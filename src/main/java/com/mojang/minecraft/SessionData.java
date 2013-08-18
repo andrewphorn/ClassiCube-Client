@@ -24,6 +24,7 @@ public final class SessionData {
 		allowedBlocks.add(Block.BRICK);
 		allowedBlocks.add(Block.GRASS);
 		allowedBlocks.add(Block.DIRT);
+		allowedBlocks.add(Block.GRASS);
 		allowedBlocks.add(Block.WOOD);
 		allowedBlocks.add(Block.LOG);
 		allowedBlocks.add(Block.LEAVES);
@@ -63,7 +64,5 @@ public final class SessionData {
 		allowedBlocks.add(Block.BOOKSHELF);
 		allowedBlocks.add(Block.TNT);
 		allowedBlocks.add(Block.OBSIDIAN);
-		allowedBlocks.add(Block.WATER);
-		allowedBlocks.add(Block.LAVA);
 	}
 }
