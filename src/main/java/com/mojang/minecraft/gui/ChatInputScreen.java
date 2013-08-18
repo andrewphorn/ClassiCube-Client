@@ -6,7 +6,7 @@ import org.lwjgl.input.Keyboard;
 
 public final class ChatInputScreen extends GuiScreen {
 
-   private String message = "";
+   public String message = "";
    private int counter = 0;
 
 
