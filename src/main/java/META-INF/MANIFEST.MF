@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.oyasunadev.mcraft.client.core.MinecraftStandalone
+
