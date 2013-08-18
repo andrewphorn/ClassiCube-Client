@@ -326,9 +326,12 @@ public class Mob extends Entity {
 	}
 
 	public void hurt(Entity var1, int var2) {
+		//System.out.println("this");
 		if(!this.level.creativeMode) {
 			if(this.health > 0) {
-				this.ai.hurt(var1, var2);
+				if(this.ai != null){
+					this.ai.hurt(var1, var2);
+				}
 				if((float)this.invulnerableTime > (float)this.invulnerableDuration / 2.0F) {
 					if(this.lastHealth - var2 >= this.health) {
 						return;
@@ -404,19 +407,23 @@ public class Mob extends Entity {
 		{
 			BasicAI ai1 = (BasicAI)ai;
 
-			if(ai1.running)
-			{
-				multiply = 3.0F;
-			} else {
-				multiply = 1.0F;
+			if(!this.flyingMode){
+			if(ai1.running){
+				multiply = 10F; //6x with momentum
+				} else {
+					multiply = 1.0F; //1x
+				}
+			}else if(this.flyingMode && ai1.running){
+				multiply = 90F; //6x
 			}
+			else multiply = 15F; //1x
 		}
-
-		if(isInWater())
+			
+		if(isInWater() && !this.flyingMode)
 		{
 			y1 = y;
 
-			moveRelative(yya, xxa, 0.02F * multiply);
+			moveRelative(yya, xxa * multiply, 0.02F * multiply);
 			move(xd, yd, zd);
 
 			xd *= 0.8F;
@@ -430,7 +437,7 @@ public class Mob extends Entity {
 				yd = 0.3F;
 			}
 
-		} else if(this.isInLava()) {
+		} else if(this.isInLava() && !this.flyingMode) {
 			y1 = y;
 
 			moveRelative(yya, xxa, 0.02F * multiply);
@@ -440,7 +447,7 @@ public class Mob extends Entity {
 			yd *= 0.5F;
 			zd *= 0.5F;
 
-			yd = (float)((double)yd - 0.02D);
+			yd = (float)((double)yd - 0.02D) * multiply;
 
 			if(horizontalCollision && isFree(xd, yd + 0.6F - y + y1, zd))
 			{
@@ -448,16 +455,26 @@ public class Mob extends Entity {
 			}
 
 		} else {
-			moveRelative(yya, xxa, (onGround ? 0.1F : 0.02F) * multiply);
-			move(xd, yd, zd);
+			if(!this.flyingMode)
+				moveRelative(yya, xxa, (onGround ? 0.1F : 0.02F) * multiply);
+			else
+				moveRelative(yya, xxa, (0.02F) * multiply);
+			float m = multiply / 5;
+			if(m < 1) m =1;
+			move(xd, yd * m, zd);
 
 			xd *= 0.91F;
 			yd *= 0.98F;
 			zd *= 0.91F;
 
 			yd = (float)((double)yd - 0.08D);
-
-			if(onGround)
+			if(this.flyingMode)
+			{
+				y1 = 0.0F;
+				xd *= y1;
+				zd *= y1;
+			}
+			if(onGround && !this.flyingMode )
 			{
 				y1 = 0.6F;
 

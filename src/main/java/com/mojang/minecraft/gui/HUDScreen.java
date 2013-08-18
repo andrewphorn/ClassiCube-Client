@@ -146,7 +146,7 @@ public final class HUDScreen extends Screen {
 			}
 		}
 
-		//var5.render("&cClassiCube 0.4", 2, 2, 16777215); // lol fuck that.
+		var5.render("ClassiCube 0.1", 2, 2, 16777215); // lol fuck that.
 		//var5.render("Minecraft 0.30", 2, 12, 16777215);
 		if(this.mc.settings.showFrameRate) {
 			var5.render(this.mc.debug, 2, 22, 16777215);
@@ -155,6 +155,13 @@ public final class HUDScreen extends Screen {
 			var5.render(ServerName, this.width - (var5.getWidth(ServerName) + 2), 2, 16777215);
 
 			var5.render(UserDetail, this.width - (var5.getWidth(UserDetail) + 2), 24, 16777215);
+			if(this.mc.player.flyingMode && !this.mc.player.noPhysics)
+				var5.render("Fly: ON.", 2, 32, 16777215);
+			else if(this.mc.player.flyingMode && this.mc.player.noPhysics)
+				var5.render("Fly: ON. NoClip: ON.", 2, 32, 16777215);
+			else if (this.mc.player.noPhysics && !this.mc.player.flyingMode){
+				var5.render("NoClip: ON.", 2, 32, 16777215);
+			}
 		}
 
 		if(this.mc.gamemode instanceof SurvivalGameMode) {

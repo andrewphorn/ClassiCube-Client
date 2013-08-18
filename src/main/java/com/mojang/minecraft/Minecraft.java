@@ -90,7 +90,7 @@ public final class Minecraft implements Runnable {
 	public SoundPlayer soundPlayer;
 	public MovingObjectPosition selected;
 	public GameSettings settings;
-	private MinecraftApplet applet;
+	private boolean isApplet;
 	String server;
 	int port;
 	public volatile boolean running;
@@ -98,11 +98,12 @@ public final class Minecraft implements Runnable {
 	public boolean hasMouse;
 	private int lastClick;
 	public boolean raining;
+	private MinecraftApplet applet;
 
 	public static File mcDir;
 
-
-	public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4, boolean var5) {
+	public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4, boolean var5, boolean IsApplet) {
+		this.isApplet = IsApplet;
 		this.levelIo = new LevelIO(this.progressBar);
 		this.sound = new SoundManager();
 		this.ticks = 0;
@@ -307,9 +308,10 @@ public final class Minecraft implements Runnable {
 			var1.resourceThread = new ResourceDownloadThread(mcDir, var1);
 			var1.resourceThread.run();
 
-			//System.setProperty("org.lwjgl.librarypath", mcDir + "/native/windows");
-			//System.setProperty("net.java.games.input.librarypath", mcDir + "/native/windows");
-
+			if(!isApplet){
+				System.setProperty("org.lwjgl.librarypath", mcDir + "/native/windows");
+				System.setProperty("net.java.games.input.librarypath", mcDir + "/native/windows");
+			}
 			if(this.canvas != null) {
 				Display.setParent(this.canvas);
 			} else if(this.fullscreen) {
@@ -320,7 +322,7 @@ public final class Minecraft implements Runnable {
 				Display.setDisplayMode(new DisplayMode(this.width, this.height));
 			}
 
-			Display.setTitle("Minecraft 0.30");
+			Display.setTitle("ClassiCube");
 
 			try {
 				Display.create();
@@ -361,7 +363,7 @@ public final class Minecraft implements Runnable {
 			checkGLError("Startup");
 			//
 			this.settings = new GameSettings(this, minecraftFolder);
-			this.textureManager = new TextureManager(this.settings);
+			this.textureManager = new TextureManager(this.settings, isApplet);
 			this.textureManager.registerAnimation(new TextureLavaFX());
 			this.textureManager.registerAnimation(new TextureWaterFX());
 			this.fontRenderer = new FontRenderer(this.settings, "/default.png", this.textureManager);
@@ -1647,6 +1649,16 @@ public final class Minecraft implements Runnable {
 					if(this.currentScreen == null) {
 						if(Keyboard.getEventKey() == 1) {
 							this.pause();
+						}
+						
+						if (Keyboard.getEventKey() == Keyboard.KEY_X) {
+							// if(this.)
+							this.player.noPhysics = !this.player.noPhysics;
+							this.player.hovered = !this.player.hovered;
+						}
+						
+						if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
+							this.player.flyingMode = !this.player.flyingMode;
 						}
 
 						if(this.gamemode instanceof CreativeGameMode) {
