@@ -64,5 +64,8 @@ public final class SessionData {
 		allowedBlocks.add(Block.BOOKSHELF);
 		allowedBlocks.add(Block.TNT);
 		allowedBlocks.add(Block.OBSIDIAN);
+		allowedBlocks.add(Block.BEDROCK);
+		allowedBlocks.add(Block.WATER);
+		allowedBlocks.add(Block.LAVA);
 	}
 }
