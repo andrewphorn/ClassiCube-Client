@@ -22,7 +22,6 @@ public final class SessionData {
 		(allowedBlocks = new ArrayList()).add(Block.STONE);
 		allowedBlocks.add(Block.COBBLESTONE);
 		allowedBlocks.add(Block.BRICK);
-		allowedBlocks.add(Block.GRASS);
 		allowedBlocks.add(Block.DIRT);
 		allowedBlocks.add(Block.GRASS);
 		allowedBlocks.add(Block.WOOD);
