@@ -28,6 +28,7 @@ public final class SessionData {
 		allowedBlocks.add(Block.LEAVES);
 		allowedBlocks.add(Block.GLASS);
 		allowedBlocks.add(Block.SLAB);
+		allowedBlocks.add(Block.DOUBLE_SLAB);
 		allowedBlocks.add(Block.MOSSY_COBBLESTONE);
 		allowedBlocks.add(Block.SAPLING);
 		allowedBlocks.add(Block.DANDELION);
