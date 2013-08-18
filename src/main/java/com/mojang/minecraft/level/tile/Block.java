@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class Block
 {
-	protected Block(int id)
+	public Block(int id)
 	{
 		explodes = true;
 		blocks[id] = this;
