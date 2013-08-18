@@ -21,7 +21,14 @@ public final class FontRenderer {
 
       BufferedImage var14;
       try {
-         var14 = ImageIO.read(TextureManager.class.getResourceAsStream(var2));
+    	  if(var3.Applet){
+    		  var14 = ImageIO.read(TextureManager.class.getResourceAsStream(var2));
+    	  }
+    	  else
+    	  {
+    		  var14 = ImageIO.read(TextureManager.class.getResourceAsStream("/resources"+var2));
+    	  }
+    	  
       } catch (IOException var13) {
          throw new RuntimeException(var13);
       }

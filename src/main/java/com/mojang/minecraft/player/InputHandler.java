@@ -8,6 +8,11 @@ public class InputHandler
 
 	public boolean running = false;
 
+	
+	public boolean flyingUp = false;
+	
+	public boolean flyingDown = false;
+	public boolean flying = false;
 	public void updateMovement()
 	{
 	}

@@ -54,6 +54,11 @@ public final class GameSettings
 
 	public KeyBinding runKey = new KeyBinding("Run", Keyboard.KEY_LSHIFT);
 
+	
+	public KeyBinding flyKey = new KeyBinding("Fly", Keyboard.KEY_Z);
+	public KeyBinding flyUp = new KeyBinding("Fly Up", Keyboard.KEY_Q);
+	public KeyBinding flyDown = new KeyBinding("Fly Down", Keyboard.KEY_E);
+	
 	public String getBinding(int key)
 	{
 		return bindings[key].name + ": " + Keyboard.getKeyName(bindings[key].key);

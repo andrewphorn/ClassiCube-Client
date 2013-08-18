@@ -22,8 +22,10 @@ import java.util.zip.ZipFile;
 
 public class TextureManager
 {
-	public TextureManager(GameSettings settings)
+	public boolean Applet;
+	public TextureManager(GameSettings settings, boolean Applet)
 	{
+		this.Applet = Applet;
 		this.settings = settings;
 
 		minecraftFolder = Minecraft.mcDir;
@@ -51,6 +53,9 @@ public class TextureManager
 
 	public int load(String file)
 	{
+		if(!Applet){
+			file = "/resources" + file;
+		}
 		if(textures.get(file) != null)
 		{
 			return textures.get(file);

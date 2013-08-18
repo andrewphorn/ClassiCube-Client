@@ -55,6 +55,7 @@ public abstract class Entity implements Serializable {
    public boolean noPhysics = false;
    public float pushthrough = 0.0F;
    public boolean hovered = false;
+   public boolean flyingMode = false;
 
 
    public Entity(Level var1) {
@@ -170,9 +171,13 @@ public abstract class Entity implements Serializable {
       if(this.noPhysics) {
          this.bb.move(var1, var2, var3);
          this.x = (this.bb.x0 + this.bb.x1) / 2.0F;
-         this.y = this.bb.y0 + this.heightOffset - this.ySlideOffset;
+         //if((this.bb.y0 + this.heightOffset - this.ySlideOffset) > y){
+        	 this.y = this.bb.y0 + this.heightOffset - this.ySlideOffset;
+         //}
          this.z = (this.bb.z0 + this.bb.z1) / 2.0F;
-      } else {
+         //this.yd = 0;
+      } 
+      else {
          float var4 = this.x;
          float var5 = this.z;
          float var6 = var1;
@@ -279,7 +284,7 @@ public abstract class Entity implements Serializable {
          this.collision = this.horizontalCollision || var7 != var2;
          if(this.onGround) {
             if(this.fallDistance > 0.0F) {
-               this.causeFallDamage(this.fallDistance);
+               this.causeFallDamage(this.fallDistance / 2);
                this.fallDistance = 0.0F;
             }
          } else if(var2 < 0.0F) {
@@ -299,7 +304,8 @@ public abstract class Entity implements Serializable {
          }
 
          this.x = (this.bb.x0 + this.bb.x1) / 2.0F;
-         this.y = this.bb.y0 + this.heightOffset - this.ySlideOffset;
+         this.y = this.bb.y0 + this.heightOffset - this.ySlideOffset;	 
+         
          this.z = (this.bb.z0 + this.bb.z1) / 2.0F;
          var18 = this.x - var4;
          var17 = this.z - var5;
@@ -314,8 +320,8 @@ public abstract class Entity implements Serializable {
                }
             }
          }
-
          this.ySlideOffset *= 0.4F;
+         
       }
    }
 
@@ -334,20 +340,21 @@ public abstract class Entity implements Serializable {
       return this.level.containsLiquid(this.bb.grow(0.0F, -0.4F, 0.0F), LiquidType.LAVA);
    }
 
-   public void moveRelative(float var1, float var2, float var3) {
+   public void moveRelative(float x, float y, float z) {
+	  
       float var4;
-      if((var4 = MathHelper.sqrt(var1 * var1 + var2 * var2)) >= 0.01F) {
+      if((var4 = MathHelper.sqrt(x * x + y * y)) >= 0.01F) {
          if(var4 < 1.0F) {
             var4 = 1.0F;
          }
 
-         var4 = var3 / var4;
-         var1 *= var4;
-         var2 *= var4;
-         var3 = MathHelper.sin(this.yRot * 3.1415927F / 180.0F);
+         var4 = z / var4;
+         x *= var4;
+         y *= var4;
+         z = MathHelper.sin(this.yRot * 3.1415927F / 180.0F);
          var4 = MathHelper.cos(this.yRot * 3.1415927F / 180.0F);
-         this.xd += var1 * var4 - var2 * var3;
-         this.zd += var2 * var4 + var1 * var3;
+         this.xd += x * var4 - y * z;
+         this.zd += y * var4 + x * z;
       }
    }
 
