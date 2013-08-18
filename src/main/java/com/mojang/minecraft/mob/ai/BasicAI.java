@@ -138,6 +138,16 @@ public class BasicAI extends AI {
 				}
 			}
 		}
+		else
+		{	
+			if(this.jumping && this.mob.isInLava()){
+				if(this.running){
+					this.mob.yd = 0.08F;
+				}else{
+					this.mob.yd = 0.06F;
+				}
+			}
+		}
 	
 	
 			
