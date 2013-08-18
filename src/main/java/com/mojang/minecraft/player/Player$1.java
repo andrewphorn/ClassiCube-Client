@@ -14,11 +14,14 @@ public class Player$1 extends BasicAI
 	protected void update()
 	{
 		this.jumping = player.input.jumping;
-
+		this.running = player.input.running;
+		this.flying = player.input.flying;
+		this.flyingUp = player.input.flyingUp;
+		this.flyingDown = player.input.flyingDown;
 		this.xxa = player.input.xxa;
 		this.yya = player.input.yya;
 
-		running = player.input.running;
+		
 	}
 
 	public static final long serialVersionUID = 0L;

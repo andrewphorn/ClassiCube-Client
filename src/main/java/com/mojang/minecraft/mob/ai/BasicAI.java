@@ -23,6 +23,12 @@ public class BasicAI extends AI {
 	public Entity attackTarget = null;
 
 	public boolean running = false;
+	
+	public boolean flying = false;
+	
+	public boolean flyingUp = false;
+	
+	public boolean flyingDown = false;
 
 	public void tick(Level var1, Mob var2) {
 		++this.noActionTime;
@@ -52,15 +58,104 @@ public class BasicAI extends AI {
 		} else {
 			this.update();
 		}
-
+		if(this.mob.flyingMode || this.mob.noPhysics){
+			var2.yd = 0;
+		}
+		if(this.mob.flyingMode && !this.mob.noPhysics){
+			if(this.flyingUp){
+				//System.out.println("flying up");
+						if(this.running){
+							this.mob.yd = 0.08F;
+						}else{
+							this.mob.yd = 0.06F;
+						}
+						
+			}
+			else if(this.flyingDown){
+				//System.out.println("flying down");
+						if(this.running)
+							this.mob.yd = -0.08F;
+						else
+							this.mob.yd = -0.06F;
+			}
+			else if(this.jumping){
+				if(this.running){
+					this.mob.yd = 0.08F;
+				}else{
+					this.mob.yd = 0.06F;
+				}
+			}
+		}
+		
+		else if(this.mob.noPhysics && !this.mob.flyingMode){
+			if(this.flyingUp){
+				//System.out.println("flying up");
+						if(this.running){
+							this.mob.yd = 0.48F;
+						}else{
+							this.mob.yd = 0.26F;
+						}
+						
+			}
+			else if(this.flyingDown){
+				//System.out.println("flying down");
+						if(this.running)
+							this.mob.yd = -0.48F;
+						else
+							this.mob.yd = -0.26F;
+			}
+			else if(this.jumping){
+				if(this.running){
+					this.mob.yd = 0.48F;
+				}else{
+					this.mob.yd = 0.26F;
+				}
+			}
+		}
+		
+		else if(this.mob.noPhysics && this.mob.flyingMode){
+			if(this.flyingUp){
+				//System.out.println("flying up");
+						if(this.running){
+							this.mob.yd = 0.08F;
+						}else{
+							this.mob.yd = 0.06F;
+						}
+						
+			}
+			else if(this.flyingDown){
+				//System.out.println("flying down");
+						if(this.running)
+							this.mob.yd = -0.08F;
+						else
+							this.mob.yd = -0.06F;
+			}
+			else if(this.jumping){
+				if(this.running){
+					this.mob.yd = 0.08F;
+				}else{
+					this.mob.yd = 0.06F;
+				}
+			}
+		}
+	
+	
+			
+		
 		boolean var7 = var2.isInWater();
 		boolean var9 = var2.isInLava();
 		if(this.jumping) {
-			if(var7) {
-				var2.yd += 0.04F;
-			} else if(var9) {
-				var2.yd += 0.04F;
-			} else if(var2.onGround) {
+			if(var7) { //if in water
+				if(!running)
+					var2.yd += 0.04F;
+				else
+					var2.yd += 0.08F;
+			} else if(var9) { //elseif in lava
+				if(!running)
+					var2.yd += 0.04F;
+				else
+					var2.yd += 0.08F;
+			} else if(var2.onGround) { //if on the ground
 				this.jumpFromGround();
 			}
 		}
@@ -78,11 +173,15 @@ public class BasicAI extends AI {
 				}
 			}
 		}
-
 	}
 
 	protected void jumpFromGround() {
-		this.mob.yd = 0.42F;
+		if(!running)
+			this.mob.yd = 0.42F;
+		else
+			this.mob.yd = 0.84F;
+		
+		
 	}
 
 	protected void update() {
@@ -108,7 +207,6 @@ public class BasicAI extends AI {
 		if(var1 || var2) {
 			this.jumping = this.random.nextFloat() < 0.8F;
 		}
-
 	}
 
 	public void beforeRemove() {}
