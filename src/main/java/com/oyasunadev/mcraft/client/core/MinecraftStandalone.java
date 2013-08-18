@@ -85,7 +85,7 @@ public class MinecraftStandalone
 		{
 			MCraftApplet applet = new MCraftApplet();
 			final MinecraftCanvas canvas = new MinecraftCanvas();
-			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(), false);
+			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(), false, false);
 
 			canvas.setMinecraft(minecraft);
 			canvas.setSize(getSize());

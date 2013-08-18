@@ -38,6 +38,13 @@ public class InputHandlerImpl extends InputHandler
 		jumping = keyStates[4];
 
 		running = keyStates[5];
+		
+		flyingUp = keyStates[7];
+		flyingDown = keyStates[8];
+		
+		if(keyStates[6]){
+			flying = !flying;
+		}
 	}
 
 	@Override
@@ -83,6 +90,20 @@ public class InputHandlerImpl extends InputHandler
 		if(key == settings.runKey.key)
 		{
 			index = 5;
+		}
+		
+		if(key == settings.flyKey.key)
+		{
+			index = 6;
+		}
+		
+		if(key == settings.flyUp.key)
+		{
+			index = 7;
+		}
+		if(key == settings.flyDown.key)
+		{
+			index = 8;
 		}
 
 		if(index >= 0)
