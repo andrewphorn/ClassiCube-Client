@@ -39,7 +39,7 @@ public final class ChatInputScreen extends GuiScreen {
             this.message = this.message.substring(0, this.message.length() - 1);
          }
 
-         if("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_\'*!\\\"#%/()=+?[]{}<>@|$;".indexOf(var1) >= 0 && this.message.length() < 64 - (this.minecraft.session.username.length() + 2)) {
+         if("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_\'*!\\\"#%/()=+?[]{}<>@|$;^`~".indexOf(var1) >= 0 && this.message.length() < 64 - (this.minecraft.session.username.length() + 2)) {
             this.message = this.message + var1;
          }
 

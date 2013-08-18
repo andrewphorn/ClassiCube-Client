@@ -19,7 +19,7 @@ public class SkinDownloadThread extends Thread
 		HttpURLConnection connection = null;
 
 		try {
-			connection = (HttpURLConnection)new URL("http://www.minecraft.net/skin/" + player.name + ".png").openConnection();
+			connection = (HttpURLConnection)new URL("http://www.classicube.net/static/skins/" + player.name + ".png").openConnection();
 
 			connection.setDoInput(true);
 			connection.setDoOutput(false);
