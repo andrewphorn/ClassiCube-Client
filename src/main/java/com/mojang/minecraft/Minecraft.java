@@ -1664,6 +1664,14 @@ public final class Minecraft implements Runnable {
 						if(Keyboard.getEventKey() == 63) {
 							this.raining = !this.raining;
 						}
+						if (Keyboard.getEventKey() == 53
+                                && this.networkManager != null
+                                && this.networkManager.isConnected()) {
+                        this.player.releaseAllKeys();
+                        ChatInputScreen s = new ChatInputScreen();
+                        this.setCurrentScreen(s);
+                        s.message = "/";
+                }
 
 						if(Keyboard.getEventKey() == 15 && this.gamemode instanceof SurvivalGameMode && this.player.arrows > 0) {
 							this.level.addEntity(new Arrow(this.level, this.player, this.player.x, this.player.y, this.player.z, this.player.yRot, this.player.xRot, 1.2F));
