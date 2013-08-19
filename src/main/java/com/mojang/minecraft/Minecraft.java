@@ -260,9 +260,10 @@ public final class Minecraft implements Runnable {
 						? Minecraft$OS.linux : (osName.contains("unix") ? Minecraft$OS.linux : Minecraft$OS.unknown)))))).ordinal()])
 		{
 			case 1:
-				System.out.println("UNKNOWN OS!!!");
-
-				return;
+				System.out.println("Unknown OS - Let's Try Linux (tm)");
+				minecraftFolder = new File(home, '.' + folder + '/');
+				break;
+				//return;
 			case 2:
 				minecraftFolder = new File(home, '.' + folder + '/');
 				break;
