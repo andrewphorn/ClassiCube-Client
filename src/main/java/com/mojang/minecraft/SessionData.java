@@ -63,10 +63,7 @@ public final class SessionData {
 		allowedBlocks.add(Block.BOOKSHELF);
 		allowedBlocks.add(Block.TNT);
 		allowedBlocks.add(Block.OBSIDIAN);
-<<<<<<< HEAD
-=======
 		allowedBlocks.add(Block.BEDROCK);
->>>>>>> 83e10a6b3068600e87357d5106a01fae42703cab
 		allowedBlocks.add(Block.WATER);
 		allowedBlocks.add(Block.LAVA);
 	}
