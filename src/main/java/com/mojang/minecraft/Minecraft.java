@@ -1612,6 +1612,7 @@ public final class Minecraft implements Runnable {
 						}
 
 						if(Mouse.getEventButton() == 2 && Mouse.getEventButtonState() && this.selected != null) {
+							var16 = this.level.getTile(this.selected.x, this.selected.y, this.selected.z);
 							this.player.inventory.grabTexture(var16, this.gamemode instanceof CreativeGameMode);
 						}
 					}
