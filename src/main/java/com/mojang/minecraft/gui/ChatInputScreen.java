@@ -3,6 +3,7 @@ package com.mojang.minecraft.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.PacketType;
 import org.lwjgl.input.Keyboard;
@@ -24,10 +25,28 @@ public final class ChatInputScreen extends GuiScreen {
 		++this.counter;
 	}
 
-	List<String> typinglog = new ArrayList<String>();
-	int typinglogpos = 0;
-
 	protected final void onKeyPress(char var1, int var2) {
+		if (var2 == Keyboard.KEY_UP) {
+			GameSettings.typinglogpos--;
+			if (GameSettings.typinglogpos < 0) {
+				GameSettings.typinglogpos = 0;
+			}
+			if (GameSettings.typinglogpos >= 0 && GameSettings.typinglogpos < GameSettings.typinglog.size()) {
+				this.message = GameSettings.typinglog.get(GameSettings.typinglogpos);
+			}
+		}
+		if (var2 == Keyboard.KEY_DOWN) {
+			GameSettings.typinglogpos++;
+			if (GameSettings.typinglogpos > GameSettings.typinglog.size()) {
+				GameSettings.typinglogpos = GameSettings.typinglog.size();
+			}
+			if (GameSettings.typinglogpos >= 0 && GameSettings.typinglogpos < GameSettings.typinglog.size()) {
+				this.message = GameSettings.typinglog.get(GameSettings.typinglogpos);
+			}
+			if (GameSettings.typinglogpos == GameSettings.typinglog.size()) {
+				this.message = "";
+			}
+		}
 		if (var2 == 1) {
 			this.minecraft.setCurrentScreen((GuiScreen) null);
 		} else if (var2 == 28) {
@@ -37,8 +56,8 @@ public final class ChatInputScreen extends GuiScreen {
 			if ((var4 = var4.trim()).length() > 0) {
 				var3.netHandler.send(PacketType.CHAT_MESSAGE, new Object[] {
 						Integer.valueOf(-1), var4 });
-				typinglog.add(this.message);
-				typinglogpos = typinglog.size();
+				GameSettings.typinglog.add(var4);
+				GameSettings.typinglogpos = GameSettings.typinglog.size();
 			}
 
 			this.minecraft.setCurrentScreen((GuiScreen) null);
@@ -46,28 +65,6 @@ public final class ChatInputScreen extends GuiScreen {
 			if (var2 == 14 && this.message.length() > 0) {
 				this.message = this.message.substring(0,
 						this.message.length() - 1);
-			}
-
-			if (var2 == Keyboard.KEY_UP) {
-				typinglogpos--;
-				if (typinglogpos < 0) {
-					typinglogpos = 0;
-				}
-				if (typinglogpos >= 0 && typinglogpos < typinglog.size()) {
-					this.message = typinglog.get(typinglogpos);
-				}
-			}
-			if (var2 == Keyboard.KEY_DOWN) {
-				typinglogpos++;
-				if (typinglogpos > typinglog.size()) {
-					typinglogpos = typinglog.size();
-				}
-				if (typinglogpos >= 0 && typinglogpos < typinglog.size()) {
-					this.message = typinglog.get(typinglogpos);
-				}
-				if (typinglogpos == typinglog.size()) {
-					this.message = "";
-				}
 			}
 
 			if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_\'*!\\\"#%/()=+?[]{}<>@|$;^`~"

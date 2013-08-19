@@ -4,6 +4,7 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MinecraftApplet;
 import com.mojang.minecraft.ResourceDownloadThread;
+import com.mojang.minecraft.SessionData;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -78,10 +79,21 @@ public class MinecraftStandalone {
 		 * Start Minecraft Classic.
 		 */
 		public void startMinecraft() {
+			boolean RunFakeNetwork = false;
 			MCraftApplet applet = new MCraftApplet();
 			final MinecraftCanvas canvas = new MinecraftCanvas();
 			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
 					false, false);
+
+			if (RunFakeNetwork) {
+				minecraft.host = "127.0.0.1";
+				minecraft.host = minecraft.host + ":" + "25565";
+				minecraft.session = new SessionData("Jonty800", "noidea");
+				minecraft.session.mppass = "c0dd4746a88c5785952cd0190e8214a6";
+				minecraft.session.haspaid = true;
+				minecraft.server = "127.0.0.1";
+				minecraft.port = 25565;
+			}
 
 			canvas.setMinecraft(minecraft);
 			canvas.setSize(getSize());
