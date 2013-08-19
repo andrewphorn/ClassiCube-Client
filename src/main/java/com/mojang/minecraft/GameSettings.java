@@ -10,6 +10,8 @@ import java.util.Iterator;
 
 public final class GameSettings
 {
+	public static String StatusString = "";
+	public static String PercentString = "";
 	public GameSettings(Minecraft minecraft, File minecraftFolder)
 	{
 		bindings = new KeyBinding[] {forwardKey, leftKey, backKey, rightKey, jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey, runKey};
