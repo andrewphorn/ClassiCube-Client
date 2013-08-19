@@ -2,6 +2,7 @@ package com.oyasunadev.mcraft.client.core;
 
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MinecraftApplet;
+import com.mojang.minecraft.ResourceDownloadThread;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,10 +23,8 @@ import java.util.Map;
 /**
  * Run Minecraft Classic standalone version.
  */
-public class MinecraftStandalone
-{
-	public static void main(String[] args)
-	{
+public class MinecraftStandalone {
+	public static void main(String[] args) {
 		MinecraftStandalone minecraftStandalone = new MinecraftStandalone();
 
 		minecraftStandalone.startMinecraft();
@@ -34,15 +33,13 @@ public class MinecraftStandalone
 	/**
 	 * Default constructor.
 	 */
-	public MinecraftStandalone()
-	{
+	public MinecraftStandalone() {
 	}
 
 	/**
 	 * Start Minecraft Classic.
 	 */
-	public void startMinecraft()
-	{
+	public void startMinecraft() {
 		MinecraftFrame minecraftFrame = new MinecraftFrame();
 
 		minecraftFrame.startMinecraft();
@@ -51,23 +48,19 @@ public class MinecraftStandalone
 	/**
 	 * A class representing the Minecraft Classic game.
 	 */
-	private class MinecraftFrame extends JFrame
-	{
+	private class MinecraftFrame extends JFrame {
 		/**
 		 * Default constructor.
 		 */
-		public MinecraftFrame()
-		{
+		public MinecraftFrame() {
 			setSize(854, 480);
-			//setResizable(false);
+			// setResizable(false);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			setLayout(new BorderLayout());
 
-			addWindowListener(new WindowAdapter()
-			{
+			addWindowListener(new WindowAdapter() {
 				@Override
-				public void windowClosing(WindowEvent e)
-				{
+				public void windowClosing(WindowEvent e) {
 					minecraft.running = false;
 				}
 			});
@@ -81,11 +74,11 @@ public class MinecraftStandalone
 		/**
 		 * Start Minecraft Classic.
 		 */
-		public void startMinecraft()
-		{
+		public void startMinecraft() {
 			MCraftApplet applet = new MCraftApplet();
 			final MinecraftCanvas canvas = new MinecraftCanvas();
-			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(), false, false);
+			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
+					false, false);
 
 			canvas.setMinecraft(minecraft);
 			canvas.setSize(getSize());
@@ -95,18 +88,15 @@ public class MinecraftStandalone
 			canvas.setFocusable(true);
 
 			pack();
-			setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - getWidth()) / 2,
+			setLocation(
+					(Toolkit.getDefaultToolkit().getScreenSize().width - getWidth()) / 2,
 					(Toolkit.getDefaultToolkit().getScreenSize().height - getHeight()) / 2);
 			setVisible(true);
 
-			new Thread(new Runnable()
-			{
-				public void run()
-				{
-					while(true)
-					{
-						if(!minecraft.running)
-						{
+			new Thread(new Runnable() {
+				public void run() {
+					while (true) {
+						if (!minecraft.running) {
 							minecraft.shutdown();
 							dispose();
 						}
@@ -122,16 +112,14 @@ public class MinecraftStandalone
 
 			boolean pass = false;
 
-			while(!pass)
-			{
+			while (!pass) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 
-				if(minecraft.running)
-				{
+				if (minecraft.running) {
 					pass = true;
 				}
 			}
@@ -140,26 +128,24 @@ public class MinecraftStandalone
 		}
 
 		/**
-		 * Override the MinecraftApplet class because we need to fake the Document Base and Code Base.
+		 * Override the MinecraftApplet class because we need to fake the
+		 * Document Base and Code Base.
 		 */
-		private class MCraftApplet extends MinecraftApplet
-		{
+		private class MCraftApplet extends MinecraftApplet {
 			/**
 			 * Default constructor.
 			 */
-			public MCraftApplet()
-			{
+			public MCraftApplet() {
 				parameters = new HashMap<String, String>();
 			}
 
 			/**
 			 * Fake the Document Base.
-			 *
+			 * 
 			 * @return new URL("http://minecraft.net:80/play.jsp")
 			 */
 			@Override
-			public URL getDocumentBase()
-			{
+			public URL getDocumentBase() {
 				try {
 					return new URL("http://minecraft.net:80/play.jsp");
 				} catch (MalformedURLException e) {
@@ -171,12 +157,11 @@ public class MinecraftStandalone
 
 			/**
 			 * Fake the Code Base.
-			 *
+			 * 
 			 * @return new URL("http://minecraft.net:80/")
 			 */
 			@Override
-			public URL getCodeBase()
-			{
+			public URL getCodeBase() {
 				try {
 					return new URL("http://minecraft.net:80/");
 				} catch (MalformedURLException e) {
@@ -188,13 +173,12 @@ public class MinecraftStandalone
 
 			/**
 			 * Return our own parameters variable.
-			 *
+			 * 
 			 * @param name
 			 * @return
 			 */
 			@Override
-			public String getParameter(String name)
-			{
+			public String getParameter(String name) {
 				return parameters.get(name);
 			}
 
@@ -207,21 +191,48 @@ public class MinecraftStandalone
 		/**
 		 * A canvas for the Minecraft thread.
 		 */
-		private class MinecraftCanvas extends Canvas
-		{
+		private class MinecraftCanvas extends Canvas {
+			@Override
+			public void paint(Graphics g) {
+
+				Graphics2D g2 = (Graphics2D) g;
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_ON);
+				Font font = new Font("Serif", Font.BOLD, 18);
+				g2.setFont(font);
+				if (!ResourceDownloadThread.Done) {
+					g.setColor(new Color(159,121,238));
+					g.fillRect(0, 0, this.getWidth(), this.getHeight());
+					g.setColor(Color.white);
+					font = new Font("Purisa", Font.BOLD, 48);
+					g2.setFont(font);
+					g2.drawString("ClassicCube", 10,
+							48);
+					font = new Font("Serif", Font.BOLD, 18);
+					g2.setFont(font);
+						g2.drawString(ResourceDownloadThread.PercentString, 10,
+								98);
+						g2.drawString(ResourceDownloadThread.StatusString, 10,
+								78);
+					
+				}
+				else {
+					g.setColor(new Color(159,121,238));
+					g.fillRect(0, 0, this.getWidth(), this.getHeight());
+				}
+			}
+
 			/**
 			 * Default constructor.
 			 */
-			public MinecraftCanvas()
-			{
+			public MinecraftCanvas() {
 			}
 
 			/**
 			 * Start the thread.
 			 */
 			@Override
-			public synchronized void addNotify()
-			{
+			public synchronized void addNotify() {
 				super.addNotify();
 
 				startThread();
@@ -231,8 +242,7 @@ public class MinecraftStandalone
 			 * Stop the thread.
 			 */
 			@Override
-			public synchronized void removeNotify()
-			{
+			public synchronized void removeNotify() {
 				stopThread();
 
 				super.removeNotify();
@@ -251,21 +261,19 @@ public class MinecraftStandalone
 
 			/**
 			 * Set the "minecraft" variable.
-			 *
-			 * @param minecraft The new Minecraft variable.
+			 * 
+			 * @param minecraft
+			 *            The new Minecraft variable.
 			 */
-			public void setMinecraft(Minecraft minecraft)
-			{
+			public void setMinecraft(Minecraft minecraft) {
 				this.minecraft = minecraft;
 			}
 
 			/**
 			 * Start the Minecraft client thread.
 			 */
-			private synchronized void startThread()
-			{
-				if(thread == null)
-				{
+			private synchronized void startThread() {
+				if (thread == null) {
 					thread = new Thread(minecraft, "Client");
 
 					thread.start();
@@ -275,14 +283,11 @@ public class MinecraftStandalone
 			/**
 			 * Stop the Minecraft client.
 			 */
-			private synchronized void stopThread()
-			{
-				if(thread != null)
-				{
+			private synchronized void stopThread() {
+				if (thread != null) {
 					minecraft.running = false;
 
-					try
-					{
+					try {
 						thread.join();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
