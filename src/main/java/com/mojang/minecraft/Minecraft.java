@@ -91,8 +91,8 @@ public final class Minecraft implements Runnable {
 	public MovingObjectPosition selected;
 	public GameSettings settings;
 	private boolean isApplet;
-	String server;
-	int port;
+	public String server;
+	public int port;
 	public volatile boolean running;
 	public String debug;
 	public boolean hasMouse;

@@ -239,15 +239,20 @@ public class MinecraftStandalone {
 				if (!ResourceDownloadThread.Done) {
 					g.drawImage(getImage(), 0, 0, this.getWidth(),
 							this.getHeight(), null);
-					g.setColor(Color.white);
 					font = new Font("Purisa", Font.BOLD, 48);
 					g2.setFont(font);
-					g2.drawString("ClassiCube", 10, 48);
+					g.setColor(Color.black);
+					g2.drawString("ClassiCube", 12, 50); //shadow
+					g.setColor(Color.white);
+					g2.drawString("ClassiCube", 10, 48); //normal
 					font = new Font("Serif", Font.BOLD, 18);
 					g2.setFont(font);
-					g2.drawString(GameSettings.PercentString, 10, 98);
+					g.setColor(Color.black);
+					g2.drawString(GameSettings.PercentString, 12, 100); //shadow
+					g2.drawString(GameSettings.StatusString, 12, 80);
+					g.setColor(Color.white);
+					g2.drawString(GameSettings.PercentString, 10, 98); //normal
 					g2.drawString(GameSettings.StatusString, 10, 78);
-
 				} else {
 					if (image2 == null) {
 						try {
