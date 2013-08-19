@@ -261,7 +261,7 @@ public final class Minecraft implements Runnable {
 		{
 			case 1:
 				System.out.println("Unknown OS - Let's Try Linux (tm)");
-				System.out.println(System.getProperty("os.name"));
+				System.out.println(osName);
 				minecraftFolder = new File(home, '.' + folder + '/');
 				break;
 				//return;
