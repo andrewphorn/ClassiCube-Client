@@ -120,7 +120,6 @@ public final class Minecraft implements Runnable {
 		this.hasMouse = false;
 		this.lastClick = 0;
 		this.raining = false;
-
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception var7) {
