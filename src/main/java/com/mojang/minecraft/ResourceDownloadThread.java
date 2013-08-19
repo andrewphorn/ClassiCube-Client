@@ -9,12 +9,12 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+
 public class ResourceDownloadThread extends Thread
 {
-	public static String StatusString = "";
-	public static String PercentString = "";
 	public static boolean Done = false;
-	public ResourceDownloadThread(File minecraftFolder, Minecraft minecraft)
+	
+	public ResourceDownloadThread(File minecraftFolder, Minecraft minecraft) throws IOException
 	{
 		//minecraft.fontRenderer.render("Resource download started", 2, 32, 16777215);
 		this.minecraft = minecraft;
@@ -58,8 +58,8 @@ public class ResourceDownloadThread extends Thread
 
 		try
 		{
-			PercentString = "5%";
-			StatusString = "Downloading music and sounds...";
+			GameSettings.PercentString = "5%";
+			GameSettings.StatusString = "Downloading music and sounds...";
 			System.out.println("Downloading music and sounds...");
 
 			int Percent = 5;
@@ -72,23 +72,23 @@ public class ResourceDownloadThread extends Thread
 
 				if(!file.exists())
 				{
-					PercentString = Percent +"%";
-					StatusString = "Downloading http://s3.amazonaws.com/MinecraftResources/" + files[i] + "...";
+					GameSettings.PercentString = Percent +"%";
+					GameSettings.StatusString = "Downloading http://s3.amazonaws.com/MinecraftResources/" + files[i] + "...";
 					System.out.println("Downloading http://s3.amazonaws.com/MinecraftResources/" + files[i] + "...");
 
 					url = new URL("http://s3.amazonaws.com/MinecraftResources/" + files[i]);
 					rbc = Channels.newChannel(url.openStream());
 					fos = new FileOutputStream(file);
 					fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-					StatusString ="Downloaded http://s3.amazonaws.com/MinecraftResources/" + files[i] + "!";
+					GameSettings.StatusString ="Downloaded http://s3.amazonaws.com/MinecraftResources/" + files[i] + "!";
 					System.out.println("Downloaded http://s3.amazonaws.com/MinecraftResources/" + files[i] + "!");
 				}
 			}
-			PercentString = "65%";
-			StatusString = "Downloaded music and sounds!";
+			GameSettings.PercentString = "65%";
+			GameSettings.StatusString = "Downloaded music and sounds!";
 			System.out.println("Downloaded music and sounds!");
 
-			StatusString ="Downloading lwjgl...";
+			GameSettings.StatusString ="Downloading lwjgl...";
 			System.out.println("Downloading lwjgl...");
 
 			file = new File(Minecraft.mcDir, "lwjgl-2.8.4.zip");
@@ -109,10 +109,10 @@ public class ResourceDownloadThread extends Thread
 
 			deleteDir(new File(Minecraft.mcDir, "lwjgl-2.8.4"));
 			deleteDir(file);
-			StatusString ="Downloaded lwjgl...";
+			GameSettings.StatusString ="Downloaded lwjgl...";
 			System.out.println("Downloaded lwjgl...");
-			StatusString = "";
-			PercentString = "";
+			GameSettings.StatusString = "";
+			GameSettings.PercentString = "";
 			Done = true;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
