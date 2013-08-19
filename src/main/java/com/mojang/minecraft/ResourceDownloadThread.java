@@ -11,8 +11,12 @@ import java.util.zip.ZipFile;
 
 public class ResourceDownloadThread extends Thread
 {
+	public static String StatusString = "";
+	public static String PercentString = "";
+	public static boolean Done = false;
 	public ResourceDownloadThread(File minecraftFolder, Minecraft minecraft)
 	{
+		//minecraft.fontRenderer.render("Resource download started", 2, 32, 16777215);
 		this.minecraft = minecraft;
 
 		this.setName("Resource download thread");
@@ -25,7 +29,7 @@ public class ResourceDownloadThread extends Thread
 			throw new RuntimeException("The working directory could not be created: " + dir);
 		}
 	}
-
+	public static FileOutputStream fos;
 	@Override
 	public void run()
 	{
@@ -42,7 +46,6 @@ public class ResourceDownloadThread extends Thread
 		URL url;
 		ReadableByteChannel rbc;
 		File file;
-		FileOutputStream fos;
 
 		File folder = new File(dir, "music");
 		folder.mkdir();
@@ -55,28 +58,37 @@ public class ResourceDownloadThread extends Thread
 
 		try
 		{
+			PercentString = "5%";
+			StatusString = "Downloading music and sounds...";
 			System.out.println("Downloading music and sounds...");
 
+			int Percent = 5;
 			for(int i = 0; i < files.length; i++)
 			{
+				if(Percent >=50)
+					Percent = 50;
+				Percent +=1;
 				file = new File(dir, files[i]);
 
 				if(!file.exists())
 				{
+					PercentString = Percent +"%";
+					StatusString = "Downloading http://s3.amazonaws.com/MinecraftResources/" + files[i] + "...";
 					System.out.println("Downloading http://s3.amazonaws.com/MinecraftResources/" + files[i] + "...");
 
 					url = new URL("http://s3.amazonaws.com/MinecraftResources/" + files[i]);
 					rbc = Channels.newChannel(url.openStream());
 					fos = new FileOutputStream(file);
-
 					fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-
+					StatusString ="Downloaded http://s3.amazonaws.com/MinecraftResources/" + files[i] + "!";
 					System.out.println("Downloaded http://s3.amazonaws.com/MinecraftResources/" + files[i] + "!");
 				}
 			}
-
+			PercentString = "65%";
+			StatusString = "Downloaded music and sounds!";
 			System.out.println("Downloaded music and sounds!");
 
+			StatusString ="Downloading lwjgl...";
 			System.out.println("Downloading lwjgl...");
 
 			file = new File(Minecraft.mcDir, "lwjgl-2.8.4.zip");
@@ -97,8 +109,11 @@ public class ResourceDownloadThread extends Thread
 
 			deleteDir(new File(Minecraft.mcDir, "lwjgl-2.8.4"));
 			deleteDir(file);
-
+			StatusString ="Downloaded lwjgl...";
 			System.out.println("Downloaded lwjgl...");
+			StatusString = "";
+			PercentString = "";
+			Done = true;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
