@@ -44,15 +44,14 @@ public class CreativeGameMode extends GameMode
 	@Override
 	public void apply(Player player)
 	{
-		for(int slot = 0; slot < 9; slot++)
-		{
-			player.inventory.count[slot] = 1;
-
-			if(player.inventory.slots[slot] <= 0)
-			{
-				player.inventory.slots[slot] = ((Block) SessionData.allowedBlocks.get(slot)).id;
-			}
-		}
-
+		player.inventory.slots[0] = Block.STONE.id;
+		player.inventory.slots[1] = Block.COBBLESTONE.id;
+		player.inventory.slots[2] = Block.BRICK.id;
+		player.inventory.slots[3] = Block.DIRT.id;
+		player.inventory.slots[4] = Block.WOOD.id;
+		player.inventory.slots[5] = Block.LOG.id;
+		player.inventory.slots[6] = Block.LEAVES.id;
+		player.inventory.slots[7] = Block.GRASS.id;
+		player.inventory.slots[8] = Block.SLAB.id;
 	}
 }
