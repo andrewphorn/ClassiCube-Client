@@ -1612,18 +1612,6 @@ public final class Minecraft implements Runnable {
 						}
 
 						if(Mouse.getEventButton() == 2 && Mouse.getEventButtonState() && this.selected != null) {
-							if((var16 = this.level.getTile(this.selected.x, this.selected.y, this.selected.z)) == Block.GRASS.id) {
-								var16 = Block.DIRT.id;
-							}
-
-							if(var16 == Block.DOUBLE_SLAB.id) {
-								var16 = Block.SLAB.id;
-							}
-
-							if(var16 == Block.BEDROCK.id) {
-								var16 = Block.STONE.id;
-							}
-
 							this.player.inventory.grabTexture(var16, this.gamemode instanceof CreativeGameMode);
 						}
 					}
