@@ -50,7 +50,7 @@ public class CreativeGameMode extends GameMode
 		player.inventory.slots[3] = Block.DIRT.id;
 		player.inventory.slots[4] = Block.WOOD.id;
 		player.inventory.slots[5] = Block.LOG.id;
-		player.inventory.slots[6] = 0;
+		player.inventory.slots[6] = Block.LEAVES.id;
 		player.inventory.slots[7] = Block.GRASS.id;
 		player.inventory.slots[8] = Block.SLAB.id;
 	}
