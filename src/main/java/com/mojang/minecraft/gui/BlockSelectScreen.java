@@ -15,9 +15,9 @@ public final class BlockSelectScreen extends GuiScreen {
 
    private int getBlockOnScreen(int var1, int var2) {
       for(int var3 = 0; var3 < SessionData.allowedBlocks.size(); ++var3) {
-         int var4 = this.width / 2 + var3 % 10 * 22 + -108 - 3;
-         int var5 = this.height / 2 + var3 / 10 * 22 + -60 + 3;
-         if(var1 >= var4 && var1 <= var4 + 22 && var2 >= var5 - 10 && var2 <= var5 + 10) {
+         int var4 = this.width / 2 + var3 % 9 * 20 + -108 - 3;
+         int var5 = this.height / 2 + var3 / 9 * 20 + -60 + 3;
+         if(var1 >= var4 && var1 <= var4 + 22 && var2 >= var5 - 10 && var2 <= var5 + 9) {
             return var3;
          }
       }
@@ -29,9 +29,7 @@ public final class BlockSelectScreen extends GuiScreen {
       var1 = this.getBlockOnScreen(var1, var2);
       drawFadingBox(this.width / 2 - 120, 30, this.width / 2 + 120, 180, -1878719232, -1070583712);
       if(var1 >= 0) {
-         var2 = this.width / 2 + var1 % 10 * 22 + -108;
-         int var3 = this.height / 2 + var1 / 10 * 22 + -60;
-        // drawFadingBox(var2 - 2, var3 - 6, var2 + 18, var3 + 18 - 4, -1862270977, -1056964609);
+         var2 = this.width / 2 + var1 % 9 * 20 + -108;
          drawCenteredString(this.fontRenderer, GetBlockName(var1), this.width / 2, 165, 16777215);
       }
 
@@ -45,8 +43,8 @@ public final class BlockSelectScreen extends GuiScreen {
          Block var4 = (Block)SessionData.allowedBlocks.get(var2);
          if(var4!=null){
          GL11.glPushMatrix();
-         int var5 = this.width / 2 + var2 % 10 * 22 + -108;
-         int var6 = this.height / 2 + var2 / 10 * 22 + -60;
+         int var5 = this.width / 2 + var2 % 9 * 20 + -108;
+         int var6 = this.height / 2 + var2 / 9 * 20 + -60;
          GL11.glTranslatef((float)var5, (float)var6, 0.0F);
          GL11.glScalef(9.0F, 9.0F, 9.0F);
          GL11.glTranslatef(1.0F, 0.5F, 8.0F);
