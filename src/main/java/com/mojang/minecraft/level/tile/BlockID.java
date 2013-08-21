@@ -55,7 +55,8 @@ public enum BlockID {
 	        TNT ( 46),
 	        Books ( 47),
 	        MossyRocks ( 48),
-	        Obsidian ( 49);
+	        Obsidian ( 49),
+	        TestBlock(50);
 
 	private int number;
 
