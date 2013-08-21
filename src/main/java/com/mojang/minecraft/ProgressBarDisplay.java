@@ -88,8 +88,8 @@ public final class ProgressBarDisplay {
 					|| (serverConfig.containsKey("environment.fog"))
 					|| (serverConfig.containsKey("environment.sky"))
 					|| (serverConfig.containsKey("environment.cloud"))) {
-				downloadSkin(minecraft);
-				minecraft.textureManager.textures.clear();
+				//downloadSkin(minecraft);
+				//minecraft.textureManager.textures.clear();
 			}
 		} else
 			return false; // return false if no "cfg=" was found
