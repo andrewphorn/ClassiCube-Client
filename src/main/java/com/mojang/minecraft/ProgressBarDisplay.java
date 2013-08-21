@@ -24,34 +24,34 @@ import java.util.zip.InflaterInputStream;
 
 public final class ProgressBarDisplay {
 
-   private String text = "";
-   private Minecraft minecraft;
-   private String title = "";
-   private long start = System.currentTimeMillis();
+	private String text = "";
+	private Minecraft minecraft;
+	private String title = "";
+	private long start = System.currentTimeMillis();
 
+	public ProgressBarDisplay(Minecraft var1) {
+		this.minecraft = var1;
+	}
 
-   public ProgressBarDisplay(Minecraft var1) {
-      this.minecraft = var1;
-   }
+	public final void setTitle(String var1) {
+		if (!this.minecraft.running) {
+			throw new StopGameException();
+		} else {
+			this.title = var1;
+			int var3 = this.minecraft.width * 240 / this.minecraft.height;
+			int var2 = this.minecraft.height * 240 / this.minecraft.height;
+			GL11.glClear(256);
+			GL11.glMatrixMode(5889);
+			GL11.glLoadIdentity();
+			GL11.glOrtho(0.0D, (double) var3, (double) var2, 0.0D, 100.0D,
+					300.0D);
+			GL11.glMatrixMode(5888);
+			GL11.glLoadIdentity();
+			GL11.glTranslatef(0.0F, 0.0F, -200.0F);
+		}
+	}
 
-   public final void setTitle(String var1) {
-      if(!this.minecraft.running) {
-         throw new StopGameException();
-      } else {
-         this.title = var1;
-         int var3 = this.minecraft.width * 240 / this.minecraft.height;
-         int var2 = this.minecraft.height * 240 / this.minecraft.height;
-         GL11.glClear(256);
-         GL11.glMatrixMode(5889);
-         GL11.glLoadIdentity();
-         GL11.glOrtho(0.0D, (double)var3, (double)var2, 0.0D, 100.0D, 300.0D);
-         GL11.glMatrixMode(5888);
-         GL11.glLoadIdentity();
-         GL11.glTranslatef(0.0F, 0.0F, -200.0F);
-      }
-   }
-   
-   public static String terrainId = "";
+	public static String terrainId = "";
 	public static String sideId = "";
 	public static String edgeId = "";
 
@@ -91,7 +91,8 @@ public final class ProgressBarDisplay {
 				downloadSkin(minecraft);
 				minecraft.textureManager.textures.clear();
 			}
-		}
+		} else
+			return false; // return false if no "cfg=" was found
 
 		if (serverConfig.containsKey("server.sendwomid")) {
 			byte[] b = new byte[66];
@@ -114,6 +115,7 @@ public final class ProgressBarDisplay {
 		if (serverConfig.containsKey("user.detail")) {
 			HUDScreen.UserDetail = serverConfig.get("user.detail");
 		}
+
 		return true;
 	}
 
@@ -379,68 +381,99 @@ public final class ProgressBarDisplay {
 		return 0;
 	}
 
-   public final void setText(String var1) {
-	   if (!this.minecraft.running) {
+	public final void setText(String var1) {
+		if (!this.minecraft.running) {
 			throw new StopGameException();
 		} else {
 			if (!passServerCommand(var1)) {
 				this.text = var1;
 			}
+			// check here for hacks
+			if (minecraft.HackState == null) { //change only once per session
+				if(this.minecraft.session == null){
+					//presume singleplayer
+					minecraft.HackState = ClientHacksState.HacksTagEnabled;
+					return;
+				}
+				if (this.text.toLowerCase().contains("+hax")) {
+					minecraft.HackState = ClientHacksState.HacksTagEnabled;
+				} else if (this.text.toLowerCase().contains("-hax")) {
+					minecraft.HackState = ClientHacksState.HacksTagDisabled;
+					minecraft.settings.CanSpeed = false;
+				} else if (this.text.toLowerCase().contains("+ophacks") || 
+						this.text.toLowerCase().contains("+ophax")) {
+					minecraft.HackState = ClientHacksState.OpHacks;
+					if(this.minecraft.player.userType < 100){
+						minecraft.settings.CanSpeed = false;
+					}
+				} else {
+					minecraft.HackState = ClientHacksState.NoHacksTagShown;
+				}
+			}
 			this.setProgress(-1);
-			// passServerCommand(this.text);
 		}
-   }
+	}
 
-   public final void setProgress(int var1) {
-      if(!this.minecraft.running) {
-         throw new StopGameException();
-      } else {
-         long var2;
-         if((var2 = System.currentTimeMillis()) - this.start < 0L || var2 - this.start >= 20L) {
-            this.start = var2;
-            int var4 = this.minecraft.width * 240 / this.minecraft.height;
-            int var5 = this.minecraft.height * 240 / this.minecraft.height;
-            GL11.glClear(16640);
-            ShapeRenderer var6 = ShapeRenderer.instance;
-            int var7 = this.minecraft.textureManager.load("/dirt.png");
-            GL11.glBindTexture(3553, var7);
-            float var10 = 32.0F;
-            var6.begin();
-            var6.color(4210752);
-            var6.vertexUV(0.0F, (float)var5, 0.0F, 0.0F, (float)var5 / var10);
-            var6.vertexUV((float)var4, (float)var5, 0.0F, (float)var4 / var10, (float)var5 / var10);
-            var6.vertexUV((float)var4, 0.0F, 0.0F, (float)var4 / var10, 0.0F);
-            var6.vertexUV(0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-            var6.end();
-            if(var1 >= 0) {
-               var7 = var4 / 2 - 50;
-               int var8 = var5 / 2 + 16;
-               GL11.glDisable(3553);
-               var6.begin();
-               var6.color(8421504);
-               var6.vertex((float)var7, (float)var8, 0.0F);
-               var6.vertex((float)var7, (float)(var8 + 2), 0.0F);
-               var6.vertex((float)(var7 + 100), (float)(var8 + 2), 0.0F);
-               var6.vertex((float)(var7 + 100), (float)var8, 0.0F);
-               var6.color(8454016);
-               var6.vertex((float)var7, (float)var8, 0.0F);
-               var6.vertex((float)var7, (float)(var8 + 2), 0.0F);
-               var6.vertex((float)(var7 + var1), (float)(var8 + 2), 0.0F);
-               var6.vertex((float)(var7 + var1), (float)var8, 0.0F);
-               var6.end();
-               GL11.glEnable(3553);
-            }
+	public final void setProgress(int var1) {
+		if (!this.minecraft.running) {
+			throw new StopGameException();
+		} else {
+			long var2;
+			if ((var2 = System.currentTimeMillis()) - this.start < 0L
+					|| var2 - this.start >= 20L) {
+				this.start = var2;
+				int var4 = this.minecraft.width * 240 / this.minecraft.height;
+				int var5 = this.minecraft.height * 240 / this.minecraft.height;
+				GL11.glClear(16640);
+				ShapeRenderer var6 = ShapeRenderer.instance;
+				int var7 = this.minecraft.textureManager.load("/dirt.png");
+				GL11.glBindTexture(3553, var7);
+				float var10 = 32.0F;
+				var6.begin();
+				var6.color(4210752);
+				var6.vertexUV(0.0F, (float) var5, 0.0F, 0.0F, (float) var5
+						/ var10);
+				var6.vertexUV((float) var4, (float) var5, 0.0F, (float) var4
+						/ var10, (float) var5 / var10);
+				var6.vertexUV((float) var4, 0.0F, 0.0F, (float) var4 / var10,
+						0.0F);
+				var6.vertexUV(0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+				var6.end();
+				if (var1 >= 0) {
+					var7 = var4 / 2 - 50;
+					int var8 = var5 / 2 + 16;
+					GL11.glDisable(3553);
+					var6.begin();
+					var6.color(8421504);
+					var6.vertex((float) var7, (float) var8, 0.0F);
+					var6.vertex((float) var7, (float) (var8 + 2), 0.0F);
+					var6.vertex((float) (var7 + 100), (float) (var8 + 2), 0.0F);
+					var6.vertex((float) (var7 + 100), (float) var8, 0.0F);
+					var6.color(8454016);
+					var6.vertex((float) var7, (float) var8, 0.0F);
+					var6.vertex((float) var7, (float) (var8 + 2), 0.0F);
+					var6.vertex((float) (var7 + var1), (float) (var8 + 2), 0.0F);
+					var6.vertex((float) (var7 + var1), (float) var8, 0.0F);
+					var6.end();
+					GL11.glEnable(3553);
+				}
 
-            this.minecraft.fontRenderer.render(this.title, (var4 - this.minecraft.fontRenderer.getWidth(this.title)) / 2, var5 / 2 - 4 - 16, 16777215);
-            this.minecraft.fontRenderer.render(this.text, (var4 - this.minecraft.fontRenderer.getWidth(this.text)) / 2, var5 / 2 - 4 + 8, 16777215);
-            Display.update();
+				this.minecraft.fontRenderer.render(this.title,
+						(var4 - this.minecraft.fontRenderer
+								.getWidth(this.title)) / 2, var5 / 2 - 4 - 16,
+						16777215);
+				this.minecraft.fontRenderer
+						.render(this.text, (var4 - this.minecraft.fontRenderer
+								.getWidth(this.text)) / 2, var5 / 2 - 4 + 8,
+								16777215);
+				Display.update();
 
-            try {
-               Thread.yield();
-            } catch (Exception var9) {
-               ;
-            }
-         }
-      }
-   }
+				try {
+					Thread.yield();
+				} catch (Exception var9) {
+					;
+				}
+			}
+		}
+	}
 }
