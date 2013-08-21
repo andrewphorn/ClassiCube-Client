@@ -14,11 +14,11 @@ import java.net.URL;
 public final class SoundReader {
 
    public static SoundData read(URL var0) {
-	   VorbisStream var12 = null;
+	   VorbisStream vorbisStream = null;
 	   try
 	   {
-		   LogicalOggStreamImpl var11 = (LogicalOggStreamImpl)(new OnDemandUrlStream(var0)).getLogicalStreams().iterator().next();
-		   var12 = new VorbisStream(var11);
+		   LogicalOggStreamImpl OggStream = (LogicalOggStreamImpl)(new OnDemandUrlStream(var0)).getLogicalStreams().iterator().next();
+		   vorbisStream = new VorbisStream(OggStream);
 	   } catch (VorbisFormatException e) {
 		   e.printStackTrace();
 	   } catch (OggFormatException e) {
@@ -28,9 +28,7 @@ public final class SoundReader {
 	   }
 	   byte[] var2 = new byte[4096];
       int var3 = 0;
-      boolean var1 = false;
-      IdentificationHeader var14 = var12.getIdentificationHeader();
-      int var4 = var12.getIdentificationHeader().getChannels();
+      int var4 = vorbisStream.getIdentificationHeader().getChannels();
       short[] var5 = new short[4096];
       int var6 = 0;
 
@@ -40,7 +38,7 @@ public final class SoundReader {
 
          while(true) {
             try {
-               if(var15 < var2.length && (var3 = var12.readPcm(var2, var15, var2.length - var15)) > 0) {
+               if(var15 < var2.length && (var3 = vorbisStream.readPcm(var2, var15, var2.length - var15)) > 0) {
                   var15 += var3;
                   continue;
                }
@@ -52,7 +50,6 @@ public final class SoundReader {
                break;
             }
 
-            boolean var7 = false;
             int var16 = 0;
 
             while(true) {
@@ -83,7 +80,8 @@ public final class SoundReader {
          System.arraycopy(var17, 0, var5, 0, var6);
       }
 
+      @SuppressWarnings("unused")
       IdentificationHeader var13;
-      return new SoundData(var5, (float)(var13 = var12.getIdentificationHeader()).getSampleRate());
+      return new SoundData(var5, (float)(var13 = vorbisStream.getIdentificationHeader()).getSampleRate());
    }
 }
