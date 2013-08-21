@@ -1,6 +1,8 @@
 package com.mojang.minecraft.mob;
 
+import com.mojang.minecraft.ClientHacksState;
 import com.mojang.minecraft.Entity;
+import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.mob.ai.AI;
 import com.mojang.minecraft.mob.ai.BasicAI;
@@ -415,7 +417,6 @@ public class Mob extends Entity {
 
 		if (ai instanceof BasicAI) {
 			BasicAI ai1 = (BasicAI) ai;
-
 			if (!this.flyingMode) {
 				if (ai1.running) {
 					multiply = 10F; // 6x with momentum

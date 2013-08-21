@@ -36,8 +36,9 @@ public class InputHandlerImpl extends InputHandler
 		}
 
 		jumping = keyStates[4];
-
-		running = keyStates[5];
+		if(settings.CanSpeed){
+			running = keyStates[5];
+		}
 		
 		flyingUp = keyStates[7];
 		flyingDown = keyStates[8];
