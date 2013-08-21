@@ -29,7 +29,7 @@ public class NetworkPlayer extends HumanoidMob {
       super(var1.level, (float)var4, (float)var5, (float)var6);
       this.minecraft = var1;
       this.displayName = var3;
-      var3 = FontRenderer.stripColor(var3);
+      var3 = FontRenderer.StripColors(var3);
       this.name = var3;
       this.xp = var4;
       this.yp = var5;

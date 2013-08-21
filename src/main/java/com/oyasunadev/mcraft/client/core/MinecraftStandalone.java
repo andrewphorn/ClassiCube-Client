@@ -86,7 +86,7 @@ public class MinecraftStandalone {
 		 * Start Minecraft Classic.
 		 */
 		public void startMinecraft() {
-			boolean RunFakeNetwork = false;
+			boolean RunFakeNetwork = true;
 			MCraftApplet applet = new MCraftApplet();
 			final MinecraftCanvas canvas = new MinecraftCanvas();
 			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
