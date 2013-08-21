@@ -99,6 +99,7 @@ public final class Minecraft implements Runnable {
 	private int lastClick;
 	public boolean raining;
 	private MinecraftApplet applet;
+	public ClientHacksState HackState;
 
 	public static File mcDir;
 
@@ -1642,13 +1643,19 @@ public final class Minecraft implements Runnable {
 						}
 						
 						if (Keyboard.getEventKey() == Keyboard.KEY_X) {
-							// if(this.)
-							this.player.noPhysics = !this.player.noPhysics;
-							this.player.hovered = !this.player.hovered;
+							if(HackState == ClientHacksState.HacksTagEnabled ||
+									HackState == ClientHacksState.OpHacks && this.player.userType >=100){
+								this.player.noPhysics = !this.player.noPhysics;
+								this.player.hovered = !this.player.hovered;
+							}
 						}
 						
 						if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
-							this.player.flyingMode = !this.player.flyingMode;
+							if(HackState == ClientHacksState.HacksTagEnabled ||
+									HackState == ClientHacksState.NoHacksTagShown ||
+									HackState == ClientHacksState.OpHacks && this.player.userType >=100){
+								this.player.flyingMode = !this.player.flyingMode;
+							}
 						}
 
 						if(this.gamemode instanceof CreativeGameMode) {

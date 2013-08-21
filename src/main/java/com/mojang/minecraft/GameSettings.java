@@ -52,6 +52,7 @@ public final class GameSettings
 	private Minecraft minecraft;
 	private File settingsFile;
 	public int settingCount;
+	public boolean CanSpeed = true;
 
 	public int smoothing = 0;
 	public String[] smoothingOptions = new String[] {"OFF", "Automatic", "Universal"};
