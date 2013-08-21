@@ -3,6 +3,7 @@ package com.mojang.minecraft.gui;
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -10,157 +11,180 @@ import javax.imageio.ImageIO;
 import org.lwjgl.opengl.GL11;
 
 public final class FontRenderer {
+	private int fontId = 0;
+	private int charHeight;
+	public static float RenderScale = 1F;
+	private GameSettings settings;
+	private int[] font = new int[256];
 
-   private int[] widthmap = new int[256];
-   private int fontTexture = 0;
-   private GameSettings settings;
+	public FontRenderer(GameSettings settings, String fontImage,
+			TextureManager textures, float Scale) throws IOException {
+		this.settings = settings;
+		RenderScale = Scale;
+		BufferedImage font;
 
+		try {
+			if (textures.Applet) {
+				font = ImageIO.read(TextureManager.class
+						.getResourceAsStream(fontImage));
+			} else {
+				font = ImageIO.read(TextureManager.class
+						.getResourceAsStream("/resources" + fontImage));
+			}
+		} catch (IOException e) {
+			throw new IOException("Missing resource");
+		}
+		int width = font.getWidth();
+		int height = font.getHeight();
+		this.charHeight = (height / 16);
+		int[] fontData = new int[256 * 256];
+		font.getRGB(0, 0, width, height, fontData, 0, width);
 
-   public FontRenderer(GameSettings var1, String var2, TextureManager var3) {
-      this.settings = var1;
+		for (int character = 0; character < 256; ++character) {
+			int var6 = (int) (character % 16);
+			int var7 = (int) (character / 16);
+			int chWidth = 0;
 
-      BufferedImage var14;
-      try {
-    	  if(var3.Applet){
-    		  var14 = ImageIO.read(TextureManager.class.getResourceAsStream(var2));
-    	  }
-    	  else
-    	  {
-    		  var14 = ImageIO.read(TextureManager.class.getResourceAsStream("/resources"+var2));
-    	  }
-    	  
-      } catch (IOException var13) {
-         throw new RuntimeException(var13);
-      }
+			for (boolean var9 = false; chWidth < 8 && !var9; chWidth++) {
+				int var10 = (var6 << 3) + chWidth;
+				var9 = true;
 
-      int var4 = var14.getWidth();
-      int var5 = var14.getHeight();
-      int[] var6 = new int[var4 * var5];
-      var14.getRGB(0, 0, var4, var5, var6, 0, var4);
+				for (int var11 = 0; var11 < 8 && var9; ++var11) {
+					int var12 = ((var7 << 3) + var11) * width;
+					if ((fontData[var10 + var12] & 255) > 128) {
+						var9 = false;
+					}
+				}
+			}
 
-      for(int var15 = 0; var15 < 128; ++var15) {
-         var5 = var15 % 16;
-         int var7 = var15 / 16;
-         int var8 = 0;
+			if (character == 32) {
+				chWidth = (int) (4 * (1 / getScale()));
+			}
+			this.font[character] = chWidth;
+		}
 
-         for(boolean var9 = false; var8 < 8 && !var9; ++var8) {
-            int var10 = (var5 << 3) + var8;
-            var9 = true;
+		this.fontId = textures.load(fontImage);
+	}
 
-            for(int var11 = 0; var11 < 8 && var9; ++var11) {
-               int var12 = ((var7 << 3) + var11) * var4;
-               if((var6[var10 + var12] & 255) > 128) {
-                  var9 = false;
-               }
-            }
-         }
+	public float getScale() {
+		return 7.0F / this.charHeight * RenderScale;
+	}
 
-         if(var15 == 32) {
-            var8 = 4;
-         }
+	public final void render(String text, int x, int y, int color) {
+		this.render(text, x + 1, y + 1, color, true);
+		this.renderNoShadow(text, x, y, color);
+	}
 
-         this.widthmap[var15] = var8;
-      }
+	public final void renderNoShadow(String text, int x, int y, int color) {
+		this.render(text, x, y, color, false);
+	}
 
-      this.fontTexture = var3.load(var2);
-   }
+	private void render(String text, int x, int y, int color, boolean shadow) {
+		if (text != null) {
+			char[] chars = text.toCharArray();
+			if (shadow) {
+				color = (color & 16579836) >> 2;
+			}
 
-   public final void render(String var1, int var2, int var3, int var4) {
-      this.render(var1, var2 + 1, var3 + 1, var4, true);
-      this.renderNoShadow(var1, var2, var3, var4);
-   }
+			float f1 = getScale();
+			f1 = 1.0F / f1;
+			x = (int) (x * f1);
+			y = (int) (y * f1);
 
-   public final void renderNoShadow(String var1, int var2, int var3, int var4) {
-      this.render(var1, var2, var3, var4, false);
-   }
+			GL11.glPushMatrix();
+			/*
+			 * if(shadow){ if(RenderScale < 1F){ float f3 = 1.0F * RenderScale;
+			 * GL11.glTranslatef(-f3, -f3, 0.0F); } if(RenderScale > 1F){ float
+			 * f3 = 1.0F * RenderScale; GL11.glTranslatef(+f3, +f3, 0.0F); } }
+			 */
+			GL11.glBindTexture(3553, this.fontId);
+			GL11.glScalef(getScale(), getScale(), 1.0F);
 
-   private void render(String var1, int var2, int var3, int var4, boolean var5) {
-      if(var1 != null) {
-         char[] var12 = var1.toCharArray();
-         if(var5) {
-            var4 = (var4 & 16579836) >> 2;
-         }
+			ShapeRenderer.instance.begin();
+			ShapeRenderer.instance.color(color);
+			int var7 = 0;
 
-         GL11.glBindTexture(3553, this.fontTexture);
-         ShapeRenderer var6 = ShapeRenderer.instance;
-         ShapeRenderer.instance.begin();
-         var6.color(var4);
-         int var7 = 0;
+			for (int count = 0; count < chars.length; ++count) {
+				if (chars[count] == '&' && chars.length > count + 1) {
+					int code = "0123456789abcdef".indexOf(chars[count + 1]);
+					if (code < 0) {
+						code = 15;
+					}
 
-         for(int var8 = 0; var8 < var12.length; ++var8) {
-            int var9;
-            if(var12[var8] == 38 && var12.length > var8 + 1) {
-               if((var4 = "0123456789abcdef".indexOf(var12[var8 + 1])) < 0) {
-                  var4 = 15;
-               }
+					int var9 = (code & 8) << 3;
+					int var10 = (code & 1) * 191 + var9;
+					int var11 = ((code & 2) >> 1) * 191 + var9;
+					int blue = ((code & 4) >> 2) * 191 + var9;
+					if (this.settings.anaglyph) {
+						var9 = (code * 30 + var11 * 59 + var10 * 11) / 100;
+						var11 = (code * 30 + var11 * 70) / 100;
+						var10 = (code * 30 + var10 * 70) / 100;
+						blue = var9;
+					}
 
-               var9 = (var4 & 8) << 3;
-               int var10 = (var4 & 1) * 191 + var9;
-               int var11 = ((var4 & 2) >> 1) * 191 + var9;
-               var4 = ((var4 & 4) >> 2) * 191 + var9;
-               if(this.settings.anaglyph) {
-                  var9 = (var4 * 30 + var11 * 59 + var10 * 11) / 100;
-                  var11 = (var4 * 30 + var11 * 70) / 100;
-                  var10 = (var4 * 30 + var10 * 70) / 100;
-                  var4 = var9;
-                  var11 = var11;
-                  var10 = var10;
-               }
+					int c = blue << 16 | var11 << 8 | var10;
+					if (shadow) {
+						c = (c & 16579836) >> 2;
+					}
 
-               var4 = var4 << 16 | var11 << 8 | var10;
-               var8 += 2;
-               if(var5) {
-                  var4 = (var4 & 16579836) >> 2;
-               }
+					ShapeRenderer.instance.color(c);
+					count += 2;
+				}
 
-               var6.color(var4);
-            }
+				color = chars[count] % 16 << 3;
+				int var9 = chars[count] / 16 << 3;
+				float var13 = 7.99F;
 
-            var4 = var12[var8] % 16 << 3;
-            var9 = var12[var8] / 16 << 3;
-            float var13 = 7.99F;
-            var6.vertexUV((float)(var2 + var7), (float)var3 + var13, 0.0F, (float)var4 / 128.0F, ((float)var9 + var13) / 128.0F);
-            var6.vertexUV((float)(var2 + var7) + var13, (float)var3 + var13, 0.0F, ((float)var4 + var13) / 128.0F, ((float)var9 + var13) / 128.0F);
-            var6.vertexUV((float)(var2 + var7) + var13, (float)var3, 0.0F, ((float)var4 + var13) / 128.0F, (float)var9 / 128.0F);
-            var6.vertexUV((float)(var2 + var7), (float)var3, 0.0F, (float)var4 / 128.0F, (float)var9 / 128.0F);
-            var7 += this.widthmap[var12[var8]];
-         }
+				ShapeRenderer.instance.vertexUV((x + var7), y + var13, 0.0F,
+						color / 128.0F, (var9 + var13) / 128.0F);
+				ShapeRenderer.instance
+						.vertexUV((x + var7) + var13, y + var13, 0.0F,
+								(color + var13) / 128.0F,
+								(var9 + var13) / 128.0F);
+				ShapeRenderer.instance.vertexUV((x + var7) + var13, y, 0.0F,
+						(color + var13) / 128.0F, var9 / 128.0F);
+				ShapeRenderer.instance.vertexUV((x + var7), y, 0.0F,
+						color / 128.0F, var9 / 128.0F);
+				if (chars[count] < this.font.length) {
+					var7 += this.font[chars[count]];
+				}
+			}
 
-         var6.end();
-      }
-   }
+			ShapeRenderer.instance.end();
+			GL11.glPopMatrix();
+		}
+	}
 
-   public final int getWidth(String var1) {
-      if(var1 == null) {
-         return 0;
-      } else {
-         char[] var4 = var1.toCharArray();
-         int var2 = 0;
+	public int getWidth(String paramString) {
+		if (paramString == null) {
+			return 0;
+		}
+		char[] arrayOfChar = paramString.toCharArray();
+		int i = 0;
+		for (int j = 0; j < arrayOfChar.length; j++) {
+			int k = arrayOfChar[j];
+			if (k == 38) {
+				j++;
+			} else {
+				i += this.font[k];
+			}
+		}
+		return (int) Math.floor(i * getScale());
+	}
 
-         for(int var3 = 0; var3 < var4.length; ++var3) {
-            if(var4[var3] == 38) {
-               ++var3;
-            } else {
-               var2 += this.widthmap[var4[var3]];
-            }
-         }
-
-         return var2;
-      }
-   }
-
-   public static String stripColor(String var0) {
-      char[] var3 = var0.toCharArray();
-      String var1 = "";
-
-      for(int var2 = 0; var2 < var3.length; ++var2) {
-         if(var3[var2] == 38) {
-            ++var2;
-         } else {
-            var1 = var1 + var3[var2];
-         }
-      }
-
-      return var1;
-   }
+	public static String StripColors(String message) {
+		int start = message.indexOf('&');
+		if (start == -1) {
+			return message;
+		}
+		int lastInsert = 0;
+		StringBuilder output = new StringBuilder(message.length());
+		while (start != -1) {
+			output.append(message, lastInsert, start - lastInsert);
+			lastInsert = Math.min(start + 2, message.length());
+			start = message.indexOf('&', lastInsert);
+		}
+		output.append(message, lastInsert, message.length() - lastInsert);
+		return output.toString();
+	}
 }
