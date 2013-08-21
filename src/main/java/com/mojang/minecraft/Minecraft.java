@@ -42,6 +42,9 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.Pbuffer;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
@@ -331,7 +334,6 @@ public final class Minecraft implements Runnable {
 
 			try {
 				Display.create();
-				// Display.create(new PixelFormat(8, 16, 0, 16));
 			} catch (LWJGLException var57) {
 				var57.printStackTrace();
 
