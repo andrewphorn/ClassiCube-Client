@@ -1,13 +1,17 @@
 package com.oyasunadev.mcraft.client.core;
 
+import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MinecraftApplet;
 import com.mojang.minecraft.ResourceDownloadThread;
+import com.mojang.minecraft.SessionData;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -53,7 +57,7 @@ public class MinecraftStandalone {
 		 * Default constructor.
 		 */
 		public MinecraftFrame() {
-			setSize(854, 480);
+			setSize(1020, 510);
 			// setResizable(false);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			setLayout(new BorderLayout());
@@ -75,10 +79,21 @@ public class MinecraftStandalone {
 		 * Start Minecraft Classic.
 		 */
 		public void startMinecraft() {
+			boolean RunFakeNetwork = false;
 			MCraftApplet applet = new MCraftApplet();
 			final MinecraftCanvas canvas = new MinecraftCanvas();
 			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
 					false, false);
+
+			if (RunFakeNetwork) {
+				minecraft.host = "127.0.0.1";
+				minecraft.host = minecraft.host + ":" + "25565";
+				minecraft.session = new SessionData("Jonty800", "noidea");
+				minecraft.session.mppass = "c0dd4746a88c5785952cd0190e8214a6";
+				minecraft.session.haspaid = true;
+				minecraft.server = "127.0.0.1";
+				minecraft.port = 25565;
+			}
 
 			canvas.setMinecraft(minecraft);
 			canvas.setSize(getSize());
@@ -192,33 +207,63 @@ public class MinecraftStandalone {
 		 * A canvas for the Minecraft thread.
 		 */
 		private class MinecraftCanvas extends Canvas {
+			private Image image;
+			private Image image2;
+
+			void SetImage() throws IOException {
+				setImage(ImageIO.read(getClass().getResourceAsStream(
+						"/resources" + "/rsbg.jpg")));
+
+			}
+
+			void SetImage2() throws IOException {
+				setImage2(ImageIO.read(getClass().getResourceAsStream(
+						"/resources" + "/bg.jpg")));
+			}
+
 			@Override
 			public void paint(Graphics g) {
-
+				if (image == null) {
+					try {
+						SetImage();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				Graphics2D g2 = (Graphics2D) g;
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 						RenderingHints.VALUE_ANTIALIAS_ON);
 				Font font = new Font("Serif", Font.BOLD, 18);
 				g2.setFont(font);
 				if (!ResourceDownloadThread.Done) {
-					g.setColor(new Color(159,121,238));
-					g.fillRect(0, 0, this.getWidth(), this.getHeight());
-					g.setColor(Color.white);
+					g.drawImage(getImage(), 0, 0, this.getWidth(),
+							this.getHeight(), null);
 					font = new Font("Purisa", Font.BOLD, 48);
 					g2.setFont(font);
-					g2.drawString("ClassicCube", 10,
-							48);
+					g.setColor(Color.black);
+					g2.drawString("ClassiCube", 12, 50); //shadow
+					g.setColor(Color.white);
+					g2.drawString("ClassiCube", 10, 48); //normal
 					font = new Font("Serif", Font.BOLD, 18);
 					g2.setFont(font);
-						g2.drawString(ResourceDownloadThread.PercentString, 10,
-								98);
-						g2.drawString(ResourceDownloadThread.StatusString, 10,
-								78);
-					
-				}
-				else {
-					g.setColor(new Color(159,121,238));
-					g.fillRect(0, 0, this.getWidth(), this.getHeight());
+					g.setColor(Color.black);
+					g2.drawString(GameSettings.PercentString, 12, 100); //shadow
+					g2.drawString(GameSettings.StatusString, 12, 80);
+					g.setColor(Color.white);
+					g2.drawString(GameSettings.PercentString, 10, 98); //normal
+					g2.drawString(GameSettings.StatusString, 10, 78);
+				} else {
+					if (image2 == null) {
+						try {
+							SetImage2();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					g.drawImage(getImage2(), 0, 0, this.getWidth(),
+							this.getHeight(), null);
 				}
 			}
 
@@ -297,6 +342,22 @@ public class MinecraftStandalone {
 
 					thread = null;
 				}
+			}
+
+			public Image getImage() {
+				return image;
+			}
+
+			public void setImage(Image image) {
+				this.image = image;
+			}
+
+			public Image getImage2() {
+				return image2;
+			}
+
+			public void setImage2(Image image2) {
+				this.image2 = image2;
 			}
 		}
 	}

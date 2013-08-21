@@ -6,10 +6,16 @@ import org.lwjgl.input.Keyboard;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public final class GameSettings
 {
+	public static String StatusString = "";
+	public static String PercentString = "";
+	public static List<String> typinglog = new ArrayList<String>();
+	public static int typinglogpos = 0;
 	public GameSettings(Minecraft minecraft, File minecraftFolder)
 	{
 		bindings = new KeyBinding[] {forwardKey, leftKey, backKey, rightKey, jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey, runKey};
