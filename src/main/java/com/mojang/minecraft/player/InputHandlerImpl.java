@@ -1,6 +1,7 @@
 package com.mojang.minecraft.player;
 
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.Minecraft;
 
 public class InputHandlerImpl extends InputHandler
 {
@@ -38,6 +39,7 @@ public class InputHandlerImpl extends InputHandler
 		jumping = keyStates[4];
 		if(settings.CanSpeed){
 			running = keyStates[5];
+			Minecraft.PlayerIsRunning = keyStates[5];
 		}
 		
 		flyingUp = keyStates[7];
