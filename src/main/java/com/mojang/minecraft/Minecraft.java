@@ -100,6 +100,7 @@ public final class Minecraft implements Runnable {
 	public boolean raining;
 	private MinecraftApplet applet;
 	public ClientHacksState HackState;
+	public static boolean PlayerIsRunning = false;
 
 	public static File mcDir;
 
@@ -212,12 +213,10 @@ public final class Minecraft implements Runnable {
 	public final void shutdown() {
 		try {
 			if(this.soundPlayer != null) {
-				SoundPlayer var1 = this.soundPlayer;
 				this.soundPlayer.running = false;
 			}
 
 			if(this.resourceThread != null) {
-				ResourceDownloadThread var4 = this.resourceThread;
 				this.resourceThread.running = true;
 			}
 		} catch (Exception var3) {
@@ -245,10 +244,9 @@ public final class Minecraft implements Runnable {
 			Display.destroy();
 		}
 	}
-
-	public final void run() {
-		this.running = true;
-
+	
+	public static File GetMinecraftDirectory()
+	{
 		String folder = "mcraft/client";
 		String home = System.getProperty("user.home", ".");
 		String osName = System.getProperty("os.name").toLowerCase();
@@ -265,7 +263,6 @@ public final class Minecraft implements Runnable {
 				System.out.println(osName);
 				minecraftFolder = new File(home, folder + '/');
 				break;
-				//return;
 			case 2:
 				minecraftFolder = new File(home, '.' + folder + '/');
 				break;
@@ -291,21 +288,18 @@ public final class Minecraft implements Runnable {
 			throw new RuntimeException("The working directory could not be created: " + minecraftFolder);
 		}
 
-		mcDir = minecraftFolder;
+		return minecraftFolder;
 
+	
+	}
+
+	public final void run() {
+		this.running = true;
+		
+		mcDir = GetMinecraftDirectory();
+		
 		try {
 			Minecraft var1 = this;
-
-			//if(minecraftFolder.exists())
-			//{
-			//} else {
-		//		JOptionPane.showMessageDialog(null,
-		//				"Welcome to the MCraft Client Alpha 1!" +
-		//						"\nPleave give MCraft some time to download required files." +
-		//						"\nTHIS CAN TAKE A LONG TIME DEPENDING ON YOUR INTERNET SPEED.",
-		//				"Welcome to MCraft Client",
-		//				JOptionPane.INFORMATION_MESSAGE);
-		//	}
 
 			var1.resourceThread = new ResourceDownloadThread(mcDir, var1);
 			var1.resourceThread.run();
@@ -364,7 +358,7 @@ public final class Minecraft implements Runnable {
 			GL11.glMatrixMode(5888);
 			checkGLError("Startup");
 			//
-			this.settings = new GameSettings(this, minecraftFolder);
+			this.settings = new GameSettings(this, mcDir);
 			this.textureManager = new TextureManager(this.settings, isApplet);
 			this.textureManager.registerAnimation(new TextureLavaFX());
 			this.textureManager.registerAnimation(new TextureWaterFX());

@@ -11,9 +11,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,7 +86,7 @@ public class MinecraftStandalone {
 		 * Start Minecraft Classic.
 		 */
 		public void startMinecraft() {
-			boolean RunFakeNetwork = true;
+			boolean RunFakeNetwork = false;
 			MCraftApplet applet = new MCraftApplet();
 			final MinecraftCanvas canvas = new MinecraftCanvas();
 			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
@@ -211,15 +218,72 @@ public class MinecraftStandalone {
 			private Image image2;
 
 			void SetImage() throws IOException {
-				setImage(ImageIO.read(getClass().getResourceAsStream(
-						"/resources" + "/rsbg.jpg")));
+
+				File file = new File(Minecraft.GetMinecraftDirectory().getPath()
+						+ "/rsbg.jpg");
+				if (!file.exists()) {
+					download("http://classicube.net/static/client/rsbg.jpg", file.getAbsolutePath());
+				}
+				image = ImageIO.read(new File(file.getAbsolutePath()));
 
 			}
 
 			void SetImage2() throws IOException {
-				setImage2(ImageIO.read(getClass().getResourceAsStream(
-						"/resources" + "/bg.jpg")));
+				File file = new File(Minecraft.GetMinecraftDirectory().getPath()
+						+ "/bg.jpg");
+				if (!file.exists()) {
+					download("http://classicube.net/static/client/bg.jpg", file.getAbsolutePath());
+				}
+				image = ImageIO.read(new File(file.getAbsolutePath()));
 			}
+			public void download(String address, String localFileName) {
+		        OutputStream out = null;
+		        URLConnection connection = null;
+		        InputStream in = null;
+
+		        try {
+		            URL url = new URL(address);
+		            out = new BufferedOutputStream(new FileOutputStream(localFileName));
+		            connection = url.openConnection();
+		            //I HAVE to send this or the server responds with 403
+		            connection.setRequestProperty("Content-Type", 
+		                       "application/x-www-form-urlencoded");
+		            connection.setRequestProperty("Content-Language", "en-US"); 
+		            connection.setRequestProperty("User-Agent",
+		                    "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11");
+
+		            connection.setUseCaches(false);
+		            connection.setDoInput(true);
+		            connection.setDoOutput(true);
+		            in = connection.getInputStream();
+		            byte[] buffer = new byte[1024];
+
+		            int numRead;
+		            long numWritten = 0;
+
+		            while ((numRead = in.read(buffer)) != -1) {
+		                out.write(buffer, 0, numRead);
+		                numWritten += numRead;
+		            }
+
+		            System.out.println(localFileName + "\t" + numWritten);
+		        } 
+		        catch (Exception exception) { 
+		            exception.printStackTrace();
+		        } 
+		        finally {
+		            try {
+		                if (in != null) {
+		                    in.close();
+		                }
+		                if (out != null) {
+		                    out.close();
+		                }
+		            } 
+		            catch (IOException ioe) {
+		            }
+		        }
+		    }
 
 			@Override
 			public void paint(Graphics g) {
