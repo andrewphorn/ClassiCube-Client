@@ -6,6 +6,7 @@ import java.awt.Canvas;
 import java.awt.Graphics;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MinecraftApplet extends Applet {
 	private static final long serialVersionUID = 1L;
@@ -59,6 +60,9 @@ public class MinecraftApplet extends Applet {
 
 			if (getParameter("mppass") != null) {
 				minecraft.session.mppass = getParameter("mppass");
+				ArrayList<Integer> blocks = new ArrayList<Integer>();
+				blocks.add(9); blocks.add(11);
+				SessionData.SetAllowedBlocks(false, blocks);
 			}
 
 			// TODO: Not tested.

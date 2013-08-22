@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,7 +87,7 @@ public class MinecraftStandalone {
 		 * Start Minecraft Classic.
 		 */
 		public void startMinecraft() {
-			boolean RunFakeNetwork = false;
+			boolean RunFakeNetwork = true;
 			MCraftApplet applet = new MCraftApplet();
 			final MinecraftCanvas canvas = new MinecraftCanvas();
 			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
@@ -100,6 +101,9 @@ public class MinecraftStandalone {
 				minecraft.session.haspaid = true;
 				minecraft.server = "127.0.0.1";
 				minecraft.port = 25565;
+				ArrayList blocks = new ArrayList();
+				blocks.add(9); blocks.add(11);
+				SessionData.SetAllowedBlocks(false, blocks);
 			}
 
 			canvas.setMinecraft(minecraft);

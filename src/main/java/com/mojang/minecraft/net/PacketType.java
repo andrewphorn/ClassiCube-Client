@@ -56,6 +56,7 @@ public class PacketType
 	public static final PacketType CHAT_MESSAGE;
 	public static final PacketType DISCONNECT;
 	public static final PacketType UPDATE_PLAYER_TYPE;
+	public static final PacketType UPDATE_ALLOWED_BlOCKS;
 
 	public int length;
 	private static int nextOpcode;
@@ -80,6 +81,7 @@ public class PacketType
 		CHAT_MESSAGE = new PacketType(new Class[] {Byte.TYPE, String.class});
 		DISCONNECT = new PacketType(new Class[] {String.class});
 		UPDATE_PLAYER_TYPE = new PacketType(new Class[] {Byte.TYPE});
+		UPDATE_ALLOWED_BlOCKS = new PacketType(new Class[] {byte[].class});
 
 		nextOpcode = 0;
 	}

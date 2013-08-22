@@ -54,6 +54,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -2090,6 +2092,10 @@ public final class Minecraft implements Runnable {
 												} else if (var6 == PacketType.UPDATE_PLAYER_TYPE) {
 													var42.minecraft.player.userType = ((Byte) var7[0])
 															.byteValue();
+												}
+												else if (var6 == PacketType.UPDATE_ALLOWED_BlOCKS) {
+													byte[] temp = (byte[]) var7[0];
+													SessionData.SetAllowedBlocks(temp);
 												}
 											}
 										}

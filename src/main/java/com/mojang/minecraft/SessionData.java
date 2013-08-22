@@ -19,20 +19,27 @@ public final class SessionData {
 	}
 
 	static {
-		SetAllowedBlocks(true);
+		SetAllowedBlocks(true, null);
 	}
 
-	public static void SetAllowedBlocks(boolean SinglePlayer) {
-		if (SinglePlayer) {
+	public static void SetAllowedBlocks(boolean AllBlocks, ArrayList disallowedBlocks) {
+		if (AllBlocks) {
 			allowedBlocks = Arrays.asList(Block.blocks);
 		} else {
 			List<Block> temp = new ArrayList<Block>();
 			for (int i = 0; i < Block.blocks.length; i++) {
-				if (i != 9 && i != 11) {
+				if (!disallowedBlocks.contains(i)) {
 					temp.add(Block.blocks[i]);
 				}
 			}
 			allowedBlocks = temp;
 		}
+	}
+	public static void SetAllowedBlocks(byte[] disallowedBlocks) {
+		ArrayList temp = new ArrayList();
+		for(int i = 0; i< disallowedBlocks.length; i++){
+			temp.add(disallowedBlocks[i]);
+		}
+		SetAllowedBlocks(false, temp);
 	}
 }
