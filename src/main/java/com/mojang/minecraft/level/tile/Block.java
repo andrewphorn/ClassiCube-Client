@@ -99,6 +99,7 @@ public class Block
 	public static final Block BROWN_WOOL;
 	public static final Block DEEP_BLUE_WOOL;
 	public static final Block TURQUOISE_WOOL;
+	public static final Block SANDSTONE;
 	
 	public int textureId;
 	public final int id;
@@ -756,5 +757,9 @@ public class Block
 		BROWN_WOOL = (new Block(56, 82)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
 		DEEP_BLUE_WOOL = (new Block(57, 83)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
 		TURQUOISE_WOOL = (new Block(58, 84)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		block = (new SandStoneBlock(59, 41)).setData(Tile$SoundType.stone, 0.7F, 1.0F, 3.0F);
+		blockCache = block;
+		block.explodes = false;
+		SANDSTONE = blockCache;
 	}
 }

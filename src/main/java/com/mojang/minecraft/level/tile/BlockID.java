@@ -64,7 +64,8 @@ public enum BlockID {
 	        ForestGreen ( 55 ),
 	        Brown ( 56 ),
 	        DeepBlue ( 57 ),
-	        Turquoise ( 58 );
+	        Turquoise ( 58 ),
+	        Sandstone (59);
 
 	private int number;
 
