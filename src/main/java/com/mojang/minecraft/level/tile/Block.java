@@ -110,7 +110,7 @@ public class Block
 	public static final Block LimeClay;
 	public static final Block PinkClay;
 	public static final Block GreyClay;
-	public static final Block CreamClay;
+	public static final Block Clay;
 	public static final Block OrangeClay;
 	public static final Block PeachClay;
 	public static final Block IndigoClay;
@@ -781,7 +781,7 @@ public class Block
 		block.explodes = false;
 		SANDSTONE = blockCache;
 		//--------------------------------------
-		WhiteClay = (new Block(60, 96)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		Clay = (new Block(60, 96)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
         PurpleClay = (new Block(61, 97)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
         BrownClay= (new Block(62, 98)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
         GreenClay= (new Block(63, 99)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
@@ -790,7 +790,7 @@ public class Block
         LimeClay= (new Block(66, 102)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
         PinkClay= (new Block(67, 103)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
         GreyClay= (new Block(68, 104)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        CreamClay= (new Block(69, 105)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+        WhiteClay= (new Block(69, 105)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
         OrangeClay= (new Block(70, 106)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
         PeachClay= (new Block(71, 107)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
         IndigoClay= (new Block(72, 108)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
