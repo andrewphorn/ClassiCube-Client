@@ -21,7 +21,7 @@ public class FlowerBlock extends Block {
 	public void update(Level level, int x, int y, int z, Random rand) {
 		if (!level.growTrees) {
 			int var6 = level.getTile(x, y - 1, z);
-			if (this.id != 52) { //ignore webs
+			if (this.id != 53) { //ignore webs
 				if (!level.isLit(x, y, z) || var6 != DIRT.id
 						&& var6 != GRASS.id) {
 					level.setTile(x, y, z, 0);
