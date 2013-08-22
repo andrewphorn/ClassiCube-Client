@@ -60,9 +60,6 @@ public class MinecraftApplet extends Applet {
 
 			if (getParameter("mppass") != null) {
 				minecraft.session.mppass = getParameter("mppass");
-				ArrayList<Integer> blocks = new ArrayList<Integer>();
-				blocks.add(9); blocks.add(11);
-				SessionData.SetAllowedBlocks(false, blocks);
 			}
 
 			// TODO: Not tested.

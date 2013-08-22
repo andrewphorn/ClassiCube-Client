@@ -56,7 +56,7 @@ public enum BlockID {
 	        Books ( 47),
 	        MossyRocks ( 48),
 	        Obsidian ( 49),
-	        TestBlock(50);
+	        CobblestoneSlab(50);
 
 	private int number;
 

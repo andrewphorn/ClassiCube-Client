@@ -90,7 +90,7 @@ public class Block
 	public static final Block BOOKSHELF;
 	public static final Block MOSSY_COBBLESTONE;
 	public static final Block OBSIDIAN;
-	public static final Block TESTBLOCK;
+	public static final Block COBBLESTONESLAB;
 	public int textureId;
 	public final int id;
 	public Tile$SoundType stepsound;
@@ -745,9 +745,10 @@ public class Block
 		var1 = var10000;
 		var10000.explodes = false;
 		OBSIDIAN = var1;
-		var10000 = (new StoneBlock(50, 37)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 10.0F);
+		var10000 = (new CobblestoneSlabBlock(50, false)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 2.0F);
 		var0 = false;
 		var1 = var10000;
-		TESTBLOCK = var1;
+		var10000.explodes = false;
+		COBBLESTONESLAB = var1;
 	}
 }
