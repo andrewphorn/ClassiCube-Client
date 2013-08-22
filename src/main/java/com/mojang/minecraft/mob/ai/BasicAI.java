@@ -140,7 +140,7 @@ public class BasicAI extends AI {
 		}
 		else
 		{	
-			if(this.jumping && this.mob.isInLava()){
+			if(this.jumping && (this.mob.isInLava()|| this.mob.isInSpiderWeb())){
 				if(this.running){
 					this.mob.yd = 0.08F;
 				}else{
@@ -160,7 +160,7 @@ public class BasicAI extends AI {
 					var2.yd += 0.04F;
 				else
 					var2.yd += 0.08F;
-			} else if(var9) { //elseif in lava
+			} else if(var9 || var2.isInSpiderWeb()) { //elseif in lava or spiders web
 				if(!running)
 					var2.yd += 0.04F;
 				else
@@ -214,7 +214,8 @@ public class BasicAI extends AI {
 
 		boolean var1 = this.mob.isInWater();
 		boolean var2 = this.mob.isInLava();
-		if(var1 || var2) {
+		boolean var3 = this.mob.isInSpiderWeb();
+		if(var1 || var2 || var3) {
 			this.jumping = this.random.nextFloat() < 0.8F;
 		}
 	}

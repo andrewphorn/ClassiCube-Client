@@ -445,7 +445,7 @@ public class Mob extends Entity {
 				yd = 0.3F;
 			}
 
-		} else if (this.isInLava() && !this.flyingMode && !this.noPhysics) {
+		} else if ((this.isInLava() || this.isInSpiderWeb()) && !this.flyingMode && !this.noPhysics) {
 			y1 = y;
 			if (multiply > 5)
 				multiply = 5F;
