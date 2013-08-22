@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 public final class BlockSelectScreen extends GuiScreen {
 
-	int BlocksPerRow = 12;
+	int BlocksPerRow = 14;
 	int Spacing = 18;
 
 	public BlockSelectScreen() {
@@ -18,9 +18,9 @@ public final class BlockSelectScreen extends GuiScreen {
 
 	private int getBlockOnScreen(int var1, int var2) {
 		for (int var3 = 0; var3 < SessionData.allowedBlocks.size(); ++var3) {
-			int var4 = this.width / 2 + var3 % BlocksPerRow * Spacing + -108
+			int var4 = this.width / 2 + var3 % BlocksPerRow * Spacing + -128
 					- 3;
-			int var5 = this.height / 2 + var3 / BlocksPerRow * Spacing + -60
+			int var5 = this.height / 2 + var3 / BlocksPerRow * Spacing + -45
 					+ 3;
 			if (var1 >= var4 && var1 <= var4 + Spacing
 					&& var2 >= var5 - BlocksPerRow
@@ -37,16 +37,16 @@ public final class BlockSelectScreen extends GuiScreen {
 	public final void render(int var1, int var2) {
 		var1 = this.getBlockOnScreen(var1, var2);
 
-		drawFadingBox(this.width / 2 - 120, 30, this.width / 2 + 120, 180,
+		drawFadingBox(this.width / 2 - 140, 50, this.width / 2 + 140, 200,
 				-1878719232, -1070583712);
 		if (var1 >= 0) {
-			var2 = this.width / 2 + var1 % BlocksPerRow * Spacing + -108;
+			var2 = this.width / 2 + var1 % BlocksPerRow * Spacing + -128;
 			drawCenteredString(this.fontRenderer, GetBlockName(var1),
-					this.width / 2, 165, 16777215);
+					this.width / 2, 185, 16777215);
 		}
 
 		drawCenteredString(this.fontRenderer, "Select block", this.width / 2,
-				40, 16777215);
+				60, 16777215);
 		TextureManager var7 = this.minecraft.textureManager;
 		ShapeRenderer var8 = ShapeRenderer.instance;
 		var2 = var7.load("/terrain.png");
@@ -56,9 +56,9 @@ public final class BlockSelectScreen extends GuiScreen {
 			if (var4 != null) {
 				GL11.glPushMatrix();
 				int var5 = this.width / 2 + var2 % BlocksPerRow * Spacing
-						+ -108;
+						+ -128;
 				int var6 = this.height / 2 + var2 / BlocksPerRow * Spacing
-						+ -60;
+						+ -45;
 				GL11.glTranslatef((float) var5, (float) var6, 0.0F);
 				GL11.glScalef(9.0F, 9.0F, 9.0F);
 				GL11.glTranslatef(1.0F, 0.5F, 8.0F);

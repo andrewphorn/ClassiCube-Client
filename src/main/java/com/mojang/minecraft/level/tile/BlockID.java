@@ -65,7 +65,28 @@ public enum BlockID {
 	        Brown ( 56 ),
 	        DeepBlue ( 57 ),
 	        Turquoise ( 58 ),
-	        Sandstone (59);
+	        Sandstone (59),
+	        WhiteClay(60),
+	        PurpleClay(61),
+	        BrownClay(62),
+	        GreenClay(63),
+	        RedClay(64),
+	        YellowClay(65),
+	        LimeClay(66),
+	        PinkClay(67),
+	        GreyClay(68),
+	        CreamClay(69),
+	        OrangeClay(70),
+	        PeachClay(71),
+	        IndigoClay(72),
+	        BlueClay(73),
+	        CyanClay(74),
+	        MagentaClay(75),
+	        BlackClay(76),
+	        CookedClay(77)
+	        
+	        
+	        ;
 
 	private int number;
 
