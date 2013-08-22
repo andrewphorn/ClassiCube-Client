@@ -59,7 +59,12 @@ public enum BlockID {
 	        CobblestoneSlab ( 50 ),
 	        Butter ( 51 ),
 	        DarkGrass ( 52 ),
-	        SpiderWeb ( 53 );
+	        SpiderWeb ( 53 ),
+	        LightPink ( 54 ),
+	        ForestGreen ( 55 ),
+	        Brown ( 56 ),
+	        DeepBlue ( 57 ),
+	        Turquoise ( 58 );
 
 	private int number;
 

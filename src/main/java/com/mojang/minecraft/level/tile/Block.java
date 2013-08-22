@@ -94,6 +94,12 @@ public class Block
 	public static final Block BUTTER;
 	public static final Block DARKGRASS;
 	public static final Block WEB;
+	public static final Block LIGHT_PINK_WOOL;
+	public static final Block FOREST_GREEN_WOOL;
+	public static final Block BROWN_WOOL;
+	public static final Block DEEP_BLUE_WOOL;
+	public static final Block TURQUOISE_WOOL;
+	
 	public int textureId;
 	public final int id;
 	public Tile$SoundType stepsound;
@@ -745,5 +751,10 @@ public class Block
 		BUTTER = blockCache;
 		DARKGRASS = (new DarkGrassBlock(52)).setData(Tile$SoundType.grass, 0.9F, 1.0F, 0.6F);
 		WEB = (new FlowerBlock(53, 11)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
+		LIGHT_PINK_WOOL = (new Block(54, 80)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		FOREST_GREEN_WOOL = (new Block(55, 81)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		BROWN_WOOL = (new Block(56, 82)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		DEEP_BLUE_WOOL = (new Block(57, 83)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		TURQUOISE_WOOL = (new Block(58, 84)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
 	}
 }
