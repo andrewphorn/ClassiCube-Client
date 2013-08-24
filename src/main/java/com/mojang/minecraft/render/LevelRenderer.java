@@ -39,6 +39,7 @@ public final class LevelRenderer {
       this.listId = GL11.glGenLists(2);
       this.baseListId = GL11.glGenLists(4096 << 6 << 1);
    }
+   
 
    public final void refresh() {
       int var1;

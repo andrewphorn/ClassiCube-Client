@@ -18,9 +18,8 @@ public final class FontRenderer {
 	private int[] font = new int[256];
 
 	public FontRenderer(GameSettings settings, String fontImage,
-			TextureManager textures, float Scale) throws IOException {
+			TextureManager textures) throws IOException {
 		this.settings = settings;
-		RenderScale = Scale;
 		BufferedImage font;
 
 		try {
@@ -58,16 +57,12 @@ public final class FontRenderer {
 			}
 
 			if (character == 32) {
-				chWidth = (int) (4 * (1 / getScale()));
+				chWidth = (int) (4 );
 			}
 			this.font[character] = chWidth;
 		}
 
 		this.fontId = textures.load(fontImage);
-	}
-
-	public float getScale() {
-		return 7.0F / this.charHeight * RenderScale;
 	}
 
 	public final void render(String text, int x, int y, int color) {
@@ -86,19 +81,20 @@ public final class FontRenderer {
 				color = (color & 16579836) >> 2;
 			}
 
-			float f1 = getScale();
-			f1 = 1.0F / f1;
-			x = (int) (x * f1);
-			y = (int) (y * f1);
 
 			GL11.glPushMatrix();
-			/*
-			 * if(shadow){ if(RenderScale < 1F){ float f3 = 1.0F * RenderScale;
-			 * GL11.glTranslatef(-f3, -f3, 0.0F); } if(RenderScale > 1F){ float
-			 * f3 = 1.0F * RenderScale; GL11.glTranslatef(+f3, +f3, 0.0F); } }
-			 */
+			
+			 if(shadow){ if(RenderScale < 1F){ 
+				 float f3 = 1.0F * RenderScale;
+			 GL11.glTranslatef(-f3, -f3, 0.0F); 
+			 } 
+			 if(RenderScale > 1F){ 
+				 float f3 = 1.0F * RenderScale; 
+				 GL11.glTranslatef(+f3, +f3, 0.0F); 
+				 } 
+			 }
+			 
 			GL11.glBindTexture(3553, this.fontId);
-			GL11.glScalef(getScale(), getScale(), 1.0F);
 
 			ShapeRenderer.instance.begin();
 			ShapeRenderer.instance.color(color);
@@ -169,22 +165,21 @@ public final class FontRenderer {
 				i += this.font[k];
 			}
 		}
-		return (int) Math.floor(i * getScale());
+		return (int) Math.floor(i );
 	}
 
-	public static String StripColors(String message) {
-		int start = message.indexOf('&');
-		if (start == -1) {
-			return message;
-		}
-		int lastInsert = 0;
-		StringBuilder output = new StringBuilder(message.length());
-		while (start != -1) {
-			output.append(message, lastInsert, start - lastInsert);
-			lastInsert = Math.min(start + 2, message.length());
-			start = message.indexOf('&', lastInsert);
-		}
-		output.append(message, lastInsert, message.length() - lastInsert);
-		return output.toString();
-	}
+	public static String stripColor(String var0) {
+	      char[] var3 = var0.toCharArray();
+	      String var1 = "";
+
+	      for(int var2 = 0; var2 < var3.length; ++var2) {
+	         if(var3[var2] == 38) {
+	            ++var2;
+	         } else {
+	            var1 = var1 + var3[var2];
+	         }
+	      }
+
+	      return var1;
+	   }
 }

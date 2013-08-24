@@ -21,6 +21,6 @@ public class Creeper extends Mob {
 
    public float getBrightness(float var1) {
       float var2 = (float)(20 - this.health) / 20.0F;
-      return ((MathHelper.sin((float)this.tickCount + var1) * 0.5F + 0.5F) * var2 * 0.5F + 0.25F + var2 * 0.25F) * super.getBrightness(var1);
+      return ((MathHelper.sin((float)this.tickCount + var1) * 0.5F + 0.5F) * var2 * 0.5F + 0.25F + var2 * 0.25F) * super.getBrightness(var1) + 20;
    }
 }

@@ -24,8 +24,6 @@ public final class Renderer {
    public int levelTicks;
    public Entity entity = null;
    public Random random = new Random();
-   private volatile int unused1 = 0;
-   private volatile int unused2 = 0;
    private FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
    public float fogRed;
    public float fogBlue;
@@ -129,8 +127,6 @@ public final class Renderer {
                var8 = (var7 * 30.0F + var8 * 70.0F) / 100.0F;
                var3 = (var7 * 30.0F + var3 * 70.0F) / 100.0F;
                var7 = var4;
-               var8 = var8;
-               var3 = var3;
             }
 
             GL11.glLightModel(2899, this.createBuffer(var7, var8, var3, 1.0F));
@@ -144,8 +140,6 @@ public final class Renderer {
                var8 = (var7 * 30.0F + var8 * 70.0F) / 100.0F;
                var3 = (var7 * 30.0F + var3 * 70.0F) / 100.0F;
                var7 = var4;
-               var8 = var8;
-               var3 = var3;
             }
 
             GL11.glLightModel(2899, this.createBuffer(var7, var8, var3, 1.0F));

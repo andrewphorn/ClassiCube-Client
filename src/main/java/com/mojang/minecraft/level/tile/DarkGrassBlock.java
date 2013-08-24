@@ -5,16 +5,16 @@ import com.mojang.minecraft.level.liquid.LiquidType;
 
 import java.util.Random;
 
-public final class GrassBlock extends Block {
+public final class DarkGrassBlock extends Block {
 
-   protected GrassBlock(int var1) {
-      super(2);
-      this.textureId = 3;
+   protected DarkGrassBlock(int var1) {
+      super(51);
+      this.textureId = 47;
       this.setPhysics(true);
    }
 
    protected final int getTextureId(int texture) {
-      return texture == 1?0:(texture == 0?2:3);
+      return texture == 1?31:(texture == 31?2:47);
    }
 
    public final void update(Level level, int x, int y, int z, Random rand) {
@@ -27,7 +27,7 @@ public final class GrassBlock extends Block {
                int var7 = y + rand.nextInt(5) - 3;
                int var8 = z + rand.nextInt(3) - 1;
                if(level.getTile(var6, var7, var8) == DIRT.id && level.isLit(var6, var7, var8)) {
-                  level.setTile(var6, var7, var8, GRASS.id);
+                  level.setTile(var6, var7, var8, DARKGRASS.id);
                }
             }
 
