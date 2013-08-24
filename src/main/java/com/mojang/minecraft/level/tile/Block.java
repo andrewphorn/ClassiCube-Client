@@ -91,7 +91,6 @@ public class Block
 	public static final Block MOSSY_COBBLESTONE;
 	public static final Block OBSIDIAN;
 	public static final Block COBBLESTONESLAB;
-	public static final Block BUTTER;
 	public static final Block DARKGRASS;
 	public static final Block WEB;
 	public static final Block LIGHT_PINK_WOOL;
@@ -100,25 +99,6 @@ public class Block
 	public static final Block DEEP_BLUE_WOOL;
 	public static final Block TURQUOISE_WOOL;
 	public static final Block SANDSTONE;
-	
-	public static final Block WhiteClay;
-	public static final Block PurpleClay;
-	public static final Block BrownClay;
-	public static final Block GreenClay;
-	public static final Block RedClay;
-	public static final Block YellowClay;
-	public static final Block LimeClay;
-	public static final Block PinkClay;
-	public static final Block GreyClay;
-	public static final Block Clay;
-	public static final Block OrangeClay;
-	public static final Block PeachClay;
-	public static final Block IndigoClay;
-	public static final Block BlueClay;
-	public static final Block CyanClay;
-	public static final Block MagentaClay;
-	public static final Block BlackClay;
-	public static final Block CookedClay;
 	
 	public int textureId;
 	public final int id;
@@ -765,39 +745,16 @@ public class Block
 		blockCache = block;
 		block.explodes = false;
 		COBBLESTONESLAB = blockCache;
-		block = (new Block(51, 50)).setData(Tile$SoundType.grass, 1.0F, 1.0F, 3.0F); //next to glass on texture
-		blockCache = block;
-		block.explodes = false;
-		BUTTER = blockCache;
-		DARKGRASS = (new DarkGrassBlock(52)).setData(Tile$SoundType.grass, 0.9F, 1.0F, 0.6F);
-		WEB = (new FlowerBlock(53, 11)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		LIGHT_PINK_WOOL = (new Block(54, 80)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		FOREST_GREEN_WOOL = (new Block(55, 81)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		BROWN_WOOL = (new Block(56, 82)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		DEEP_BLUE_WOOL = (new Block(57, 83)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		TURQUOISE_WOOL = (new Block(58, 84)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		block = (new SandStoneBlock(59, 41)).setData(Tile$SoundType.stone, 0.7F, 1.0F, 3.0F);
+		DARKGRASS = (new DarkGrassBlock(51)).setData(Tile$SoundType.grass, 0.9F, 1.0F, 0.6F);
+		WEB = (new FlowerBlock(52, 11)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
+		LIGHT_PINK_WOOL = (new Block(53, 80)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		FOREST_GREEN_WOOL = (new Block(54, 81)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		BROWN_WOOL = (new Block(55, 82)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		DEEP_BLUE_WOOL = (new Block(56, 83)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		TURQUOISE_WOOL = (new Block(57, 84)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		block = (new SandStoneBlock(58, 41)).setData(Tile$SoundType.stone, 0.7F, 1.0F, 3.0F);
 		blockCache = block;
 		block.explodes = false;
 		SANDSTONE = blockCache;
-		//--------------------------------------
-		Clay = (new Block(60, 96)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        PurpleClay = (new Block(61, 97)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        BrownClay= (new Block(62, 98)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        GreenClay= (new Block(63, 99)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        RedClay= (new Block(64, 100)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        YellowClay= (new Block(65, 101)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        LimeClay= (new Block(66, 102)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        PinkClay= (new Block(67, 103)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        GreyClay= (new Block(68, 104)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        WhiteClay= (new Block(69, 105)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        OrangeClay= (new Block(70, 106)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        PeachClay= (new Block(71, 107)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        IndigoClay= (new Block(72, 108)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        BlueClay= (new Block(73, 109)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        CyanClay= (new Block(74, 110)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        MagentaClay= (new Block(75, 111)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        BlackClay= (new Block(76, 112)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-        CookedClay= (new Block(77, 113)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
 	}
 }
