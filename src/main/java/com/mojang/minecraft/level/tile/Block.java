@@ -746,7 +746,7 @@ public class Block
 		block.explodes = false;
 		COBBLESTONESLAB = blockCache;
 		DARKGRASS = (new DarkGrassBlock(51)).setData(Tile$SoundType.grass, 0.9F, 1.0F, 0.6F);
-		WEB = (new FlowerBlock(52, 11)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
+		WEB = (new SaplingBlock(52, 11)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
 		LIGHT_PINK_WOOL = (new Block(53, 80)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
 		FOREST_GREEN_WOOL = (new Block(54, 81)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
 		BROWN_WOOL = (new Block(55, 82)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);

@@ -3,13 +3,14 @@ package com.mojang.minecraft.net;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.mob.HumanoidMob;
+import com.mojang.minecraft.mob.Spider;
 import com.mojang.minecraft.render.TextureManager;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
 
-public class NetworkPlayer extends HumanoidMob {
+public class NetworkPlayer extends Spider {
 
    public static final long serialVersionUID = 77479605454997290L;
    private List moveQueue = new LinkedList();
@@ -29,7 +30,7 @@ public class NetworkPlayer extends HumanoidMob {
       super(var1.level, (float)var4, (float)var5, (float)var6);
       this.minecraft = var1;
       this.displayName = var3;
-      var3 = FontRenderer.StripColors(var3);
+      var3 = FontRenderer.stripColor(var3);
       this.name = var3;
       this.xp = var4;
       this.yp = var5;
@@ -39,7 +40,7 @@ public class NetworkPlayer extends HumanoidMob {
       this.setPos((float)var4 / 32.0F, (float)var5 / 32.0F, (float)var6 / 32.0F);
       this.xRot = var8;
       this.yRot = var7;
-      this.armor = this.helmet = false;
+     // this.armor = this.helmet = false;
       this.renderOffset = 0.6875F;
       (new SkinDownloadThread(this)).start();
       this.allowAlpha = false;

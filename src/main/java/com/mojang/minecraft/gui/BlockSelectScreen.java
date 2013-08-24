@@ -11,7 +11,6 @@ public final class BlockSelectScreen extends GuiScreen {
 
 	int BlocksPerRow = 14;
 	int Spacing = 18;
-
 	public BlockSelectScreen() {
 		this.grabsMouse = true;
 	}
@@ -78,11 +77,10 @@ public final class BlockSelectScreen extends GuiScreen {
 				GL11.glPopMatrix();
 			}
 		}
-
 	}
 
 	String GetBlockName(int id) {
-		if (id == 0 || id == 255)
+		if (id <= 0 || id >= 255)
 			return "";
 		Block b = (Block) SessionData.allowedBlocks.get(id);
 		if (b == null)
