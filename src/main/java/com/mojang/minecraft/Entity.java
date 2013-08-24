@@ -355,6 +355,13 @@ public abstract class Entity implements Serializable {
 		return this.level.containsLiquid(this.bb.grow(0.0F, -0.4F, 0.0F),
 				LiquidType.LAVA);
 	}
+	
+	public boolean isInSpiderWeb() {
+		int var1;
+		return (var1 = this.level.getTile((int) this.x, (int) (this.y + 0.12F), (int) this.z)) != 0 ? Block.blocks[var1] == Block.WEB : false || 
+				(var1 = this.level.getTile((int) this.x, (int) (this.y - 1),
+						(int) this.z)) != 0 ? Block.blocks[var1] == Block.WEB : false;
+	}
 
 	public void moveRelative(float x, float y, float z) {
 

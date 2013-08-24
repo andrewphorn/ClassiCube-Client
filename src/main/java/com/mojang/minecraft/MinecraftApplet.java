@@ -6,6 +6,7 @@ import java.awt.Canvas;
 import java.awt.Graphics;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MinecraftApplet extends Applet {
 	private static final long serialVersionUID = 1L;

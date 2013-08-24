@@ -44,11 +44,6 @@ public class LiquidBlock extends Block {
    }
 
    public void update(Level level, int x, int y, int z, Random rand) {
-      boolean var7 = false;
-      z = z;
-      y = y;
-      x = x;
-      level = level;
       boolean var8 = false;
 
       boolean var6;
