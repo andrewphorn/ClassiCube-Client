@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
 
-public class NetworkPlayer extends Spider {
+public class NetworkPlayer extends HumanoidMob {
 
    public static final long serialVersionUID = 77479605454997290L;
    private List moveQueue = new LinkedList();
@@ -40,7 +40,7 @@ public class NetworkPlayer extends Spider {
       this.setPos((float)var4 / 32.0F, (float)var5 / 32.0F, (float)var6 / 32.0F);
       this.xRot = var8;
       this.yRot = var7;
-     // this.armor = this.helmet = false;
+      this.armor = this.helmet = false;
       this.renderOffset = 0.6875F;
       (new SkinDownloadThread(this)).start();
       this.allowAlpha = false;

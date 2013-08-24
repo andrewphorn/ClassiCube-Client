@@ -376,7 +376,7 @@ public final class Minecraft implements Runnable {
 			this.textureManager.registerAnimation(new TextureLavaFX());
 			this.textureManager.registerAnimation(new TextureWaterFX());
 			this.fontRenderer = new FontRenderer(this.settings, "/default.png",
-					this.textureManager, 1);
+					this.textureManager);
 			IntBuffer var9;
 			(var9 = BufferUtils.createIntBuffer(256)).clear().limit(256);
 			this.levelRenderer = new LevelRenderer(this, this.textureManager);

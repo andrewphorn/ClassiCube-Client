@@ -93,11 +93,6 @@ public class Block
 	public static final Block COBBLESTONESLAB;
 	public static final Block DARKGRASS;
 	public static final Block WEB;
-	public static final Block LIGHT_PINK_WOOL;
-	public static final Block FOREST_GREEN_WOOL;
-	public static final Block BROWN_WOOL;
-	public static final Block DEEP_BLUE_WOOL;
-	public static final Block TURQUOISE_WOOL;
 	public static final Block SANDSTONE;
 	
 	public int textureId;
@@ -747,12 +742,7 @@ public class Block
 		COBBLESTONESLAB = blockCache;
 		DARKGRASS = (new DarkGrassBlock(51)).setData(Tile$SoundType.grass, 0.9F, 1.0F, 0.6F);
 		WEB = (new SaplingBlock(52, 11)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		LIGHT_PINK_WOOL = (new Block(53, 80)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		FOREST_GREEN_WOOL = (new Block(54, 81)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		BROWN_WOOL = (new Block(55, 82)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		DEEP_BLUE_WOOL = (new Block(56, 83)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		TURQUOISE_WOOL = (new Block(57, 84)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		block = (new SandStoneBlock(58, 41)).setData(Tile$SoundType.stone, 0.7F, 1.0F, 3.0F);
+		block = (new SandStoneBlock(53, 41)).setData(Tile$SoundType.stone, 0.7F, 1.0F, 3.0F);
 		blockCache = block;
 		block.explodes = false;
 		SANDSTONE = blockCache;
