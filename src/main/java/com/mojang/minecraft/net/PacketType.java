@@ -56,8 +56,21 @@ public class PacketType
 	public static final PacketType CHAT_MESSAGE;
 	public static final PacketType DISCONNECT;
 	public static final PacketType UPDATE_PLAYER_TYPE;
-	public static final PacketType UPDATE_ALLOWED_BlOCKS;
-
+	//------------------------------------------------
+	public static final PacketType EXT_INFO; //16
+    public static final PacketType EXT_ENTRY; //17
+    public static final PacketType CLICK_DISTANCE; //18
+    public static final PacketType UPDATE_ALLOWED_BlOCKS; //19
+    public static final PacketType HOLDTHIS; //20
+    public static final PacketType SET_TEXT_HOTKEY; //21
+    public static final PacketType EXT_ADD_PLAYER_NAME; //22
+    public static final PacketType EXT_ADD_ENTITY; //23
+    public static final PacketType EXT_REMOVE_PLAYER_NAME; //24
+    public static final PacketType ENV_SET_COLOR; //25
+    public static final PacketType SELECTION_CUBOID; //26
+    public static final PacketType REMOVE_SELECTION_CUBOID; //27
+    public static final PacketType EXT_PLAYER; //28
+	
 	public int length;
 	private static int nextOpcode;
 	public byte opcode;
@@ -81,8 +94,20 @@ public class PacketType
 		CHAT_MESSAGE = new PacketType(new Class[] {Byte.TYPE, String.class});
 		DISCONNECT = new PacketType(new Class[] {String.class});
 		UPDATE_PLAYER_TYPE = new PacketType(new Class[] {Byte.TYPE});
+		EXT_INFO = new PacketType(new Class[] {String.class, Short.TYPE});
+		EXT_ENTRY = new PacketType(new Class[] {String.class, Integer.TYPE});
+		CLICK_DISTANCE = new PacketType(new Class[] {Short.TYPE});
 		UPDATE_ALLOWED_BlOCKS = new PacketType(new Class[] {byte[].class});
-
+		HOLDTHIS = new PacketType(new Class[] {Byte.TYPE, Byte.TYPE});
+		SET_TEXT_HOTKEY = new PacketType(new Class[] {String.class, String.class, Integer.TYPE, Byte.TYPE});
+		EXT_ADD_PLAYER_NAME = new PacketType(new Class[] { Byte.TYPE, String.class, String.class, String.class, Byte.TYPE}); //check [0] unsigned byte
+		EXT_ADD_ENTITY = new PacketType(new Class[] { Byte.TYPE, String.class, String.class}); //check [0] unsigned byte
+		EXT_REMOVE_PLAYER_NAME = new PacketType(new Class[] {String.class});
+		ENV_SET_COLOR = new PacketType(new Class[] {Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE}); //byte, ubyte, ubyte, ubyte
+		SELECTION_CUBOID = new PacketType(new Class[] {Byte.TYPE, String.class, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Byte.class, Byte.class, Byte.class, Byte.class}); //last 4 are ubyte
+		REMOVE_SELECTION_CUBOID = new PacketType(new Class[] {Byte.TYPE});
+		EXT_PLAYER = new PacketType(new Class[] {Byte.TYPE, String.class});
+		
 		nextOpcode = 0;
 	}
 }

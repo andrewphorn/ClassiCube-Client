@@ -12,8 +12,6 @@ import org.lwjgl.opengl.GL11;
 
 public final class FontRenderer {
 	private int fontId = 0;
-	private int charHeight;
-	public static float RenderScale = 1F;
 	private GameSettings settings;
 	private int[] font = new int[256];
 
@@ -35,7 +33,6 @@ public final class FontRenderer {
 		}
 		int width = font.getWidth();
 		int height = font.getHeight();
-		this.charHeight = (height / 16);
 		int[] fontData = new int[256 * 256];
 		font.getRGB(0, 0, width, height, fontData, 0, width);
 
@@ -57,13 +54,14 @@ public final class FontRenderer {
 			}
 
 			if (character == 32) {
-				chWidth = (int) (4 );
+				chWidth = (int) (4);
 			}
 			this.font[character] = chWidth;
 		}
 
 		this.fontId = textures.load(fontImage);
 	}
+	
 
 	public final void render(String text, int x, int y, int color) {
 		this.render(text, x + 1, y + 1, color, true);
@@ -81,19 +79,12 @@ public final class FontRenderer {
 				color = (color & 16579836) >> 2;
 			}
 
-
 			GL11.glPushMatrix();
-			
-			 if(shadow){ if(RenderScale < 1F){ 
-				 float f3 = 1.0F * RenderScale;
-			 GL11.glTranslatef(-f3, -f3, 0.0F); 
-			 } 
-			 if(RenderScale > 1F){ 
-				 float f3 = 1.0F * RenderScale; 
-				 GL11.glTranslatef(+f3, +f3, 0.0F); 
-				 } 
-			 }
-			 
+			/*
+			 * if(shadow){ if(RenderScale < 1F){ float f3 = 1.0F * RenderScale;
+			 * GL11.glTranslatef(-f3, -f3, 0.0F); } if(RenderScale > 1F){ float
+			 * f3 = 1.0F * RenderScale; GL11.glTranslatef(+f3, +f3, 0.0F); } }
+			 */
 			GL11.glBindTexture(3553, this.fontId);
 
 			ShapeRenderer.instance.begin();
@@ -165,7 +156,7 @@ public final class FontRenderer {
 				i += this.font[k];
 			}
 		}
-		return (int) Math.floor(i );
+		return (int) Math.floor(i);
 	}
 
 	public static String stripColor(String var0) {
