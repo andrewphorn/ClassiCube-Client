@@ -17,7 +17,7 @@ public final class CobblestoneSlabBlock extends Block {
    }
 
    protected final int getTextureId(int texture) {
-      return texture <= 16?16:16;
+      return 16;
    }
 
    public final boolean isSolid() {

@@ -94,6 +94,8 @@ public class Block
 	public static final Block DARKGRASS;
 	public static final Block WEB;
 	public static final Block SANDSTONE;
+	public static final Block SNOW;
+	public static final Block FIRE;
 	
 	public int textureId;
 	public final int id;
@@ -746,5 +748,10 @@ public class Block
 		blockCache = block;
 		block.explodes = false;
 		SANDSTONE = blockCache;
+		block = new SnowBlock(54, 79).setData(Tile$SoundType.none, 0.7F, 1.0F, 3.0F);
+		blockCache = block;
+		block.explodes = false;
+		SNOW = blockCache;
+		FIRE = new FireBlock(55, 100).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
 	}
 }

@@ -28,6 +28,7 @@ import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.*;
 import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.render.texture.TextureLavaFX;
+import com.mojang.minecraft.render.texture.TextureFireFX;
 import com.mojang.minecraft.render.texture.TextureWaterFX;
 import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
@@ -373,6 +374,7 @@ public final class Minecraft implements Runnable {
 			//
 			this.settings = new GameSettings(this, mcDir);
 			this.textureManager = new TextureManager(this.settings, isApplet);
+			this.textureManager.registerAnimation(new TextureFireFX());
 			this.textureManager.registerAnimation(new TextureLavaFX());
 			this.textureManager.registerAnimation(new TextureWaterFX());
 			this.fontRenderer = new FontRenderer(this.settings, "/default.png",
@@ -549,39 +551,39 @@ public final class Minecraft implements Runnable {
 						if (!this.online) {
 							this.gamemode.applyCracks(this.timer.delta);
 							float var65 = this.timer.delta;
-							com.mojang.minecraft.render.Renderer var66 = this.renderer;
+							com.mojang.minecraft.render.Renderer renderer = this.renderer;
 							if (this.renderer.displayActive
 									&& !Display.isActive()) {
-								var66.minecraft.pause();
+								renderer.minecraft.pause();
 							}
 
-							var66.displayActive = Display.isActive();
+							renderer.displayActive = Display.isActive();
 							int var68;
 							int var70;
 							int var86;
 							int var81;
-							if (var66.minecraft.hasMouse) {
+							if (renderer.minecraft.hasMouse) {
 								var81 = 0;
 								var86 = 0;
-								if (var66.minecraft.levelLoaded) {
-									if (var66.minecraft.canvas != null) {
+								if (renderer.minecraft.levelLoaded) {
+									if (renderer.minecraft.canvas != null) {
 										Point var90;
-										var70 = (var90 = var66.minecraft.canvas
+										var70 = (var90 = renderer.minecraft.canvas
 												.getLocationOnScreen()).x
-												+ var66.minecraft.width / 2;
+												+ renderer.minecraft.width / 2;
 										var68 = var90.y
-												+ var66.minecraft.height / 2;
+												+ renderer.minecraft.height / 2;
 										Point var75;
 										var81 = (var75 = MouseInfo
 												.getPointerInfo().getLocation()).x
 												- var70;
 										var86 = -(var75.y - var68);
-										var66.minecraft.robot.mouseMove(var70,
+										renderer.minecraft.robot.mouseMove(var70,
 												var68);
 									} else {
 										Mouse.setCursorPosition(
-												var66.minecraft.width / 2,
-												var66.minecraft.height / 2);
+												renderer.minecraft.width / 2,
+												renderer.minecraft.height / 2);
 									}
 								} else {
 									var81 = Mouse.getDX();
@@ -589,35 +591,35 @@ public final class Minecraft implements Runnable {
 								}
 
 								byte var91 = 1;
-								if (var66.minecraft.settings.invertMouse) {
+								if (renderer.minecraft.settings.invertMouse) {
 									var91 = -1;
 								}
 
-								var66.minecraft.player.turn((float) var81,
+								renderer.minecraft.player.turn((float) var81,
 										(float) (var86 * var91));
 							}
 
-							if (!var66.minecraft.online) {
-								var81 = var66.minecraft.width * 240
-										/ var66.minecraft.height;
-								var86 = var66.minecraft.height * 240
-										/ var66.minecraft.height;
+							if (!renderer.minecraft.online) {
+								var81 = renderer.minecraft.width * 240
+										/ renderer.minecraft.height;
+								var86 = renderer.minecraft.height * 240
+										/ renderer.minecraft.height;
 								int var94 = Mouse.getX() * var81
-										/ var66.minecraft.width;
+										/ renderer.minecraft.width;
 								var70 = var86 - Mouse.getY() * var86
-										/ var66.minecraft.height - 1;
-								if (var66.minecraft.level != null) {
+										/ renderer.minecraft.height - 1;
+								if (renderer.minecraft.level != null) {
 									float var80 = var65;
-									com.mojang.minecraft.render.Renderer var82 = var66;
-									com.mojang.minecraft.render.Renderer var27 = var66;
+									com.mojang.minecraft.render.Renderer var82 = renderer;
+									com.mojang.minecraft.render.Renderer var27 = renderer;
 									Player var28;
-									float var29 = (var28 = var66.minecraft.player).xRotO
+									float var29 = (var28 = renderer.minecraft.player).xRotO
 											+ (var28.xRot - var28.xRotO)
 											* var65;
 									float var30 = var28.yRotO
 											+ (var28.yRot - var28.yRotO)
 											* var65;
-									Vec3D var31 = var66.getPlayerVector(var65);
+									Vec3D var31 = renderer.getPlayerVector(var65);
 									float var32 = MathHelper
 											.cos(-var30 * 0.017453292F - 3.1415927F);
 									float var69 = MathHelper
@@ -628,36 +630,36 @@ public final class Minecraft implements Runnable {
 											.sin(-var29 * 0.017453292F);
 									float var34 = var69 * var74;
 									float var87 = var32 * var74;
-									float var36 = var66.minecraft.gamemode
+									float reachDistance = renderer.minecraft.gamemode
 											.getReachDistance();
-									Vec3D var71 = var31.add(var34 * var36,
-											var33 * var36, var87 * var36);
-									var66.minecraft.selected = var66.minecraft.level
+									Vec3D var71 = var31.add(var34 * reachDistance,
+											var33 * reachDistance, var87 * reachDistance);
+									renderer.minecraft.selected = renderer.minecraft.level
 											.clip(var31, var71);
-									var74 = var36;
-									if (var66.minecraft.selected != null) {
-										var74 = var66.minecraft.selected.vec
-												.distance(var66
+									var74 = reachDistance;
+									if (renderer.minecraft.selected != null) {
+										var74 = renderer.minecraft.selected.vec
+												.distance(renderer
 														.getPlayerVector(var65));
 									}
 
-									var31 = var66.getPlayerVector(var65);
-									if (var66.minecraft.gamemode instanceof CreativeGameMode) {
-										var36 = 32.0F;
+									var31 = renderer.getPlayerVector(var65);
+									if (renderer.minecraft.gamemode instanceof CreativeGameMode) {
+										reachDistance = 32.0F;
 									} else {
-										var36 = var74;
+										reachDistance = var74;
 									}
 
-									var71 = var31.add(var34 * var36, var33
-											* var36, var87 * var36);
-									var66.entity = null;
-									List var37 = var66.minecraft.level.blockMap
+									var71 = var31.add(var34 * reachDistance, var33
+											* reachDistance, var87 * reachDistance);
+									renderer.entity = null;
+									List var37 = renderer.minecraft.level.blockMap
 											.getEntities(
 													var28,
 													var28.bb.expand(var34
-															* var36, var33
-															* var36, var87
-															* var36));
+															* reachDistance, var33
+															* reachDistance, var87
+															* reachDistance));
 									float var35 = 0.0F;
 
 									for (var81 = 0; var81 < var37.size(); ++var81) {
@@ -830,10 +832,8 @@ public final class Minecraft implements Runnable {
 										}
 
 										var101 = var82.minecraft.levelRenderer;
-										Collections
-												.sort(var82.minecraft.levelRenderer.chunks,
-														new ChunkDirtyDistanceComparator(
-																var126));
+										Collections.sort(var82.minecraft.levelRenderer.chunks,
+														new ChunkDirtyDistanceComparator(var126));
 										var98 = var101.chunks.size() - 1;
 										int var105;
 										if ((var105 = var101.chunks.size()) > 3) {
@@ -1075,11 +1075,11 @@ public final class Minecraft implements Runnable {
 										var35 = (float) (var101.level.skyColor >> 8 & 255) / 255.0F;
 										var87 = (float) (var101.level.skyColor & 255) / 255.0F;
 										if (var101.minecraft.settings.anaglyph) {
-											var36 = (var34 * 30.0F + var35
+											reachDistance = (var34 * 30.0F + var35
 													* 59.0F + var87 * 11.0F) / 100.0F;
 											var69 = (var34 * 30.0F + var35 * 70.0F) / 100.0F;
 											var74 = (var34 * 30.0F + var87 * 70.0F) / 100.0F;
-											var34 = var36;
+											var34 = reachDistance;
 											var35 = var69;
 											var87 = var74;
 										}
@@ -1547,25 +1547,25 @@ public final class Minecraft implements Runnable {
 										++var77;
 									}
 
-									var66.minecraft.hud
+									renderer.minecraft.hud
 											.render(var65,
-													var66.minecraft.currentScreen != null,
+													renderer.minecraft.currentScreen != null,
 													var94, var70);
 								} else {
 									GL11.glViewport(0, 0,
-											var66.minecraft.width,
-											var66.minecraft.height);
+											renderer.minecraft.width,
+											renderer.minecraft.height);
 									GL11.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
 									GL11.glClear(16640);
 									GL11.glMatrixMode(5889);
 									GL11.glLoadIdentity();
 									GL11.glMatrixMode(5888);
 									GL11.glLoadIdentity();
-									var66.enableGuiMode();
+									renderer.enableGuiMode();
 								}
 
-								if (var66.minecraft.currentScreen != null) {
-									var66.minecraft.currentScreen.render(var94,
+								if (renderer.minecraft.currentScreen != null) {
+									renderer.minecraft.currentScreen.render(var94,
 											var70);
 								}
 
@@ -1646,9 +1646,9 @@ public final class Minecraft implements Runnable {
 				var2.moving = true;
 			}
 
-			int var3;
-			if (var1 == 1 && (var3 = this.player.inventory.getSelected()) > 0
-					&& this.gamemode.useItem(this.player, var3)) {
+			int x;
+			if (var1 == 1 && (x = this.player.inventory.getSelected()) > 0
+					&& this.gamemode.useItem(this.player, x)) {
 				var2 = this.renderer.heldBlock;
 				this.renderer.heldBlock.pos = 0.0F;
 			} else if (this.selected == null) {
@@ -1663,74 +1663,83 @@ public final class Minecraft implements Runnable {
 						return;
 					}
 				} else if (this.selected.entityPos == 0) {
-					var3 = this.selected.x;
-					int var4 = this.selected.y;
-					int var5 = this.selected.z;
+					x = this.selected.x;
+					int y = this.selected.y;
+					int z = this.selected.z;
 					if (var1 != 0) {
 						if (this.selected.face == 0) {
-							--var4;
+							--y;
 						}
 
 						if (this.selected.face == 1) {
-							++var4;
+							++y;
 						}
 
 						if (this.selected.face == 2) {
-							--var5;
+							--z;
 						}
 
 						if (this.selected.face == 3) {
-							++var5;
+							++z;
 						}
 
 						if (this.selected.face == 4) {
-							--var3;
+							--x;
 						}
 
 						if (this.selected.face == 5) {
-							++var3;
+							++x;
 						}
 					}
 
-					Block var6 = Block.blocks[this.level.getTile(var3, var4,
-							var5)];
+					Block block = Block.blocks[this.level.getTile(x, y, z)];
+					//if mouse click left
 					if (var1 == 0) {
-						if (var6 != Block.BEDROCK
+						if (block != Block.BEDROCK
 								|| this.player.userType >= 100) {
-							this.gamemode.hitBlock(var3, var4, var5);
+							this.gamemode.hitBlock(x, y, z);
 							return;
 						}
+						//else if its right click
 					} else {
-						int var10;
-						if ((var10 = this.player.inventory.getSelected()) <= 0) {
-							return;
+						int blockID = this.player.inventory.getSelected();
+						if (blockID <= 0) {
+							return; //if air return
 						}
-
-						Block var8;
-						AABB var9;
-						if (((var8 = Block.blocks[this.level.getTile(var3,
-								var4, var5)]) == null
-								|| var8 == Block.WATER
-								|| var8 == Block.STATIONARY_WATER
-								|| var8 == Block.LAVA || var8 == Block.STATIONARY_LAVA)
-								&& ((var9 = Block.blocks[var10]
-										.getCollisionBox(var3, var4, var5)) == null || (this.player.bb
-										.intersects(var9) ? false : this.level
-										.isFree(var9)))) {
-							if (!this.gamemode.canPlace(var10)) {
+						AABB aabb = Block.blocks[blockID].getCollisionBox(x, y, z);
+						if ((block == null || block == Block.WATER
+								|| block == Block.STATIONARY_WATER
+								|| block == Block.LAVA || block == Block.STATIONARY_LAVA )
+								&& (aabb == null || (this.player.bb
+										.intersects(aabb) ? false : this.level
+										.isFree(aabb)))) {
+							if (!this.gamemode.canPlace(blockID)) {
 								return;
+							}
+							Block toCheck = Block.blocks[this.level.getTile(x, y - 1, z)];
+							if(toCheck!=null){
+								if(toCheck.id > 0){
+									if(toCheck == Block.SNOW){
+										if(this.selected.face == 1){
+											if(block == Block.SNOW)
+												return;
+											else
+												y-=1;
+										}
+									}
+								}
 							}
 
 							if (this.isOnline()) {
-								this.networkManager.sendBlockChange(var3, var4,
-										var5, var1, var10);
+								this.networkManager.sendBlockChange(x, y,
+										z, var1, blockID);
 							}
 
-							this.level.netSetTile(var3, var4, var5, var10);
+							this.level.netSetTile(x, y, z, blockID);
 							var2 = this.renderer.heldBlock;
 							this.renderer.heldBlock.pos = 0.0F;
-							Block.blocks[var10].onPlace(this.level, var3, var4,
-									var5);
+							Block.blocks[blockID].onPlace(this.level, x, y,
+									z);
 						}
 					}
 				}
@@ -1775,7 +1784,7 @@ public final class Minecraft implements Runnable {
 		}
 
 		int var4;
-		int var8;
+		int i;
 		int var40;
 		int var46;
 		int var45;
@@ -1787,94 +1796,93 @@ public final class Minecraft implements Runnable {
 			} else {
 				NetworkManager var20 = this.networkManager;
 				if (this.networkManager.successful) {
-					NetworkHandler var18 = var20.netHandler;
 					if (var20.netHandler.connected) {
 						try {
-							NetworkHandler var22 = var20.netHandler;
-							var20.netHandler.channel.read(var22.in);
+							NetworkHandler networkHandler = var20.netHandler;
+							var20.netHandler.channel.read(networkHandler.in);
 							var4 = 0;
 
-							while (var22.in.position() > 0 && var4++ != 100) {
-								var22.in.flip();
-								byte var5 = var22.in.get(0);
-								PacketType var6;
-								if ((var6 = PacketType.packets[var5]) == null) {
+							while (networkHandler.in.position() > 0 && var4++ != 100) {
+								networkHandler.in.flip();
+								byte var5 = networkHandler.in.get(0);
+								PacketType packetType;
+								if ((packetType = PacketType.packets[var5]) == null) {
 									throw new IOException("Bad command: "
 											+ var5);
 								}
 
-								if (var22.in.remaining() < var6.length + 1) {
-									var22.in.compact();
+								if (networkHandler.in.remaining() < packetType.length + 1) {
+									networkHandler.in.compact();
 									break;
 								}
 
-								var22.in.get();
-								Object[] var7 = new Object[var6.params.length];
+								networkHandler.in.get();
+								Object[] packetParams = new Object[packetType.params.length];
 
-								for (var8 = 0; var8 < var7.length; ++var8) {
-									var7[var8] = var22
-											.readObject(var6.params[var8]);
+								for (i = 0; i < packetParams.length; ++i) {
+									packetParams[i] = networkHandler
+											.readObject(packetType.params[i]);
 								}
 
-								NetworkManager var42 = var22.netManager;
-								if (var22.netManager.successful) {
-									if (var6 == PacketType.IDENTIFICATION) {
-										var42.minecraft.progressBar
-												.setTitle(var7[1].toString());
-										var42.minecraft.progressBar
-												.setText(var7[2].toString());
-										var42.minecraft.player.userType = ((Byte) var7[3])
+								NetworkManager networkManager = networkHandler.netManager;
+								if (networkHandler.netManager.successful) {
+									if (packetType == PacketType.IDENTIFICATION) {
+										networkManager.minecraft.progressBar
+												.setTitle(packetParams[1].toString());
+										networkManager.minecraft.progressBar
+												.setText(packetParams[2].toString());
+										networkManager.minecraft.player.userType = ((Byte) packetParams[3])
 												.byteValue();
-									} else if (var6 == PacketType.LEVEL_INIT) {
-										var42.minecraft.setLevel((Level) null);
-										var42.levelData = new ByteArrayOutputStream();
-									} else if (var6 == PacketType.LEVEL_DATA) {
-										short var11 = ((Short) var7[0])
+									} else if (packetType == PacketType.LEVEL_INIT) {
+										networkManager.minecraft.setLevel((Level) null);
+										networkManager.levelData = new ByteArrayOutputStream();
+									} else if (packetType == PacketType.LEVEL_DATA) {
+										short chunkLength = ((Short) packetParams[0])
 												.shortValue();
-										byte[] var12 = (byte[]) ((byte[]) var7[1]);
-										byte var13 = ((Byte) var7[2])
+										byte[] chunkData = (byte[]) ((byte[]) packetParams[1]);
+										byte percentComplete = ((Byte) packetParams[2])
 												.byteValue();
-										var42.minecraft.progressBar
-												.setProgress(var13);
-										var42.levelData.write(var12, 0, var11);
-									} else if (var6 == PacketType.LEVEL_FINALIZE) {
+										networkManager.minecraft.progressBar
+												.setProgress(percentComplete);
+										networkManager.levelData.write(chunkData, 0, chunkLength);
+									} else if (packetType == PacketType.LEVEL_FINALIZE) {
 										try {
-											var42.levelData.close();
-										} catch (IOException var14) {
-											var14.printStackTrace();
+											networkManager.levelData.close();
+										} catch (IOException e) {
+											e.printStackTrace();
 										}
 
-										byte[] var51 = LevelIO
+										byte[] decompressedStream = LevelIO
 												.decompress(new ByteArrayInputStream(
-														var42.levelData
+														networkManager.levelData
 																.toByteArray()));
-										var42.levelData = null;
-										short var55 = ((Short) var7[0])
+										networkManager.levelData = null;
+										short xSize = ((Short) packetParams[0])
 												.shortValue();
-										short var63 = ((Short) var7[1])
+										short ySize = ((Short) packetParams[1])
 												.shortValue();
-										short var21 = ((Short) var7[2])
+										short zSize = ((Short) packetParams[2])
 												.shortValue();
-										Level var30;
-										(var30 = new Level())
+										Level level;
+										(level = new Level())
 												.setNetworkMode(true);
-										var30.setData(var55, var63, var21,
-												var51);
-										var42.minecraft.setLevel(var30);
-										var42.minecraft.online = false;
-										var42.levelLoaded = true;
+										level.setData(xSize, ySize, zSize,
+												decompressedStream);
+										networkManager.minecraft.setLevel(level);
+										networkManager.minecraft.online = false;
+										networkManager.levelLoaded = true;
 										ProgressBarDisplay.InitEnv(this);
 										this.levelRenderer.refresh();
-									} else if (var6 == PacketType.BLOCK_CHANGE) {
-										if (var42.minecraft.level != null) {
-											var42.minecraft.level.netSetTile(
-													((Short) var7[0])
+									} else if (packetType == PacketType.BLOCK_CHANGE) {
+										if (networkManager.minecraft.level != null) {
+											networkManager.minecraft.level.netSetTile(
+													((Short) packetParams[0])
 															.shortValue(),
-													((Short) var7[1])
+													((Short) packetParams[1])
 															.shortValue(),
-													((Short) var7[2])
+													((Short) packetParams[2])
 															.shortValue(),
-													((Byte) var7[3])
+													((Byte) packetParams[3])
 															.byteValue());
 										}
 									} else {
@@ -1886,19 +1894,19 @@ public final class Minecraft implements Runnable {
 										byte var10001;
 										short var47;
 										short var10003;
-										if (var6 == PacketType.SPAWN_PLAYER) {
-											var10001 = ((Byte) var7[0])
+										if (packetType == PacketType.SPAWN_PLAYER) {
+											var10001 = ((Byte) packetParams[0])
 													.byteValue();
-											String var10002 = (String) var7[1];
-											var10003 = ((Short) var7[2])
+											String var10002 = (String) packetParams[1];
+											var10003 = ((Short) packetParams[2])
 													.shortValue();
-											var10004 = ((Short) var7[3])
+											var10004 = ((Short) packetParams[3])
 													.shortValue();
-											short var10005 = ((Short) var7[4])
+											short var10005 = ((Short) packetParams[4])
 													.shortValue();
-											byte var10006 = ((Byte) var7[5])
+											byte var10006 = ((Byte) packetParams[5])
 													.byteValue();
-											byte var58 = ((Byte) var7[6])
+											byte var58 = ((Byte) packetParams[6])
 													.byteValue();
 											var9 = var10006;
 											short var10 = var10005;
@@ -1910,7 +1918,7 @@ public final class Minecraft implements Runnable {
 												var9 = (byte) (var9 + 128);
 												var47 = (short) (var47 - 22);
 												var33 = new NetworkPlayer(
-														var42.minecraft,
+														networkManager.minecraft,
 														var5,
 														var34,
 														var36,
@@ -1918,19 +1926,19 @@ public final class Minecraft implements Runnable {
 														var10,
 														(float) (var9 * 360) / 256.0F,
 														(float) (var58 * 360) / 256.0F);
-												var42.players.put(
+												networkManager.players.put(
 														Byte.valueOf(var5),
 														var33);
-												var42.minecraft.level
+												networkManager.minecraft.level
 														.addEntity(var33);
 											} else {
-												var42.minecraft.level
+												networkManager.minecraft.level
 														.setSpawnPos(
 																var36 / 32,
 																var47 / 32,
 																var10 / 32,
 																(float) (var9 * 320 / 256));
-												var42.minecraft.player
+												networkManager.minecraft.player
 														.moveTo((float) var36 / 32.0F,
 																(float) var47 / 32.0F,
 																(float) var10 / 32.0F,
@@ -1941,18 +1949,18 @@ public final class Minecraft implements Runnable {
 											byte var53;
 											NetworkPlayer var61;
 											byte var69;
-											if (var6 == PacketType.POSITION_ROTATION) {
-												var10001 = ((Byte) var7[0])
+											if (packetType == PacketType.POSITION_ROTATION) {
+												var10001 = ((Byte) packetParams[0])
 														.byteValue();
-												short var66 = ((Short) var7[1])
+												short var66 = ((Short) packetParams[1])
 														.shortValue();
-												var10003 = ((Short) var7[2])
+												var10003 = ((Short) packetParams[2])
 														.shortValue();
-												var10004 = ((Short) var7[3])
+												var10004 = ((Short) packetParams[3])
 														.shortValue();
-												var69 = ((Byte) var7[4])
+												var69 = ((Byte) packetParams[4])
 														.byteValue();
-												var9 = ((Byte) var7[5])
+												var9 = ((Byte) packetParams[5])
 														.byteValue();
 												var53 = var69;
 												var47 = var10004;
@@ -1960,7 +1968,7 @@ public final class Minecraft implements Runnable {
 												short var38 = var66;
 												var5 = var10001;
 												if (var5 < 0) {
-													var42.minecraft.player
+													networkManager.minecraft.player
 															.moveTo((float) var38 / 32.0F,
 																	(float) var36 / 32.0F,
 																	(float) var47 / 32.0F,
@@ -1969,7 +1977,7 @@ public final class Minecraft implements Runnable {
 												} else {
 													var53 = (byte) (var53 + 128);
 													var36 = (short) (var36 - 22);
-													if ((var61 = (NetworkPlayer) var42.players
+													if ((var61 = (NetworkPlayer) networkManager.players
 															.get(Byte
 																	.valueOf(var5))) != null) {
 														var61.teleport(
@@ -1986,18 +1994,18 @@ public final class Minecraft implements Runnable {
 												byte var49;
 												byte var65;
 												byte var67;
-												if (var6 == PacketType.POSITION_ROTATION_UPDATE) {
-													var10001 = ((Byte) var7[0])
+												if (packetType == PacketType.POSITION_ROTATION_UPDATE) {
+													var10001 = ((Byte) packetParams[0])
 															.byteValue();
-													var67 = ((Byte) var7[1])
+													var67 = ((Byte) packetParams[1])
 															.byteValue();
-													var65 = ((Byte) var7[2])
+													var65 = ((Byte) packetParams[2])
 															.byteValue();
-													byte var64 = ((Byte) var7[3])
+													byte var64 = ((Byte) packetParams[3])
 															.byteValue();
-													var69 = ((Byte) var7[4])
+													var69 = ((Byte) packetParams[4])
 															.byteValue();
-													var9 = ((Byte) var7[5])
+													var9 = ((Byte) packetParams[5])
 															.byteValue();
 													var53 = var69;
 													var49 = var64;
@@ -2006,7 +2014,7 @@ public final class Minecraft implements Runnable {
 													var5 = var10001;
 													if (var5 >= 0) {
 														var53 = (byte) (var53 + 128);
-														if ((var61 = (NetworkPlayer) var42.players
+														if ((var61 = (NetworkPlayer) networkManager.players
 																.get(Byte
 																		.valueOf(var5))) != null) {
 															var61.queue(
@@ -2017,19 +2025,19 @@ public final class Minecraft implements Runnable {
 																	(float) (var9 * 360) / 256.0F);
 														}
 													}
-												} else if (var6 == PacketType.ROTATION_UPDATE) {
-													var10001 = ((Byte) var7[0])
+												} else if (packetType == PacketType.ROTATION_UPDATE) {
+													var10001 = ((Byte) packetParams[0])
 															.byteValue();
-													var67 = ((Byte) var7[1])
+													var67 = ((Byte) packetParams[1])
 															.byteValue();
-													var44 = ((Byte) var7[2])
+													var44 = ((Byte) packetParams[2])
 															.byteValue();
 													var37 = var67;
 													var5 = var10001;
 													if (var5 >= 0) {
 														var37 = (byte) (var37 + 128);
 														NetworkPlayer var54;
-														if ((var54 = (NetworkPlayer) var42.players
+														if ((var54 = (NetworkPlayer) networkManager.players
 																.get(Byte
 																		.valueOf(var5))) != null) {
 															var54.queue(
@@ -2037,64 +2045,64 @@ public final class Minecraft implements Runnable {
 																	(float) (var44 * 360) / 256.0F);
 														}
 													}
-												} else if (var6 == PacketType.POSITION_UPDATE) {
-													var10001 = ((Byte) var7[0])
+												} else if (packetType == PacketType.POSITION_UPDATE) {
+													var10001 = ((Byte) packetParams[0])
 															.byteValue();
-													var67 = ((Byte) var7[1])
+													var67 = ((Byte) packetParams[1])
 															.byteValue();
-													var65 = ((Byte) var7[2])
+													var65 = ((Byte) packetParams[2])
 															.byteValue();
-													var49 = ((Byte) var7[3])
+													var49 = ((Byte) packetParams[3])
 															.byteValue();
 													var44 = var65;
 													var37 = var67;
 													var5 = var10001;
 													NetworkPlayer var59;
 													if (var5 >= 0
-															&& (var59 = (NetworkPlayer) var42.players
+															&& (var59 = (NetworkPlayer) networkManager.players
 																	.get(Byte
 																			.valueOf(var5))) != null) {
 														var59.queue(var37,
 																var44, var49);
 													}
-												} else if (var6 == PacketType.DESPAWN_PLAYER) {
-													var5 = ((Byte) var7[0])
+												} else if (packetType == PacketType.DESPAWN_PLAYER) {
+													var5 = ((Byte) packetParams[0])
 															.byteValue();
 													if (var5 >= 0
-															&& (var33 = (NetworkPlayer) var42.players
+															&& (var33 = (NetworkPlayer) networkManager.players
 																	.remove(Byte
 																			.valueOf(var5))) != null) {
 														var33.clear();
-														var42.minecraft.level
+														networkManager.minecraft.level
 																.removeEntity(var33);
 													}
-												} else if (var6 == PacketType.CHAT_MESSAGE) {
-													var10001 = ((Byte) var7[0])
+												} else if (packetType == PacketType.CHAT_MESSAGE) {
+													var10001 = ((Byte) packetParams[0])
 															.byteValue();
-													var34 = (String) var7[1];
+													var34 = (String) packetParams[1];
 													var5 = var10001;
 													if (var5 < 0) {
-														var42.minecraft.hud
+														networkManager.minecraft.hud
 																.addChat("&e"
 																		+ var34);
 													} else {
-														var42.players.get(Byte
+														networkManager.players.get(Byte
 																.valueOf(var5));
-														var42.minecraft.hud
+														networkManager.minecraft.hud
 																.addChat(var34);
 													}
-												} else if (var6 == PacketType.DISCONNECT) {
-													var42.netHandler.close();
-													var42.minecraft
+												} else if (packetType == PacketType.DISCONNECT) {
+													networkManager.netHandler.close();
+													networkManager.minecraft
 															.setCurrentScreen(new ErrorScreen(
 																	"Connection lost",
-																	(String) var7[0]));
-												} else if (var6 == PacketType.UPDATE_PLAYER_TYPE) {
-													var42.minecraft.player.userType = ((Byte) var7[0])
+																	(String) packetParams[0]));
+												} else if (packetType == PacketType.UPDATE_PLAYER_TYPE) {
+													networkManager.minecraft.player.userType = ((Byte) packetParams[0])
 															.byteValue();
 												}
-												else if (var6 == PacketType.UPDATE_ALLOWED_BlOCKS) {
-													byte[] temp = (byte[]) var7[0];
+												else if (packetType == PacketType.UPDATE_ALLOWED_BlOCKS) {
+													byte[] temp = (byte[]) packetParams[0];
 													SessionData.SetAllowedBlocks(temp);
 												}
 											}
@@ -2102,17 +2110,17 @@ public final class Minecraft implements Runnable {
 									}
 								}
 
-								if (!var22.connected) {
+								if (!networkHandler.connected) {
 									break;
 								}
 
-								var22.in.compact();
+								networkHandler.in.compact();
 							}
 
-							if (var22.out.position() > 0) {
-								var22.out.flip();
-								var22.channel.write(var22.out);
-								var22.out.compact();
+							if (networkHandler.out.position() > 0) {
+								networkHandler.out.flip();
+								networkHandler.channel.write(networkHandler.out);
+								networkHandler.out.compact();
 							}
 						} catch (Exception var15) {
 							var20.minecraft.setCurrentScreen(new ErrorScreen(
@@ -2373,7 +2381,7 @@ public final class Minecraft implements Runnable {
 				var46 = (int) var27.y;
 				var45 = (int) var27.z;
 
-				for (var8 = 0; var8 < 50; ++var8) {
+				for (i = 0; i < 50; ++i) {
 					int var60 = var40 + var39.random.nextInt(9) - 4;
 					int var52 = var45 + var39.random.nextInt(9) - 4;
 					int var57;
@@ -2390,7 +2398,6 @@ public final class Minecraft implements Runnable {
 				}
 			}
 
-			LevelRenderer var31 = this.levelRenderer;
 			++this.levelRenderer.ticks;
 			this.level.tickEntities();
 			if (!this.isOnline()) {
