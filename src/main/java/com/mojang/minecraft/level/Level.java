@@ -830,13 +830,13 @@ public class Level implements Serializable {
 
                int var22 = this.getTile(var6, var7, var8);
                Block var21 = Block.blocks[var22];
-               if(var22 > 0 && var21.getLiquidType() == LiquidType.NOT_LIQUID) {
+               if(var22 > 0 && ( var21.getLiquidType() == LiquidType.NOT_LIQUID )) {
                   MovingObjectPosition var23;
                   if(var21.isCube()) {
                      if((var23 = var21.clip(var6, var7, var8, var1, var2)) != null) {
                         return var23;
                      }
-                  } else if((var23 = var21.clip(var6, var7, var8, var1, var2)) != null) {
+                  } else if((var23 = var21.clip(var6, var7, var8, var1, var2)) != null ) {
                      return var23;
                   }
                }

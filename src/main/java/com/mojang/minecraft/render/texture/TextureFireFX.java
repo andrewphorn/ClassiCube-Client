@@ -9,7 +9,7 @@ public class TextureFireFX extends TextureFX
 
     public TextureFireFX()
     {
-        super(Block.BROWN_MUSHROOM.textureId);
+        super(Block.FIRE.textureId);
         field_1133_g = new float[320];
         field_1132_h = new float[320];
     }

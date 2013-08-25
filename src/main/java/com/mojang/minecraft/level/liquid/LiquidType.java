@@ -4,7 +4,7 @@ public class LiquidType
 {
 	private LiquidType(int type)
 	{
-		values = new LiquidType[4];
+		values = new LiquidType[5];
 
 		values[type] = this;
 	}
@@ -14,4 +14,5 @@ public class LiquidType
 	public static final LiquidType NOT_LIQUID = new LiquidType(0);
 	public static final LiquidType WATER = new LiquidType(1);
 	public static final LiquidType LAVA = new LiquidType(2);
+	public static final LiquidType SNOW = new LiquidType(3);
 }

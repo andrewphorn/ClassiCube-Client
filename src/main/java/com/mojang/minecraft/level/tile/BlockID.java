@@ -60,7 +60,8 @@ public enum BlockID {
 	        DarkGrass ( 51 ),
 	        SpiderWeb ( 52 ),
 	        Sandstone (53),
-	        Snow(54);
+	        Snow(54),
+	        Fire(55);
 
 	private int number;
 

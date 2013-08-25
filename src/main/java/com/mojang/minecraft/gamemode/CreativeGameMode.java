@@ -44,14 +44,32 @@ public class CreativeGameMode extends GameMode
 	@Override
 	public void apply(Player player)
 	{
-		player.inventory.slots[0] = Block.STONE.id;
-		player.inventory.slots[1] = Block.COBBLESTONE.id;
-		player.inventory.slots[2] = Block.BRICK.id;
-		player.inventory.slots[3] = Block.DIRT.id;
-		player.inventory.slots[4] = Block.WOOD.id;
-		player.inventory.slots[5] = Block.LOG.id;
-		player.inventory.slots[6] = Block.LEAVES.id;
-		player.inventory.slots[7] = Block.GRASS.id;
-		player.inventory.slots[8] = Block.SLAB.id;
+		//default starting blocks
+		Block[] blocks = new Block[]{
+				Block.STONE,Block.COBBLESTONE, Block.BRICK, 
+				Block.DIRT, Block.WOOD, Block.LOG, 
+				Block.LEAVES,Block.GRASS,Block.SLAB
+		};
+		
+		boolean CanProceed = true;
+		for(int i=0; i< blocks.length; i++){
+			if(!SessionData.allowedBlocks.contains(blocks[i])){
+				CanProceed = false;
+			}
+		}
+		
+		//if one of them is banned, instead pick 9 blocks from allowed blocks
+		if(!CanProceed)
+		{
+			blocks = new Block[]{};
+			for(int i = 0; i< blocks.length; i++){
+				blocks[i] = (Block) SessionData.allowedBlocks.get(i);
+			}
+		}
+		
+		//set them
+		for(int i = 0; i< blocks.length; i++){
+			player.inventory.slots[i] = blocks[i].id;
+		}
 	}
 }

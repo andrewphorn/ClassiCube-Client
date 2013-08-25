@@ -1,17 +1,18 @@
 package com.mojang.minecraft.level.tile;
 
 import com.mojang.minecraft.level.Level;
+import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.phys.AABB;
 
 public final class SnowBlock extends Block {
 
 	int Texture;
-
+	int id;
 	public SnowBlock(int var1, int var2) {
 		super(var1, var2);
+		id = var1;
 		Texture = var2;
 		this.setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
-
 	}
 
 	protected final int getTextureId(int texture) {
@@ -19,8 +20,12 @@ public final class SnowBlock extends Block {
 	}
 
 	public final boolean isSolid() {
-		return false;
-	}
+	      return false;
+	   }
+	
+	public final boolean isOpaque() {
+	      return true;
+	   }
 
 	public final int getDrop() {
 		return SNOW.id;

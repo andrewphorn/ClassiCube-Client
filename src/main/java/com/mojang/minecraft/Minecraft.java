@@ -551,39 +551,39 @@ public final class Minecraft implements Runnable {
 						if (!this.online) {
 							this.gamemode.applyCracks(this.timer.delta);
 							float var65 = this.timer.delta;
-							com.mojang.minecraft.render.Renderer var66 = this.renderer;
+							com.mojang.minecraft.render.Renderer renderer = this.renderer;
 							if (this.renderer.displayActive
 									&& !Display.isActive()) {
-								var66.minecraft.pause();
+								renderer.minecraft.pause();
 							}
 
-							var66.displayActive = Display.isActive();
+							renderer.displayActive = Display.isActive();
 							int var68;
 							int var70;
 							int var86;
 							int var81;
-							if (var66.minecraft.hasMouse) {
+							if (renderer.minecraft.hasMouse) {
 								var81 = 0;
 								var86 = 0;
-								if (var66.minecraft.levelLoaded) {
-									if (var66.minecraft.canvas != null) {
+								if (renderer.minecraft.levelLoaded) {
+									if (renderer.minecraft.canvas != null) {
 										Point var90;
-										var70 = (var90 = var66.minecraft.canvas
+										var70 = (var90 = renderer.minecraft.canvas
 												.getLocationOnScreen()).x
-												+ var66.minecraft.width / 2;
+												+ renderer.minecraft.width / 2;
 										var68 = var90.y
-												+ var66.minecraft.height / 2;
+												+ renderer.minecraft.height / 2;
 										Point var75;
 										var81 = (var75 = MouseInfo
 												.getPointerInfo().getLocation()).x
 												- var70;
 										var86 = -(var75.y - var68);
-										var66.minecraft.robot.mouseMove(var70,
+										renderer.minecraft.robot.mouseMove(var70,
 												var68);
 									} else {
 										Mouse.setCursorPosition(
-												var66.minecraft.width / 2,
-												var66.minecraft.height / 2);
+												renderer.minecraft.width / 2,
+												renderer.minecraft.height / 2);
 									}
 								} else {
 									var81 = Mouse.getDX();
@@ -591,35 +591,35 @@ public final class Minecraft implements Runnable {
 								}
 
 								byte var91 = 1;
-								if (var66.minecraft.settings.invertMouse) {
+								if (renderer.minecraft.settings.invertMouse) {
 									var91 = -1;
 								}
 
-								var66.minecraft.player.turn((float) var81,
+								renderer.minecraft.player.turn((float) var81,
 										(float) (var86 * var91));
 							}
 
-							if (!var66.minecraft.online) {
-								var81 = var66.minecraft.width * 240
-										/ var66.minecraft.height;
-								var86 = var66.minecraft.height * 240
-										/ var66.minecraft.height;
+							if (!renderer.minecraft.online) {
+								var81 = renderer.minecraft.width * 240
+										/ renderer.minecraft.height;
+								var86 = renderer.minecraft.height * 240
+										/ renderer.minecraft.height;
 								int var94 = Mouse.getX() * var81
-										/ var66.minecraft.width;
+										/ renderer.minecraft.width;
 								var70 = var86 - Mouse.getY() * var86
-										/ var66.minecraft.height - 1;
-								if (var66.minecraft.level != null) {
+										/ renderer.minecraft.height - 1;
+								if (renderer.minecraft.level != null) {
 									float var80 = var65;
-									com.mojang.minecraft.render.Renderer var82 = var66;
-									com.mojang.minecraft.render.Renderer var27 = var66;
+									com.mojang.minecraft.render.Renderer var82 = renderer;
+									com.mojang.minecraft.render.Renderer var27 = renderer;
 									Player var28;
-									float var29 = (var28 = var66.minecraft.player).xRotO
+									float var29 = (var28 = renderer.minecraft.player).xRotO
 											+ (var28.xRot - var28.xRotO)
 											* var65;
 									float var30 = var28.yRotO
 											+ (var28.yRot - var28.yRotO)
 											* var65;
-									Vec3D var31 = var66.getPlayerVector(var65);
+									Vec3D var31 = renderer.getPlayerVector(var65);
 									float var32 = MathHelper
 											.cos(-var30 * 0.017453292F - 3.1415927F);
 									float var69 = MathHelper
@@ -630,36 +630,36 @@ public final class Minecraft implements Runnable {
 											.sin(-var29 * 0.017453292F);
 									float var34 = var69 * var74;
 									float var87 = var32 * var74;
-									float var36 = var66.minecraft.gamemode
+									float reachDistance = renderer.minecraft.gamemode
 											.getReachDistance();
-									Vec3D var71 = var31.add(var34 * var36,
-											var33 * var36, var87 * var36);
-									var66.minecraft.selected = var66.minecraft.level
+									Vec3D var71 = var31.add(var34 * reachDistance,
+											var33 * reachDistance, var87 * reachDistance);
+									renderer.minecraft.selected = renderer.minecraft.level
 											.clip(var31, var71);
-									var74 = var36;
-									if (var66.minecraft.selected != null) {
-										var74 = var66.minecraft.selected.vec
-												.distance(var66
+									var74 = reachDistance;
+									if (renderer.minecraft.selected != null) {
+										var74 = renderer.minecraft.selected.vec
+												.distance(renderer
 														.getPlayerVector(var65));
 									}
 
-									var31 = var66.getPlayerVector(var65);
-									if (var66.minecraft.gamemode instanceof CreativeGameMode) {
-										var36 = 32.0F;
+									var31 = renderer.getPlayerVector(var65);
+									if (renderer.minecraft.gamemode instanceof CreativeGameMode) {
+										reachDistance = 32.0F;
 									} else {
-										var36 = var74;
+										reachDistance = var74;
 									}
 
-									var71 = var31.add(var34 * var36, var33
-											* var36, var87 * var36);
-									var66.entity = null;
-									List var37 = var66.minecraft.level.blockMap
+									var71 = var31.add(var34 * reachDistance, var33
+											* reachDistance, var87 * reachDistance);
+									renderer.entity = null;
+									List var37 = renderer.minecraft.level.blockMap
 											.getEntities(
 													var28,
 													var28.bb.expand(var34
-															* var36, var33
-															* var36, var87
-															* var36));
+															* reachDistance, var33
+															* reachDistance, var87
+															* reachDistance));
 									float var35 = 0.0F;
 
 									for (var81 = 0; var81 < var37.size(); ++var81) {
@@ -832,10 +832,8 @@ public final class Minecraft implements Runnable {
 										}
 
 										var101 = var82.minecraft.levelRenderer;
-										Collections
-												.sort(var82.minecraft.levelRenderer.chunks,
-														new ChunkDirtyDistanceComparator(
-																var126));
+										Collections.sort(var82.minecraft.levelRenderer.chunks,
+														new ChunkDirtyDistanceComparator(var126));
 										var98 = var101.chunks.size() - 1;
 										int var105;
 										if ((var105 = var101.chunks.size()) > 3) {
@@ -1077,11 +1075,11 @@ public final class Minecraft implements Runnable {
 										var35 = (float) (var101.level.skyColor >> 8 & 255) / 255.0F;
 										var87 = (float) (var101.level.skyColor & 255) / 255.0F;
 										if (var101.minecraft.settings.anaglyph) {
-											var36 = (var34 * 30.0F + var35
+											reachDistance = (var34 * 30.0F + var35
 													* 59.0F + var87 * 11.0F) / 100.0F;
 											var69 = (var34 * 30.0F + var35 * 70.0F) / 100.0F;
 											var74 = (var34 * 30.0F + var87 * 70.0F) / 100.0F;
-											var34 = var36;
+											var34 = reachDistance;
 											var35 = var69;
 											var87 = var74;
 										}
@@ -1549,25 +1547,25 @@ public final class Minecraft implements Runnable {
 										++var77;
 									}
 
-									var66.minecraft.hud
+									renderer.minecraft.hud
 											.render(var65,
-													var66.minecraft.currentScreen != null,
+													renderer.minecraft.currentScreen != null,
 													var94, var70);
 								} else {
 									GL11.glViewport(0, 0,
-											var66.minecraft.width,
-											var66.minecraft.height);
+											renderer.minecraft.width,
+											renderer.minecraft.height);
 									GL11.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
 									GL11.glClear(16640);
 									GL11.glMatrixMode(5889);
 									GL11.glLoadIdentity();
 									GL11.glMatrixMode(5888);
 									GL11.glLoadIdentity();
-									var66.enableGuiMode();
+									renderer.enableGuiMode();
 								}
 
-								if (var66.minecraft.currentScreen != null) {
-									var66.minecraft.currentScreen.render(var94,
+								if (renderer.minecraft.currentScreen != null) {
+									renderer.minecraft.currentScreen.render(var94,
 											var70);
 								}
 
@@ -1648,9 +1646,9 @@ public final class Minecraft implements Runnable {
 				var2.moving = true;
 			}
 
-			int var3;
-			if (var1 == 1 && (var3 = this.player.inventory.getSelected()) > 0
-					&& this.gamemode.useItem(this.player, var3)) {
+			int x;
+			if (var1 == 1 && (x = this.player.inventory.getSelected()) > 0
+					&& this.gamemode.useItem(this.player, x)) {
 				var2 = this.renderer.heldBlock;
 				this.renderer.heldBlock.pos = 0.0F;
 			} else if (this.selected == null) {
@@ -1665,74 +1663,83 @@ public final class Minecraft implements Runnable {
 						return;
 					}
 				} else if (this.selected.entityPos == 0) {
-					var3 = this.selected.x;
-					int var4 = this.selected.y;
-					int var5 = this.selected.z;
+					x = this.selected.x;
+					int y = this.selected.y;
+					int z = this.selected.z;
 					if (var1 != 0) {
 						if (this.selected.face == 0) {
-							--var4;
+							--y;
 						}
 
 						if (this.selected.face == 1) {
-							++var4;
+							++y;
 						}
 
 						if (this.selected.face == 2) {
-							--var5;
+							--z;
 						}
 
 						if (this.selected.face == 3) {
-							++var5;
+							++z;
 						}
 
 						if (this.selected.face == 4) {
-							--var3;
+							--x;
 						}
 
 						if (this.selected.face == 5) {
-							++var3;
+							++x;
 						}
 					}
 
-					Block var6 = Block.blocks[this.level.getTile(var3, var4,
-							var5)];
+					Block block = Block.blocks[this.level.getTile(x, y, z)];
+					//if mouse click left
 					if (var1 == 0) {
-						if (var6 != Block.BEDROCK
+						if (block != Block.BEDROCK
 								|| this.player.userType >= 100) {
-							this.gamemode.hitBlock(var3, var4, var5);
+							this.gamemode.hitBlock(x, y, z);
 							return;
 						}
+						//else if its right click
 					} else {
-						int var10;
-						if ((var10 = this.player.inventory.getSelected()) <= 0) {
-							return;
+						int blockID = this.player.inventory.getSelected();
+						if (blockID <= 0) {
+							return; //if air return
 						}
-
-						Block var8;
-						AABB var9;
-						if (((var8 = Block.blocks[this.level.getTile(var3,
-								var4, var5)]) == null
-								|| var8 == Block.WATER
-								|| var8 == Block.STATIONARY_WATER
-								|| var8 == Block.LAVA || var8 == Block.STATIONARY_LAVA)
-								&& ((var9 = Block.blocks[var10]
-										.getCollisionBox(var3, var4, var5)) == null || (this.player.bb
-										.intersects(var9) ? false : this.level
-										.isFree(var9)))) {
-							if (!this.gamemode.canPlace(var10)) {
+						AABB aabb = Block.blocks[blockID].getCollisionBox(x, y, z);
+						if ((block == null || block == Block.WATER
+								|| block == Block.STATIONARY_WATER
+								|| block == Block.LAVA || block == Block.STATIONARY_LAVA )
+								&& (aabb == null || (this.player.bb
+										.intersects(aabb) ? false : this.level
+										.isFree(aabb)))) {
+							if (!this.gamemode.canPlace(blockID)) {
 								return;
+							}
+							Block toCheck = Block.blocks[this.level.getTile(x, y - 1, z)];
+							if(toCheck!=null){
+								if(toCheck.id > 0){
+									if(toCheck == Block.SNOW){
+										if(this.selected.face == 1){
+											if(block == Block.SNOW)
+												return;
+											else
+												y-=1;
+										}
+									}
+								}
 							}
 
 							if (this.isOnline()) {
-								this.networkManager.sendBlockChange(var3, var4,
-										var5, var1, var10);
+								this.networkManager.sendBlockChange(x, y,
+										z, var1, blockID);
 							}
 
-							this.level.netSetTile(var3, var4, var5, var10);
+							this.level.netSetTile(x, y, z, blockID);
 							var2 = this.renderer.heldBlock;
 							this.renderer.heldBlock.pos = 0.0F;
-							Block.blocks[var10].onPlace(this.level, var3, var4,
-									var5);
+							Block.blocks[blockID].onPlace(this.level, x, y,
+									z);
 						}
 					}
 				}
