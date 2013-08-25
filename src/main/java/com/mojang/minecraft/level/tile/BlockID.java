@@ -59,7 +59,8 @@ public enum BlockID {
 	        CobblestoneSlab ( 50 ),
 	        DarkGrass ( 51 ),
 	        SpiderWeb ( 52 ),
-	        Sandstone (53);
+	        Sandstone (53),
+	        Snow(54);
 
 	private int number;
 
