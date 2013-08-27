@@ -17,7 +17,7 @@ public class SkinDownloadThread extends Thread {
 
 		try {
 			connection = (HttpURLConnection) new URL(
-					"http://www.classicube.net/static/skins/" + player.name
+					"http://www.classicube.net/static/skins/" + player.SkinName == null ? player.name : player.SkinName
 							+ ".png").openConnection();
 			connection.setRequestProperty("Content-Type",
 					"application/x-www-form-urlencoded");

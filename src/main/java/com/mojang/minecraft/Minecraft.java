@@ -2237,41 +2237,11 @@ public final class Minecraft implements Runnable {
 															.byteValue();
 													String playerName = (String) packetParams[1];
 													String skinName = (String) packetParams[2];
-													playerX = ((Short) packetParams[3])
-															.shortValue();
-													playerY = ((Short) packetParams[4])
-															.shortValue();
-													short playerZ = ((Short) packetParams[5])
-															.shortValue();
-													byte playerPitch = ((Byte) packetParams[6])
-															.byteValue();
-													byte playerYaw = ((Byte) packetParams[7])
-															.byteValue();
-													pitch = playerPitch;
-													short z = playerZ;
-													y = playerY;
-													x = playerX;
-													name = playerName;
-													id = playerID;
-													if (id >= 0) {
-														pitch = (byte) (pitch + 128);
-														y = (short) (y - 22);
-														var33 = new NetworkPlayer(
-																networkManager.minecraft,
-																id,
-																name,
-																x,
-																y,
-																z,
-																(float) (pitch * 360) / 256.0F,
-																(float) (playerYaw * 360) / 256.0F);
-														var33.SkinName = skinName;
-														networkManager.players
-																.put(Byte
-																		.valueOf(id),
-																		var33);
-														networkManager.minecraft.level
-																.addEntity(var33);
+													
+													NetworkPlayer player = networkManager.players.get(playerID);
+													if(player!=null){
+														player.SkinName = skinName;
+														((NetworkPlayer)player).downloadSkin();
 													}
 												}
 												else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
