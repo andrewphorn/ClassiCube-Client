@@ -2454,9 +2454,9 @@ public final class Minecraft implements Runnable {
 								&& this.networkManager != null
 								&& this.networkManager.isConnected()) {
 							this.player.releaseAllKeys();
-							ChatInputScreen s = new ChatInputScreen();
+							ChatInputScreenExtension s = new ChatInputScreenExtension();
 							this.setCurrentScreen(s);
-							s.message = "/";
+							s.inputLine = "/";
 						}
 
 						if (Keyboard.getEventKey() == 15
@@ -2499,7 +2499,7 @@ public final class Minecraft implements Runnable {
 								&& this.networkManager != null
 								&& this.networkManager.isConnected()) {
 							this.player.releaseAllKeys();
-							this.setCurrentScreen(new ChatInputScreen());
+							this.setCurrentScreen(new ChatInputScreenExtension());
 						}
 					}
 
