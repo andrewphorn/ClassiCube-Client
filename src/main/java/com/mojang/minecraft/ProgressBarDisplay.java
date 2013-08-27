@@ -154,6 +154,7 @@ public final class ProgressBarDisplay {
 				System.out.println("Changing cloud colour to " + i1);
 			}
 		}
+		
 	}
 
 	public static HashMap<String, String> fetchConfig(String location) {

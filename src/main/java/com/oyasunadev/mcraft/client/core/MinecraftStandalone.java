@@ -65,7 +65,7 @@ public class MinecraftStandalone {
 		 * Default constructor.
 		 */
 		public MinecraftFrame() {
-			setSize(1020, 510);
+			setSize(1024, 512);
 			// setResizable(false);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			setLayout(new BorderLayout());

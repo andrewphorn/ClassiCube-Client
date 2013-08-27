@@ -4,6 +4,7 @@ import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
+import com.mojang.minecraft.ColorCache;
 
 import java.util.Random;
 
@@ -101,8 +102,8 @@ public class LiquidBlock extends Block {
       return false;
    }
 
-   protected final float getBrightness(Level level, int x, int y, int z) {
-      return this.type == LiquidType.LAVA?100.0F: level.getBrightness(x, y, z);
+   protected final ColorCache getBrightness(Level level, int x, int y, int z) {
+      return this.type == LiquidType.LAVA?new ColorCache(100.0F/255,100.0F/255,100.0F/255) : level.getBrightnessColor(x, y, z);
    }
 
    public final boolean canRenderSide(Level level, int x, int y, int z, int side) {

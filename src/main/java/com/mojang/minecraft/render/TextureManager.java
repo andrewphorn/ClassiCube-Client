@@ -106,7 +106,7 @@ public class TextureManager
 	public static BufferedImage load1(BufferedImage image)
 	{
 		int charWidth = image.getWidth() / 16;
-		BufferedImage image1 = new BufferedImage(16, image.getHeight() * charWidth, 2);
+		BufferedImage image1 = new BufferedImage(16, image.getHeight() * charWidth, BufferedImage.TYPE_INT_ARGB_PRE);
 		Graphics graphics = image1.getGraphics();
 
 		for(int i = 0; i < charWidth; i++)

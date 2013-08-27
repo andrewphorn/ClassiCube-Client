@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 public final class BlockSelectScreen extends GuiScreen {
 
-	int BlocksPerRow = 11;
+	int BlocksPerRow = 13;
 			int Spacing = 20;
    public BlockSelectScreen() {
       this.grabsMouse = true;
@@ -17,7 +17,7 @@ public final class BlockSelectScreen extends GuiScreen {
 
    private int getBlockOnScreen(int var1, int var2) {
       for(int var3 = 0; var3 < SessionData.allowedBlocks.size(); ++var3) {
-         int var4 = this.width / 2 + var3 % BlocksPerRow * Spacing + -108 - 3;
+         int var4 = this.width / 2 + var3 % BlocksPerRow * Spacing + -128 - 3;
          int var5 = this.height / 2 + var3 / BlocksPerRow * Spacing + -60 + 3;
          if(var1 >= var4 && var1 <= var4 + 22 && var2 >= var5 - BlocksPerRow && var2 <= var5 + BlocksPerRow) {
             return var3;
@@ -30,10 +30,9 @@ public final class BlockSelectScreen extends GuiScreen {
    float lastRotation = 0;
    public final void render(int var1, int var2) {
       var1 = this.getBlockOnScreen(var1, var2);
-      drawFadingBox(this.width / 2 - 120, 30, this.width / 2 + 120, 180, -1878719232, -1070583712);
+      drawFadingBox(this.width / 2 - 140, 30, this.width / 2 + 140, 180, -1878719232, -1070583712);
       if(var1 >= 0) {
-         var2 = this.width / 2 + var1 % BlocksPerRow * Spacing + -108;
-         int var3 = this.height / 2 + var1 / BlocksPerRow * Spacing + -60;
+         var2 = this.width / 2 + var1 % BlocksPerRow * Spacing + -128;
          drawCenteredString(this.fontRenderer, GetBlockName(var1), this.width / 2, 165, 16777215);
       }
 
@@ -47,7 +46,7 @@ public final class BlockSelectScreen extends GuiScreen {
          Block var4 = (Block)SessionData.allowedBlocks.get(var2);
          if(var4!=null){
          GL11.glPushMatrix();
-         int var5 = this.width / 2 + var2 % BlocksPerRow * Spacing + -108;
+         int var5 = this.width / 2 + var2 % BlocksPerRow * Spacing + -128;
          int var6 = this.height / 2 + var2 / BlocksPerRow * Spacing + -60;
          GL11.glTranslatef((float)var5, (float)var6, 0.0F);
          GL11.glScalef(9.0F, 9.0F, 9.0F);
@@ -72,15 +71,20 @@ public final class BlockSelectScreen extends GuiScreen {
    }
    String GetBlockName(int id)
    {
-	   if(id == 0 || id == 255) return "";
-	  Block b = (Block) SessionData.allowedBlocks.get(id);
-	  if(b == null)return "";
-	  int ID = b.id;
-	  BlockID bid = BlockID.values()[ID + 1];
-	  String s;
-	  if(bid == null)
-		  s="";
-	  else s= bid.name();
+	   String s;
+	   if(id == 0 || id == 255) 
+		   return "";
+	   try{
+		   Block b = (Block) SessionData.allowedBlocks.get(id);
+		   if(b == null)
+			   return "";
+		   int ID = b.id;
+		   BlockID bid = BlockID.values()[ID + 1];
+		   if(bid == null)
+			   s="";
+		   else 
+			   s = bid.name();
+	   }catch(Exception e){ return ""; }
 	  return s;
    }
 

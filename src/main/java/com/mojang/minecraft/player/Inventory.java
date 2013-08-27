@@ -1,5 +1,6 @@
 package com.mojang.minecraft.player;
 
+import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.SessionData;
 import com.mojang.minecraft.level.tile.Block;
 
@@ -38,6 +39,7 @@ public class Inventory implements Serializable {
    }
 
    public void grabTexture(int var1, boolean var2) {
+	   if(GameSettings.CanReplaceSlot){
       int var3;
       if((var3 = this.getSlot(var1)) >= 0) {
          this.selected = var3;
@@ -45,11 +47,13 @@ public class Inventory implements Serializable {
          if(var2 && var1 > 0 && SessionData.allowedBlocks.contains(Block.blocks[var1])) {
             this.replaceSlot(Block.blocks[var1]);
          }
+      }
 
       }
    }
 
    public void swapPaint(int var1) {
+	   if(GameSettings.CanReplaceSlot){
       if(var1 > 0) {
          var1 = 1;
       }
@@ -65,24 +69,29 @@ public class Inventory implements Serializable {
       while(this.selected >= this.slots.length) {
          this.selected -= this.slots.length;
       }
+	   }
 
    }
 
    public void replaceSlot(int var1) {
-      if(var1 >= 0) {
-         this.replaceSlot((Block)SessionData.allowedBlocks.get(var1));
-      }
+	   if(GameSettings.CanReplaceSlot){
+		   if(var1 >= 0) {
+			   this.replaceSlot((Block)SessionData.allowedBlocks.get(var1));
+		   }
+	   }
 
    }
 
    public void replaceSlot(Block var1) {
-      if(var1 != null) {
-         int var2;
-         if((var2 = this.getSlot(var1.id)) >= 0) {
-            this.slots[var2] = this.slots[this.selected];
-         }
+	   if(GameSettings.CanReplaceSlot){
+		   if(var1 != null) {
+			   	int var2;
+			   	if((var2 = this.getSlot(var1.id)) >= 0) {
+			   		this.slots[var2] = this.slots[this.selected];
+			   	}
 
-         this.slots[this.selected] = var1.id;
+			   this.slots[this.selected] = var1.id;
+		   }
       }
 
    }
