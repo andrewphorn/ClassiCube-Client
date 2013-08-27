@@ -19,7 +19,7 @@ public final class SessionData {
 	}
 
 	static {
-		SetAllowedBlocks(com.oyasunadev.mcraft.client.util.Constants.SupportLevel);
+		AddStandardMinecraftBlocks();
 	}
 	
 	public static void SetAllowedBlocks(byte SupportLevel) {
