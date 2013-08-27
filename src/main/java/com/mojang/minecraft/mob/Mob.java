@@ -1,6 +1,7 @@
 package com.mojang.minecraft.mob;
 
 import com.mojang.minecraft.ClientHacksState;
+import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
@@ -250,9 +251,9 @@ public class Mob extends Entity {
 			GL11.glPushMatrix();
 			float var8 = this.animStepO + (this.animStep - this.animStepO)
 					* var2;
-			float var9;
-			GL11.glColor3f(var9 = this.getBrightness(var2), var9, var9);
-			var9 = 0.0625F;
+			ColorCache var9 = this.getBrightnessColor(var2);
+			GL11.glColor3f(var9.R, var9.G, var9.B);
+			
 			float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F
 					* var5 * this.bobStrength - 23.0F;
 			GL11.glTranslatef(this.xo + (this.x - this.xo) * var2, this.yo
@@ -285,8 +286,8 @@ public class Mob extends Entity {
 				GL11.glRotatef(-(180.0F - var4 + this.rotOffs), 0.0F, 1.0F,
 						0.0F);
 			}
-
-			GL11.glTranslatef(0.0F, -var10 * var9, 0.0F);
+			float var91 = 0.0625F;
+			GL11.glTranslatef(0.0F, -var10 * var91, 0.0F);
 			GL11.glScalef(1.0F, -1.0F, 1.0F);
 			GL11.glRotatef(180.0F - var4 + this.rotOffs, 0.0F, 1.0F, 0.0F);
 			if (!this.allowAlpha) {
@@ -298,13 +299,13 @@ public class Mob extends Entity {
 			GL11.glScalef(-1.0F, 1.0F, 1.0F);
 			modelCache.getModel(this.modelName).attackOffset = var3 / 5.0F;
 			this.bindTexture(var1);
-			this.renderModel(var1, var8, var2, var5, var6, var7, var9);
+			this.renderModel(var1, var8, var2, var5, var6, var7, var91);
 			if (this.invulnerableTime > this.invulnerableDuration - 10) {
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
 				GL11.glEnable(3042);
 				GL11.glBlendFunc(770, 1);
 				this.bindTexture(var1);
-				this.renderModel(var1, var8, var2, var5, var6, var7, var9);
+				this.renderModel(var1, var8, var2, var5, var6, var7, var91);
 				GL11.glDisable(3042);
 				GL11.glBlendFunc(770, 771);
 			}

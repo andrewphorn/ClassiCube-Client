@@ -1,5 +1,6 @@
 package com.mojang.minecraft.particle;
 
+import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.render.ShapeRenderer;
@@ -87,8 +88,8 @@ public class Particle extends Entity {
       float var13 = this.xo + (this.x - this.xo) * var2;
       float var14 = this.yo + (this.y - this.yo) * var2;
       float var15 = this.zo + (this.z - this.zo) * var2;
-      var2 = this.getBrightness(var2);
-      var1.color(this.rCol * var2, this.gCol * var2, this.bCol * var2);
+      ColorCache var21 = this.getBrightnessColor(var2);
+      var1.color(this.rCol * var21.R, this.gCol * var21.G, this.bCol * var21.B);
       var1.vertexUV(var13 - var3 * var12 - var6 * var12, var14 - var4 * var12, var15 - var5 * var12 - var7 * var12, var8, var11);
       var1.vertexUV(var13 - var3 * var12 + var6 * var12, var14 + var4 * var12, var15 - var5 * var12 + var7 * var12, var8, var10);
       var1.vertexUV(var13 + var3 * var12 + var6 * var12, var14 + var4 * var12, var15 + var5 * var12 + var7 * var12, var9, var10);
