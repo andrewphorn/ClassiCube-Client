@@ -394,6 +394,13 @@ public abstract class Entity implements Serializable {
 		int var3 = (int) this.z;
 		return this.level.getBrightness(var4, var2, var3);
 	}
+	
+	public ColorCache getBrightnessColor(float var1) {
+		int var4 = (int) this.x;
+		int var2 = (int) (this.y + this.heightOffset / 2.0F - 0.5F);
+		int var3 = (int) this.z;
+		return this.level.getBrightnessColor(var4, var2, var3);
+	}
 
 	public void render(TextureManager var1, float var2) {
 	}

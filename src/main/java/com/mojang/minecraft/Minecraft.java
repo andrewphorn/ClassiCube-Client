@@ -166,7 +166,7 @@ public final class Minecraft implements Runnable {
 
 			this.currentScreen = (GuiScreen) var1;
 			if (var1 != null) {
-				if (this.hasMouse && !var1.grabsMouse) {
+				if (this.hasMouse) {
 					this.player.releaseAllKeys();
 					this.hasMouse = false;
 					if (this.levelLoaded) {
@@ -2443,10 +2443,12 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (Keyboard.getEventKey() == this.settings.inventoryKey.key) {
-							this.player.inventory.selected = 0;
-							this.player.inventory.replaceSlot(Block.blocks[6]);
-							GameSettings.CanReplaceSlot = false;
-							// this.gamemode.openInventory();
+							//this.player.inventory.selected = 0;
+							//this.player.inventory.replaceSlot(Block.blocks[6]);
+							//GameSettings.CanReplaceSlot = false;
+							 this.gamemode.openInventory();
+							// this.level.customLightColour = new ColorCache(1/255F, 120/255F, 120/255F);
+							 //this.level.customShadowColour = new ColorCache(120/255F, 1/255F, 120/255F);
 							/*
 							 * if(this.notifyScreen == null){ this.notifyScreen
 							 * = new GuiNotificationScreen("Test",

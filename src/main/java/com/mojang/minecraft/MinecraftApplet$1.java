@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -24,28 +25,18 @@ import javax.imageio.ImageIO;
 
 // MinecraftCanvas
 public class MinecraftApplet$1 extends Canvas {
-	private Image image;
-	private Image image2;
+	private BufferedImage image;
+	private BufferedImage image2;
 
 	void SetImage() throws IOException {
-
-		File file = new File(Minecraft.GetMinecraftDirectory().getPath()
-				+ "/rsbg.jpg");
-		if (!file.exists()) {
-			download("http://classicube.net/static/client/rsbg.jpg", file.getAbsolutePath());
-		}
-		image = ImageIO.read(new File(file.getAbsolutePath()));
+		image = ImageIO.read(getClass().getResourceAsStream("/resources" + "/rsbg.jpg"));
 
 	}
 
 	void SetImage2() throws IOException {
-		File file = new File(Minecraft.GetMinecraftDirectory().getPath()
-				+ "/bg.jpg");
-		if (!file.exists()) {
-			download("http://classicube.net/static/client/bg.jpg", file.getAbsolutePath());
-		}
-		image2 = ImageIO.read(new File(file.getAbsolutePath()));
+		image2 = ImageIO.read(getClass().getResourceAsStream("/resources" + "/bg.jpg"));
 	}
+
 	public void download(String address, String localFileName) {
         OutputStream out = null;
         URLConnection connection = null;
