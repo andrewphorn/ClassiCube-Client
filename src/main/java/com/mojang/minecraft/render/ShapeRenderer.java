@@ -19,7 +19,69 @@ public final class ShapeRenderer {
    private int vertexLength = 3;
    private int length = 0;
    private boolean noColor = false;
+   private int numFloats = 0;
+   private int numPoints = 0;
+   private float textureX;
+   private float textureY;
    public static ShapeRenderer instance = new ShapeRenderer();
+   
+   public void setColor(long paramLong) {
+	    if (!this.noColor) {
+	      if (!this.color)
+	        this.vertexLength += 4;
+	      this.color = true;
+
+	      int i = (int)(paramLong >> 24 & 0xFF);
+	      int j = (int)(paramLong >> 16 & 0xFF);
+	      int k = (int)(paramLong >> 8 & 0xFF);
+	      int m = (int)(paramLong & 0xFF);
+
+	      this.r = (j / 255.0F);
+	      this.g = (k / 255.0F);
+	      this.b = (m / 255.0F);
+	    }
+	  }
+   
+   public void addBox(float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5, float paramFloat6, float paramFloat7, float paramFloat8) {
+	    addPoint(paramFloat1, paramFloat2 + paramFloat4, 0.0F, paramFloat5, paramFloat6 + paramFloat8);
+	    addPoint(paramFloat1 + paramFloat3, paramFloat2 + paramFloat4, 0.0F, paramFloat5 + paramFloat7, paramFloat6 + paramFloat8);
+	    addPoint(paramFloat1 + paramFloat3, paramFloat2, 0.0F, paramFloat5 + paramFloat7, paramFloat6);
+	    addPoint(paramFloat1, paramFloat2, 0.0F, paramFloat5, paramFloat6);
+	  }
+
+	  public void addPoint(float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5) {
+	    if (!this.texture) {
+	      this.vertexLength += 2;
+	    }
+	    this.texture = true;
+
+	    this.textureX = paramFloat4;
+	    this.textureY = paramFloat5;
+
+	    addPoint(paramFloat1, paramFloat2, paramFloat3);
+	  }
+
+	  public void addPoint(float paramFloat1, float paramFloat2, float paramFloat3) {
+	    this.data[(this.numFloats++)] = paramFloat1;
+	    this.data[(this.numFloats++)] = paramFloat2;
+	    this.data[(this.numFloats++)] = paramFloat3;
+
+	    if (this.texture) {
+	      this.data[(this.numFloats++)] = this.textureX;
+	      this.data[(this.numFloats++)] = this.textureY;
+	    }
+
+	    if (this.color) {
+	      this.data[(this.numFloats++)] = this.r;
+	      this.data[(this.numFloats++)] = this.g;
+	      this.data[(this.numFloats++)] = this.b;
+	    }
+
+	    this.numPoints += 1;
+
+	    if ((this.numPoints % 4 == 0) && (this.numFloats + (this.vertexLength << 2) >= 524288))
+	      end();
+	  }
 
 
    public final void end() {

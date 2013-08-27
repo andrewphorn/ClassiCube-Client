@@ -1,5 +1,6 @@
 package com.mojang.minecraft.gamemode;
 
+import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.SessionData;
 import com.mojang.minecraft.gui.BlockSelectScreen;
@@ -32,7 +33,8 @@ public class CreativeGameMode extends GameMode
 	{
 		BlockSelectScreen blockSelectScreen = new BlockSelectScreen();
 
-		minecraft.setCurrentScreen(blockSelectScreen);
+		if(GameSettings.CanReplaceSlot)
+			minecraft.setCurrentScreen(blockSelectScreen);
 	}
 
 	@Override

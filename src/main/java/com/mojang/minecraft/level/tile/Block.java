@@ -9,8 +9,11 @@ import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.TerrainParticle;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
+import com.mojang.minecraft.ColorCache;
 
 import java.util.Random;
+
+import org.lwjgl.opengl.GL11;
 
 public class Block
 {
@@ -91,11 +94,21 @@ public class Block
 	public static final Block MOSSY_COBBLESTONE;
 	public static final Block OBSIDIAN;
 	public static final Block COBBLESTONESLAB;
-	public static final Block DARKGRASS;
 	public static final Block WEB;
 	public static final Block SANDSTONE;
 	public static final Block SNOW;
 	public static final Block FIRE;
+	public static final Block LIGHT_PINK_WOOL;
+	public static final Block FOREST_GREEN_WOOL;
+	public static final Block BROWN_WOOL;
+	public static final Block DEEP_BLUE_WOOL;
+	public static final Block TURQUOISE_WOOL;
+	public static final Block ICE;
+	public static final Block STONEBRICK;
+	public static final Block QUARTZ;
+	public static final Block CRATE;
+	public static final Block CERAMIC_TILE;
+	public static final Block MAGMA;
 	
 	public int textureId;
 	public final int id;
@@ -174,9 +187,9 @@ public class Block
 		renderInside(shapeRenderer, -2, 0, 0, 5);
 	}
 
-	protected float getBrightness(Level level, int x, int y, int z)
+	protected ColorCache getBrightness(Level level, int x, int y, int z)
 	{
-		return level.getBrightness(x, y, z);
+		return level.getBrightnessColor(x, y, z);
 	}
 
 	public boolean canRenderSide(Level level, int x, int y, int z, int side)
@@ -255,7 +268,8 @@ public class Block
 	}
 
 	// TODO.
-	public final void renderSide(ShapeRenderer var1, int var2, int var3, int var4, int var5) {
+	public void renderSide(ShapeRenderer var1, int var2, int var3, int var4, int var5) {
+		
 		int var6;
 		float var7;
 		float var8 = (var7 = (float)((var6 = this.getTextureId(var5)) % 16) / 16.0F) + 0.0624375F;
@@ -599,45 +613,45 @@ public class Block
 		float var7 = 0.5F;
 		float var8 = 0.8F;
 		float var9 = 0.6F;
-		float var10;
+		ColorCache var10;
 		if(this.canRenderSide(var1, var2, var3 - 1, var4, 0)) {
 			var10 = this.getBrightness(var1, var2, var3 - 1, var4);
-			var5.color(var7 * var10, var7 * var10, var7 * var10);
+			var5.color(var7 * var10.R, var7 * var10.G, var7 * var10.B);
 			this.renderInside(var5, var2, var3, var4, 0);
 			var6 = true;
 		}
 
 		if(this.canRenderSide(var1, var2, var3 + 1, var4, 1)) {
 			var10 = this.getBrightness(var1, var2, var3 + 1, var4);
-			var5.color(var10 * 1.0F, var10 * 1.0F, var10 * 1.0F);
+			var5.color(var10.R * 1.0F, var10.G * 1.0F, var10.B * 1.0F);
 			this.renderInside(var5, var2, var3, var4, 1);
 			var6 = true;
 		}
 
 		if(this.canRenderSide(var1, var2, var3, var4 - 1, 2)) {
 			var10 = this.getBrightness(var1, var2, var3, var4 - 1);
-			var5.color(var8 * var10, var8 * var10, var8 * var10);
+			var5.color(var8 * var10.R, var8 * var10.G, var8 * var10.B);
 			this.renderInside(var5, var2, var3, var4, 2);
 			var6 = true;
 		}
 
 		if(this.canRenderSide(var1, var2, var3, var4 + 1, 3)) {
 			var10 = this.getBrightness(var1, var2, var3, var4 + 1);
-			var5.color(var8 * var10, var8 * var10, var8 * var10);
+			var5.color(var8 * var10.R, var8 * var10.G, var8 * var10.B);
 			this.renderInside(var5, var2, var3, var4, 3);
 			var6 = true;
 		}
 
 		if(this.canRenderSide(var1, var2 - 1, var3, var4, 4)) {
 			var10 = this.getBrightness(var1, var2 - 1, var3, var4);
-			var5.color(var9 * var10, var9 * var10, var9 * var10);
+			var5.color(var9 * var10.R, var9 * var10.G, var9 * var10.B);
 			this.renderInside(var5, var2, var3, var4, 4);
 			var6 = true;
 		}
 
 		if(this.canRenderSide(var1, var2 + 1, var3, var4, 5)) {
 			var10 = this.getBrightness(var1, var2 + 1, var3, var4);
-			var5.color(var9 * var10, var9 * var10, var9 * var10);
+			var5.color(var9 * var10.R, var9 * var10.G, var9 * var10.B);
 			this.renderInside(var5, var2, var3, var4, 5);
 			var6 = true;
 		}
@@ -742,16 +756,27 @@ public class Block
 		blockCache = block;
 		block.explodes = false;
 		COBBLESTONESLAB = blockCache;
-		DARKGRASS = (new DarkGrassBlock(51)).setData(Tile$SoundType.grass, 0.9F, 1.0F, 0.6F);
-		WEB = (new SaplingBlock(52, 11)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		block = (new SandStoneBlock(53, 41)).setData(Tile$SoundType.stone, 0.7F, 1.0F, 3.0F);
+		WEB = (new SaplingBlock(51, 11)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
+		block = (new SandStoneBlock(52, 41)).setData(Tile$SoundType.stone, 0.7F, 1.0F, 3.0F);
 		blockCache = block;
 		block.explodes = false;
 		SANDSTONE = blockCache;
-		block = new SnowBlock(54, 79).setData(Tile$SoundType.none, 0.7F, 1.0F, 3.0F);
+		block = new SnowBlock(53, 50).setData(Tile$SoundType.none, 0.7F, 1.0F, 3.0F);
 		blockCache = block;
 		block.explodes = false;
 		SNOW = blockCache;
-		FIRE = new FireBlock(55, 100).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
+		FIRE = new FireBlock(54, 38).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
+		LIGHT_PINK_WOOL = (new Block(55, 80)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		FOREST_GREEN_WOOL = (new Block(56, 81)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		BROWN_WOOL = (new Block(57, 82)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		DEEP_BLUE_WOOL = (new Block(58, 83)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		TURQUOISE_WOOL = (new Block(59, 84)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
+		ICE = (new IceBlock(60, 51)).setData(Tile$SoundType.metal, 1.0F, 1.0F, 0.8F);
+		
+		CERAMIC_TILE = (new Block(61, 54)).setData(Tile$SoundType.metal, 1.0F, 1.0F, 0.8F);
+		MAGMA = (new MagmaBlock(62, 86)).setData(Tile$SoundType.metal, 1.0F, 1.0F, 0.8F);
+		QUARTZ = (new MetalBlock(63, 42)).setData(Tile$SoundType.metal, 1.0F, 1.0F, 0.8F);
+		CRATE = (new Block(64, 53)).setData(Tile$SoundType.wood, 1.0F, 1.0F, 0.8F);
+		STONEBRICK = (new Block(65, 52)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 0.8F);
 	}
 }

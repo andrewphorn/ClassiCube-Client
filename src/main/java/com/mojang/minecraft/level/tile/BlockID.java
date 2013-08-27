@@ -57,11 +57,21 @@ public enum BlockID {
 	        MossyRocks ( 48 ),
 	        Obsidian ( 49 ),
 	        CobblestoneSlab ( 50 ),
-	        DarkGrass ( 51 ),
-	        SpiderWeb ( 52 ),
-	        Sandstone (53),
-	        Snow(54),
-	        Fire(55);
+	        SpiderWeb ( 51 ),
+	        Sandstone ( 52 ),
+	        Snow ( 53 ),
+	        Fire ( 54 ),
+	        LightPink ( 55 ),
+	        ForestGreen ( 56 ),
+	        Brown ( 57 ),
+	        DeepBlue ( 58 ),
+	        Turquoise ( 59 ),
+	        Ice ( 60 ),
+	        CeramicTile ( 61 ),
+			Magma ( 62 ),
+			Pillar ( 63 ),
+			Crate ( 64 ),
+			StoneBrick ( 65 );
 
 	private int number;
 

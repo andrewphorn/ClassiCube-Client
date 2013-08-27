@@ -80,6 +80,7 @@ public final class Minecraft implements Runnable {
 	public TextureManager textureManager;
 	public FontRenderer fontRenderer;
 	public GuiScreen currentScreen = null;
+	public GuiScreen notifyScreen = null;
 	public ProgressBarDisplay progressBar = new ProgressBarDisplay(this);
 	public com.mojang.minecraft.render.Renderer renderer = new com.mojang.minecraft.render.Renderer(
 			this);
@@ -97,7 +98,7 @@ public final class Minecraft implements Runnable {
 	public SoundPlayer soundPlayer;
 	public MovingObjectPosition selected;
 	public GameSettings settings;
-	private boolean isApplet;
+	public boolean isApplet;
 	public String server;
 	public int port;
 	public volatile boolean running;
@@ -105,7 +106,7 @@ public final class Minecraft implements Runnable {
 	public boolean hasMouse;
 	private int lastClick;
 	public boolean raining;
-	private MinecraftApplet applet;
+	public MinecraftApplet applet;
 	public ClientHacksState HackState;
 	public static boolean PlayerIsRunning = false;
 
@@ -165,7 +166,7 @@ public final class Minecraft implements Runnable {
 
 			this.currentScreen = (GuiScreen) var1;
 			if (var1 != null) {
-				if (this.hasMouse) {
+				if (this.hasMouse && !var1.grabsMouse) {
 					this.player.releaseAllKeys();
 					this.hasMouse = false;
 					if (this.levelLoaded) {
@@ -259,27 +260,43 @@ public final class Minecraft implements Runnable {
 		}
 	}
 
+	private static Minecraft$OS getOs() {
+		String s = System.getProperty("os.name").toLowerCase();
+		if (s.contains("win")) {
+			return Minecraft$OS.windows;
+		}
+		if (s.contains("mac")) {
+			return Minecraft$OS.macos;
+		}
+		if (s.contains("solaris")) {
+			return Minecraft$OS.solaris;
+		}
+		if (s.contains("sunos")) {
+			return Minecraft$OS.solaris;
+		}
+		if (s.contains("linux")) {
+			return Minecraft$OS.linux;
+		}
+		if (s.contains("unix")) {
+			return Minecraft$OS.linux;
+		} else {
+			return Minecraft$OS.unknown;
+		}
+	}
+
 	public static File GetMinecraftDirectory() {
 		String folder = "mcraft/client";
 		String home = System.getProperty("user.home", ".");
-		String osName = System.getProperty("os.name").toLowerCase();
 		File minecraftFolder;
-		switch (OperatingSystemLookup.lookup[(osName.contains("win") ? Minecraft$OS.windows
-				: (osName.contains("mac") ? Minecraft$OS.macos : (osName
-						.contains("solaris") ? Minecraft$OS.solaris : (osName
-						.contains("sunos") ? Minecraft$OS.solaris : (osName
-						.contains("linux") ? Minecraft$OS.linux : (osName
-						.contains("unix") ? Minecraft$OS.linux
-						: Minecraft$OS.unknown)))))).ordinal()]) {
-		case 1:
-			System.out.println("Unknown OS - Let's Try Linux (tm)");
-			System.out.println(osName);
+		Minecraft$OS os = getOs();
+		switch (os.id) {
+		case 0:
 			minecraftFolder = new File(home, folder + '/');
 			break;
-		case 2:
+		case 1:
 			minecraftFolder = new File(home, '.' + folder + '/');
 			break;
-		case 3:
+		case 2:
 			String appData = System.getenv("APPDATA");
 
 			if (appData != null) {
@@ -288,7 +305,7 @@ public final class Minecraft implements Runnable {
 				minecraftFolder = new File(home, '.' + folder + '/');
 			}
 			break;
-		case 4:
+		case 3:
 			minecraftFolder = new File(home, "Library/Application Support/"
 					+ folder);
 			break;
@@ -451,9 +468,6 @@ public final class Minecraft implements Runnable {
 					var4.running = false;
 				}
 
-				// var1.resourceThread = new ResourceDownloadThread(mcDir,
-				// var1);
-				// var1.resourceThread.start();
 			} catch (Exception var52) {
 				;
 			}
@@ -578,8 +592,8 @@ public final class Minecraft implements Runnable {
 												.getPointerInfo().getLocation()).x
 												- var70;
 										var86 = -(var75.y - var68);
-										renderer.minecraft.robot.mouseMove(var70,
-												var68);
+										renderer.minecraft.robot.mouseMove(
+												var70, var68);
 									} else {
 										Mouse.setCursorPosition(
 												renderer.minecraft.width / 2,
@@ -619,7 +633,8 @@ public final class Minecraft implements Runnable {
 									float var30 = var28.yRotO
 											+ (var28.yRot - var28.yRotO)
 											* var65;
-									Vec3D var31 = renderer.getPlayerVector(var65);
+									Vec3D var31 = renderer
+											.getPlayerVector(var65);
 									float var32 = MathHelper
 											.cos(-var30 * 0.017453292F - 3.1415927F);
 									float var69 = MathHelper
@@ -632,8 +647,10 @@ public final class Minecraft implements Runnable {
 									float var87 = var32 * var74;
 									float reachDistance = renderer.minecraft.gamemode
 											.getReachDistance();
-									Vec3D var71 = var31.add(var34 * reachDistance,
-											var33 * reachDistance, var87 * reachDistance);
+									Vec3D var71 = var31.add(var34
+											* reachDistance, var33
+											* reachDistance, var87
+											* reachDistance);
 									renderer.minecraft.selected = renderer.minecraft.level
 											.clip(var31, var71);
 									var74 = reachDistance;
@@ -650,16 +667,20 @@ public final class Minecraft implements Runnable {
 										reachDistance = var74;
 									}
 
-									var71 = var31.add(var34 * reachDistance, var33
-											* reachDistance, var87 * reachDistance);
+									var71 = var31.add(var34 * reachDistance,
+											var33 * reachDistance, var87
+													* reachDistance);
 									renderer.entity = null;
 									List var37 = renderer.minecraft.level.blockMap
 											.getEntities(
 													var28,
-													var28.bb.expand(var34
-															* reachDistance, var33
-															* reachDistance, var87
-															* reachDistance));
+													var28.bb.expand(
+															var34
+																	* reachDistance,
+															var33
+																	* reachDistance,
+															var87
+																	* reachDistance));
 									float var35 = 0.0F;
 
 									for (var81 = 0; var81 < var37.size(); ++var81) {
@@ -832,8 +853,10 @@ public final class Minecraft implements Runnable {
 										}
 
 										var101 = var82.minecraft.levelRenderer;
-										Collections.sort(var82.minecraft.levelRenderer.chunks,
-														new ChunkDirtyDistanceComparator(var126));
+										Collections
+												.sort(var82.minecraft.levelRenderer.chunks,
+														new ChunkDirtyDistanceComparator(
+																var126));
 										var98 = var101.chunks.size() - 1;
 										int var105;
 										if ((var105 = var101.chunks.size()) > 3) {
@@ -979,7 +1002,8 @@ public final class Minecraft implements Runnable {
 												var89.textureManager
 														.load("/rock.png"));
 										GL11.glEnable(3553);
-										GL11.glCallList(var89.listId);
+										GL11.glCallList(var89.listId); // rock
+																		// edges
 										var82.updateFog();
 										var101 = var89;
 										GL11.glBindTexture(3553,
@@ -1075,8 +1099,8 @@ public final class Minecraft implements Runnable {
 										var35 = (float) (var101.level.skyColor >> 8 & 255) / 255.0F;
 										var87 = (float) (var101.level.skyColor & 255) / 255.0F;
 										if (var101.minecraft.settings.anaglyph) {
-											reachDistance = (var34 * 30.0F + var35
-													* 59.0F + var87 * 11.0F) / 100.0F;
+											reachDistance = (var34 * 30.0F
+													+ var35 * 59.0F + var87 * 11.0F) / 100.0F;
 											var69 = (var34 * 30.0F + var35 * 70.0F) / 100.0F;
 											var74 = (var34 * 30.0F + var87 * 70.0F) / 100.0F;
 											var34 = reachDistance;
@@ -1260,12 +1284,14 @@ public final class Minecraft implements Runnable {
 										GL11.glBindTexture(3553,
 												var89.textureManager
 														.load("/water.png"));
-										GL11.glCallList(var89.listId + 1);
+										GL11.glCallList(var89.listId + 1); // outside
+																			// of
+																			// map
 										GL11.glDisable(3042);
 										GL11.glEnable(3042);
 										GL11.glColorMask(false, false, false,
 												false);
-										var120 = var89.sortChunks(var126, 1);
+
 										GL11.glColorMask(true, true, true, true);
 										if (var82.minecraft.settings.anaglyph) {
 											if (var77 == 0) {
@@ -1276,14 +1302,22 @@ public final class Minecraft implements Runnable {
 														false, false);
 											}
 										}
-
+										var120 = var89.sortChunks(var126, 1); // draws
+																				// the
+																				// blocks
 										if (var120 > 0) {
 											GL11.glBindTexture(
 													3553,
 													var89.textureManager
 															.load("/terrain.png"));
-											GL11.glCallLists(var89.buffer);
+											GL11.glCallLists(var89.buffer); // draws
+																			// the
+																			// transparent
+																			// blocks
 										}
+										GL11.glCallList(var89.listId + 2); // outside
+																			// of
+																			// map
 
 										GL11.glDepthMask(true);
 										GL11.glDisable(3042);
@@ -1501,13 +1535,14 @@ public final class Minecraft implements Runnable {
 													1.0F, 0.0F, 0.0F);
 										}
 
-										GL11.glColor4f(
-												var74 = var112.minecraft.level
-														.getBrightness(
-																(int) var116.x,
-																(int) var116.y,
-																(int) var116.z),
-												var74, var74, 1.0F);
+										ColorCache color = var112.minecraft.level
+												.getBrightnessColor(
+														(int) var116.x,
+														(int) var116.y,
+														(int) var116.z);
+										GL11.glColor4f(color.R, color.G,
+												color.B, 1.0F);
+
 										ShapeRenderer var123 = ShapeRenderer.instance;
 										if (var112.block != null) {
 											var34 = 0.4F;
@@ -1563,10 +1598,14 @@ public final class Minecraft implements Runnable {
 									GL11.glLoadIdentity();
 									renderer.enableGuiMode();
 								}
+								if (renderer.minecraft.notifyScreen != null) {
+									renderer.minecraft.notifyScreen.render(
+											var94, var70);
+								}
 
 								if (renderer.minecraft.currentScreen != null) {
-									renderer.minecraft.currentScreen.render(var94,
-											var70);
+									renderer.minecraft.currentScreen.render(
+											var94, var70);
 								}
 
 								Thread.yield();
@@ -1693,53 +1732,54 @@ public final class Minecraft implements Runnable {
 					}
 
 					Block block = Block.blocks[this.level.getTile(x, y, z)];
-					//if mouse click left
+					// if mouse click left
 					if (var1 == 0) {
 						if (block != Block.BEDROCK
 								|| this.player.userType >= 100) {
 							this.gamemode.hitBlock(x, y, z);
 							return;
 						}
-						//else if its right click
+						// else if its right click
 					} else {
 						int blockID = this.player.inventory.getSelected();
 						if (blockID <= 0) {
-							return; //if air return
+							return; // if air return
 						}
-						AABB aabb = Block.blocks[blockID].getCollisionBox(x, y, z);
+						AABB aabb = Block.blocks[blockID].getCollisionBox(x, y,
+								z);
 						if ((block == null || block == Block.WATER
 								|| block == Block.STATIONARY_WATER
-								|| block == Block.LAVA || block == Block.STATIONARY_LAVA )
+								|| block == Block.LAVA || block == Block.STATIONARY_LAVA)
 								&& (aabb == null || (this.player.bb
 										.intersects(aabb) ? false : this.level
 										.isFree(aabb)))) {
 							if (!this.gamemode.canPlace(blockID)) {
 								return;
 							}
-							Block toCheck = Block.blocks[this.level.getTile(x, y - 1, z)];
-							if(toCheck!=null){
-								if(toCheck.id > 0){
-									if(toCheck == Block.SNOW){
-										if(this.selected.face == 1){
-											if(block == Block.SNOW)
+							Block toCheck = Block.blocks[this.level.getTile(x,
+									y - 1, z)];
+							if (toCheck != null) {
+								if (toCheck.id > 0) {
+									if (toCheck == Block.SNOW) {
+										if (this.selected.face == 1) {
+											if (block == Block.SNOW)
 												return;
 											else
-												y-=1;
+												y -= 1;
 										}
 									}
 								}
 							}
 
 							if (this.isOnline()) {
-								this.networkManager.sendBlockChange(x, y,
-										z, var1, blockID);
+								this.networkManager.sendBlockChange(x, y, z,
+										var1, blockID);
 							}
 
 							this.level.netSetTile(x, y, z, blockID);
 							var2 = this.renderer.heldBlock;
 							this.renderer.heldBlock.pos = 0.0F;
-							Block.blocks[blockID].onPlace(this.level, x, y,
-									z);
+							Block.blocks[blockID].onPlace(this.level, x, y, z);
 						}
 					}
 				}
@@ -1802,13 +1842,13 @@ public final class Minecraft implements Runnable {
 							var20.netHandler.channel.read(networkHandler.in);
 							var4 = 0;
 
-							while (networkHandler.in.position() > 0 && var4++ != 100) {
+							while (networkHandler.in.position() > 0
+									&& var4++ != 100) {
 								networkHandler.in.flip();
-								byte var5 = networkHandler.in.get(0);
+								byte id = networkHandler.in.get(0);
 								PacketType packetType;
-								if ((packetType = PacketType.packets[var5]) == null) {
-									throw new IOException("Bad command: "
-											+ var5);
+								if ((packetType = PacketType.packets[id]) == null) {
+									throw new IOException("Bad command: " + id);
 								}
 
 								if (networkHandler.in.remaining() < packetType.length + 1) {
@@ -1828,13 +1868,16 @@ public final class Minecraft implements Runnable {
 								if (networkHandler.netManager.successful) {
 									if (packetType == PacketType.IDENTIFICATION) {
 										networkManager.minecraft.progressBar
-												.setTitle(packetParams[1].toString());
+												.setTitle(packetParams[1]
+														.toString());
 										networkManager.minecraft.progressBar
-												.setText(packetParams[2].toString());
+												.setText(packetParams[2]
+														.toString());
 										networkManager.minecraft.player.userType = ((Byte) packetParams[3])
 												.byteValue();
 									} else if (packetType == PacketType.LEVEL_INIT) {
-										networkManager.minecraft.setLevel((Level) null);
+										networkManager.minecraft
+												.setLevel((Level) null);
 										networkManager.levelData = new ByteArrayOutputStream();
 									} else if (packetType == PacketType.LEVEL_DATA) {
 										short chunkLength = ((Short) packetParams[0])
@@ -1844,7 +1887,8 @@ public final class Minecraft implements Runnable {
 												.byteValue();
 										networkManager.minecraft.progressBar
 												.setProgress(percentComplete);
-										networkManager.levelData.write(chunkData, 0, chunkLength);
+										networkManager.levelData.write(
+												chunkData, 0, chunkLength);
 									} else if (packetType == PacketType.LEVEL_FINALIZE) {
 										try {
 											networkManager.levelData.close();
@@ -1868,39 +1912,41 @@ public final class Minecraft implements Runnable {
 												.setNetworkMode(true);
 										level.setData(xSize, ySize, zSize,
 												decompressedStream);
-										networkManager.minecraft.setLevel(level);
+										networkManager.minecraft
+												.setLevel(level);
 										networkManager.minecraft.online = false;
 										networkManager.levelLoaded = true;
 										ProgressBarDisplay.InitEnv(this);
 										this.levelRenderer.refresh();
 									} else if (packetType == PacketType.BLOCK_CHANGE) {
 										if (networkManager.minecraft.level != null) {
-											networkManager.minecraft.level.netSetTile(
-													((Short) packetParams[0])
-															.shortValue(),
-													((Short) packetParams[1])
-															.shortValue(),
-													((Short) packetParams[2])
-															.shortValue(),
-													((Byte) packetParams[3])
-															.byteValue());
+											networkManager.minecraft.level
+													.netSetTile(
+															((Short) packetParams[0])
+																	.shortValue(),
+															((Short) packetParams[1])
+																	.shortValue(),
+															((Short) packetParams[2])
+																	.shortValue(),
+															((Byte) packetParams[3])
+																	.byteValue());
 										}
 									} else {
-										byte var9;
-										String var34;
+										byte pitch;
+										String name;
 										NetworkPlayer var33;
-										short var36;
-										short var10004;
+										short x;
+										short playerY;
 										byte var10001;
-										short var47;
-										short var10003;
+										short y;
+										short playerX;
 										if (packetType == PacketType.SPAWN_PLAYER) {
 											var10001 = ((Byte) packetParams[0])
 													.byteValue();
 											String var10002 = (String) packetParams[1];
-											var10003 = ((Short) packetParams[2])
+											playerX = ((Short) packetParams[2])
 													.shortValue();
-											var10004 = ((Short) packetParams[3])
+											playerY = ((Short) packetParams[3])
 													.shortValue();
 											short var10005 = ((Short) packetParams[4])
 													.shortValue();
@@ -1908,41 +1954,41 @@ public final class Minecraft implements Runnable {
 													.byteValue();
 											byte var58 = ((Byte) packetParams[6])
 													.byteValue();
-											var9 = var10006;
+											pitch = var10006;
 											short var10 = var10005;
-											var47 = var10004;
-											var36 = var10003;
-											var34 = var10002;
-											var5 = var10001;
-											if (var5 >= 0) {
-												var9 = (byte) (var9 + 128);
-												var47 = (short) (var47 - 22);
+											y = playerY;
+											x = playerX;
+											name = var10002;
+											id = var10001;
+											if (id >= 0) {
+												pitch = (byte) (pitch + 128);
+												y = (short) (y - 22);
 												var33 = new NetworkPlayer(
 														networkManager.minecraft,
-														var5,
-														var34,
-														var36,
-														var47,
+														id,
+														name,
+														x,
+														y,
 														var10,
-														(float) (var9 * 360) / 256.0F,
+														(float) (pitch * 360) / 256.0F,
 														(float) (var58 * 360) / 256.0F);
-												networkManager.players.put(
-														Byte.valueOf(var5),
-														var33);
+												networkManager.players
+														.put(Byte.valueOf(id),
+																var33);
 												networkManager.minecraft.level
 														.addEntity(var33);
 											} else {
 												networkManager.minecraft.level
 														.setSpawnPos(
-																var36 / 32,
-																var47 / 32,
+																x / 32,
+																y / 32,
 																var10 / 32,
-																(float) (var9 * 320 / 256));
+																(float) (pitch * 320 / 256));
 												networkManager.minecraft.player
-														.moveTo((float) var36 / 32.0F,
-																(float) var47 / 32.0F,
+														.moveTo((float) x / 32.0F,
+																(float) y / 32.0F,
 																(float) var10 / 32.0F,
-																(float) (var9 * 360) / 256.0F,
+																(float) (pitch * 360) / 256.0F,
 																(float) (var58 * 360) / 256.0F);
 											}
 										} else {
@@ -1954,38 +2000,38 @@ public final class Minecraft implements Runnable {
 														.byteValue();
 												short var66 = ((Short) packetParams[1])
 														.shortValue();
-												var10003 = ((Short) packetParams[2])
+												playerX = ((Short) packetParams[2])
 														.shortValue();
-												var10004 = ((Short) packetParams[3])
+												playerY = ((Short) packetParams[3])
 														.shortValue();
 												var69 = ((Byte) packetParams[4])
 														.byteValue();
-												var9 = ((Byte) packetParams[5])
+												pitch = ((Byte) packetParams[5])
 														.byteValue();
 												var53 = var69;
-												var47 = var10004;
-												var36 = var10003;
+												y = playerY;
+												x = playerX;
 												short var38 = var66;
-												var5 = var10001;
-												if (var5 < 0) {
+												id = var10001;
+												if (id < 0) {
 													networkManager.minecraft.player
 															.moveTo((float) var38 / 32.0F,
-																	(float) var36 / 32.0F,
-																	(float) var47 / 32.0F,
+																	(float) x / 32.0F,
+																	(float) y / 32.0F,
 																	(float) (var53 * 360) / 256.0F,
-																	(float) (var9 * 360) / 256.0F);
+																	(float) (pitch * 360) / 256.0F);
 												} else {
 													var53 = (byte) (var53 + 128);
-													var36 = (short) (var36 - 22);
+													x = (short) (x - 22);
 													if ((var61 = (NetworkPlayer) networkManager.players
 															.get(Byte
-																	.valueOf(var5))) != null) {
+																	.valueOf(id))) != null) {
 														var61.teleport(
 																var38,
-																var36,
-																var47,
+																x,
+																y,
 																(float) (var53 * 360) / 256.0F,
-																(float) (var9 * 360) / 256.0F);
+																(float) (pitch * 360) / 256.0F);
 													}
 												}
 											} else {
@@ -2005,24 +2051,24 @@ public final class Minecraft implements Runnable {
 															.byteValue();
 													var69 = ((Byte) packetParams[4])
 															.byteValue();
-													var9 = ((Byte) packetParams[5])
+													pitch = ((Byte) packetParams[5])
 															.byteValue();
 													var53 = var69;
 													var49 = var64;
 													var44 = var65;
 													var37 = var67;
-													var5 = var10001;
-													if (var5 >= 0) {
+													id = var10001;
+													if (id >= 0) {
 														var53 = (byte) (var53 + 128);
 														if ((var61 = (NetworkPlayer) networkManager.players
 																.get(Byte
-																		.valueOf(var5))) != null) {
+																		.valueOf(id))) != null) {
 															var61.queue(
 																	var37,
 																	var44,
 																	var49,
 																	(float) (var53 * 360) / 256.0F,
-																	(float) (var9 * 360) / 256.0F);
+																	(float) (pitch * 360) / 256.0F);
 														}
 													}
 												} else if (packetType == PacketType.ROTATION_UPDATE) {
@@ -2033,13 +2079,13 @@ public final class Minecraft implements Runnable {
 													var44 = ((Byte) packetParams[2])
 															.byteValue();
 													var37 = var67;
-													var5 = var10001;
-													if (var5 >= 0) {
+													id = var10001;
+													if (id >= 0) {
 														var37 = (byte) (var37 + 128);
 														NetworkPlayer var54;
 														if ((var54 = (NetworkPlayer) networkManager.players
 																.get(Byte
-																		.valueOf(var5))) != null) {
+																		.valueOf(id))) != null) {
 															var54.queue(
 																	(float) (var37 * 360) / 256.0F,
 																	(float) (var44 * 360) / 256.0F);
@@ -2056,22 +2102,22 @@ public final class Minecraft implements Runnable {
 															.byteValue();
 													var44 = var65;
 													var37 = var67;
-													var5 = var10001;
+													id = var10001;
 													NetworkPlayer var59;
-													if (var5 >= 0
+													if (id >= 0
 															&& (var59 = (NetworkPlayer) networkManager.players
 																	.get(Byte
-																			.valueOf(var5))) != null) {
+																			.valueOf(id))) != null) {
 														var59.queue(var37,
 																var44, var49);
 													}
 												} else if (packetType == PacketType.DESPAWN_PLAYER) {
-													var5 = ((Byte) packetParams[0])
+													id = ((Byte) packetParams[0])
 															.byteValue();
-													if (var5 >= 0
+													if (id >= 0
 															&& (var33 = (NetworkPlayer) networkManager.players
 																	.remove(Byte
-																			.valueOf(var5))) != null) {
+																			.valueOf(id))) != null) {
 														var33.clear();
 														networkManager.minecraft.level
 																.removeEntity(var33);
@@ -2079,20 +2125,22 @@ public final class Minecraft implements Runnable {
 												} else if (packetType == PacketType.CHAT_MESSAGE) {
 													var10001 = ((Byte) packetParams[0])
 															.byteValue();
-													var34 = (String) packetParams[1];
-													var5 = var10001;
-													if (var5 < 0) {
+													name = (String) packetParams[1];
+													id = var10001;
+													if (id < 0) {
 														networkManager.minecraft.hud
 																.addChat("&e"
-																		+ var34);
+																		+ name);
 													} else {
-														networkManager.players.get(Byte
-																.valueOf(var5));
+														networkManager.players
+																.get(Byte
+																		.valueOf(id));
 														networkManager.minecraft.hud
-																.addChat(var34);
+																.addChat(name);
 													}
 												} else if (packetType == PacketType.DISCONNECT) {
-													networkManager.netHandler.close();
+													networkManager.netHandler
+															.close();
 													networkManager.minecraft
 															.setCurrentScreen(new ErrorScreen(
 																	"Connection lost",
@@ -2100,10 +2148,134 @@ public final class Minecraft implements Runnable {
 												} else if (packetType == PacketType.UPDATE_PLAYER_TYPE) {
 													networkManager.minecraft.player.userType = ((Byte) packetParams[0])
 															.byteValue();
+												} else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
+													byte SupportLevel = ((Byte) packetParams[0])
+															.byteValue();
+													byte[] toSendParams = new byte[] { com.oyasunadev.mcraft.client.util.Constants.SupportLevel };
+													networkManager.netHandler
+															.send(PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
+																	toSendParams);
+													SessionData
+															.SetAllowedBlocks(SupportLevel);
+												} else if (packetType == PacketType.ENV_SET_COLOR) {
+													byte Variable = ((Byte) packetParams[0])
+															.byteValue();
+													byte r = ((Byte) packetParams[1])
+															.byteValue();
+													byte g = ((Byte) packetParams[2])
+															.byteValue();
+													byte b = ((Byte) packetParams[3])
+															.byteValue();
+													int dec = 256 * 256 * r
+															+ 256 * g + b;
+													switch (Variable) {
+													case 0: // sky
+														this.level.skyColor = dec;
+														break;
+													case 1: // cloud
+														this.level.cloudColor = dec;
+														break;
+													case 2: // fog
+														this.level.fogColor = dec;
+														break;
+													case 3: // ambient light
+															// (TODO)
+														this.level.customShadowColour = new ColorCache(
+																r / 255.0F,
+																g / 255.0F,
+																b / 255.0F);
+														break;
+													case 4: // diffuse color
+															// (TODO)
+														this.level.customLightColour = new ColorCache(
+																r / 255.0F,
+																g / 255.0F,
+																b / 255.0F);
+														break;
+													}
+													this.levelRenderer
+															.refresh();
+												} else if (packetType == PacketType.EXT_INFO) {
+													String AppName = (String) packetParams[0];
+													short ExtensionCount = (Short) packetParams[1];
+												} else if (packetType == PacketType.EXT_ENTRY) {
+													String ExtName = (String) packetParams[0];
+													short Version = (Short) packetParams[1];
+												} else if (packetType == PacketType.CLICK_DISTANCE) {
+													short Distance = (Short) packetParams[0];
+													this.gamemode.reachDistance = Distance / 32;
+												} else if (packetType == PacketType.HOLDTHIS) {
+													byte BlockToHold = ((Byte) packetParams[0])
+															.byteValue();
+													byte PreventChange = ((Byte) packetParams[1])
+															.byteValue();
+													boolean CanPreventChange = PreventChange > 0;
+
+													if (CanPreventChange == true)
+														GameSettings.CanReplaceSlot = false;
+
+													this.player.inventory.selected = 0;
+													this.player.inventory
+															.replaceSlot(Block.blocks[BlockToHold]);
+
+													if (CanPreventChange == false) 
+														GameSettings.CanReplaceSlot = true;
+												} else if (packetType == PacketType.SET_TEXT_HOTKEY) {
+													String Label = (String) packetParams[0];
+													String Action = (String) packetParams[1];
+													int keyCode = (Integer) packetParams[2];
+													byte KeyMods = ((Byte) packetParams[3])
+															.byteValue();
+												} else if (packetType == PacketType.EXT_ADD_ENTITY) {
+													byte playerID = ((Byte) packetParams[0]).byteValue();
+													String playerName = (String) packetParams[1];
+													String listName = (String) packetParams[2];
+													String groupName = (String) packetParams[3];
+													byte unusedRank = ((Byte) packetParams[4]).byteValue();
+												}else if (packetType == PacketType.EXT_ADD_ENTITY) {
+													byte playerID = ((Byte) packetParams[0])
+															.byteValue();
+													String playerName = (String) packetParams[1];
+													String skinName = (String) packetParams[2];
+													playerX = ((Short) packetParams[3])
+															.shortValue();
+													playerY = ((Short) packetParams[4])
+															.shortValue();
+													short playerZ = ((Short) packetParams[5])
+															.shortValue();
+													byte playerPitch = ((Byte) packetParams[6])
+															.byteValue();
+													byte playerYaw = ((Byte) packetParams[7])
+															.byteValue();
+													pitch = playerPitch;
+													short z = playerZ;
+													y = playerY;
+													x = playerX;
+													name = playerName;
+													id = playerID;
+													if (id >= 0) {
+														pitch = (byte) (pitch + 128);
+														y = (short) (y - 22);
+														var33 = new NetworkPlayer(
+																networkManager.minecraft,
+																id,
+																name,
+																x,
+																y,
+																z,
+																(float) (pitch * 360) / 256.0F,
+																(float) (playerYaw * 360) / 256.0F);
+														var33.SkinName = skinName;
+														networkManager.players
+																.put(Byte
+																		.valueOf(id),
+																		var33);
+														networkManager.minecraft.level
+																.addEntity(var33);
+													}
 												}
-												else if (packetType == PacketType.UPDATE_ALLOWED_BlOCKS) {
-													byte[] temp = (byte[]) packetParams[0];
-													SessionData.SetAllowedBlocks(temp);
+												else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
+													String playerName = (String) packetParams[0];
 												}
 											}
 										}
@@ -2119,7 +2291,8 @@ public final class Minecraft implements Runnable {
 
 							if (networkHandler.out.position() > 0) {
 								networkHandler.out.flip();
-								networkHandler.channel.write(networkHandler.out);
+								networkHandler.channel
+										.write(networkHandler.out);
 								networkHandler.out.compact();
 							}
 						} catch (Exception var15) {
@@ -2270,7 +2443,25 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (Keyboard.getEventKey() == this.settings.inventoryKey.key) {
-							this.gamemode.openInventory();
+							this.player.inventory.selected = 0;
+							this.player.inventory.replaceSlot(Block.blocks[6]);
+							GameSettings.CanReplaceSlot = false;
+							// this.gamemode.openInventory();
+							/*
+							 * if(this.notifyScreen == null){ this.notifyScreen
+							 * = new GuiNotificationScreen("Test",
+							 * "Click Save all parts) the second thing (to delete this (to delete this (to delete this my dog is fat a potential health hazard payment tacos click Save all parts) 3 poor 1 hour homes for rent society has been dreaming of she was very pretty I jut woke up clear your mind part, empty it and (to delete this [new part] click Save all parts) part, empty it and [new part] ) A point and figure chart shows the trend hitting"
+							 * ); int var2 = this.width * 240 / this.height; int
+							 * var3 = this.height * 240 / this.height;
+							 * ((GuiScreen) this.notifyScreen).open(this, var2,
+							 * var3); } else{ this.notifyScreen = new
+							 * GuiNotificationScreen("Test",
+							 * "Click \nSave all parts) the second thing (to delete this (to delete this (to delete this my dog is fat a potential health hazard payment tacos click Save all parts) 3 poor 1 hour homes for rent society has been dreaming of she was very pretty I jut woke up clear your mind part, empty it and (to delete this [new part] click Save all parts) part, empty it and [new part] ) A point and figure chart shows the trend hitting"
+							 * ); int var2 = this.width * 240 / this.height; int
+							 * var3 = this.height * 240 / this.height;
+							 * ((GuiScreen) this.notifyScreen).open(this, var2,
+							 * var3); }
+							 */
 						}
 
 						if (Keyboard.getEventKey() == this.settings.chatKey.key
@@ -2283,7 +2474,8 @@ public final class Minecraft implements Runnable {
 
 					for (var25 = 0; var25 < 9; ++var25) {
 						if (Keyboard.getEventKey() == var25 + 2) {
-							this.player.inventory.selected = var25;
+							if (GameSettings.CanReplaceSlot)
+								this.player.inventory.selected = var25;
 						}
 					}
 

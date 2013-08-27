@@ -4,6 +4,7 @@ import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.util.MathHelper;
+import com.mojang.minecraft.ColorCache;
 
 public final class FireBlock extends Block {
 
@@ -15,8 +16,8 @@ public final class FireBlock extends Block {
 	}
 
 	@Override
-	protected final float getBrightness(Level level, int x, int y, int z) {
-		return 100.0F;
+	protected final ColorCache getBrightness(Level level, int x, int y, int z) {
+		return new ColorCache(100.0F/255, 100.0F/255,100.0F/255);
 	}
 	
 	private void render(ShapeRenderer var1, float var2, float var3, float var4) {
@@ -67,8 +68,8 @@ public final class FireBlock extends Block {
 
 	public final boolean render(Level var1, int var2, int var3, int var4,
 			ShapeRenderer var5) {
-		float var6 = getBrightness(var1, var2, var3, var4);
-		var5.color(var6, var6, var6);
+		ColorCache var6 = getBrightness(var1, var2, var3, var4);
+		var5.color(var6.R, var6.G, var6.B);
 		this.render(var5, (float) var2, (float) var3, (float) var4);
 		return true;
 	}

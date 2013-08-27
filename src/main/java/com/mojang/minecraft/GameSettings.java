@@ -14,6 +14,9 @@ public final class GameSettings
 {
 	public static String StatusString = "";
 	public static String PercentString = "";
+	
+	public static boolean CanReplaceSlot = true;
+	
 	public static List<String> typinglog = new ArrayList<String>();
 	public static int typinglogpos = 0;
 	public GameSettings(Minecraft minecraft, File minecraftFolder)

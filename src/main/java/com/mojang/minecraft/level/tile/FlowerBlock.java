@@ -1,5 +1,6 @@
 package com.mojang.minecraft.level.tile;
 
+import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
@@ -82,8 +83,8 @@ public class FlowerBlock extends Block {
 
 	public final boolean render(Level var1, int var2, int var3, int var4,
 			ShapeRenderer var5) {
-		float var6 = var1.getBrightness(var2, var3, var4);
-		var5.color(var6, var6, var6);
+		ColorCache var6 = var1.getBrightnessColor(var2, var3, var4);
+		var5.color(var6.R, var6.G, var6.B);
 		this.render(var5, (float) var2, (float) var3, (float) var4);
 		return true;
 	}

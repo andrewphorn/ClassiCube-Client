@@ -1,5 +1,6 @@
 package com.mojang.minecraft.level;
 
+import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MovingObjectPosition;
@@ -14,6 +15,7 @@ import com.mojang.minecraft.sound.EntitySoundPos;
 import com.mojang.minecraft.sound.LevelSoundPos;
 import com.mojang.util.MathHelper;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +55,8 @@ public class Level implements Serializable {
    public transient ParticleManager particleEngine;
    public transient Object font;
    public boolean growTrees;
+   public ColorCache customShadowColour;
+   public ColorCache customLightColour;
 
 
    public Level() {
@@ -579,6 +583,17 @@ public class Level implements Serializable {
 
    public float getBrightness(int var1, int var2, int var3) {
       return this.isLit(var1, var2, var3)?1.0F:0.6F;
+   }
+   public ColorCache getBrightnessColor(int var1, int var2, int var3) {
+	   float a = 0.6F, b = 0.6F, c = 0.6F;
+	   float d = 1.0F, e=1.0F, f=1.0F;
+	   if(customShadowColour!=null){
+		  a = customShadowColour.R; b = customShadowColour.G; c= customShadowColour.B;
+	   }
+	   if(customLightColour!=null){
+			  d = customLightColour.R; e = customLightColour.G; f= customLightColour.B;
+		}
+	   return this.isLit(var1, var2, var3) ? new ColorCache(d,e,f) : new ColorCache(a,b,c);
    }
 
    public float getCaveness(float var1, float var2, float var3, float var4) {
