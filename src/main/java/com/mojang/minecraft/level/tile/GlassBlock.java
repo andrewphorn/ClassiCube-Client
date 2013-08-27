@@ -2,7 +2,7 @@ package com.mojang.minecraft.level.tile;
 
 import com.mojang.minecraft.level.Level;
 
-public final class GlassBlock extends Block {
+public class GlassBlock extends Block {
 
    private boolean showNeighborSides = false;
 

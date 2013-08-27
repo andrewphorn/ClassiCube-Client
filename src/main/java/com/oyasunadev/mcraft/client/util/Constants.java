@@ -26,4 +26,6 @@ public class Constants
 	 * The client type sent to the server to identify what client is being used. Default is 0x00.
 	 */
 	public static final byte CLIENT_TYPE = 0x01;
+	
+	public static final byte SupportLevel = (byte)1;
 }

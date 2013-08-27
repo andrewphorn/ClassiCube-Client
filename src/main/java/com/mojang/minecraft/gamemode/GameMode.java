@@ -75,9 +75,10 @@ public class GameMode
 	{
 	}
 
+	public float reachDistance = 5.0F;
 	public float getReachDistance()
 	{
-		return 5.0F;
+		return reachDistance;
 	}
 
 	public boolean useItem(Player player, int type)

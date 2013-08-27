@@ -7,10 +7,11 @@ public enum Minecraft$OS
 	windows("windows", 2),
 	macos("macos", 3),
 	unknown("unknown", 4);
-
-	private static final Minecraft$OS[] values = new Minecraft$OS[] {linux, solaris, windows, macos, unknown};
+	public final int id;
+	public static final Minecraft$OS[] values = new Minecraft$OS[] {linux, solaris, windows, macos, unknown};
 
 	private Minecraft$OS(String name, int id)
 	{
+		this.id = id;
 	}
 }

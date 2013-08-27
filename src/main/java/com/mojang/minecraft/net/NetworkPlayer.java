@@ -24,6 +24,7 @@ public class NetworkPlayer extends HumanoidMob {
    public String displayName;
    int tickCount = 0;
    private TextureManager textures;
+   public String SkinName = null;
 
 
    public NetworkPlayer(Minecraft var1, int var2, String var3, int var4, int var5, int var6, float var7, float var8) {
@@ -100,14 +101,14 @@ public class NetworkPlayer extends HumanoidMob {
       GL11.glRotatef(-this.minecraft.player.yRot, 0.0F, 1.0F, 0.0F);
       var2 = 0.05F;
       GL11.glScalef(0.05F, -var2, var2);
-      GL11.glTranslatef((float)(-var3.getWidth(this.displayName)) / 2.0F, 0.0F, 0.0F);
+      GL11.glTranslatef((float)(-var3.getWidth(this.SkinName == null ? this.displayName : this.SkinName)) / 2.0F, 0.0F, 0.0F);
       GL11.glNormal3f(1.0F, -1.0F, 1.0F);
       GL11.glDisable(2896);
       GL11.glDisable(16384);
       if(this.name.equalsIgnoreCase("Notch")) {
-         var3.renderNoShadow(this.displayName, 0, 0, 16776960);
+         var3.renderNoShadow(this.SkinName == null ? this.displayName : this.SkinName, 0, 0, 16776960);
       } else {
-         var3.renderNoShadow(this.displayName, 0, 0, 16777215);
+         var3.renderNoShadow(this.SkinName == null ? this.displayName : this.SkinName, 0, 0, 16777215);
       }
 
       GL11.glDepthFunc(516);
@@ -115,12 +116,12 @@ public class NetworkPlayer extends HumanoidMob {
       GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
       GL11.glEnable(3042);
       GL11.glBlendFunc(770, 771);
-      var3.renderNoShadow(this.displayName, 0, 0, 16777215);
+      var3.renderNoShadow(this.SkinName == null ? this.displayName : this.SkinName, 0, 0, 16777215);
       GL11.glDisable(3042);
       GL11.glDepthMask(true);
       GL11.glDepthFunc(515);
       GL11.glTranslatef(1.0F, 1.0F, -0.05F);
-      var3.renderNoShadow(this.name, 0, 0, 5263440);
+      var3.renderNoShadow(this.SkinName == null ? this.name : this.name, 0, 0, 5263440);
       GL11.glEnable(16384);
       GL11.glEnable(2896);
       GL11.glPopMatrix();

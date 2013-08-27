@@ -1,9 +1,8 @@
 package com.mojang.minecraft.render;
-
 import com.mojang.minecraft.player.Player;
 import java.util.Comparator;
 
-public class ChunkDistanceComparator implements Comparator
+public class ChunkDistanceComparator implements Comparator<Chunk>
 {
 	public ChunkDistanceComparator(Player player)
 	{
@@ -11,10 +10,8 @@ public class ChunkDistanceComparator implements Comparator
 	}
 
 	@Override
-	public int compare(Object o1, Object o2)
+	public int compare(Chunk chunk, Chunk other)
 	{
-		Chunk chunk = (Chunk)o1;
-		Chunk other = (Chunk)o2;
 
 		float sqDist = chunk.distanceSquared(player);
 		float otherSqDist = other.distanceSquared(player);

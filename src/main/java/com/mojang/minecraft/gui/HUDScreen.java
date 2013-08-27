@@ -147,7 +147,6 @@ public final class HUDScreen extends Screen {
 		}
 
 		var5.render("ClassiCube 0.1", 2, 2, 16777215); // lol fuck that.
-		//var5.render("Minecraft 0.30", 2, 12, 16777215);
 		if(this.mc.settings.showFrameRate) {
 			var5.render(this.mc.debug, 2, 22, 16777215);
 			var5.render(Compass, this.width - (var5.getWidth(Compass) + 2), 12, 16777215);
@@ -163,7 +162,6 @@ public final class HUDScreen extends Screen {
 				var5.render("NoClip: ON.", 2, 32, 16777215);
 			}
 		}
-
 		if(this.mc.gamemode instanceof SurvivalGameMode) {
 			String var24 = "Score: &e" + this.mc.player.getScore();
 			var5.render(var24, this.width - var5.getWidth(var24) - 2, 2, 16777215);

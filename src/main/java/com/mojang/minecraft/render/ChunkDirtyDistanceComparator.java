@@ -3,7 +3,7 @@ package com.mojang.minecraft.render;
 import com.mojang.minecraft.player.Player;
 import java.util.Comparator;
 
-public class ChunkDirtyDistanceComparator implements Comparator
+public class ChunkDirtyDistanceComparator implements Comparator<Chunk>
 {
 	public ChunkDirtyDistanceComparator(Player player)
 	{
@@ -11,11 +11,8 @@ public class ChunkDirtyDistanceComparator implements Comparator
 	}
 
 	@Override
-	public int compare(Object o1, Object o2)
+	public int compare(Chunk chunk, Chunk other)
 	{
-		Chunk chunk = (Chunk)o1;
-		Chunk other = (Chunk)o2;
-
 		if(chunk.visible || !other.visible)
 		{
 			if(other.visible)
@@ -23,8 +20,7 @@ public class ChunkDirtyDistanceComparator implements Comparator
 				float sqDist = chunk.distanceSquared(player);
 				float otherSqDist = other.distanceSquared(player);
 
-				if(sqDist == otherSqDist)
-				{
+				if(sqDist == otherSqDist){
 					return 0;
 				} else if(sqDist > otherSqDist) {
 					return -1;

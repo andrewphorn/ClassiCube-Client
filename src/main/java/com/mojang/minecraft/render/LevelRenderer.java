@@ -75,10 +75,10 @@ public final class LevelRenderer {
       this.chunks.clear();
       GL11.glNewList(this.listId, 4864);
       LevelRenderer var9 = this;
-      float var10 = 0.5F;
-      GL11.glColor4f(0.5F, var10, var10, 1.0F);
+      float waterLevel = 0.5F;
+      GL11.glColor4f(0.5F, waterLevel, waterLevel, 1.0F);
       ShapeRenderer var11 = ShapeRenderer.instance;
-      float var12 = this.level.getGroundLevel();
+      float groundLevel = this.level.getGroundLevel();
       int var5 = 128;
       if(128 > this.level.width) {
          var5 = this.level.width;
@@ -94,15 +94,15 @@ public final class LevelRenderer {
       int var7;
       for(var7 = -var5 * var6; var7 < var9.level.width + var5 * var6; var7 += var5) {
          for(int var8 = -var5 * var6; var8 < var9.level.height + var5 * var6; var8 += var5) {
-            var10 = var12;
+            waterLevel = groundLevel;
             if(var7 >= 0 && var8 >= 0 && var7 < var9.level.width && var8 < var9.level.height) {
-               var10 = 0.0F;
+               waterLevel = 0.0F;
             }
 
-            var11.vertexUV((float)var7, var10, (float)(var8 + var5), 0.0F, (float)var5);
-            var11.vertexUV((float)(var7 + var5), var10, (float)(var8 + var5), (float)var5, (float)var5);
-            var11.vertexUV((float)(var7 + var5), var10, (float)var8, (float)var5, 0.0F);
-            var11.vertexUV((float)var7, var10, (float)var8, 0.0F, 0.0F);
+            var11.vertexUV((float)var7, waterLevel, (float)(var8 + var5), 0.0F, (float)var5);
+            var11.vertexUV((float)(var7 + var5), waterLevel, (float)(var8 + var5), (float)var5, (float)var5);
+            var11.vertexUV((float)(var7 + var5), waterLevel, (float)var8, (float)var5, 0.0F);
+            var11.vertexUV((float)var7, waterLevel, (float)var8, 0.0F, 0.0F);
          }
       }
 
@@ -113,10 +113,10 @@ public final class LevelRenderer {
       for(var7 = 0; var7 < var9.level.width; var7 += var5) {
          var11.vertexUV((float)var7, 0.0F, 0.0F, 0.0F, 0.0F);
          var11.vertexUV((float)(var7 + var5), 0.0F, 0.0F, (float)var5, 0.0F);
-         var11.vertexUV((float)(var7 + var5), var12, 0.0F, (float)var5, var12);
-         var11.vertexUV((float)var7, var12, 0.0F, 0.0F, var12);
-         var11.vertexUV((float)var7, var12, (float)var9.level.height, 0.0F, var12);
-         var11.vertexUV((float)(var7 + var5), var12, (float)var9.level.height, (float)var5, var12);
+         var11.vertexUV((float)(var7 + var5), groundLevel, 0.0F, (float)var5, groundLevel);
+         var11.vertexUV((float)var7, groundLevel, 0.0F, 0.0F, groundLevel);
+         var11.vertexUV((float)var7, groundLevel, (float)var9.level.height, 0.0F, groundLevel);
+         var11.vertexUV((float)(var7 + var5), groundLevel, (float)var9.level.height, (float)var5, groundLevel);
          var11.vertexUV((float)(var7 + var5), 0.0F, (float)var9.level.height, (float)var5, 0.0F);
          var11.vertexUV((float)var7, 0.0F, (float)var9.level.height, 0.0F, 0.0F);
       }
@@ -124,22 +124,25 @@ public final class LevelRenderer {
       GL11.glColor3f(0.6F, 0.6F, 0.6F);
 
       for(var7 = 0; var7 < var9.level.height; var7 += var5) {
-         var11.vertexUV(0.0F, var12, (float)var7, 0.0F, 0.0F);
-         var11.vertexUV(0.0F, var12, (float)(var7 + var5), (float)var5, 0.0F);
-         var11.vertexUV(0.0F, 0.0F, (float)(var7 + var5), (float)var5, var12);
-         var11.vertexUV(0.0F, 0.0F, (float)var7, 0.0F, var12);
-         var11.vertexUV((float)var9.level.width, 0.0F, (float)var7, 0.0F, var12);
-         var11.vertexUV((float)var9.level.width, 0.0F, (float)(var7 + var5), (float)var5, var12);
-         var11.vertexUV((float)var9.level.width, var12, (float)(var7 + var5), (float)var5, 0.0F);
-         var11.vertexUV((float)var9.level.width, var12, (float)var7, 0.0F, 0.0F);
+         var11.vertexUV(0.0F, groundLevel, (float)var7, 0.0F, 0.0F);
+         var11.vertexUV(0.0F, groundLevel, (float)(var7 + var5), (float)var5, 0.0F);
+         var11.vertexUV(0.0F, 0.0F, (float)(var7 + var5), (float)var5, groundLevel);
+         var11.vertexUV(0.0F, 0.0F, (float)var7, 0.0F, groundLevel);
+         var11.vertexUV((float)var9.level.width, 0.0F, (float)var7, 0.0F, groundLevel);
+         var11.vertexUV((float)var9.level.width, 0.0F, (float)(var7 + var5), (float)var5, groundLevel);
+         var11.vertexUV((float)var9.level.width, groundLevel, (float)(var7 + var5), (float)var5, 0.0F);
+         var11.vertexUV((float)var9.level.width, groundLevel, (float)var7, 0.0F, 0.0F);
       }
 
       var11.end();
       GL11.glEndList();
+      
+      
       GL11.glNewList(this.listId + 1, 4864);
       var9 = this;
       GL11.glColor3f(1.0F, 1.0F, 1.0F);
-      var10 = this.level.getWaterLevel();
+      waterLevel = this.level.getWaterLevel();
+      
       GL11.glBlendFunc(770, 771);
       var11 = ShapeRenderer.instance;
       var4 = 128;
@@ -156,7 +159,7 @@ public final class LevelRenderer {
 
       for(var6 = -var4 * var5; var6 < var9.level.width + var4 * var5; var6 += var4) {
          for(var7 = -var4 * var5; var7 < var9.level.height + var4 * var5; var7 += var4) {
-            float var13 = var10 - 0.1F;
+            float var13 = waterLevel - 0.1F;
             if(var6 < 0 || var7 < 0 || var6 >= var9.level.width || var7 >= var9.level.height) {
                var11.vertexUV((float)var6, var13, (float)(var7 + var4), 0.0F, (float)var4);
                var11.vertexUV((float)(var6 + var4), var13, (float)(var7 + var4), (float)var4, (float)var4);
@@ -200,7 +203,7 @@ public final class LevelRenderer {
          GL11.glBindTexture(3553, this.textureManager.load("/terrain.png"));
          GL11.glCallLists(this.buffer);
       }
-
+      
       return this.buffer.remaining();
    }
 

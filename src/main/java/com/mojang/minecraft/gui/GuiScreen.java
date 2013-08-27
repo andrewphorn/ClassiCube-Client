@@ -13,7 +13,7 @@ public class GuiScreen extends Screen {
    protected Minecraft minecraft;
    public int width;
    public int height;
-   protected List buttons = new ArrayList();
+   protected List<Button> buttons = new ArrayList<Button>();
    public boolean grabsMouse = false;
    protected FontRenderer fontRenderer;
 

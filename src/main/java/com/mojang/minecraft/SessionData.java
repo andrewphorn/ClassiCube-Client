@@ -19,28 +19,38 @@ public final class SessionData {
 	}
 
 	static {
-		ArrayList<Block> temp = new ArrayList<Block>();
-		for (int i = 1; i < Block.blocks.length; i++) {
-			temp.add(Block.blocks[i]);
-		}
-		SetAllowedBlocks(temp);
+		SetAllowedBlocks(com.oyasunadev.mcraft.client.util.Constants.SupportLevel);
 	}
-
-	public static void SetAllowedBlocks(ArrayList<Block> temp2) {
-		ArrayList<Block> temp = new ArrayList<Block>();
-		for (int i = 0; i < Block.blocks.length; i++) {
-			if (temp2.contains(Block.blocks[i])) {
-				temp.add(Block.blocks[i]);
+	
+	public static void SetAllowedBlocks(byte SupportLevel) {
+		//latest
+		if(SupportLevel == com.oyasunadev.mcraft.client.util.Constants.SupportLevel){
+			ArrayList<Block> ab = new ArrayList<Block>();
+			for(int i = 1; i< Block.blocks.length; i++){
+				ab.add(Block.blocks[i]);
 			}
+			allowedBlocks = ab;
 		}
-		allowedBlocks = temp;
-	}
-
-	public static void SetAllowedBlocks(byte[] arrayBlocks) {
-		ArrayList temp = new ArrayList();
-		for (int i = 0; i < arrayBlocks.length; i++) {
-			temp.add(arrayBlocks[i]);
+		
+		else if(SupportLevel == 1){
+			ArrayList<Block> ab = new ArrayList<Block>();
+			for(int i = 1; i < 64; i++){
+				ab.add(Block.blocks[i]);
+			}
+			allowedBlocks = ab;
 		}
-		SetAllowedBlocks(temp);
+		else if(SupportLevel <= 0){
+			AddStandardMinecraftBlocks();
+		}
+		
 	}
+	
+	public static void AddStandardMinecraftBlocks(){
+		ArrayList<Block> ab = new ArrayList<Block>();
+		for(int i = 1; i< 49; i++){ //ignore air
+			ab.add(Block.blocks[i]);
+		}
+		allowedBlocks = ab;
+	}
+	
 }
