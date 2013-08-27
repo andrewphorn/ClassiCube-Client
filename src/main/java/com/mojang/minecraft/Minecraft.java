@@ -34,6 +34,8 @@ import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
 import com.mojang.net.NetworkHandler;
 import com.mojang.util.MathHelper;
+import com.oyasunadev.mcraft.client.util.ExtData;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controllers;
@@ -1788,6 +1790,8 @@ public final class Minecraft implements Runnable {
 		}
 	}
 
+	int recievedExtensionLength;
+
 	private void tick() {
 		if (this.soundPlayer != null) {
 			SoundPlayer var1 = this.soundPlayer;
@@ -1841,7 +1845,6 @@ public final class Minecraft implements Runnable {
 							NetworkHandler networkHandler = var20.netHandler;
 							var20.netHandler.channel.read(networkHandler.in);
 							var4 = 0;
-
 							while (networkHandler.in.position() > 0
 									&& var4++ != 100) {
 								networkHandler.in.flip();
@@ -1850,7 +1853,7 @@ public final class Minecraft implements Runnable {
 								if ((packetType = PacketType.packets[id]) == null) {
 									throw new IOException("Bad command: " + id);
 								}
-
+								System.out.println(packetType.toString());
 								if (networkHandler.in.remaining() < packetType.length + 1) {
 									networkHandler.in.compact();
 									break;
@@ -1932,21 +1935,21 @@ public final class Minecraft implements Runnable {
 																	.byteValue());
 										}
 									} else {
-										byte pitch;
-										String name;
+										byte var9;
+										String var34;
 										NetworkPlayer var33;
-										short x;
-										short playerY;
+										short var36;
+										short var10004;
 										byte var10001;
-										short y;
-										short playerX;
+										short var47;
+										short var10003;
 										if (packetType == PacketType.SPAWN_PLAYER) {
 											var10001 = ((Byte) packetParams[0])
 													.byteValue();
 											String var10002 = (String) packetParams[1];
-											playerX = ((Short) packetParams[2])
+											var10003 = ((Short) packetParams[2])
 													.shortValue();
-											playerY = ((Short) packetParams[3])
+											var10004 = ((Short) packetParams[3])
 													.shortValue();
 											short var10005 = ((Short) packetParams[4])
 													.shortValue();
@@ -1954,41 +1957,41 @@ public final class Minecraft implements Runnable {
 													.byteValue();
 											byte var58 = ((Byte) packetParams[6])
 													.byteValue();
-											pitch = var10006;
+											var9 = var10006;
 											short var10 = var10005;
-											y = playerY;
-											x = playerX;
-											name = var10002;
-											id = var10001;
-											if (id >= 0) {
-												pitch = (byte) (pitch + 128);
-												y = (short) (y - 22);
+											var47 = var10004;
+											var36 = var10003;
+											var34 = var10002;
+											byte var5 = var10001;
+											if (var5 >= 0) {
+												var9 = (byte) (var9 + 128);
+												var47 = (short) (var47 - 22);
 												var33 = new NetworkPlayer(
 														networkManager.minecraft,
-														id,
-														name,
-														x,
-														y,
+														var5,
+														var34,
+														var36,
+														var47,
 														var10,
-														(float) (pitch * 360) / 256.0F,
+														(float) (var9 * 360) / 256.0F,
 														(float) (var58 * 360) / 256.0F);
-												networkManager.players
-														.put(Byte.valueOf(id),
-																var33);
+												networkManager.players.put(
+														Byte.valueOf(var5),
+														var33);
 												networkManager.minecraft.level
 														.addEntity(var33);
 											} else {
 												networkManager.minecraft.level
 														.setSpawnPos(
-																x / 32,
-																y / 32,
+																var36 / 32,
+																var47 / 32,
 																var10 / 32,
-																(float) (pitch * 320 / 256));
+																(float) (var9 * 320 / 256));
 												networkManager.minecraft.player
-														.moveTo((float) x / 32.0F,
-																(float) y / 32.0F,
+														.moveTo((float) var36 / 32.0F,
+																(float) var47 / 32.0F,
 																(float) var10 / 32.0F,
-																(float) (pitch * 360) / 256.0F,
+																(float) (var9 * 360) / 256.0F,
 																(float) (var58 * 360) / 256.0F);
 											}
 										} else {
@@ -2000,38 +2003,38 @@ public final class Minecraft implements Runnable {
 														.byteValue();
 												short var66 = ((Short) packetParams[1])
 														.shortValue();
-												playerX = ((Short) packetParams[2])
+												var10003 = ((Short) packetParams[2])
 														.shortValue();
-												playerY = ((Short) packetParams[3])
+												var10004 = ((Short) packetParams[3])
 														.shortValue();
 												var69 = ((Byte) packetParams[4])
 														.byteValue();
-												pitch = ((Byte) packetParams[5])
+												var9 = ((Byte) packetParams[5])
 														.byteValue();
 												var53 = var69;
-												y = playerY;
-												x = playerX;
+												var47 = var10004;
+												var36 = var10003;
 												short var38 = var66;
-												id = var10001;
-												if (id < 0) {
+												byte var5 = var10001;
+												if (var5 < 0) {
 													networkManager.minecraft.player
 															.moveTo((float) var38 / 32.0F,
-																	(float) x / 32.0F,
-																	(float) y / 32.0F,
+																	(float) var36 / 32.0F,
+																	(float) var47 / 32.0F,
 																	(float) (var53 * 360) / 256.0F,
-																	(float) (pitch * 360) / 256.0F);
+																	(float) (var9 * 360) / 256.0F);
 												} else {
 													var53 = (byte) (var53 + 128);
-													x = (short) (x - 22);
+													var36 = (short) (var36 - 22);
 													if ((var61 = (NetworkPlayer) networkManager.players
 															.get(Byte
-																	.valueOf(id))) != null) {
+																	.valueOf(var5))) != null) {
 														var61.teleport(
 																var38,
-																x,
-																y,
+																var36,
+																var47,
 																(float) (var53 * 360) / 256.0F,
-																(float) (pitch * 360) / 256.0F);
+																(float) (var9 * 360) / 256.0F);
 													}
 												}
 											} else {
@@ -2051,24 +2054,24 @@ public final class Minecraft implements Runnable {
 															.byteValue();
 													var69 = ((Byte) packetParams[4])
 															.byteValue();
-													pitch = ((Byte) packetParams[5])
+													var9 = ((Byte) packetParams[5])
 															.byteValue();
 													var53 = var69;
 													var49 = var64;
 													var44 = var65;
 													var37 = var67;
-													id = var10001;
-													if (id >= 0) {
+													byte var5 = var10001;
+													if (var5 >= 0) {
 														var53 = (byte) (var53 + 128);
 														if ((var61 = (NetworkPlayer) networkManager.players
 																.get(Byte
-																		.valueOf(id))) != null) {
+																		.valueOf(var5))) != null) {
 															var61.queue(
 																	var37,
 																	var44,
 																	var49,
 																	(float) (var53 * 360) / 256.0F,
-																	(float) (pitch * 360) / 256.0F);
+																	(float) (var9 * 360) / 256.0F);
 														}
 													}
 												} else if (packetType == PacketType.ROTATION_UPDATE) {
@@ -2079,13 +2082,13 @@ public final class Minecraft implements Runnable {
 													var44 = ((Byte) packetParams[2])
 															.byteValue();
 													var37 = var67;
-													id = var10001;
-													if (id >= 0) {
+													byte var5 = var10001;
+													if (var5 >= 0) {
 														var37 = (byte) (var37 + 128);
 														NetworkPlayer var54;
 														if ((var54 = (NetworkPlayer) networkManager.players
 																.get(Byte
-																		.valueOf(id))) != null) {
+																		.valueOf(var5))) != null) {
 															var54.queue(
 																	(float) (var37 * 360) / 256.0F,
 																	(float) (var44 * 360) / 256.0F);
@@ -2102,22 +2105,22 @@ public final class Minecraft implements Runnable {
 															.byteValue();
 													var44 = var65;
 													var37 = var67;
-													id = var10001;
+													byte var5 = var10001;
 													NetworkPlayer var59;
-													if (id >= 0
+													if (var5 >= 0
 															&& (var59 = (NetworkPlayer) networkManager.players
 																	.get(Byte
-																			.valueOf(id))) != null) {
+																			.valueOf(var5))) != null) {
 														var59.queue(var37,
 																var44, var49);
 													}
 												} else if (packetType == PacketType.DESPAWN_PLAYER) {
-													id = ((Byte) packetParams[0])
+													byte var5 = ((Byte) packetParams[0])
 															.byteValue();
-													if (id >= 0
+													if (var5 >= 0
 															&& (var33 = (NetworkPlayer) networkManager.players
 																	.remove(Byte
-																			.valueOf(id))) != null) {
+																			.valueOf(var5))) != null) {
 														var33.clear();
 														networkManager.minecraft.level
 																.removeEntity(var33);
@@ -2125,18 +2128,18 @@ public final class Minecraft implements Runnable {
 												} else if (packetType == PacketType.CHAT_MESSAGE) {
 													var10001 = ((Byte) packetParams[0])
 															.byteValue();
-													name = (String) packetParams[1];
-													id = var10001;
-													if (id < 0) {
+													var34 = (String) packetParams[1];
+													byte var5 = var10001;
+													if (var5 < 0) {
 														networkManager.minecraft.hud
 																.addChat("&e"
-																		+ name);
+																		+ var34);
 													} else {
 														networkManager.players
 																.get(Byte
-																		.valueOf(id));
+																		.valueOf(var5));
 														networkManager.minecraft.hud
-																.addChat(name);
+																.addChat(var34);
 													}
 												} else if (packetType == PacketType.DISCONNECT) {
 													networkManager.netHandler
@@ -2148,108 +2151,162 @@ public final class Minecraft implements Runnable {
 												} else if (packetType == PacketType.UPDATE_PLAYER_TYPE) {
 													networkManager.minecraft.player.userType = ((Byte) packetParams[0])
 															.byteValue();
-												} else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-													byte SupportLevel = ((Byte) packetParams[0])
-															.byteValue();
-													byte[] toSendParams = new byte[] { com.oyasunadev.mcraft.client.util.Constants.SupportLevel };
-													networkManager.netHandler
-															.send(PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
-																	toSendParams);
-													SessionData
-															.SetAllowedBlocks(SupportLevel);
-												} else if (packetType == PacketType.ENV_SET_COLOR) {
-													byte Variable = ((Byte) packetParams[0])
-															.byteValue();
-													byte r = ((Byte) packetParams[1])
-															.byteValue();
-													byte g = ((Byte) packetParams[2])
-															.byteValue();
-													byte b = ((Byte) packetParams[3])
-															.byteValue();
-													int dec = 256 * 256 * r
-															+ 256 * g + b;
-													switch (Variable) {
-													case 0: // sky
-														this.level.skyColor = dec;
-														break;
-													case 1: // cloud
-														this.level.cloudColor = dec;
-														break;
-													case 2: // fog
-														this.level.fogColor = dec;
-														break;
-													case 3: // ambient light
-															// (TODO)
-														this.level.customShadowColour = new ColorCache(
-																r / 255.0F,
-																g / 255.0F,
-																b / 255.0F);
-														break;
-													case 4: // diffuse color
-															// (TODO)
-														this.level.customLightColour = new ColorCache(
-																r / 255.0F,
-																g / 255.0F,
-																b / 255.0F);
-														break;
-													}
-													this.levelRenderer
-															.refresh();
-												} else if (packetType == PacketType.EXT_INFO) {
-													String AppName = (String) packetParams[0];
-													short ExtensionCount = (Short) packetParams[1];
-												} else if (packetType == PacketType.EXT_ENTRY) {
-													String ExtName = (String) packetParams[0];
-													short Version = (Short) packetParams[1];
-												} else if (packetType == PacketType.CLICK_DISTANCE) {
-													short Distance = (Short) packetParams[0];
-													this.gamemode.reachDistance = Distance / 32;
-												} else if (packetType == PacketType.HOLDTHIS) {
-													byte BlockToHold = ((Byte) packetParams[0])
-															.byteValue();
-													byte PreventChange = ((Byte) packetParams[1])
-															.byteValue();
-													boolean CanPreventChange = PreventChange > 0;
-
-													if (CanPreventChange == true)
-														GameSettings.CanReplaceSlot = false;
-
-													this.player.inventory.selected = 0;
-													this.player.inventory
-															.replaceSlot(Block.blocks[BlockToHold]);
-
-													if (CanPreventChange == false) 
-														GameSettings.CanReplaceSlot = true;
-												} else if (packetType == PacketType.SET_TEXT_HOTKEY) {
-													String Label = (String) packetParams[0];
-													String Action = (String) packetParams[1];
-													int keyCode = (Integer) packetParams[2];
-													byte KeyMods = ((Byte) packetParams[3])
-															.byteValue();
-												} else if (packetType == PacketType.EXT_ADD_ENTITY) {
-													byte playerID = ((Byte) packetParams[0]).byteValue();
-													String playerName = (String) packetParams[1];
-													String listName = (String) packetParams[2];
-													String groupName = (String) packetParams[3];
-													byte unusedRank = ((Byte) packetParams[4]).byteValue();
-												}else if (packetType == PacketType.EXT_ADD_ENTITY) {
-													byte playerID = ((Byte) packetParams[0])
-															.byteValue();
-													String playerName = (String) packetParams[1];
-													String skinName = (String) packetParams[2];
-													
-													NetworkPlayer player = networkManager.players.get(playerID);
-													if(player!=null){
-														player.SkinName = skinName;
-														((NetworkPlayer)player).downloadSkin();
-													}
 												}
-												else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
-													String playerName = (String) packetParams[0];
-												}
+
 											}
 										}
 									}
+								}
+
+								else if (packetType == PacketType.EXT_INFO) {
+									String AppName = (String) packetParams[0];
+									short ExtensionCount = (Short) packetParams[1];
+									System.out
+											.println("Connecting to AppName: "
+													+ AppName
+													+ " with extension count: "
+													+ ExtensionCount);
+									recievedExtensionLength = ExtensionCount;
+								} else if (packetType == PacketType.EXT_ENTRY) {
+									String ExtName = (String) packetParams[0];
+									short Version = (Short) packetParams[1];
+									com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
+											.add(new ExtData(ExtName, Version));
+
+									if (recievedExtensionLength == com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
+											.size()) {
+										List<ExtData> temp = new ArrayList<ExtData>();
+										for (int j = 0; j < PacketType.packets.length; j++) {
+											if (PacketType.packets[j].extName != "") {
+												temp.add(new ExtData(
+														PacketType.packets[j].extName,
+														PacketType.packets[j].Version));
+											}
+										}
+										String AppName = "ClassiCube";
+										Object[] toSendParams = new Object[] {
+												AppName, temp.size() };
+										networkManager.netHandler.send(
+												PacketType.EXT_INFO,
+												toSendParams);
+										for (int k = 0; k < temp.size(); k++) {
+											toSendParams = new Object[] {
+													temp.get(k).Name,
+													temp.get(k).Version };
+											networkManager.netHandler.send(
+													PacketType.EXT_ENTRY,
+													toSendParams);
+										}
+									}
+								}
+								// ===============KICK if packetType is not
+								// mutual================
+								else if (packetType.extName != ""
+										&& com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
+												.contains(new ExtData(
+														packetType.extName,
+														packetType.Version))) {
+
+									if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
+										byte SupportLevel = ((Byte) packetParams[0])
+												.byteValue();
+										byte[] toSendParams = new byte[] { com.oyasunadev.mcraft.client.util.Constants.SupportLevel };
+										networkManager.netHandler
+												.send(PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
+														toSendParams);
+										SessionData
+												.SetAllowedBlocks(SupportLevel);
+									} else if (packetType == PacketType.ENV_SET_COLOR) {
+										byte Variable = ((Byte) packetParams[0])
+												.byteValue();
+										byte r = ((Byte) packetParams[1])
+												.byteValue();
+										byte g = ((Byte) packetParams[2])
+												.byteValue();
+										byte b = ((Byte) packetParams[3])
+												.byteValue();
+										int dec = 256 * 256 * r + 256 * g + b;
+										switch (Variable) {
+										case 0: // sky
+											this.level.skyColor = dec;
+											break;
+										case 1: // cloud
+											this.level.cloudColor = dec;
+											break;
+										case 2: // fog
+											this.level.fogColor = dec;
+											break;
+										case 3: // ambient light
+												// (TODO)
+											this.level.customShadowColour = new ColorCache(
+													r / 255.0F, g / 255.0F,
+													b / 255.0F);
+											break;
+										case 4: // diffuse color
+												// (TODO)
+											this.level.customLightColour = new ColorCache(
+													r / 255.0F, g / 255.0F,
+													b / 255.0F);
+											break;
+										}
+										this.levelRenderer.refresh();
+									} else if (packetType == PacketType.CLICK_DISTANCE) {
+										short Distance = (Short) packetParams[0];
+										this.gamemode.reachDistance = Distance / 32;
+									} else if (packetType == PacketType.HOLDTHIS) {
+										byte BlockToHold = ((Byte) packetParams[0])
+												.byteValue();
+										byte PreventChange = ((Byte) packetParams[1])
+												.byteValue();
+										boolean CanPreventChange = PreventChange > 0;
+
+										if (CanPreventChange == true)
+											GameSettings.CanReplaceSlot = false;
+
+										this.player.inventory.selected = 0;
+										this.player.inventory
+												.replaceSlot(Block.blocks[BlockToHold]);
+
+										if (CanPreventChange == false)
+											GameSettings.CanReplaceSlot = true;
+									} else if (packetType == PacketType.SET_TEXT_HOTKEY) {
+										String Label = (String) packetParams[0];
+										String Action = (String) packetParams[1];
+										int keyCode = (Integer) packetParams[2];
+										byte KeyMods = ((Byte) packetParams[3])
+												.byteValue();
+									} else if (packetType == PacketType.EXT_ADD_ENTITY) {
+										byte playerID = ((Byte) packetParams[0])
+												.byteValue();
+										String playerName = (String) packetParams[1];
+										String listName = (String) packetParams[2];
+										String groupName = (String) packetParams[3];
+										byte unusedRank = ((Byte) packetParams[4])
+												.byteValue();
+									} else if (packetType == PacketType.EXT_ADD_ENTITY) {
+										byte playerID = ((Byte) packetParams[0])
+												.byteValue();
+										String playerName = (String) packetParams[1];
+										String skinName = (String) packetParams[2];
+
+										NetworkPlayer player = networkManager.players
+												.get(playerID);
+										if (player != null) {
+											player.SkinName = skinName;
+											((NetworkPlayer) player)
+													.downloadSkin();
+										}
+									} else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
+										String playerName = (String) packetParams[0];
+									}
+								} else {
+									var20.minecraft
+											.setCurrentScreen(new ErrorScreen(
+													"Disconnected!",
+													"Unsupported extension type"));
+									var20.minecraft.online = false;
+									var20.netHandler.close();
+									var20.minecraft.networkManager = null;
 								}
 
 								if (!networkHandler.connected) {
@@ -2413,12 +2470,14 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (Keyboard.getEventKey() == this.settings.inventoryKey.key) {
-							//this.player.inventory.selected = 0;
-							//this.player.inventory.replaceSlot(Block.blocks[6]);
-							//GameSettings.CanReplaceSlot = false;
-							 this.gamemode.openInventory();
-							// this.level.customLightColour = new ColorCache(1/255F, 120/255F, 120/255F);
-							 //this.level.customShadowColour = new ColorCache(120/255F, 1/255F, 120/255F);
+							// this.player.inventory.selected = 0;
+							// this.player.inventory.replaceSlot(Block.blocks[6]);
+							// GameSettings.CanReplaceSlot = false;
+							this.gamemode.openInventory();
+							// this.level.customLightColour = new
+							// ColorCache(1/255F, 120/255F, 120/255F);
+							// this.level.customShadowColour = new
+							// ColorCache(120/255F, 1/255F, 120/255F);
 							/*
 							 * if(this.notifyScreen == null){ this.notifyScreen
 							 * = new GuiNotificationScreen("Test",

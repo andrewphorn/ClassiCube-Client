@@ -75,6 +75,8 @@ public class PacketType
 	private static int nextOpcode;
 	public byte opcode;
 	public Class[] params;
+	public String extName = "";
+	public int Version = 1;
 
 	static
 	{
@@ -94,6 +96,8 @@ public class PacketType
 		CHAT_MESSAGE = new PacketType(new Class[] {Byte.TYPE, String.class});
 		DISCONNECT = new PacketType(new Class[] {String.class});
 		UPDATE_PLAYER_TYPE = new PacketType(new Class[] {Byte.TYPE});
+		
+		//--------------------------------------------------------------
 		EXT_INFO = new PacketType(new Class[] {String.class, Short.TYPE});
 		EXT_ENTRY = new PacketType(new Class[] {String.class, Integer.TYPE});
 		CLICK_DISTANCE = new PacketType(new Class[] {Short.TYPE});
@@ -107,6 +111,21 @@ public class PacketType
 		SELECTION_CUBOID = new PacketType(new Class[] {Byte.TYPE, String.class, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Byte.class, Byte.class, Byte.class, Byte.class}); //last 4 are ubyte
 		REMOVE_SELECTION_CUBOID = new PacketType(new Class[] {Byte.TYPE});
 		EXT_PLAYER = new PacketType(new Class[] {Byte.TYPE, String.class});
+		
+		//set names
+		EXT_INFO.extName = "ExtInfo";
+		EXT_ENTRY.extName = "ExtEntry";
+		CLICK_DISTANCE.extName = "SetClickDistance";
+		CUSTOM_BLOCK_SUPPORT_LEVEL.extName = "CustomBlockSupportLevel";
+		HOLDTHIS.extName = "HoldThis";
+		SET_TEXT_HOTKEY.extName = "SetTextHotKey";
+		EXT_ADD_PLAYER_NAME.extName = "ExtAddPlayerName";
+		EXT_ADD_ENTITY.extName = "ExtAddEntity";
+		EXT_REMOVE_PLAYER_NAME.extName = "ExtRemovePlayerName";
+		ENV_SET_COLOR.extName = "EnvSetColor";
+		SELECTION_CUBOID.extName = "SelectionCuboid";
+		REMOVE_SELECTION_CUBOID.extName = "RemoveSelectionCuboid";
+		EXT_PLAYER.extName = ""; //not supported (Was ExtPlayer)
 		
 		nextOpcode = 0;
 	}

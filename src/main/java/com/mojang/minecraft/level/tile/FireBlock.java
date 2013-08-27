@@ -17,7 +17,7 @@ public final class FireBlock extends Block {
 
 	@Override
 	protected final ColorCache getBrightness(Level level, int x, int y, int z) {
-		return new ColorCache(100.0F/255, 100.0F/255,100.0F/255);
+		return new ColorCache(255.0F/255.0F, 255.0F/255.0F,255.0F/255.0F);
 	}
 	
 	private void render(ShapeRenderer var1, float var2, float var3, float var4) {
