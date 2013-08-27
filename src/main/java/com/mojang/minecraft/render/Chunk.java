@@ -59,8 +59,8 @@ public final class Chunk {
                for(int var12 = Z; var12 < var6; ++var12) {
                   int var13;
                   if((var13 = this.level.getTile(var10, var11, var12)) > 0) {
-                     Block var14 = Block.blocks[var13];
-                    	 if((var14).getRenderPass() != var7) {
+                     Block var14;
+                    	 if((var14 = Block.blocks[var13]).getRenderPass() != var7) {
                              var8 = true;
                           } else {
                              var9 |= var14.render(this.level, var10, var11, var12, renderer);
