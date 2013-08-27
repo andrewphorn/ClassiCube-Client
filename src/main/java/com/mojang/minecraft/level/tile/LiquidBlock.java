@@ -103,7 +103,7 @@ public class LiquidBlock extends Block {
    }
 
    protected final ColorCache getBrightness(Level level, int x, int y, int z) {
-      return this.type == LiquidType.LAVA?new ColorCache(100.0F/255,100.0F/255,100.0F/255) : level.getBrightnessColor(x, y, z);
+      return this.type == LiquidType.LAVA?new ColorCache(255.0F/255.0F,255.0F/255.0F,255.0F/255.0F) : level.getBrightnessColor(x, y, z);
    }
 
    public final boolean canRenderSide(Level level, int x, int y, int z, int side) {
