@@ -98,7 +98,7 @@ public class MinecraftStandalone {
 			if (RunFakeNetwork) {
 				minecraft.host = "127.0.0.1";
 				minecraft.host = minecraft.host + ":" + "25565";
-				minecraft.session = new SessionData("Jonty800", "noidea");
+				minecraft.session = new SessionData("Jonty8001", "noidea");
 				minecraft.session.mppass = "c0dd4746a88c5785952cd0190e8214a6";
 				minecraft.session.haspaid = true;
 				minecraft.server = "127.0.0.1";
@@ -221,24 +221,14 @@ public class MinecraftStandalone {
 			private Image image2;
 
 			void SetImage() throws IOException {
-
-				File file = new File(Minecraft.GetMinecraftDirectory().getPath()
-						+ "/rsbg.jpg");
-				if (!file.exists()) {
-					download("http://classicube.net/static/client/rsbg.jpg", file.getAbsolutePath());
-				}
-				image = ImageIO.read(new File(file.getAbsolutePath()));
+				image = ImageIO.read(getClass().getResourceAsStream("/resources" + "/rsbg.jpg"));
 
 			}
 
 			void SetImage2() throws IOException {
-				File file = new File(Minecraft.GetMinecraftDirectory().getPath()
-						+ "/bg.jpg");
-				if (!file.exists()) {
-					download("http://classicube.net/static/client/bg.jpg", file.getAbsolutePath());
-				}
-				image = ImageIO.read(new File(file.getAbsolutePath()));
+				image2 = ImageIO.read(getClass().getResourceAsStream("/resources" + "/bg.jpg"));
 			}
+			
 			public void download(String address, String localFileName) {
 		        OutputStream out = null;
 		        URLConnection connection = null;
