@@ -69,7 +69,6 @@ public class PacketType
     public static final PacketType ENV_SET_COLOR; //25
     public static final PacketType SELECTION_CUBOID; //26
     public static final PacketType REMOVE_SELECTION_CUBOID; //27
-    public static final PacketType EXT_PLAYER; //28
 	
 	public int length;
 	private static int nextOpcode;
@@ -101,7 +100,7 @@ public class PacketType
 		EXT_INFO = new PacketType(new Class[] {String.class, Short.TYPE});
 		EXT_ENTRY = new PacketType(new Class[] {String.class, Integer.TYPE});
 		CLICK_DISTANCE = new PacketType(new Class[] {Short.TYPE});
-		CUSTOM_BLOCK_SUPPORT_LEVEL = new PacketType(new Class[] {byte[].class});
+		CUSTOM_BLOCK_SUPPORT_LEVEL = new PacketType(new Class[] {Byte.TYPE});
 		HOLDTHIS = new PacketType(new Class[] {Byte.TYPE, Byte.TYPE});
 		SET_TEXT_HOTKEY = new PacketType(new Class[] {String.class, String.class, Integer.TYPE, Byte.TYPE});
 		EXT_ADD_PLAYER_NAME = new PacketType(new Class[] { Byte.TYPE, String.class, String.class, String.class, Byte.TYPE}); //check [0] unsigned byte
@@ -110,13 +109,12 @@ public class PacketType
 		ENV_SET_COLOR = new PacketType(new Class[] {Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE}); //byte, ubyte, ubyte, ubyte
 		SELECTION_CUBOID = new PacketType(new Class[] {Byte.TYPE, String.class, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Byte.class, Byte.class, Byte.class, Byte.class}); //last 4 are ubyte
 		REMOVE_SELECTION_CUBOID = new PacketType(new Class[] {Byte.TYPE});
-		EXT_PLAYER = new PacketType(new Class[] {Byte.TYPE, String.class});
 		
 		//set names
 		EXT_INFO.extName = "ExtInfo";
 		EXT_ENTRY.extName = "ExtEntry";
 		CLICK_DISTANCE.extName = "SetClickDistance";
-		CUSTOM_BLOCK_SUPPORT_LEVEL.extName = "CustomBlockSupportLevel";
+		CUSTOM_BLOCK_SUPPORT_LEVEL.extName = "CustomBlocks";
 		HOLDTHIS.extName = "HoldThis";
 		SET_TEXT_HOTKEY.extName = "SetTextHotKey";
 		EXT_ADD_PLAYER_NAME.extName = "ExtAddPlayerName";
@@ -125,7 +123,6 @@ public class PacketType
 		ENV_SET_COLOR.extName = "EnvSetColor";
 		SELECTION_CUBOID.extName = "SelectionCuboid";
 		REMOVE_SELECTION_CUBOID.extName = "RemoveSelectionCuboid";
-		EXT_PLAYER.extName = ""; //not supported (Was ExtPlayer)
 		
 		nextOpcode = 0;
 	}
