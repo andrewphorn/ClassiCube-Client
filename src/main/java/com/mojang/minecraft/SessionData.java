@@ -34,7 +34,7 @@ public final class SessionData {
 		
 		else if(SupportLevel == 1){
 			ArrayList<Block> ab = new ArrayList<Block>();
-			for(int i = 1; i < 64; i++){
+			for(int i = 1; i < 65; i++){
 				ab.add(Block.blocks[i]);
 			}
 			allowedBlocks = ab;
@@ -47,7 +47,7 @@ public final class SessionData {
 	
 	public static void AddStandardMinecraftBlocks(){
 		ArrayList<Block> ab = new ArrayList<Block>();
-		for(int i = 1; i< 49; i++){ //ignore air
+		for(int i = 1; i< 50; i++){ //ignore air
 			ab.add(Block.blocks[i]);
 		}
 		allowedBlocks = ab;
