@@ -1853,23 +1853,171 @@ public final class Minecraft implements Runnable {
 								if ((packetType = PacketType.packets[id]) == null) {
 									throw new IOException("Bad command: " + id);
 								}
-								System.out.println(packetType.toString());
 								if (networkHandler.in.remaining() < packetType.length + 1) {
 									networkHandler.in.compact();
 									break;
 								}
-
+								if(packetType.opcode != 8 && packetType.opcode != 2){
+									System.out.println("Reading Packet: " + packetType.opcode);
+								}
 								networkHandler.in.get();
 								Object[] packetParams = new Object[packetType.params.length];
 
 								for (i = 0; i < packetParams.length; ++i) {
 									packetParams[i] = networkHandler
 											.readObject(packetType.params[i]);
+									if(packetType.opcode != 8 && packetType.opcode != 2){
+										System.out.println("Reading object: " + packetParams[i]);
+									}
 								}
 
 								NetworkManager networkManager = networkHandler.netManager;
 								if (networkHandler.netManager.successful) {
-									if (packetType == PacketType.IDENTIFICATION) {
+									if (packetType == PacketType.EXT_INFO) {
+										String AppName = (String) packetParams[0];
+										short ExtensionCount = (Short) packetParams[1];
+										System.out.println("Connecting to AppName: "
+														+ AppName
+														+ " with extension count: "
+														+ ExtensionCount);
+										recievedExtensionLength = ExtensionCount;
+									} else if (packetType == PacketType.EXT_ENTRY) {
+										System.out.println("EXT_ENTRY packet");
+										String ExtName = ((String) packetParams[0]);
+										Integer Version = ((Integer) packetParams[1]).intValue();
+										System.out.println("Adding ExtEntry to list");
+										com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
+												.add(new ExtData(ExtName, Version));
+
+										if (recievedExtensionLength == com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
+												.size()) {
+											System.out.println("ExtEntry has reached total length");
+											System.out.println("Making temp array data");
+											List<ExtData> temp = new ArrayList<ExtData>();
+											for (int j = 0; j < PacketType.packets.length - 1; j++) {
+												if(PacketType.packets[j] != null){
+												if (PacketType.packets[j].extName != "") {
+													temp.add(new ExtData(
+															PacketType.packets[j].extName,
+															PacketType.packets[j].Version));
+													System.out.println("Adding ExtEntry to packet to send:" + PacketType.packets[j].extName);
+												}
+											}
+											}
+											String AppName = "ClassiCube";
+											Object[] toSendParams = new Object[] {
+													AppName, temp.size() };
+											System.out.println("Sending my ExtList inside a loop, one by one");
+											networkManager.netHandler.send(
+													PacketType.EXT_INFO,
+													toSendParams);
+											for (int k = 0; k < temp.size(); k++) {
+												toSendParams = new Object[] {
+														temp.get(k).Name,
+														temp.get(k).Version };
+												networkManager.netHandler.send(
+														PacketType.EXT_ENTRY,
+														toSendParams);
+												System.out.println("Sent: " + temp.get(k).Name);
+											}
+											System.out.println("Done");
+										}
+									}
+									else if (packetType == PacketType.ENV_SET_COLOR) {
+										byte Variable = ((Byte) packetParams[0])
+												.byteValue();
+										byte r = ((Byte) packetParams[1])
+												.byteValue();
+										byte g = ((Byte) packetParams[2])
+												.byteValue();
+										byte b = ((Byte) packetParams[3])
+												.byteValue();
+										int dec = 256 * 256 * r + 256 * g + b;
+										switch (Variable) {
+										case 0: // sky
+											this.level.skyColor = dec;
+											break;
+										case 1: // cloud
+											this.level.cloudColor = dec;
+											break;
+										case 2: // fog
+											this.level.fogColor = dec;
+											break;
+										case 3: // ambient light
+												// (TODO)
+											this.level.customShadowColour = new ColorCache(
+													r / 255.0F, g / 255.0F,
+													b / 255.0F);
+											break;
+										case 4: // diffuse color
+												// (TODO)
+											this.level.customLightColour = new ColorCache(
+													r / 255.0F, g / 255.0F,
+													b / 255.0F);
+											break;
+										}
+										this.levelRenderer.refresh();
+									} else if (packetType == PacketType.CLICK_DISTANCE) {
+										short Distance = (Short) packetParams[0];
+										this.gamemode.reachDistance = Distance / 32;
+									} else if (packetType == PacketType.HOLDTHIS) {
+										byte BlockToHold = ((Byte) packetParams[0])
+												.byteValue();
+										byte PreventChange = ((Byte) packetParams[1])
+												.byteValue();
+										boolean CanPreventChange = PreventChange > 0;
+
+										if (CanPreventChange == true)
+											GameSettings.CanReplaceSlot = false;
+
+										this.player.inventory.selected = 0;
+										this.player.inventory
+												.replaceSlot(Block.blocks[BlockToHold]);
+
+										if (CanPreventChange == false)
+											GameSettings.CanReplaceSlot = true;
+									} else if (packetType == PacketType.SET_TEXT_HOTKEY) {
+										String Label = (String) packetParams[0];
+										String Action = (String) packetParams[1];
+										int keyCode = (Integer) packetParams[2];
+										byte KeyMods = ((Byte) packetParams[3])
+												.byteValue();
+									} else if (packetType == PacketType.EXT_ADD_ENTITY) {
+										byte playerID = ((Byte) packetParams[0])
+												.byteValue();
+										String playerName = (String) packetParams[1];
+										String listName = (String) packetParams[2];
+										String groupName = (String) packetParams[3];
+										byte unusedRank = ((Byte) packetParams[4])
+												.byteValue();
+									} else if (packetType == PacketType.EXT_ADD_ENTITY) {
+										byte playerID = ((Byte) packetParams[0])
+												.byteValue();
+										String playerName = (String) packetParams[1];
+										String skinName = (String) packetParams[2];
+
+										NetworkPlayer player = networkManager.players
+												.get(playerID);
+										if (player != null) {
+											player.SkinName = skinName;
+											((NetworkPlayer) player)
+													.downloadSkin();
+										}
+									} else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
+										String playerName = (String) packetParams[0];
+									}
+									else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
+										System.out.println("Custom block packet");
+										byte SupportLevel = ((Byte) packetParams[0])
+												.byteValue();
+										//byte[] toSendParams = new byte[] { com.oyasunadev.mcraft.client.util.Constants.SupportLevel };
+										networkManager.netHandler
+												.send(PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
+														com.oyasunadev.mcraft.client.util.Constants.SupportLevel);
+										SessionData.SetAllowedBlocks(SupportLevel);
+									}
+									
+										else if (packetType == PacketType.IDENTIFICATION) {
 										networkManager.minecraft.progressBar
 												.setTitle(packetParams[1]
 														.toString());
@@ -2152,161 +2300,100 @@ public final class Minecraft implements Runnable {
 													networkManager.minecraft.player.userType = ((Byte) packetParams[0])
 															.byteValue();
 												}
+												// ===============KICK if packetType is not mutual================
+												
+														//if(com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
+																//.contains(new ExtData(
+																	//	packetType.extName,
+																		//packetType.Version))) 
+																{
+															/* else if (packetType == PacketType.ENV_SET_COLOR) {
+														byte Variable = ((Byte) packetParams[0])
+																.byteValue();
+														byte r = ((Byte) packetParams[1])
+																.byteValue();
+														byte g = ((Byte) packetParams[2])
+																.byteValue();
+														byte b = ((Byte) packetParams[3])
+																.byteValue();
+														int dec = 256 * 256 * r + 256 * g + b;
+														switch (Variable) {
+														case 0: // sky
+															this.level.skyColor = dec;
+															break;
+														case 1: // cloud
+															this.level.cloudColor = dec;
+															break;
+														case 2: // fog
+															this.level.fogColor = dec;
+															break;
+														case 3: // ambient light
+																// (TODO)
+															this.level.customShadowColour = new ColorCache(
+																	r / 255.0F, g / 255.0F,
+																	b / 255.0F);
+															break;
+														case 4: // diffuse color
+																// (TODO)
+															this.level.customLightColour = new ColorCache(
+																	r / 255.0F, g / 255.0F,
+																	b / 255.0F);
+															break;
+														}
+														this.levelRenderer.refresh();
+													} else if (packetType == PacketType.CLICK_DISTANCE) {
+														short Distance = (Short) packetParams[0];
+														this.gamemode.reachDistance = Distance / 32;
+													} else if (packetType == PacketType.HOLDTHIS) {
+														byte BlockToHold = ((Byte) packetParams[0])
+																.byteValue();
+														byte PreventChange = ((Byte) packetParams[1])
+																.byteValue();
+														boolean CanPreventChange = PreventChange > 0;
 
+														if (CanPreventChange == true)
+															GameSettings.CanReplaceSlot = false;
+
+														this.player.inventory.selected = 0;
+														this.player.inventory
+																.replaceSlot(Block.blocks[BlockToHold]);
+
+														if (CanPreventChange == false)
+															GameSettings.CanReplaceSlot = true;
+													} else if (packetType == PacketType.SET_TEXT_HOTKEY) {
+														String Label = (String) packetParams[0];
+														String Action = (String) packetParams[1];
+														int keyCode = (Integer) packetParams[2];
+														byte KeyMods = ((Byte) packetParams[3])
+																.byteValue();
+													} else if (packetType == PacketType.EXT_ADD_ENTITY) {
+														byte playerID = ((Byte) packetParams[0])
+																.byteValue();
+														String playerName = (String) packetParams[1];
+														String listName = (String) packetParams[2];
+														String groupName = (String) packetParams[3];
+														byte unusedRank = ((Byte) packetParams[4])
+																.byteValue();
+													} else if (packetType == PacketType.EXT_ADD_ENTITY) {
+														byte playerID = ((Byte) packetParams[0])
+																.byteValue();
+														String playerName = (String) packetParams[1];
+														String skinName = (String) packetParams[2];
+
+														NetworkPlayer player = networkManager.players
+																.get(playerID);
+														if (player != null) {
+															player.SkinName = skinName;
+															((NetworkPlayer) player)
+																	.downloadSkin();
+														}
+													} else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
+														String playerName = (String) packetParams[0];
+													}*/
+												}
 											}
 										}
 									}
-								}
-
-								else if (packetType == PacketType.EXT_INFO) {
-									String AppName = (String) packetParams[0];
-									short ExtensionCount = (Short) packetParams[1];
-									System.out
-											.println("Connecting to AppName: "
-													+ AppName
-													+ " with extension count: "
-													+ ExtensionCount);
-									recievedExtensionLength = ExtensionCount;
-								} else if (packetType == PacketType.EXT_ENTRY) {
-									String ExtName = (String) packetParams[0];
-									short Version = (Short) packetParams[1];
-									com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
-											.add(new ExtData(ExtName, Version));
-
-									if (recievedExtensionLength == com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
-											.size()) {
-										List<ExtData> temp = new ArrayList<ExtData>();
-										for (int j = 0; j < PacketType.packets.length; j++) {
-											if (PacketType.packets[j].extName != "") {
-												temp.add(new ExtData(
-														PacketType.packets[j].extName,
-														PacketType.packets[j].Version));
-											}
-										}
-										String AppName = "ClassiCube";
-										Object[] toSendParams = new Object[] {
-												AppName, temp.size() };
-										networkManager.netHandler.send(
-												PacketType.EXT_INFO,
-												toSendParams);
-										for (int k = 0; k < temp.size(); k++) {
-											toSendParams = new Object[] {
-													temp.get(k).Name,
-													temp.get(k).Version };
-											networkManager.netHandler.send(
-													PacketType.EXT_ENTRY,
-													toSendParams);
-										}
-									}
-								}
-								// ===============KICK if packetType is not
-								// mutual================
-								else if (packetType.extName != ""
-										&& com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
-												.contains(new ExtData(
-														packetType.extName,
-														packetType.Version))) {
-
-									if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-										byte SupportLevel = ((Byte) packetParams[0])
-												.byteValue();
-										byte[] toSendParams = new byte[] { com.oyasunadev.mcraft.client.util.Constants.SupportLevel };
-										networkManager.netHandler
-												.send(PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
-														toSendParams);
-										SessionData
-												.SetAllowedBlocks(SupportLevel);
-									} else if (packetType == PacketType.ENV_SET_COLOR) {
-										byte Variable = ((Byte) packetParams[0])
-												.byteValue();
-										byte r = ((Byte) packetParams[1])
-												.byteValue();
-										byte g = ((Byte) packetParams[2])
-												.byteValue();
-										byte b = ((Byte) packetParams[3])
-												.byteValue();
-										int dec = 256 * 256 * r + 256 * g + b;
-										switch (Variable) {
-										case 0: // sky
-											this.level.skyColor = dec;
-											break;
-										case 1: // cloud
-											this.level.cloudColor = dec;
-											break;
-										case 2: // fog
-											this.level.fogColor = dec;
-											break;
-										case 3: // ambient light
-												// (TODO)
-											this.level.customShadowColour = new ColorCache(
-													r / 255.0F, g / 255.0F,
-													b / 255.0F);
-											break;
-										case 4: // diffuse color
-												// (TODO)
-											this.level.customLightColour = new ColorCache(
-													r / 255.0F, g / 255.0F,
-													b / 255.0F);
-											break;
-										}
-										this.levelRenderer.refresh();
-									} else if (packetType == PacketType.CLICK_DISTANCE) {
-										short Distance = (Short) packetParams[0];
-										this.gamemode.reachDistance = Distance / 32;
-									} else if (packetType == PacketType.HOLDTHIS) {
-										byte BlockToHold = ((Byte) packetParams[0])
-												.byteValue();
-										byte PreventChange = ((Byte) packetParams[1])
-												.byteValue();
-										boolean CanPreventChange = PreventChange > 0;
-
-										if (CanPreventChange == true)
-											GameSettings.CanReplaceSlot = false;
-
-										this.player.inventory.selected = 0;
-										this.player.inventory
-												.replaceSlot(Block.blocks[BlockToHold]);
-
-										if (CanPreventChange == false)
-											GameSettings.CanReplaceSlot = true;
-									} else if (packetType == PacketType.SET_TEXT_HOTKEY) {
-										String Label = (String) packetParams[0];
-										String Action = (String) packetParams[1];
-										int keyCode = (Integer) packetParams[2];
-										byte KeyMods = ((Byte) packetParams[3])
-												.byteValue();
-									} else if (packetType == PacketType.EXT_ADD_ENTITY) {
-										byte playerID = ((Byte) packetParams[0])
-												.byteValue();
-										String playerName = (String) packetParams[1];
-										String listName = (String) packetParams[2];
-										String groupName = (String) packetParams[3];
-										byte unusedRank = ((Byte) packetParams[4])
-												.byteValue();
-									} else if (packetType == PacketType.EXT_ADD_ENTITY) {
-										byte playerID = ((Byte) packetParams[0])
-												.byteValue();
-										String playerName = (String) packetParams[1];
-										String skinName = (String) packetParams[2];
-
-										NetworkPlayer player = networkManager.players
-												.get(playerID);
-										if (player != null) {
-											player.SkinName = skinName;
-											((NetworkPlayer) player)
-													.downloadSkin();
-										}
-									} else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
-										String playerName = (String) packetParams[0];
-									}
-								} else {
-									var20.minecraft
-											.setCurrentScreen(new ErrorScreen(
-													"Disconnected!",
-													"Unsupported extension type"));
-									var20.minecraft.online = false;
-									var20.netHandler.close();
-									var20.minecraft.networkManager = null;
 								}
 
 								if (!networkHandler.connected) {
@@ -2474,9 +2561,9 @@ public final class Minecraft implements Runnable {
 							// this.player.inventory.replaceSlot(Block.blocks[6]);
 							// GameSettings.CanReplaceSlot = false;
 							this.gamemode.openInventory();
-							// this.level.customLightColour = new
-							// ColorCache(1/255F, 120/255F, 120/255F);
-							// this.level.customShadowColour = new
+							 //this.level.customLightColour = new
+							 //ColorCache(1/255F, 120/255F, 120/255F);
+							 //this.level.customShadowColour = new
 							// ColorCache(120/255F, 1/255F, 120/255F);
 							/*
 							 * if(this.notifyScreen == null){ this.notifyScreen

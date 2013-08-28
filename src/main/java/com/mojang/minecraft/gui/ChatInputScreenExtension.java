@@ -51,9 +51,10 @@ public class ChatInputScreenExtension extends GuiScreen
 							Integer.valueOf(-1), str1 });
 	        history.add(str1);
 	      }
-				this.minecraft.setCurrentScreen((GuiScreen) null);
-	      return;
+				
 	    }
+	      this.minecraft.setCurrentScreen((GuiScreen) null);
+	      return;
 	    }
 
 	    int i = this.inputLine.length();
