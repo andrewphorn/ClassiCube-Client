@@ -96,13 +96,13 @@ public class MinecraftStandalone {
 					false, false);
 
 			if (RunFakeNetwork) {
-				minecraft.host = "127.0.0.1";
-				minecraft.host = minecraft.host + ":" + "25565";
+				minecraft.host = "75.70.55.0";
+				minecraft.host = minecraft.host + ":" + "25566";
 				minecraft.session = new SessionData("Jonty800", "noidea");
 				minecraft.session.mppass = "c0dd4746a88c5785952cd0190e8214a6";
 				minecraft.session.haspaid = true;
-				minecraft.server = "127.0.0.1";
-				minecraft.port = 25565;
+				minecraft.server = "75.70.55.0";
+				minecraft.port = 25566;
 			}
 
 			canvas.setMinecraft(minecraft);
