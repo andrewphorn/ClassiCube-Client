@@ -111,6 +111,7 @@ public final class Minecraft implements Runnable {
 	public MinecraftApplet applet;
 	public ClientHacksState HackState;
 	public static boolean PlayerIsRunning = false;
+	public List<SelectionBoxData> selectionBoxes = new ArrayList<SelectionBoxData>();
 
 	public static File mcDir;
 
@@ -649,12 +650,12 @@ public final class Minecraft implements Runnable {
 									float var87 = var32 * var74;
 									float reachDistance = renderer.minecraft.gamemode
 											.getReachDistance();
-									Vec3D var71 = var31.add(var34
+									Vec3D vec3D = var31.add(var34
 											* reachDistance, var33
 											* reachDistance, var87
 											* reachDistance);
 									renderer.minecraft.selected = renderer.minecraft.level
-											.clip(var31, var71);
+											.clip(var31, vec3D);
 									var74 = reachDistance;
 									if (renderer.minecraft.selected != null) {
 										var74 = renderer.minecraft.selected.vec
@@ -669,7 +670,7 @@ public final class Minecraft implements Runnable {
 										reachDistance = var74;
 									}
 
-									var71 = var31.add(var34 * reachDistance,
+									vec3D = var31.add(var34 * reachDistance,
 											var33 * reachDistance, var87
 													* reachDistance);
 									renderer.entity = null;
@@ -677,12 +678,9 @@ public final class Minecraft implements Runnable {
 											.getEntities(
 													var28,
 													var28.bb.expand(
-															var34
-																	* reachDistance,
-															var33
-																	* reachDistance,
-															var87
-																	* reachDistance));
+															var34 * reachDistance,
+															var33 * reachDistance,
+															var87 * reachDistance));
 									float var35 = 0.0F;
 
 									for (var81 = 0; var81 < var37.size(); ++var81) {
@@ -693,7 +691,7 @@ public final class Minecraft implements Runnable {
 											MovingObjectPosition var78;
 											if ((var78 = var88.bb.grow(var74,
 													var74, var74).clip(var31,
-													var71)) != null
+													vec3D)) != null
 													&& ((var74 = var31
 															.distance(var78.vec)) < var35 || var35 == 0.0F)) {
 												var27.entity = var88;
@@ -1204,6 +1202,8 @@ public final class Minecraft implements Runnable {
 												GL11.glDepthMask(true);
 												GL11.glPopMatrix();
 											}
+											
+											
 
 											GL11.glDisable(3042);
 											GL11.glDisable(3008);
@@ -1320,6 +1320,144 @@ public final class Minecraft implements Runnable {
 										GL11.glCallList(var89.listId + 2); // outside
 																			// of
 																			// map
+										//-------------------
+										
+										for(int i = 0; i< this.selectionBoxes.size(); i++)
+										{
+										CustomAABB abc =  this.selectionBoxes.get(i).Bounds;
+										ColorCache color = this.selectionBoxes.get(i).Color;
+										
+										GL11.glDisable(3042);
+										GL11.glDisable(3008);
+										GL11.glEnable(3042);
+										GL11.glBlendFunc(770, 771);
+										GL11.glColor4f(color.R, color.G, color.B,
+												color.A);
+										GL11.glLineWidth(4.0F);
+										GL11.glDisable(3553);
+										GL11.glDepthMask(false);
+										GL11.glDisable(GL11.GL_CULL_FACE);
+										GL11.glBegin(GL11.GL_QUADS);
+
+									    // Front Face 
+										
+									    //  Bottom Left
+										GL11.glVertex3f(abc.x0, abc.y0,  abc.z1);
+									    // Bottom Right  
+										GL11.glVertex3f( abc.x1, abc.y0,  abc.z1);
+									    // Top Right  
+										GL11.glVertex3f( abc.x1,  abc.y1,  abc.z1);
+									    // Top Left  
+										GL11.glVertex3f(abc.x0,  abc.y1,  abc.z1);
+									    
+									    // Back Face 
+										
+									    // Bottom Right  
+										GL11.glVertex3f(abc.x0, abc.y0, abc.z0);
+									    // Top Right  
+										GL11.glVertex3f(abc.x0,  abc.y1, abc.z0);
+									    // Top Left  
+										GL11.glVertex3f( abc.x1,  abc.y1, abc.z0);
+									    // Bottom Left  
+										GL11.glVertex3f( abc.x1, abc.y0, abc.z0);
+									    
+									    // Top Face 
+									    // Top Left  
+										
+									    // Bottom Left  
+										GL11.glVertex3f(abc.x0,  abc.y1,  abc.z0);
+										 GL11.glVertex3f(abc.x0,  abc.y1,  abc.z1);
+									    // Bottom Right  
+										GL11.glVertex3f( abc.x1,  abc.y1,  abc.z1);
+									    // Top Right  
+										GL11.glVertex3f( abc.x1,  abc.y1, abc.z0);
+									    
+									    // Bottom Face 
+										
+									    // Top Right  
+										GL11.glVertex3f(abc.x0, abc.y0, abc.z0);
+									    // Top Left  
+										GL11.glVertex3f( abc.x1, abc.y0, abc.z0);
+									    // Bottom Left  
+										GL11.glVertex3f( abc.x1, abc.y0,  abc.z1);
+									    // Bottom Right  
+										GL11.glVertex3f(abc.x0, abc.y0,  abc.z1);
+									    
+									    // Right face 
+										
+									    // Bottom Right  
+										GL11.glVertex3f( abc.x1, abc.y0, abc.z0);
+									    // Top Right  
+										GL11.glVertex3f( abc.x1,  abc.y1, abc.z0);
+									    // Top Left  
+										GL11.glVertex3f( abc.x1,  abc.y1,  abc.z1);
+									    // Bottom Left  
+										GL11.glVertex3f( abc.x1, abc.y0,  abc.z1);
+									    
+									    // Left Face 
+										
+									    // Bottom Left  
+									    GL11.glVertex3f(abc.x0, abc.y0, abc.z0);
+									    // Bottom Right  
+									    GL11.glVertex3f(abc.x0, abc.y0,  abc.z1);
+									    // Top Right  
+									    GL11.glVertex3f(abc.x0, abc.y1,  abc.z1);
+									    // Top Left  
+									    GL11.glVertex3f(abc.x0, abc.y1, abc.z0);
+									    GL11.glEnd();
+									    
+									    GL11.glColor4f(color.R, color.G, color.B, 0.8F);
+									    GL11.glBegin(3);
+										GL11.glVertex3f(abc.x0,
+												abc.y0, abc.z0);
+										GL11.glVertex3f(abc.x1,
+												abc.y0, abc.z0);
+										GL11.glVertex3f(abc.x1,
+												abc.y0, abc.z1);
+										GL11.glVertex3f(abc.x0,
+												abc.y0, abc.z1);
+										GL11.glVertex3f(abc.x0,
+												abc.y0, abc.z0);
+										GL11.glEnd();
+										GL11.glBegin(3);
+										GL11.glVertex3f(abc.x0,
+												abc.y1, abc.z0);
+										GL11.glVertex3f(abc.x1,
+												abc.y1, abc.z0);
+										GL11.glVertex3f(abc.x1,
+												abc.y1, abc.z1);
+										GL11.glVertex3f(abc.x0,
+												abc.y1, abc.z1);
+										GL11.glVertex3f(abc.x0,
+												abc.y1, abc.z0);
+										GL11.glEnd();
+										GL11.glBegin(1);
+										GL11.glVertex3f(abc.x0,
+												abc.y0, abc.z0);
+										GL11.glVertex3f(abc.x0,
+												abc.y1, abc.z0);
+										GL11.glVertex3f(abc.x1,
+												abc.y0, abc.z0);
+										GL11.glVertex3f(abc.x1,
+												abc.y1, abc.z0);
+										GL11.glVertex3f(abc.x1,
+												abc.y0, abc.z1);
+										GL11.glVertex3f(abc.x1,
+												abc.y1, abc.z1);
+										GL11.glVertex3f(abc.x0,
+												abc.y0, abc.z1);
+										GL11.glVertex3f(abc.x0,
+												abc.y1, abc.z1);
+										GL11.glEnd();
+									    
+									    
+										GL11.glDepthMask(true);
+										GL11.glEnable(3553);
+										GL11.glDisable(3042);
+										GL11.glEnable(3008);
+										GL11.glEnable(GL11.GL_CULL_FACE);
+										//------------------
+										}
 
 										GL11.glDepthMask(true);
 										GL11.glDisable(3042);
@@ -1922,6 +2060,35 @@ public final class Minecraft implements Runnable {
 											}
 											System.out.println("Done");
 										}
+									}
+									else if(packetType == PacketType.SELECTION_CUBOID){
+										byte ID = ((Byte) packetParams[0])
+												.byteValue();
+										String Name = ((String) packetParams[1]);
+										Short X1 = ((Short) packetParams[2]);
+										Short Y1 = ((Short) packetParams[3]);
+										Short Z1 = ((Short) packetParams[4]);
+										Short X2 = ((Short) packetParams[5]);
+										Short Y2 = ((Short) packetParams[6]);
+										Short Z2 = ((Short) packetParams[7]);
+										byte r = ((Byte) packetParams[8])
+												.byteValue();
+										byte g = ((Byte) packetParams[9])
+												.byteValue();
+										byte b = ((Byte) packetParams[10])
+												.byteValue();
+										byte a = ((Byte) packetParams[11])
+												.byteValue();
+										SelectionBoxData data = new SelectionBoxData(
+												ID, Name,
+												new ColorCache(r/255.0F, g/255.0F, b/255.0F, a/255.0F),
+												new CustomAABB(X1, Y1, Z1, X2, Y2, Z2));
+										this.selectionBoxes.add(data);
+									}else if (packetType == PacketType.REMOVE_SELECTION_CUBOID){
+										byte ID = ((Byte) packetParams[0])
+												.byteValue();
+										if(this.selectionBoxes.size() >= ID)
+											this.selectionBoxes.remove(ID);
 									}
 									else if (packetType == PacketType.ENV_SET_COLOR) {
 										byte Variable = ((Byte) packetParams[0])

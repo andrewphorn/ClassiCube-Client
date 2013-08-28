@@ -88,7 +88,7 @@ public class MinecraftStandalone {
 		 */
 		public void startMinecraft() {
 			
-			boolean RunFakeNetwork = true;
+			boolean RunFakeNetwork = false;
 			
 			MCraftApplet applet = new MCraftApplet();
 			final MinecraftCanvas canvas = new MinecraftCanvas();
@@ -96,12 +96,12 @@ public class MinecraftStandalone {
 					false, false);
 
 			if (RunFakeNetwork) {
-				minecraft.host = "75.70.55.0";
+				minecraft.host = "127.0.0.1";
 				minecraft.host = minecraft.host + ":" + "25566";
-				minecraft.session = new SessionData("Jonty800", "noidea");
+				minecraft.session = new SessionData("SexyScoot", "noidea");
 				minecraft.session.mppass = "c0dd4746a88c5785952cd0190e8214a6";
 				minecraft.session.haspaid = true;
-				minecraft.server = "75.70.55.0";
+				minecraft.server = "127.0.0.1";
 				minecraft.port = 25566;
 			}
 
