@@ -45,6 +45,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.Pbuffer;
@@ -1324,8 +1325,9 @@ public final class Minecraft implements Runnable {
 										
 										for(int i = 0; i< this.selectionBoxes.size(); i++)
 										{
-										CustomAABB abc =  this.selectionBoxes.get(i).Bounds;
+										CustomAABB bounds =  this.selectionBoxes.get(i).Bounds;
 										ColorCache color = this.selectionBoxes.get(i).Color;
+										GL11.glLineWidth(2);
 										
 										GL11.glDisable(3042);
 										GL11.glDisable(3008);
@@ -1333,133 +1335,126 @@ public final class Minecraft implements Runnable {
 										GL11.glBlendFunc(770, 771);
 										GL11.glColor4f(color.R, color.G, color.B,
 												color.A);
-										GL11.glLineWidth(4.0F);
 										GL11.glDisable(3553);
 										GL11.glDepthMask(false);
 										GL11.glDisable(GL11.GL_CULL_FACE);
-										GL11.glBegin(GL11.GL_QUADS);
+										//GL11.glBegin(GL11.GL_QUADS);
 
 									    // Front Face 
 										
 									    //  Bottom Left
-										GL11.glVertex3f(abc.x0, abc.y0,  abc.z1);
+										ShapeRenderer sr = ShapeRenderer.instance;
+									    sr.begin();
+										sr.vertex(bounds.x0, bounds.y0,  bounds.z1);
 									    // Bottom Right  
-										GL11.glVertex3f( abc.x1, abc.y0,  abc.z1);
+										sr.vertex( bounds.x1, bounds.y0,  bounds.z1);
 									    // Top Right  
-										GL11.glVertex3f( abc.x1,  abc.y1,  abc.z1);
+										sr.vertex( bounds.x1,  bounds.y1,  bounds.z1);
 									    // Top Left  
-										GL11.glVertex3f(abc.x0,  abc.y1,  abc.z1);
+										sr.vertex(bounds.x0,  bounds.y1,  bounds.z1);
 									    
 									    // Back Face 
 										
 									    // Bottom Right  
-										GL11.glVertex3f(abc.x0, abc.y0, abc.z0);
+										sr.vertex(bounds.x0, bounds.y0, bounds.z0);
 									    // Top Right  
-										GL11.glVertex3f(abc.x0,  abc.y1, abc.z0);
+										sr.vertex(bounds.x0,  bounds.y1, bounds.z0);
 									    // Top Left  
-										GL11.glVertex3f( abc.x1,  abc.y1, abc.z0);
+										sr.vertex( bounds.x1,  bounds.y1, bounds.z0);
 									    // Bottom Left  
-										GL11.glVertex3f( abc.x1, abc.y0, abc.z0);
+										sr.vertex( bounds.x1, bounds.y0, bounds.z0);
 									    
 									    // Top Face 
 									    // Top Left  
 										
 									    // Bottom Left  
-										GL11.glVertex3f(abc.x0,  abc.y1,  abc.z0);
-										 GL11.glVertex3f(abc.x0,  abc.y1,  abc.z1);
+										sr.vertex(bounds.x0,  bounds.y1,  bounds.z0);
+										 sr.vertex(bounds.x0,  bounds.y1,  bounds.z1);
 									    // Bottom Right  
-										GL11.glVertex3f( abc.x1,  abc.y1,  abc.z1);
+										sr.vertex( bounds.x1,  bounds.y1,  bounds.z1);
 									    // Top Right  
-										GL11.glVertex3f( abc.x1,  abc.y1, abc.z0);
+										sr.vertex( bounds.x1,  bounds.y1, bounds.z0);
 									    
 									    // Bottom Face 
 										
 									    // Top Right  
-										GL11.glVertex3f(abc.x0, abc.y0, abc.z0);
+										sr.vertex(bounds.x0, bounds.y0, bounds.z0);
 									    // Top Left  
-										GL11.glVertex3f( abc.x1, abc.y0, abc.z0);
+										sr.vertex( bounds.x1, bounds.y0, bounds.z0);
 									    // Bottom Left  
-										GL11.glVertex3f( abc.x1, abc.y0,  abc.z1);
+										sr.vertex( bounds.x1, bounds.y0,  bounds.z1);
 									    // Bottom Right  
-										GL11.glVertex3f(abc.x0, abc.y0,  abc.z1);
+										sr.vertex(bounds.x0, bounds.y0,  bounds.z1);
 									    
 									    // Right face 
 										
 									    // Bottom Right  
-										GL11.glVertex3f( abc.x1, abc.y0, abc.z0);
+										sr.vertex( bounds.x1, bounds.y0, bounds.z0);
 									    // Top Right  
-										GL11.glVertex3f( abc.x1,  abc.y1, abc.z0);
+										sr.vertex( bounds.x1,  bounds.y1, bounds.z0);
 									    // Top Left  
-										GL11.glVertex3f( abc.x1,  abc.y1,  abc.z1);
+										sr.vertex( bounds.x1,  bounds.y1,  bounds.z1);
 									    // Bottom Left  
-										GL11.glVertex3f( abc.x1, abc.y0,  abc.z1);
+										sr.vertex( bounds.x1, bounds.y0,  bounds.z1);
 									    
 									    // Left Face 
 										
 									    // Bottom Left  
-									    GL11.glVertex3f(abc.x0, abc.y0, abc.z0);
+									    sr.vertex(bounds.x0, bounds.y0, bounds.z0);
 									    // Bottom Right  
-									    GL11.glVertex3f(abc.x0, abc.y0,  abc.z1);
+									    sr.vertex(bounds.x0, bounds.y0,  bounds.z1);
 									    // Top Right  
-									    GL11.glVertex3f(abc.x0, abc.y1,  abc.z1);
+									    sr.vertex(bounds.x0, bounds.y1,  bounds.z1);
 									    // Top Left  
-									    GL11.glVertex3f(abc.x0, abc.y1, abc.z0);
+									    sr.vertex(bounds.x0, bounds.y1, bounds.z0);
+									    sr.end();
+									    
+									    GL11.glColor4f(color.R, color.G, color.B, color.A + 0.2F);
+									    
+									    
+									    GL11.glBegin(GL11.GL_LINE_STRIP);
+
+									    GL11.glVertex3f(bounds.x0, bounds.y0, bounds.z1);
+									    GL11.glVertex3f(bounds.x0, bounds.y1, bounds.z1);
+									    GL11.glVertex3f(bounds.x1, bounds.y1, bounds.z1);
+									    GL11.glVertex3f(bounds.x1, bounds.y0, bounds.z1);
+									    GL11.glVertex3f(bounds.x0, bounds.y0, bounds.z1);
+
+									    GL11.glVertex3f(bounds.x0, bounds.y0, bounds.z0);
+									    GL11.glVertex3f(bounds.x0, bounds.y1, bounds.z0);
+									    GL11.glVertex3f(bounds.x1, bounds.y1, bounds.z0);
+									    GL11.glVertex3f(bounds.x1, bounds.y0, bounds.z0);
+									    GL11.glVertex3f(bounds.x0, bounds.y0, bounds.z0);
+
 									    GL11.glEnd();
 									    
-									    GL11.glColor4f(color.R, color.G, color.B, 0.8F);
-									    GL11.glBegin(3);
-										GL11.glVertex3f(abc.x0,
-												abc.y0, abc.z0);
-										GL11.glVertex3f(abc.x1,
-												abc.y0, abc.z0);
-										GL11.glVertex3f(abc.x1,
-												abc.y0, abc.z1);
-										GL11.glVertex3f(abc.x0,
-												abc.y0, abc.z1);
-										GL11.glVertex3f(abc.x0,
-												abc.y0, abc.z0);
-										GL11.glEnd();
-										GL11.glBegin(3);
-										GL11.glVertex3f(abc.x0,
-												abc.y1, abc.z0);
-										GL11.glVertex3f(abc.x1,
-												abc.y1, abc.z0);
-										GL11.glVertex3f(abc.x1,
-												abc.y1, abc.z1);
-										GL11.glVertex3f(abc.x0,
-												abc.y1, abc.z1);
-										GL11.glVertex3f(abc.x0,
-												abc.y1, abc.z0);
-										GL11.glEnd();
-										GL11.glBegin(1);
-										GL11.glVertex3f(abc.x0,
-												abc.y0, abc.z0);
-										GL11.glVertex3f(abc.x0,
-												abc.y1, abc.z0);
-										GL11.glVertex3f(abc.x1,
-												abc.y0, abc.z0);
-										GL11.glVertex3f(abc.x1,
-												abc.y1, abc.z0);
-										GL11.glVertex3f(abc.x1,
-												abc.y0, abc.z1);
-										GL11.glVertex3f(abc.x1,
-												abc.y1, abc.z1);
-										GL11.glVertex3f(abc.x0,
-												abc.y0, abc.z1);
-										GL11.glVertex3f(abc.x0,
-												abc.y1, abc.z1);
-										GL11.glEnd();
+									    GL11.glBegin(GL11.GL_LINES);
+
+									    GL11.glVertex3f(bounds.x0, bounds.y0, bounds.z1);
+									    GL11.glVertex3f(bounds.x0, bounds.y0, bounds.z0);
+
+									    GL11.glVertex3f(bounds.x0, bounds.y1, bounds.z1);
+									    GL11.glVertex3f(bounds.x0, bounds.y1, bounds.z0);
+
+									    GL11.glVertex3f(bounds.x1, bounds.y1, bounds.z1);
+									    GL11.glVertex3f(bounds.x1, bounds.y1, bounds.z0);
+
+									    GL11.glVertex3f(bounds.x1, bounds.y0, bounds.z1);
+									    GL11.glVertex3f(bounds.x1, bounds.y0, bounds.z0);
+
+									    GL11.glEnd();
 									    
-									    
-										GL11.glDepthMask(true);
-										GL11.glEnable(3553);
-										GL11.glDisable(3042);
-										GL11.glEnable(3008);
+										 GL11.glDepthMask(true);
+											GL11.glEnable(3553);
+											GL11.glDisable(3042);
+											GL11.glEnable(3008);
+										
 										GL11.glEnable(GL11.GL_CULL_FACE);
+										
 										//------------------
 										}
 
-										GL11.glDepthMask(true);
+										
 										GL11.glDisable(3042);
 										GL11.glDisable(2912);
 										if (var82.minecraft.raining) {
@@ -2728,25 +2723,7 @@ public final class Minecraft implements Runnable {
 							// this.player.inventory.replaceSlot(Block.blocks[6]);
 							// GameSettings.CanReplaceSlot = false;
 							this.gamemode.openInventory();
-							 //this.level.customLightColour = new
-							 //ColorCache(1/255F, 120/255F, 120/255F);
-							 //this.level.customShadowColour = new
-							// ColorCache(120/255F, 1/255F, 120/255F);
-							/*
-							 * if(this.notifyScreen == null){ this.notifyScreen
-							 * = new GuiNotificationScreen("Test",
-							 * "Click Save all parts) the second thing (to delete this (to delete this (to delete this my dog is fat a potential health hazard payment tacos click Save all parts) 3 poor 1 hour homes for rent society has been dreaming of she was very pretty I jut woke up clear your mind part, empty it and (to delete this [new part] click Save all parts) part, empty it and [new part] ) A point and figure chart shows the trend hitting"
-							 * ); int var2 = this.width * 240 / this.height; int
-							 * var3 = this.height * 240 / this.height;
-							 * ((GuiScreen) this.notifyScreen).open(this, var2,
-							 * var3); } else{ this.notifyScreen = new
-							 * GuiNotificationScreen("Test",
-							 * "Click \nSave all parts) the second thing (to delete this (to delete this (to delete this my dog is fat a potential health hazard payment tacos click Save all parts) 3 poor 1 hour homes for rent society has been dreaming of she was very pretty I jut woke up clear your mind part, empty it and (to delete this [new part] click Save all parts) part, empty it and [new part] ) A point and figure chart shows the trend hitting"
-							 * ); int var2 = this.width * 240 / this.height; int
-							 * var3 = this.height * 240 / this.height;
-							 * ((GuiScreen) this.notifyScreen).open(this, var2,
-							 * var3); }
-							 */
+							//this.selectionBoxes.add(new SelectionBoxData((byte) 1,"",new ColorCache(0F,0F,0F,0.6F), new CustomAABB(12,45,30, 20, 30, 40))); 
 						}
 
 						if (Keyboard.getEventKey() == this.settings.chatKey.key
