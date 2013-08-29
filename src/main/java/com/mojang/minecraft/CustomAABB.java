@@ -10,12 +10,12 @@ public class CustomAABB {
 	public float z1;
 
 	public CustomAABB(float var1, float var2, float var3, float var4, float var5, float var6) {
-		var1 += 0.1F;
-		var2 += 0.1F;
-		var3 += 0.1F;
-		var4 -= 0.1F;
-		var5 -= 0.1F;
-		var6 -= 0.1F;
+		var1 += 0.05F;
+		var2 += 0.05F;
+		var3 += 0.05F;
+		var4 -= 0.05F;
+		var5 -= 0.05F;
+		var6 -= 0.05F;
 
 		this.x0 = var1;
 		this.y0 = var2;
