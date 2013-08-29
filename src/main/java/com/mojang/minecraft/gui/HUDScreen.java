@@ -170,7 +170,7 @@ public final class HUDScreen extends Screen {
 
 		byte var25 = 10;
 		boolean var27 = false;
-		if(this.mc.currentScreen instanceof ChatInputScreen) {
+		if(this.mc.currentScreen instanceof ChatInputScreenExtension) {
 			var25 = 20;
 			var27 = true;
 		}
