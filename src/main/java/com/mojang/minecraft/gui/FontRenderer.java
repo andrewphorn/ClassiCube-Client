@@ -58,7 +58,6 @@ public final class FontRenderer {
 			}
 			this.font[character] = chWidth;
 		}
-
 		this.fontId = textures.load(fontImage);
 	}
 	
@@ -80,11 +79,7 @@ public final class FontRenderer {
 			}
 
 			GL11.glPushMatrix();
-			/*
-			 * if(shadow){ if(RenderScale < 1F){ float f3 = 1.0F * RenderScale;
-			 * GL11.glTranslatef(-f3, -f3, 0.0F); } if(RenderScale > 1F){ float
-			 * f3 = 1.0F * RenderScale; GL11.glTranslatef(+f3, +f3, 0.0F); } }
-			 */
+			
 			GL11.glBindTexture(3553, this.fontId);
 
 			ShapeRenderer.instance.begin();
