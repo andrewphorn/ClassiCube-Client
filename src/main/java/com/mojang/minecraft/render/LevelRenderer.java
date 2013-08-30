@@ -180,32 +180,32 @@ public final class LevelRenderer {
    }
 
    public final int sortChunks(Player var1, int var2) {
-      float var3 = var1.x - this.lastLoadX;
-      float var4 = var1.y - this.lastLoadY;
-      float var5 = var1.z - this.lastLoadZ;
-      if(var3 * var3 + var4 * var4 + var5 * var5 > 64.0F) {
-         this.lastLoadX = var1.x;
-         this.lastLoadY = var1.y;
-         this.lastLoadZ = var1.z;
-         Arrays.sort(this.loadQueue, new ChunkDistanceComparator(var1));
-      }
+       float var3 = var1.x - this.lastLoadX;
+       float var4 = var1.y - this.lastLoadY;
+       float var5 = var1.z - this.lastLoadZ;
+       if(var3 * var3 + var4 * var4 + var5 * var5 > 64.0F) {
+          this.lastLoadX = var1.x;
+          this.lastLoadY = var1.y;
+          this.lastLoadZ = var1.z;
+          Arrays.sort(this.loadQueue, new ChunkDistanceComparator(var1));
+       }
 
-      int var6 = 0;
+       int var6 = 0;
 
-      for(int var7 = 0; var7 < this.loadQueue.length; ++var7) {
-         var6 = this.loadQueue[var7].appendLists(this.chunkDataCache, var6, var2);
-      }
+       for(int var7 = 0; var7 < this.loadQueue.length; ++var7) {
+          var6 = this.loadQueue[var7].appendLists(this.chunkDataCache, var6, var2);
+       }
 
-      this.buffer.clear();
-      this.buffer.put(this.chunkDataCache, 0, var6);
-      this.buffer.flip();
-      if(this.buffer.remaining() > 0) {
-         GL11.glBindTexture(3553, this.textureManager.load("/terrain.png"));
-         GL11.glCallLists(this.buffer);
-      }
-      
-      return this.buffer.remaining();
-   }
+       this.buffer.clear();
+       this.buffer.put(this.chunkDataCache, 0, var6);
+       this.buffer.flip();
+       if(this.buffer.remaining() > 0) {
+          GL11.glBindTexture(3553, this.textureManager.load("/terrain.png"));
+          GL11.glCallLists(this.buffer);
+       }
+
+       return this.buffer.remaining();
+    }
 
    public final void queueChunks(int var1, int var2, int var3, int var4, int var5, int var6) {
       var1 /= 16;

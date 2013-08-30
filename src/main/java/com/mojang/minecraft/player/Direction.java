@@ -4,9 +4,9 @@ import com.mojang.minecraft.GameSettings;
 
 public class Direction
 {
-	public Direction(GameSettings settings)
+	public Direction(com.mojang.minecraft.GameSettings gameSettings)
 	{
-		this.settings = settings;
+		this.settings = gameSettings;
 	}
 	public GameSettings settings;
   public float move = 0.0F;
@@ -46,6 +46,7 @@ public class Direction
       this.keylist[i] = false;
   }
 
+	public static final long serialVersionUID = 0L;
   public final void calc()
   {
     this.move = 0.0F;
