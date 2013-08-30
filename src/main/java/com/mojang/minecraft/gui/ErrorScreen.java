@@ -37,12 +37,12 @@ public final class ErrorScreen extends GuiScreen {
 	      if(var1.id == 0) {
 	    	  Minecraft cache = this.minecraft;
 	        	 this.minecraft.shutdown();
-	        	 if(this.minecraft.isOnline()){
+	        	 if(cache.session != null){
 	        		 this.minecraft.networkManager.netHandler.close();
 	        	 }
 	        	 this.minecraft = new Minecraft(cache.canvas, cache.applet, cache.width, cache.height, false, cache.isApplet );
 	        	 
-	         if(cache.isOnline()){
+	         if(cache.session != null){
 	        	 this.minecraft.host = cache.host;
 	        	 this.minecraft.port = cache.port;
 	        	 this.minecraft.host = cache.host + ":" + cache.port;

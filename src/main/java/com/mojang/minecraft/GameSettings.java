@@ -21,7 +21,7 @@ public final class GameSettings
 	public static int typinglogpos = 0;
 	public GameSettings(Minecraft minecraft, File minecraftFolder)
 	{
-		bindings = new KeyBinding[] {forwardKey, leftKey, backKey, rightKey, jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey, runKey};
+		bindings = new KeyBinding[] {forwardKey, leftKey, backKey, rightKey, jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey};
 
 		settingCount = 10;
 
@@ -61,9 +61,6 @@ public final class GameSettings
 	public String[] smoothingOptions = new String[] {"OFF", "Automatic", "Universal"};
 	public int anisotropic = 0;
 	public String[] anisotropicOptions = new String[] {"OFF", "ON"};
-
-	public KeyBinding runKey = new KeyBinding("Run", Keyboard.KEY_LSHIFT);
-
 	
 	public KeyBinding flyKey = new KeyBinding("Fly", Keyboard.KEY_Z);
 	public KeyBinding flyUp = new KeyBinding("Fly Up", Keyboard.KEY_Q);
@@ -80,6 +77,7 @@ public final class GameSettings
 
 		save();
 	}
+	
 
 	public void toggleSetting(int setting, int fogValue)
 	{

@@ -478,6 +478,63 @@ public class Level implements Serializable {
 
       return false;
    }
+   
+   public boolean containsBlock(AABB var1, Block var2) {
+       int var3 = (int)var1.x0;
+       int var4 = (int)var1.x1 + 1;
+       int var5 = (int)var1.y0;
+       int var6 = (int)var1.y1 + 1;
+       int var7 = (int)var1.z0;
+       int var8 = (int)var1.z1 + 1;
+       if(var1.x0 < 0.0F) {
+          --var3;
+       }
+
+       if(var1.y0 < 0.0F) {
+          --var5;
+       }
+
+       if(var1.z0 < 0.0F) {
+          --var7;
+       }
+
+       if(var3 < 0) {
+          var3 = 0;
+       }
+
+       if(var5 < 0) {
+          var5 = 0;
+       }
+
+       if(var7 < 0) {
+          var7 = 0;
+       }
+
+       if(var4 > this.width) {
+          var4 = this.width;
+       }
+
+       if(var6 > this.depth) {
+          var6 = this.depth;
+       }
+
+       if(var8 > this.height) {
+          var8 = this.height;
+       }
+
+       for(int var11 = var3; var11 < var4; ++var11) {
+          for(var3 = var5; var3 < var6; ++var3) {
+             for(int var9 = var7; var9 < var8; ++var9) {
+                Block var10;
+                if((var10 = Block.blocks[this.getTile(var11, var3, var9)]) != null && var10 == var2) {
+                   return true;
+                }
+             }
+          }
+       }
+
+       return false;
+    }
 
    public boolean containsLiquid(AABB var1, LiquidType var2) {
       int var3 = (int)var1.x0;
