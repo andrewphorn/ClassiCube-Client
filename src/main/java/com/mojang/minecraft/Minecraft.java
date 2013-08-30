@@ -108,6 +108,7 @@ public final class Minecraft implements Runnable {
     public static boolean PlayerIsRunning = false;
     public List<SelectionBoxData> selectionBoxes = new ArrayList<SelectionBoxData>();
     public List<HotKeyData> hotKeys = new ArrayList<HotKeyData>();
+    public HackState HackState;
 
     public static File mcDir;
 
@@ -2632,6 +2633,23 @@ public final class Minecraft implements Runnable {
 			    this.setCurrentScreen(s);
 			    s.inputLine = "/";
 			}
+			if (Keyboard.getEventKey() == Keyboard.KEY_X) {
+				if (HackState == HackState.HacksTagEnabled
+						|| HackState == HackState.OpHacks
+						&& this.player.userType >= 100) {
+					this.player.noPhysics = !this.player.noPhysics;
+					this.player.hovered = !this.player.hovered;
+				}
+			}
+
+			if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
+				if (HackState == HackState.HacksTagEnabled
+						|| HackState == HackState.NoHacksTagShown
+						|| HackState == HackState.OpHacks
+						&& this.player.userType >= 100) {
+					this.player.flyingMode = !this.player.flyingMode;
+				}
+			}
 
 			if (Keyboard.getEventKey() == 15
 				&& this.gamemode instanceof SurvivalGameMode
@@ -2846,7 +2864,7 @@ public final class Minecraft implements Runnable {
 	}
 
 	if (this.player == null) {
-	    this.player = new Player(var1, this);
+	    this.player = new Player(var1);
 	    this.player.resetPos();
 	    this.gamemode.preparePlayer(this.player);
 	    if (var1 != null) {
