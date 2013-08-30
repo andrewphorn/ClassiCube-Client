@@ -24,9 +24,9 @@ import java.util.zip.InflaterInputStream;
 
 public final class ProgressBarDisplay {
 
-	private String text = "";
+	public String text = "";
 	private Minecraft minecraft;
-	private String title = "";
+	public String title = "";
 	private long start = System.currentTimeMillis();
 
 	public ProgressBarDisplay(Minecraft var1) {
@@ -79,17 +79,6 @@ public final class ProgressBarDisplay {
 						System.out.println(e.getMessage());
 					}
 				}
-				terrainId = (serverConfig.get("environment.terrain"));
-				edgeId = (serverConfig.get("environment.edge"));
-				sideId = (serverConfig.get("environment.side"));
-			}
-			if ((terrainId != "") || (edgeId != "") || (sideId != "")
-					|| (serverConfig.containsKey("environment.level"))
-					|| (serverConfig.containsKey("environment.fog"))
-					|| (serverConfig.containsKey("environment.sky"))
-					|| (serverConfig.containsKey("environment.cloud"))) {
-				//downloadSkin(minecraft);
-				//minecraft.textureManager.textures.clear();
 			}
 		} else
 			return false; // return false if no "cfg=" was found
@@ -119,7 +108,7 @@ public final class ProgressBarDisplay {
 		return true;
 	}
 
-	public static void InitEnv(Minecraft minecraft) {
+	/*public static void InitEnv(Minecraft minecraft) {
 		if (serverConfig == null)
 			return;
 		int i1;
@@ -155,7 +144,7 @@ public final class ProgressBarDisplay {
 			}
 		}
 		
-	}
+	}*/
 
 	public static HashMap<String, String> fetchConfig(String location) {
 		HashMap<String, String> localHashMap = new HashMap<String, String>();
@@ -388,28 +377,6 @@ public final class ProgressBarDisplay {
 		} else {
 			if (!passServerCommand(var1)) {
 				this.text = var1;
-			}
-			// check here for hacks
-			if (minecraft.HackState == null) { //change only once per session
-				if(this.minecraft.session == null){
-					//presume singleplayer
-					minecraft.HackState = ClientHacksState.HacksTagEnabled;
-					return;
-				}
-				if (this.text.toLowerCase().contains("+hax")) {
-					minecraft.HackState = ClientHacksState.HacksTagEnabled;
-				} else if (this.text.toLowerCase().contains("-hax")) {
-					minecraft.HackState = ClientHacksState.HacksTagDisabled;
-					minecraft.settings.CanSpeed = false;
-				} else if (this.text.toLowerCase().contains("+ophacks") || 
-						this.text.toLowerCase().contains("+ophax")) {
-					minecraft.HackState = ClientHacksState.OpHacks;
-					if(this.minecraft.player.userType < 100){
-						minecraft.settings.CanSpeed = false;
-					}
-				} else {
-					minecraft.HackState = ClientHacksState.NoHacksTagShown;
-				}
 			}
 			this.setProgress(-1);
 		}

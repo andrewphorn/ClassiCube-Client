@@ -1,9 +1,7 @@
 package com.mojang.minecraft.mob;
 
-import com.mojang.minecraft.ClientHacksState;
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
-import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.mob.ai.AI;
 import com.mojang.minecraft.mob.ai.BasicAI;
@@ -414,26 +412,11 @@ public class Mob extends Entity {
 
 	public void travel(float yya, float xxa) {
 		float y1;
-		float multiply = 1.0F;
 
-		if (ai instanceof BasicAI) {
-			BasicAI ai1 = (BasicAI) ai;
-			if (!this.flyingMode) {
-				if (ai1.running) {
-					multiply = 10F; // 6x with momentum
-				} else {
-					multiply = 1.0F; // 1x
-				}
-			} else if (this.flyingMode && ai1.running) {
-				multiply = 90F; // 6x
-			} else
-				multiply = 15F; // 1x
-		}
-
-		if (isInWater() && !this.flyingMode && !this.noPhysics) {
+		if (isInWater()) {
 			y1 = y;
 
-			moveRelative(yya, xxa * multiply, 0.02F * multiply);
+			moveRelative(yya, xxa , 0.02F);
 			move(xd, yd, zd);
 
 			xd *= 0.8F;
@@ -446,32 +429,26 @@ public class Mob extends Entity {
 				yd = 0.3F;
 			}
 
-		} else if ((this.isInLava() || this.isInSpiderWeb()) && !this.flyingMode && !this.noPhysics) {
+		} else if ((this.isInLava() || this.isInSpiderWeb())) {
 			y1 = y;
-			if (multiply > 5)
-				multiply = 5F;
-			moveRelative(yya, xxa, 0.02F * multiply);
+			
+			moveRelative(yya, xxa, 0.02F);
 			move(xd, yd, zd);
 
 			xd *= 0.5F;
 			yd *= 0.5F;
 			zd *= 0.5F;
 
-			yd = (float) ((double) yd - 0.02D) * multiply;
+			yd = (float) ((double) yd - 0.02D);
 
 			if (horizontalCollision && isFree(xd, yd + 0.6F - y + y1, zd)) {
 				yd = 0.3F;
 			}
 
 		} else {
-			if (!this.flyingMode)
-				moveRelative(yya, xxa, (onGround ? 0.1F : 0.02F) * multiply);
-			else
-				moveRelative(yya, xxa, (0.02F) * multiply);
-			float m = multiply / 5;
-			if (m < 1)
-				m = 1;
-			move(xd, yd * m, zd);
+			moveRelative(yya, xxa, (onGround ? 0.1F : 0.02F));
+			
+			move(xd, yd, zd);
 
 			xd *= 0.91F;
 			yd *= 0.98F;

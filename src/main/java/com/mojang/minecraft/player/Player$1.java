@@ -15,9 +15,6 @@ public class Player$1 extends BasicAI
 	{
 		this.jumping = player.input.jumping;
 		this.running = player.input.running;
-		this.flying = player.input.flying;
-		this.flyingUp = player.input.flyingUp;
-		this.flyingDown = player.input.flyingDown;
 		this.xxa = player.input.xxa;
 		this.yya = player.input.yya;
 
