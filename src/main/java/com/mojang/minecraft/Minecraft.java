@@ -25,7 +25,6 @@ import com.mojang.minecraft.particle.WaterDropParticle;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.player.InputHandlerImpl;
 import com.mojang.minecraft.player.Player;
-import com.mojang.minecraft.player.PlayerExtension;
 import com.mojang.minecraft.render.*;
 import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.render.texture.TextureLavaFX;
@@ -68,7 +67,7 @@ public final class Minecraft implements Runnable {
     private Timer timer = new Timer(20.0F);
     public Level level;
     public LevelRenderer levelRenderer;
-    public PlayerExtension player;
+    public Player player;
     public ParticleManager particleManager;
     public SessionData session = null;
     public String host;
@@ -1040,300 +1039,45 @@ public final class Minecraft implements Runnable {
 					var82.updateFog();
 					var101 = var89;
 
-					GL11.glBindTexture(3553,
-						var89.textureManager
-							.load("/clouds.png"));
+					GL11.glBindTexture(3553, var89.textureManager.load("/clouds.png"));
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-					var107 = (var89.level.cloudColor >> 16 & 255) / 255.0F;
-					var29 = (var89.level.cloudColor >> 8 & 255) / 255.0F;
-					var30 = (var89.level.cloudColor & 255) / 255.0F;
-					if (var89.minecraft.settings.anaglyph) {
-					    var117 = (var107 * 30.0F + var29
-						    * 59.0F + var30 * 11.0F) / 100.0F;
-					    var32 = (var107 * 30.0F + var29 * 70.0F) / 100.0F;
-					    var69 = (var107 * 30.0F + var30 * 70.0F) / 100.0F;
-					    var107 = var117;
-					    var29 = var32;
-					    var30 = var69;
+					var107 = (float)(var89.level.cloudColor >> 16 & 255) / 255.0F;
+					var29 = (float)(var89.level.cloudColor >> 8 & 255) / 255.0F;
+					var30 = (float)(var89.level.cloudColor & 255) / 255.0F;
+					if(var89.minecraft.settings.anaglyph) {
+						var117 = (var107 * 30.0F + var29 * 59.0F + var30 * 11.0F) / 100.0F;
+						var32 = (var107 * 30.0F + var29 * 70.0F) / 100.0F;
+						var69 = (var107 * 30.0F + var30 * 70.0F) / 100.0F;
+						var107 = var117;
+						var29 = var32;
+						var30 = var69;
 					}
 
 					shapeRenderer = ShapeRenderer.instance;
 					var74 = 0.0F;
 					var33 = 4.8828125E-4F;
-					var74 = var89.level.depth + 2;
-					var34 = (var89.ticks + var80) * var33
-						* 0.03F;
+					var74 = (float)(var89.level.depth + 2);
+					var34 = ((float)var89.ticks + var80) * var33 * 0.03F;
 					var35 = 0.0F;
 					shapeRenderer.begin();
-					shapeRenderer.color(var107, var29,
-						var30);
+					shapeRenderer.color(var107, var29, var30);
 
-					for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
-					    for (var125 = -2048; var125 < var101.level.height + 2048; var125 += 512) {
-						shapeRenderer.vertexUV(var86,
-							var74, var125 + 512,
-							var86 * var33 + var34,
-							(var125 + 512) * var33);
-						shapeRenderer.vertexUV(
-							var86 + 512, var74,
-							var125 + 512,
-							(var86 + 512) * var33
-								+ var34,
-							(var125 + 512) * var33);
-						shapeRenderer.vertexUV(
-							var86 + 512, var74,
-							var125,
-							(var86 + 512) * var33
-								+ var34, var125
-								* var33);
-						shapeRenderer.vertexUV(var86,
-							var74, var125,
-							var86 * var33 + var34,
-							var125 * var33);
-						shapeRenderer.vertexUV(var86,
-							var74, var125,
-							var86 * var33 + var34,
-							var125 * var33);
-						shapeRenderer.vertexUV(
-							var86 + 512, var74,
-							var125,
-							(var86 + 512) * var33
-								+ var34, var125
-								* var33);
-						shapeRenderer.vertexUV(
-							var86 + 512, var74,
-							var125 + 512,
-							(var86 + 512) * var33
-								+ var34,
-							(var125 + 512) * var33);
-						shapeRenderer.vertexUV(var86,
-							var74, var125 + 512,
-							var86 * var33 + var34,
-							(var125 + 512) * var33);
-					    }
+					for(var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
+						for(var125 = -2048; var125 < var101.level.height + 2048; var125 += 512) {
+						    shapeRenderer.vertexUV((float)var86, var74, (float)(var125 + 512), (float)var86 * var33 + var34, (float)(var125 + 512) * var33);
+							shapeRenderer.vertexUV((float)(var86 + 512), var74, (float)(var125 + 512), (float)(var86 + 512) * var33 + var34, (float)(var125 + 512) * var33);
+							shapeRenderer.vertexUV((float)(var86 + 512), var74, (float)var125, (float)(var86 + 512) * var33 + var34, (float)var125 * var33);
+							shapeRenderer.vertexUV((float)var86, var74, (float)var125, (float)var86 * var33 + var34, (float)var125 * var33);
+							shapeRenderer.vertexUV((float)var86, var74, (float)var125, (float)var86 * var33 + var34, (float)var125 * var33);
+							shapeRenderer.vertexUV((float)(var86 + 512), var74, (float)var125, (float)(var86 + 512) * var33 + var34, (float)var125 * var33);
+							shapeRenderer.vertexUV((float)(var86 + 512), var74, (float)(var125 + 512), (float)(var86 + 512) * var33 + var34, (float)(var125 + 512) * var33);
+							shapeRenderer.vertexUV((float)var86, var74, (float)(var125 + 512), (float)var86 * var33 + var34, (float)(var125 + 512) * var33);
+						}
 					}
 
 					shapeRenderer.end();
-					/*
-					 * shapeRenderer.color(var107, var29,
-					 * var30); ShapeRenderer tessellator =
-					 * shapeRenderer; byte b0 = 8; byte b1 =
-					 * 4; float f13 = 9.765625E-4F; float f2
-					 * = 12.0F; float f3 = 4.0F; float f4 =
-					 * this.level.depth - 0.33F;
-					 * GL11.glPushMatrix();
-					 * GL11.glScalef(f2, 1.0F, f2);
-					 * GL11.glDisable(GL11.GL_CULL_FACE);
-					 * lastCloudPosition +=0.01F;
-					 * if(lastCloudPosition > 512)
-					 * lastCloudPosition = 0; for (int k =
-					 * 0; k < 2; ++k) { if (k == 0) {
-					 * GL11.glColorMask(false, false, false,
-					 * false); } else if
-					 * (this.settings.anaglyph) {
-					 * GL11.glColorMask(true, false, false,
-					 * true);
-					 * 
-					 * } else { GL11.glColorMask(true, true,
-					 * true, true); } for (int l = -b1 + 1;
-					 * l <= b1; ++l) { for (int i1 = -b1 +
-					 * 1; i1 <= b1; ++i1) {
-					 * tessellator.begin(); float f14 =
-					 * (float)(l * b0); float f15 =
-					 * (float)(i1 * b0); float d1 = 2048;
-					 * float d2 = 2048; float f11 =
-					 * (float)(d1 - (double)Math.floor(d1));
-					 * float f12 = (float)(d2 -
-					 * (double)Math.floor(d2)); float f16 =
-					 * (f14 - f11) + lastCloudPosition;
-					 * float f17 = f15 - f12; float f9 =
-					 * 0.00390625F; float f8 =
-					 * (float)Math.floor(d1) * f9; float f10
-					 * = (float)Math.floor(d2) * f9;
-					 * 
-					 * if (f4 > -f3 - 1.0F) {
-					 * //tessellator.color(f5 * 0.7F, f6 *
-					 * 0.7F, f7 * 0.7F);
-					 * tessellator.normal(0.0F, -1.0F,
-					 * 0.0F);
-					 * tessellator.vertexUV((float)(f16 +
-					 * 0.0F), (float)(f4 + 0.0F),
-					 * (float)(f17 + (float)b0),
-					 * (float)((f14 + 0.0F) * f9 + f8),
-					 * (float)((f15 + (float)b0) * f9 +
-					 * f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)b0), (float)(f4 + 0.0F),
-					 * (float)(f17 + (float)b0),
-					 * (float)((f14 + (float)b0) * f9 + f8),
-					 * (float)((f15 + (float)b0) * f9 +
-					 * f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)b0), (float)(f4 + 0.0F),
-					 * (float)(f17 + 0.0F), (float)((f14 +
-					 * (float)b0) * f9 + f8), (float)((f15 +
-					 * 0.0F) * f9 + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * 0.0F), (float)(f4 + 0.0F),
-					 * (float)(f17 + 0.0F), (float)((f14 +
-					 * 0.0F) * f9 + f8), (float)((f15 +
-					 * 0.0F) * f9 + f10)); }
-					 * 
-					 * if (f4 <= f3 + 1.0F) { //
-					 * tessellator.color(f5, f6, f7);
-					 * tessellator.normal(0.0F, 1.0F, 0.0F);
-					 * tessellator.vertexUV((float)(f16 +
-					 * 0.0F), (float)(f4 + f3 - f13),
-					 * (float)(f17 + (float)b0),
-					 * (float)((f14 + 0.0F) * f9 + f8),
-					 * (float)((f15 + (float)b0) * f9 +
-					 * f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)b0), (float)(f4 + f3 - f13),
-					 * (float)(f17 + (float)b0),
-					 * (float)((f14 + (float)b0) * f9 + f8),
-					 * (float)((f15 + (float)b0) * f9 +
-					 * f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)b0), (float)(f4 + f3 - f13),
-					 * (float)(f17 + 0.0F), (float)((f14 +
-					 * (float)b0) * f9 + f8), (float)((f15 +
-					 * 0.0F) * f9 + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * 0.0F), (float)(f4 + f3 - f13),
-					 * (float)(f17 + 0.0F), (float)((f14 +
-					 * 0.0F) * f9 + f8), (float)((f15 +
-					 * 0.0F) * f9 + f10)); }
-					 * 
-					 * // tessellator.color(f5 * 0.9F, f6 *
-					 * 0.9F, f7 * 0.9F); int j1;
-					 * 
-					 * if (l > -1) {
-					 * tessellator.normal(-1.0F, 0.0F,
-					 * 0.0F);
-					 * 
-					 * for (j1 = 0; j1 < b0; ++j1) {
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)j1 + 0.0F), (float)(f4 +
-					 * 0.0F), (float)(f17 + (float)b0),
-					 * (float)((f14 + (float)j1 + 0.5F) * f9
-					 * + f8), (float)((f15 + (float)b0) * f9
-					 * + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)j1 + 0.0F), (float)(f4 + f3),
-					 * (float)(f17 + (float)b0),
-					 * (float)((f14 + (float)j1 + 0.5F) * f9
-					 * + f8), (float)((f15 + (float)b0) * f9
-					 * + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)j1 + 0.0F), (float)(f4 + f3),
-					 * (float)(f17 + 0.0F), (float)((f14 +
-					 * (float)j1 + 0.5F) * f9 + f8),
-					 * (float)((f15 + 0.0F) * f9 + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)j1 + 0.0F), (float)(f4 +
-					 * 0.0F), (float)(f17 + 0.0F),
-					 * (float)((f14 + (float)j1 + 0.5F) * f9
-					 * + f8), (float)((f15 + 0.0F) * f9 +
-					 * f10)); } }
-					 * 
-					 * if (l <= 1) {
-					 * tessellator.normal(1.0F, 0.0F, 0.0F);
-					 * 
-					 * for (j1 = 0; j1 < b0; ++j1) {
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)j1 + 1.0F - f13), (float)(f4 +
-					 * 0.0F), (float)(f17 + (float)b0),
-					 * (float)((f14 + (float)j1 + 0.5F) * f9
-					 * + f8), (float)((f15 + (float)b0) * f9
-					 * + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)j1 + 1.0F - f13), (float)(f4 +
-					 * f3), (float)(f17 + (float)b0),
-					 * (float)((f14 + (float)j1 + 0.5F) * f9
-					 * + f8), (float)((f15 + (float)b0) * f9
-					 * + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)j1 + 1.0F - f13), (float)(f4 +
-					 * f3), (float)(f17 + 0.0F),
-					 * (float)((f14 + (float)j1 + 0.5F) * f9
-					 * + f8), (float)((f15 + 0.0F) * f9 +
-					 * f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)j1 + 1.0F - f13), (float)(f4 +
-					 * 0.0F), (float)(f17 + 0.0F),
-					 * (float)((f14 + (float)j1 + 0.5F) * f9
-					 * + f8), (float)((f15 + 0.0F) * f9 +
-					 * f10)); } }
-					 * 
-					 * //tessellator.color(f5 * 0.8F, f6 *
-					 * 0.8F, f7 * 0.8F);
-					 * 
-					 * if (i1 > -1) {
-					 * tessellator.normal(0.0F, 0.0F,
-					 * -1.0F);
-					 * 
-					 * for (j1 = 0; j1 < b0; ++j1) {
-					 * tessellator.vertexUV((float)(f16 +
-					 * 0.0F), (float)(f4 + f3), (float)(f17
-					 * + (float)j1 + 0.0F), (float)((f14 +
-					 * 0.0F) * f9 + f8), (float)((f15 +
-					 * (float)j1 + 0.5F) * f9 + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)b0), (float)(f4 + f3),
-					 * (float)(f17 + (float)j1 + 0.0F),
-					 * (float)((f14 + (float)b0) * f9 + f8),
-					 * (float)((f15 + (float)j1 + 0.5F) * f9
-					 * + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)b0), (float)(f4 + 0.0F),
-					 * (float)(f17 + (float)j1 + 0.0F),
-					 * (float)((f14 + (float)b0) * f9 + f8),
-					 * (float)((f15 + (float)j1 + 0.5F) * f9
-					 * + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * 0.0F), (float)(f4 + 0.0F),
-					 * (float)(f17 + (float)j1 + 0.0F),
-					 * (float)((f14 + 0.0F) * f9 + f8),
-					 * (float)((f15 + (float)j1 + 0.5F) * f9
-					 * + f10)); } }
-					 * 
-					 * if (i1 <= 1) {
-					 * tessellator.normal(0.0F, 0.0F, 1.0F);
-					 * 
-					 * for (j1 = 0; j1 < b0; ++j1) {
-					 * tessellator.vertexUV((float)(f16 +
-					 * 0.0F), (float)(f4 + f3), (float)(f17
-					 * + (float)j1 + 1.0F - f13),
-					 * (float)((f14 + 0.0F) * f9 + f8),
-					 * (float)((f15 + (float)j1 + 0.5F) * f9
-					 * + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)b0), (float)(f4 + f3),
-					 * (float)(f17 + (float)j1 + 1.0F -
-					 * f13), (float)((f14 + (float)b0) * f9
-					 * + f8), (float)((f15 + (float)j1 +
-					 * 0.5F) * f9 + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * (float)b0), (float)(f4 + 0.0F),
-					 * (float)(f17 + (float)j1 + 1.0F -
-					 * f13), (float)((f14 + (float)b0) * f9
-					 * + f8), (float)((f15 + (float)j1 +
-					 * 0.5F) * f9 + f10));
-					 * tessellator.vertexUV((float)(f16 +
-					 * 0.0F), (float)(f4 + 0.0F),
-					 * (float)(f17 + (float)j1 + 1.0F -
-					 * f13), (float)((f14 + 0.0F) * f9 +
-					 * f8), (float)((f15 + (float)j1 + 0.5F)
-					 * * f9 + f10)); } }
-					 * 
-					 * tessellator.end(); } } }
-					 * GL11.glPopMatrix();
-					 * GL11.glEnable(GL11.GL_CULL_FACE);
-					 */
 					GL11.glDisable(3553);
-					shapeRenderer = ShapeRenderer.instance;
+					
 					shapeRenderer.begin();
 					var34 = (var101.level.skyColor >> 16 & 255) / 255.0F;
 					var35 = (var101.level.skyColor >> 8 & 255) / 255.0F;
@@ -1517,43 +1261,29 @@ public final class Minecraft implements Runnable {
 					var82.updateFog();
 					GL11.glEnable(3553);
 					GL11.glEnable(3042);
-					GL11.glBindTexture(3553,
-						var89.textureManager
-							.load("/water.png"));
-					GL11.glCallList(var89.listId + 1); // outside
-									   // of
-									   // map
+					GL11.glBindTexture(3553, var89.textureManager.load("/water.png"));
+					GL11.glCallList(var89.listId + 1);
 					GL11.glDisable(3042);
 					GL11.glEnable(3042);
-					GL11.glColorMask(false, false, false,
-						false);
-
+					GL11.glColorMask(false, false, false, false);
+					var120 = var89.sortChunks(var126, 1);
 					GL11.glColorMask(true, true, true, true);
-					if (var82.minecraft.settings.anaglyph) {
-					    if (var77 == 0) {
-						GL11.glColorMask(false, true,
-							true, false);
-					    } else {
-						GL11.glColorMask(true, false,
-							false, false);
-					    }
+					if(var82.minecraft.settings.anaglyph) {
+						if(var77 == 0) {
+							GL11.glColorMask(false, true, true, false);
+						} else {
+							GL11.glColorMask(true, false, false, false);
+						}
 					}
-					var120 = var89.sortChunks(var126, 1); // draws
-									      // the
-									      // blocks
-					if (var120 > 0) {
-					    GL11.glBindTexture(
-						    3553,
-						    var89.textureManager
-							    .load("/terrain.png"));
-					    GL11.glCallLists(var89.buffer); // draws
-									    // the
-									    // transparent
-									    // blocks
+
+					if(var120 > 0) {
+						GL11.glBindTexture(3553, var89.textureManager.load("/terrain.png"));
+						GL11.glCallLists(var89.buffer);
 					}
-					GL11.glCallList(var89.listId + 2); // outside
-									   // of
-									   // map
+
+					GL11.glDepthMask(true);
+					GL11.glDisable(3042);
+					GL11.glDisable(2912);
 					// -------------------
 
 					for (int i = 0; i < this.selectionBoxes
@@ -1730,9 +1460,6 @@ public final class Minecraft implements Runnable {
 
 					    // ------------------
 					}
-
-					GL11.glDisable(3042);
-					GL11.glDisable(2912);
 					if (var82.minecraft.raining) {
 					    float var97 = var80;
 					    var27 = var82;
@@ -3106,7 +2833,7 @@ public final class Minecraft implements Runnable {
 	    var1.font = this.fontRenderer;
 	    var1.rendererContext$5cd64a7f = this;
 	    if (!this.isOnline()) {
-		this.player = (PlayerExtension) var1
+		this.player = (Player) var1
 			.findSubclassOf(Player.class);
 	    } else if (this.player != null) {
 		this.player.resetPos();
@@ -3119,7 +2846,7 @@ public final class Minecraft implements Runnable {
 	}
 
 	if (this.player == null) {
-	    this.player = new PlayerExtension(var1, this);
+	    this.player = new Player(var1, this);
 	    this.player.resetPos();
 	    this.gamemode.preparePlayer(this.player);
 	    if (var1 != null) {

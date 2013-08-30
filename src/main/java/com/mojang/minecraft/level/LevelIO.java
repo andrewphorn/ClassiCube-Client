@@ -29,9 +29,15 @@ public final class LevelIO {
 
    public final boolean save(Level var1, File var2) {
       try {
-         FileOutputStream var5 = new FileOutputStream(var2);
-         save(var1, (OutputStream)var5);
-         var5.close();
+	  FileOutputStream fos = new FileOutputStream(var2);
+		GZIPOutputStream gos = new GZIPOutputStream(fos);
+		ObjectOutputStream out = new ObjectOutputStream(gos);
+		out.writeLong(var1.serialVersionUID);
+		out.writeObject(var1);
+		out.close();
+		gos.close();
+		fos.close();
+        
          return true;
       } catch (Exception var4) {
          var4.printStackTrace();

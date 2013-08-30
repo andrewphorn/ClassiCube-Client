@@ -8,16 +8,16 @@ import org.lwjgl.opengl.GL11;
 
 public final class Chunk {
 
-   public Level level;
+   private Level level;
    private int baseListId = -1;
-   public static ShapeRenderer renderer = ShapeRenderer.instance;
+   private static ShapeRenderer renderer = ShapeRenderer.instance;
    public static int chunkUpdates = 0;
-   public int x;
-   public int y;
-   public int z;
-   public int width;
-   public int height;
-   public int depth;
+   private int x;
+   private int y;
+   private int z;
+   private int width;
+   private int height;
+   private int depth;
    public boolean visible = false;
    private boolean[] dirty = new boolean[2];
    public boolean loaded;
@@ -36,9 +36,9 @@ public final class Chunk {
 
    public final void update() {
       ++chunkUpdates;
-      int X = this.x;
-      int Y = this.y;
-      int Z = this.z;
+      int var1 = this.x;
+      int var2 = this.y;
+      int var3 = this.z;
       int var4 = this.x + this.width;
       int var5 = this.y + this.height;
       int var6 = this.z + this.depth;
@@ -54,28 +54,26 @@ public final class Chunk {
          GL11.glNewList(this.baseListId + var7, 4864);
          renderer.begin();
 
-         for(int var10 = X; var10 < var4; ++var10) {
-            for(int var11 = Y; var11 < var5; ++var11) {
-               for(int var12 = Z; var12 < var6; ++var12) {
+         for(int var10 = var1; var10 < var4; ++var10) {
+            for(int var11 = var2; var11 < var5; ++var11) {
+               for(int var12 = var3; var12 < var6; ++var12) {
                   int var13;
                   if((var13 = this.level.getTile(var10, var11, var12)) > 0) {
                      Block var14;
-                    	 if((var14 = Block.blocks[var13]).getRenderPass() != var7) {
-                             var8 = true;
-                          } else {
-                             var9 |= var14.render(this.level, var10, var11, var12, renderer);
-                          } 
+                     if((var14 = Block.blocks[var13]).getRenderPass() != var7) {
+                        var8 = true;
+                     } else {
+                        var9 |= var14.render(this.level, var10, var11, var12, renderer);
                      }
+                  }
                }
             }
          }
 
          renderer.end();
          GL11.glEndList();
-         
-         
          if(var9) {
-        	 this.dirty[var7] = false;
+            this.dirty[var7] = false;
          }
 
          if(!var8) {
