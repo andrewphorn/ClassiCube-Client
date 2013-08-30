@@ -14,7 +14,7 @@ public class Skeleton extends Zombie {
       this.textureName = "/mob/skeleton.png";
       Skeleton$1 var5 = new Skeleton$1(this);
       this.deathScore = 120;
-      var5.runSpeed = 0.3F;
+      //var5.runSpeed = 0.3F;
       var5.damage = 8;
       this.ai = var5;
    }
