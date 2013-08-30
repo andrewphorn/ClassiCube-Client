@@ -13,10 +13,10 @@ public class Player$1 extends BasicAI
 	@Override
 	protected void update()
 	{
-		this.jumping = player.input.jumping;
-		this.running = player.input.running;
-		this.xxa = player.input.xxa;
-		this.yya = player.input.yya;
+		//this.jumping = player.input.jumping;
+		//this.running = player.input.running;
+		//this.xxa = player.input.xxa;
+		//this.yya = player.input.yya;
 
 		
 	}

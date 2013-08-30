@@ -246,12 +246,6 @@ public class Player extends Mob
 	    if (i != 0) {
 	      this.yd *= f2 / 4.0F;
 	      this.walkDist = 0.0F;
-	      try {
-	        Field localField2 = Entity.class.getDeclaredField("nextStep");
-	        localField2.setAccessible(true);
-	        localField2.set(this, Integer.valueOf(0));
-	      } catch (Exception localException2) {
-	      }
 	    }
 	    else {
 	      this.yd = ((float)(this.yd - 0.01D));

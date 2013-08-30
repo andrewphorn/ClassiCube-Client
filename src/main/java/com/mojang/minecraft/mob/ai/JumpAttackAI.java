@@ -6,7 +6,7 @@ public class JumpAttackAI extends BasicAttackAI {
 
 
    public JumpAttackAI() {
-      this.runSpeed *= 0.8F;
+     // this.runSpeed *= 0.8F;
    }
 
    protected void jumpFromGround() {

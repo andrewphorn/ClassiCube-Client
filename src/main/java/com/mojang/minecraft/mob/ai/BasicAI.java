@@ -16,9 +16,9 @@ public class BasicAI extends AI {
 	protected float yRotA;
 	public Level level;
 	public Mob mob;
-	public boolean jumping = false;
+	//public boolean jumping = false;
 	protected int attackDelay = 0;
-	public float runSpeed = 0.7F;
+	//public float runSpeed = 0.7F;
 	protected int noActionTime = 0;
 	public Entity attackTarget = null;
 
@@ -45,7 +45,7 @@ public class BasicAI extends AI {
 		}
 
 		if(var2.health <= 0) {
-			this.jumping = false;
+			//this.jumping = false;
 			this.xxa = 0.0F;
 			this.yya = 0.0F;
 			this.yRotA = 0.0F;
@@ -53,7 +53,7 @@ public class BasicAI extends AI {
 			this.update();
 		}
 
-		boolean var7 = var2.isInWater();
+		/*boolean var7 = var2.isInWater();
 		boolean var9 = var2.isInLava();
 		boolean varA = var2.isInSpiderWeb();
 		if(this.jumping) {
@@ -64,7 +64,7 @@ public class BasicAI extends AI {
 			} else if(var2.onGround) {
 				this.jumpFromGround();
 			}
-		}
+		}*/
 
 		this.xxa *= 0.98F;
 		this.yya *= 0.98F;
@@ -83,16 +83,16 @@ public class BasicAI extends AI {
 	}
 
 	protected void jumpFromGround() {
-		this.mob.yd = 0.42F;
+		//this.mob.yd = 0.42F;
 	}
 
 	protected void update() {
 		if(this.random.nextFloat() < 0.07F) {
-			this.xxa = (this.random.nextFloat() - 0.5F) * this.runSpeed;
-			this.yya = this.random.nextFloat() * this.runSpeed;
+			this.xxa = (this.random.nextFloat() - 0.5F);
+			this.yya = this.random.nextFloat();
 		}
 
-		this.jumping = this.random.nextFloat() < 0.01F;
+		//this.jumping = this.random.nextFloat() < 0.01F;
 		if(this.random.nextFloat() < 0.04F) {
 			this.yRotA = (this.random.nextFloat() - 0.5F) * 60.0F;
 		}
@@ -100,16 +100,16 @@ public class BasicAI extends AI {
 		this.mob.yRot += this.yRotA;
 		this.mob.xRot = (float)this.defaultLookAngle;
 		if(this.attackTarget != null) {
-			this.yya = this.runSpeed;
-			this.jumping = this.random.nextFloat() < 0.04F;
+			//this.yya = this.runSpeed;
+			//this.jumping = this.random.nextFloat() < 0.04F;
 		}
 
-		boolean var1 = this.mob.isInWater();
+		/*boolean var1 = this.mob.isInWater();
 		boolean var2 = this.mob.isInLava();
 		boolean var3 = this.mob.isInSpiderWeb();
 		if(var1 || var2 || var3) {
 			this.jumping = this.random.nextFloat() < 0.8F;
-		}
+		}*/
 
 	}
 
