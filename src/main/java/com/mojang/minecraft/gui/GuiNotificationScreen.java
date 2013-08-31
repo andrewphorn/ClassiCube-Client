@@ -22,21 +22,20 @@ public final class GuiNotificationScreen extends GuiScreen {
 	this.grabsMouse = true;
 	start();
     }
-    
+
     private final Timer timer = new Timer();
     private final int miliseconds;
 
     public void start() {
-        timer.schedule(new TimerTask() {
-            public void run() {
-                Stop();
-                timer.cancel();
-            }
-        }, miliseconds);
+	timer.schedule(new TimerTask() {
+	    public void run() {
+		Stop();
+		timer.cancel();
+	    }
+	}, miliseconds);
     }
-    
-    void Stop()
-    {
+
+    void Stop() {
 	this.minecraft.notifyScreen = null;
     }
 
@@ -54,15 +53,16 @@ public final class GuiNotificationScreen extends GuiScreen {
 	GL11.glTranslatef(this.width * 0.7F - 2 + widthOffset,
 		this.height * 0.7F - 21, 0.0F);
 	GL11.glScalef(0.3F, 0.3F, 0.3F);
-	drawBox(0, 0, this.width - 2, this.height - (this.height / 4), Integer.MIN_VALUE);
+	drawBox(0, 0, this.width - 2, this.height - (this.height / 4),
+		Integer.MIN_VALUE);
 
 	GL11.glScalef(2F, 2F, 2F);
-	drawCenteredString(this.fontRenderer, this.title, (this.width / 2 / 2), 20,
-		16777215);
+	drawCenteredString(this.fontRenderer, this.title, (this.width / 2 / 2),
+		20, 16777215);
 
 	int lastSubstring = 0;
 	int lastWidth = 0;
-	for (int i = 0; i <= 41 * 6; i += 41) {
+	for (int i = 0; i <= 41 * 4; i += 41) {
 	    try {
 		drawCenteredString(
 			this.fontRenderer,

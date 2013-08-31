@@ -4,60 +4,55 @@ import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.render.TextureManager;
 
-public class TakeEntityAnim extends Entity
-{
-	public TakeEntityAnim(Level level1, Entity item, Entity player)
-	{
-		super(level1);
+public class TakeEntityAnim extends Entity {
+    public TakeEntityAnim(Level level1, Entity item, Entity player) {
+	super(level1);
 
-		this.item = item;
-		this.player = player;
+	this.item = item;
+	this.player = player;
 
-		setSize(1.0F, 1.0F);
+	setSize(1.0F, 1.0F);
 
-		xorg = item.x;
-		yorg = item.y;
-		zorg = item.z;
+	xorg = item.x;
+	yorg = item.y;
+	zorg = item.z;
+    }
+
+    @Override
+    public void tick() {
+	time++;
+
+	if (time >= 3) {
+	    remove();
 	}
 
-	@Override
-	public void tick()
-	{
-		time++;
+	// TODO: Is this right?
+	float distance = (distance = (float) time / 3.0F) * distance;
 
-		if(time >= 3)
-		{
-			remove();
-		}
+	xo = item.xo = item.x;
+	yo = item.yo = item.y;
+	zo = item.zo = item.z;
 
-		// TODO: Is this right?
-		float distance = (distance = (float)time / 3.0F) * distance;
+	x = item.x = xorg + (player.x - xorg) * distance;
+	y = item.y = yorg + (player.y - 1.0F - yorg) * distance;
+	z = item.z = zorg + (player.z - zorg) * distance;
 
-		xo = item.xo = item.x;
-		yo = item.yo = item.y;
-		zo = item.zo = item.z;
+	setPos(x, y, z);
+    }
 
-		x = item.x = xorg + (player.x - xorg) * distance;
-		y = item.y = yorg + (player.y - 1.0F - yorg) * distance;
-		z = item.z = zorg + (player.z - zorg) * distance;
+    @Override
+    public void render(TextureManager textureManager, float unknown0) {
+	item.render(textureManager, unknown0);
+    }
 
-		setPos(x, y, z);
-	}
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public void render(TextureManager textureManager, float unknown0)
-	{
-		item.render(textureManager, unknown0);
-	}
+    private int time = 0;
 
-	private static final long serialVersionUID = 1L;
+    private Entity item;
+    private Entity player;
 
-	private int time = 0;
-
-	private Entity item;
-	private Entity player;
-
-	private float xorg;
-	private float yorg;
-	private float zorg;
+    private float xorg;
+    private float yorg;
+    private float zorg;
 }
