@@ -57,6 +57,7 @@ import java.math.BigInteger;
 import java.nio.IntBuffer;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -121,7 +122,7 @@ public final class Minecraft implements Runnable {
 	// new ColorCache(0F, 1.0F, 0F, 0.6F), new CustomAABB(12, 45, 30,
 	// 20, 30, 40)));
 	
-	/*for(int i = 0; i< 140; i++){
+	for(int i = 0; i< 140; i++){
 	    String group = "Guest";
 	    if(i > 8)group = "Owner";
 	    if(i > 11) group = "Test";
@@ -132,7 +133,8 @@ public final class Minecraft implements Runnable {
 	    if(i > 45) group = "aaaaa";
 	    this.playerListNameData.add(new PlayerListNameData((short) i, "" +i, "" +i, group, (byte)1));
 	    
-	}*/
+	}
+	Collections.sort(playerListNameData, new PlayerListComparator());
 	this.isApplet = IsApplet;
 	this.levelIo = new LevelIO(this.progressBar);
 	this.sound = new SoundManager();
