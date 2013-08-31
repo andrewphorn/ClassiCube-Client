@@ -2,7 +2,6 @@ package com.mojang.minecraft.gui;
 
 import com.mojang.minecraft.ChatLine;
 import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.PlayerListComparator;
 import com.mojang.minecraft.PlayerListNameData;
 import com.mojang.minecraft.gamemode.SurvivalGameMode;
 import com.mojang.minecraft.level.tile.Block;
@@ -14,13 +13,12 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public final class HUDScreen extends Screen {
 
-    public List chat = new ArrayList();
+    public List<ChatLine> chat = new ArrayList<ChatLine>();
     private Random random = new Random();
     private Minecraft mc;
     public int width;
@@ -215,7 +213,7 @@ public final class HUDScreen extends Screen {
 		if (Keyboard.isKeyDown(l)) {
 		    Page = l - 2;
 		}
-	    List playersOnWorld = this.mc.networkManager.getPlayers();
+	    List<String> playersOnWorld = this.mc.networkManager.getPlayers();
 	    GL11.glEnable(3042);
 	    GL11.glDisable(3553);
 	    GL11.glBlendFunc(770, 771);
@@ -307,7 +305,7 @@ public final class HUDScreen extends Screen {
 
     }
 
-    public int FindGroupChanges(int Page, List playerListNames) {
+    public int FindGroupChanges(int Page, List<PlayerListNameData> playerListNames) {
 	int groupChanges = 0;
 	String lastGroupName = "";
 	int rangeA = (28 * (Page));

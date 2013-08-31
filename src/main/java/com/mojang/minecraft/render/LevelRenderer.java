@@ -17,7 +17,7 @@ public final class LevelRenderer {
    public TextureManager textureManager;
    public int listId;
    public IntBuffer buffer = BufferUtils.createIntBuffer(65536);
-   public List chunks = new ArrayList();
+   public List<Chunk> chunks = new ArrayList<Chunk>();
    private Chunk[] loadQueue;
    public Chunk[] chunkCache;
    private int xChunks;
@@ -238,7 +238,7 @@ public final class LevelRenderer {
          var6 = this.zChunks - 1;
       }
 
-      for(var1 = var1; var1 <= var4; ++var1) {
+      for(; var1 <= var4; ++var1) {
          for(int var7 = var2; var7 <= var5; ++var7) {
             for(int var8 = var3; var8 <= var6; ++var8) {
                Chunk var9;

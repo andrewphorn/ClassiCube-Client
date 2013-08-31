@@ -248,7 +248,6 @@ public class OggPage {
          int totalLength=0;
 
          byte[] segmentTable=new byte[pageSegments];
-         byte[] tmpBuf=new byte[1];
 
          for(int i=0; i<pageSegments; i++) {
             int l=0;

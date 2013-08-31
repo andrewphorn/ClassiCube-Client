@@ -38,10 +38,9 @@ public class UncachedUrlStream implements PhysicalOggStream {
    private URLConnection source;
    private InputStream sourceStream;
    private Object drainLock=new Object();
-   private LinkedList pageCache=new LinkedList();
-   private long numberOfSamples=-1;
+   private LinkedList<OggPage> pageCache=new LinkedList<OggPage>();
 
-   private HashMap logicalStreams=new HashMap();
+   private HashMap<Integer, LogicalOggStreamImpl> logicalStreams=new HashMap<Integer, LogicalOggStreamImpl>();
 
    private LoaderThread loaderThread;
 
@@ -70,7 +69,7 @@ public class UncachedUrlStream implements PhysicalOggStream {
       //System.out.println();
    }
 
-   public Collection getLogicalStreams() {
+   public Collection<LogicalOggStreamImpl> getLogicalStreams() {
       return logicalStreams.values();
    }
 
@@ -126,15 +125,11 @@ public class UncachedUrlStream implements PhysicalOggStream {
    public class LoaderThread implements Runnable {
 
       private InputStream source;
-      private LinkedList pageCache;
-      private RandomAccessFile drain;
-      private byte[] memoryCache;
+      private LinkedList<OggPage> pageCache;
 
       private boolean bosDone=false;
 
-      private int pageNumber;
-
-      public LoaderThread(InputStream source, LinkedList pageCache) {
+      public LoaderThread(InputStream source, LinkedList<OggPage> pageCache) {
          this.source=source;
          this.pageCache=pageCache;
       }
@@ -142,7 +137,6 @@ public class UncachedUrlStream implements PhysicalOggStream {
       public void run() {
          try {
             boolean eos=false;
-            byte[] buffer=new byte[8192];
             while(!eos) {
                OggPage op=OggPage.create(source);
                synchronized (drainLock) {
@@ -158,15 +152,10 @@ public class UncachedUrlStream implements PhysicalOggStream {
 
                LogicalOggStreamImpl los=(LogicalOggStreamImpl)getLogicalStream(op.getStreamSerialNumber());
                if(los==null) {
-                  los=new LogicalOggStreamImpl(UncachedUrlStream.this, op.getStreamSerialNumber());
+                  los=new LogicalOggStreamImpl(UncachedUrlStream.this);
                   logicalStreams.put(new Integer(op.getStreamSerialNumber()), los);
                   los.checkFormat(op);
                }
-
-               //los.addPageNumberMapping(pageNumber);
-               //los.addGranulePosition(op.getAbsoluteGranulePosition());
-
-               pageNumber++;
 
                while(pageCache.size()>PAGECACHE_SIZE) {
                   try {

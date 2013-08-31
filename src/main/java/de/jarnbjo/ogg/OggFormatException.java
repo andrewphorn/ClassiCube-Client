@@ -30,7 +30,12 @@ import java.io.IOException;
 
 public class OggFormatException extends IOException {
 
-   public OggFormatException() {
+   /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+public OggFormatException() {
       super();
    }
 

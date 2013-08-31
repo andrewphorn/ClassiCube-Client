@@ -40,7 +40,7 @@ abstract class Residue {
    protected int classBook; // groupbook
    protected int[] cascade; // secondstages
    protected int[][] books;
-   protected HashMap looks=new HashMap();
+   protected HashMap<Mode, Look> looks=new HashMap<Mode, Look>();
 
    protected Residue() {
    }
@@ -54,8 +54,6 @@ abstract class Residue {
 
       cascade=new int[classifications];
 
-      int acc=0;
-
       for(int i=0; i<classifications; i++) {
          int highBits=0, lowBits=0;
          lowBits=source.getInt(3);
@@ -63,7 +61,6 @@ abstract class Residue {
             highBits=source.getInt(5);
          }
          cascade[i]=(highBits<<3)|lowBits;
-         acc+=Util.icount(cascade[i]);
       }
 
       books=new int[classifications][8];
@@ -166,7 +163,7 @@ abstract class Residue {
       int frames;
 
       protected Look (VorbisStream source, Mode mode) {
-         int dim=0, acc=0, maxstage=0;
+         int dim=0, maxstage=0;
 
          map=mode.getMapping();
          parts=Residue.this.getClassifications();

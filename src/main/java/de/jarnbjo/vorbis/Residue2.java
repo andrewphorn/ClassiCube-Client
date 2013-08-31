@@ -24,7 +24,6 @@
 package de.jarnbjo.vorbis;
 
 import java.io.IOException;
-import java.util.*;
 
 import de.jarnbjo.util.io.BitInputStream;
 
@@ -47,9 +46,6 @@ class Residue2 extends Residue {
 
       Look look=getLook(vorbis, mode);
 
-      CodeBook codeBook=vorbis.getSetupHeader().getCodeBooks()[getClassBook()];
-
-      int classvalsPerCodeword=codeBook.getDimensions();
       int nToRead=getEnd()-getBegin();
       int partitionsToRead=nToRead/getPartitionSize(); // partvals
 

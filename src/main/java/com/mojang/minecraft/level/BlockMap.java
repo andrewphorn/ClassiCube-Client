@@ -17,12 +17,13 @@ public class BlockMap implements Serializable {
    private int height;
    private BlockMap$Slot slot = new BlockMap$Slot(this, (SyntheticClass)null);
    private BlockMap$Slot slot2 = new BlockMap$Slot(this, (SyntheticClass)null);
-   public List[] entityGrid;
-   public List all = new ArrayList();
-   private List tmp = new ArrayList();
+   public List<Entity>[] entityGrid;
+   public List<Entity> all = new ArrayList<Entity>();
+   private List<Entity> tmp = new ArrayList<Entity>();
 
 
-   public BlockMap(int var1, int var2, int var3) {
+   @SuppressWarnings("unchecked")
+public BlockMap(int var1, int var2, int var3) {
       this.width = var1 / 16;
       this.depth = var2 / 16;
       this.height = var3 / 16;
@@ -43,7 +44,7 @@ public class BlockMap implements Serializable {
       for(var1 = 0; var1 < this.width; ++var1) {
          for(var2 = 0; var2 < this.depth; ++var2) {
             for(var3 = 0; var3 < this.height; ++var3) {
-               this.entityGrid[(var3 * this.depth + var2) * this.width + var1] = new ArrayList();
+               this.entityGrid[(var3 * this.depth + var2) * this.width + var1] = new ArrayList<Entity>();
             }
          }
       }
@@ -76,12 +77,12 @@ public class BlockMap implements Serializable {
       }
    }
 
-   public List getEntities(Entity var1, float var2, float var3, float var4, float var5, float var6, float var7) {
+   public List<Entity> getEntities(Entity var1, float var2, float var3, float var4, float var5, float var6, float var7) {
       this.tmp.clear();
       return this.getEntities(var1, var2, var3, var4, var5, var6, var7, this.tmp);
    }
 
-   public List getEntities(Entity var1, float var2, float var3, float var4, float var5, float var6, float var7, List var8) {
+   public List<Entity> getEntities(Entity var1, float var2, float var3, float var4, float var5, float var6, float var7, List<Entity> var8) {
       BlockMap$Slot var9 = this.slot.init(var2, var3, var4);
       BlockMap$Slot var10 = this.slot2.init(var5, var6, var7);
 
@@ -89,7 +90,7 @@ public class BlockMap implements Serializable {
          for(int var12 = BlockMap$Slot.getYSlot(var9) - 1; var12 <= BlockMap$Slot.getYSlot(var10) + 1; ++var12) {
             for(int var13 = BlockMap$Slot.getZSlot(var9) - 1; var13 <= BlockMap$Slot.getZSlot(var10) + 1; ++var13) {
                if(var11 >= 0 && var12 >= 0 && var13 >= 0 && var11 < this.width && var12 < this.depth && var13 < this.height) {
-                  List var14 = this.entityGrid[(var13 * this.depth + var12) * this.width + var11];
+                  List<?> var14 = this.entityGrid[(var13 * this.depth + var12) * this.width + var11];
 
                   for(int var15 = 0; var15 < var14.size(); ++var15) {
                      Entity var16;
@@ -109,7 +110,7 @@ public class BlockMap implements Serializable {
       for(int var1 = 0; var1 < this.width; ++var1) {
          for(int var2 = 0; var2 < this.depth; ++var2) {
             for(int var3 = 0; var3 < this.height; ++var3) {
-               List var4 = this.entityGrid[(var3 * this.depth + var2) * this.width + var1];
+               List<?> var4 = this.entityGrid[(var3 * this.depth + var2) * this.width + var1];
 
                for(int var5 = 0; var5 < var4.size(); ++var5) {
                   if(!((Entity)var4.get(var5)).isCreativeModeAllowed()) {
@@ -133,19 +134,19 @@ public class BlockMap implements Serializable {
 
    }
 
-   public List getEntities(Entity var1, AABB var2) {
+   public List<Entity> getEntities(Entity var1, AABB var2) {
       this.tmp.clear();
       return this.getEntities(var1, var2.x0, var2.y0, var2.z0, var2.x1, var2.y1, var2.z1, this.tmp);
    }
 
-   public List getEntities(Entity var1, AABB var2, List var3) {
+   public List<Entity> getEntities(Entity var1, AABB var2, List<Entity> var3) {
       return this.getEntities(var1, var2.x0, var2.y0, var2.z0, var2.x1, var2.y1, var2.z1, var3);
    }
 
    public void tickAll() {
       for(int var1 = 0; var1 < this.all.size(); ++var1) {
          Entity var2;
-         (var2 = (Entity)this.all.get(var1)).tick();
+         (var2 = this.all.get(var1)).tick();
          if(var2.removed) {
             this.all.remove(var1--);
             this.slot.init(var2.xOld, var2.yOld, var2.zOld).remove(var2);
@@ -174,7 +175,7 @@ public class BlockMap implements Serializable {
             float var10 = (float)((var8 + 1 << 4) + 2);
 
             for(int var11 = 0; var11 < this.height; ++var11) {
-               List var12;
+               List<?> var12;
                if((var12 = this.entityGrid[(var11 * this.depth + var8) * this.width + var5]).size() != 0) {
                   float var13 = (float)((var11 << 4) - 2);
                   float var14 = (float)((var11 + 1 << 4) + 2);

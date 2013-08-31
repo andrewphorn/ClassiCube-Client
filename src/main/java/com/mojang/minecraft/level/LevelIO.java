@@ -32,7 +32,7 @@ public final class LevelIO {
 	  FileOutputStream fos = new FileOutputStream(var2);
 		GZIPOutputStream gos = new GZIPOutputStream(fos);
 		ObjectOutputStream out = new ObjectOutputStream(gos);
-		out.writeLong(var1.serialVersionUID);
+		out.writeLong(Level.serialVersionUID);
 		out.writeObject(var1);
 		out.close();
 		gos.close();
