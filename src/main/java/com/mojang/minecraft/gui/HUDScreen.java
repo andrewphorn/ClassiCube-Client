@@ -2,6 +2,7 @@ package com.mojang.minecraft.gui;
 
 import com.mojang.minecraft.ChatLine;
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.PlayerListComparator;
 import com.mojang.minecraft.PlayerListNameData;
 import com.mojang.minecraft.gamemode.SurvivalGameMode;
 import com.mojang.minecraft.level.tile.Block;
@@ -13,6 +14,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -219,11 +221,11 @@ public final class HUDScreen extends Screen {
 	    GL11.glBlendFunc(770, 771);
 	    GL11.glBegin(7);
 	    GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.7F);
-	    GL11.glVertex2f((float) (i + 128), (float) (var15 - 68 - 12));
-	    GL11.glVertex2f((float) (i - 128), (float) (var15 - 68 - 12));
+	    GL11.glVertex2f((float) (i + 132), (float) (var15 - 72 - 12));
+	    GL11.glVertex2f((float) (i - 132), (float) (var15 - 72 - 12));
 	    GL11.glColor4f(0.2F, 0.2F, 0.2F, 0.8F);
-	    GL11.glVertex2f((float) (i - 128), (float) (var15 + 68));
-	    GL11.glVertex2f((float) (i + 128), (float) (var15 + 68));
+	    GL11.glVertex2f((float) (i - 132), (float) (var15 + 72));
+	    GL11.glVertex2f((float) (i + 132), (float) (var15 + 72));
 	    GL11.glEnd();
 	    GL11.glDisable(3042);
 	    GL11.glEnable(3553);
@@ -256,22 +258,15 @@ public final class HUDScreen extends Screen {
 		int x = i + 8;
 		int y = var15 - 73;
 		int groupChanges = 0;
+		boolean hasStartedNewColumn = false;
+		
 		List<PlayerListNameData> namesToPrint = new ArrayList<PlayerListNameData>();
 
-		int rangeA = (maxStringsPerScreen * (Page)) - groupChanges;
-		int rangeB = rangeA + (maxStringsPerScreen - FindGroupChanges(Page,
-			    playerListNames));
-		rangeB = Math.min(rangeB, playerListNames.size());
-		for (int k = rangeA; k < rangeB; k++) {
-		    namesToPrint.add(playerListNames.get(k));
-		}
-		
 		for (int m = 0; m < Page; m++) {
 		    groupChanges += FindGroupChanges(m, playerListNames);
 		}
-		namesToPrint.clear();
-		rangeA = (maxStringsPerScreen * (Page)) - groupChanges;
-		rangeB = rangeA + (maxStringsPerScreen) - FindGroupChanges(Page,
+		int rangeA = (maxStringsPerScreen * (Page)) - groupChanges;
+		int rangeB = rangeA + (maxStringsPerScreen) - FindGroupChanges(Page,
 			    playerListNames);
 		rangeB = Math.min(rangeB, playerListNames.size());
 		for (int k = rangeA; k < rangeB; k++) {
@@ -282,8 +277,10 @@ public final class HUDScreen extends Screen {
 		    if (var11  < maxStringsPerColumn - groupsOnThisPage) {
 			x = (i - 128) + 8;
 		    } else {
-			if (var11 == maxStringsPerColumn - groupsOnThisPage )
+			if ((var11 >= maxStringsPerColumn - groupsOnThisPage) && !hasStartedNewColumn ){
 			    y = var15 - 73;
+			    hasStartedNewColumn = true;
+			}
 			x = i + 8;
 		    }
 		    
