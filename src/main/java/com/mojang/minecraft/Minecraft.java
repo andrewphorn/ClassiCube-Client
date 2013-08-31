@@ -122,7 +122,7 @@ public final class Minecraft implements Runnable {
 	// new ColorCache(0F, 1.0F, 0F, 0.6F), new CustomAABB(12, 45, 30,
 	// 20, 30, 40)));
 	
-	for(int i = 0; i< 140; i++){
+	/*for(int i = 0; i< 140; i++){
 	    String group = "Guest";
 	    if(i > 8)group = "Owner";
 	    if(i > 11) group = "Test";
@@ -134,7 +134,7 @@ public final class Minecraft implements Runnable {
 	    this.playerListNameData.add(new PlayerListNameData((short) i, "" +i, "" +i, group, (byte)1));
 	    
 	}
-	Collections.sort(playerListNameData, new PlayerListComparator());
+	Collections.sort(playerListNameData, new PlayerListComparator());*/
 	this.isApplet = IsApplet;
 	this.levelIo = new LevelIO(this.progressBar);
 	this.sound = new SoundManager();
@@ -1372,12 +1372,6 @@ public final class Minecraft implements Runnable {
 							    .load("/terrain.png"));
 					    GL11.glCallLists(var89.buffer);
 					}
-
-					GL11.glDepthMask(true);
-					GL11.glDisable(3042);
-					GL11.glDisable(2912);
-					// -------------------
-
 					for (int i = 0; i < this.selectionBoxes
 						.size(); i++) {
 					    CustomAABB bounds = this.selectionBoxes
