@@ -117,10 +117,9 @@ public class ResourceDownloadThread extends Thread {
 			    Minecraft.mcDir, "native"));
 		}
 		deleteDir(new File(Minecraft.mcDir, "lwjgl-2.9.0"));
-		    deleteDir(file);
+		deleteDir(file);
 	    }
 
-	    
 	    GameSettings.StatusString = "Downloaded lwjgl...";
 	    System.out.println("Downloaded lwjgl...");
 	    GameSettings.StatusString = "";

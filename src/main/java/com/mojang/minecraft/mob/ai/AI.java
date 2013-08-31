@@ -8,13 +8,15 @@ import java.io.Serializable;
 
 public abstract class AI implements Serializable {
 
-   public static final long serialVersionUID = 0L;
-   public int defaultLookAngle = 0;
+    public static final long serialVersionUID = 0L;
+    public int defaultLookAngle = 0;
 
+    public void tick(Level var1, Mob var2) {
+    }
 
-   public void tick(Level var1, Mob var2) {}
+    public void beforeRemove() {
+    }
 
-   public void beforeRemove() {}
-
-   public void hurt(Entity var1, int var2) {}
+    public void hurt(Entity var1, int var2) {
+    }
 }

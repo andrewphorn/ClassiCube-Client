@@ -29,83 +29,89 @@ import de.jarnbjo.util.io.BitInputStream;
 
 class Residue2 extends Residue {
 
-   private double[][] decodedVectors;
+    private double[][] decodedVectors;
 
-   private Residue2() {
-   }
+    private Residue2() {
+    }
 
-   protected Residue2(BitInputStream source, SetupHeader header) throws VorbisFormatException, IOException {
-      super(source, header);
-   }
+    protected Residue2(BitInputStream source, SetupHeader header)
+	    throws VorbisFormatException, IOException {
+	super(source, header);
+    }
 
-   protected int getType() {
-      return 2;
-   }
+    protected int getType() {
+	return 2;
+    }
 
-   protected void decodeResidue(VorbisStream vorbis, BitInputStream source, Mode mode, int ch, boolean[] doNotDecodeFlags, float[][] vectors) throws VorbisFormatException, IOException {
+    protected void decodeResidue(VorbisStream vorbis, BitInputStream source,
+	    Mode mode, int ch, boolean[] doNotDecodeFlags, float[][] vectors)
+	    throws VorbisFormatException, IOException {
 
-      Look look=getLook(vorbis, mode);
+	Look look = getLook(vorbis, mode);
 
-      int nToRead=getEnd()-getBegin();
-      int partitionsToRead=nToRead/getPartitionSize(); // partvals
+	int nToRead = getEnd() - getBegin();
+	int partitionsToRead = nToRead / getPartitionSize(); // partvals
 
-      int samplesPerPartition=getPartitionSize();
-      int partitionsPerWord=look.getPhraseBook().getDimensions();
+	int samplesPerPartition = getPartitionSize();
+	int partitionsPerWord = look.getPhraseBook().getDimensions();
 
-      int partWords=(partitionsToRead+partitionsPerWord-1)/partitionsPerWord;
+	int partWords = (partitionsToRead + partitionsPerWord - 1)
+		/ partitionsPerWord;
 
-      int realCh=0;
-      for(int i=0; i<doNotDecodeFlags.length; i++) {
-         if(!doNotDecodeFlags[i]) {
-            realCh++;
-         }
-      }
+	int realCh = 0;
+	for (int i = 0; i < doNotDecodeFlags.length; i++) {
+	    if (!doNotDecodeFlags[i]) {
+		realCh++;
+	    }
+	}
 
-      float[][] realVectors=new float[realCh][];
+	float[][] realVectors = new float[realCh][];
 
-      realCh=0;
-      for(int i=0; i<doNotDecodeFlags.length; i++) {
-         if(!doNotDecodeFlags[i]) {
-            realVectors[realCh++]=vectors[i];
-         }
-      }
+	realCh = 0;
+	for (int i = 0; i < doNotDecodeFlags.length; i++) {
+	    if (!doNotDecodeFlags[i]) {
+		realVectors[realCh++] = vectors[i];
+	    }
+	}
 
-      int[][] partword=new int[partWords][];
-      for(int s=0;s<look.getStages();s++){
-         for(int i=0,l=0;i<partitionsToRead;l++){
-            if(s==0){
-	            //int temp=look.getPhraseBook().readInt(source);
-	            int temp=source.getInt(look.getPhraseBook().getHuffmanRoot());
-	            if(temp==-1){
-	               throw new VorbisFormatException("");
-	            }
-	            partword[l]=look.getDecodeMap()[temp];
-	            if(partword[l]==null){
-	               throw new VorbisFormatException("");
-	            }
-	         }
+	int[][] partword = new int[partWords][];
+	for (int s = 0; s < look.getStages(); s++) {
+	    for (int i = 0, l = 0; i < partitionsToRead; l++) {
+		if (s == 0) {
+		    // int temp=look.getPhraseBook().readInt(source);
+		    int temp = source.getInt(look.getPhraseBook()
+			    .getHuffmanRoot());
+		    if (temp == -1) {
+			throw new VorbisFormatException("");
+		    }
+		    partword[l] = look.getDecodeMap()[temp];
+		    if (partword[l] == null) {
+			throw new VorbisFormatException("");
+		    }
+		}
 
-            for(int k=0;k<partitionsPerWord && i<partitionsToRead;k++,i++){
-               int offset=begin+i*samplesPerPartition;
-	            if((cascade[partword[l][k]]&(1<<s))!=0){
-                  CodeBook stagebook=vorbis.getSetupHeader().getCodeBooks()[look.getPartBooks()[partword[l][k]][s]];
-	               if(stagebook!=null){
-                     stagebook.readVvAdd(realVectors, source, offset, samplesPerPartition);
-                  }
-	            }
-	         }
-         }
-      }
-   }
+		for (int k = 0; k < partitionsPerWord && i < partitionsToRead; k++, i++) {
+		    int offset = begin + i * samplesPerPartition;
+		    if ((cascade[partword[l][k]] & (1 << s)) != 0) {
+			CodeBook stagebook = vorbis.getSetupHeader()
+				.getCodeBooks()[look.getPartBooks()[partword[l][k]][s]];
+			if (stagebook != null) {
+			    stagebook.readVvAdd(realVectors, source, offset,
+				    samplesPerPartition);
+			}
+		    }
+		}
+	    }
+	}
+    }
 
+    public Object clone() {
+	Residue2 clone = new Residue2();
+	fill(clone);
+	return clone;
+    }
 
-   public Object clone() {
-      Residue2 clone=new Residue2();
-      fill(clone);
-      return clone;
-   }
-
-   protected double[][] getDecodedVectors() {
-      return decodedVectors;
-   }
+    protected double[][] getDecodedVectors() {
+	return decodedVectors;
+    }
 }

@@ -30,7 +30,6 @@ import java.io.*;
 
 import de.jarnbjo.util.io.BitInputStream;
 
-
 /**
  */
 
