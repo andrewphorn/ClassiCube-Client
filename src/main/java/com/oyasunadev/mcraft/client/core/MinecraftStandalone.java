@@ -36,387 +36,389 @@ import java.util.Map;
  * Run Minecraft Classic standalone version.
  */
 public class MinecraftStandalone {
-	public static void main(String[] args) {
-		MinecraftStandalone minecraftStandalone = new MinecraftStandalone();
+    public static void main(String[] args) {
+	MinecraftStandalone minecraftStandalone = new MinecraftStandalone();
 
-		minecraftStandalone.startMinecraft();
-	}
+	minecraftStandalone.startMinecraft();
+    }
 
+    /**
+     * Default constructor.
+     */
+    public MinecraftStandalone() {
+    }
+
+    /**
+     * Start Minecraft Classic.
+     */
+    public void startMinecraft() {
+	MinecraftFrame minecraftFrame = new MinecraftFrame();
+
+	minecraftFrame.startMinecraft();
+    }
+
+    /**
+     * A class representing the Minecraft Classic game.
+     */
+    private class MinecraftFrame extends JFrame {
 	/**
 	 * Default constructor.
 	 */
-	public MinecraftStandalone() {
+	public MinecraftFrame() {
+	    setSize(1024, 512);
+	    // setResizable(false);
+	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    setLayout(new BorderLayout());
+
+	    addWindowListener(new WindowAdapter() {
+		@Override
+		public void windowClosing(WindowEvent e) {
+		    minecraft.running = false;
+		}
+	    });
 	}
+
+	/**
+	 * Minecraft reference.
+	 */
+	private Minecraft minecraft;
 
 	/**
 	 * Start Minecraft Classic.
 	 */
 	public void startMinecraft() {
-		MinecraftFrame minecraftFrame = new MinecraftFrame();
 
-		minecraftFrame.startMinecraft();
+	    boolean RunFakeNetwork = true;
+
+	    MCraftApplet applet = new MCraftApplet();
+	    final MinecraftCanvas canvas = new MinecraftCanvas();
+	    minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
+		    false, false);
+
+	    if (RunFakeNetwork) {
+		minecraft.host = "127.0.0.1";
+		minecraft.host = minecraft.host + ":" + "25566";
+		minecraft.session = new SessionData("Scoot", "noidea");
+		minecraft.session.mppass = "c0dd4746a88c5785952cd0190e8214a6";
+		minecraft.session.haspaid = true;
+		minecraft.server = "127.0.0.1";
+		minecraft.port = 25566;
+	    }
+
+	    canvas.setMinecraft(minecraft);
+	    canvas.setSize(getSize());
+
+	    add(canvas, "Center");
+
+	    canvas.setFocusable(true);
+
+	    pack();
+	    setLocation(
+		    (Toolkit.getDefaultToolkit().getScreenSize().width - getWidth()) / 2,
+		    (Toolkit.getDefaultToolkit().getScreenSize().height - getHeight()) / 2);
+	    setVisible(true);
+
+	    new Thread(new Runnable() {
+		public void run() {
+		    while (true) {
+			if (!minecraft.running) {
+			    minecraft.shutdown();
+			    dispose();
+			}
+
+			try {
+			    Thread.sleep(1);
+			} catch (InterruptedException e) {
+			    e.printStackTrace();
+			}
+		    }
+		}
+	    }).start();
+
+	    boolean pass = false;
+
+	    while (!pass) {
+		try {
+		    Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		    e.printStackTrace();
+		}
+
+		if (minecraft.running) {
+		    pass = true;
+		}
+	    }
+
+	    // DO SHIT...?
 	}
 
 	/**
-	 * A class representing the Minecraft Classic game.
+	 * Override the MinecraftApplet class because we need to fake the
+	 * Document Base and Code Base.
 	 */
-	private class MinecraftFrame extends JFrame {
-		/**
-		 * Default constructor.
-		 */
-		public MinecraftFrame() {
-			setSize(1024, 512);
-			// setResizable(false);
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			setLayout(new BorderLayout());
+	private class MCraftApplet extends MinecraftApplet {
 
-			addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowClosing(WindowEvent e) {
-					minecraft.running = false;
-				}
-			});
+	    /**
+	     * Default constructor.
+	     */
+	    public MCraftApplet() {
+		parameters = new HashMap<String, String>();
+	    }
+
+	    /**
+	     * Fake the Document Base.
+	     * 
+	     * @return new URL("http://minecraft.net:80/play.jsp")
+	     */
+	    @Override
+	    public URL getDocumentBase() {
+		try {
+		    return new URL("http://minecraft.net:80/play.jsp");
+		} catch (MalformedURLException e) {
+		    e.printStackTrace();
 		}
 
-		/**
-		 * Minecraft reference.
-		 */
-		private Minecraft minecraft;
+		return null;
+	    }
 
-		/**
-		 * Start Minecraft Classic.
-		 */
-		public void startMinecraft() {
-			
-			boolean RunFakeNetwork = false;
-			
-			MCraftApplet applet = new MCraftApplet();
-			final MinecraftCanvas canvas = new MinecraftCanvas();
-			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
-					false, false);
-
-			if (RunFakeNetwork) {
-				minecraft.host = "127.0.0.1";
-				minecraft.host = minecraft.host + ":" + "25566";
-				minecraft.session = new SessionData("Scoot", "noidea");
-				minecraft.session.mppass = "c0dd4746a88c5785952cd0190e8214a6";
-				minecraft.session.haspaid = true;
-				minecraft.server = "127.0.0.1";
-				minecraft.port = 25566;
-			}
-
-			canvas.setMinecraft(minecraft);
-			canvas.setSize(getSize());
-
-			add(canvas, "Center");
-
-			canvas.setFocusable(true);
-
-			pack();
-			setLocation(
-					(Toolkit.getDefaultToolkit().getScreenSize().width - getWidth()) / 2,
-					(Toolkit.getDefaultToolkit().getScreenSize().height - getHeight()) / 2);
-			setVisible(true);
-
-			new Thread(new Runnable() {
-				public void run() {
-					while (true) {
-						if (!minecraft.running) {
-							minecraft.shutdown();
-							dispose();
-						}
-
-						try {
-							Thread.sleep(1);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}).start();
-
-			boolean pass = false;
-
-			while (!pass) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				if (minecraft.running) {
-					pass = true;
-				}
-			}
-
-			// DO SHIT...?
+	    /**
+	     * Fake the Code Base.
+	     * 
+	     * @return new URL("http://minecraft.net:80/")
+	     */
+	    @Override
+	    public URL getCodeBase() {
+		try {
+		    return new URL("http://minecraft.net:80/");
+		} catch (MalformedURLException e) {
+		    e.printStackTrace();
 		}
 
-		/**
-		 * Override the MinecraftApplet class because we need to fake the
-		 * Document Base and Code Base.
-		 */
-		private class MCraftApplet extends MinecraftApplet {
-		    
-			/**
-			 * Default constructor.
-			 */
-			public MCraftApplet() {
-				parameters = new HashMap<String, String>();
-			}
+		return null;
+	    }
 
-			/**
-			 * Fake the Document Base.
-			 * 
-			 * @return new URL("http://minecraft.net:80/play.jsp")
-			 */
-			@Override
-			public URL getDocumentBase() {
-				try {
-					return new URL("http://minecraft.net:80/play.jsp");
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
+	    /**
+	     * Return our own parameters variable.
+	     * 
+	     * @param name
+	     * @return
+	     */
+	    @Override
+	    public String getParameter(String name) {
+		return parameters.get(name);
+	    }
 
-				return null;
-			}
+	    /**
+	     * Use our own parameters map.
+	     */
+	    private Map<String, String> parameters;
+	}
 
-			/**
-			 * Fake the Code Base.
-			 * 
-			 * @return new URL("http://minecraft.net:80/")
-			 */
-			@Override
-			public URL getCodeBase() {
-				try {
-					return new URL("http://minecraft.net:80/");
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
+	/**
+	 * A canvas for the Minecraft thread.
+	 */
+	private class MinecraftCanvas extends Canvas {
+	    private Image image;
+	    private Image image2;
 
-				return null;
-			}
+	    void SetImage() throws IOException {
+		image = ImageIO.read(getClass().getResourceAsStream(
+			"/resources" + "/rsbg.jpg"));
 
-			/**
-			 * Return our own parameters variable.
-			 * 
-			 * @param name
-			 * @return
-			 */
-			@Override
-			public String getParameter(String name) {
-				return parameters.get(name);
-			}
+	    }
 
-			/**
-			 * Use our own parameters map.
-			 */
-			private Map<String, String> parameters;
-		}
+	    void SetImage2() throws IOException {
+		image2 = ImageIO.read(getClass().getResourceAsStream(
+			"/resources" + "/bg.jpg"));
+	    }
 
-		/**
-		 * A canvas for the Minecraft thread.
-		 */
-		private class MinecraftCanvas extends Canvas {
-			private Image image;
-			private Image image2;
+	    public void download(String address, String localFileName) {
+		OutputStream out = null;
+		URLConnection connection = null;
+		InputStream in = null;
 
-			void SetImage() throws IOException {
-				image = ImageIO.read(getClass().getResourceAsStream("/resources" + "/rsbg.jpg"));
+		try {
+		    URL url = new URL(address);
+		    out = new BufferedOutputStream(new FileOutputStream(
+			    localFileName));
+		    connection = url.openConnection();
+		    // I HAVE to send this or the server responds with 403
+		    connection.setRequestProperty("Content-Type",
+			    "application/x-www-form-urlencoded");
+		    connection.setRequestProperty("Content-Language", "en-US");
+		    connection
+			    .setRequestProperty(
+				    "User-Agent",
+				    "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11");
 
-			}
+		    connection.setUseCaches(false);
+		    connection.setDoInput(true);
+		    connection.setDoOutput(true);
+		    in = connection.getInputStream();
+		    byte[] buffer = new byte[1024];
 
-			void SetImage2() throws IOException {
-				image2 = ImageIO.read(getClass().getResourceAsStream("/resources" + "/bg.jpg"));
-			}
-			
-			public void download(String address, String localFileName) {
-		        OutputStream out = null;
-		        URLConnection connection = null;
-		        InputStream in = null;
+		    int numRead;
+		    long numWritten = 0;
 
-		        try {
-		            URL url = new URL(address);
-		            out = new BufferedOutputStream(new FileOutputStream(localFileName));
-		            connection = url.openConnection();
-		            //I HAVE to send this or the server responds with 403
-		            connection.setRequestProperty("Content-Type", 
-		                       "application/x-www-form-urlencoded");
-		            connection.setRequestProperty("Content-Language", "en-US"); 
-		            connection.setRequestProperty("User-Agent",
-		                    "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11");
-
-		            connection.setUseCaches(false);
-		            connection.setDoInput(true);
-		            connection.setDoOutput(true);
-		            in = connection.getInputStream();
-		            byte[] buffer = new byte[1024];
-
-		            int numRead;
-		            long numWritten = 0;
-
-		            while ((numRead = in.read(buffer)) != -1) {
-		                out.write(buffer, 0, numRead);
-		                numWritten += numRead;
-		            }
-
-		            System.out.println(localFileName + "\t" + numWritten);
-		        } 
-		        catch (Exception exception) { 
-		            exception.printStackTrace();
-		        } 
-		        finally {
-		            try {
-		                if (in != null) {
-		                    in.close();
-		                }
-		                if (out != null) {
-		                    out.close();
-		                }
-		            } 
-		            catch (IOException ioe) {
-		            }
-		        }
+		    while ((numRead = in.read(buffer)) != -1) {
+			out.write(buffer, 0, numRead);
+			numWritten += numRead;
 		    }
 
-			@Override
-			public void paint(Graphics g) {
-				if (image == null) {
-					try {
-						SetImage();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				Graphics2D g2 = (Graphics2D) g;
-				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-						RenderingHints.VALUE_ANTIALIAS_ON);
-				Font font = new Font("Serif", Font.BOLD, 18);
-				g2.setFont(font);
-				if (!ResourceDownloadThread.Done) {
-					g.drawImage(getImage(), 0, 0, this.getWidth(),
-							this.getHeight(), null);
-					font = new Font("Purisa", Font.BOLD, 48);
-					g2.setFont(font);
-					g.setColor(Color.black);
-					g2.drawString("ClassiCube", 12, 50); //shadow
-					g.setColor(Color.white);
-					g2.drawString("ClassiCube", 10, 48); //normal
-					font = new Font("Serif", Font.BOLD, 18);
-					g2.setFont(font);
-					g.setColor(Color.black);
-					g2.drawString(GameSettings.PercentString, 12, 100); //shadow
-					g2.drawString(GameSettings.StatusString, 12, 80);
-					g.setColor(Color.white);
-					g2.drawString(GameSettings.PercentString, 10, 98); //normal
-					g2.drawString(GameSettings.StatusString, 10, 78);
-				} else {
-					if (image2 == null) {
-						try {
-							SetImage2();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					g.drawImage(getImage2(), 0, 0, this.getWidth(),
-							this.getHeight(), null);
-				}
+		    System.out.println(localFileName + "\t" + numWritten);
+		} catch (Exception exception) {
+		    exception.printStackTrace();
+		} finally {
+		    try {
+			if (in != null) {
+			    in.close();
 			}
-
-			/**
-			 * Default constructor.
-			 */
-			public MinecraftCanvas() {
+			if (out != null) {
+			    out.close();
 			}
-
-			/**
-			 * Start the thread.
-			 */
-			@Override
-			public synchronized void addNotify() {
-				super.addNotify();
-
-				startThread();
-			}
-
-			/**
-			 * Stop the thread.
-			 */
-			@Override
-			public synchronized void removeNotify() {
-				stopThread();
-
-				super.removeNotify();
-			}
-
-			private static final long serialVersionUID = 1L;
-
-			/**
-			 * The Minecraft variable.
-			 */
-			private Minecraft minecraft;
-			/**
-			 * The Minecraft thread.
-			 */
-			private Thread thread;
-
-			/**
-			 * Set the "minecraft" variable.
-			 * 
-			 * @param minecraft
-			 *            The new Minecraft variable.
-			 */
-			public void setMinecraft(Minecraft minecraft) {
-				this.minecraft = minecraft;
-			}
-
-			/**
-			 * Start the Minecraft client thread.
-			 */
-			private synchronized void startThread() {
-				if (thread == null) {
-					thread = new Thread(minecraft, "Client");
-
-					thread.start();
-				}
-			}
-
-			/**
-			 * Stop the Minecraft client.
-			 */
-			private synchronized void stopThread() {
-				if (thread != null) {
-					minecraft.running = false;
-
-					try {
-						thread.join();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-
-						minecraft.shutdown();
-					}
-
-					thread = null;
-				}
-			}
-
-			public Image getImage() {
-				return image;
-			}
-
-			public void setImage(Image image) {
-				this.image = image;
-			}
-
-			public Image getImage2() {
-				return image2;
-			}
-
-			public void setImage2(Image image2) {
-				this.image2 = image2;
-			}
+		    } catch (IOException ioe) {
+		    }
 		}
+	    }
+
+	    @Override
+	    public void paint(Graphics g) {
+		if (image == null) {
+		    try {
+			SetImage();
+		    } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		    }
+		}
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+			RenderingHints.VALUE_ANTIALIAS_ON);
+		Font font = new Font("Serif", Font.BOLD, 18);
+		g2.setFont(font);
+		if (!ResourceDownloadThread.Done) {
+		    g.drawImage(getImage(), 0, 0, this.getWidth(),
+			    this.getHeight(), null);
+		    font = new Font("Purisa", Font.BOLD, 48);
+		    g2.setFont(font);
+		    g.setColor(Color.black);
+		    g2.drawString("ClassiCube", 12, 50); // shadow
+		    g.setColor(Color.white);
+		    g2.drawString("ClassiCube", 10, 48); // normal
+		    font = new Font("Serif", Font.BOLD, 18);
+		    g2.setFont(font);
+		    g.setColor(Color.black);
+		    g2.drawString(GameSettings.PercentString, 12, 100); // shadow
+		    g2.drawString(GameSettings.StatusString, 12, 80);
+		    g.setColor(Color.white);
+		    g2.drawString(GameSettings.PercentString, 10, 98); // normal
+		    g2.drawString(GameSettings.StatusString, 10, 78);
+		} else {
+		    if (image2 == null) {
+			try {
+			    SetImage2();
+			} catch (IOException e) {
+			    // TODO Auto-generated catch block
+			    e.printStackTrace();
+			}
+		    }
+		    g.drawImage(getImage2(), 0, 0, this.getWidth(),
+			    this.getHeight(), null);
+		}
+	    }
+
+	    /**
+	     * Default constructor.
+	     */
+	    public MinecraftCanvas() {
+	    }
+
+	    /**
+	     * Start the thread.
+	     */
+	    @Override
+	    public synchronized void addNotify() {
+		super.addNotify();
+
+		startThread();
+	    }
+
+	    /**
+	     * Stop the thread.
+	     */
+	    @Override
+	    public synchronized void removeNotify() {
+		stopThread();
+
+		super.removeNotify();
+	    }
+
+	    private static final long serialVersionUID = 1L;
+
+	    /**
+	     * The Minecraft variable.
+	     */
+	    private Minecraft minecraft;
+	    /**
+	     * The Minecraft thread.
+	     */
+	    private Thread thread;
+
+	    /**
+	     * Set the "minecraft" variable.
+	     * 
+	     * @param minecraft
+	     *            The new Minecraft variable.
+	     */
+	    public void setMinecraft(Minecraft minecraft) {
+		this.minecraft = minecraft;
+	    }
+
+	    /**
+	     * Start the Minecraft client thread.
+	     */
+	    private synchronized void startThread() {
+		if (thread == null) {
+		    thread = new Thread(minecraft, "Client");
+
+		    thread.start();
+		}
+	    }
+
+	    /**
+	     * Stop the Minecraft client.
+	     */
+	    private synchronized void stopThread() {
+		if (thread != null) {
+		    minecraft.running = false;
+
+		    try {
+			thread.join();
+		    } catch (InterruptedException e) {
+			e.printStackTrace();
+
+			minecraft.shutdown();
+		    }
+
+		    thread = null;
+		}
+	    }
+
+	    public Image getImage() {
+		return image;
+	    }
+
+	    public void setImage(Image image) {
+		this.image = image;
+	    }
+
+	    public Image getImage2() {
+		return image2;
+	    }
+
+	    public void setImage2(Image image2) {
+		this.image2 = image2;
+	    }
 	}
+    }
 }
