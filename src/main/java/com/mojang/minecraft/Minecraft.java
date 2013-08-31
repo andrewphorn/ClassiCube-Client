@@ -199,9 +199,9 @@ public final class Minecraft implements Runnable {
 		int var3 = this.height * 240 / this.height;
 		var1.open(this, var2, var3);
 		this.online = false;
-	    } else {
-		this.grabMouse();
+		return;
 	    }
+	    this.grabMouse();
 	}
     }
 
@@ -391,14 +391,9 @@ public final class Minecraft implements Runnable {
 	    Display.setTitle("ClassiCube");
 
 	    try {
-		try {
-		    Display.create();
-		} catch (LWJGLException var57) {
-		    Display.create();
-		}
+		Display.create();
 	    } catch (LWJGLException var57) {
 		var57.printStackTrace();
-
 		try {
 		    Thread.sleep(1000L);
 		} catch (InterruptedException var56) {
@@ -522,7 +517,7 @@ public final class Minecraft implements Runnable {
 	} catch (Exception var62) {
 	    var62.printStackTrace();
 	    JOptionPane.showMessageDialog((Component) null, var62.toString(),
-		    "Failed to start Minecraft", 0);
+		    "Failed to start ClassiCube", 0);
 	    return;
 	}
 	if (this.session == null)
@@ -1971,23 +1966,24 @@ public final class Minecraft implements Runnable {
 			    if (this.isOnline()) {
 				this.networkManager.sendBlockChange(x, y, z,
 					var1, blockID);
-				}
+			    }
 			    File file = new File(mcDir, "Achievements.txt");
-				if(!file.exists()){
-				    try {
-					file.createNewFile();
-				    } catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				    }
-				    this.notifyScreen = new GuiNotificationScreen(
-						"Achievement Get: This is where it all begins!",
-						"Congratulations, you have figured out how to place a block! Good for you :)",6000);
-					int var21 = this.width * 240 / this.height;
-					int var3 = this.height * 240 / this.height;
-					((GuiScreen) this.notifyScreen).open(this,
-						var21, var3);
+			    if (!file.exists()) {
+				try {
+				    file.createNewFile();
+				} catch (IOException e) {
+				    // TODO Auto-generated catch block
+				    e.printStackTrace();
 				}
+				this.notifyScreen = new GuiNotificationScreen(
+					"Achievement Get: This is where it all begins!",
+					"Congratulations, you have figured out how to place a block! Good for you :)",
+					6000);
+				int var21 = this.width * 240 / this.height;
+				int var3 = this.height * 240 / this.height;
+				((GuiScreen) this.notifyScreen).open(this,
+					var21, var3);
+			    }
 
 			    this.level.netSetTile(x, y, z, blockID);
 			    var2 = this.renderer.heldBlock;
@@ -2776,30 +2772,12 @@ public final class Minecraft implements Runnable {
 			    // this.player.inventory.replaceSlot(Block.blocks[6]);
 			    // GameSettings.CanReplaceSlot = false;
 
-			    // this.gamemode.openInventory();
+			    this.gamemode.openInventory();
 
 			    // this.selectionBoxes.add(new
 			    // SelectionBoxData((byte) 1,"",new
 			    // ColorCache(0F,0F,0F,0.6F), new
 			    // CustomAABB(12,45,30, 20, 30, 40)));
-
-			    if (this.notifyScreen == null) {
-				this.notifyScreen = new GuiNotificationScreen(
-					"Test",
-					"Click Save all parts) the second thing (to delete this (to delete this (to delete this my dog is fat a potential health hazard payment tacos click Save all parts) 3 poor 1 hour homes for rent society has been dreaming of she was very pretty I jut woke up clear your mind part, empty it and (to delete this [new part] click Save all parts) part, empty it and [new part] ) A point and figure chart shows the trend hitting",5000);
-				int var2 = this.width * 240 / this.height;
-				int var3 = this.height * 240 / this.height;
-				((GuiScreen) this.notifyScreen).open(this,
-					var2, var3);
-			    } else {
-				this.notifyScreen = new GuiNotificationScreen(
-					"Test",
-					"Click \nSave all parts) the second thing (to delete this (to delete this (to delete this my dog is fat a potential health hazard payment tacos click Save all parts) 3 poor 1 hour homes for rent society has been dreaming of she was very pretty I jut woke up clear your mind part, empty it and (to delete this [new part] click Save all parts) part, empty it and [new part] ) A point and figure chart shows the trend hitting",5000);
-				int var2 = this.width * 240 / this.height;
-				int var3 = this.height * 240 / this.height;
-				((GuiScreen) this.notifyScreen).open(this,
-					var2, var3);
-			    }
 
 			}
 

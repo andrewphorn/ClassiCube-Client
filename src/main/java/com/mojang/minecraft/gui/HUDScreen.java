@@ -257,31 +257,32 @@ public final class HUDScreen extends Screen {
 		int y = var15 - 73;
 		int groupChanges = 0;
 		boolean hasStartedNewColumn = false;
-		
+
 		List<PlayerListNameData> namesToPrint = new ArrayList<PlayerListNameData>();
 
 		for (int m = 0; m < Page; m++) {
 		    groupChanges += FindGroupChanges(m, playerListNames);
 		}
 		int rangeA = (maxStringsPerScreen * (Page)) - groupChanges;
-		int rangeB = rangeA + (maxStringsPerScreen) - FindGroupChanges(Page,
-			    playerListNames);
+		int rangeB = rangeA + (maxStringsPerScreen)
+			- FindGroupChanges(Page, playerListNames);
 		rangeB = Math.min(rangeB, playerListNames.size());
 		for (int k = rangeA; k < rangeB; k++) {
 		    namesToPrint.add(playerListNames.get(k));
 		}
 		int groupsOnThisPage = 0;
 		for (var11 = 0; var11 < namesToPrint.size(); ++var11) {
-		    if (var11  < maxStringsPerColumn - groupsOnThisPage) {
+		    if (var11 < maxStringsPerColumn - groupsOnThisPage) {
 			x = (i - 128) + 8;
 		    } else {
-			if ((var11 >= maxStringsPerColumn - groupsOnThisPage) && !hasStartedNewColumn ){
+			if ((var11 >= maxStringsPerColumn - groupsOnThisPage)
+				&& !hasStartedNewColumn) {
 			    y = var15 - 73;
 			    hasStartedNewColumn = true;
 			}
 			x = i + 8;
 		    }
-		    
+
 		    y += 9;
 		    PlayerListNameData pi = namesToPrint.get(var11);
 		    if (lastGroupName != pi.groupName) {
@@ -293,7 +294,8 @@ public final class HUDScreen extends Screen {
 		    String playerName = FontRenderer.stripColor(pi.playerName);
 		    String listName = FontRenderer.stripColor(pi.listName);
 		    if (var2 && var3 >= x && var4 >= y && var3 < x + 120
-			    && var4 < y + 8) { // if your mouse if hovered over this name
+			    && var4 < y + 8) { // if your mouse if hovered over
+					       // this name
 			this.hoveredPlayer = playerName;
 			var5.renderNoShadow(listName, x + 8, y, 16777215);
 		    } else { // else render a normal name
@@ -305,7 +307,8 @@ public final class HUDScreen extends Screen {
 
     }
 
-    public int FindGroupChanges(int Page, List<PlayerListNameData> playerListNames) {
+    public int FindGroupChanges(int Page,
+	    List<PlayerListNameData> playerListNames) {
 	int groupChanges = 0;
 	String lastGroupName = "";
 	int rangeA = (28 * (Page));
