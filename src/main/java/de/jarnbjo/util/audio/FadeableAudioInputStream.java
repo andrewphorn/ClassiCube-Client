@@ -5,7 +5,6 @@ import javax.sound.sampled.*;
 
 public class FadeableAudioInputStream extends AudioInputStream {
 
-   private AudioInputStream stream;
    private boolean fading=false;
    private double phi=0.0;
 

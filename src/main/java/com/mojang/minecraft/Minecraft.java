@@ -45,7 +45,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
 import javax.sound.sampled.AudioFormat;
@@ -118,20 +117,17 @@ public final class Minecraft implements Runnable {
 	// this.selectionBoxes.add(new SelectionBoxData((byte) 1, "",
 	// new ColorCache(0F, 1.0F, 0F, 0.6F), new CustomAABB(12, 45, 30,
 	// 20, 30, 40)));
-	
-	/*for(int i = 0; i< 140; i++){
-	    String group = "Guest";
-	    if(i > 8)group = "Owner";
-	    if(i > 11) group = "Test";
-	    if( i > 18) group = "Test2";
-	    if(i > 32) group = "Last group";
-	    if(i > 35) group = "jk";
-	    if(i > 40) group = "rollin";
-	    if(i > 45) group = "aaaaa";
-	    this.playerListNameData.add(new PlayerListNameData((short) i, "" +i, "" +i, group, (byte)1));
-	    
-	}
-	Collections.sort(playerListNameData, new PlayerListComparator());*/
+
+	/*
+	 * for(int i = 0; i< 140; i++){ String group = "Guest"; if(i > 8)group =
+	 * "Owner"; if(i > 11) group = "Test"; if( i > 18) group = "Test2"; if(i
+	 * > 32) group = "Last group"; if(i > 35) group = "jk"; if(i > 40) group
+	 * = "rollin"; if(i > 45) group = "aaaaa";
+	 * this.playerListNameData.add(new PlayerListNameData((short) i, "" +i,
+	 * "" +i, group, (byte)1));
+	 * 
+	 * } Collections.sort(playerListNameData, new PlayerListComparator());
+	 */
 	this.isApplet = IsApplet;
 	this.levelIo = new LevelIO(this.progressBar);
 	this.sound = new SoundManager();
@@ -396,8 +392,6 @@ public final class Minecraft implements Runnable {
 
 	    try {
 		try {
-		    PixelFormat pf = new PixelFormat();
-
 		    Display.create();
 		} catch (LWJGLException var57) {
 		    Display.create();
@@ -455,8 +449,6 @@ public final class Minecraft implements Runnable {
 		(var85 = new Level()).setData(8, 8, 8, new byte[512]);
 		this.setLevel(var85);
 	    } else {
-		boolean var10 = false;
-
 		try {
 		    if (var1.levelName != null) {
 			var1.loadOnlineLevel(var1.levelName, var1.levelId);
@@ -721,7 +713,7 @@ public final class Minecraft implements Runnable {
 					    var33 * reachDistance, var87
 						    * reachDistance);
 				    renderer.entity = null;
-				    List var37 = renderer.minecraft.level.blockMap
+				    List<Entity> var37 = renderer.minecraft.level.blockMap
 					    .getEntities(
 						    var28,
 						    var28.bb.expand(
@@ -1201,7 +1193,6 @@ public final class Minecraft implements Runnable {
 					    MovingObjectPosition var10001 = var82.minecraft.selected;
 					    var105 = var126.inventory
 						    .getSelected();
-					    boolean var106 = false;
 					    MovingObjectPosition var102 = var10001;
 					    var101 = var89;
 					    ShapeRenderer var113 = ShapeRenderer.instance;
@@ -1245,10 +1236,6 @@ public final class Minecraft implements Runnable {
 						var113.begin();
 						var113.noColor();
 						GL11.glDepthMask(false);
-						if (var73 == null) {
-						    var73 = Block.STONE;
-						}
-
 						for (var86 = 0; var86 < 6; ++var86) {
 						    var73.renderSide(
 							    var113,
@@ -1268,7 +1255,6 @@ public final class Minecraft implements Runnable {
 					    GL11.glDisable(3008);
 					    var10001 = var82.minecraft.selected;
 					    var126.inventory.getSelected();
-					    var106 = false;
 					    var102 = var10001;
 					    GL11.glEnable(3042);
 					    GL11.glBlendFunc(770, 771);
@@ -1985,7 +1971,23 @@ public final class Minecraft implements Runnable {
 			    if (this.isOnline()) {
 				this.networkManager.sendBlockChange(x, y, z,
 					var1, blockID);
-			    }
+				}
+			    File file = new File(mcDir, "Achievements.txt");
+				if(!file.exists()){
+				    try {
+					file.createNewFile();
+				    } catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				    }
+				    this.notifyScreen = new GuiNotificationScreen(
+						"Achievement Get: This is where it all begins!",
+						"Congratulations, you have figured out how to place a block! Good for you :)",6000);
+					int var21 = this.width * 240 / this.height;
+					int var3 = this.height * 240 / this.height;
+					((GuiScreen) this.notifyScreen).open(this,
+						var21, var3);
+				}
 
 			    this.level.netSetTile(x, y, z, blockID);
 			    var2 = this.renderer.heldBlock;
@@ -2163,8 +2165,9 @@ public final class Minecraft implements Runnable {
 					byte ID = ((Byte) packetParams[0])
 						.byteValue();
 					List<SelectionBoxData> cache = this.selectionBoxes;
-					for(int q =0; q< this.selectionBoxes.size(); q++){
-					    if(this.selectionBoxes.get(q).ID == ID){
+					for (int q = 0; q < this.selectionBoxes
+						.size(); q++) {
+					    if (this.selectionBoxes.get(q).ID == ID) {
 						cache.remove(q);
 					    }
 					}
@@ -2237,8 +2240,13 @@ public final class Minecraft implements Runnable {
 					String groupName = (String) packetParams[3];
 					byte unusedRank = ((Byte) packetParams[4])
 						.byteValue();
-					this.playerListNameData.add(new PlayerListNameData(NameId, playerName, listName, groupName, unusedRank));
-					Collections.sort(playerListNameData, new PlayerListComparator());
+					this.playerListNameData
+						.add(new PlayerListNameData(
+							NameId, playerName,
+							listName, groupName,
+							unusedRank));
+					Collections.sort(playerListNameData,
+						new PlayerListComparator());
 				    } else if (packetType == PacketType.EXT_ADD_ENTITY) {
 					byte playerID = ((Byte) packetParams[0])
 						.byteValue();
@@ -2254,8 +2262,9 @@ public final class Minecraft implements Runnable {
 				    } else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
 					Short NameId = (Short) packetParams[0];
 					List<PlayerListNameData> cache = this.playerListNameData;
-					for(int q =0; q<  this.playerListNameData.size(); q++){
-					    if( this.playerListNameData.get(q).nameID == NameId){
+					for (int q = 0; q < this.playerListNameData
+						.size(); q++) {
+					    if (this.playerListNameData.get(q).nameID == NameId) {
 						cache.remove(q);
 					    }
 					}
@@ -2735,8 +2744,8 @@ public final class Minecraft implements Runnable {
 			    s.inputLine = "/";
 			}
 			if (Keyboard.getEventKey() == Keyboard.KEY_X) {
-			    if (HackState == HackState.HacksTagEnabled
-				    || HackState == HackState.OpHacks
+			    if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
+				    || HackState == com.mojang.minecraft.HackState.OpHacks
 				    && this.player.userType >= 100) {
 				this.player.noPhysics = !this.player.noPhysics;
 				this.player.hovered = !this.player.hovered;
@@ -2744,9 +2753,9 @@ public final class Minecraft implements Runnable {
 			}
 
 			if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
-			    if (HackState == HackState.HacksTagEnabled
-				    || HackState == HackState.NoHacksTagShown
-				    || HackState == HackState.OpHacks
+			    if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
+				    || HackState == com.mojang.minecraft.HackState.NoHacksTagShown
+				    || HackState == com.mojang.minecraft.HackState.OpHacks
 				    && this.player.userType >= 100) {
 				this.player.flyingMode = !this.player.flyingMode;
 			    }
@@ -2766,11 +2775,32 @@ public final class Minecraft implements Runnable {
 			    // this.player.inventory.selected = 0;
 			    // this.player.inventory.replaceSlot(Block.blocks[6]);
 			    // GameSettings.CanReplaceSlot = false;
-			    this.gamemode.openInventory();
+
+			    // this.gamemode.openInventory();
+
 			    // this.selectionBoxes.add(new
 			    // SelectionBoxData((byte) 1,"",new
 			    // ColorCache(0F,0F,0F,0.6F), new
 			    // CustomAABB(12,45,30, 20, 30, 40)));
+
+			    if (this.notifyScreen == null) {
+				this.notifyScreen = new GuiNotificationScreen(
+					"Test",
+					"Click Save all parts) the second thing (to delete this (to delete this (to delete this my dog is fat a potential health hazard payment tacos click Save all parts) 3 poor 1 hour homes for rent society has been dreaming of she was very pretty I jut woke up clear your mind part, empty it and (to delete this [new part] click Save all parts) part, empty it and [new part] ) A point and figure chart shows the trend hitting",5000);
+				int var2 = this.width * 240 / this.height;
+				int var3 = this.height * 240 / this.height;
+				((GuiScreen) this.notifyScreen).open(this,
+					var2, var3);
+			    } else {
+				this.notifyScreen = new GuiNotificationScreen(
+					"Test",
+					"Click \nSave all parts) the second thing (to delete this (to delete this (to delete this my dog is fat a potential health hazard payment tacos click Save all parts) 3 poor 1 hour homes for rent society has been dreaming of she was very pretty I jut woke up clear your mind part, empty it and (to delete this [new part] click Save all parts) part, empty it and [new part] ) A point and figure chart shows the trend hitting",5000);
+				int var2 = this.width * 240 / this.height;
+				int var3 = this.height * 240 / this.height;
+				((GuiScreen) this.notifyScreen).open(this,
+					var2, var3);
+			    }
+
 			}
 
 			if (Keyboard.getEventKey() == this.settings.chatKey.key
@@ -2783,7 +2813,7 @@ public final class Minecraft implements Runnable {
 
 		    for (var25 = 0; var25 < 9; ++var25) {
 			if (Keyboard.getEventKey() == var25 + 2) {
-			    if(Keyboard.isKeyDown(Keyboard.KEY_TAB))
+			    if (Keyboard.isKeyDown(Keyboard.KEY_TAB))
 				return;
 			    else if (GameSettings.CanReplaceSlot)
 				this.player.inventory.selected = var25;
@@ -2815,7 +2845,6 @@ public final class Minecraft implements Runnable {
 
 	    boolean var26 = this.currentScreen == null && Mouse.isButtonDown(0)
 		    && this.hasMouse;
-	    boolean var35 = false;
 	    if (!this.gamemode.instantBreak && this.blockHitTime <= 0) {
 		if (var26 && this.selected != null
 			&& this.selected.entityPos == 0) {

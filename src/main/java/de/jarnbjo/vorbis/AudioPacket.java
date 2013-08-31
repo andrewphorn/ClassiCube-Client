@@ -24,7 +24,6 @@
 package de.jarnbjo.vorbis;
 
 import java.io.IOException;
-import java.util.*;
 
 import de.jarnbjo.util.io.*;
 
@@ -143,8 +142,6 @@ class AudioPacket {
          }
       }
 
-      Residue[] decodedResidues=new Residue[mapping.getSubmaps()];
-
       for(int i=0; i<mapping.getSubmaps(); i++) {
          int ch=0;
          boolean[] doNotDecodeFlags=new boolean[channels];
@@ -161,7 +158,6 @@ class AudioPacket {
 
 
       for(int i=mapping.getCouplingSteps()-1; i>=0; i--) {
-         double newA=0, newM=0;
          final float[] magnitudeVector=pcm[magnitudes[i]];
          final float[] angleVector=pcm[angles[i]];
          for(int j=0; j<magnitudeVector.length; j++) {

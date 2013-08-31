@@ -1,7 +1,5 @@
 package com.mojang.minecraft.sound;
 
-import de.jarnbjo.vorbis.VorbisStream;
-
 import java.nio.ByteBuffer;
 
 // TODO.
@@ -25,42 +23,28 @@ final class MusicPlayThread extends Thread {
                return;
             }
 
-            Music var1 = this.music;
             ByteBuffer var2;
-            Music var10001;
             if(this.music.playing == null) {
-               var1 = this.music;
                if(this.music.current != null) {
-                  var1 = this.music;
                   var2 = this.music.current;
-                  var10001 = this.music;
                   this.music.playing = var2;
                   var2 = null;
-                  var1 = this.music;
                   this.music.current = null;
-                  var1 = this.music;
                   this.music.playing.clear();
                }
             }
 
-            var1 = this.music;
             if(this.music.playing != null) {
-               var1 = this.music;
                if(this.music.playing.remaining() != 0) {
                   while(true) {
-                     var1 = this.music;
                      if(this.music.playing.remaining() == 0) {
                         break;
                      }
 
-                     var1 = this.music;
-                     var1 = this.music;
                      var2 = this.music.playing;
-                     VorbisStream var9 = this.music.stream;
                      int var10 = this.music.stream.readPcm(var2.array(), var2.position(), var2.remaining());
                      var2.position(var2.position() + var10);
-                     boolean var11;
-                     if(var11 = var10 <= 0) {
+                     if(var10 <= 0) {
                         this.music.finished = true;
                         this.music.stopped = true;
                         break;
@@ -69,24 +53,17 @@ final class MusicPlayThread extends Thread {
                }
             }
 
-            var1 = this.music;
             if(this.music.playing != null) {
-               var1 = this.music;
                if(this.music.previous == null) {
-                  var1 = this.music;
                   this.music.playing.flip();
-                  var1 = this.music;
                   var2 = this.music.playing;
-                  var10001 = this.music;
                   this.music.previous = var2;
                   var2 = null;
-                  var1 = this.music;
                   this.music.playing = var2;
                }
             }
 
             Thread.sleep(10L);
-            var1 = this.music;
          } while(this.music.player.running);
 
          return;

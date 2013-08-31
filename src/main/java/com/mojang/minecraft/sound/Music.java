@@ -44,7 +44,6 @@ public final class Music implements Audio {
          this.stopped = true;
          return false;
       } else {
-         var3 = var3;
          int var4 = 0;
 
          while(var3 > 0 && (this.processing != null || this.previous != null)) {

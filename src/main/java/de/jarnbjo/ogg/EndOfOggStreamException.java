@@ -30,6 +30,11 @@ import java.io.IOException;
 
 public class EndOfOggStreamException extends IOException {
 
-   public EndOfOggStreamException() {
+   /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+public EndOfOggStreamException() {
    }
 }

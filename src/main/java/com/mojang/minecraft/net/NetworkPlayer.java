@@ -3,7 +3,6 @@ package com.mojang.minecraft.net;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.mob.HumanoidMob;
-import com.mojang.minecraft.mob.Spider;
 import com.mojang.minecraft.render.TextureManager;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
@@ -13,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 public class NetworkPlayer extends HumanoidMob {
 
    public static final long serialVersionUID = 77479605454997290L;
-   private List moveQueue = new LinkedList();
+   private List<PositionUpdate> moveQueue = new LinkedList<PositionUpdate>();
    private Minecraft minecraft;
    private int xp;
    private int yp;

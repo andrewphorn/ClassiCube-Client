@@ -31,7 +31,6 @@ public final class ShapeRenderer {
 	        this.vertexLength += 4;
 	      this.color = true;
 
-	      int i = (int)(paramLong >> 24 & 0xFF);
 	      int j = (int)(paramLong >> 16 & 0xFF);
 	      int k = (int)(paramLong >> 8 & 0xFF);
 	      int m = (int)(paramLong & 0xFF);

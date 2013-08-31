@@ -1,13 +1,9 @@
 package com.mojang.minecraft.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.PacketType;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 public final class ChatInputScreen extends GuiScreen {
 

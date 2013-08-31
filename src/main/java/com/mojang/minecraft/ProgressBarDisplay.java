@@ -164,6 +164,7 @@ public final class ProgressBarDisplay {
 	return localHashMap;
     }
 
+    @SuppressWarnings({ "deprecation", "static-access" })
     public void downloadSkin(Minecraft minecraft) {
 	try {
 	    File File1 = minecraft.mcDir; // my folder
