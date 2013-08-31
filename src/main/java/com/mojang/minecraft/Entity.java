@@ -185,8 +185,8 @@ public abstract class Entity implements Serializable {
 	    float var7 = var2;
 	    float var8 = var3;
 	    AABB var9 = this.bb.copy();
-	    ArrayList var10 = this.level.getCubes(this.bb.expand(var1, var2,
-		    var3));
+	    ArrayList<AABB> var10 = this.level.getCubes(this.bb.expand(var1,
+		    var2, var3));
 
 	    for (int var11 = 0; var11 < var10.size(); ++var11) {
 		var2 = ((AABB) var10.get(var11)).clipYCollide(this.bb, var2);

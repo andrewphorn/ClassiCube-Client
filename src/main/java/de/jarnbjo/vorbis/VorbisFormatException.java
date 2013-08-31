@@ -20,7 +20,7 @@
  *
  *
  */
- 
+
 package de.jarnbjo.vorbis;
 
 import java.io.IOException;
@@ -31,11 +31,16 @@ import java.io.IOException;
 
 public class VorbisFormatException extends IOException {
 
-   public VorbisFormatException() {
-      super();
-   }
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   public VorbisFormatException(String message) {
-      super(message);
-   }
+    public VorbisFormatException() {
+	super();
+    }
+
+    public VorbisFormatException(String message) {
+	super(message);
+    }
 }

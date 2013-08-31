@@ -125,12 +125,11 @@ public final class FontRenderer {
 			(color + var13) / 128.0F, var9 / 128.0F);
 		ShapeRenderer.instance.vertexUV((x + var7), y, 0.0F,
 			color / 128.0F, var9 / 128.0F);
-		
+
 		if (chars[count] < this.font.length) {
 		    var7 += this.font[chars[count]];
 		}
 	    }
-            
 
 	    ShapeRenderer.instance.end();
 	}

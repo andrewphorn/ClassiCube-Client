@@ -19,23 +19,23 @@ public final class BlockSelectScreen extends GuiScreen {
 	this.grabsMouse = true;
 	start();
     }
-    
+
     private final Timer timer = new Timer();
     private final int miliseconds = 30;
 
     public void start() {
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                Rotate();
-               // timer.cancel();
-            }
-        }, miliseconds, miliseconds );
+	timer.scheduleAtFixedRate(new TimerTask() {
+	    public void run() {
+		Rotate();
+		// timer.cancel();
+	    }
+	}, miliseconds, miliseconds);
     }
-    
-    void Rotate()
-    {
+
+    void Rotate() {
 	this.lastRotation += 2.7F;
     }
+
     public TimerTask timertask;
 
     private int getBlockOnScreen(int var1, int var2) {
@@ -87,7 +87,7 @@ public final class BlockSelectScreen extends GuiScreen {
 		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 		GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
 		if (var1 == var2) {
-		    //lastRotation += 0.7F;
+		    // lastRotation += 0.7F;
 		    GL11.glScalef(1.6F, 1.6F, 1.6F);
 		    GL11.glRotatef(lastRotation, 0.0F, 1.0F, 0.0F);
 		}

@@ -1,6 +1,7 @@
 package com.mojang.minecraft.net;
 
 public class PacketType {
+    @SuppressWarnings("rawtypes")
     private PacketType(Class... classes) {
 	opcode = (byte) (nextOpcode++);
 	packets[opcode] = this;
@@ -70,6 +71,7 @@ public class PacketType {
     public int length;
     private static int nextOpcode;
     public byte opcode;
+    @SuppressWarnings("rawtypes")
     public Class[] params;
     public String extName = "";
     public int Version = 1;

@@ -1,7 +1,6 @@
 package com.mojang.minecraft.mob;
 
 import com.mojang.minecraft.Entity;
-import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.mob.ai.AI;
 import com.mojang.minecraft.mob.ai.BasicAI;

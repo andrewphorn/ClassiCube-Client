@@ -110,7 +110,7 @@ public final class GameSettings {
 	    anaglyph = !anaglyph;
 
 	    TextureManager textureManager = minecraft.textureManager;
-	    Iterator iterator = this.minecraft.textureManager.textureImages
+	    Iterator<?> iterator = this.minecraft.textureManager.textureImages
 		    .keySet().iterator();
 
 	    int i;
