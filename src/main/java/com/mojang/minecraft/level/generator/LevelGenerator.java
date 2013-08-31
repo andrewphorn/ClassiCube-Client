@@ -133,8 +133,6 @@ public final class LevelGenerator {
       }
 
       this.progressBar.setText("Carving..");
-      boolean var45 = true;
-      boolean var44 = false;
       var5 = this;
       var48 = this.width;
       var51 = this.depth;
@@ -434,7 +432,7 @@ public final class LevelGenerator {
 
    private long flood(int var1, int var2, int var3, int var4, int var5) {
       byte var20 = (byte)var5;
-      ArrayList var21 = new ArrayList();
+      ArrayList<int[]> var21 = new ArrayList<int[]>();
       byte var6 = 0;
       int var7 = 1;
 
@@ -486,7 +484,7 @@ public final class LevelGenerator {
          boolean var18 = false;
          var11 += (long)(var15 - var14);
 
-         for(var14 = var14; var14 < var15; ++var14) {
+         for(; var14 < var15; ++var14) {
             this.blocks[var2] = var20;
             boolean var19;
             if(var3 > 0) {

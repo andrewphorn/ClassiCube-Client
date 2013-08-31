@@ -12,10 +12,6 @@ public enum Tile$SoundType {
    public final String name;
    private final float volume;
    private final float pitch;
-   // $FF: synthetic field
-   private static final Tile$SoundType[] values = new Tile$SoundType[]{none, grass, cloth, gravel, stone, metal, wood};
-
-
    private Tile$SoundType(String var1, int var2, String var3, float var4, float var5) {
       this.name = var3;
       this.volume = var4;

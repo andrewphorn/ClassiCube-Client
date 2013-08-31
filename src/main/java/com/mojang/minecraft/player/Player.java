@@ -50,7 +50,7 @@ public class Player extends Mob {
 
 	this.bob += (var1 - this.bob) * 0.4F;
 	this.tilt += (var2 - this.tilt) * 0.8F;
-	List var3;
+	List<?> var3;
 	if (this.health > 0
 		&& (var3 = this.level.findEntities(this,
 			this.bb.grow(1.0F, 0.0F, 1.0F))) != null) {

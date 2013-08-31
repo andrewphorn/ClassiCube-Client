@@ -27,9 +27,6 @@
 package de.jarnbjo.vorbis;
 
 class MdctFloat {
-  static private final float cPI3_8=0.38268343236508977175f;
-  static private final float cPI2_8=0.70710678118654752441f;
-  static private final float cPI1_8=0.92387953251128675613f;
 
   private int n;
   private int log2n;
@@ -39,16 +36,12 @@ class MdctFloat {
 
   private float[] equalizer;
 
-  private float scale;
-
-  private int itmp1, itmp2, itmp3, itmp4, itmp5, itmp6, itmp7, itmp8, itmp9;
-  private float dtmp1, dtmp2, dtmp3, dtmp4, dtmp5, dtmp6, dtmp7, dtmp8, dtmp9;
+  private float dtmp1, dtmp2, dtmp3, dtmp4;
 
   protected MdctFloat(int n) {
     bitrev=new int[n/4];
     trig=new float[n+n/4];
 
-    int n2=n>>>1;
     log2n=(int)Math.rint(Math.log(n)/Math.log(2));
     this.n=n;
 
@@ -82,7 +75,6 @@ class MdctFloat {
 	bitrev[i*2+1]=acc;
       }
     }
-    scale=4.f/n;
   }
 
   //void clear(){

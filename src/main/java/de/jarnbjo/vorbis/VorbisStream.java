@@ -30,7 +30,6 @@
 package de.jarnbjo.vorbis;
 
 import java.io.*;
-import java.util.*;
 
 import de.jarnbjo.ogg.*;
 import de.jarnbjo.util.io.*;
@@ -45,8 +44,7 @@ public class VorbisStream {
    private CommentHeader commentHeader;
    private SetupHeader setupHeader;
 
-   private AudioPacket lastAudioPacket, nextAudioPacket;
-   private LinkedList audioPackets=new LinkedList();
+   private AudioPacket lastAudioPacket;
    private byte[] currentPcm;
    private int currentPcmIndex;
    private int currentPcmLimit;
@@ -55,13 +53,7 @@ public class VorbisStream {
    private static final int COMMENT_HEADER = 3;
    private static final int SETUP_HEADER = 5;
 
-   private int bitIndex=0;
-   private byte lastByte=(byte)0;
-   private boolean initialized=false;
-
    private Object streamLock=new Object();
-   private int pageCounter=0;
-
    private int currentBitRate=0;
 
    private long currentGranulePosition;
@@ -131,7 +123,7 @@ public class VorbisStream {
 
    public int readPcm(byte[] buffer, int offset, int length) throws IOException {
       synchronized (streamLock) {
-         final int channels=identificationHeader.getChannels();
+         identificationHeader.getChannels();
 
          if(lastAudioPacket==null) {
             lastAudioPacket=getNextAudioPacket();
@@ -162,7 +154,6 @@ public class VorbisStream {
 
 
    private AudioPacket getNextAudioPacket() throws VorbisFormatException, IOException {
-      pageCounter++;
       byte[] data=oggStream.getNextOggPacket();
       AudioPacket res=null;
       while(res==null) {

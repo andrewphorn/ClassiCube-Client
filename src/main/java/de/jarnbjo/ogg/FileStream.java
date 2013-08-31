@@ -36,9 +36,8 @@ public class FileStream implements PhysicalOggStream {
    private boolean closed=false;
    private RandomAccessFile source;
    private long[] pageOffsets;
-   private long numberOfSamples=-1;
 
-   private HashMap logicalStreams=new HashMap();
+   private HashMap<Integer, LogicalOggStreamImpl> logicalStreams=new HashMap<Integer, LogicalOggStreamImpl>();
 
    /**
     * Creates access to the specified file through the <code>PhysicalOggStream</code> interface.
@@ -53,7 +52,7 @@ public class FileStream implements PhysicalOggStream {
    public FileStream(RandomAccessFile source) throws OggFormatException, IOException {
       this.source=source;
 
-      ArrayList po=new ArrayList();
+      ArrayList<Long> po=new ArrayList<Long>();
       int pageNumber=0;
       try {
          while(true) {
@@ -67,7 +66,7 @@ public class FileStream implements PhysicalOggStream {
 
             LogicalOggStreamImpl los=(LogicalOggStreamImpl)getLogicalStream(op.getStreamSerialNumber());
             if(los==null) {
-               los=new LogicalOggStreamImpl(this, op.getStreamSerialNumber());
+               los=new LogicalOggStreamImpl(this);
                logicalStreams.put(new Integer(op.getStreamSerialNumber()), los);
             }
 
@@ -95,13 +94,13 @@ public class FileStream implements PhysicalOggStream {
       this.source.seek(0L);
       pageOffsets=new long[po.size()];
       int i=0;
-      Iterator iter=po.iterator();
+      Iterator<Long> iter=po.iterator();
       while(iter.hasNext()) {
          pageOffsets[i++]=((Long)iter.next()).longValue();
       }
    }
 
-   public Collection getLogicalStreams() {
+   public Collection<LogicalOggStreamImpl> getLogicalStreams() {
       return logicalStreams.values();
    }
 
@@ -112,10 +111,6 @@ public class FileStream implements PhysicalOggStream {
    public void close() throws IOException {
       closed=true;
       source.close();
-   }
-
-   private OggPage getNextPage() throws EndOfOggStreamException, IOException, OggFormatException  {
-      return getNextPage(false);
    }
 
    private OggPage getNextPage(boolean skipData) throws EndOfOggStreamException, IOException, OggFormatException  {
@@ -132,7 +127,7 @@ public class FileStream implements PhysicalOggStream {
    }
 
    public void setTime(long granulePosition) throws IOException {
-      for(Iterator iter=logicalStreams.values().iterator(); iter.hasNext(); ) {
+      for(Iterator<LogicalOggStreamImpl> iter=logicalStreams.values().iterator(); iter.hasNext(); ) {
          LogicalOggStream los=(LogicalOggStream)iter.next();
          los.setTime(granulePosition);
       }

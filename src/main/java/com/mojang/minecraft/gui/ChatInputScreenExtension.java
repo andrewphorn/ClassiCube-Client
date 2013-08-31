@@ -31,7 +31,7 @@ public class ChatInputScreenExtension extends GuiScreen
 		++this.tickCount;
 	}
 
-	public static Vector<String> history = new Vector();
+	public static Vector<String> history = new Vector<String>();
 	 
 	int j;
 	@Override

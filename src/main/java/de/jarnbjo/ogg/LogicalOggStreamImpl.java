@@ -34,10 +34,9 @@ import java.util.*;
 public class LogicalOggStreamImpl implements LogicalOggStream {
 
    private PhysicalOggStream source;
-   private int serialNumber;
 
-   private ArrayList pageNumberMapping=new ArrayList();
-   private ArrayList granulePositions=new ArrayList();
+   private ArrayList<Integer> pageNumberMapping=new ArrayList<Integer>();
+   private ArrayList<Long> granulePositions=new ArrayList<Long>();
 
    private int pageIndex=0;
    private OggPage currentPage;
@@ -47,9 +46,8 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
 
    private String format=FORMAT_UNKNOWN;
 
-   public LogicalOggStreamImpl(PhysicalOggStream source, int serialNumber) {
+   public LogicalOggStreamImpl(PhysicalOggStream source ) {
       this.source=source;
-      this.serialNumber=serialNumber;
    }
 
    public void addPageNumberMapping(int physicalPageNumber) {

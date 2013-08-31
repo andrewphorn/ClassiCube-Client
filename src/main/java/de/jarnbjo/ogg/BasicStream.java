@@ -21,7 +21,6 @@
 package de.jarnbjo.ogg;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
 
 /**
@@ -36,23 +35,20 @@ public class BasicStream implements PhysicalOggStream {
 
    private boolean closed=false;
    private InputStream sourceStream;
-   private Object drainLock=new Object();
-   private LinkedList pageCache=new LinkedList();
-   private long numberOfSamples=-1;
    private int position=0;
 
-   private HashMap logicalStreams=new HashMap();
+   private HashMap<Integer, LogicalOggStreamImpl> logicalStreams=new HashMap<Integer, LogicalOggStreamImpl>();
    private OggPage firstPage;
 
    public BasicStream(InputStream sourceStream) throws OggFormatException, IOException {
       firstPage=OggPage.create(sourceStream);
       position+=firstPage.getTotalLength();
-      LogicalOggStreamImpl los=new LogicalOggStreamImpl(this, firstPage.getStreamSerialNumber());
+      LogicalOggStreamImpl los=new LogicalOggStreamImpl(this);
       logicalStreams.put(new Integer(firstPage.getStreamSerialNumber()), los);
       los.checkFormat(firstPage);
    }
 
-   public Collection getLogicalStreams() {
+   public Collection<LogicalOggStreamImpl> getLogicalStreams() {
       return logicalStreams.values();
    }
 
@@ -86,10 +82,6 @@ public class BasicStream implements PhysicalOggStream {
          position+=page.getTotalLength();
          return page;
       }
-   }
-
-   private LogicalOggStream getLogicalStream(int serialNumber) {
-      return (LogicalOggStream)logicalStreams.get(new Integer(serialNumber));
    }
 
    public void setTime(long granulePosition) throws IOException {

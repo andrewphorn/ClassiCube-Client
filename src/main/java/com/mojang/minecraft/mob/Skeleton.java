@@ -14,7 +14,7 @@ public class Skeleton extends Zombie {
       this.textureName = "/mob/skeleton.png";
       Skeleton$1 var5 = new Skeleton$1(this);
       this.deathScore = 120;
-      //var5.runSpeed = 0.3F;
+      var5.runSpeed = 0.3F;
       var5.damage = 8;
       this.ai = var5;
    }
@@ -25,7 +25,6 @@ public class Skeleton extends Zombie {
 
    // $FF: synthetic method
    static void shootRandomArrow(Skeleton var0) {
-      var0 = var0;
       int var1 = (int)((Math.random() + Math.random()) * 3.0D + 4.0D);
 
       for(int var2 = 0; var2 < var1; ++var2) {

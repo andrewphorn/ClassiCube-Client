@@ -1,14 +1,6 @@
 package com.mojang.minecraft.gui;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-
-import org.lwjgl.opengl.Display;
-
 import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.SessionData;
-import com.mojang.minecraft.level.LevelIO;
 
 public final class ErrorScreen extends GuiScreen {
 
