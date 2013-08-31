@@ -19,8 +19,7 @@ public final class SessionData {
 	}
 
 	static {
-		//AddStandardMinecraftBlocks();
-		SetAllowedBlocks((byte)1);
+		AddStandardMinecraftBlocks();
 	}
 	
 	public static void SetAllowedBlocks(byte SupportLevel) {

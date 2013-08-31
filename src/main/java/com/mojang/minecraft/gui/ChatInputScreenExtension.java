@@ -40,6 +40,8 @@ public class ChatInputScreenExtension extends GuiScreen
 	    	this.minecraft.setCurrentScreen((GuiScreen) null);
 	      return;
 	    }
+	    if(Keyboard.isKeyDown(Keyboard.KEY_TAB))
+		return;
 
 	    if (paramInt == 28) {
 	      String str1 = this.inputLine.trim();
