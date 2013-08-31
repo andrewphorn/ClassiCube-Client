@@ -91,33 +91,36 @@ public class ResourceDownloadThread extends Thread {
 	    GameSettings.PercentString = "65%";
 	    GameSettings.StatusString = "Downloaded music and sounds!";
 	    System.out.println("Downloaded music and sounds!");
+	    if (!minecraft.isApplet) {
+		GameSettings.StatusString = "Downloading lwjgl...";
+		System.out.println("Downloading lwjgl...");
 
-	    GameSettings.StatusString = "Downloading lwjgl...";
-	    System.out.println("Downloading lwjgl...");
+		file = new File(Minecraft.mcDir, "lwjgl-2.9.0.zip");
 
-	    file = new File(Minecraft.mcDir, "lwjgl-2.9.0.zip");
+		if (!file.exists()
+			&& !new File(Minecraft.mcDir, "libs").exists()
+			&& !new File(Minecraft.mcDir, "native").exists()) {
+		    url = new URL(
+			    "http://downloads.sourceforge.net/project/java-game-lib/Official%20Releases/LWJGL%202.9.0/lwjgl-2.9.0.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fjava-game-lib%2Ffiles%2FOfficial%2520Releases%2FLWJGL%25202.9.0%2F&ts=1377932992&use_mirror=garr");
+		    rbc = Channels.newChannel(url.openStream());
+		    fos = new FileOutputStream(file);
 
-	    if (!file.exists() && !new File(Minecraft.mcDir, "libs").exists()
-		    && !new File(Minecraft.mcDir, "native").exists()) {
-		url = new URL(
-			"http://downloads.sourceforge.net/project/java-game-lib/Official%20Releases/LWJGL%202.9.0/lwjgl-2.9.0.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fjava-game-lib%2Ffiles%2FOfficial%2520Releases%2FLWJGL%25202.9.0%2F&ts=1377932992&use_mirror=garr");
-		rbc = Channels.newChannel(url.openStream());
-		fos = new FileOutputStream(file);
+		    fos.getChannel().transferFrom(rbc, 0, 1 << 24);
 
-		fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+		    unpack(file.toString());
 
-		unpack(file.toString());
-
-		copyFolder(new File(Minecraft.mcDir,
-			"lwjgl-2.9.0/lwjgl-2.9.0/jar"), new File(
-			Minecraft.mcDir, "libs"));
-		copyFolder(new File(Minecraft.mcDir,
-			"lwjgl-2.9.0/lwjgl-2.9.0/native"), new File(
-			Minecraft.mcDir, "native"));
+		    copyFolder(new File(Minecraft.mcDir,
+			    "lwjgl-2.9.0/lwjgl-2.9.0/jar"), new File(
+			    Minecraft.mcDir, "libs"));
+		    copyFolder(new File(Minecraft.mcDir,
+			    "lwjgl-2.9.0/lwjgl-2.9.0/native"), new File(
+			    Minecraft.mcDir, "native"));
+		}
+		deleteDir(new File(Minecraft.mcDir, "lwjgl-2.9.0"));
+		    deleteDir(file);
 	    }
 
-	    deleteDir(new File(Minecraft.mcDir, "lwjgl-2.9.0"));
-	    deleteDir(file);
+	    
 	    GameSettings.StatusString = "Downloaded lwjgl...";
 	    System.out.println("Downloaded lwjgl...");
 	    GameSettings.StatusString = "";
