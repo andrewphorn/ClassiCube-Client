@@ -53,11 +53,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.math.BigInteger;
 import java.nio.IntBuffer;
-import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -1372,6 +1369,12 @@ public final class Minecraft implements Runnable {
 							    .load("/terrain.png"));
 					    GL11.glCallLists(var89.buffer);
 					}
+
+					GL11.glDepthMask(true);
+					GL11.glDisable(3042);
+					GL11.glDisable(2912);
+					// -------------------
+
 					for (int i = 0; i < this.selectionBoxes
 						.size(); i++) {
 					    CustomAABB bounds = this.selectionBoxes
@@ -2235,6 +2238,7 @@ public final class Minecraft implements Runnable {
 					byte unusedRank = ((Byte) packetParams[4])
 						.byteValue();
 					this.playerListNameData.add(new PlayerListNameData(NameId, playerName, listName, groupName, unusedRank));
+					Collections.sort(playerListNameData, new PlayerListComparator());
 				    } else if (packetType == PacketType.EXT_ADD_ENTITY) {
 					byte playerID = ((Byte) packetParams[0])
 						.byteValue();
