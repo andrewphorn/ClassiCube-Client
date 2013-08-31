@@ -2607,7 +2607,7 @@ public final class Minecraft implements Runnable {
 	    this.setCurrentScreen((GuiScreen) null);
 	}
 
-	if (this.currentScreen == null || this.currentScreen.grabsMouse) {
+	if (this.currentScreen == null) {
 	    int var25;
 	    while (Mouse.next()) {
 		if ((var25 = Mouse.getEventDWheel()) != 0) {
