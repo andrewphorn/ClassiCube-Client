@@ -81,7 +81,7 @@ public class InputHandlerImpl extends InputHandler {
 	    index = 5;
 	}
 	if (index >= 0) {
-	    keyStates[index] = state;
+	    //keyStates[index] = state;
 	}
 
     }
