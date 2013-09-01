@@ -1,6 +1,7 @@
 package com.mojang.minecraft.mob;
 
 import com.mojang.minecraft.level.Level;
+import com.mojang.minecraft.model.AnimalModel;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.render.TextureManager;
@@ -20,19 +21,15 @@ public class HumanoidMob extends Mob {
 
     public void renderModel(TextureManager var1, float var2, float var3,
 	    float var4, float var5, float var6, float var7) {
+	if(this.modelName == "sheep"){
+	    renderSheep(var1, var2,var3,var4,var5,var6,var7);
+	    return;
+	}
 	super.renderModel(var1, var2, var3, var4, var5, var6, var7);
+	
 	Model var9 = modelCache.getModel(this.modelName);
 	GL11.glEnable(3008);
 	if (this.allowAlpha) {
-	    GL11.glEnable(2884);
-	}
-
-	if (this.hasHair) {
-	    GL11.glDisable(2884);
-	    HumanoidModel var10 = null;
-	    (var10 = (HumanoidModel) var9).headwear.yaw = var10.head.yaw;
-	    var10.headwear.pitch = var10.head.pitch;
-	    var10.headwear.render(var7);
 	    GL11.glEnable(2884);
 	}
 
@@ -65,5 +62,34 @@ public class HumanoidMob extends Mob {
 	}
 
 	GL11.glDisable(3008);
+    }
+    
+    public void renderSheep(TextureManager var1, float var2, float var3,
+	    float var4, float var5, float var6, float var7) {
+	AnimalModel var8;
+	float var9 = (var8 = (AnimalModel) modelCache.getModel("sheep")).head.y;
+	float var10 = var8.head.z;
+	super.renderModel(var1, var2, var3, var4, var5, var6, var7);
+	    GL11.glBindTexture(3553, var1.load("/mob/sheep_fur.png"));
+	    AnimalModel var11;
+	    (var11 = (AnimalModel) modelCache.getModel("sheep.fur")).head.yaw = var8.head.yaw;
+	    var11.head.pitch = var8.head.pitch;
+	    var11.head.y = var8.head.y;
+	    var11.head.x = var8.head.x;
+	    var11.body.yaw = var8.body.yaw;
+	    var11.body.pitch = var8.body.pitch;
+	    var11.leg1.pitch = var8.leg1.pitch;
+	    var11.leg2.pitch = var8.leg2.pitch;
+	    var11.leg3.pitch = var8.leg3.pitch;
+	    var11.leg4.pitch = var8.leg4.pitch;
+	    var11.head.render(var7);
+	    var11.body.render(var7);
+	    var11.leg1.render(var7);
+	    var11.leg2.render(var7);
+	    var11.leg3.render(var7);
+	    var11.leg4.render(var7);
+
+	var8.head.y = var9;
+	var8.head.z = var10;
     }
 }
