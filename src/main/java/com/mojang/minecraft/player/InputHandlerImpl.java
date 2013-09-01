@@ -4,6 +4,7 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public class InputHandlerImpl extends InputHandler {
     public InputHandlerImpl(GameSettings gameSettings) {
@@ -14,13 +15,15 @@ public class InputHandlerImpl extends InputHandler {
     public void updateMovement() {
 
     // wow this shouldn't be neccesary.
-    keyStates[0] = Keyboard.isKeyDown(settings.forwardKey.key);
-    keyStates[1] = Keyboard.isKeyDown(settings.backKey.key);
-    keyStates[2] = Keyboard.isKeyDown(settings.leftKey.key);
-    keyStates[3] = Keyboard.isKeyDown(settings.rightKey.key);
-    keyStates[4] = Keyboard.isKeyDown(settings.jumpKey.key);
-    keyStates[5] = Keyboard.isKeyDown(settings.runKey.key);
-    // this also apparently fixes the mouse bug? such confusion.
+    if (Mouse.isGrabbed()) {
+	    keyStates[0] = Keyboard.isKeyDown(settings.forwardKey.key);
+	    keyStates[1] = Keyboard.isKeyDown(settings.backKey.key);
+	    keyStates[2] = Keyboard.isKeyDown(settings.leftKey.key);
+	    keyStates[3] = Keyboard.isKeyDown(settings.rightKey.key);
+	    keyStates[4] = Keyboard.isKeyDown(settings.jumpKey.key);
+	    keyStates[5] = Keyboard.isKeyDown(settings.runKey.key);
+    	// this also apparently fixes the mouse bug? such confusion.
+	}
 	xxa = 0.0F;
 	yya = 0.0F;
 
