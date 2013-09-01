@@ -17,11 +17,8 @@ import java.net.URLConnection;
 
 import javax.imageio.ImageIO;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.AWTGLCanvas;
-
 // MinecraftCanvas
-public class MinecraftApplet$1 extends AWTGLCanvas {
+public class MinecraftApplet$1 extends Canvas {
     private BufferedImage image;
     private BufferedImage image2;
 
@@ -84,7 +81,7 @@ public class MinecraftApplet$1 extends AWTGLCanvas {
 	}
     }
 
-    /*@Override
+    @Override
     public void paint(Graphics g) {
 	if (image == null) {
 	    try {
@@ -126,9 +123,9 @@ public class MinecraftApplet$1 extends AWTGLCanvas {
 	    }
 	    g.drawImage(image2, 0, 0, this.getWidth(), this.getHeight(), null);
 	}
-    }*/
+    }
 
-    public MinecraftApplet$1(MinecraftApplet minecraftApplet) throws LWJGLException {
+    public MinecraftApplet$1(MinecraftApplet minecraftApplet) {
 	this.applet = minecraftApplet;
     }
 
