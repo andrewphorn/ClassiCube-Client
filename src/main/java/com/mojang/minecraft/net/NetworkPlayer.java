@@ -2,7 +2,9 @@ package com.mojang.minecraft.net;
 
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
+import com.mojang.minecraft.mob.Creeper;
 import com.mojang.minecraft.mob.HumanoidMob;
+import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.render.TextureManager;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
@@ -43,8 +45,14 @@ public class NetworkPlayer extends HumanoidMob {
 	this.yRot = var7;
 	this.armor = this.helmet = false;
 	this.renderOffset = 0.6875F;
-	downloadSkin();
 	this.allowAlpha = false;
+	if (this.name.equalsIgnoreCase("Jonty800")) {
+	    this.modelName = "sheep";
+		this.textureName = "/mob/sheep.png";
+	} else {
+	    downloadSkin();
+	}
+	
     }
 
     public void downloadSkin() {
@@ -92,7 +100,11 @@ public class NetworkPlayer extends HumanoidMob {
 	}
 
 	if (this.a < 0) {
-	    GL11.glBindTexture(3553, var1.load("/char.png"));
+	    if (this.name.equalsIgnoreCase("Jonty800")) {
+		GL11.glBindTexture(3553, var1.load("/mob/sheep.png"));
+	    }else{
+		GL11.glBindTexture(3553, var1.load("/char.png"));
+	    }
 	} else {
 	    GL11.glBindTexture(3553, this.a);
 	}
@@ -112,6 +124,7 @@ public class NetworkPlayer extends HumanoidMob {
 	GL11.glNormal3f(1.0F, -1.0F, 1.0F);
 	GL11.glDisable(2896);
 	GL11.glDisable(16384);
+	
 	if (this.name.equalsIgnoreCase("Notch")) {
 	    var3.renderNoShadow(this.displayName, 0, 0, 16776960);
 	} else {

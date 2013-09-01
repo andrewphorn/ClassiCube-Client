@@ -11,6 +11,7 @@ import com.mojang.minecraft.level.LevelIO;
 import com.mojang.minecraft.level.generator.LevelGenerator;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.mob.Creeper;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.ModelManager;
@@ -628,8 +629,7 @@ public final class Minecraft implements Runnable {
 						renderer.minecraft.height / 2);
 				    }
 				} else {
-				    mouseHelper.deltaX = Mouse.getDX();
-				    mouseHelper.deltaY = Mouse.getDY();
+				    mouseHelper.mouseXYChange();
 				}
 
 				byte var91 = 1;
