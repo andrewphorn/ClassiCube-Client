@@ -6,10 +6,13 @@ import java.awt.Canvas;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.AWTGLCanvas;
+
 public class MinecraftApplet extends Applet {
     private static final long serialVersionUID = 1L;
 
-    private Canvas canvas;
+    private AWTGLCanvas canvas;
     private Minecraft minecraft;
 
     private Thread thread = null;
@@ -34,7 +37,12 @@ public class MinecraftApplet extends Applet {
     }
 
     public void init() {
-	canvas = new MinecraftApplet$1(this);
+	try {
+	    canvas = new MinecraftApplet$1(this);
+	} catch (LWJGLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
 
 	boolean fullscreen = false;
 
