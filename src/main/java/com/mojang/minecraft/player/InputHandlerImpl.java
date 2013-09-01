@@ -14,12 +14,13 @@ public class InputHandlerImpl extends InputHandler {
     public void updateMovement() {
 
     // wow this shouldn't be neccesary.
-    keystate[0] = Keyboard.isKeyDown(settings.forwardKey);
-    keystate[1] = Keyboard.isKeyDown(settings.backKey);
-    keystate[2] = Keyboard.isKeyDown(settings.leftkey);
-    keystate[3] = Keyboard.isKeyDown(settings.rightKey);
-    keystate[4] = Keyboard.isKeyDown(settings.jumpKey);
-    keystate[5] = Keyboard.isKeyDown(settings.runKey);
+    keyStates[0] = Keyboard.isKeyDown(settings.forwardKey.key);
+    keyStates[1] = Keyboard.isKeyDown(settings.backKey.key);
+    keyStates[2] = Keyboard.isKeyDown(settings.leftKey.key);
+    keyStates[3] = Keyboard.isKeyDown(settings.rightKey.key);
+    keyStates[4] = Keyboard.isKeyDown(settings.jumpKey.key);
+    keyStates[5] = Keyboard.isKeyDown(settings.runKey.key);
+    // this also apparently fixes the mouse bug? such confusion.
 	xxa = 0.0F;
 	yya = 0.0F;
 
