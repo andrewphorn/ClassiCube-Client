@@ -198,6 +198,7 @@ public final class Minecraft implements Runnable {
 		return;
 	    }else{
 		this.setIngameFocus();
+		this.hasMouse = true;
 	    }
 	}
     }
