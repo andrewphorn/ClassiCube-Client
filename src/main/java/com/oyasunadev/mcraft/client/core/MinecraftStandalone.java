@@ -8,10 +8,6 @@ import com.mojang.minecraft.SessionData;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.AWTGLCanvas;
-
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -32,7 +28,7 @@ import java.util.Map;
  * Run Minecraft Classic standalone version.
  */
 public class MinecraftStandalone {
-    public static void main(String[] args) throws LWJGLException {
+    public static void main(String[] args) {
 	MinecraftStandalone minecraftStandalone = new MinecraftStandalone();
 
 	minecraftStandalone.startMinecraft();
@@ -46,9 +42,8 @@ public class MinecraftStandalone {
 
     /**
      * Start Minecraft Classic.
-     * @throws LWJGLException 
      */
-    public void startMinecraft() throws LWJGLException {
+    public void startMinecraft() {
 	MinecraftFrame minecraftFrame = new MinecraftFrame();
 
 	minecraftFrame.startMinecraft();
@@ -87,14 +82,13 @@ public class MinecraftStandalone {
 
 	/**
 	 * Start Minecraft Classic.
-	 * @throws LWJGLException 
 	 */
-	public void startMinecraft() throws LWJGLException {
+	public void startMinecraft() {
 
 	    boolean RunFakeNetwork = false;
 
 	    MCraftApplet applet = new MCraftApplet();
-	    final AWTGLCanvas canvas = new AWTGLCanvas();
+	    final MinecraftCanvas canvas = new MinecraftCanvas();
 	    minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
 		    false, false);
 
@@ -108,7 +102,7 @@ public class MinecraftStandalone {
 		minecraft.port = 25566;
 	    }
 
-	    //canvas.setMinecraft(minecraft);
+	    canvas.setMinecraft(minecraft);
 	    canvas.setSize(getSize());
 
 	    add(canvas, "Center");

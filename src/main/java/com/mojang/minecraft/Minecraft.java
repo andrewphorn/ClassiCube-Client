@@ -42,7 +42,6 @@ import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -71,7 +70,7 @@ public final class Minecraft implements Runnable {
     public ParticleManager particleManager;
     public SessionData session = null;
     public String host;
-    public AWTGLCanvas canvas;
+    public Canvas canvas;
     public boolean levelLoaded = false;
     public volatile boolean waiting = false;
     private Cursor cursor;
@@ -113,7 +112,7 @@ public final class Minecraft implements Runnable {
 
     public static File mcDir;
 
-    public Minecraft(AWTGLCanvas var1, MinecraftApplet var2, int var3, int var4,
+    public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4,
 	    boolean var5, boolean IsApplet) {
 	// this.selectionBoxes.add(new SelectionBoxData((byte) 1, "",
 	// new ColorCache(0F, 1.0F, 0F, 0.6F), new CustomAABB(12, 45, 30,
