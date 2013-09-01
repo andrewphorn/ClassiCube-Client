@@ -69,8 +69,6 @@ public final class NetworkHandler {
 
     @SuppressWarnings("rawtypes")
     public final void send(PacketType var1, Object... var2) {
-	if (var1.opcode != 8 && var1.opcode != 2 && var1.opcode != 3)
-	    System.out.println("Sending Packet: " + var1.opcode);
 	if (this.connected) {
 	    this.out.put(var1.opcode);
 
