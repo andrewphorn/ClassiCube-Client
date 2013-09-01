@@ -603,12 +603,7 @@ public final class Minecraft implements Runnable {
 			    this.gamemode.applyCracks(this.timer.delta);
 			    float var65 = this.timer.delta;
 			    com.mojang.minecraft.render.Renderer renderer = this.renderer;
-			    if (this.renderer.displayActive
-				    && !Display.isActive()) {
-				renderer.minecraft.pause();
-			    }
-
-			    renderer.displayActive = Display.isActive();
+			    
 			    int var68;
 			    int var70;
 			    int var86;
@@ -1800,6 +1795,12 @@ public final class Minecraft implements Runnable {
 
 				Thread.yield();
 				Display.update();
+				if (this.renderer.displayActive
+					    && !Display.isActive()) {
+					renderer.minecraft.pause();
+				    }
+
+				    renderer.displayActive = Display.isActive();
 			    }
 			}
 
@@ -1992,7 +1993,6 @@ public final class Minecraft implements Runnable {
 			}
 		    }
 		}
-
 	    }
 	}
     }
@@ -2064,22 +2064,12 @@ public final class Minecraft implements Runnable {
 				    networkHandler.in.compact();
 				    break;
 				}
-				if (packetType.opcode != 8
-					&& packetType.opcode != 2) {
-				    //System.out.println("Reading Packet: "
-					//    + packetType.opcode);
-				}
 				networkHandler.in.get();
 				Object[] packetParams = new Object[packetType.params.length];
 
 				for (i = 0; i < packetParams.length; ++i) {
 				    packetParams[i] = networkHandler
 					    .readObject(packetType.params[i]);
-				    if (packetType.opcode != 8
-					    && packetType.opcode != 2) {
-					//System.out.println("Reading object: "
-					//	+ packetParams[i]);
-				    }
 				}
 
 				NetworkManager networkManager = networkHandler.netManager;
@@ -2087,11 +2077,11 @@ public final class Minecraft implements Runnable {
 				    if (packetType == PacketType.EXT_INFO) {
 					String AppName = (String) packetParams[0];
 					short ExtensionCount = (Short) packetParams[1];
-					//System.out
-					//	.println("Connecting to AppName: "
-					//		+ AppName
-					//		+ " with extension count: "
-					//		+ ExtensionCount);
+					System.out
+						.println("Connecting to AppName: "
+							+ AppName
+							+ " with extension count: "
+							+ ExtensionCount);
 					recievedExtensionLength = ExtensionCount;
 				    } else if (packetType == PacketType.EXT_ENTRY) {
 					String ExtName = ((String) packetParams[0]);
@@ -2126,10 +2116,7 @@ public final class Minecraft implements Runnable {
 						networkManager.netHandler.send(
 							PacketType.EXT_ENTRY,
 							toSendParams);
-						//System.out.println("Sent: "
-						//	+ temp.get(k).Name);
 					    }
-					    //System.out.println("Done");
 					}
 				    } else if (packetType == PacketType.SELECTION_CUBOID) {
 					byte ID = ((Byte) packetParams[0])
