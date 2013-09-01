@@ -42,7 +42,7 @@ public final class GameSettings {
     public int viewDistance = 0;
     public boolean viewBobbing = true;
     public boolean anaglyph = false;
-    public boolean limitFramerate = false;
+    public boolean limitFramerate = true;
     public KeyBinding forwardKey = new KeyBinding("Forward", 17);
     public KeyBinding leftKey = new KeyBinding("Left", 30);
     public KeyBinding backKey = new KeyBinding("Back", 31);

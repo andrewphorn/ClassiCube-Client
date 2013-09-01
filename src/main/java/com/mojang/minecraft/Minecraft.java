@@ -2117,7 +2117,6 @@ public final class Minecraft implements Runnable {
 							PacketType.EXT_ENTRY,
 							toSendParams);
 					    }
-					    System.out.println("Done");
 					}
 				    } else if (packetType == PacketType.SELECTION_CUBOID) {
 					byte ID = ((Byte) packetParams[0])
@@ -2254,8 +2253,8 @@ public final class Minecraft implements Runnable {
 					}
 					this.playerListNameData = cache;
 				    } else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-					System.out
-						.println("Custom block packet");
+					//System.out
+					//	.println("Custom block packet");
 					byte SupportLevel = ((Byte) packetParams[0])
 						.byteValue();
 					networkManager.netHandler
