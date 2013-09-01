@@ -109,6 +109,8 @@ public final class Minecraft implements Runnable {
     public List<HotKeyData> hotKeys = new ArrayList<HotKeyData>();
     public HackState HackState;
     public List<PlayerListNameData> playerListNameData = new ArrayList<PlayerListNameData>();
+    /** Mouse helper instance. */
+    public MouseHelper mouseHelper;
 
     public static File mcDir;
 
@@ -145,6 +147,7 @@ public final class Minecraft implements Runnable {
 	this.hasMouse = false;
 	this.lastClick = 0;
 	this.raining = false;
+	this.mouseHelper = new MouseHelper();
 
 	try {
 	    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -181,27 +184,20 @@ public final class Minecraft implements Runnable {
 
 	    this.currentScreen = var1;
 	    if (var1 != null) {
+		this.setIngameNotInFocus();
 		if (this.hasMouse) {
-		    this.player.releaseAllKeys();
 		    this.hasMouse = false;
-		    if (this.levelLoaded) {
-			try {
-			    Mouse.setNativeCursor((Cursor) null);
-			} catch (LWJGLException var4) {
-			    var4.printStackTrace();
-			}
-		    } else {
-			Mouse.setGrabbed(false);
-		    }
-		}
+		   }
+		//}
 
 		int var2 = this.width * 240 / this.height;
 		int var3 = this.height * 240 / this.height;
 		var1.open(this, var2, var3);
 		this.online = false;
 		return;
+	    }else{
+		this.setIngameFocus();
 	    }
-	    this.grabMouse();
 	}
     }
 
@@ -603,14 +599,14 @@ public final class Minecraft implements Runnable {
 			    this.gamemode.applyCracks(this.timer.delta);
 			    float var65 = this.timer.delta;
 			    com.mojang.minecraft.render.Renderer renderer = this.renderer;
-			    
+
 			    int var68;
 			    int var70;
-			    int var86;
-			    int var81;
+			    int var86 =0;
+			    int var81 =0;
 			    if (renderer.minecraft.hasMouse) {
-				var81 = 0;
-				var86 = 0;
+				mouseHelper.deltaX = 0;
+				mouseHelper.deltaY = 0;
 				if (renderer.minecraft.levelLoaded) {
 				    if (renderer.minecraft.canvas != null) {
 					Point var90;
@@ -620,10 +616,10 @@ public final class Minecraft implements Runnable {
 					var68 = var90.y
 						+ renderer.minecraft.height / 2;
 					Point var75;
-					var81 = (var75 = MouseInfo
+					mouseHelper.deltaY = (var75 = MouseInfo
 						.getPointerInfo().getLocation()).x
 						- var70;
-					var86 = -(var75.y - var68);
+					mouseHelper.deltaX = -(var75.y - var68);
 					renderer.minecraft.robot.mouseMove(
 						var70, var68);
 				    } else {
@@ -632,8 +628,8 @@ public final class Minecraft implements Runnable {
 						renderer.minecraft.height / 2);
 				    }
 				} else {
-				    var81 = Mouse.getDX();
-				    var86 = Mouse.getDY();
+				    mouseHelper.deltaX = Mouse.getDX();
+				    mouseHelper.deltaY = Mouse.getDY();
 				}
 
 				byte var91 = 1;
@@ -641,7 +637,7 @@ public final class Minecraft implements Runnable {
 				    var91 = -1;
 				}
 
-				renderer.minecraft.player.turn(var81, var86
+				renderer.minecraft.player.turn( mouseHelper.deltaX,  mouseHelper.deltaY
 					* var91);
 			    }
 
@@ -1796,11 +1792,11 @@ public final class Minecraft implements Runnable {
 				Thread.yield();
 				Display.update();
 				if (this.renderer.displayActive
-					    && !Display.isActive()) {
-					renderer.minecraft.pause();
-				    }
+					&& !Display.isActive()) {
+				    renderer.minecraft.pause();
+				}
 
-				    renderer.displayActive = Display.isActive();
+				renderer.displayActive = Display.isActive();
 			    }
 			}
 
@@ -1837,27 +1833,45 @@ public final class Minecraft implements Runnable {
 	}
 
     }
+    public boolean inGameHasFocus;
+    
+    public void setIngameFocus()
+    {
+        if (Display.isActive())
+        {
+            if (!this.inGameHasFocus)
+            {
+                this.inGameHasFocus = true;
+                this.mouseHelper.grabMouseCursor();
+                this.setCurrentScreen((GuiScreen) null);
+    	    	this.lastClick = 10000;
+            }
+        }
+    }
+
+    //Resets the player keystate, disables the ingame focus, and ungrabs the mouse cursor.
+    public void setIngameNotInFocus()
+    {
+        if (this.inGameHasFocus)
+        {
+            this.player.releaseAllKeys();
+            this.inGameHasFocus = false;
+            this.mouseHelper.ungrabMouseCursor();
+        }
+    }
 
     public final void grabMouse() {
 	if (!this.hasMouse) {
 	    this.hasMouse = true;
-	    if (this.levelLoaded) {
-		try {
-		    Mouse.setNativeCursor(this.cursor);
-		    Mouse.setCursorPosition(this.width / 2, this.height / 2);
-		} catch (LWJGLException var2) {
-		    var2.printStackTrace();
-		}
-
-		if (this.canvas == null) {
-		    this.canvas.requestFocus();
-		}
-	    } else {
-		Mouse.setGrabbed(true);
+	    if ( this.currentScreen != null) {
+		this.setIngameNotInFocus();
+		if (this.hasMouse) {
+		    this.hasMouse = false;
+		   }
+		return;
+	    }else{
+		this.setIngameFocus();
 	    }
-
-	    this.setCurrentScreen((GuiScreen) null);
-	    this.lastClick = this.ticks + 10000;
 	}
     }
 
@@ -2253,8 +2267,8 @@ public final class Minecraft implements Runnable {
 					}
 					this.playerListNameData = cache;
 				    } else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-					//System.out
-					//	.println("Custom block packet");
+					// System.out
+					// .println("Custom block packet");
 					byte SupportLevel = ((Byte) packetParams[0])
 						.byteValue();
 					networkManager.netHandler
