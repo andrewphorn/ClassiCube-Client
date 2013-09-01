@@ -2087,11 +2087,11 @@ public final class Minecraft implements Runnable {
 				    if (packetType == PacketType.EXT_INFO) {
 					String AppName = (String) packetParams[0];
 					short ExtensionCount = (Short) packetParams[1];
-					System.out
-						.println("Connecting to AppName: "
-							+ AppName
-							+ " with extension count: "
-							+ ExtensionCount);
+					//System.out
+					//	.println("Connecting to AppName: "
+					//		+ AppName
+					//		+ " with extension count: "
+					//		+ ExtensionCount);
 					recievedExtensionLength = ExtensionCount;
 				    } else if (packetType == PacketType.EXT_ENTRY) {
 					String ExtName = ((String) packetParams[0]);
