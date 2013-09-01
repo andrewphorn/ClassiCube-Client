@@ -14,16 +14,7 @@ public class InputHandlerImpl extends InputHandler {
     @Override
     public void updateMovement() {
 
-    // wow this shouldn't be neccesary.
-    if (Mouse.isGrabbed()) {
-	    keyStates[0] = Keyboard.isKeyDown(settings.forwardKey.key);
-	    keyStates[1] = Keyboard.isKeyDown(settings.backKey.key);
-	    keyStates[2] = Keyboard.isKeyDown(settings.leftKey.key);
-	    keyStates[3] = Keyboard.isKeyDown(settings.rightKey.key);
-	    keyStates[4] = Keyboard.isKeyDown(settings.jumpKey.key);
-	    keyStates[5] = Keyboard.isKeyDown(settings.runKey.key);
-    	// this also apparently fixes the mouse bug? such confusion.
-	}
+	// wow this shouldn't be neccesary.
 	xxa = 0.0F;
 	yya = 0.0F;
 
@@ -61,31 +52,33 @@ public class InputHandlerImpl extends InputHandler {
     @Override
     public void setKeyState(int key, boolean state) {
 	byte index = -1;
+	if (Mouse.isGrabbed()) {
 
-	if (key == settings.forwardKey.key) {
-	    index = 0;
-	}
+	    if (key == settings.forwardKey.key) {
+		index = 0;
+	    }
 
-	if (key == settings.backKey.key) {
-	    index = 1;
-	}
+	    if (key == settings.backKey.key) {
+		index = 1;
+	    }
 
-	if (key == settings.leftKey.key) {
-	    index = 2;
-	}
+	    if (key == settings.leftKey.key) {
+		index = 2;
+	    }
 
-	if (key == settings.rightKey.key) {
-	    index = 3;
-	}
+	    if (key == settings.rightKey.key) {
+		index = 3;
+	    }
 
-	if (key == settings.jumpKey.key) {
-	    index = 4;
-	}
-	if (key == settings.runKey.key) {
-	    index = 5;
-	}
-	if (index >= 0) {
-	    keyStates[index] = state;
+	    if (key == settings.jumpKey.key) {
+		index = 4;
+	    }
+	    if (key == settings.runKey.key) {
+		index = 5;
+	    }
+	    if (index >= 0) {
+		keyStates[index] = state;
+	    }
 	}
 
     }
