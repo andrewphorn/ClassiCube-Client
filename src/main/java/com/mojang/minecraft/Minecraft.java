@@ -2066,8 +2066,8 @@ public final class Minecraft implements Runnable {
 				}
 				if (packetType.opcode != 8
 					&& packetType.opcode != 2) {
-				    System.out.println("Reading Packet: "
-					    + packetType.opcode);
+				    //System.out.println("Reading Packet: "
+					//    + packetType.opcode);
 				}
 				networkHandler.in.get();
 				Object[] packetParams = new Object[packetType.params.length];
@@ -2077,8 +2077,8 @@ public final class Minecraft implements Runnable {
 					    .readObject(packetType.params[i]);
 				    if (packetType.opcode != 8
 					    && packetType.opcode != 2) {
-					System.out.println("Reading object: "
-						+ packetParams[i]);
+					//System.out.println("Reading object: "
+					//	+ packetParams[i]);
 				    }
 				}
 
@@ -2126,10 +2126,10 @@ public final class Minecraft implements Runnable {
 						networkManager.netHandler.send(
 							PacketType.EXT_ENTRY,
 							toSendParams);
-						System.out.println("Sent: "
-							+ temp.get(k).Name);
+						//System.out.println("Sent: "
+						//	+ temp.get(k).Name);
 					    }
-					    System.out.println("Done");
+					    //System.out.println("Done");
 					}
 				    } else if (packetType == PacketType.SELECTION_CUBOID) {
 					byte ID = ((Byte) packetParams[0])
@@ -2266,8 +2266,8 @@ public final class Minecraft implements Runnable {
 					}
 					this.playerListNameData = cache;
 				    } else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-					System.out
-						.println("Custom block packet");
+					//System.out
+					//	.println("Custom block packet");
 					byte SupportLevel = ((Byte) packetParams[0])
 						.byteValue();
 					networkManager.netHandler
