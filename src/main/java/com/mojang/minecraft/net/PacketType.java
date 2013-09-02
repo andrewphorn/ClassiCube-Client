@@ -67,6 +67,8 @@ public class PacketType {
     public static final PacketType ENV_SET_COLOR; // 25
     public static final PacketType SELECTION_CUBOID; // 26
     public static final PacketType REMOVE_SELECTION_CUBOID; // 27
+    public static final PacketType SET_BLOCK_PERMISSIONS; // 28
+    public static final PacketType CHANGE_MODEL; // 29
 
     public int length;
     private static int nextOpcode;
@@ -126,6 +128,8 @@ public class PacketType {
 		Short.TYPE, Short.TYPE, Byte.class, Byte.class, Byte.class,
 		Byte.class }); // last 4 are ubyte
 	REMOVE_SELECTION_CUBOID = new PacketType(new Class[] { Byte.TYPE });
+	SET_BLOCK_PERMISSIONS = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE, Integer.TYPE });
+	CHANGE_MODEL = new PacketType(new Class[] { Byte.TYPE, String.class });
 
 	// set names
 	EXT_INFO.extName = "ExtInfo";
@@ -140,6 +144,8 @@ public class PacketType {
 	ENV_SET_COLOR.extName = "EnvSetColor";
 	SELECTION_CUBOID.extName = "SelectionCuboid";
 	REMOVE_SELECTION_CUBOID.extName = "RemoveSelectionCuboid";
+	SET_BLOCK_PERMISSIONS.extName = "SetBlockPermissions";
+	CHANGE_MODEL.extName = "ChangeModel";
 
 	nextOpcode = 0;
     }

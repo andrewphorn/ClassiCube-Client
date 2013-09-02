@@ -46,13 +46,9 @@ public class NetworkPlayer extends HumanoidMob {
 	this.armor = this.helmet = false;
 	this.renderOffset = 0.6875F;
 	this.allowAlpha = false;
-	if (this.name.equalsIgnoreCase("Jonty800")) {
-	    this.modelName = "sheep";
-		this.textureName = "/mob/sheep.png";
-	} else {
+	if (this.modelName == "humanoid") {
 	    downloadSkin();
 	}
-	
     }
 
     public void downloadSkin() {
@@ -95,15 +91,18 @@ public class NetworkPlayer extends HumanoidMob {
 	    }
 
 	    this.hasHair = var10001;
-	    this.a = var1.load(this.newTexture);
+	    if(this.modelName == "humanoid"){
+		this.a = var1.load(this.newTexture);
+	    }
 	    this.newTexture = null;
 	}
 
 	if (this.a < 0) {
-	    if (this.name.equalsIgnoreCase("Jonty800")) {
-		GL11.glBindTexture(3553, var1.load("/mob/sheep.png"));
-	    }else{
+	    if (this.modelName == "humanoid") {
 		GL11.glBindTexture(3553, var1.load("/char.png"));
+	    } else {
+		GL11.glBindTexture(3553,
+			var1.load("/mob/" + this.modelName + ".png"));
 	    }
 	} else {
 	    GL11.glBindTexture(3553, this.a);
@@ -124,7 +123,7 @@ public class NetworkPlayer extends HumanoidMob {
 	GL11.glNormal3f(1.0F, -1.0F, 1.0F);
 	GL11.glDisable(2896);
 	GL11.glDisable(16384);
-	
+
 	if (this.name.equalsIgnoreCase("Notch")) {
 	    var3.renderNoShadow(this.displayName, 0, 0, 16776960);
 	} else {
