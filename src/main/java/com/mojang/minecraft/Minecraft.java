@@ -40,7 +40,6 @@ import com.oyasunadev.mcraft.client.util.ExtData;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controllers;
-import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -111,6 +110,7 @@ public final class Minecraft implements Runnable {
     public List<PlayerListNameData> playerListNameData = new ArrayList<PlayerListNameData>();
     /** Mouse helper instance. */
     public MouseHelper mouseHelper;
+    
 
     public static File mcDir;
 
@@ -169,8 +169,8 @@ public final class Minecraft implements Runnable {
 		var8.printStackTrace();
 	    }
 	}
-
     }
+   
 
     public final void setCurrentScreen(GuiScreen var1) {
 	if (!(this.currentScreen instanceof ErrorScreen)) {
@@ -594,11 +594,11 @@ public final class Minecraft implements Runnable {
 
 			    int var68;
 			    int var70;
-			    int var86 =0;
-			    int var81 =0;
+			    int var86;
+			    int var81;
 			    if (renderer.minecraft.hasMouse) {
-				mouseHelper.deltaX = 0;
-				mouseHelper.deltaY = 0;
+				var81 = 0;
+				var86 = 0;
 				if (renderer.minecraft.levelLoaded) {
 				    if (renderer.minecraft.canvas != null) {
 					Point var90;
@@ -608,10 +608,10 @@ public final class Minecraft implements Runnable {
 					var68 = var90.y
 						+ renderer.minecraft.height / 2;
 					Point var75;
-					mouseHelper.deltaY = (var75 = MouseInfo
+					var81 = (var75 = MouseInfo
 						.getPointerInfo().getLocation()).x
 						- var70;
-					mouseHelper.deltaX = -(var75.y - var68);
+					var86 = -(var75.y - var68);
 					renderer.minecraft.robot.mouseMove(
 						var70, var68);
 				    } else {
@@ -620,7 +620,8 @@ public final class Minecraft implements Runnable {
 						renderer.minecraft.height / 2);
 				    }
 				} else {
-				    mouseHelper.mouseXYChange();
+				    var81 = Mouse.getDX();
+				    var86 = Mouse.getDY();
 				}
 
 				byte var91 = 1;
@@ -628,7 +629,7 @@ public final class Minecraft implements Runnable {
 				    var91 = -1;
 				}
 
-				renderer.minecraft.player.turn( mouseHelper.deltaX,  mouseHelper.deltaY
+				renderer.minecraft.player.turn(var81, var86
 					* var91);
 			    }
 
@@ -1313,6 +1314,7 @@ public final class Minecraft implements Runnable {
 					GL11.glEnable(3042);
 					GL11.glColorMask(false, false, false,
 						false);
+					
 					var120 = var89.sortChunks(var126, 1);
 					GL11.glColorMask(true, true, true, true);
 					if (var82.minecraft.settings.anaglyph) {
@@ -1770,6 +1772,8 @@ public final class Minecraft implements Runnable {
 				    GL11.glLoadIdentity();
 				    renderer.enableGuiMode();
 				}
+				
+				
 				if (renderer.minecraft.notifyScreen != null) {
 				    renderer.minecraft.notifyScreen.render(
 					    var94, var70);
