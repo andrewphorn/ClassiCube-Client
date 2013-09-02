@@ -21,30 +21,18 @@ public final class SaveLevelScreen extends LoadLevelScreen {
 	for (int var2 = 0; var2 < 5; ++var2) {
 	    ((Button) this.buttons.get(var2)).text = var1[var2];
 	    ((Button) this.buttons.get(var2)).visible = true;
-	    ((Button) this.buttons.get(var2)).active = this.minecraft.session.haspaid;
+	    ((Button) this.buttons.get(var2)).active = true;
 	}
 
     }
 
     public final void render(int var1, int var2) {
 	super.render(var1, var2);
-	if (!this.minecraft.session.haspaid) {
-	    drawFadingBox(this.width / 2 - 80, 72, this.width / 2 + 80, 120,
-		    -536870912, -536870912);
-	    drawCenteredString(this.fontRenderer, "Premium only!",
-		    this.width / 2, 80, 16748688);
-	    drawCenteredString(this.fontRenderer,
-		    "Purchase the game to be able", this.width / 2, 96,
-		    14712960);
-	    drawCenteredString(this.fontRenderer,
-		    "to save your levels online.", this.width / 2, 104,
-		    14712960);
-	}
     }
 
     protected final void openLevel(File var1) {
-	if (!var1.getName().endsWith(".mine")) {
-	    var1 = new File(var1.getParentFile(), var1.getName() + ".mine");
+	if (!var1.getName().endsWith(".dat")) {
+	    var1 = new File(var1.getParentFile(), var1.getName() + ".dat");
 	}
 
 	File var2 = var1;

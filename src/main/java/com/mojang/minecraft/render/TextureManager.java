@@ -42,21 +42,69 @@ public class TextureManager {
     public List<TextureFX> animations = new ArrayList<TextureFX>();
     public GameSettings settings;
 
-    public HashMap<String, Integer> externalTexturePacks = new HashMap<String, Integer>();
+    public String currentTexturePack = null;
 
     public File minecraftFolder;
     public File texturesFolder;
 
     public int previousMipmapMode;
 
+    public int loadTexturePack(String file) throws IOException {
+	idBuffer.clear();
+
+	GL11.glGenTextures(idBuffer);
+
+	int textureID = idBuffer.get(0);
+	if (file.endsWith(".zip")) {
+	    ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/"
+		    + file));
+
+	    String terrainPNG = "terrain.png";
+
+	    if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(
+		    1, terrainPNG.length()) : terrainPNG) != null) {
+		currentTerrainPng = ImageIO
+			.read(zip.getInputStream(zip.getEntry(terrainPNG
+				.startsWith("/") ? terrainPNG.substring(1,
+				terrainPNG.length()) : terrainPNG)));
+	    } else {
+		try{
+		currentTerrainPng = ImageIO.read(TextureManager.class
+			.getResourceAsStream(terrainPNG));
+		}catch(Exception e){
+		    zip.close();
+		    return textureID;
+		}
+	    }
+
+	    zip.close();
+
+	    currentTexturePack = minecraftFolder + "/texturepacks/" + file;
+
+	}
+
+	return textureID;
+    }
+
+    BufferedImage currentTerrainPng;
+
     public int load(String file) {
-	if (!Applet) {
+	if (!Applet && !file.endsWith(".zip")) {
 	    file = "/resources" + file;
 	}
+	if (file.contains("terrain") && textures.containsKey("customTerrain")) {
+	    return textures.get("customTerrain");
+	}
+	if (file.contains("terrain") && !textures.containsKey("customTerrain")) {
+	    if (currentTerrainPng != null) {
+		int id = load(currentTerrainPng);
+		textures.put("customTerrain", id);
+		return id;
+	    }
+	}
+
 	if (textures.get(file) != null) {
 	    return textures.get(file);
-	} else if (externalTexturePacks.get(file) != null) {
-	    return externalTexturePacks.get(file);
 	} else {
 	    try {
 		idBuffer.clear();
@@ -94,7 +142,7 @@ public class TextureManager {
 
 		    zip.close();
 
-		    externalTexturePacks.put(file, textureID);
+		    currentTexturePack = file;
 		}
 
 		return textureID;
@@ -226,9 +274,10 @@ public class TextureManager {
 		generateMipMaps(textureBuffer, width, height, false);
 	    }
 	    if (settings.anisotropic > 0) {
-	        float max = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-	        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max);
-	        
+		float max = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D,
+			GL_TEXTURE_MAX_ANISOTROPY_EXT, max);
+
 	    }
 	}
 

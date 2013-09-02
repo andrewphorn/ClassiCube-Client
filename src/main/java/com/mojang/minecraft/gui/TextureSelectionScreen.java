@@ -1,28 +1,26 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.level.Level;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
-public class LoadLevelScreen extends GuiScreen implements Runnable {
+public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
     protected GuiScreen parent;
     private boolean finished = false;
     private boolean loaded = false;
-    private String[] levels = null;
+    private ArrayList<TexturePackData> textures = new ArrayList<TexturePackData>();
     private String status = "";
-    protected String title = "Load level";
+    protected String title = "Load texture";
     boolean frozen = false;
     JFileChooser chooser;
     protected boolean saving = false;
     protected File selectedFile;
 
-    public LoadLevelScreen(GuiScreen var1) {
+    public TextureSelectionScreen(GuiScreen var1) {
 	this.parent = var1;
     }
 
@@ -35,27 +33,34 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
 		    var2.printStackTrace();
 		}
 	    }
-	    this.levels = new String[]{""};
-	    if (this.levels.length >= 5) {
-		this.setLevels(this.levels);
+
+	    this.status = "Getting texture list..";
+		TexturePackData data;
+		for(String file : (new File(minecraft.GetMinecraftDirectory() + "/texturepacks").list())) {
+			if(!file.endsWith(".zip")) continue;
+			data = new TexturePackData(file, file.substring(0, file.indexOf(".")));
+			textures.add(data);
+		}
+	    if (this.textures.size() >= 5) {
+		this.setTextures(this.textures);
 		this.loaded = true;
 		return;
 	    }
 
-	    this.status = this.levels[0];
+	    this.status = this.textures.get(0).location;
 	    this.finished = true;
 	} catch (Exception var3) {
 	    var3.printStackTrace();
-	    this.status = "Failed to load levels";
-	    //this.finished = true;
+	    this.status = "Failed to load textures";
+	    this.finished = true;
 	}
 
     }
 
-    protected void setLevels(String[] var1) {
+    protected void setTextures(ArrayList<TexturePackData> var1) {
 	for (int var2 = 0; var2 < 5; ++var2) {
-	    ((Button) this.buttons.get(var2)).active = !var1[var2].equals("-");
-	    ((Button) this.buttons.get(var2)).text = var1[var2];
+	    ((Button) this.buttons.get(var2)).active = !(var1).get(var2).equals("-");
+	    ((Button) this.buttons.get(var2)).text = var1.get(var2).name;
 	    ((Button) this.buttons.get(var2)).visible = true;
 	}
 
@@ -71,9 +76,9 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
 	    ((Button) this.buttons.get(var1)).active = false;
 	}
 
-	this.buttons.add(new Button(5, this.width / 2 - 100,
-		this.height / 6 + 120 + 12, "Load file..."));
 	this.buttons.add(new Button(6, this.width / 2 - 100,
+		this.height / 6 + 120 + 12, "Load file..."));
+	this.buttons.add(new Button(7, this.width / 2 - 100,
 		this.height / 6 + 168, "Cancel"));
     }
 
@@ -81,37 +86,39 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
 	if (!this.frozen) {
 	    if (var1.active) {
 		if (this.loaded && var1.id < 5) {
-		    this.openLevel(var1.id);
-		}
-
-		if (this.finished || this.loaded && var1.id == 5) {
-		    this.frozen = true;
-		    LevelDialog var2;
-		    (var2 = new LevelDialog(this)).setDaemon(true);
-		    SwingUtilities.invokeLater(var2);
+		    this.openTexture(textures.get(var1.id));
 		}
 
 		if (this.finished || this.loaded && var1.id == 6) {
+		    this.frozen = true;
+		    TextureDialog var2;
+		    (var2 = new TextureDialog(this)).setDaemon(true);
+		    SwingUtilities.invokeLater(var2);
+		}
+
+		if (this.finished || this.loaded && var1.id == 7) {
 		    this.minecraft.setCurrentScreen(this.parent);
 		}
+
 	    }
 	}
     }
 
-    protected void openLevel(File var1) {
-	File var2 = var1;
-	Minecraft var4 = this.minecraft;
-	Level var5;
-	if ((var5 = this.minecraft.levelIo.load(var2)) == null) {
-	} else {
-	    var4.setLevel(var5);
-	}
-
+    protected void openTexture(TexturePackData var1) {
+	this.selectedFile = new File(var1.location);
+	openTexture(var1.location);
 	this.minecraft.setCurrentScreen(this.parent);
     }
 
-    protected void openLevel(int var1) {
-	this.minecraft.loadOnlineLevel(this.minecraft.session.username, var1);
+    protected void openTexture(String file) {
+	try {
+	    this.minecraft.textureManager.loadTexturePack(file);
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	
+	this.minecraft.levelRenderer.refresh();
 	this.minecraft.setCurrentScreen((GuiScreen) null);
 	this.minecraft.grabMouse();
     }
@@ -150,7 +157,7 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
     public final void tick() {
 	super.tick();
 	if (this.selectedFile != null) {
-	    this.openLevel(this.selectedFile);
+	    //this.openTexture(this.selectedFile);
 	    this.selectedFile = null;
 	}
 
