@@ -42,7 +42,7 @@ public class MinecraftStandalone {
 	    }
 	}
 	MinecraftStandalone minecraftStandalone = new MinecraftStandalone();
-	if (Player == null || Server == null || Mppass == null || Port == 0) {
+	if (Player == null || Server == null || Mppass == null || Port <= 0) {
 	    minecraftStandalone.startMinecraft(null, null, null, 0);
 	} else {
 	    minecraftStandalone.startMinecraft(Player, Server, Mppass, Port);
@@ -112,6 +112,12 @@ public class MinecraftStandalone {
 	    final MinecraftCanvas canvas = new MinecraftCanvas();
 	    minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
 		    false, false);
+
+	    minecraft.session = new SessionData(Player, "noidea");
+	    minecraft.session.mppass = Mppass;
+	    minecraft.session.haspaid = true;
+	    minecraft.server = Server;
+	    minecraft.port = Port;
 
 	    if (RunFakeNetwork) {
 		minecraft.host = "127.0.0.1";
