@@ -9,3 +9,4 @@ public class ChatLine {
     public String message;
     public int time; 
 }
+ 

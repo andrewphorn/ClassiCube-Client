@@ -1,9 +1,12 @@
 package com.mojang.minecraft.mob;
 
 import com.mojang.minecraft.level.Level;
+import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.level.tile.BlockModelRenderer;
 import com.mojang.minecraft.model.AnimalModel;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
+import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import org.lwjgl.opengl.GL11;
 
@@ -18,11 +21,31 @@ public class HumanoidMob extends Mob {
 	this.modelName = "humanoid";
 	this.setPos(var2, var3, var4);
     }
+    
+    public static boolean isInteger(String s) {
+	try {
+	    Integer.parseInt(s);
+	} catch (NumberFormatException e) {
+	    return false;
+	}
+	return true;
+    }
 
     public void renderModel(TextureManager var1, float var2, float var3,
 	    float var4, float var5, float var6, float var7) {
 	if(this.modelName == "sheep"){
 	    renderSheep(var1, var2,var3,var4,var5,var6,var7);
+	    return;
+	}
+	if(isInteger(this.modelName)){
+	    try{
+	    if(block == null){
+		block = new BlockModelRenderer(Block.blocks[Integer.parseInt(this.modelName)].textureId);
+	    }
+	    renderBlock(var1);
+	    }catch(Exception e){
+		this.modelName = "humanoid";
+	    }
 	    return;
 	}
 	super.renderModel(var1, var2, var3, var4, var5, var6, var7);
@@ -62,6 +85,13 @@ public class HumanoidMob extends Mob {
 	}
 
 	GL11.glDisable(3008);
+    }
+    BlockModelRenderer block;
+    public final void renderBlock(TextureManager var1){
+	GL11.glPushMatrix();
+	GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
+	block.render( 0, 0, 0, ShapeRenderer.instance );
+	GL11.glPopMatrix();
     }
     
     public void renderSheep(TextureManager var1, float var2, float var3,
