@@ -29,24 +29,44 @@ import java.util.Map;
  */
 public class MinecraftStandalone {
     public static void main(String[] args) {
+	String Player = null;
+	String Server = null;
+	int Port = 0;
+	String Mppass = null;
+	if (args != null) {
+	    if (args.length > 3) {
+		Server = args[0];
+		Port = Integer.parseInt(args[1]);
+		Player = args[2];
+		Mppass = args[3];
+	    }
+	}
 	MinecraftStandalone minecraftStandalone = new MinecraftStandalone();
+	if (Player == null || Server == null || Mppass == null || Port == 0) {
+	    minecraftStandalone.startMinecraft(null, null, null, 0);
+	} else {
+	    minecraftStandalone.startMinecraft(Player, Server, Mppass, Port);
+	}
+    }
 
-	minecraftStandalone.startMinecraft();
+    public void startMinecraft(String Player, String Server, String Mppass,
+	    int Port) {
+	MinecraftFrame minecraftFrame = new MinecraftFrame();
+
+	minecraftFrame.startMinecraft(Player, Server, Mppass, Port);
+    }
+
+    public void startMinecraft() {
+	MinecraftFrame minecraftFrame = new MinecraftFrame();
+
+	minecraftFrame.startMinecraft(null, null, null, 0);
     }
 
     /**
      * Default constructor.
      */
     public MinecraftStandalone() {
-    }
 
-    /**
-     * Start Minecraft Classic.
-     */
-    public void startMinecraft() {
-	MinecraftFrame minecraftFrame = new MinecraftFrame();
-
-	minecraftFrame.startMinecraft();
     }
 
     /**
@@ -83,7 +103,8 @@ public class MinecraftStandalone {
 	/**
 	 * Start Minecraft Classic.
 	 */
-	public void startMinecraft() {
+	public void startMinecraft(String Player, String Server, String Mppass,
+		int Port) {
 
 	    boolean RunFakeNetwork = false;
 
