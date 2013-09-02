@@ -87,7 +87,6 @@ public final class BlockSelectScreen extends GuiScreen {
 		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 		GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
 		if (var1 == var2) {
-		    // lastRotation += 0.7F;
 		    GL11.glScalef(1.6F, 1.6F, 1.6F);
 		    GL11.glRotatef(lastRotation, 0.0F, 1.0F, 0.0F);
 		}

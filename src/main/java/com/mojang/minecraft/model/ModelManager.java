@@ -1,5 +1,7 @@
 package com.mojang.minecraft.model;
 
+import com.mojang.minecraft.SessionData;
+
 public final class ModelManager {
 
     private HumanoidModel human = new HumanoidModel(0.0F);
@@ -16,6 +18,11 @@ public final class ModelManager {
     private CrocModel croc = new CrocModel();
 
     public final Model getModel(String var1) {
+	for(int i=1; i< SessionData.allowedBlocks.size(); i++){
+	    if(var1.equals("" + i)){
+		return new BlockModel();
+	    }
+	}
 	return (Model) (var1.equals("humanoid") ? this.human : (var1
 		.equals("humanoid.armor") ? this.armoredHuman : (var1
 		.equals("creeper") ? this.creeper

@@ -2,9 +2,7 @@ package com.mojang.minecraft.net;
 
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
-import com.mojang.minecraft.mob.Creeper;
 import com.mojang.minecraft.mob.HumanoidMob;
-import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.render.TextureManager;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
@@ -48,6 +46,10 @@ public class NetworkPlayer extends HumanoidMob {
 	this.allowAlpha = false;
 	if (this.modelName == "humanoid") {
 	    downloadSkin();
+	}else if(isInteger(this.modelName)){
+	    GL11.glBindTexture(
+		    3553,
+		    var1.textureManager.load("/terrain.png"));
 	}
     }
 
@@ -91,22 +93,36 @@ public class NetworkPlayer extends HumanoidMob {
 	    }
 
 	    this.hasHair = var10001;
-	    if(this.modelName == "humanoid"){
+	    if (this.modelName == "humanoid") {
 		this.a = var1.load(this.newTexture);
 	    }
 	    this.newTexture = null;
 	}
+	if (isInteger(this.modelName)) {
+	    GL11.glBindTexture(
+		    3553,
+		    var1.load("/terrain.png"));
+	    return;
+	} else if (this.modelName != "humanoid") {
+	    GL11.glBindTexture(3553,
+		    var1.load("/mob/" + this.modelName + ".png"));
+	    return;
+	}
 
 	if (this.a < 0) {
-	    if (this.modelName == "humanoid") {
-		GL11.glBindTexture(3553, var1.load("/char.png"));
-	    } else {
-		GL11.glBindTexture(3553,
-			var1.load("/mob/" + this.modelName + ".png"));
-	    }
+	    GL11.glBindTexture(3553, var1.load("/char.png"));
 	} else {
 	    GL11.glBindTexture(3553, this.a);
 	}
+    }
+
+    public static boolean isInteger(String s) {
+	try {
+	    Integer.parseInt(s);
+	} catch (NumberFormatException e) {
+	    return false;
+	}
+	return true;
     }
 
     public void renderHover(TextureManager var1, float var2) {

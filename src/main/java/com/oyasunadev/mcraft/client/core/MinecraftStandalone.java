@@ -106,8 +106,6 @@ public class MinecraftStandalone {
 	public void startMinecraft(String Player, String Server, String Mppass,
 		int Port) {
 
-	    boolean RunFakeNetwork = false;
-
 	    MCraftApplet applet = new MCraftApplet();
 	    final MinecraftCanvas canvas = new MinecraftCanvas();
 	    minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
@@ -118,6 +116,8 @@ public class MinecraftStandalone {
 	    minecraft.session.haspaid = true;
 	    minecraft.server = Server;
 	    minecraft.port = Port;
+	    
+	    boolean RunFakeNetwork = true;
 
 	    if (RunFakeNetwork) {
 		minecraft.host = "127.0.0.1";
