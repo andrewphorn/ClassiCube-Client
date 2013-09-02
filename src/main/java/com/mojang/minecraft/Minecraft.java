@@ -2795,7 +2795,6 @@ public final class Minecraft implements Runnable {
 			    // GameSettings.CanReplaceSlot = false;
 
 			    this.gamemode.openInventory();
-
 			    // this.selectionBoxes.add(new
 			    // SelectionBoxData((byte) 1,"",new
 			    // ColorCache(0F,0F,0F,0.6F), new
