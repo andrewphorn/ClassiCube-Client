@@ -74,7 +74,6 @@ public final class Minecraft implements Runnable {
     public Canvas canvas;
     public boolean levelLoaded = false;
     public volatile boolean waiting = false;
-    private Cursor cursor;
     public TextureManager textureManager;
     public FontRenderer fontRenderer;
     public GuiScreen currentScreen = null;
@@ -472,15 +471,6 @@ public final class Minecraft implements Runnable {
 
 	    this.particleManager = new ParticleManager(this.level,
 		    this.textureManager);
-	    if (this.levelLoaded) {
-		try {
-		    var1.cursor = new Cursor(16, 16, 0, 0, 1, var9,
-			    (IntBuffer) null);
-		} catch (LWJGLException var53) {
-		    var53.printStackTrace();
-		}
-	    }
-
 	    try {
 		var1.soundPlayer = new SoundPlayer(var1.settings);
 		SoundPlayer var4 = var1.soundPlayer;
@@ -2268,8 +2258,8 @@ public final class Minecraft implements Runnable {
 					}
 					this.playerListNameData = cache;
 				    } else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-					// System.out
-					// .println("Custom block packet");
+					 System.out
+					 .println("Custom block packet");
 					byte SupportLevel = ((Byte) packetParams[0])
 						.byteValue();
 					networkManager.netHandler
@@ -2277,6 +2267,32 @@ public final class Minecraft implements Runnable {
 							com.oyasunadev.mcraft.client.util.Constants.SupportLevel);
 					SessionData
 						.SetAllowedBlocks(SupportLevel);
+				    }
+				    else if (packetType == PacketType.SET_BLOCK_PERMISSIONS) {
+					byte BlockType = ((Byte) packetParams[0])
+						.byteValue();
+					byte AllowPlacement = ((Byte) packetParams[1])
+						.byteValue();
+					byte AllowDeletion = ((Byte) packetParams[2])
+						.byteValue();
+				    }
+				    else if (packetType == PacketType.CHANGE_MODEL) {
+					byte PlayerID = ((Byte) packetParams[0])
+						.byteValue();
+					String ModelName = (String) packetParams[1];
+					    if (PlayerID >= 0) {
+						NetworkPlayer netPlayer;
+						if ((netPlayer = networkManager.players
+							    .get(Byte.valueOf(PlayerID))) != null){
+						   ModelManager m = new ModelManager();
+						   if(m.getModel(ModelName.toLowerCase()) == null) {
+						       netPlayer.modelName = "humanoid";
+						   }else{
+						       netPlayer.modelName = ModelName.toLowerCase();
+						   }
+						   netPlayer.bindTexture(this.textureManager);
+						}
+					    }
 				    }
 
 				    else if (packetType == PacketType.IDENTIFICATION) {
