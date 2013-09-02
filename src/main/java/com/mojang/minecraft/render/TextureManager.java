@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipFile;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 
 public class TextureManager {
     public boolean Applet;
@@ -143,13 +145,6 @@ public class TextureManager {
 		    GL12.GL_TEXTURE_BASE_LEVEL, 0);
 	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL,
 		    4);
-
-	    if (settings.anisotropic > 0) {
-		GL11.glTexParameteri(
-			GL11.GL_TEXTURE_2D,
-			EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT,
-			16);
-	    }
 	} else {
 	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
 		    GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
@@ -229,6 +224,11 @@ public class TextureManager {
 		}
 
 		generateMipMaps(textureBuffer, width, height, false);
+	    }
+	    if (settings.anisotropic > 0) {
+	        float max = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+	        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max);
+	        
 	    }
 	}
 
