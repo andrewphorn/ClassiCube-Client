@@ -443,7 +443,7 @@ public class Mob extends Entity {
 		yd = 0.3F;
 	    }
 
-	} else if ((this.isInLava() || this.isInSpiderWeb())
+	} else if ((this.isInLava())
 		&& !this.flyingMode && !this.noPhysics) {
 	    y1 = y;
 	    if (multiply > 5)
@@ -461,7 +461,27 @@ public class Mob extends Entity {
 		yd = 0.3F;
 	    }
 
-	} else {
+	} 
+	else if (this.isInOrOnRope()
+		&& !this.flyingMode && !this.noPhysics) {
+	    y1 = y;
+	    if (multiply >= 5)
+		multiply = 2.5F;
+	    else multiply = 1.7f;
+	    moveRelative(yya, xxa, 0.02F * multiply);
+	    move(xd, yd, zd);
+
+	    xd *= 0.5F;
+	    yd *= 0.5F;
+	    zd *= 0.5F;
+
+	    yd = (float) ((double) yd - 0.02D) * multiply;
+
+	    if (horizontalCollision && isFree(xd, yd + 0.6F - y + y1, zd)) {
+		yd = 0.3F;
+	    }
+
+	}else {
 	    if (!this.flyingMode)
 		moveRelative(yya, xxa, (onGround ? 0.1F : 0.02F) * multiply);
 	    else

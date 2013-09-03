@@ -117,6 +117,9 @@ public class MinecraftStandalone {
 	    minecraft.server = Server;
 	    minecraft.port = Port;
 	    
+	    if(Player == null && Server == null && Mppass == null)
+		minecraft.session = null;
+	    
 	    boolean RunFakeNetwork = false;
 
 	    if (RunFakeNetwork) {
