@@ -11,6 +11,8 @@ public class InputHandler {
 
     public boolean flyingDown = false;
     public boolean flying = false;
+    
+    public boolean noClip = false;
 
     public void updateMovement() {
     }
