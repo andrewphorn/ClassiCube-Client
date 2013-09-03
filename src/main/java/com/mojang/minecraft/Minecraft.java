@@ -11,7 +11,6 @@ import com.mojang.minecraft.level.LevelIO;
 import com.mojang.minecraft.level.generator.LevelGenerator;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.mob.Creeper;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.ModelManager;
@@ -39,6 +38,7 @@ import com.oyasunadev.mcraft.client.util.ExtData;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -405,9 +405,34 @@ public final class Minecraft implements Runnable {
 
 	    Keyboard.create();
 	    Mouse.create();
-
+	    int cc = 0;
+	    Controller[] c;
+	    int gp = -1; // to store controller number of the gamepad
 	    try {
+		System.out.println("Creating controllers");
 		Controllers.create();
+		if (Controllers.isCreated()) {
+		    cc = Controllers.getControllerCount();
+		    c = new Controller[cc];
+
+		    for (int i = 0; i < cc; i++) {
+			c[i] = Controllers.getController(i);
+			if (c[i].getName().indexOf("Controller") > -1) {
+			    gp = i;
+			}
+		    }
+		    if (gp == -1) {
+			System.out.println("No gamepad controller exists.");
+		    } else {
+			int bc = c[gp].getButtonCount();
+			int ac = c[gp].getAxisCount();
+			System.out.println("The controller has " + bc
+				+ " buttons and " + ac + " axis.");
+			for (int i = 0; i < bc; i++) {
+			    System.out.println(c[gp].getButtonName(i));
+			}
+		    }
+		}
 	    } catch (Exception var55) {
 		var55.printStackTrace();
 	    }
@@ -433,7 +458,7 @@ public final class Minecraft implements Runnable {
 	    this.textureManager.registerAnimation(new TextureWaterFX());
 	    this.fontRenderer = new FontRenderer(this.settings, "/default.png",
 		    this.textureManager);
-	    if(this.session == null)
+	    if (this.session == null)
 		this.HackState = HackState.HacksTagEnabled;
 	    IntBuffer var9;
 	    (var9 = BufferUtils.createIntBuffer(256)).clear().limit(256);
