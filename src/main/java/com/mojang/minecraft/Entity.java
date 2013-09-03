@@ -358,9 +358,9 @@ public abstract class Entity implements Serializable {
 		LiquidType.LAVA);
     }
 
-    public boolean isInSpiderWeb() {
+    public boolean isInOrOnRope() {
 	return this.level.containsBlock(this.bb.grow(0.0F, -0.4F, 0.0F),
-		Block.WEB);
+		Block.ROPE);
     }
 
     public void moveRelative(float x, float y, float z) {

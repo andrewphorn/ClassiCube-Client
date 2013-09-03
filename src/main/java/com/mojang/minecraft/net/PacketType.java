@@ -69,6 +69,7 @@ public class PacketType {
     public static final PacketType REMOVE_SELECTION_CUBOID; // 27
     public static final PacketType SET_BLOCK_PERMISSIONS; // 28
     public static final PacketType CHANGE_MODEL; // 29
+    public static final PacketType ENV_SET_MAP_APPEARANCE; //30
 
     public int length;
     private static int nextOpcode;
@@ -114,23 +115,19 @@ public class PacketType {
 	SET_TEXT_HOTKEY = new PacketType(new Class[] { String.class,
 		String.class, Integer.TYPE, Byte.TYPE });
 	EXT_ADD_PLAYER_NAME = new PacketType(new Class[] { Short.TYPE,
-		String.class, String.class, String.class, Byte.TYPE }); // check
-									// [0]
-									// unsigned
-									// byte
+		String.class, String.class, String.class, Byte.TYPE });
 	EXT_ADD_ENTITY = new PacketType(new Class[] { Byte.TYPE, String.class,
-		String.class }); // check [0] unsigned byte
+		String.class });
 	EXT_REMOVE_PLAYER_NAME = new PacketType(new Class[] { Short.TYPE });
-	ENV_SET_COLOR = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE,
-		Byte.TYPE, Byte.TYPE }); // byte, ubyte, ubyte, ubyte
+	ENV_SET_COLOR = new PacketType(new Class[] { Byte.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE });
 	SELECTION_CUBOID = new PacketType(new Class[] { Byte.TYPE,
 		String.class, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE,
-		Short.TYPE, Short.TYPE, Byte.class, Byte.class, Byte.class,
-		Byte.class }); // last 4 are ubyte
+		Short.TYPE, Short.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE });
 	REMOVE_SELECTION_CUBOID = new PacketType(new Class[] { Byte.TYPE });
 	SET_BLOCK_PERMISSIONS = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE, Integer.TYPE });
 	CHANGE_MODEL = new PacketType(new Class[] { Byte.TYPE, String.class });
-
+	ENV_SET_MAP_APPEARANCE = new PacketType(new Class[] { String.class, Byte.TYPE, Byte.TYPE, Short.TYPE });
+	
 	// set names
 	EXT_INFO.extName = "ExtInfo";
 	EXT_ENTRY.extName = "ExtEntry";
@@ -146,6 +143,7 @@ public class PacketType {
 	REMOVE_SELECTION_CUBOID.extName = "RemoveSelectionCuboid";
 	SET_BLOCK_PERMISSIONS.extName = "SetBlockPermissions";
 	CHANGE_MODEL.extName = "ChangeModel";
+	ENV_SET_MAP_APPEARANCE.extName = "EnvSetMapAppearance";
 
 	nextOpcode = 0;
     }

@@ -48,14 +48,18 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.input.Cursor;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public final class Minecraft implements Runnable {
@@ -167,6 +171,7 @@ public final class Minecraft implements Runnable {
 		var8.printStackTrace();
 	    }
 	}
+
     }
 
     public final void setCurrentScreen(GuiScreen var1) {
@@ -362,6 +367,18 @@ public final class Minecraft implements Runnable {
     @Override
     public final void run() {
 	this.running = true;
+	String textureFile = "/terrain.png";
+	if (!isApplet) {
+	    textureFile = "/resources" + textureFile;
+	}
+	BufferedImage image = null;
+	try {
+	    image = ImageIO.read(TextureManager.class
+		    .getResourceAsStream(textureFile));
+	} catch (IOException e1) {
+	    // TODO Auto-generated catch block
+	    e1.printStackTrace();
+	}
 
 	mcDir = GetMinecraftDirectory();
 
@@ -378,6 +395,8 @@ public final class Minecraft implements Runnable {
 		System.setProperty("net.java.games.input.librarypath", mcDir
 			+ "/native/" + getOSfolderName(s));
 	    }
+	    if (this.session == null)
+		SessionData.SetAllowedBlocks((byte) 1);
 	    if (this.canvas != null) {
 		Display.setParent(this.canvas);
 	    } else if (this.fullscreen) {
@@ -428,9 +447,9 @@ public final class Minecraft implements Runnable {
 			int ac = c[gp].getAxisCount();
 			System.out.println("The controller has " + bc
 				+ " buttons and " + ac + " axis.");
-			for (int i = 0; i < bc; i++) {
-			    System.out.println(c[gp].getButtonName(i));
-			}
+			// for (int i = 0; i < bc; i++) {
+			// System.out.println(c[gp].getButtonName(i));
+			// }
 		    }
 		}
 	    } catch (Exception var55) {
@@ -458,6 +477,9 @@ public final class Minecraft implements Runnable {
 	    this.textureManager.registerAnimation(new TextureWaterFX());
 	    this.fontRenderer = new FontRenderer(this.settings, "/default.png",
 		    this.textureManager);
+
+	    this.textureManager.textureAtlas = this.textureManager
+		    .Atlas2dInto1d(image, 16, 16);
 	    if (this.session == null)
 		this.HackState = HackState.HacksTagEnabled;
 	    IntBuffer var9;
@@ -546,8 +568,6 @@ public final class Minecraft implements Runnable {
 		    "Failed to start ClassiCube", 0);
 	    return;
 	}
-	if (this.session == null)
-	    SessionData.SetAllowedBlocks((byte) 1);
 
 	long var13 = System.currentTimeMillis();
 	int var15 = 0;
@@ -2155,14 +2175,14 @@ public final class Minecraft implements Runnable {
 					Short X2 = ((Short) packetParams[5]);
 					Short Y2 = ((Short) packetParams[6]);
 					Short Z2 = ((Short) packetParams[7]);
-					byte r = ((Byte) packetParams[8])
-						.byteValue();
-					byte g = ((Byte) packetParams[9])
-						.byteValue();
-					byte b = ((Byte) packetParams[10])
-						.byteValue();
-					byte a = ((Byte) packetParams[11])
-						.byteValue();
+					Integer r = ((Integer) packetParams[8])
+						.intValue();
+					Integer g = ((Integer) packetParams[9])
+						.intValue();
+					Integer b = ((Integer) packetParams[10])
+						.intValue();
+					Integer a = ((Integer) packetParams[11])
+						.intValue();
 					SelectionBoxData data = new SelectionBoxData(
 						ID, Name,
 						new ColorCache(r / 255.0F,
@@ -2185,13 +2205,13 @@ public final class Minecraft implements Runnable {
 				    } else if (packetType == PacketType.ENV_SET_COLOR) {
 					byte Variable = ((Byte) packetParams[0])
 						.byteValue();
-					byte r = ((Byte) packetParams[1])
-						.byteValue();
-					byte g = ((Byte) packetParams[2])
-						.byteValue();
-					byte b = ((Byte) packetParams[3])
-						.byteValue();
-					int dec = 256 * 256 * r + 256 * g + b;
+					Integer r = ((Integer) packetParams[1])
+						.intValue();
+					Integer g = ((Integer) packetParams[2])
+						.intValue();
+					Integer b = ((Integer) packetParams[3])
+						.intValue();
+					int dec = 255 * 255 * r + 255 * g + b;
 					switch (Variable) {
 					case 0: // sky
 					    this.level.skyColor = dec;
@@ -2213,6 +2233,27 @@ public final class Minecraft implements Runnable {
 						    b / 255.0F);
 					    break;
 					}
+					this.levelRenderer.refresh();
+				    } else if (packetType == PacketType.ENV_SET_MAP_APPEARANCE) {
+					String textureUrl = ((String) packetParams[0]);
+					byte sideBlock = ((Byte) packetParams[1])
+						.byteValue();
+					byte edgeBlock = ((Byte) packetParams[2])
+						.byteValue();
+					short sideLevel = ((Short) packetParams[3])
+						.byteValue();
+					if (!this.settings.canServerChangeTextures)
+					    return;
+					if (sideBlock < Block.blocks.length) {
+					    this.textureManager.customSideBlock = textureManager.textureAtlas
+						    .get(sideBlock);
+					}
+					if (edgeBlock < Block.blocks.length) {
+					    this.textureManager.customEdgeBlock = textureManager.textureAtlas
+						    .get(edgeBlock);
+					}
+					this.textureManager.textures.clear();
+					this.level.waterLevel = sideLevel;
 					this.levelRenderer.refresh();
 				    } else if (packetType == PacketType.CLICK_DISTANCE) {
 					short Distance = (Short) packetParams[0];
@@ -2818,7 +2859,6 @@ public final class Minecraft implements Runnable {
 			    // SelectionBoxData((byte) 1,"",new
 			    // ColorCache(0F,0F,0F,0.6F), new
 			    // CustomAABB(12,45,30, 20, 30, 40)));
-
 			}
 
 			if (Keyboard.getEventKey() == this.settings.chatKey.key

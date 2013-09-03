@@ -83,13 +83,15 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	this.buttons.add(new Button(6, this.width / 2 - 100,
 		this.height / 6 + 120 + 12, "Load file..."));
 	this.buttons.add(new Button(7, this.width / 2 - 100,
-		this.height / 6 + 168, "Cancel"));
+		this.height / 6 + 154 + 22, "Cancel"));
+	this.buttons.add(new Button(8, this.width / 2 - 100,
+		this.height /6 + 154 , "Default Texture"));
     }
 
     protected final void onButtonClick(Button var1) {
 	if (!this.frozen) {
 	    if (var1.active) {
-		if (this.loaded && var1.id < this.textures.size()) {
+		if (this.loaded && var1.id < 5) {
 		    this.openTexture(textures.get(var1.id));
 		}
 
@@ -102,6 +104,14 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
 		if (this.finished || this.loaded && var1.id == 7) {
 		    this.minecraft.setCurrentScreen(this.parent);
+		}
+		if (var1.id == 8) {
+		    this.minecraft.textureManager.currentTerrainPng = null;
+		    this.minecraft.textureManager.load("/terrain.png");
+		    this.minecraft.setCurrentScreen((GuiScreen) null);
+		    this.minecraft.grabMouse();
+		    this.minecraft.textureManager.textures.clear();
+		    this.minecraft.levelRenderer.refresh();
 		}
 
 	    }
@@ -161,6 +171,5 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	if (this.selectedFile != null) {
 	    this.selectedFile = null;
 	}
-
     }
 }

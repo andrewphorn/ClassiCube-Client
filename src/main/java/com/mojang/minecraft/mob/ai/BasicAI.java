@@ -137,15 +137,15 @@ public class BasicAI extends AI {
 		} else {
 		    this.mob.yd = 0.06F;
 		}
-	    } else if (this.mob.isInSpiderWeb()) {
-		if (this.mob.yd > 0.01f)
-		    this.mob.yd = 0.01F;
+	    } else if (this.jumping && this.mob.isInOrOnRope()) {
+		if (this.mob.yd > 0.02f)
+		    this.mob.yd = 0.02F;
 	    }
 	}
 
 	boolean var7 = var2.isInWater();
 	boolean isInLava = var2.isInLava();
-	boolean isInSpiderWeb = var2.isInSpiderWeb();
+	boolean isInOrOnRope = var2.isInOrOnRope();
 	if (this.jumping) {
 	    if (var7) { // if in water
 		if (!running)
@@ -157,8 +157,11 @@ public class BasicAI extends AI {
 		    var2.yd += 0.04F;
 		else
 		    var2.yd += 0.08F;
-	    } else if (isInSpiderWeb) {
-		var2.yd += 0.06F;
+	    } else if (isInOrOnRope) {
+		if (!running)
+		    var2.yd += 0.1F;
+		else
+		    var2.yd += 0.15F;
 	    }
 
 	    else if (var2.onGround) { // if on the ground
@@ -209,7 +212,7 @@ public class BasicAI extends AI {
 
 	boolean var1 = this.mob.isInWater();
 	boolean isInLava = this.mob.isInLava();
-	boolean isInSpiderWeb = this.mob.isInSpiderWeb();
+	boolean isInSpiderWeb = this.mob.isInOrOnRope();
 	if (var1 || isInLava || isInSpiderWeb) {
 	    this.jumping = this.random.nextFloat() < 0.8F;
 	}
