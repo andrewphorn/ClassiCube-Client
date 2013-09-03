@@ -24,7 +24,7 @@ public final class GameSettings {
 		jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey,
 		loadLocationKey, runKey };
 
-	settingCount = 10;
+	settingCount = 11;
 
 	this.minecraft = minecraft;
 
@@ -38,6 +38,7 @@ public final class GameSettings {
     public boolean music = true;
     public boolean sound = true;
     public boolean invertMouse = false;
+    public boolean canServerChangeTextures = false;
     public boolean showFrameRate = false;
     public int viewDistance = 0;
     public boolean viewBobbing = true;
@@ -160,7 +161,6 @@ public final class GameSettings {
 	    }
 
 	    minecraft.textureManager.textures.clear();
-	    minecraft.textureManager.textureImages.clear();
 
 	    minecraft.levelRenderer.refresh();
 	}
@@ -173,9 +173,11 @@ public final class GameSettings {
 	    }
 
 	    minecraft.textureManager.textures.clear();
-	    minecraft.textureManager.textureImages.clear();
 
 	    minecraft.levelRenderer.refresh();
+	}
+	if (setting == 10) {
+	    canServerChangeTextures = !canServerChangeTextures;
 	}
 
 	save();
@@ -203,7 +205,10 @@ public final class GameSettings {
 										+ smoothingOptions[smoothing]
 										: (id == 9 ? "Anisotropic: "
 											+ anisotropicOptions[anisotropic]
-											: "")))))))));
+												: (id == 10 ? "Allow server textures: "
+													+ (canServerChangeTextures ? "Yes"
+														: "No")
+											: ""))))))))));
     }
 
     private void load() {
@@ -256,6 +261,9 @@ public final class GameSettings {
 		    if (setting[0].equals("anisotropic")) {
 			anisotropic = Integer.parseInt(setting[1]);
 		    }
+		    if (setting[0].equals("canServerChangeTextures")) {
+			canServerChangeTextures = setting[1].equals("true");
+		    }
 
 		    for (int index = 0; index < this.bindings.length; index++) {
 			if (setting[0].equals("key_" + bindings[index].name)) {
@@ -289,6 +297,7 @@ public final class GameSettings {
 
 	    writer.println("smoothing:" + smoothing);
 	    writer.println("anisotropic:" + anisotropic);
+	    writer.println("canServerChangeTextures:" + canServerChangeTextures);
 
 	    for (int binding = 0; binding < bindings.length; binding++) {
 		writer.println("key_" + bindings[binding].name + ":"

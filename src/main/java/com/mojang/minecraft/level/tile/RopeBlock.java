@@ -4,13 +4,13 @@ import com.mojang.minecraft.level.Level;
 
 import java.util.Random;
 
-public final class SaplingBlock extends FlowerBlock {
+public final class RopeBlock extends FlowerBlock {
 
-    protected SaplingBlock(int var1, int var2) {
+    protected RopeBlock(int var1, int var2) {
 	super(var1, var2);
-	float var3 = 0.4F;
+	float var3 = 0.3F;
 	this.setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F,
-		var3 * 2.0F, var3 + 0.5F);
+		var3 * 3.0F, var3 + 0.5F);
     }
 
     public final void update(Level level, int x, int y, int z, Random rand) {

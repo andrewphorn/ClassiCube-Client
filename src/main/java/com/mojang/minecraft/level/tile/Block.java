@@ -89,7 +89,7 @@ public class Block {
     public static final Block MOSSY_COBBLESTONE;
     public static final Block OBSIDIAN;
     public static final Block COBBLESTONESLAB;
-    public static final Block WEB;
+    public static final Block ROPE;
     public static final Block SANDSTONE;
     public static final Block SNOW;
     public static final Block FIRE;
@@ -811,7 +811,7 @@ public class Block {
 	blockCache = block;
 	block.explodes = false;
 	COBBLESTONESLAB = blockCache;
-	WEB = (new SaplingBlock(51, 11)).setData(Tile$SoundType.none, 0.7F,
+	ROPE = (new RopeBlock(51, 11)).setData(Tile$SoundType.none, 0.7F,
 		1.0F, 0.0F);
 	block = (new SandStoneBlock(52, 41)).setData(Tile$SoundType.stone,
 		0.7F, 1.0F, 3.0F);

@@ -41,8 +41,11 @@ public class TextureManager {
     public ByteBuffer textureBuffer = BufferUtils.createByteBuffer(262144);
     public List<TextureFX> animations = new ArrayList<TextureFX>();
     public GameSettings settings;
+    public List<BufferedImage> textureAtlas = new ArrayList();
 
-    public String currentTexturePack = null;
+    public BufferedImage currentTerrainPng = null;
+    public BufferedImage customSideBlock = null;
+    public BufferedImage customEdgeBlock = null;
 
     public File minecraftFolder;
     public File texturesFolder;
@@ -64,10 +67,10 @@ public class TextureManager {
 				.startsWith("/") ? terrainPNG.substring(1,
 				terrainPNG.length()) : terrainPNG)));
 	    } else {
-		try{
-		currentTerrainPng = ImageIO.read(TextureManager.class
-			.getResourceAsStream(terrainPNG));
-		}catch(Exception e){
+		try {
+		    currentTerrainPng = ImageIO.read(TextureManager.class
+			    .getResourceAsStream(terrainPNG));
+		} catch (Exception e) {
 		    zip.close();
 		    return textureID;
 		}
@@ -75,14 +78,10 @@ public class TextureManager {
 
 	    zip.close();
 
-	    currentTexturePack = minecraftFolder + "/texturepacks/" + file;
-
 	}
 
 	return textureID;
     }
-
-    BufferedImage currentTerrainPng;
 
     public int load(String file) {
 	if (!Applet && !file.endsWith(".zip")) {
@@ -98,11 +97,32 @@ public class TextureManager {
 		return id;
 	    }
 	}
+	if (file.contains("rock") && textures.containsKey("customEdge")) {
+	    return textures.get("customEdge");
+	}
+	if (file.contains("rock") && !textures.containsKey("customEdge")) {
+	    if (customEdgeBlock != null) {
+		int id = load(customEdgeBlock);
+		textures.put("customEdge", id);
+		return id;
+	    }
+	}
+	if (file.contains("water") && textures.containsKey("customSide")) {
+	    return textures.get("customSide");
+	}
+	if (file.contains("water") && !textures.containsKey("customSide")) {
+	    if (customEdgeBlock != null) {
+		int id = load(customSideBlock);
+		textures.put("customSide", id);
+		return id;
+	    }
+	}
 
 	if (textures.get(file) != null) {
 	    return textures.get(file);
 	} else {
 	    try {
+		
 		idBuffer.clear();
 
 		GL11.glGenTextures(idBuffer);
@@ -137,8 +157,6 @@ public class TextureManager {
 		    }
 
 		    zip.close();
-
-		    currentTexturePack = file;
 		}
 
 		return textureID;
@@ -146,6 +164,43 @@ public class TextureManager {
 		throw new RuntimeException("!!", e);
 	    }
 	}
+    }
+    
+    public List<BufferedImage> Atlas2dInto1d(BufferedImage atlas2d, int tiles, int atlassizezlimit)
+    {
+
+        int tilesize = atlas2d.getWidth() / tiles;
+
+        int atlasescount = Math.max(1, (tiles * tiles * tilesize) / atlassizezlimit);
+        List<BufferedImage> atlases = new ArrayList<BufferedImage>();
+
+        //256 x 1
+        BufferedImage atlas1d = null;
+
+        for (int i = 0; i < tiles * tiles; i++)
+        {
+            int x = i % tiles;
+            int y = i / tiles;
+            int tilesinatlas = (tiles * tiles / atlasescount);
+            if (i % tilesinatlas == 0)
+            {
+                if (atlas1d != null)
+                {
+                    atlases.add(atlas1d);
+                }
+                atlas1d = new BufferedImage(tilesize, atlassizezlimit, BufferedImage.TYPE_INT_ARGB_PRE);
+            }
+            for (int xx = 0; xx < tilesize; xx++)
+            {
+                for (int yy = 0; yy < tilesize; yy++)
+                {
+                    int c = atlas2d.getRGB(x * tilesize + xx, y * tilesize + yy);
+                    atlas1d.setRGB(xx, (i % tilesinatlas) * tilesize + yy, c);
+                }
+            }
+        }
+        atlases.add(atlas1d);
+        return atlases;
     }
 
     public static BufferedImage load1(BufferedImage image) {
@@ -161,6 +216,27 @@ public class TextureManager {
 	graphics.dispose();
 
 	return image1;
+    }
+
+    public BufferedImage getBlockTexture(String file, int textureID) {
+	BufferedImage src = null;
+	try {
+	    src = ImageIO.read(TextureManager.class
+		    .getResourceAsStream("/resources" + file));
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	int x = (textureID * 16) % 16;
+	int y = x % 16;
+	Rectangle rect = new Rectangle();
+	rect.x = x;
+	rect.y = y;
+	rect.width = 16;
+	rect.height = 16;
+	BufferedImage dest = src.getSubimage(rect.x, rect.y, rect.width,
+		rect.height);
+	return dest;
     }
 
     public int load(BufferedImage image) {

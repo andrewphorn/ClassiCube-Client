@@ -21,7 +21,7 @@ public final class OptionsScreen extends GuiScreen {
 	}
 
 	this.buttons.add(new Button(100, this.width / 2 - 100,
-		this.height / 6 + 120 + 12, "Controls..."));
+		this.height / 6 + 120 + 26, "Controls..."));
 	this.buttons.add(new Button(200, this.width / 2 - 100,
 		this.height / 6 + 168, "Done"));
     }
