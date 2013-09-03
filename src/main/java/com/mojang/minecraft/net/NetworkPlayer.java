@@ -44,6 +44,9 @@ public class NetworkPlayer extends HumanoidMob {
 	this.armor = this.helmet = false;
 	this.renderOffset = 0.6875F;
 	this.allowAlpha = false;
+	if (this.name.equalsIgnoreCase("Jonty800")) {
+	    this.modelName = "sheep";
+	}
 	if (this.modelName == "humanoid") {
 	    downloadSkin();
 	}else if(isInteger(this.modelName)){

@@ -604,7 +604,12 @@ public final class Minecraft implements Runnable {
 			    this.gamemode.applyCracks(this.timer.delta);
 			    float var65 = this.timer.delta;
 			    com.mojang.minecraft.render.Renderer renderer = this.renderer;
+			    if (this.renderer.displayActive
+				    && !Display.isActive()) {
+				renderer.minecraft.pause();
+			    }
 
+			    renderer.displayActive = Display.isActive();
 			    int var68;
 			    int var70;
 			    int var86;
@@ -1799,12 +1804,6 @@ public final class Minecraft implements Runnable {
 
 				Thread.yield();
 				Display.update();
-				if (this.renderer.displayActive
-					&& !Display.isActive()) {
-				    renderer.minecraft.pause();
-				}
-
-				renderer.displayActive = Display.isActive();
 			    }
 			}
 
