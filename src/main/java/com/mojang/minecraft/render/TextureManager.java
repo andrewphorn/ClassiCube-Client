@@ -50,11 +50,7 @@ public class TextureManager {
     public int previousMipmapMode;
 
     public int loadTexturePack(String file) throws IOException {
-	idBuffer.clear();
-
-	GL11.glGenTextures(idBuffer);
-
-	int textureID = idBuffer.get(0);
+	int textureID = 0;
 	if (file.endsWith(".zip")) {
 	    ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/"
 		    + file));

@@ -35,19 +35,22 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	    }
 
 	    this.status = "Getting texture list..";
-		TexturePackData data;
-		for(String file : (new File(minecraft.GetMinecraftDirectory() + "/texturepacks").list())) {
-			if(!file.endsWith(".zip")) continue;
-			data = new TexturePackData(file, file.substring(0, file.indexOf(".")));
-			textures.add(data);
-		}
-	    if (this.textures.size() >= 5) {
+	    TexturePackData data;
+	    for (String file : (new File(minecraft.GetMinecraftDirectory()
+		    + "/texturepacks").list())) {
+		if (!file.endsWith(".zip"))
+		    continue;
+		data = new TexturePackData(file, file.substring(0,
+			file.indexOf(".")));
+		textures.add(data);
+	    }
+	    if (this.textures.size() >= 1) {
 		this.setTextures(this.textures);
 		this.loaded = true;
 		return;
 	    }
 
-	    this.status = this.textures.get(0).location;
+	    this.status = "Finished loading textures";
 	    this.finished = true;
 	} catch (Exception var3) {
 	    var3.printStackTrace();
@@ -58,8 +61,9 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
     }
 
     protected void setTextures(ArrayList<TexturePackData> var1) {
-	for (int var2 = 0; var2 < 5; ++var2) {
-	    ((Button) this.buttons.get(var2)).active = !(var1).get(var2).equals("-");
+	for (int var2 = 0; var2 < 5; ++var2) { //take first 5 only
+	    ((Button) this.buttons.get(var2)).active = !(var1).get(var2)
+		    .equals("-");
 	    ((Button) this.buttons.get(var2)).text = var1.get(var2).name;
 	    ((Button) this.buttons.get(var2)).visible = true;
 	}
@@ -85,14 +89,14 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
     protected final void onButtonClick(Button var1) {
 	if (!this.frozen) {
 	    if (var1.active) {
-		if (this.loaded && var1.id < 5) {
+		if (this.loaded && var1.id < this.textures.size()) {
 		    this.openTexture(textures.get(var1.id));
 		}
 
 		if (this.finished || this.loaded && var1.id == 6) {
 		    this.frozen = true;
 		    TextureDialog var2;
-		    (var2 = new TextureDialog(this)).setDaemon(true);
+		    (var2 = new TextureDialog(this, minecraft)).setDaemon(true);
 		    SwingUtilities.invokeLater(var2);
 		}
 
@@ -117,8 +121,6 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	
-	this.minecraft.levelRenderer.refresh();
 	this.minecraft.setCurrentScreen((GuiScreen) null);
 	this.minecraft.grabMouse();
     }
@@ -157,7 +159,6 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
     public final void tick() {
 	super.tick();
 	if (this.selectedFile != null) {
-	    //this.openTexture(this.selectedFile);
 	    this.selectedFile = null;
 	}
 

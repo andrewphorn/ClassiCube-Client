@@ -12,7 +12,7 @@ public final class SnowBlock extends Block {
 	super(var1, var2);
 	id = var1;
 	Texture = var2;
-	this.setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
+	this.setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.20F, 1.0F);
     }
 
     protected final int getTextureId(int texture) {

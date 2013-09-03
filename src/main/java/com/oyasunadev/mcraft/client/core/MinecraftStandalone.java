@@ -117,7 +117,7 @@ public class MinecraftStandalone {
 	    minecraft.server = Server;
 	    minecraft.port = Port;
 	    
-	    boolean RunFakeNetwork = true;
+	    boolean RunFakeNetwork = false;
 
 	    if (RunFakeNetwork) {
 		minecraft.host = "127.0.0.1";
