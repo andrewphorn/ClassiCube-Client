@@ -39,6 +39,8 @@ public class InputHandlerImpl extends InputHandler {
 	    running = keyStates[5];
 	    Minecraft.PlayerIsRunning = keyStates[5];
 	}
+	flyingUp = keyStates[6];
+	flyingDown = keyStates[7];
     }
 
     @Override
@@ -74,6 +76,12 @@ public class InputHandlerImpl extends InputHandler {
 	}
 	if (key == settings.runKey.key) {
 	    index = 5;
+	}
+	if (key == settings.flyUp.key) {
+	    index = 6;
+	}
+	if (key == settings.flyDown.key) {
+	    index = 7;
 	}
 	if (index >= 0) {
 	    keyStates[index] = state;

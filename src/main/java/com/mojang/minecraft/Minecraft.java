@@ -110,7 +110,7 @@ public final class Minecraft implements Runnable {
     public HackState HackState;
     public List<PlayerListNameData> playerListNameData = new ArrayList<PlayerListNameData>();
     private Cursor cursor;
-    
+
     public static File mcDir;
 
     public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4,
@@ -168,7 +168,6 @@ public final class Minecraft implements Runnable {
 	    }
 	}
     }
-   
 
     public final void setCurrentScreen(GuiScreen var1) {
 	if (!(this.currentScreen instanceof ErrorScreen)) {
@@ -434,7 +433,8 @@ public final class Minecraft implements Runnable {
 	    this.textureManager.registerAnimation(new TextureWaterFX());
 	    this.fontRenderer = new FontRenderer(this.settings, "/default.png",
 		    this.textureManager);
-	    this.HackState = HackState.HacksTagEnabled;
+	    if(this.session == null)
+		this.HackState = HackState.HacksTagEnabled;
 	    IntBuffer var9;
 	    (var9 = BufferUtils.createIntBuffer(256)).clear().limit(256);
 	    this.levelRenderer = new LevelRenderer(this, this.textureManager);
@@ -1332,7 +1332,7 @@ public final class Minecraft implements Runnable {
 					GL11.glEnable(3042);
 					GL11.glColorMask(false, false, false,
 						false);
-					
+
 					var120 = var89.sortChunks(var126, 1);
 					GL11.glColorMask(true, true, true, true);
 					if (var82.minecraft.settings.anaglyph) {
@@ -1790,8 +1790,7 @@ public final class Minecraft implements Runnable {
 				    GL11.glLoadIdentity();
 				    renderer.enableGuiMode();
 				}
-				
-				
+
 				if (renderer.minecraft.notifyScreen != null) {
 				    renderer.minecraft.notifyScreen.render(
 					    var94, var70);
@@ -2256,8 +2255,8 @@ public final class Minecraft implements Runnable {
 					}
 					this.playerListNameData = cache;
 				    } else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-					 System.out
-					 .println("Custom block packet");
+					System.out
+						.println("Custom block packet");
 					byte SupportLevel = ((Byte) packetParams[0])
 						.byteValue();
 					networkManager.netHandler
@@ -2265,32 +2264,33 @@ public final class Minecraft implements Runnable {
 							com.oyasunadev.mcraft.client.util.Constants.SupportLevel);
 					SessionData
 						.SetAllowedBlocks(SupportLevel);
-				    }
-				    else if (packetType == PacketType.SET_BLOCK_PERMISSIONS) {
+				    } else if (packetType == PacketType.SET_BLOCK_PERMISSIONS) {
 					byte BlockType = ((Byte) packetParams[0])
 						.byteValue();
 					byte AllowPlacement = ((Byte) packetParams[1])
 						.byteValue();
 					byte AllowDeletion = ((Byte) packetParams[2])
 						.byteValue();
-				    }
-				    else if (packetType == PacketType.CHANGE_MODEL) {
+				    } else if (packetType == PacketType.CHANGE_MODEL) {
 					byte PlayerID = ((Byte) packetParams[0])
 						.byteValue();
 					String ModelName = (String) packetParams[1];
-					    if (PlayerID >= 0) {
-						NetworkPlayer netPlayer;
-						if ((netPlayer = networkManager.players
-							    .get(Byte.valueOf(PlayerID))) != null){
-						   ModelManager m = new ModelManager();
-						   if(m.getModel(ModelName.toLowerCase()) == null) {
-						       netPlayer.modelName = "humanoid";
-						   }else{
-						       netPlayer.modelName = ModelName.toLowerCase();
-						   }
-						   netPlayer.bindTexture(this.textureManager);
+					if (PlayerID >= 0) {
+					    NetworkPlayer netPlayer;
+					    if ((netPlayer = networkManager.players
+						    .get(Byte.valueOf(PlayerID))) != null) {
+						ModelManager m = new ModelManager();
+						if (m.getModel(ModelName
+							.toLowerCase()) == null) {
+						    netPlayer.modelName = "humanoid";
+						} else {
+						    netPlayer.modelName = ModelName
+							    .toLowerCase();
 						}
+						netPlayer
+							.bindTexture(this.textureManager);
 					    }
+					}
 				    }
 
 				    else if (packetType == PacketType.IDENTIFICATION) {
