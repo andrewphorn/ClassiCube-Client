@@ -46,6 +46,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
+import org.lwjgl.input.Cursor;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -108,10 +109,8 @@ public final class Minecraft implements Runnable {
     public List<HotKeyData> hotKeys = new ArrayList<HotKeyData>();
     public HackState HackState;
     public List<PlayerListNameData> playerListNameData = new ArrayList<PlayerListNameData>();
-    /** Mouse helper instance. */
-    public MouseHelper mouseHelper;
+    private Cursor cursor;
     
-
     public static File mcDir;
 
     public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4,
@@ -147,7 +146,6 @@ public final class Minecraft implements Runnable {
 	this.hasMouse = false;
 	this.lastClick = 0;
 	this.raining = false;
-	this.mouseHelper = new MouseHelper();
 
 	try {
 	    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -184,21 +182,27 @@ public final class Minecraft implements Runnable {
 
 	    this.currentScreen = var1;
 	    if (var1 != null) {
-		this.setIngameNotInFocus();
 		if (this.hasMouse) {
+		    this.player.releaseAllKeys();
 		    this.hasMouse = false;
-		   }
-		//}
+		    if (this.levelLoaded) {
+			try {
+			    Mouse.setNativeCursor((Cursor) null);
+			} catch (LWJGLException var4) {
+			    var4.printStackTrace();
+			}
+		    } else {
+			Mouse.setGrabbed(false);
+		    }
+		}
 
 		int var2 = this.width * 240 / this.height;
 		int var3 = this.height * 240 / this.height;
 		var1.open(this, var2, var3);
 		this.online = false;
 		return;
-	    }else{
-		this.setIngameFocus();
-		this.hasMouse = true;
 	    }
+	    this.grabMouse();
 	}
     }
 
@@ -472,6 +476,14 @@ public final class Minecraft implements Runnable {
 
 	    this.particleManager = new ParticleManager(this.level,
 		    this.textureManager);
+	    if (this.levelLoaded) {
+		try {
+		    var1.cursor = new Cursor(16, 16, 0, 0, 1, var9,
+			    (IntBuffer) null);
+		} catch (LWJGLException var53) {
+		    var53.printStackTrace();
+		}
+	    }
 	    try {
 		var1.soundPlayer = new SoundPlayer(var1.settings);
 		SoundPlayer var4 = var1.soundPlayer;
@@ -1829,45 +1841,27 @@ public final class Minecraft implements Runnable {
 	}
 
     }
-    public boolean inGameHasFocus;
-    
-    public void setIngameFocus()
-    {
-        if (Display.isActive())
-        {
-            if (!this.inGameHasFocus)
-            {
-                this.inGameHasFocus = true;
-                this.mouseHelper.grabMouseCursor();
-                this.setCurrentScreen((GuiScreen) null);
-    	    	this.lastClick = 10000;
-            }
-        }
-    }
-
-    //Resets the player keystate, disables the ingame focus, and ungrabs the mouse cursor.
-    public void setIngameNotInFocus()
-    {
-        if (this.inGameHasFocus)
-        {
-            this.player.releaseAllKeys();
-            this.inGameHasFocus = false;
-            this.mouseHelper.ungrabMouseCursor();
-        }
-    }
 
     public final void grabMouse() {
 	if (!this.hasMouse) {
 	    this.hasMouse = true;
-	    if ( this.currentScreen != null) {
-		this.setIngameNotInFocus();
-		if (this.hasMouse) {
-		    this.hasMouse = false;
-		   }
-		return;
-	    }else{
-		this.setIngameFocus();
+	    if (this.levelLoaded) {
+		try {
+		    Mouse.setNativeCursor(this.cursor);
+		    Mouse.setCursorPosition(this.width / 2, this.height / 2);
+		} catch (LWJGLException var2) {
+		    var2.printStackTrace();
+		}
+
+		if (this.canvas == null) {
+		    this.canvas.requestFocus();
+		}
+	    } else {
+		Mouse.setGrabbed(true);
 	    }
+
+	    this.setCurrentScreen((GuiScreen) null);
+	    this.lastClick = this.ticks + 10000;
 	}
     }
 

@@ -5,9 +5,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,18 +20,29 @@ import javax.imageio.ImageIO;
 
 // MinecraftCanvas
 public class MinecraftApplet$1 extends Canvas {
-    private BufferedImage image;
-    private BufferedImage image2;
+    private Image image;
+    private Image image2;
 
     void SetImage() throws IOException {
-	image = ImageIO.read(getClass().getResourceAsStream(
-		"/resources" + "/rsbg.jpg"));
+
+	File file = new File(Minecraft.GetMinecraftDirectory().getPath()
+		+ "/rsbg.jpg");
+	if (!file.exists()) {
+	    download("http://classicube.net/static/client/rsbg.jpg",
+		    file.getAbsolutePath());
+	}
+	image = ImageIO.read(new File(file.getAbsolutePath()));
 
     }
 
     void SetImage2() throws IOException {
-	image2 = ImageIO.read(getClass().getResourceAsStream(
-		"/resources" + "/bg.jpg"));
+	File file = new File(Minecraft.GetMinecraftDirectory().getPath()
+		+ "/bg.jpg");
+	if (!file.exists()) {
+	    download("http://classicube.net/static/client/bg.jpg",
+		    file.getAbsolutePath());
+	}
+	image2 = ImageIO.read(new File(file.getAbsolutePath()));
     }
 
     public void download(String address, String localFileName) {
