@@ -119,10 +119,10 @@ public class PacketType {
 	EXT_ADD_ENTITY = new PacketType(new Class[] { Byte.TYPE, String.class,
 		String.class });
 	EXT_REMOVE_PLAYER_NAME = new PacketType(new Class[] { Short.TYPE });
-	ENV_SET_COLOR = new PacketType(new Class[] { Byte.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE });
+	ENV_SET_COLOR = new PacketType(new Class[] { Byte.TYPE, Short.TYPE, Short.TYPE, Short.TYPE });
 	SELECTION_CUBOID = new PacketType(new Class[] { Byte.TYPE,
 		String.class, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE,
-		Short.TYPE, Short.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE });
+		Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE });
 	REMOVE_SELECTION_CUBOID = new PacketType(new Class[] { Byte.TYPE });
 	SET_BLOCK_PERMISSIONS = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE, Integer.TYPE });
 	CHANGE_MODEL = new PacketType(new Class[] { Byte.TYPE, String.class });

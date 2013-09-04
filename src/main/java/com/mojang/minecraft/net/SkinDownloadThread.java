@@ -5,10 +5,13 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 public class SkinDownloadThread extends Thread {
-    public SkinDownloadThread(NetworkPlayer networkPlayer) {
+    String skinServer;
+    
+    public SkinDownloadThread(NetworkPlayer networkPlayer, String skinServer) {
 	super();
 
 	this.player = networkPlayer;
+	this.skinServer = skinServer;
     }
 
     @Override
@@ -17,7 +20,7 @@ public class SkinDownloadThread extends Thread {
 
 	try {
 	    connection = (HttpURLConnection) new URL(
-		    "http://www.classicube.net/static/skins/"
+		    skinServer
 			    + (player.SkinName == null ? player.name
 				    : player.SkinName) + ".png")
 		    .openConnection();

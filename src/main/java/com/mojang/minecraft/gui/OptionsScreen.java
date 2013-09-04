@@ -14,15 +14,18 @@ public final class OptionsScreen extends GuiScreen {
     }
 
     public final void onOpen() {
-	for (int var1 = 0; var1 < this.settings.settingCount; ++var1) {
+	for (int var1 = 0; var1 < 10; ++var1) {
 	    this.buttons.add(new OptionButton(var1, this.width / 2 - 155 + var1
 		    % 2 * 160, this.height / 6 + 24 * (var1 >> 1),
 		    this.settings.getSetting(var1)));
 	}
-
+	
 	this.buttons.add(new Button(100, this.width / 2 - 100,
-		this.height / 6 + 120 + 26, "Controls..."));
+		this.height / 6 + 90 + 32, "Advanced Options..."));
+
 	this.buttons.add(new Button(200, this.width / 2 - 100,
+		this.height / 6 + 120 + 26, "Controls..."));
+	this.buttons.add(new Button(300, this.width / 2 - 100,
 		this.height / 6 + 168, "Done"));
     }
 
@@ -32,13 +35,18 @@ public final class OptionsScreen extends GuiScreen {
 		this.settings.toggleSetting(var1.id, 1);
 		var1.text = this.settings.getSetting(var1.id);
 	    }
-
+	    
 	    if (var1.id == 100) {
-		this.minecraft.setCurrentScreen(new ControlsScreen(this,
+		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(this,
 			this.settings));
 	    }
 
 	    if (var1.id == 200) {
+		this.minecraft.setCurrentScreen(new ControlsScreen(this,
+			this.settings));
+	    }
+
+	    if (var1.id == 300) {
 		this.minecraft.setCurrentScreen(this.parent);
 	    }
 

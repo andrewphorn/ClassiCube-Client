@@ -24,9 +24,9 @@ import java.util.zip.InflaterInputStream;
 
 public final class ProgressBarDisplay {
 
-    public String text = "";
+    public static String text = "";
     private Minecraft minecraft;
-    public String title = "";
+    public static String title = "";
     private long start = System.currentTimeMillis();
 
     public ProgressBarDisplay(Minecraft var1) {

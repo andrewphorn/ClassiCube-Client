@@ -164,11 +164,11 @@ public final class HUDScreen extends Screen {
 
 	    var5.render(this.mc.debug, 2, 12, 16777215);
 
-	    if (this.mc.player.flyingMode && !this.mc.player.noPhysics)
+	    if ((this.mc.player.flyingMode || this.mc.player.input.fly) && !(this.mc.player.noPhysics || this.mc.player.input.noclip))
 		var5.render("Fly: ON.", 2, 32, 16777215);
-	    else if (!this.mc.player.flyingMode && this.mc.player.noPhysics)
+	    else if (!(this.mc.player.flyingMode || this.mc.player.input.fly) && (this.mc.player.noPhysics || this.mc.player.input.noclip))
 		var5.render("NoClip: ON.", 2, 32, 16777215);
-	    else if (this.mc.player.flyingMode && this.mc.player.noPhysics)
+	    else if ((this.mc.player.flyingMode || this.mc.player.input.fly) && (this.mc.player.noPhysics || this.mc.player.input.noclip))
 		var5.render("Fly: ON. NoClip: ON", 2, 32, 16777215);
 	    GL11.glPopMatrix();
 

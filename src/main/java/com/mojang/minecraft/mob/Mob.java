@@ -335,7 +335,6 @@ public class Mob extends Entity {
     }
 
     public void hurt(Entity var1, int var2) {
-	// System.out.println("this");
 	if (!this.level.creativeMode) {
 	    if (this.health > 0) {
 		if (this.ai != null) {
