@@ -1,6 +1,7 @@
 package com.mojang.minecraft.gui;
 
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.gui.inputscreens.InputValueScreen;
 
 import java.io.File;
 
