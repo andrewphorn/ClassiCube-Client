@@ -156,7 +156,6 @@ public final class HUDScreen extends Screen {
 		}
 	    }
 	}
-
 	if (this.mc.settings.showFrameRate) {
 	    GL11.glPushMatrix();
 	    GL11.glScalef(0.7F, 0.7F, 1.0F);
@@ -305,6 +304,11 @@ public final class HUDScreen extends Screen {
 	    }
 	}
 
+    }
+    
+    public static void drawCenteredString(FontRenderer var0, String var1,
+	    int var2, int var3, int var4) {
+	var0.render(var1, var2 - var0.getWidth(var1) / 2, var3, var4);
     }
 
     public int FindGroupChanges(int Page,
