@@ -42,7 +42,7 @@ public final class SaveLevelScreen extends LoadLevelScreen {
     }
 
     protected final void openLevel(int var1) {
-	this.minecraft.setCurrentScreen(new LevelNameScreen(this,
-		((Button) this.buttons.get(var1)).text, var1));
+	this.minecraft.setCurrentScreen(new InputValueScreen(this,
+		((Button) this.buttons.get(var1)).text, var1, "Enter level name..."));
     }
 }

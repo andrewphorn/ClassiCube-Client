@@ -6,9 +6,10 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 public class SkinDownloadThread extends Thread {
-    public SkinDownloadThread(Minecraft minecraft) {
+    String skinServer;
+    public SkinDownloadThread(Minecraft minecraft, String skinServer) {
 	super();
-
+	this.skinServer = skinServer;
 	this.minecraft = minecraft;
     }
 
@@ -19,7 +20,7 @@ public class SkinDownloadThread extends Thread {
 
 	    try {
 		connection = (HttpURLConnection) new URL(
-			"http://www.classicube.net/static/skins/"
+			skinServer
 				+ minecraft.session.username + ".png")
 			.openConnection();
 

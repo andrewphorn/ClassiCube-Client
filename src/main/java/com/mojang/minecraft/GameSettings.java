@@ -10,7 +10,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public final class GameSettings {
+public final class GameSettings implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     public static String StatusString = "";
     public static String PercentString = "";
 
@@ -24,7 +28,7 @@ public final class GameSettings {
 		jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey,
 		loadLocationKey, runKey };
 
-	settingCount = 11;
+	settingCount = 12;
 
 	this.minecraft = minecraft;
 
@@ -60,6 +64,7 @@ public final class GameSettings {
     private File settingsFile;
     public int settingCount;
     public boolean CanSpeed = true;
+    public int HackType = 0;
 
     public int smoothing = 0;
     public String[] smoothingOptions = new String[] { "OFF", "Automatic",
@@ -179,6 +184,13 @@ public final class GameSettings {
 	if (setting == 10) {
 	    canServerChangeTextures = !canServerChangeTextures;
 	}
+	if (setting == 11) {
+	    if (HackType == 1) {
+		HackType = 0;
+	    } else {
+		HackType++;
+	    }
+	}
 
 	save();
     }
@@ -208,7 +220,10 @@ public final class GameSettings {
 												: (id == 10 ? "Allow server textures: "
 													+ (canServerChangeTextures ? "Yes"
 														: "No")
-											: ""))))))))));
+														: (id == 11 ? "SpeedHack Type: "
+													+ (HackType == 0 ? "Normal"
+														: "Adv")
+											: "")))))))))));
     }
 
     private void load() {
@@ -264,6 +279,9 @@ public final class GameSettings {
 		    if (setting[0].equals("canServerChangeTextures")) {
 			canServerChangeTextures = setting[1].equals("true");
 		    }
+		    if (setting[0].equals("HackType")) {
+			HackType = Integer.parseInt(setting[1]);
+		    }
 
 		    for (int index = 0; index < this.bindings.length; index++) {
 			if (setting[0].equals("key_" + bindings[index].name)) {
@@ -298,7 +316,7 @@ public final class GameSettings {
 	    writer.println("smoothing:" + smoothing);
 	    writer.println("anisotropic:" + anisotropic);
 	    writer.println("canServerChangeTextures:" + canServerChangeTextures);
-
+	    writer.println("HackType:" + HackType);
 	    for (int binding = 0; binding < bindings.length; binding++) {
 		writer.println("key_" + bindings[binding].name + ":"
 			+ bindings[binding].key);

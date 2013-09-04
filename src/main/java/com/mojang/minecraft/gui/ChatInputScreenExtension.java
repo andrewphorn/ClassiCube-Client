@@ -3,19 +3,21 @@ package com.mojang.minecraft.gui;
 import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.PacketType;
 
+import java.awt.List;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Vector;
 import org.lwjgl.input.Keyboard;
 
 public class ChatInputScreenExtension extends GuiScreen {
     public String inputLine = "";
     private int tickCount = 0;
-    private int caretPos = 0;
+    public int caretPos = 0;
     private int historyPos = 0;
 
     public final void onOpen() {
@@ -141,7 +143,6 @@ public class ChatInputScreenExtension extends GuiScreen {
     public void render(int paramInt1, int paramInt2) {
 	drawBox(2, this.height - 14, this.width - 2, this.height - 2,
 		-2147483648);
-	// System.out.println(""+temp.length);
 	char[] temp = new char[128];
 	for (int a = 0; a < this.inputLine.length(); a++) {
 	    temp[a] = this.inputLine.toCharArray()[a];
@@ -159,11 +160,6 @@ public class ChatInputScreenExtension extends GuiScreen {
 	}
 	drawString(this.fontRenderer, "> " + string, 4, this.height - 12,
 		14737632);
-	// drawString(this.fontRenderer, "> " + this.inputLine + (this.tickCount
-	// / 6 % 2 == 0 ? this.caretPos + 1 : -1), 4, this.height - 12,
-	// -3092272);
-	// drawString(this.fontRenderer, "> " + this.inputLine + (this.tickCount
-	// / 6 % 2 == 0 ? "" : "_"), 4, this.height - 12, -3092272);
     }
 
     protected final void onMouseClick(int paramInt1, int paramInt2,
