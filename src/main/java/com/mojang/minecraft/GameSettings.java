@@ -1,5 +1,6 @@
 package com.mojang.minecraft;
 
+import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import org.lwjgl.input.Keyboard;
 
@@ -28,7 +29,7 @@ public final class GameSettings implements Serializable {
 		jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey,
 		loadLocationKey, runKey };
 
-	settingCount = 12;
+	settingCount = 13;
 
 	this.minecraft = minecraft;
 
@@ -65,6 +66,8 @@ public final class GameSettings implements Serializable {
     public int settingCount;
     public boolean CanSpeed = true;
     public int HackType = 0;
+
+    public boolean VBOs = false;
 
     public int smoothing = 0;
     public String[] smoothingOptions = new String[] { "OFF", "Automatic",
@@ -191,6 +194,9 @@ public final class GameSettings implements Serializable {
 		HackType++;
 	    }
 	}
+	if (setting == 12) {
+	    VBOs = !VBOs;
+	}
 
 	save();
     }
@@ -217,13 +223,16 @@ public final class GameSettings implements Serializable {
 										+ smoothingOptions[smoothing]
 										: (id == 9 ? "Anisotropic: "
 											+ anisotropicOptions[anisotropic]
-												: (id == 10 ? "Allow server textures: "
-													+ (canServerChangeTextures ? "Yes"
-														: "No")
-														: (id == 11 ? "SpeedHack Type: "
+											: (id == 10 ? "Allow server textures: "
+												+ (canServerChangeTextures ? "Yes"
+													: "No")
+												: (id == 11 ? "SpeedHack Type: "
 													+ (HackType == 0 ? "Normal"
 														: "Adv")
-											: "")))))))))));
+													: (id == 12 ? "Use VBOs: "
+														+ (VBOs ? "Yes"
+															: "No")
+														: ""))))))))))));
     }
 
     private void load() {
@@ -282,6 +291,10 @@ public final class GameSettings implements Serializable {
 		    if (setting[0].equals("HackType")) {
 			HackType = Integer.parseInt(setting[1]);
 		    }
+		    if (setting[0].equals("VBOs")) {
+			VBOs = setting[1].equals("true");
+			ShapeRenderer.tryVBO = VBOs;
+		    }
 
 		    for (int index = 0; index < this.bindings.length; index++) {
 			if (setting[0].equals("key_" + bindings[index].name)) {
@@ -317,6 +330,7 @@ public final class GameSettings implements Serializable {
 	    writer.println("anisotropic:" + anisotropic);
 	    writer.println("canServerChangeTextures:" + canServerChangeTextures);
 	    writer.println("HackType:" + HackType);
+	    writer.println("VBOs:" + VBOs);
 	    for (int binding = 0; binding < bindings.length; binding++) {
 		writer.println("key_" + bindings[binding].name + ":"
 			+ bindings[binding].key);
