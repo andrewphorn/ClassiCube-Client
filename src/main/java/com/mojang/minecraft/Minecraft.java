@@ -114,8 +114,8 @@ public final class Minecraft implements Runnable {
     public HackState HackState;
     public List<PlayerListNameData> playerListNameData = new ArrayList<PlayerListNameData>();
     private Cursor cursor;
-
     public static File mcDir;
+    public String skinServer = "http://www.classicube.net/static/skins/";
 
     public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4,
 	    boolean var5, boolean IsApplet) {
@@ -557,7 +557,7 @@ public final class Minecraft implements Runnable {
 
 	    checkGLError("Post startup");
 	    this.hud = new HUDScreen(this, this.width, this.height);
-	    (new SkinDownloadThread(this)).start();
+	    (new SkinDownloadThread(this, skinServer)).start();
 	    if (this.server != null && this.session != null) {
 		this.networkManager = new NetworkManager(this, this.server,
 			this.port, this.session.username, this.session.mppass);
@@ -1703,7 +1703,6 @@ public final class Minecraft implements Runnable {
 					    GL11.glEnable(2884);
 					    GL11.glDisable(3042);
 					}
-
 					if (var82.entity != null) {
 					    var82.entity
 						    .renderHover(
@@ -2175,14 +2174,14 @@ public final class Minecraft implements Runnable {
 					Short X2 = ((Short) packetParams[5]);
 					Short Y2 = ((Short) packetParams[6]);
 					Short Z2 = ((Short) packetParams[7]);
-					Integer r = ((Integer) packetParams[8])
-						.intValue();
-					Integer g = ((Integer) packetParams[9])
-						.intValue();
-					Integer b = ((Integer) packetParams[10])
-						.intValue();
-					Integer a = ((Integer) packetParams[11])
-						.intValue();
+					Short r = ((Short) packetParams[8])
+						.shortValue();
+					Short g = ((Short) packetParams[9])
+						.shortValue();
+					Short b = ((Short) packetParams[10])
+						.shortValue();
+					Short a = ((Short) packetParams[11])
+						.shortValue();
 					SelectionBoxData data = new SelectionBoxData(
 						ID, Name,
 						new ColorCache(r / 255.0F,
@@ -2205,12 +2204,12 @@ public final class Minecraft implements Runnable {
 				    } else if (packetType == PacketType.ENV_SET_COLOR) {
 					byte Variable = ((Byte) packetParams[0])
 						.byteValue();
-					Integer r = ((Integer) packetParams[1])
-						.intValue();
-					Integer g = ((Integer) packetParams[2])
-						.intValue();
-					Integer b = ((Integer) packetParams[3])
-						.intValue();
+					Short r = ((Short) packetParams[1])
+						.shortValue();
+					Short g = ((Short) packetParams[2])
+						.shortValue();
+					Short b = ((Short) packetParams[3])
+						.shortValue();
 					int dec = 255 * 255 * r + 255 * g + b;
 					switch (Variable) {
 					case 0: // sky
@@ -2244,11 +2243,15 @@ public final class Minecraft implements Runnable {
 						.byteValue();
 					if (!this.settings.canServerChangeTextures)
 					    return;
-					if (sideBlock < Block.blocks.length) {
+					if (sideBlock == -1) {
+					    this.textureManager.customSideBlock = null;
+					} else if (sideBlock < Block.blocks.length) {
 					    this.textureManager.customSideBlock = textureManager.textureAtlas
 						    .get(sideBlock);
 					}
-					if (edgeBlock < Block.blocks.length) {
+					if (edgeBlock == -1) {
+					    this.textureManager.customEdgeBlock = null;
+					} else if (edgeBlock < Block.blocks.length) {
 					    this.textureManager.customEdgeBlock = textureManager.textureAtlas
 						    .get(edgeBlock);
 					}
@@ -2736,7 +2739,7 @@ public final class Minecraft implements Runnable {
 	    if (this.blockHitTime > 0) {
 		--this.blockHitTime;
 	    }
-
+	    // s.logic();
 	    while (Keyboard.next()) {
 		this.player.setKey(Keyboard.getEventKey(),
 			Keyboard.getEventKeyState());
@@ -2746,49 +2749,37 @@ public final class Minecraft implements Runnable {
 		    }
 
 		    if (this.currentScreen == null) {
-			for (int j = 0; j < this.hotKeys.size(); j++) { // check
-									// through
-									// all
-									// stored
-									// hotkeys
-			    HotKeyData hkData = this.hotKeys.get(j);
-			    String label = hkData.label;
-			    String action = hkData.action;
-			    int keyCode = hkData.keyCode;
-			    byte keyMods = hkData.keyMods;
-
-			    List<Integer> heldKeys = new ArrayList<Integer>();
-			    if ((keyMods & 1) != 0)
-				heldKeys.add(29); // ctrl (left)
-			    if ((keyMods & 2) != 0)
-				heldKeys.add(42); // shift (left)
-			    if ((keyMods & 4) != 0)
-				heldKeys.add(56); // alt (left)
-
-			    // Check if the key(s) are pressed
-			    if (Keyboard.getEventKey() == keyCode) {
-				boolean canSendHotkey = true;
-				for (int k = 0; k < heldKeys.size(); k++) {
-				    if (!Keyboard.isKeyDown(heldKeys.get(k)))
-					canSendHotkey = false;
-				}
-				if (action.endsWith("\n")) { // check whether to
-							     // send message or
-							     // open window
-				    this.hud.addChat("Sending HotKey: " + label);
-				    action = action.replace("\n", "");
-				    this.networkManager.netHandler.send(
-					    PacketType.CHAT_MESSAGE,
-					    new Object[] { Integer.valueOf(-1),
-						    action });
-				} else { // open window
-				    this.hud.addChat("Opening HotKey: " + label);
-				    ChatInputScreenExtension cisExt = new ChatInputScreenExtension();
-				    cisExt.inputLine = action;
-				    this.setCurrentScreen(cisExt);
-				}
-			    }
-			}
+			/*
+			 * for (int j = 0; j < this.hotKeys.size(); j++) { //
+			 * check // through // all // stored // hotkeys
+			 * HotKeyData hkData = this.hotKeys.get(j); String label
+			 * = hkData.label; String action = hkData.action; int
+			 * keyCode = hkData.keyCode; byte keyMods =
+			 * hkData.keyMods;
+			 * 
+			 * List<Integer> heldKeys = new ArrayList<Integer>(); if
+			 * ((keyMods & 1) != 0) heldKeys.add(29); // ctrl (left)
+			 * if ((keyMods & 2) != 0) heldKeys.add(42); // shift
+			 * (left) if ((keyMods & 4) != 0) heldKeys.add(56); //
+			 * alt (left)
+			 * 
+			 * // Check if the key(s) are pressed if
+			 * (Keyboard.getEventKey() == keyCode) { boolean
+			 * canSendHotkey = true; for (int k = 0; k <
+			 * heldKeys.size(); k++) { if
+			 * (!Keyboard.isKeyDown(heldKeys.get(k))) canSendHotkey
+			 * = false; } if (action.endsWith("\n")) { // check
+			 * whether to // send message or // open window
+			 * this.hud.addChat("Sending HotKey: " + label); action
+			 * = action.replace("\n", "");
+			 * this.networkManager.netHandler.send(
+			 * PacketType.CHAT_MESSAGE, new Object[] {
+			 * Integer.valueOf(-1), action }); } else { // open
+			 * window this.hud.addChat("Opening HotKey: " + label);
+			 * ChatInputScreenExtension cisExt = new
+			 * ChatInputScreenExtension(); cisExt.inputLine =
+			 * action; this.setCurrentScreen(cisExt); } } }
+			 */
 		    }
 
 		    if (this.currentScreen == null) {
@@ -2820,22 +2811,25 @@ public final class Minecraft implements Runnable {
 			    ChatInputScreenExtension s = new ChatInputScreenExtension();
 			    this.setCurrentScreen(s);
 			    s.inputLine = "/";
+			    s.caretPos++;
 			}
-			if (Keyboard.getEventKey() == Keyboard.KEY_X) {
-			    if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
-				    || HackState == com.mojang.minecraft.HackState.OpHacks
-				    && this.player.userType >= 100) {
-				this.player.noPhysics = !this.player.noPhysics;
-				this.player.hovered = !this.player.hovered;
+			if (this.settings.HackType == 0) {
+			    if (Keyboard.getEventKey() == Keyboard.KEY_X) {
+				if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
+					|| HackState == com.mojang.minecraft.HackState.OpHacks
+					&& this.player.userType >= 100) {
+				    this.player.noPhysics = !this.player.noPhysics;
+				    this.player.hovered = !this.player.hovered;
+				}
 			    }
-			}
 
-			if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
-			    if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
-				    || HackState == com.mojang.minecraft.HackState.NoHacksTagShown
-				    || HackState == com.mojang.minecraft.HackState.OpHacks
-				    && this.player.userType >= 100) {
-				this.player.flyingMode = !this.player.flyingMode;
+			    if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
+				if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
+					|| HackState == com.mojang.minecraft.HackState.NoHacksTagShown
+					|| HackState == com.mojang.minecraft.HackState.OpHacks
+					&& this.player.userType >= 100) {
+				    this.player.flyingMode = !this.player.flyingMode;
+				}
 			    }
 			}
 
@@ -3053,7 +3047,7 @@ public final class Minecraft implements Runnable {
 	}
 
 	if (this.player == null) {
-	    this.player = new Player(var1);
+	    this.player = new Player(var1, this.settings);
 	    this.player.resetPos();
 	    this.gamemode.preparePlayer(this.player);
 	    if (var1 != null) {

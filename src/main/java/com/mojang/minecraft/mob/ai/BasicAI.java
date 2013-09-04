@@ -3,6 +3,7 @@ package com.mojang.minecraft.mob.ai;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.mob.Mob;
+import com.mojang.minecraft.player.Player;
 
 import java.util.List;
 import java.util.Random;
@@ -59,87 +60,89 @@ public class BasicAI extends AI {
 	} else {
 	    this.update();
 	}
-	if (this.mob.flyingMode || this.mob.noPhysics) {
-	    var2.yd = 0;
-	}
-	if (this.mob.flyingMode && !this.mob.noPhysics) {
-	    if (this.flyingUp) {
-		// System.out.println("flying up");
-		if (this.running) {
-		    this.mob.yd = 0.08F;
-		} else {
-		    this.mob.yd = 0.06F;
-		}
+	if (((Player) this.mob).input.HackState == 0) {
+	    if (this.mob.flyingMode || this.mob.noPhysics) {
+		var2.yd = 0;
+	    }
+	    if (this.mob.flyingMode && !this.mob.noPhysics) {
+		if (this.flyingUp) {
+		    // System.out.println("flying up");
+		    if (this.running) {
+			this.mob.yd = 0.08F;
+		    } else {
+			this.mob.yd = 0.06F;
+		    }
 
-	    } else if (this.flyingDown) {
-		// System.out.println("flying down");
-		if (this.running)
-		    this.mob.yd = -0.08F;
-		else
-		    this.mob.yd = -0.06F;
-	    } else if (this.jumping) {
-		if (this.running) {
-		    this.mob.yd = 0.08F;
-		} else {
-		    this.mob.yd = 0.06F;
+		} else if (this.flyingDown) {
+		    // System.out.println("flying down");
+		    if (this.running)
+			this.mob.yd = -0.08F;
+		    else
+			this.mob.yd = -0.06F;
+		} else if (this.jumping) {
+		    if (this.running) {
+			this.mob.yd = 0.08F;
+		    } else {
+			this.mob.yd = 0.06F;
+		    }
 		}
 	    }
-	}
 
-	else if (this.mob.noPhysics && !this.mob.flyingMode) {
-	    if (this.flyingUp) {
-		if (this.running) {
-		    this.mob.yd = 0.48F;
-		} else {
-		    this.mob.yd = 0.26F;
-		}
+	    else if (this.mob.noPhysics && !this.mob.flyingMode) {
+		if (this.flyingUp) {
+		    if (this.running) {
+			this.mob.yd = 0.48F;
+		    } else {
+			this.mob.yd = 0.26F;
+		    }
 
-	    } else if (this.flyingDown) {
-		if (this.running)
-		    this.mob.yd = -0.48F;
-		else
-		    this.mob.yd = -0.26F;
-	    } else if (this.jumping) {
-		if (this.running) {
-		    this.mob.yd = 0.48F;
-		} else {
-		    this.mob.yd = 0.26F;
+		} else if (this.flyingDown) {
+		    if (this.running)
+			this.mob.yd = -0.48F;
+		    else
+			this.mob.yd = -0.26F;
+		} else if (this.jumping) {
+		    if (this.running) {
+			this.mob.yd = 0.48F;
+		    } else {
+			this.mob.yd = 0.26F;
+		    }
 		}
 	    }
-	}
 
-	else if (this.mob.noPhysics && this.mob.flyingMode) {
-	    if (this.flyingUp) {
-		// System.out.println("flying up");
-		if (this.running) {
-		    this.mob.yd = 0.08F;
-		} else {
-		    this.mob.yd = 0.06F;
-		}
+	    else if (this.mob.noPhysics && this.mob.flyingMode) {
+		if (this.flyingUp) {
+		    // System.out.println("flying up");
+		    if (this.running) {
+			this.mob.yd = 0.08F;
+		    } else {
+			this.mob.yd = 0.06F;
+		    }
 
-	    } else if (this.flyingDown) {
-		// System.out.println("flying down");
-		if (this.running)
-		    this.mob.yd = -0.08F;
-		else
-		    this.mob.yd = -0.06F;
-	    } else if (this.jumping) {
-		if (this.running) {
-		    this.mob.yd = 0.08F;
-		} else {
-		    this.mob.yd = 0.06F;
+		} else if (this.flyingDown) {
+		    // System.out.println("flying down");
+		    if (this.running)
+			this.mob.yd = -0.08F;
+		    else
+			this.mob.yd = -0.06F;
+		} else if (this.jumping) {
+		    if (this.running) {
+			this.mob.yd = 0.08F;
+		    } else {
+			this.mob.yd = 0.06F;
+		    }
 		}
-	    }
-	} else {
-	    if (this.jumping && this.mob.isInLava()) {
-		if (this.running) {
-		    this.mob.yd = 0.08F;
-		} else {
-		    this.mob.yd = 0.06F;
+	    } else {
+		if (this.jumping && this.mob.isInLava()) {
+		    if (this.running) {
+			this.mob.yd = 0.08F;
+		    } else {
+			this.mob.yd = 0.06F;
+		    }
+		} else if (this.jumping && this.mob.isInOrOnRope()) {
+		    if (this.mob.yd > 0.02f)
+			this.mob.yd = 0.02F;
 		}
-	    } else if (this.jumping && this.mob.isInOrOnRope()) {
-		if (this.mob.yd > 0.02f)
-		    this.mob.yd = 0.02F;
 	    }
 	}
 

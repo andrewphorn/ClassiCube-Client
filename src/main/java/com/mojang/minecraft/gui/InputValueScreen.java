@@ -3,18 +3,22 @@ package com.mojang.minecraft.gui;
 import com.mojang.minecraft.Minecraft;
 import org.lwjgl.input.Keyboard;
 
-public final class LevelNameScreen extends GuiScreen {
+public class InputValueScreen extends GuiScreen {
 
-    private GuiScreen parent;
-    private String title = "Enter level name:";
-    private int id;
-    private String name;
-    private int counter = 0;
+    public GuiScreen parent;
+    public String title = "Enter level name:";
+    public int id;
+    public String name;
+    public int counter = 0;
+    public boolean numbersOnly = false;
+    public String allowedChars = null;
+    public int stringLimit = 64;
 
-    public LevelNameScreen(GuiScreen var1, String var2, int var3) {
+    public InputValueScreen(GuiScreen var1, String var2, int var3, String Title) {
 	this.parent = var1;
 	this.id = var3;
 	this.name = var2;
+	this.title = Title;
 	if (this.name.equals("-")) {
 	    this.name = "";
 	}
@@ -39,7 +43,7 @@ public final class LevelNameScreen extends GuiScreen {
 	++this.counter;
     }
 
-    protected final void onButtonClick(Button var1) {
+    protected void onButtonClick(Button var1) {
 	if (var1.active) {
 	    if (var1.id == 0 && this.name.trim().length() > 1) {
 		Minecraft var10000 = this.minecraft;
@@ -61,17 +65,21 @@ public final class LevelNameScreen extends GuiScreen {
 	}
     }
 
-    protected final void onKeyPress(char var1, int var2) {
+    public final void onKeyPress(char var1, int var2) {
 	if (var2 == 14 && this.name.length() > 0) {
 	    this.name = this.name.substring(0, this.name.length() - 1);
 	}
 
-	if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_\'*!\"#%/()=+?[]{}<>"
-		.indexOf(var1) >= 0 && this.name.length() < 64) {
+	String canUse = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_\'*!\"#%/()=+?[]{}<>";
+	if(this.numbersOnly)
+	    canUse = "0123456789";
+	if(this.allowedChars!=null)
+	    canUse = allowedChars;
+	if (canUse.indexOf(var1) >= 0 && this.name.length() < stringLimit) {
 	    this.name = this.name + var1;
 	}
 
-	((Button) this.buttons.get(0)).active = this.name.trim().length() > 1;
+	((Button) this.buttons.get(0)).active = this.name.trim().length() > 0;
     }
 
     public final void render(int var1, int var2) {

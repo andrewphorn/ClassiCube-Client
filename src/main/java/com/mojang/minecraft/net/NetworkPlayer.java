@@ -57,7 +57,7 @@ public class NetworkPlayer extends HumanoidMob {
     }
 
     public void downloadSkin() {
-	(new SkinDownloadThread(this)).start();
+	(new SkinDownloadThread(this, this.minecraft.skinServer)).start();
     }
 
     public void aiStep() {
