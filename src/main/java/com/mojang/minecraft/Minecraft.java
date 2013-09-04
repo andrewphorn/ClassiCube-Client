@@ -116,6 +116,8 @@ public final class Minecraft implements Runnable {
     private Cursor cursor;
     public static File mcDir;
     public String skinServer = "http://www.classicube.net/static/skins/";
+    public List<Block> DisallowPlacementBlocks = new ArrayList<Block>();
+    public List<Block> DisallowedBreakingBlocks = new ArrayList<Block>();
 
     public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4,
 	    boolean var5, boolean IsApplet) {
@@ -1972,15 +1974,15 @@ public final class Minecraft implements Runnable {
 		    // if mouse click left
 		    if (var1 == 0) {
 			if (block != Block.BEDROCK
-				|| this.player.userType >= 100) {
+				|| this.player.userType >= 100 || this.DisallowedBreakingBlocks.contains(block)) {
 			    this.gamemode.hitBlock(x, y, z);
 			    return;
 			}
 			// else if its right click
 		    } else {
 			int blockID = this.player.inventory.getSelected();
-			if (blockID <= 0) {
-			    return; // if air return
+			if (blockID <= 0 || this.DisallowPlacementBlocks.contains(Block.blocks[blockID])) {
+			    return; // if air or not allowed, return
 			}
 			AABB aabb = Block.blocks[blockID].getCollisionBox(x, y,
 				z);
@@ -2340,6 +2342,33 @@ public final class Minecraft implements Runnable {
 						.byteValue();
 					byte AllowDeletion = ((Byte) packetParams[2])
 						.byteValue();
+					Block block = Block.blocks[BlockType];
+					if (AllowPlacement == 0) {
+					    if (!this.DisallowPlacementBlocks
+						    .contains(block)) {
+						this.DisallowPlacementBlocks
+							.add(block);
+					    }
+					} else {
+					    if (this.DisallowPlacementBlocks
+						    .contains(block)) {
+						this.DisallowPlacementBlocks
+							.remove(block);
+					    }
+					}
+					if (AllowDeletion == 0) {
+					    if (!this.DisallowedBreakingBlocks
+						    .contains(block)) {
+						this.DisallowedBreakingBlocks
+							.add(block);
+					    }
+					} else {
+					    if (this.DisallowedBreakingBlocks
+						    .contains(block)) {
+						this.DisallowedBreakingBlocks
+							.remove(block);
+					    }
+					}
 				    } else if (packetType == PacketType.CHANGE_MODEL) {
 					byte PlayerID = ((Byte) packetParams[0])
 						.byteValue();
