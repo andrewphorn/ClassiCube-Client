@@ -2343,6 +2343,7 @@ public final class Minecraft implements Runnable {
 					byte AllowDeletion = ((Byte) packetParams[2])
 						.byteValue();
 					Block block = Block.blocks[BlockType];
+					if(block == null) return;
 					if (AllowPlacement == 0) {
 					    if (!this.DisallowPlacementBlocks
 						    .contains(block)) {

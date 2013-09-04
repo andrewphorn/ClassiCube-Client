@@ -16,12 +16,14 @@ public final class AdvancedOptionsScreen extends GuiScreen {
     private GuiScreen parent;
     private String title = "Advanced Options";
     private GameSettings settings;
-
+    boolean drawWarning = false;
+    
     public AdvancedOptionsScreen(GuiScreen var1, GameSettings var2) {
 	this.parent = var1;
 	this.settings = var2;
     }
 
+    String lastVBOValue = null;
     public final void onOpen() {
 	int heightSeperator = 0;
 	for (int var1 = 10; var1 < this.settings.settingCount; ++var1) {
@@ -63,6 +65,9 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 	    if (var1.id < 100) {
 		this.settings.toggleSetting(var1.id, 1);
 		var1.text = this.settings.getSetting(var1.id);
+		if(var1.id == 12){
+		    this.drawWarning = true;
+		}
 	    }
 
 	    if (var1.id == 100) {
@@ -153,11 +158,14 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 	}
 	return hexBuilder.toString();
     }
-
+    String optionWarningMessage = "Changing to/from VBOs requires a client restart";
     public final void render(int var1, int var2) {
 	drawFadingBox(0, 0, this.width, this.height, 1610941696, -1607454624);
 	drawCenteredString(this.fontRenderer, this.title, this.width / 2, 20,
 		16777215);
+	if(drawWarning){
+	    drawCenteredString(this.minecraft.fontRenderer, this.optionWarningMessage, this.minecraft.width / 2 /2, this.height / 6 + 128, 16711680);
+	}
 	super.render(var1, var2);
     }
 }
