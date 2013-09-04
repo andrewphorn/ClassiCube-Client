@@ -121,9 +121,9 @@ public final class Minecraft implements Runnable {
 
     public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4,
 	    boolean var5, boolean IsApplet) {
-	// this.selectionBoxes.add(new SelectionBoxData((byte) 1, "",
-	// new ColorCache(0F, 1.0F, 0F, 0.6F), new CustomAABB(12, 45, 30,
-	// 20, 30, 40)));
+	//this.selectionBoxes.add(new SelectionBoxData((byte) 1, "",
+		//new ColorCache(0F, 1.0F, 0F, 0.6F), new CustomAABB(12, 45, 30,
+			//20, 30, 40)));
 
 	/*
 	 * for(int i = 0; i< 140; i++){ String group = "Guest"; if(i > 8)group =
@@ -1520,55 +1520,49 @@ public final class Minecraft implements Runnable {
 					    GL11.glColor4f(color.R, color.G,
 						    color.B, color.A + 0.2F);
 
-					    GL11.glBegin(GL11.GL_LINE_STRIP);
-
-					    GL11.glVertex3f(bounds.x0,
-						    bounds.y0, bounds.z1);
-					    GL11.glVertex3f(bounds.x0,
-						    bounds.y1, bounds.z1);
-					    GL11.glVertex3f(bounds.x1,
-						    bounds.y1, bounds.z1);
-					    GL11.glVertex3f(bounds.x1,
-						    bounds.y0, bounds.z1);
-					    GL11.glVertex3f(bounds.x0,
-						    bounds.y0, bounds.z1);
-
-					    GL11.glVertex3f(bounds.x0,
-						    bounds.y0, bounds.z0);
-					    GL11.glVertex3f(bounds.x0,
-						    bounds.y1, bounds.z0);
-					    GL11.glVertex3f(bounds.x1,
-						    bounds.y1, bounds.z0);
-					    GL11.glVertex3f(bounds.x1,
-						    bounds.y0, bounds.z0);
-					    GL11.glVertex3f(bounds.x0,
-						    bounds.y0, bounds.z0);
-
-					    GL11.glEnd();
-
-					    GL11.glBegin(GL11.GL_LINES);
-
-					    GL11.glVertex3f(bounds.x0,
-						    bounds.y0, bounds.z1);
-					    GL11.glVertex3f(bounds.x0,
-						    bounds.y0, bounds.z0);
-
-					    GL11.glVertex3f(bounds.x0,
-						    bounds.y1, bounds.z1);
-					    GL11.glVertex3f(bounds.x0,
-						    bounds.y1, bounds.z0);
-
-					    GL11.glVertex3f(bounds.x1,
-						    bounds.y1, bounds.z1);
-					    GL11.glVertex3f(bounds.x1,
-						    bounds.y1, bounds.z0);
-
-					    GL11.glVertex3f(bounds.x1,
-						    bounds.y0, bounds.z1);
-					    GL11.glVertex3f(bounds.x1,
-						    bounds.y0, bounds.z0);
-
-					    GL11.glEnd();
+					    ShapeRenderer var2 = ShapeRenderer.instance;
+					    var2.startDrawing(3);
+					    var2.vertex(bounds.x0, bounds.y0,
+						    bounds.z0);
+					    var2.vertex(bounds.x1, bounds.y0,
+						    bounds.z0);
+					    var2.vertex(bounds.x1, bounds.y0,
+						    bounds.z1);
+					    var2.vertex(bounds.x0, bounds.y0,
+						    bounds.z1);
+					    var2.vertex(bounds.x0, bounds.y0,
+						    bounds.z0);
+					    var2.end();
+					    var2.startDrawing(3);
+					    var2.vertex(bounds.x0, bounds.y1,
+						    bounds.z0);
+					    var2.vertex(bounds.x1, bounds.y1,
+						    bounds.z0);
+					    var2.vertex(bounds.x1, bounds.y1,
+						    bounds.z1);
+					    var2.vertex(bounds.x0, bounds.y1,
+						    bounds.z1);
+					    var2.vertex(bounds.x0, bounds.y1,
+						    bounds.z0);
+					    var2.end();
+					    var2.startDrawing(1);
+					    var2.vertex(bounds.x0, bounds.y0,
+						    bounds.z0);
+					    var2.vertex(bounds.x0, bounds.y1,
+						    bounds.z0);
+					    var2.vertex(bounds.x1, bounds.y0,
+						    bounds.z0);
+					    var2.vertex(bounds.x1, bounds.y1,
+						    bounds.z0);
+					    var2.vertex(bounds.x1, bounds.y0,
+						    bounds.z1);
+					    var2.vertex(bounds.x1, bounds.y1,
+						    bounds.z1);
+					    var2.vertex(bounds.x0, bounds.y0,
+						    bounds.z1);
+					    var2.vertex(bounds.x0, bounds.y1,
+						    bounds.z1);
+					    var2.end();
 
 					    GL11.glDepthMask(true);
 					    GL11.glEnable(3553);
@@ -1974,14 +1968,18 @@ public final class Minecraft implements Runnable {
 		    // if mouse click left
 		    if (var1 == 0) {
 			if (block != Block.BEDROCK
-				|| this.player.userType >= 100 || this.DisallowedBreakingBlocks.contains(block)) {
+				|| this.player.userType >= 100
+				|| this.DisallowedBreakingBlocks
+					.contains(block)) {
 			    this.gamemode.hitBlock(x, y, z);
 			    return;
 			}
 			// else if its right click
 		    } else {
 			int blockID = this.player.inventory.getSelected();
-			if (blockID <= 0 || this.DisallowPlacementBlocks.contains(Block.blocks[blockID])) {
+			if (blockID <= 0
+				|| this.DisallowPlacementBlocks
+					.contains(Block.blocks[blockID])) {
 			    return; // if air or not allowed, return
 			}
 			AABB aabb = Block.blocks[blockID].getCollisionBox(x, y,
@@ -2343,7 +2341,8 @@ public final class Minecraft implements Runnable {
 					byte AllowDeletion = ((Byte) packetParams[2])
 						.byteValue();
 					Block block = Block.blocks[BlockType];
-					if(block == null) return;
+					if (block == null)
+					    return;
 					if (AllowPlacement == 0) {
 					    if (!this.DisallowPlacementBlocks
 						    .contains(block)) {
