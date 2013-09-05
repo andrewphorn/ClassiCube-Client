@@ -1,5 +1,6 @@
 package com.mojang.minecraft.player;
 
+import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
@@ -40,7 +41,7 @@ public class Player extends Mob {
     boolean HacksEnabled = true;
 
     public static boolean noPush = false;
-    transient GameSettings settings;
+    public transient GameSettings settings;
 
     @Override
     public void aiStep() {
@@ -278,6 +279,124 @@ public class Player extends Mob {
 	}
 
     }
+    
+    @Override
+    public void render(TextureManager var1, float var2) {
+	if(!this.settings.thirdPersonMode)return;
+	if (this.modelName != null) {
+	    float var3;
+	    if ((var3 = (float) this.attackTime - var2) < 0.0F) {
+		var3 = 0.0F;
+	    }
+
+	    while (this.yBodyRotO - this.yBodyRot < -180.0F) {
+		this.yBodyRotO += 360.0F;
+	    }
+
+	    while (this.yBodyRotO - this.yBodyRot >= 180.0F) {
+		this.yBodyRotO -= 360.0F;
+	    }
+
+	    while (this.xRotO - this.xRot < -180.0F) {
+		this.xRotO += 360.0F;
+	    }
+
+	    while (this.xRotO - this.xRot >= 180.0F) {
+		this.xRotO -= 360.0F;
+	    }
+
+	    while (this.yRotO - this.yRot < -180.0F) {
+		this.yRotO += 360.0F;
+	    }
+
+	    while (this.yRotO - this.yRot >= 180.0F) {
+		this.yRotO -= 360.0F;
+	    }
+
+	    float var4 = this.yBodyRotO + ((this.yBodyRot - this.yBodyRotO)
+		    * var2);
+	    float var5 = this.oRun + (this.run - this.oRun) * var2;
+	    float var6 = this.yRotO + (this.yRot - this.yRotO) * var2;
+	    float var7 = this.xRotO + (this.xRot - this.xRotO) * var2;
+	    var6 -= var4;
+	    GL11.glPushMatrix();
+	    float var8 = this.animStepO + (this.animStep - this.animStepO)
+		    * var2;
+	    ColorCache c =this.getBrightnessColor(var2);
+	    
+	    GL11.glColor3f(c.R, c.G, c.B);
+	    float var9 = 0.0625F;
+	    float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F
+		    * var5 * this.bobStrength - 23.0F;
+	    GL11.glTranslatef(this.xo + (this.x - this.xo) * var2, this.yo
+		    + (this.y - this.yo) * var2 - 1.62F + this.renderOffset,
+		    this.zo + (this.z - this.zo) * var2);
+	    float var11;
+	    if ((var11 = (float) this.hurtTime - var2) > 0.0F
+		    || this.health <= 0) {
+		if (var11 < 0.0F) {
+		    var11 = 0.0F;
+		} else {
+		    var11 = MathHelper.sin((var11 /= (float) this.hurtDuration)
+			    * var11 * var11 * var11 * 3.1415927F) * 14.0F;
+		}
+
+		float var12 = 0.0F;
+		if (this.health <= 0) {
+		    var12 = ((float) this.deathTime + var2) / 20.0F;
+		    if ((var11 += var12 * var12 * 800.0F) > 90.0F) {
+			var11 = 90.0F;
+		    }
+		}
+
+		var12 = this.hurtDir;
+		GL11.glRotatef(180.0F - var4 + this.rotOffs + 45, 0.0F, 1.0F, 0.0F);
+		GL11.glScalef(1.0F, 1.0F, 1.0F);
+		GL11.glRotatef(-var12, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(-var11, 0.0F, 0.0F, 1.0F);
+		GL11.glRotatef(var12, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(-(180.0F - var4 + this.rotOffs), 0.0F, 1.0F,
+			0.0F);
+	    }
+
+	    GL11.glTranslatef(0.0F, -var10 * var9, 0.0F);
+	    GL11.glScalef(1.0F, -1.0F, 1.0F);
+	    GL11.glRotatef(180.0F - var4 + this.rotOffs, 0.0F, 1.0F, 0.0F);
+	    if (!this.allowAlpha) {
+		GL11.glDisable(3008);
+	    } else {
+		GL11.glDisable(2884);
+	    }
+
+	    GL11.glScalef(-1.0F, 1.0F, 1.0F);
+	    modelCache.getModel(this.modelName).attackOffset = var3 / 5.0F;
+	    this.bindTexture(var1);
+	    this.renderModel(var1, var8, var2, var5, var6, var7, var9);
+	    if (this.invulnerableTime > this.invulnerableDuration - 10) {
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
+		GL11.glEnable(3042);
+		GL11.glBlendFunc(770, 1);
+		this.bindTexture(var1);
+		this.renderModel(var1, var8, var2, var5, var6, var7, var9);
+		GL11.glDisable(3042);
+		GL11.glBlendFunc(770, 771);
+	    }
+
+	    GL11.glEnable(3008);
+	    if (this.allowAlpha) {
+		GL11.glEnable(2884);
+	    }
+
+	    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	    GL11.glPopMatrix();
+	}
+    }
+
+    public void renderModel(TextureManager var1, float var2, float var3,
+	    float var4, float var5, float var6, float var7) {
+	modelCache.getModel(this.modelName).render(var2, var4,
+		(float) this.tickCount + var3, var5, var6, var7);
+    }
 
     @Override
     public void bindTexture(TextureManager var1) {
@@ -294,10 +413,6 @@ public class Player extends Mob {
 	    var2 = newTextureId;
 	    GL11.glBindTexture(3553, var2);
 	}
-    }
-
-    @Override
-    public void render(TextureManager var1, float var2) {
     }
 
     @Override

@@ -365,6 +365,8 @@ public final class Minecraft implements Runnable {
 	    return "linux";
 	}
     }
+    
+    float cameraDistance = -0.1F;
 
     @Override
     public final void run() {
@@ -708,6 +710,7 @@ public final class Minecraft implements Runnable {
 				var70 = var86 - Mouse.getY() * var86
 					/ renderer.minecraft.height - 1;
 				if (renderer.minecraft.level != null) {
+				    
 				    float var80 = var65;
 				    com.mojang.minecraft.render.Renderer var82 = renderer;
 				    com.mojang.minecraft.render.Renderer var27 = renderer;
@@ -908,7 +911,7 @@ public final class Minecraft implements Runnable {
 					}
 
 					var116 = var82.minecraft.player;
-					GL11.glTranslatef(0.0F, 0.0F, -0.1F);
+					GL11.glTranslatef(0.0F, 0.0F, cameraDistance);
 					GL11.glRotatef(var116.xRotO
 						+ (var116.xRot - var116.xRotO)
 						* var80, 1.0F, 0.0F, 0.0F);
@@ -1781,11 +1784,13 @@ public final class Minecraft implements Runnable {
 					    GL11.glScalef(0.4F, var34, var34);
 					    GL11.glTranslatef(-0.5F, -0.5F,
 						    -0.5F);
-					    GL11.glBindTexture(
-						    3553,
-						    var112.minecraft.textureManager
-							    .load("/terrain.png"));
-					    var112.block.renderPreview(var123);
+					    if(!this.settings.thirdPersonMode){
+						GL11.glBindTexture(
+							3553,
+							var112.minecraft.textureManager
+							.load("/terrain.png"));
+						var112.block.renderPreview(var123);
+					    }
 					} else {
 					    var116.bindTexture(var112.minecraft.textureManager);
 					    GL11.glScalef(1.0F, -1.0F, -1.0F);
@@ -2842,6 +2847,17 @@ public final class Minecraft implements Runnable {
 			    s.inputLine = "/";
 			    s.caretPos++;
 			}
+			
+			if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
+				if(this.cameraDistance == -0.1F){
+				    this.cameraDistance = -5.1f;
+				    this.settings.thirdPersonMode = true;
+				}else{
+				    this.cameraDistance = -0.1F;
+				    this.settings.thirdPersonMode = false;
+				}
+			    }
+			
 			if (this.settings.HackType == 0) {
 			    if (Keyboard.getEventKey() == Keyboard.KEY_X) {
 				if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
@@ -3065,6 +3081,7 @@ public final class Minecraft implements Runnable {
 	    var1.rendererContext$5cd64a7f = this;
 	    if (!this.isOnline()) {
 		this.player = (Player) var1.findSubclassOf(Player.class);
+		this.player.settings = this.settings;
 	    } else if (this.player != null) {
 		this.player.resetPos();
 		this.gamemode.preparePlayer(this.player);
