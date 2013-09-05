@@ -54,8 +54,8 @@ public class Level implements Serializable {
     public transient ParticleManager particleEngine;
     public transient Object font;
     public boolean growTrees;
-    public transient ColorCache customShadowColour;
-    public transient ColorCache customLightColour;
+    public ColorCache customShadowColour;
+    public ColorCache customLightColour;
 
     public Level() {
 	this.randId = this.random.nextInt();
