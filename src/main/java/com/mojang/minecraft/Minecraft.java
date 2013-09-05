@@ -709,17 +709,15 @@ public final class Minecraft implements Runnable {
 					/ renderer.minecraft.width;
 				var70 = var86 - Mouse.getY() * var86
 					/ renderer.minecraft.height - 1;
-				if (renderer.minecraft.level != null) {
-				    
+				if (renderer.minecraft.level != null && player !=null) {
 				    float var80 = var65;
 				    com.mojang.minecraft.render.Renderer var82 = renderer;
 				    com.mojang.minecraft.render.Renderer var27 = renderer;
-				    Player var28;
-				    float var29 = (var28 = renderer.minecraft.player).xRotO
-					    + (var28.xRot - var28.xRotO)
+				    float var29 = player.xRotO
+					    + (player.xRot - player.xRotO)
 					    * var65;
-				    float var30 = var28.yRotO
-					    + (var28.yRot - var28.yRotO)
+				    float var30 = player.yRotO
+					    + (player.yRot - player.yRotO)
 					    * var65;
 				    Vec3D var31 = renderer
 					    .getPlayerVector(var65);
@@ -761,8 +759,8 @@ public final class Minecraft implements Runnable {
 				    renderer.entity = null;
 				    List<Entity> var37 = renderer.minecraft.level.blockMap
 					    .getEntities(
-						    var28,
-						    var28.bb.expand(
+						    player,
+						    player.bb.expand(
 							    var34
 								    * reachDistance,
 							    var33
@@ -821,7 +819,6 @@ public final class Minecraft implements Runnable {
 						var82.minecraft.width,
 						var82.minecraft.height);
 					Level var26 = var82.minecraft.level;
-					var28 = var82.minecraft.player;
 					var29 = 1.0F / (4 - var82.minecraft.settings.viewDistance);
 					var29 = 1.0F - (float) Math.pow(var29,
 						0.25D);
@@ -843,9 +840,9 @@ public final class Minecraft implements Runnable {
 					Block var73;
 					if ((var73 = Block.blocks[var26
 						.getTile(
-							(int) var28.x,
-							(int) (var28.y + 0.12F),
-							(int) var28.z)]) != null
+							(int) player.x,
+							(int) (player.y + 0.12F),
+							(int) player.z)]) != null
 						&& var73.getLiquidType() != LiquidType.NOT_LIQUID) {
 					    LiquidType var79;
 					    if ((var79 = var73.getLiquidType()) == LiquidType.WATER) {
@@ -912,6 +909,7 @@ public final class Minecraft implements Runnable {
 
 					var116 = var82.minecraft.player;
 					GL11.glTranslatef(0.0F, 0.0F, cameraDistance);
+					
 					GL11.glRotatef(var116.xRotO
 						+ (var116.xRot - var116.xRotO)
 						* var80, 1.0F, 0.0F, 0.0F);
@@ -946,8 +944,8 @@ public final class Minecraft implements Runnable {
 								var126));
 					var98 = var101.chunks.size() - 1;
 					int var105;
-					if ((var105 = var101.chunks.size()) > 3) {
-					    var105 = 3;
+					if ((var105 = var101.chunks.size()) > 4) {
+					    var105 = 4;
 					}
 
 					int var104;
@@ -1377,6 +1375,7 @@ public final class Minecraft implements Runnable {
 					GL11.glBindTexture(3553,
 						var89.textureManager
 							.load("/water.png"));
+					
 					GL11.glCallList(var89.listId + 1);
 					GL11.glDisable(3042);
 					GL11.glEnable(3042);
@@ -1579,11 +1578,10 @@ public final class Minecraft implements Runnable {
 					if (var82.minecraft.raining) {
 					    float var97 = var80;
 					    var27 = var82;
-					    var28 = var82.minecraft.player;
 					    Level var109 = var82.minecraft.level;
-					    var104 = (int) var28.x;
-					    var108 = (int) var28.y;
-					    var114 = (int) var28.z;
+					    var104 = (int) player.x;
+					    var108 = (int) player.y;
+					    var114 = (int) player.z;
 					    ShapeRenderer var84 = ShapeRenderer.instance;
 					    GL11.glDisable(2884);
 					    GL11.glNormal3f(0.0F, 1.0F, 0.0F);
@@ -1615,9 +1613,9 @@ public final class Minecraft implements Runnable {
 								+ var110 * 3121 + var122 * 418711) % 32 + var97) / 32.0F;
 							float var124 = var110
 								+ 0.5F
-								- var28.x;
+								- player.x;
 							var35 = var122 + 0.5F
-								- var28.z;
+								- player.z;
 							float var92 = MathHelper
 								.sqrt(var124
 									* var124
@@ -2967,7 +2965,7 @@ public final class Minecraft implements Runnable {
 	    }
 	}
 
-	if (this.level != null) {
+	if (this.level != null && player !=null) {
 	    com.mojang.minecraft.render.Renderer var29 = this.renderer;
 	    ++this.renderer.levelTicks;
 	    HeldBlock var41 = var29.heldBlock;
@@ -2980,7 +2978,7 @@ public final class Minecraft implements Runnable {
 		}
 	    }
 
-	    Player var27 = var41.minecraft.player;
+	    Player var27 = player;
 	    var4 = var41.minecraft.player.inventory.getSelected();
 	    Block var43 = null;
 	    if (var4 > 0) {
@@ -3081,7 +3079,11 @@ public final class Minecraft implements Runnable {
 	    var1.rendererContext$5cd64a7f = this;
 	    if (!this.isOnline()) {
 		this.player = (Player) var1.findSubclassOf(Player.class);
+		if(this.player == null){
+		    this.player = new Player(var1, this.settings);
+		}
 		this.player.settings = this.settings;
+		this.player.resetPos();
 	    } else if (this.player != null) {
 		this.player.resetPos();
 		this.gamemode.preparePlayer(this.player);
