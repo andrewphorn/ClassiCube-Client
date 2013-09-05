@@ -14,8 +14,8 @@ public enum BlockID {
 
     YellowFlower(37), RedFlower(38), BrownMushroom(39), RedMushroom(40),
 
-    Gold(41), Iron(42), DoubleStair(4), Stair(44), Brick(45), TNT(46), Books(47), MossyRocks(
-	    48), Obsidian(49), CobblestoneSlab(50), SpiderWeb(51), Sandstone(52), Snow(
+    Gold(41), Iron(42), DoubleStair(43), Stair(44), Brick(45), TNT(46), Books(47), MossyRocks(
+	    48), Obsidian(49), CobblestoneSlab(50), Rope(51), Sandstone(52), Snow(
 	    53), Fire(54), LightPink(55), ForestGreen(56), Brown(57), DeepBlue(
 	    58), Turquoise(59), Ice(60), CeramicTile(61), Magma(62), Pillar(63), Crate(
 	    64), StoneBrick(65);

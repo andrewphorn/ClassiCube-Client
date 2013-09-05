@@ -45,7 +45,6 @@ public class Player extends Mob {
 
     @Override
     public void aiStep() {
-
 	if (settings.HackType == 0) {
 	    this.inventory.tick();
 	    this.oBob = this.bob;
@@ -177,7 +176,7 @@ public class Player extends Mob {
 		if (bool1) {
 		    this.yd += 0.08F;
 		} else if (bool3) {
-		    this.yd += 0.05F;
+		    this.yd += 0.06F;
 		} else if (bool2) {
 		    this.yd += 0.07F;
 		} else if (i != 0) {
@@ -279,10 +278,11 @@ public class Player extends Mob {
 	}
 
     }
-    
+
     @Override
     public void render(TextureManager var1, float var2) {
-	if(!this.settings.thirdPersonMode)return;
+	if (!this.settings.thirdPersonMode)
+	    return;
 	if (this.modelName != null) {
 	    float var3;
 	    if ((var3 = (float) this.attackTime - var2) < 0.0F) {
@@ -313,8 +313,8 @@ public class Player extends Mob {
 		this.yRotO -= 360.0F;
 	    }
 
-	    float var4 = this.yBodyRotO + ((this.yBodyRot - this.yBodyRotO)
-		    * var2);
+	    float var4 = this.yBodyRotO
+		    + ((this.yBodyRot - this.yBodyRotO) * var2);
 	    float var5 = this.oRun + (this.run - this.oRun) * var2;
 	    float var6 = this.yRotO + (this.yRot - this.yRotO) * var2;
 	    float var7 = this.xRotO + (this.xRot - this.xRotO) * var2;
@@ -322,8 +322,8 @@ public class Player extends Mob {
 	    GL11.glPushMatrix();
 	    float var8 = this.animStepO + (this.animStep - this.animStepO)
 		    * var2;
-	    ColorCache c =this.getBrightnessColor(var2);
-	    
+	    ColorCache c = this.getBrightnessColor(var2);
+
 	    GL11.glColor3f(c.R, c.G, c.B);
 	    float var9 = 0.0625F;
 	    float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F
@@ -350,7 +350,8 @@ public class Player extends Mob {
 		}
 
 		var12 = this.hurtDir;
-		GL11.glRotatef(180.0F - var4 + this.rotOffs + 45, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(180.0F - var4 + this.rotOffs + 45, 0.0F, 1.0F,
+			0.0F);
 		GL11.glScalef(1.0F, 1.0F, 1.0F);
 		GL11.glRotatef(-var12, 0.0F, 1.0F, 0.0F);
 		GL11.glRotatef(-var11, 0.0F, 0.0F, 1.0F);
