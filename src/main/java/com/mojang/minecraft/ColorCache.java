@@ -1,6 +1,8 @@
 package com.mojang.minecraft;
 
-public class ColorCache {
+import java.io.Serializable;
+
+public class ColorCache implements Serializable {
 
     public float R;
     public float G;

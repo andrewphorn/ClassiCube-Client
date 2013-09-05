@@ -78,7 +78,11 @@ public final class LevelRenderer {
 	GL11.glNewList(this.listId, 4864);
 	LevelRenderer var9 = this;
 	float waterLevel = 0.5F;
-	GL11.glColor4f(0.5F, waterLevel, waterLevel, 1.0F);
+	if(this.level.customLightColour!=null){
+	    GL11.glColor4f(this.level.customLightColour.R,this.level.customLightColour.G, this.level.customLightColour.B, 1.0F);
+	}else{
+	    GL11.glColor4f(0.5F, waterLevel, waterLevel, 1.0F);
+	}
 	ShapeRenderer var11 = ShapeRenderer.instance;
 	float groundLevel = this.level.getGroundLevel();
 	int var5 = 128;
@@ -102,7 +106,6 @@ public final class LevelRenderer {
 			&& var8 < var9.level.height) {
 		    waterLevel = 0.0F;
 		}
-
 		var11.vertexUV((float) var7, waterLevel, (float) (var8 + var5),
 			0.0F, (float) var5);
 		var11.vertexUV((float) (var7 + var5), waterLevel,
@@ -115,7 +118,11 @@ public final class LevelRenderer {
 	}
 
 	var11.end();
-	GL11.glColor3f(0.8F, 0.8F, 0.8F);
+	if(this.level.customLightColour!=null){
+	   GL11.glColor4f(this.level.customLightColour.R,
+		    this.level.customLightColour.G, 
+		    this.level.customLightColour.B, 1.0F);
+	}
 	var11.begin();
 
 	for (var7 = 0; var7 < var9.level.width; var7 += var5) {
@@ -135,7 +142,11 @@ public final class LevelRenderer {
 		    0.0F);
 	}
 
-	GL11.glColor3f(0.6F, 0.6F, 0.6F);
+	if(this.level.customLightColour!=null){
+		   GL11.glColor4f(this.level.customLightColour.R,
+			    this.level.customLightColour.G, 
+			    this.level.customLightColour.B, 1.0F);
+		}
 
 	for (var7 = 0; var7 < var9.level.height; var7 += var5) {
 	    var11.vertexUV(0.0F, groundLevel, (float) var7, 0.0F, 0.0F);
@@ -159,7 +170,11 @@ public final class LevelRenderer {
 
 	GL11.glNewList(this.listId + 1, 4864);
 	var9 = this;
-	GL11.glColor3f(1.0F, 1.0F, 1.0F);
+	if(this.level.customLightColour!=null){
+		   GL11.glColor4f(this.level.customLightColour.R,
+			    this.level.customLightColour.G, 
+			    this.level.customLightColour.B, 1.0F);
+		}
 	waterLevel = this.level.getWaterLevel();
 
 	GL11.glBlendFunc(770, 771);
