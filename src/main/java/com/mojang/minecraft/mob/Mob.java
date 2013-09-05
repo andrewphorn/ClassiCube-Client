@@ -1,5 +1,6 @@
 package com.mojang.minecraft.mob;
 
+import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.mob.ai.AI;
@@ -248,9 +249,9 @@ public class Mob extends Entity {
 	    GL11.glPushMatrix();
 	    float var8 = this.animStepO + (this.animStep - this.animStepO)
 		    * var2;
-	    float var9;
-	    GL11.glColor3f(var9 = this.getBrightness(var2), var9, var9);
-	    var9 = 0.0625F;
+	    ColorCache varaa = this.getBrightnessColor(var2);
+	    GL11.glColor3f(varaa.R, varaa.G, varaa.B);
+	    float var9 = 0.0625F;
 	    float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F
 		    * var5 * this.bobStrength - 23.0F;
 	    GL11.glTranslatef(this.xo + (this.x - this.xo) * var2, this.yo
