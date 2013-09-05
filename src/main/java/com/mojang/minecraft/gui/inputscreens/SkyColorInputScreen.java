@@ -1,7 +1,5 @@
 package com.mojang.minecraft.gui.inputscreens;
 
-import java.awt.Color;
-
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.AdvancedOptionsScreen;
 import com.mojang.minecraft.gui.Button;
