@@ -38,6 +38,7 @@ import com.oyasunadev.mcraft.client.util.ExtData;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
@@ -45,6 +46,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.input.Cursor;
 
@@ -63,6 +65,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public final class Minecraft implements Runnable {
@@ -369,6 +373,59 @@ public final class Minecraft implements Runnable {
 	}
     }
 
+    private static final List<DisplayMode> displayModes = new ArrayList<DisplayMode>();
+
+    private void setDisplayMode() throws LWJGLException {
+	if (displayModes.size() == 0) {
+	    displayModes.add(new DisplayMode(2560, 1600));
+	    displayModes.add(new DisplayMode(2880, 1800));
+	}
+	HashSet<DisplayMode> var1 = new HashSet<DisplayMode>();
+	Collections.addAll(var1, Display.getAvailableDisplayModes());
+	DisplayMode var2 = Display.getDesktopDisplayMode();
+
+	if (!var1.contains(var2) && getOs() == Minecraft$OS.macos) {
+	    Iterator<DisplayMode> var3 = displayModes.iterator();
+
+	    while (var3.hasNext()) {
+		DisplayMode var4 = (DisplayMode) var3.next();
+		boolean var5 = true;
+		Iterator<DisplayMode> var6 = var1.iterator();
+		DisplayMode var7;
+
+		while (var6.hasNext()) {
+		    var7 = (DisplayMode) var6.next();
+
+		    if (var7.getBitsPerPixel() == 32
+			    && var7.getWidth() == var4.getWidth()
+			    && var7.getHeight() == var4.getHeight()) {
+			var5 = false;
+			break;
+		    }
+		}
+
+		if (!var5) {
+		    var6 = var1.iterator();
+
+		    while (var6.hasNext()) {
+			var7 = (DisplayMode) var6.next();
+
+			if (var7.getBitsPerPixel() == 32
+				&& var7.getWidth() == var4.getWidth() / 2
+				&& var7.getHeight() == var4.getHeight() / 2) {
+			    var2 = var7;
+			    break;
+			}
+		    }
+		}
+	    }
+	}
+
+	Display.setDisplayMode(var2);
+	this.width = var2.getWidth();
+	this.height = var2.getHeight();
+    }
+
     float cameraDistance = -0.1F;
 
     @Override
@@ -407,6 +464,7 @@ public final class Minecraft implements Runnable {
 	    if (this.canvas != null) {
 		Display.setParent(this.canvas);
 	    } else if (this.fullscreen) {
+		setDisplayMode();
 		Display.setFullscreen(true);
 		this.width = Display.getDisplayMode().getWidth();
 		this.height = Display.getDisplayMode().getHeight();
@@ -414,19 +472,24 @@ public final class Minecraft implements Runnable {
 		Display.setDisplayMode(new DisplayMode(this.width, this.height));
 	    }
 
+	    System.out.println("Using LWJGL Version: " + Sys.getVersion());
+	    Display.setResizable(true);
 	    Display.setTitle("ClassiCube");
-
 	    try {
-		Display.create();
-	    } catch (LWJGLException var57) {
-		var57.printStackTrace();
+		Display.create((new PixelFormat()).withDepthBits(24));
+	    } catch (LWJGLException var58) {
 		try {
-		    Thread.sleep(1000L);
-		} catch (InterruptedException var56) {
-		    ;
-		}
+		    Display.create();
+		} catch (LWJGLException var57) {
+		    var57.printStackTrace();
+		    try {
+			Thread.sleep(1000L);
+		    } catch (InterruptedException var56) {
+			;
+		    }
 
-		Display.create();
+		    Display.create();
+		}
 	    }
 
 	    Keyboard.create();
@@ -527,7 +590,6 @@ public final class Minecraft implements Runnable {
 		    this.generateLevel(1);
 		}
 	    }
-	    
 
 	    this.particleManager = new ParticleManager(this.level,
 		    this.textureManager);
@@ -908,8 +970,9 @@ public final class Minecraft implements Runnable {
 					}
 
 					var82.hurtEffect(var80);
-					    var82.applyBobbing(var80,var82.minecraft.settings.viewBobbing );
-					
+					var82.applyBobbing(
+						var80,
+						var82.minecraft.settings.viewBobbing);
 
 					var116 = var82.minecraft.player;
 					GL11.glTranslatef(0.0F, 0.0F,
@@ -1721,7 +1784,9 @@ public final class Minecraft implements Runnable {
 					}
 
 					var82.hurtEffect(var80);
-					    var82.applyBobbing(var80, var82.minecraft.settings.viewBobbing);
+					var82.applyBobbing(
+						var80,
+						var82.minecraft.settings.viewBobbing);
 
 					HeldBlock var112 = var82.heldBlock;
 					var117 = var82.heldBlock.lastPos
@@ -2263,16 +2328,22 @@ public final class Minecraft implements Runnable {
 						    .get(edgeBlock);
 					}
 					if (textureUrl.length() > 0) {
-					    File path = new File( GetMinecraftDirectory(), "/skins/terrain");
+					    File path = new File(
+						    GetMinecraftDirectory(),
+						    "/skins/terrain");
 					    if (!path.exists()) {
 						path.mkdirs();
 					    }
-					    String hash = this.getHash(textureUrl);
+					    String hash = this
+						    .getHash(textureUrl);
 					    if (hash != null) {
-						File file = new File(path, hash+ ".png");
+						File file = new File(path, hash
+							+ ".png");
 						BufferedImage image;
 						if (!file.exists()) {
-						    downloadImage( textureUrl, file.getAbsolutePath());
+						    downloadImage(
+							    textureUrl,
+							    file.getAbsolutePath());
 						}
 						image = ImageIO.read(file);
 						this.textureManager.currentTerrainPng = image;
