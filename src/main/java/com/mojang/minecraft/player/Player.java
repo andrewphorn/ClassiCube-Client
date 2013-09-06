@@ -272,7 +272,6 @@ public class Player extends Mob {
 
 	    float f4 = 0.0F;
 	    float f3 = 0.0f;
-
 	    if (j != 0) {
 		f4 = i != 0 ? 0.72F : 0.71F;
 		if (i != 0)
@@ -314,10 +313,13 @@ public class Player extends Mob {
 		this.zd *= f2;
 		this.tilt = 0f;
 	    } else {
-		yd *= 0.98F;
+		this.xd *= 0.751F;
+		this.yd *= 0.758F;
+		this.zd *= 0.751F;
 		yd = (float) ((double) yd - 0.08D);
 		isOnIce = true;
-		if (xd > 0.85f || xd < -0.85f || zd < -0.85f || zd > 0.85f)
+		//System.out.println(xd);
+		if (xd > 0.237f || xd < -0.237f || zd < -0.237f || zd > 0.237f)
 		    this.tilt = -15.0f;
 		else{
 		    this.tilt = 0f;
