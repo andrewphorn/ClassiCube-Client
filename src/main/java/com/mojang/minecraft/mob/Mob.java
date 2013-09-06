@@ -3,6 +3,7 @@ package com.mojang.minecraft.mob;
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
+import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.ai.AI;
 import com.mojang.minecraft.mob.ai.BasicAI;
 import com.mojang.minecraft.model.ModelManager;
@@ -443,8 +444,7 @@ public class Mob extends Entity {
 		yd = 0.3F;
 	    }
 
-	} else if ((this.isInLava())
-		&& !this.flyingMode && !this.noPhysics) {
+	} else if ((this.isInLava()) && !this.flyingMode && !this.noPhysics) {
 	    y1 = y;
 	    if (multiply > 5)
 		multiply = 5F;
@@ -461,13 +461,12 @@ public class Mob extends Entity {
 		yd = 0.3F;
 	    }
 
-	} 
-	else if (this.isInOrOnRope()
-		&& !this.flyingMode && !this.noPhysics) {
+	} else if (this.isInOrOnRope() && !this.flyingMode && !this.noPhysics) {
 	    y1 = y;
 	    if (multiply >= 5)
 		multiply = 2.5F;
-	    else multiply = 1.7f;
+	    else
+		multiply = 1.7f;
 	    moveRelative(yya, xxa, 0.02F * multiply);
 	    move(xd, yd, zd);
 
@@ -481,7 +480,7 @@ public class Mob extends Entity {
 		yd = 0.3F;
 	    }
 
-	}else {
+	} else {
 	    if (!this.flyingMode)
 		moveRelative(yya, xxa, (onGround ? 0.1F : 0.02F) * multiply);
 	    else
@@ -490,22 +489,29 @@ public class Mob extends Entity {
 	    if (m < 1)
 		m = 1;
 	    move(xd, yd * m, zd);
+	    int var1 = this.level.getTile((int) this.x,
+		    (int) ((this.y) - 2.12F), (int) this.z);
+	    
+		xd *= 0.91F;
+		yd *= 0.98F;
+		zd *= 0.91F;
+		yd = (float) ((double) yd - 0.08D);
+		if (Block.blocks[var1] != Block.ICE) {
+		
+		if (this.flyingMode) {
+		    y1 = 0.0F;
+		    xd *= y1;
+		    zd *= y1;
+		}
+		if (onGround && !this.flyingMode) {
+		    y1 = 0.6F;
 
-	    xd *= 0.91F;
-	    yd *= 0.98F;
-	    zd *= 0.91F;
-
-	    yd = (float) ((double) yd - 0.08D);
-	    if (this.flyingMode) {
-		y1 = 0.0F;
-		xd *= y1;
-		zd *= y1;
-	    }
-	    if (onGround && !this.flyingMode) {
-		y1 = 0.6F;
-
-		xd *= y1;
-		zd *= y1;
+		    xd *= y1;
+		    zd *= y1;
+		}
+	    }else{
+		if(xd > 0.90f || xd < -0.90f || zd < -0.90f ||  zd > 0.90f)
+		    this.tilt = -60.0f;
 	    }
 	}
     }

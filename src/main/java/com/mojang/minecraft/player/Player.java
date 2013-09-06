@@ -6,8 +6,11 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.ProgressBarDisplay;
 import com.mojang.minecraft.level.Level;
+import com.mojang.minecraft.level.liquid.LiquidType;
+import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.HumanoidModel;
+import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 
@@ -40,6 +43,8 @@ public class Player extends Mob {
     private int jumpCount = 0;
     boolean HacksEnabled;
 
+    boolean isOnIce = false;
+
     public static boolean noPush = false;
     public transient GameSettings settings;
 
@@ -64,7 +69,6 @@ public class Player extends Mob {
 	    if (this.onGround || this.health <= 0) {
 		var2 = 0.0F;
 	    }
-
 	    this.bob += (var1 - this.bob) * 0.4F;
 	    this.tilt += (var2 - this.tilt) * 0.8F;
 	    List<?> var3;
@@ -76,9 +80,31 @@ public class Player extends Mob {
 		}
 	    }
 	} else {
+	    this.oBob = this.bob;
 	    this.HacksEnabled = settings.HacksEnabled;
 	    this.input.updateMovement(settings.HackType);
 	    super.aiStep();
+	    float fx = xd;
+	    float fy = yd;
+	    float fz = zd;
+	    if(fx > 0.1f)
+		fx = 0.1f;
+	    if(fy > 0.1f)
+		fy = 0.1f;
+	    if(fz > 0.1f)
+		fz = 0.1f;
+	    
+	    if(fx < -0.1f)
+		fx = -0.1f;
+	    if(fy < -0.1f)
+		fy = -0.1f;
+	    if(fz < -0.1f)
+		fz = -0.1f;
+	    
+	    float aaa = MathHelper.sqrt(fx * fx + fz * fz);
+	    float bbb = (float) Math.atan((double) (-fy * 0.2F)) * 15.0F;
+	    this.bob += (aaa - this.bob) * 0.4F;
+	    this.tilt += (bbb - this.tilt) * 0.8F;
 	    if ((this.nox == 0) || (this.nos == 0) || (this.noc == 0)) {
 		try {
 		    String title = ProgressBarDisplay.title;
@@ -133,7 +159,7 @@ public class Player extends Mob {
 	    int j = 0;
 	    int k = 1;
 	    float f1 = 1.0F;
-
+	    this.oBob = this.bob;
 	    if ((this.input.fly) && (this.nox < 1))
 		i = 1;
 	    if ((this.input.noclip) && (this.noc < 0))
@@ -203,7 +229,9 @@ public class Player extends Mob {
 
 	    if (HacksEnabled && (k != 0) && (this.jumpCount > 1)) {
 		f1 *= 2.5F;
-		f1 *= this.jumpCount;
+		if (!this.isOnIce) {
+		    f1 *= this.jumpCount;
+		}
 	    }
 
 	    if ((bool1) && (i == 0) && (j == 0)) {
@@ -221,6 +249,7 @@ public class Player extends Mob {
 		    this.yd = 0.3F;
 		return;
 	    }
+
 	    if ((bool2) && (i == 0) && (j == 0)) {
 		f2 = this.y;
 		super.moveRelative(this.input.strafe, this.input.move,
@@ -242,7 +271,8 @@ public class Player extends Mob {
 	    }
 
 	    float f4 = 0.0F;
-	    float f3;
+	    float f3 = 0.0f;
+
 	    if (j != 0) {
 		f4 = i != 0 ? 0.72F : 0.71F;
 		if (i != 0)
@@ -263,21 +293,37 @@ public class Player extends Mob {
 	    } else {
 		super.move(this.xd * f1, this.yd * f1, this.zd * f1);
 	    }
-	    this.xd *= 0.91F;
-	    this.yd *= 0.98F;
-	    this.zd *= 0.91F;
-	    f2 = 0.6F;
+	    int var1 = this.level.getTile((int) this.x,
+		    (int) ((this.y) - 2.12F), (int) this.z);
+	    if (Block.blocks[var1] != Block.ICE) {
+		if (this.jumpCount == 0) {
+		    this.isOnIce = false;
+		}
+		f2 = 0.6F;
+		this.xd *= 0.91F;
+		this.yd *= 0.98F;
+		this.zd *= 0.91F;
 
-	    if (i != 0) {
-		this.yd *= f2 / 4.0F;
-		this.walkDist = 0.0F;
+		if (i != 0) {
+		    this.yd *= f2 / 4.0F;
+		    this.walkDist = 0.0F;
+		} else {
+		    this.yd = ((float) (this.yd - 0.01D));
+		}
+		this.xd *= f2;
+		this.zd *= f2;
+		this.tilt = 0f;
 	    } else {
-		this.yd = ((float) (this.yd - 0.01D));
+		yd *= 0.98F;
+		yd = (float) ((double) yd - 0.08D);
+		isOnIce = true;
+		if (xd > 0.85f || xd < -0.85f || zd < -0.85f || zd > 0.85f)
+		    this.tilt = -15.0f;
+		else{
+		    this.tilt = 0f;
+		}
 	    }
-	    this.xd *= f2;
-	    this.zd *= f2;
 	}
-
     }
 
     @Override
