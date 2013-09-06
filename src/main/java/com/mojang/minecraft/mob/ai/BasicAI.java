@@ -215,8 +215,7 @@ public class BasicAI extends AI {
 
 	boolean var1 = this.mob.isInWater();
 	boolean isInLava = this.mob.isInLava();
-	boolean isInSpiderWeb = this.mob.isInOrOnRope();
-	if (var1 || isInLava || isInSpiderWeb) {
+	if (var1 || isInLava ) {
 	    this.jumping = this.random.nextFloat() < 0.8F;
 	}
     }

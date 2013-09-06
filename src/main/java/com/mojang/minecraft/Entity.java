@@ -359,7 +359,7 @@ public abstract class Entity implements Serializable {
     }
 
     public boolean isInOrOnRope() {
-	return this.level.containsBlock(this.bb.grow(0.0F, -0.4F, 0.0F),
+	return this.level.containsBlock(this.bb.grow(-0.5F, 0.0F, -0.5F),
 		Block.ROPE);
     }
 

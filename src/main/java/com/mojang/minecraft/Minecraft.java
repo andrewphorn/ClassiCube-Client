@@ -55,15 +55,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.IntBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public final class Minecraft implements Runnable {
@@ -908,9 +907,8 @@ public final class Minecraft implements Runnable {
 					}
 
 					var82.hurtEffect(var80);
-					if (var82.minecraft.settings.viewBobbing) {
-					    var82.applyBobbing(var80);
-					}
+					    var82.applyBobbing(var80,var82.minecraft.settings.viewBobbing );
+					
 
 					var116 = var82.minecraft.player;
 					GL11.glTranslatef(0.0F, 0.0F,
@@ -1722,9 +1720,7 @@ public final class Minecraft implements Runnable {
 					}
 
 					var82.hurtEffect(var80);
-					if (var82.minecraft.settings.viewBobbing) {
-					    var82.applyBobbing(var80);
-					}
+					    var82.applyBobbing(var80, var82.minecraft.settings.viewBobbing);
 
 					HeldBlock var112 = var82.heldBlock;
 					var117 = var82.heldBlock.lastPos
@@ -2266,16 +2262,20 @@ public final class Minecraft implements Runnable {
 						    .get(edgeBlock);
 					}
 					if (textureUrl.length() > 0) {
-					    File path = new File(
-						    GetMinecraftDirectory() + "/skins/terrain");
+					    File path = new File( GetMinecraftDirectory(), "/skins/terrain");
 					    if (!path.exists()) {
 						path.mkdirs();
 					    }
-					   String fileName = downloadImage(textureUrl,
-						    GetMinecraftDirectory() + "/skins/terrain");
-					   if(fileName !=null){
-					       
-					   }
+					    String hash = this.getHash(textureUrl);
+					    if (hash != null) {
+						File file = new File(path, hash+ ".png");
+						BufferedImage image;
+						if (!file.exists()) {
+						    downloadImage( textureUrl, file.getAbsolutePath());
+						}
+						image = ImageIO.read(file);
+						this.textureManager.currentTerrainPng = image;
+					    }
 					}
 					this.textureManager.textures.clear();
 					this.level.waterLevel = sideLevel;
@@ -3160,11 +3160,11 @@ public final class Minecraft implements Runnable {
 	System.gc();
     }
 
-    String downloadImage(String source, String dest) {
+    void downloadImage(String source, String dest) {
 	URL url;
 	try {
 	    if (!doesUrlExistAndIsImage(source))
-		return null;
+		return;
 	    url = new URL(source);
 
 	    InputStream in = new BufferedInputStream(url.openStream());
@@ -3177,44 +3177,20 @@ public final class Minecraft implements Runnable {
 	    out.close();
 	    in.close();
 	    byte[] response = out.toByteArray();
-	    FileOutputStream fos = new FileOutputStream(dest + "/temp.image");
+	    FileOutputStream fos = new FileOutputStream(dest);
 	    fos.write(response);
 	    fos.close();
-	    String md5 = getMD5Checksum(dest + "/temp.image");
-	    return md5;
 	} catch (Exception e) {
 	    e.printStackTrace();
-	    return null;
+	    return;
 	}
     }
 
-    public byte[] createChecksum(String filename) throws Exception {
-	InputStream fis = new FileInputStream(filename);
-
-	byte[] buffer = new byte[1024];
-	MessageDigest complete = MessageDigest.getInstance("MD5");
-	int numRead;
-
-	do {
-	    numRead = fis.read(buffer);
-	    if (numRead > 0) {
-		complete.update(buffer, 0, numRead);
-	    }
-	} while (numRead != -1);
-
-	fis.close();
-	return complete.digest();
-    }
-
-    // convert a byte array to a HEX string
-    public String getMD5Checksum(String filename) throws Exception {
-	byte[] b = createChecksum(filename);
-	String result = "";
-
-	for (int i = 0; i < b.length; i++) {
-	    result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
-	}
-	return result;
+    public String getHash(String urlString) throws Exception {
+	MessageDigest md = MessageDigest.getInstance("MD5");
+	byte[] urlBytes = urlString.getBytes(StandardCharsets.US_ASCII);
+	byte[] hashBytes = md.digest(urlBytes);
+	return new BigInteger(1, hashBytes).toString(16);
     }
 
     public static boolean doesUrlExistAndIsImage(String URLName) {
