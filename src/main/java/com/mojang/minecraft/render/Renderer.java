@@ -61,19 +61,21 @@ public final class Renderer {
 	}
     }
 
-    public void applyBobbing(float var1) {
+    public void applyBobbing(float var1, boolean enabled) {
 	Player var4;
 	float var2 = (var4 = this.minecraft.player).walkDist - var4.walkDistO;
 	var2 = var4.walkDist + var2 * var1;
 	float var3 = var4.oBob + (var4.bob - var4.oBob) * var1;
 	float var5 = var4.oTilt + (var4.tilt - var4.oTilt) * var1;
-	GL11.glTranslatef(MathHelper.sin(var2 * 3.1415927F) * var3 * 0.5F,
-		-Math.abs(MathHelper.cos(var2 * 3.1415927F) * var3), 0.0F);
-	GL11.glRotatef(MathHelper.sin(var2 * 3.1415927F) * var3 * 3.0F, 0.0F,
-		0.0F, 1.0F);
-	GL11.glRotatef(
-		Math.abs(MathHelper.cos(var2 * 3.1415927F + 0.2F) * var3) * 5.0F,
-		1.0F, 0.0F, 0.0F);
+	if(enabled){
+	    GL11.glTranslatef(MathHelper.sin(var2 * 3.1415927F) * var3 * 0.5F,
+		    -Math.abs(MathHelper.cos(var2 * 3.1415927F) * var3), 0.0F);
+	    GL11.glRotatef(MathHelper.sin(var2 * 3.1415927F) * var3 * 3.0F, 0.0F,
+		    0.0F, 1.0F);
+	    GL11.glRotatef(
+		    Math.abs(MathHelper.cos(var2 * 3.1415927F + 0.2F) * var3) * 5.0F,
+		    1.0F, 0.0F, 0.0F);
+	}
 	GL11.glRotatef(var5, 1.0F, 0.0F, 0.0F);
     }
 
