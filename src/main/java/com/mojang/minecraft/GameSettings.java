@@ -29,7 +29,7 @@ public final class GameSettings implements Serializable {
 		jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey,
 		loadLocationKey, runKey };
 
-	settingCount = 13;
+	settingCount = 14;
 
 	this.minecraft = minecraft;
 
@@ -69,6 +69,8 @@ public final class GameSettings implements Serializable {
     public int HackType = 0;
 
     public boolean VBOs = false;
+
+    public boolean HacksEnabled = true;
 
     public int smoothing = 0;
     public String[] smoothingOptions = new String[] { "OFF", "Automatic",
@@ -198,6 +200,9 @@ public final class GameSettings implements Serializable {
 	if (setting == 12) {
 	    VBOs = !VBOs;
 	}
+	if (setting == 13) {
+	    HacksEnabled = !HacksEnabled;
+	}
 
 	save();
     }
@@ -233,7 +238,10 @@ public final class GameSettings implements Serializable {
 													: (id == 12 ? "Use VBOs: "
 														+ (VBOs ? "Yes"
 															: "No")
-														: ""))))))))))));
+														: (id == 13 ? "Enable Hacks: "
+															+ (HacksEnabled ? "Yes"
+																: "No")
+															: "")))))))))))));
     }
 
     private void load() {
@@ -296,6 +304,9 @@ public final class GameSettings implements Serializable {
 			VBOs = setting[1].equals("true");
 			ShapeRenderer.tryVBO = VBOs;
 		    }
+		    if (setting[0].equals("HacksEnabled")) {
+			HacksEnabled = setting[1].equals("true");
+		    }
 
 		    for (int index = 0; index < this.bindings.length; index++) {
 			if (setting[0].equals("key_" + bindings[index].name)) {
@@ -326,12 +337,12 @@ public final class GameSettings implements Serializable {
 	    writer.println("bobView:" + viewBobbing);
 	    writer.println("anaglyph3d:" + anaglyph);
 	    writer.println("limitFramerate:" + limitFramerate);
-
 	    writer.println("smoothing:" + smoothing);
 	    writer.println("anisotropic:" + anisotropic);
 	    writer.println("canServerChangeTextures:" + canServerChangeTextures);
 	    writer.println("HackType:" + HackType);
 	    writer.println("VBOs:" + VBOs);
+	    writer.println("HacksEnabled:" + HacksEnabled);
 	    for (int binding = 0; binding < bindings.length; binding++) {
 		writer.println("key_" + bindings[binding].name + ":"
 			+ bindings[binding].key);

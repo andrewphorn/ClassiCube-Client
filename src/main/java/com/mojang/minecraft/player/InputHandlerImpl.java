@@ -35,12 +35,14 @@ public class InputHandlerImpl extends InputHandler {
 	    }
 
 	    jumping = keyStates[4];
-	    if (settings.CanSpeed) {
-		running = keyStates[5];
-		Minecraft.PlayerIsRunning = keyStates[5];
+	    if (this.settings.HacksEnabled) {
+		if (settings.CanSpeed) {
+		    running = keyStates[5];
+		    Minecraft.PlayerIsRunning = keyStates[5];
+		}
+		flyingUp = keyStates[6];
+		flyingDown = keyStates[7];
 	    }
-	    flyingUp = keyStates[6];
-	    flyingDown = keyStates[7];
 	}
     }
 
@@ -158,6 +160,6 @@ public class InputHandlerImpl extends InputHandler {
     }
 
     private boolean[] keyStates = new boolean[100];
-    
+
     private transient GameSettings settings;
 }

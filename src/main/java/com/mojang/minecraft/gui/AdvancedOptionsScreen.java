@@ -65,7 +65,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 	    if (var1.id < 100) {
 		this.settings.toggleSetting(var1.id, 1);
 		var1.text = this.settings.getSetting(var1.id);
-		if(var1.id == 12){
+		if(var1.text.contains("VBO")){
 		    this.drawWarning = true;
 		}
 	    }
