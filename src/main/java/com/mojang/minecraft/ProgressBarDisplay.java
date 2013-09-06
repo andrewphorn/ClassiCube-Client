@@ -37,7 +37,7 @@ public final class ProgressBarDisplay {
 	if (!this.minecraft.running) {
 	    throw new StopGameException();
 	} else {
-	    this.title = var1;
+	    title = var1;
 	    int var3 = this.minecraft.width * 240 / this.minecraft.height;
 	    int var2 = this.minecraft.height * 240 / this.minecraft.height;
 	    GL11.glClear(256);
@@ -74,7 +74,7 @@ public final class ProgressBarDisplay {
 		if (serverConfig.containsKey("server.detail")) {
 		    try {
 			String str = serverConfig.get("server.detail");
-			this.text = str;
+			text = str;
 		    } catch (Exception e) {
 			System.out.println(e.getMessage());
 		    }
@@ -107,31 +107,6 @@ public final class ProgressBarDisplay {
 
 	return true;
     }
-
-    /*
-     * public static void InitEnv(Minecraft minecraft) { if (serverConfig ==
-     * null) return; int i1; if (serverConfig.containsKey("environment.level"))
-     * { i1 = Integer.parseInt(serverConfig.get("environment.level")); if (i1 >=
-     * 0) { minecraft.level.waterLevel = i1;
-     * System.out.println("Changing water level to " + i1); } }
-     * 
-     * if (serverConfig.containsKey("environment.fog")) { i1 =
-     * Integer.parseInt(serverConfig.get("environment.fog")); if (i1 >= 0) {
-     * minecraft.level.fogColor = i1;
-     * System.out.println("Changing fog colour to " + i1); } }
-     * 
-     * if (serverConfig.containsKey("environment.sky")) { i1 =
-     * Integer.parseInt(serverConfig.get("environment.sky")); if (i1 >= 0) {
-     * minecraft.level.skyColor = i1;
-     * System.out.println("Changing sky colour to " + i1); } }
-     * 
-     * if (serverConfig.containsKey("environment.cloud")) { i1 =
-     * Integer.parseInt(serverConfig.get("environment.cloud")); if (i1 >= 0) {
-     * minecraft.level.cloudColor = i1;
-     * System.out.println("Changing cloud colour to " + i1); } }
-     * 
-     * }
-     */
 
     public static HashMap<String, String> fetchConfig(String location) {
 	HashMap<String, String> localHashMap = new HashMap<String, String>();
@@ -364,7 +339,7 @@ public final class ProgressBarDisplay {
 	    throw new StopGameException();
 	} else {
 	    if (!passServerCommand(var1)) {
-		this.text = var1;
+		text = var1;
 	    }
 
 	    if (minecraft.HackState == null) { // change only once per session
@@ -373,13 +348,13 @@ public final class ProgressBarDisplay {
 		    minecraft.HackState = HackState.HacksTagEnabled;
 		    return;
 		}
-		if (this.text.toLowerCase().contains("+hax")) {
+		if (text.toLowerCase().contains("+hax")) {
 		    minecraft.HackState = HackState.HacksTagEnabled;
-		} else if (this.text.toLowerCase().contains("-hax")) {
+		} else if (text.toLowerCase().contains("-hax")) {
 		    minecraft.HackState = HackState.HacksTagDisabled;
 		    minecraft.settings.CanSpeed = false;
-		} else if (this.text.toLowerCase().contains("+ophacks")
-			|| this.text.toLowerCase().contains("+ophax")) {
+		} else if (text.toLowerCase().contains("+ophacks")
+			|| text.toLowerCase().contains("+ophax")) {
 		    minecraft.HackState = HackState.OpHacks;
 		    if (this.minecraft.player.userType < 100) {
 			minecraft.settings.CanSpeed = false;
@@ -436,13 +411,13 @@ public final class ProgressBarDisplay {
 		    GL11.glEnable(3553);
 		}
 
-		this.minecraft.fontRenderer.render(this.title,
+		this.minecraft.fontRenderer.render(title,
 			(var4 - this.minecraft.fontRenderer
-				.getWidth(this.title)) / 2, var5 / 2 - 4 - 16,
+				.getWidth(title)) / 2, var5 / 2 - 4 - 16,
 			16777215);
 		this.minecraft.fontRenderer
-			.render(this.text, (var4 - this.minecraft.fontRenderer
-				.getWidth(this.text)) / 2, var5 / 2 - 4 + 8,
+			.render(text, (var4 - this.minecraft.fontRenderer
+				.getWidth(text)) / 2, var5 / 2 - 4 + 8,
 				16777215);
 		Display.update();
 
