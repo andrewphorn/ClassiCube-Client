@@ -109,8 +109,12 @@ public class ClassiCubeStandalone {
 	    MCraftApplet applet = new MCraftApplet();
 	    final MinecraftCanvas canvas = new MinecraftCanvas();
 	    minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
-		    false, true);
-
+		    false, false);
+	    String s = System.getProperty("os.name").toLowerCase();
+		System.setProperty("org.lwjgl.librarypath", minecraft.mcDir + "/native/"
+			+ minecraft.getOSfolderName(s));
+		System.setProperty("net.java.games.input.librarypath", minecraft.mcDir
+			+ "/native/" + minecraft.getOSfolderName(s));
 	    minecraft.session = new SessionData(Player, "noidea");
 	    minecraft.session.mppass = Mppass;
 	    minecraft.session.haspaid = true;
