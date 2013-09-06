@@ -527,6 +527,7 @@ public final class Minecraft implements Runnable {
 		    this.generateLevel(1);
 		}
 	    }
+	    
 
 	    this.particleManager = new ParticleManager(this.level,
 		    this.textureManager);
