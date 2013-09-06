@@ -55,7 +55,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.IntBuffer;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -2261,6 +2265,18 @@ public final class Minecraft implements Runnable {
 					    this.textureManager.customEdgeBlock = textureManager.textureAtlas
 						    .get(edgeBlock);
 					}
+					if (textureUrl.length() > 0) {
+					    File path = new File(
+						    GetMinecraftDirectory() + "/skins/terrain");
+					    if (!path.exists()) {
+						path.mkdirs();
+					    }
+					   String fileName = downloadImage(textureUrl,
+						    GetMinecraftDirectory() + "/skins/terrain");
+					   if(fileName !=null){
+					       
+					   }
+					}
 					this.textureManager.textures.clear();
 					this.level.waterLevel = sideLevel;
 					this.levelRenderer.refresh();
@@ -2858,8 +2874,7 @@ public final class Minecraft implements Runnable {
 				this.settings.thirdPersonMode = false;
 			    }
 			}
-			
-			
+
 			if (this.settings.HacksEnabled) {
 			    if (this.settings.HackType == 0) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_X) {
@@ -2880,7 +2895,7 @@ public final class Minecraft implements Runnable {
 				    }
 				}
 			    }
-			}else{
+			} else {
 			    this.player.flyingMode = false;
 			    this.player.noPhysics = false;
 			    this.player.hovered = false;
@@ -3143,6 +3158,77 @@ public final class Minecraft implements Runnable {
 	}
 
 	System.gc();
+    }
+
+    String downloadImage(String source, String dest) {
+	URL url;
+	try {
+	    if (!doesUrlExistAndIsImage(source))
+		return null;
+	    url = new URL(source);
+
+	    InputStream in = new BufferedInputStream(url.openStream());
+	    ByteArrayOutputStream out = new ByteArrayOutputStream();
+	    byte[] buf = new byte[1024];
+	    int n = 0;
+	    while (-1 != (n = in.read(buf))) {
+		out.write(buf, 0, n);
+	    }
+	    out.close();
+	    in.close();
+	    byte[] response = out.toByteArray();
+	    FileOutputStream fos = new FileOutputStream(dest + "/temp.image");
+	    fos.write(response);
+	    fos.close();
+	    String md5 = getMD5Checksum(dest + "/temp.image");
+	    return md5;
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    return null;
+	}
+    }
+
+    public byte[] createChecksum(String filename) throws Exception {
+	InputStream fis = new FileInputStream(filename);
+
+	byte[] buffer = new byte[1024];
+	MessageDigest complete = MessageDigest.getInstance("MD5");
+	int numRead;
+
+	do {
+	    numRead = fis.read(buffer);
+	    if (numRead > 0) {
+		complete.update(buffer, 0, numRead);
+	    }
+	} while (numRead != -1);
+
+	fis.close();
+	return complete.digest();
+    }
+
+    // convert a byte array to a HEX string
+    public String getMD5Checksum(String filename) throws Exception {
+	byte[] b = createChecksum(filename);
+	String result = "";
+
+	for (int i = 0; i < b.length; i++) {
+	    result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+	}
+	return result;
+    }
+
+    public static boolean doesUrlExistAndIsImage(String URLName) {
+	try {
+	    HttpURLConnection.setFollowRedirects(false);
+	    HttpURLConnection con = (HttpURLConnection) new URL(URLName)
+		    .openConnection();
+	    con.setRequestMethod("HEAD");
+	    return (con.getResponseCode() == HttpURLConnection.HTTP_OK && con
+		    .getContentType().contains("image"));
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    return false;
+	}
     }
 
     public void resize() {
