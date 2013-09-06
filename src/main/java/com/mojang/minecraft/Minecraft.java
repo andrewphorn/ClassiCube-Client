@@ -121,9 +121,9 @@ public final class Minecraft implements Runnable {
 
     public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4,
 	    boolean var5, boolean IsApplet) {
-	//this.selectionBoxes.add(new SelectionBoxData((byte) 1, "",
-		//new ColorCache(0F, 1.0F, 0F, 0.6F), new CustomAABB(12, 45, 30,
-			//20, 30, 40)));
+	// this.selectionBoxes.add(new SelectionBoxData((byte) 1, "",
+	// new ColorCache(0F, 1.0F, 0F, 0.6F), new CustomAABB(12, 45, 30,
+	// 20, 30, 40)));
 
 	/*
 	 * for(int i = 0; i< 140; i++){ String group = "Guest"; if(i > 8)group =
@@ -365,7 +365,7 @@ public final class Minecraft implements Runnable {
 	    return "linux";
 	}
     }
-    
+
     float cameraDistance = -0.1F;
 
     @Override
@@ -709,7 +709,8 @@ public final class Minecraft implements Runnable {
 					/ renderer.minecraft.width;
 				var70 = var86 - Mouse.getY() * var86
 					/ renderer.minecraft.height - 1;
-				if (renderer.minecraft.level != null && player !=null) {
+				if (renderer.minecraft.level != null
+					&& player != null) {
 				    float var80 = var65;
 				    com.mojang.minecraft.render.Renderer var82 = renderer;
 				    com.mojang.minecraft.render.Renderer var27 = renderer;
@@ -760,13 +761,13 @@ public final class Minecraft implements Runnable {
 				    List<Entity> var37 = renderer.minecraft.level.blockMap
 					    .getEntities(
 						    player,
-						    player.bb.expand(
-							    var34
+						    player.bb
+							    .expand(var34
 								    * reachDistance,
-							    var33
-								    * reachDistance,
-							    var87
-								    * reachDistance));
+								    var33
+									    * reachDistance,
+								    var87
+									    * reachDistance));
 				    float var35 = 0.0F;
 
 				    for (var81 = 0; var81 < var37.size(); ++var81) {
@@ -908,8 +909,9 @@ public final class Minecraft implements Runnable {
 					}
 
 					var116 = var82.minecraft.player;
-					GL11.glTranslatef(0.0F, 0.0F, cameraDistance);
-					
+					GL11.glTranslatef(0.0F, 0.0F,
+						cameraDistance);
+
 					GL11.glRotatef(var116.xRotO
 						+ (var116.xRot - var116.xRotO)
 						* var80, 1.0F, 0.0F, 0.0F);
@@ -1375,7 +1377,7 @@ public final class Minecraft implements Runnable {
 					GL11.glBindTexture(3553,
 						var89.textureManager
 							.load("/water.png"));
-					
+
 					GL11.glCallList(var89.listId + 1);
 					GL11.glDisable(3042);
 					GL11.glEnable(3042);
@@ -1782,12 +1784,13 @@ public final class Minecraft implements Runnable {
 					    GL11.glScalef(0.4F, var34, var34);
 					    GL11.glTranslatef(-0.5F, -0.5F,
 						    -0.5F);
-					    if(!this.settings.thirdPersonMode){
+					    if (!this.settings.thirdPersonMode) {
 						GL11.glBindTexture(
 							3553,
 							var112.minecraft.textureManager
-							.load("/terrain.png"));
-						var112.block.renderPreview(var123);
+								.load("/terrain.png"));
+						var112.block
+							.renderPreview(var123);
 					    }
 					} else {
 					    var116.bindTexture(var112.minecraft.textureManager);
@@ -2845,35 +2848,42 @@ public final class Minecraft implements Runnable {
 			    s.inputLine = "/";
 			    s.caretPos++;
 			}
-			
-			if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
-				if(this.cameraDistance == -0.1F){
-				    this.cameraDistance = -5.1f;
-				    this.settings.thirdPersonMode = true;
-				}else{
-				    this.cameraDistance = -0.1F;
-				    this.settings.thirdPersonMode = false;
-				}
-			    }
-			
-			if (this.settings.HackType == 0) {
-			    if (Keyboard.getEventKey() == Keyboard.KEY_X) {
-				if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
-					|| HackState == com.mojang.minecraft.HackState.OpHacks
-					&& this.player.userType >= 100) {
-				    this.player.noPhysics = !this.player.noPhysics;
-				    this.player.hovered = !this.player.hovered;
-				}
-			    }
 
-			    if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
-				if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
-					|| HackState == com.mojang.minecraft.HackState.NoHacksTagShown
-					|| HackState == com.mojang.minecraft.HackState.OpHacks
-					&& this.player.userType >= 100) {
-				    this.player.flyingMode = !this.player.flyingMode;
+			if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
+			    if (this.cameraDistance == -0.1F) {
+				this.cameraDistance = -5.1f;
+				this.settings.thirdPersonMode = true;
+			    } else {
+				this.cameraDistance = -0.1F;
+				this.settings.thirdPersonMode = false;
+			    }
+			}
+			
+			
+			if (this.settings.HacksEnabled) {
+			    if (this.settings.HackType == 0) {
+				if (Keyboard.getEventKey() == Keyboard.KEY_X) {
+				    if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
+					    || HackState == com.mojang.minecraft.HackState.OpHacks
+					    && this.player.userType >= 100) {
+					this.player.noPhysics = !this.player.noPhysics;
+					this.player.hovered = !this.player.hovered;
+				    }
+				}
+
+				if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
+				    if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
+					    || HackState == com.mojang.minecraft.HackState.NoHacksTagShown
+					    || HackState == com.mojang.minecraft.HackState.OpHacks
+					    && this.player.userType >= 100) {
+					this.player.flyingMode = !this.player.flyingMode;
+				    }
 				}
 			    }
+			}else{
+			    this.player.flyingMode = false;
+			    this.player.noPhysics = false;
+			    this.player.hovered = false;
 			}
 
 			if (Keyboard.getEventKey() == 15
@@ -2965,7 +2975,7 @@ public final class Minecraft implements Runnable {
 	    }
 	}
 
-	if (this.level != null && player !=null) {
+	if (this.level != null && player != null) {
 	    com.mojang.minecraft.render.Renderer var29 = this.renderer;
 	    ++this.renderer.levelTicks;
 	    HeldBlock var41 = var29.heldBlock;
@@ -3079,7 +3089,7 @@ public final class Minecraft implements Runnable {
 	    var1.rendererContext$5cd64a7f = this;
 	    if (!this.isOnline()) {
 		this.player = (Player) var1.findSubclassOf(Player.class);
-		if(this.player == null){
+		if (this.player == null) {
 		    this.player = new Player(var1, this.settings);
 		}
 		this.player.settings = this.settings;
