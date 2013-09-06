@@ -38,7 +38,7 @@ public class Player extends Mob {
     private int nos = 0;
 
     private int jumpCount = 0;
-    boolean HacksEnabled = true;
+    boolean HacksEnabled;
 
     public static boolean noPush = false;
     public transient GameSettings settings;
@@ -76,6 +76,7 @@ public class Player extends Mob {
 		}
 	    }
 	} else {
+	    this.HacksEnabled = settings.HacksEnabled;
 	    this.input.updateMovement(settings.HackType);
 	    super.aiStep();
 	    if ((this.nox == 0) || (this.nos == 0) || (this.noc == 0)) {
