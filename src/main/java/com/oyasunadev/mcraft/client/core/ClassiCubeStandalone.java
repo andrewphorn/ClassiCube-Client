@@ -29,37 +29,39 @@ import java.util.Map;
  */
 public class ClassiCubeStandalone {
     public static void main(String[] args) {
-	String Player = null;
-	String Server = null;
-	int Port = 0;
-	String Mppass = null;
+	String player = null;
+	String server = null;
+	int port = 0;
+	String mppass = null;
+	String skinServer = null;
 	if (args != null) {
 	    if (args.length > 3) {
-		Server = args[0];
-		Port = Integer.parseInt(args[1]);
-		Player = args[2];
-		Mppass = args[3];
+		server = args[0];
+		port = Integer.parseInt(args[1]);
+		player = args[2];
+		mppass = args[3];
+		skinServer = args[4];
 	    }
 	}
 	ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
-	if (Player == null || Server == null || Mppass == null || Port <= 0) {
-	    classicubeStandalone.startMinecraft(null, null, null, 0);
+	if (player == null || server == null || mppass == null || port <= 0) {
+	    classicubeStandalone.startMinecraft(null, null, null, 0, skinServer);
 	} else {
-	    classicubeStandalone.startMinecraft(Player, Server, Mppass, Port);
+	    classicubeStandalone.startMinecraft(player, server, mppass, port, skinServer);
 	}
     }
 
     public void startMinecraft(String Player, String Server, String Mppass,
-	    int Port) {
+	    int Port, String skinServer) {
 	MinecraftFrame minecraftFrame = new MinecraftFrame();
 
-	minecraftFrame.startMinecraft(Player, Server, Mppass, Port);
+	minecraftFrame.startMinecraft(Player, Server, Mppass, Port, skinServer);
     }
 
     public void startMinecraft() {
 	MinecraftFrame minecraftFrame = new MinecraftFrame();
 
-	minecraftFrame.startMinecraft(null, null, null, 0);
+	minecraftFrame.startMinecraft(null, null, null, 0, null);
     }
 
     /**
@@ -104,7 +106,7 @@ public class ClassiCubeStandalone {
 	 * Start Minecraft Classic.
 	 */
 	public void startMinecraft(String Player, String Server, String Mppass,
-		int Port) {
+		int Port, String skinServer) {
 
 	    MCraftApplet applet = new MCraftApplet();
 	    final MinecraftCanvas canvas = new MinecraftCanvas();
@@ -115,6 +117,9 @@ public class ClassiCubeStandalone {
 	    minecraft.session.haspaid = true;
 	    minecraft.server = Server;
 	    minecraft.port = Port;
+	    if(skinServer!=null){
+		minecraft.skinServer = skinServer;
+	    }
 	    
 	    if(Player == null && Server == null && Mppass == null)
 		minecraft.session = null;
