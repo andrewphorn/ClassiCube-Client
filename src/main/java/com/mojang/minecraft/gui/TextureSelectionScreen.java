@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
+import com.mojang.minecraft.Minecraft;
+
 public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
     protected GuiScreen parent;
@@ -36,7 +38,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
 	    this.status = "Getting texture list..";
 	    TexturePackData data;
-	    for (String file : (new File(minecraft.getMinecraftDirectory()
+	    for (String file : (new File(Minecraft.getMinecraftDirectory()
 		    + "/texturepacks").list())) {
 		if (!file.endsWith(".zip"))
 		    continue;
@@ -61,13 +63,13 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
     }
 
     protected void setTextures(ArrayList<TexturePackData> var1) {
-	for (int var2 = 0; var2 < 5; ++var2) { //take first 5 only
-	    ((Button) this.buttons.get(var2)).active = !(var1).get(var2)
-		    .equals("-");
-	    ((Button) this.buttons.get(var2)).text = var1.get(var2).name;
-	    ((Button) this.buttons.get(var2)).visible = true;
+	for (int var2 = 0; var2 < Math.min(var1.size(), 5); ++var2) {
+	    
+	    this.buttons.get(var2).active = !var1.get(var2).equals(
+		    "-");
+	    this.buttons.get(var2).text = var1.get(var2).name;
+	   this.buttons.get(var2).visible = true;
 	}
-
     }
 
     public void onOpen() {
@@ -85,35 +87,32 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	this.buttons.add(new Button(7, this.width / 2 - 100,
 		this.height / 6 + 154 + 22, "Cancel"));
 	this.buttons.add(new Button(8, this.width / 2 - 100,
-		this.height /6 + 154 , "Default Texture"));
+		this.height / 6 + 154, "Default Texture"));
     }
 
     protected final void onButtonClick(Button var1) {
-	if (!this.frozen) {
-	    if (var1.active) {
-		if (this.loaded && var1.id < 5) {
-		    this.openTexture(textures.get(var1.id));
-		}
+	if (!this.frozen && var1.active) {
+	    if (this.loaded && var1.id < 5) {
+		this.openTexture(textures.get(var1.id));
+	    }
 
-		if (this.finished || this.loaded && var1.id == 6) {
-		    this.frozen = true;
-		    TextureDialog var2;
-		    (var2 = new TextureDialog(this, minecraft)).setDaemon(true);
-		    SwingUtilities.invokeLater(var2);
-		}
+	    if (this.loaded && var1.id == 6) {
+		this.frozen = true;
+		TextureDialog var2;
+		(var2 = new TextureDialog(this, minecraft)).setDaemon(true);
+		SwingUtilities.invokeLater(var2);
+	    }
 
-		if (this.finished || this.loaded && var1.id == 7) {
-		    this.minecraft.setCurrentScreen(this.parent);
-		}
-		if (var1.id == 8) {
-		    this.minecraft.textureManager.currentTerrainPng = null;
-		    this.minecraft.textureManager.load("/terrain.png");
-		    this.minecraft.setCurrentScreen((GuiScreen) null);
-		    this.minecraft.grabMouse();
-		    this.minecraft.textureManager.textures.clear();
-		    this.minecraft.levelRenderer.refresh();
-		}
-
+	    if (this.finished || this.loaded && var1.id == 7) {
+		this.minecraft.setCurrentScreen(this.parent);
+	    }
+	    if (var1.id == 8) {
+		this.minecraft.textureManager.currentTerrainPng = null;
+		this.minecraft.textureManager.load("/terrain.png");
+		this.minecraft.setCurrentScreen((GuiScreen) null);
+		this.minecraft.grabMouse();
+		this.minecraft.textureManager.textures.clear();
+		this.minecraft.levelRenderer.refresh();
 	    }
 	}
     }

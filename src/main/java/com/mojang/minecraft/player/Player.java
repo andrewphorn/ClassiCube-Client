@@ -3,14 +3,11 @@ package com.mojang.minecraft.player;
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.ProgressBarDisplay;
 import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.HumanoidModel;
-import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 

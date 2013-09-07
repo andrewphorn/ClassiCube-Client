@@ -67,8 +67,8 @@ public abstract class Entity implements Serializable {
 	    float var1 = (float) this.level.xSpawn + 0.5F;
 	    float var2 = (float) this.level.ySpawn;
 
-	    for (float var3 = (float) this.level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
-		this.setPos(var1, var2, var3);
+	    for (double var3 = (float) this.level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
+		this.setPos(var1, var2, (float) var3);
 		if (this.level.getCubes(this.bb).size() == 0) {
 		    break;
 		}

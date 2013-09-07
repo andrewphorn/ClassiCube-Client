@@ -33,13 +33,11 @@ public class MinecraftStandalone {
 	String Server = null;
 	int Port = 0;
 	String Mppass = null;
-	if (args != null) {
-	    if (args.length > 3) {
+	if (args != null && args.length > 3) {
 		Server = args[0];
 		Port = Integer.parseInt(args[1]);
 		Player = args[2];
 		Mppass = args[3];
-	    }
 	}
 	MinecraftStandalone minecraftStandalone = new MinecraftStandalone();
 	if (Player == null || Server == null || Mppass == null || Port <= 0) {

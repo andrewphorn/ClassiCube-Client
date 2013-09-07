@@ -76,26 +76,21 @@ public class Inventory implements Serializable {
     }
 
     public void replaceSlot(int var1) {
-	if (GameSettings.CanReplaceSlot) {
-	    if (var1 >= 0) {
-		this.replaceSlot((Block) SessionData.allowedBlocks.get(var1));
-	    }
+	if (GameSettings.CanReplaceSlot && var1 >= 0) {
+	    this.replaceSlot((Block) SessionData.allowedBlocks.get(var1));
 	}
 
     }
 
     public void replaceSlot(Block var1) {
-	if (GameSettings.CanReplaceSlot) {
-	    if (var1 != null) {
-		int var2;
-		if ((var2 = this.getSlot(var1.id)) >= 0) {
-		    this.slots[var2] = this.slots[this.selected];
-		}
-
-		this.slots[this.selected] = var1.id;
+	if (GameSettings.CanReplaceSlot && var1 != null) {
+	    int var2;
+	    if ((var2 = this.getSlot(var1.id)) >= 0) {
+		this.slots[var2] = this.slots[this.selected];
 	    }
-	}
 
+	    this.slots[this.selected] = var1.id;
+	}
     }
 
     public boolean addResource(int var1) {

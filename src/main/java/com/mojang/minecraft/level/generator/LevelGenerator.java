@@ -224,13 +224,13 @@ public final class LevelGenerator {
 	this.setProgress(0);
 
 	for (var54 = 0; var54 < var5.width; ++var54) {
-	    var5.flood(var54, var5.height / 2 - 1, 0, 0, var51);
-	    var5.flood(var54, var5.height / 2 - 1, var5.depth - 1, 0, var51);
+	    var5.flood(var54, var5.height / 2 - 1, 0, var51);
+	    var5.flood(var54, var5.height / 2 - 1, var5.depth - 1, var51);
 	}
 
 	for (var54 = 0; var54 < var5.depth; ++var54) {
-	    var5.flood(0, var5.height / 2 - 1, var54, 0, var51);
-	    var5.flood(var5.width - 1, var5.height / 2 - 1, var54, 0, var51);
+	    var5.flood(0, var5.height / 2 - 1, var54, var51);
+	    var5.flood(var5.width - 1, var5.height / 2 - 1, var54, var51);
 	}
 
 	var54 = var5.width * var5.depth / 8000;
@@ -244,7 +244,7 @@ public final class LevelGenerator {
 	    var12 = var5.waterLevel - 1 - var5.random.nextInt(2);
 	    var23 = var5.random.nextInt(var5.depth);
 	    if (var5.blocks[(var12 * var5.depth + var23) * var5.width + var11] == 0) {
-		var5.flood(var11, var12, var23, 0, var51);
+		var5.flood(var11, var12, var23, var51);
 	    }
 	}
 
@@ -262,7 +262,7 @@ public final class LevelGenerator {
 	    var54 = (int) (var5.random.nextFloat() * var5.random.nextFloat() * (float) (var5.waterLevel - 3));
 	    var24 = var5.random.nextInt(var5.depth);
 	    if (var5.blocks[(var54 * var5.depth + var24) * var5.width + var51] == 0) {
-		var5.flood(var51, var54, var24, 0, Block.STATIONARY_LAVA.id);
+		var5.flood(var51, var54, var24, Block.STATIONARY_LAVA.id);
 	    }
 	}
 
@@ -491,7 +491,7 @@ public final class LevelGenerator {
 	this.progressBar.setProgress(var1);
     }
 
-    private long flood(int var1, int var2, int var3, int var4, int var5) {
+    private long flood(int var1, int var2, int var3, int var5) {
 	byte var20 = (byte) var5;
 	ArrayList<int[]> var21 = new ArrayList<int[]>();
 	byte var6 = 0;

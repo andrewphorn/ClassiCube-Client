@@ -3,13 +3,13 @@ package com.mojang.minecraft.render.texture;
 import com.mojang.minecraft.level.tile.Block;
 
 public class TextureFireFX extends TextureFX {
-    protected float field_1133_g[];
-    protected float field_1132_h[];
+    protected float a[];
+    protected float b[];
 
     public TextureFireFX() {
 	super(Block.FIRE.textureId);
-	field_1133_g = new float[320];
-	field_1132_h = new float[320];
+	a = new float[320];
+	b = new float[320];
     }
 
     @Override
@@ -17,22 +17,22 @@ public class TextureFireFX extends TextureFX {
 	for (int i = 0; i < 16; i++) {
 	    for (int j = 0; j < 20; j++) {
 		int k = 18;
-		float f = field_1133_g[i + ((j + 1) % 20) * 16] * (float) k;
+		float f = a[i + ((j + 1) % 20) * 16] * (float) k;
 		for (int i1 = i - 1; i1 <= i + 1; i1++) {
 		    for (int j1 = j; j1 <= j + 1; j1++) {
 			int l1 = i1;
 			int j2 = j1;
 			if (l1 >= 0 && j2 >= 0 && l1 < 16 && j2 < 20) {
-			    f += field_1133_g[l1 + j2 * 16];
+			    f += a[l1 + j2 * 16];
 			}
 			k++;
 		    }
 
 		}
 
-		field_1132_h[i + j * 16] = f / ((float) k * 1.06F);
+		b[i + j * 16] = f / ((float) k * 1.06F);
 		if (j >= 19) {
-		    field_1132_h[i + j * 16] = (float) (Math.random()
+		    b[i + j * 16] = (float) (Math.random()
 			    * Math.random() * Math.random() * 4D
 			    + Math.random() * 0.10000000149011612D + 0.20000000298023224D);
 		}
@@ -40,11 +40,11 @@ public class TextureFireFX extends TextureFX {
 
 	}
 
-	float af[] = field_1132_h;
-	field_1132_h = field_1133_g;
-	field_1133_g = af;
+	float af[] = b;
+	b = a;
+	a = af;
 	for (int l = 0; l < 256; l++) {
-	    float f1 = field_1133_g[l] * 1.8F;
+	    float f1 = a[l] * 1.8F;
 	    if (f1 > 1.0F) {
 		f1 = 1.0F;
 	    }

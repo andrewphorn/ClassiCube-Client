@@ -61,7 +61,7 @@ public final class LevelRenderer {
 		for (var4 = 0; var4 < this.zChunks; ++var4) {
 		    this.chunkCache[(var4 * this.yChunks + var3) * this.xChunks
 			    + var2] = new Chunk(this.level, var2 << 4,
-			    var3 << 4, var4 << 4, 16, this.baseListId + var1);
+			    var3 << 4, var4 << 4, this.baseListId + var1);
 		    this.loadQueue[(var4 * this.yChunks + var3) * this.xChunks
 			    + var2] = this.chunkCache[(var4 * this.yChunks + var3)
 			    * this.xChunks + var2];

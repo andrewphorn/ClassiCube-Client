@@ -21,8 +21,6 @@ public class Block {
 
 	setBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 
-	opaque[id] = isSolid();
-	cube[id] = isCube();
 	liquid[id] = false;
     }
 
@@ -35,10 +33,7 @@ public class Block {
     protected static Random random = new Random();
     public static final Block[] blocks = new Block[256];
     public static final boolean[] physics = new boolean[256];
-    private static boolean[] opaque = new boolean[256];
-    private static boolean[] cube = new boolean[256];
     public static final boolean[] liquid = new boolean[256];
-    private static int[] tickDelay = new int[256];
     public static final Block STONE;
     public static final Block GRASS;
     public static final Block DIRT;
@@ -147,10 +142,6 @@ public class Block {
 	this.x2 = x2;
 	this.y2 = y2;
 	this.z2 = z2;
-    }
-
-    public void setTickDelay(int tickDelay) {
-	Block.tickDelay[id] = tickDelay;
     }
 
     public void renderFullbright(ShapeRenderer shapeRenderer) {
@@ -725,7 +716,7 @@ public class Block {
 		0.4F, 0.2F);
 	SPONGE = (new SpongeBlock(19)).setData(Tile$SoundType.cloth, 1.0F,
 		0.9F, 0.6F);
-	GLASS = (new GlassBlock(20, 49, false)).setData(Tile$SoundType.metal,
+	GLASS = (new GlassBlock(20, 49)).setData(Tile$SoundType.metal,
 		1.0F, 1.0F, 0.3F);
 	RED_WOOL = (new Block(21, 64)).setData(Tile$SoundType.cloth, 1.0F,
 		1.0F, 0.8F);

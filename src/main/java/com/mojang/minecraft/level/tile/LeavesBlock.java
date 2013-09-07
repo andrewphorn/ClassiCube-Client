@@ -3,7 +3,7 @@ package com.mojang.minecraft.level.tile;
 public final class LeavesBlock extends LeavesBaseBlock {
 
     protected LeavesBlock(int var1, int var2) {
-	super(18, 22, true);
+	super(var1, var2);
     }
 
     public final int getDropCount() {

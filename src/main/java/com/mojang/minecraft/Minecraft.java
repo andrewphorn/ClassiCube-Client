@@ -167,7 +167,7 @@ public final class Minecraft implements Runnable {
 	}
 
 	this.applet = var2;
-	new SleepForeverThread(this);
+	new SleepForeverThread();
 	this.canvas = var1;
 	this.width = var3;
 	this.height = var4;
@@ -428,7 +428,6 @@ public final class Minecraft implements Runnable {
 
     float cameraDistance = -0.1F;
 
-    @Override
     public final void run() {
 	this.running = true;
 	String textureFile = "/terrain.png";
@@ -478,8 +477,9 @@ public final class Minecraft implements Runnable {
 	    Display.setResizable(true);
 	    Display.setTitle("ClassiCube");
 	    try {
-		Display.create((new PixelFormat()).withDepthBits(24));
+		Display.create(new PixelFormat().withDepthBits(16));
 	    } catch (LWJGLException var58) {
+		System.out.println("Failed to create display with depth bits");
 		try {
 		    Display.create();
 		} catch (LWJGLException var57) {
@@ -520,7 +520,7 @@ public final class Minecraft implements Runnable {
 		    this.textureManager);
 
 	    this.textureManager.textureAtlas = this.textureManager
-		    .Atlas2dInto1d(image, 16, 16);
+		    .Atlas2dInto1d(image, 16, image.getWidth() / 16);
 	    if (this.session == null)
 		this.HackState = HackState.HacksTagEnabled;
 	    IntBuffer var9;
@@ -686,10 +686,10 @@ public final class Minecraft implements Runnable {
 
 			checkGLError("Pre render");
 			GL11.glEnable(3553);
+
 			if (!this.online) {
 			    this.gamemode.applyCracks(this.timer.delta);
 			    float var65 = this.timer.delta;
-			    com.mojang.minecraft.render.Renderer renderer = this.renderer;
 			    if (this.renderer.displayActive
 				    && !Display.isActive()) {
 				renderer.minecraft.pause();
@@ -749,8 +749,6 @@ public final class Minecraft implements Runnable {
 				if (renderer.minecraft.level != null
 					&& player != null) {
 				    float var80 = var65;
-				    com.mojang.minecraft.render.Renderer var82 = renderer;
-				    com.mojang.minecraft.render.Renderer var27 = renderer;
 				    float var29 = player.xRotO
 					    + (player.xRot - player.xRotO)
 					    * var65;
@@ -818,16 +816,16 @@ public final class Minecraft implements Runnable {
 						    vec3D)) != null
 						    && ((var74 = var31
 							    .distance(var78.vec)) < var35 || var35 == 0.0F)) {
-						var27.entity = var88;
+						renderer.entity = var88;
 						var35 = var74;
 					    }
 					}
 				    }
 
-				    if (var27.entity != null
-					    && !(var27.minecraft.gamemode instanceof CreativeGameMode)) {
-					var27.minecraft.selected = new MovingObjectPosition(
-						var27.entity);
+				    if (renderer.entity != null
+					    && !(renderer.minecraft.gamemode instanceof CreativeGameMode)) {
+					renderer.minecraft.selected = new MovingObjectPosition(
+						renderer.entity);
 				    }
 
 				    int var77 = 0;
@@ -839,7 +837,7 @@ public final class Minecraft implements Runnable {
 					    break;
 					}
 
-					if (var82.minecraft.settings.anaglyph) {
+					if (renderer.minecraft.settings.anaglyph) {
 					    if (var77 == 0) {
 						GL11.glColorMask(false, true,
 							true, false);
@@ -849,32 +847,32 @@ public final class Minecraft implements Runnable {
 					    }
 					}
 
-					Player var126 = var82.minecraft.player;
-					Level var119 = var82.minecraft.level;
-					LevelRenderer var89 = var82.minecraft.levelRenderer;
-					ParticleManager var93 = var82.minecraft.particleManager;
+					Player var126 = renderer.minecraft.player;
+					Level var119 = renderer.minecraft.level;
+					LevelRenderer var89 = renderer.minecraft.levelRenderer;
+					ParticleManager var93 = renderer.minecraft.particleManager;
 					GL11.glViewport(0, 0,
-						var82.minecraft.width,
-						var82.minecraft.height);
-					Level var26 = var82.minecraft.level;
-					var29 = 1.0F / (4 - var82.minecraft.settings.viewDistance);
+						renderer.minecraft.width,
+						renderer.minecraft.height);
+					Level var26 = renderer.minecraft.level;
+					var29 = 1.0F / (4 - renderer.minecraft.settings.viewDistance);
 					var29 = 1.0F - (float) Math.pow(var29,
 						0.25D);
 					var30 = (var26.skyColor >> 16 & 255) / 255.0F;
 					float var117 = (var26.skyColor >> 8 & 255) / 255.0F;
 					var32 = (var26.skyColor & 255) / 255.0F;
-					var82.fogRed = (var26.fogColor >> 16 & 255) / 255.0F;
-					var82.fogBlue = (var26.fogColor >> 8 & 255) / 255.0F;
-					var82.fogGreen = (var26.fogColor & 255) / 255.0F;
-					var82.fogRed += (var30 - var82.fogRed)
+					renderer.fogRed = (var26.fogColor >> 16 & 255) / 255.0F;
+					renderer.fogBlue = (var26.fogColor >> 8 & 255) / 255.0F;
+					renderer.fogGreen = (var26.fogColor & 255) / 255.0F;
+					renderer.fogRed += (var30 - renderer.fogRed)
 						* var29;
-					var82.fogBlue += (var117 - var82.fogBlue)
+					renderer.fogBlue += (var117 - renderer.fogBlue)
 						* var29;
-					var82.fogGreen += (var32 - var82.fogGreen)
+					renderer.fogGreen += (var32 - renderer.fogGreen)
 						* var29;
-					var82.fogRed *= var82.fogColorMultiplier;
-					var82.fogBlue *= var82.fogColorMultiplier;
-					var82.fogGreen *= var82.fogColorMultiplier;
+					renderer.fogRed *= renderer.fogColorMultiplier;
+					renderer.fogBlue *= renderer.fogColorMultiplier;
+					renderer.fogGreen *= renderer.fogColorMultiplier;
 					Block var73;
 					if ((var73 = Block.blocks[var26
 						.getTile(
@@ -884,43 +882,43 @@ public final class Minecraft implements Runnable {
 						&& var73.getLiquidType() != LiquidType.NOT_LIQUID) {
 					    LiquidType var79;
 					    if ((var79 = var73.getLiquidType()) == LiquidType.WATER) {
-						var82.fogRed = 0.02F;
-						var82.fogBlue = 0.02F;
-						var82.fogGreen = 0.2F;
+						renderer.fogRed = 0.02F;
+						renderer.fogBlue = 0.02F;
+						renderer.fogGreen = 0.2F;
 					    } else if (var79 == LiquidType.LAVA) {
-						var82.fogRed = 0.6F;
-						var82.fogBlue = 0.1F;
-						var82.fogGreen = 0.0F;
+						renderer.fogRed = 0.6F;
+						renderer.fogBlue = 0.1F;
+						renderer.fogGreen = 0.0F;
 					    }
 					}
 
-					if (var82.minecraft.settings.anaglyph) {
-					    var74 = (var82.fogRed * 30.0F
-						    + var82.fogBlue * 59.0F + var82.fogGreen * 11.0F) / 100.0F;
-					    var33 = (var82.fogRed * 30.0F + var82.fogBlue * 70.0F) / 100.0F;
-					    var34 = (var82.fogRed * 30.0F + var82.fogGreen * 70.0F) / 100.0F;
-					    var82.fogRed = var74;
-					    var82.fogBlue = var33;
-					    var82.fogGreen = var34;
+					if (renderer.minecraft.settings.anaglyph) {
+					    var74 = (renderer.fogRed * 30.0F
+						    + renderer.fogBlue * 59.0F + renderer.fogGreen * 11.0F) / 100.0F;
+					    var33 = (renderer.fogRed * 30.0F + renderer.fogBlue * 70.0F) / 100.0F;
+					    var34 = (renderer.fogRed * 30.0F + renderer.fogGreen * 70.0F) / 100.0F;
+					    renderer.fogRed = var74;
+					    renderer.fogBlue = var33;
+					    renderer.fogGreen = var34;
 					}
 
-					GL11.glClearColor(var82.fogRed,
-						var82.fogBlue, var82.fogGreen,
+					GL11.glClearColor(renderer.fogRed,
+						renderer.fogBlue, renderer.fogGreen,
 						0.0F);
 					GL11.glClear(16640);
-					var82.fogColorMultiplier = 1.0F;
+					renderer.fogColorMultiplier = 1.0F;
 					GL11.glEnable(2884);
-					var82.fogEnd = 512 >> (var82.minecraft.settings.viewDistance << 1);
+					renderer.fogEnd = 512 >> (renderer.minecraft.settings.viewDistance << 1);
 					GL11.glMatrixMode(5889);
 					GL11.glLoadIdentity();
 					var29 = 0.07F;
-					if (var82.minecraft.settings.anaglyph) {
+					if (renderer.minecraft.settings.anaglyph) {
 					    GL11.glTranslatef(
 						    (-((var77 << 1) - 1))
 							    * var29, 0.0F, 0.0F);
 					}
 
-					Player var116 = var82.minecraft.player;
+					Player var116 = renderer.minecraft.player;
 					var69 = 70.0F;
 					if (var116.health <= 0) {
 					    var74 = var116.deathTime + var80;
@@ -929,23 +927,23 @@ public final class Minecraft implements Runnable {
 
 					GLU.gluPerspective(
 						var69,
-						(float) var82.minecraft.width
-							/ (float) var82.minecraft.height,
-						0.05F, var82.fogEnd);
+						(float) renderer.minecraft.width
+							/ (float) renderer.minecraft.height,
+						0.05F, renderer.fogEnd);
 					GL11.glMatrixMode(5888);
 					GL11.glLoadIdentity();
-					if (var82.minecraft.settings.anaglyph) {
+					if (renderer.minecraft.settings.anaglyph) {
 					    GL11.glTranslatef(
 						    ((var77 << 1) - 1) * 0.1F,
 						    0.0F, 0.0F);
 					}
 
-					var82.hurtEffect(var80);
-					var82.applyBobbing(
+					renderer.hurtEffect(var80);
+					renderer.applyBobbing(
 						var80,
-						var82.minecraft.settings.viewBobbing);
+						renderer.minecraft.settings.viewBobbing);
 
-					var116 = var82.minecraft.player;
+					var116 = renderer.minecraft.player;
 					GL11.glTranslatef(0.0F, 0.0F,
 						cameraDistance);
 
@@ -968,7 +966,7 @@ public final class Minecraft implements Runnable {
 						-var33);
 					Frustrum var76 = FrustrumImpl.update();
 					Frustrum var100 = var76;
-					LevelRenderer var101 = var82.minecraft.levelRenderer;
+					LevelRenderer var101 = renderer.minecraft.levelRenderer;
 
 					int var98;
 					for (var98 = 0; var98 < var101.chunkCache.length; ++var98) {
@@ -976,9 +974,9 @@ public final class Minecraft implements Runnable {
 						    .clip(var100);
 					}
 
-					var101 = var82.minecraft.levelRenderer;
+					var101 = renderer.minecraft.levelRenderer;
 					Collections
-						.sort(var82.minecraft.levelRenderer.chunks,
+						.sort(renderer.minecraft.levelRenderer.chunks,
 							new ChunkDirtyDistanceComparator(
 								var126));
 					var98 = var101.chunks.size() - 1;
@@ -996,12 +994,13 @@ public final class Minecraft implements Runnable {
 					    var118.loaded = false;
 					}
 
-					var82.updateFog();
+					renderer.updateFog();
 					GL11.glEnable(2912);
 					var89.sortChunks(var126, 0);
 					int var83;
 					int var110;
-					ShapeRenderer shapeRenderer;
+					ShapeRenderer.tryVBO = settings.VBOs;
+					ShapeRenderer shapeRenderer = ShapeRenderer.instance;
 					int var114;
 					int var125;
 					int var122;
@@ -1029,8 +1028,8 @@ public final class Minecraft implements Runnable {
 								    0.2F, 0.2F,
 								    0.2F, 1.0F);
 							    GL11.glDepthFunc(513);
-							    shapeRenderer = ShapeRenderer.instance;
-							    ShapeRenderer.instance
+
+							    shapeRenderer
 								    .begin();
 
 							    for (var114 = 0; var114 < 6; ++var114) {
@@ -1067,14 +1066,14 @@ public final class Minecraft implements Runnable {
 					    }
 					}
 
-					var82.setLighting(true);
-					Vec3D var103 = var82
+					renderer.setLighting(true);
+					Vec3D var103 = renderer
 						.getPlayerVector(var80);
 					var89.level.blockMap.render(var103,
 						var76, var89.textureManager,
 						var80);
-					var82.setLighting(false);
-					var82.updateFog();
+					renderer.setLighting(false);
+					renderer.updateFog();
 					float var107 = var80;
 					ParticleManager var96 = var93;
 					var29 = -MathHelper
@@ -1103,14 +1102,13 @@ public final class Minecraft implements Runnable {
 						}
 
 						GL11.glBindTexture(3553, var110);
-						ShapeRenderer var121 = ShapeRenderer.instance;
-						ShapeRenderer.instance.begin();
+						shapeRenderer.begin();
 
 						for (var120 = 0; var120 < var96.particles[var83]
 							.size(); ++var120) {
 						    ((Particle) var96.particles[var83]
 							    .get(var120))
-							    .render(var121,
+							    .render(shapeRenderer,
 								    var107,
 								    var29,
 								    var69,
@@ -1119,7 +1117,7 @@ public final class Minecraft implements Runnable {
 								    var32);
 						}
 
-						var121.end();
+						shapeRenderer.end();
 					    }
 					}
 
@@ -1129,7 +1127,7 @@ public final class Minecraft implements Runnable {
 					GL11.glEnable(3553);
 					GL11.glCallList(var89.listId); // rock
 								       // edges
-					var82.updateFog();
+					renderer.updateFog();
 					var101 = var89;
 
 					GL11.glBindTexture(3553,
@@ -1149,7 +1147,6 @@ public final class Minecraft implements Runnable {
 					    var30 = var69;
 					}
 
-					shapeRenderer = ShapeRenderer.instance;
 					var74 = 0.0F;
 					var33 = 4.8828125E-4F;
 					var74 = (float) (var89.level.depth + 2);
@@ -1269,16 +1266,16 @@ public final class Minecraft implements Runnable {
 
 					shapeRenderer.end();
 					GL11.glEnable(3553);
-					var82.updateFog();
+					renderer.updateFog();
 					int var108;
-					if (var82.minecraft.selected != null) {
+					if (renderer.minecraft.selected != null) {
 					    GL11.glDisable(3008);
-					    MovingObjectPosition var10001 = var82.minecraft.selected;
+					    MovingObjectPosition var10001 = renderer.minecraft.selected;
 					    var105 = var126.inventory
 						    .getSelected();
 					    MovingObjectPosition var102 = var10001;
 					    var101 = var89;
-					    ShapeRenderer var113 = ShapeRenderer.instance;
+
 					    GL11.glEnable(3042);
 					    GL11.glEnable(3008);
 					    GL11.glBlendFunc(770, 1);
@@ -1316,12 +1313,12 @@ public final class Minecraft implements Runnable {
 							-(var102.x + var74),
 							-(var102.y + var33),
 							-(var102.z + var34));
-						var113.begin();
-						var113.noColor();
+						shapeRenderer.begin();
+						shapeRenderer.noColor();
 						GL11.glDepthMask(false);
 						for (var86 = 0; var86 < 6; ++var86) {
 						    var73.renderSide(
-							    var113,
+							    shapeRenderer,
 							    var102.x,
 							    var102.y,
 							    var102.z,
@@ -1329,14 +1326,14 @@ public final class Minecraft implements Runnable {
 							    240 + (int) (var101.cracks * 10.0F));
 						}
 
-						var113.end();
+						shapeRenderer.end();
 						GL11.glDepthMask(true);
 						GL11.glPopMatrix();
 					    }
 
 					    GL11.glDisable(3042);
 					    GL11.glDisable(3008);
-					    var10001 = var82.minecraft.selected;
+					    var10001 = renderer.minecraft.selected;
 					    var126.inventory.getSelected();
 					    var102 = var10001;
 					    GL11.glEnable(3042);
@@ -1408,7 +1405,7 @@ public final class Minecraft implements Runnable {
 					}
 
 					GL11.glBlendFunc(770, 771);
-					var82.updateFog();
+					renderer.updateFog();
 					GL11.glEnable(3553);
 					GL11.glEnable(3042);
 					GL11.glBindTexture(3553,
@@ -1423,7 +1420,7 @@ public final class Minecraft implements Runnable {
 
 					var120 = var89.sortChunks(var126, 1);
 					GL11.glColorMask(true, true, true, true);
-					if (var82.minecraft.settings.anaglyph) {
+					if (renderer.minecraft.settings.anaglyph) {
 					    if (var77 == 0) {
 						GL11.glColorMask(false, true,
 							true, false);
@@ -1468,142 +1465,140 @@ public final class Minecraft implements Runnable {
 					    // Front Face
 
 					    // Bottom Left
-					    ShapeRenderer sr = ShapeRenderer.instance;
-					    sr.begin();
-					    sr.vertex(bounds.x0, bounds.y0,
-						    bounds.z1);
+					    shapeRenderer.begin();
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z1);
 					    // Bottom Right
-					    sr.vertex(bounds.x1, bounds.y0,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y0, bounds.z1);
 					    // Top Right
-					    sr.vertex(bounds.x1, bounds.y1,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y1, bounds.z1);
 					    // Top Left
-					    sr.vertex(bounds.x0, bounds.y1,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z1);
 
 					    // Back Face
 
 					    // Bottom Right
-					    sr.vertex(bounds.x0, bounds.y0,
-						    bounds.z0);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z0);
 					    // Top Right
-					    sr.vertex(bounds.x0, bounds.y1,
-						    bounds.z0);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z0);
 					    // Top Left
-					    sr.vertex(bounds.x1, bounds.y1,
-						    bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y1, bounds.z0);
 					    // Bottom Left
-					    sr.vertex(bounds.x1, bounds.y0,
-						    bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y0, bounds.z0);
 
 					    // Top Face
 					    // Top Left
 
 					    // Bottom Left
-					    sr.vertex(bounds.x0, bounds.y1,
-						    bounds.z0);
-					    sr.vertex(bounds.x0, bounds.y1,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z0);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z1);
 					    // Bottom Right
-					    sr.vertex(bounds.x1, bounds.y1,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y1, bounds.z1);
 					    // Top Right
-					    sr.vertex(bounds.x1, bounds.y1,
-						    bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y1, bounds.z0);
 
 					    // Bottom Face
 
 					    // Top Right
-					    sr.vertex(bounds.x0, bounds.y0,
-						    bounds.z0);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z0);
 					    // Top Left
-					    sr.vertex(bounds.x1, bounds.y0,
-						    bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y0, bounds.z0);
 					    // Bottom Left
-					    sr.vertex(bounds.x1, bounds.y0,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y0, bounds.z1);
 					    // Bottom Right
-					    sr.vertex(bounds.x0, bounds.y0,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z1);
 
 					    // Right face
 
 					    // Bottom Right
-					    sr.vertex(bounds.x1, bounds.y0,
-						    bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y0, bounds.z0);
 					    // Top Right
-					    sr.vertex(bounds.x1, bounds.y1,
-						    bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y1, bounds.z0);
 					    // Top Left
-					    sr.vertex(bounds.x1, bounds.y1,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y1, bounds.z1);
 					    // Bottom Left
-					    sr.vertex(bounds.x1, bounds.y0,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y0, bounds.z1);
 
 					    // Left Face
 
 					    // Bottom Left
-					    sr.vertex(bounds.x0, bounds.y0,
-						    bounds.z0);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z0);
 					    // Bottom Right
-					    sr.vertex(bounds.x0, bounds.y0,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z1);
 					    // Top Right
-					    sr.vertex(bounds.x0, bounds.y1,
-						    bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z1);
 					    // Top Left
-					    sr.vertex(bounds.x0, bounds.y1,
-						    bounds.z0);
-					    sr.end();
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z0);
+					    shapeRenderer.end();
 
 					    GL11.glColor4f(color.R, color.G,
 						    color.B, color.A + 0.2F);
 
-					    ShapeRenderer var2 = ShapeRenderer.instance;
-					    var2.startDrawing(3);
-					    var2.vertex(bounds.x0, bounds.y0,
-						    bounds.z0);
-					    var2.vertex(bounds.x1, bounds.y0,
-						    bounds.z0);
-					    var2.vertex(bounds.x1, bounds.y0,
-						    bounds.z1);
-					    var2.vertex(bounds.x0, bounds.y0,
-						    bounds.z1);
-					    var2.vertex(bounds.x0, bounds.y0,
-						    bounds.z0);
-					    var2.end();
-					    var2.startDrawing(3);
-					    var2.vertex(bounds.x0, bounds.y1,
-						    bounds.z0);
-					    var2.vertex(bounds.x1, bounds.y1,
-						    bounds.z0);
-					    var2.vertex(bounds.x1, bounds.y1,
-						    bounds.z1);
-					    var2.vertex(bounds.x0, bounds.y1,
-						    bounds.z1);
-					    var2.vertex(bounds.x0, bounds.y1,
-						    bounds.z0);
-					    var2.end();
-					    var2.startDrawing(1);
-					    var2.vertex(bounds.x0, bounds.y0,
-						    bounds.z0);
-					    var2.vertex(bounds.x0, bounds.y1,
-						    bounds.z0);
-					    var2.vertex(bounds.x1, bounds.y0,
-						    bounds.z0);
-					    var2.vertex(bounds.x1, bounds.y1,
-						    bounds.z0);
-					    var2.vertex(bounds.x1, bounds.y0,
-						    bounds.z1);
-					    var2.vertex(bounds.x1, bounds.y1,
-						    bounds.z1);
-					    var2.vertex(bounds.x0, bounds.y0,
-						    bounds.z1);
-					    var2.vertex(bounds.x0, bounds.y1,
-						    bounds.z1);
-					    var2.end();
+					    shapeRenderer.startDrawing(3);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y0, bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y0, bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z0);
+					    shapeRenderer.end();
+					    shapeRenderer.startDrawing(3);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y1, bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y1, bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z0);
+					    shapeRenderer.end();
+					    shapeRenderer.startDrawing(1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z0);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y0, bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y1, bounds.z0);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y0, bounds.z1);
+					    shapeRenderer.vertex(bounds.x1,
+						    bounds.y1, bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y0, bounds.z1);
+					    shapeRenderer.vertex(bounds.x0,
+						    bounds.y1, bounds.z1);
+					    shapeRenderer.end();
 
 					    GL11.glDepthMask(true);
 					    GL11.glEnable(3553);
@@ -1614,21 +1609,20 @@ public final class Minecraft implements Runnable {
 
 					    // ------------------
 					}
-					if (var82.minecraft.raining) {
+					if (renderer.minecraft.raining) {
 					    float var97 = var80;
-					    var27 = var82;
-					    Level var109 = var82.minecraft.level;
+					    renderer = renderer;
+					    Level var109 = renderer.minecraft.level;
 					    var104 = (int) player.x;
 					    var108 = (int) player.y;
 					    var114 = (int) player.z;
-					    ShapeRenderer var84 = ShapeRenderer.instance;
 					    GL11.glDisable(2884);
 					    GL11.glNormal3f(0.0F, 1.0F, 0.0F);
 					    GL11.glEnable(3042);
 					    GL11.glBlendFunc(770, 771);
 					    GL11.glBindTexture(
 						    3553,
-						    var82.minecraft.textureManager
+						    renderer.minecraft.textureManager
 							    .load("/rain.png"));
 
 					    for (var110 = var104 - 5; var110 <= var104 + 5; ++var110) {
@@ -1648,7 +1642,7 @@ public final class Minecraft implements Runnable {
 						    }
 
 						    if (var86 != var125) {
-							var74 = ((var27.levelTicks
+							var74 = ((renderer.levelTicks
 								+ var110 * 3121 + var122 * 418711) % 32 + var97) / 32.0F;
 							float var124 = var110
 								+ 0.5F
@@ -1666,15 +1660,15 @@ public final class Minecraft implements Runnable {
 								1.0F,
 								(1.0F - var92
 									* var92) * 0.7F);
-							var84.begin();
-							var84.vertexUV(var110,
-								var86, var122,
-								0.0F, var86
-									* 2.0F
+							shapeRenderer.begin();
+							shapeRenderer.vertexUV(
+								var110, var86,
+								var122, 0.0F,
+								var86 * 2.0F
 									/ 8.0F
 									+ var74
 									* 2.0F);
-							var84.vertexUV(
+							shapeRenderer.vertexUV(
 								var110 + 1,
 								var86,
 								var122 + 1,
@@ -1683,7 +1677,7 @@ public final class Minecraft implements Runnable {
 									/ 8.0F
 									+ var74
 									* 2.0F);
-							var84.vertexUV(
+							shapeRenderer.vertexUV(
 								var110 + 1,
 								var125,
 								var122 + 1,
@@ -1692,22 +1686,22 @@ public final class Minecraft implements Runnable {
 									/ 8.0F
 									+ var74
 									* 2.0F);
-							var84.vertexUV(var110,
-								var125, var122,
-								0.0F, var125
-									* 2.0F
+							shapeRenderer.vertexUV(
+								var110, var125,
+								var122, 0.0F,
+								var125 * 2.0F
 									/ 8.0F
 									+ var74
 									* 2.0F);
-							var84.vertexUV(var110,
-								var86,
+							shapeRenderer.vertexUV(
+								var110, var86,
 								var122 + 1,
 								0.0F, var86
 									* 2.0F
 									/ 8.0F
 									+ var74
 									* 2.0F);
-							var84.vertexUV(
+							shapeRenderer.vertexUV(
 								var110 + 1,
 								var86, var122,
 								2.0F, var86
@@ -1715,7 +1709,7 @@ public final class Minecraft implements Runnable {
 									/ 8.0F
 									+ var74
 									* 2.0F);
-							var84.vertexUV(
+							shapeRenderer.vertexUV(
 								var110 + 1,
 								var125, var122,
 								2.0F, var125
@@ -1723,15 +1717,15 @@ public final class Minecraft implements Runnable {
 									/ 8.0F
 									+ var74
 									* 2.0F);
-							var84.vertexUV(var110,
-								var125,
+							shapeRenderer.vertexUV(
+								var110, var125,
 								var122 + 1,
 								0.0F, var125
 									* 2.0F
 									/ 8.0F
 									+ var74
 									* 2.0F);
-							var84.end();
+							shapeRenderer.end();
 						    }
 						}
 					    }
@@ -1739,28 +1733,28 @@ public final class Minecraft implements Runnable {
 					    GL11.glEnable(2884);
 					    GL11.glDisable(3042);
 					}
-					if (var82.entity != null) {
-					    var82.entity
+					if (renderer.entity != null) {
+					    renderer.entity
 						    .renderHover(
-							    var82.minecraft.textureManager,
+							    renderer.minecraft.textureManager,
 							    var80);
 					}
 
 					GL11.glClear(256);
 					GL11.glLoadIdentity();
-					if (var82.minecraft.settings.anaglyph) {
+					if (renderer.minecraft.settings.anaglyph) {
 					    GL11.glTranslatef(
 						    ((var77 << 1) - 1) * 0.1F,
 						    0.0F, 0.0F);
 					}
 
-					var82.hurtEffect(var80);
-					var82.applyBobbing(
+					renderer.hurtEffect(var80);
+					renderer.applyBobbing(
 						var80,
-						var82.minecraft.settings.viewBobbing);
+						renderer.minecraft.settings.viewBobbing);
 
-					HeldBlock var112 = var82.heldBlock;
-					var117 = var82.heldBlock.lastPos
+					HeldBlock var112 = renderer.heldBlock;
+					var117 = renderer.heldBlock.lastPos
 						+ (var112.pos - var112.lastPos)
 						* var80;
 					var116 = var112.minecraft.player;
@@ -1815,7 +1809,6 @@ public final class Minecraft implements Runnable {
 					GL11.glColor4f(color.R, color.G,
 						color.B, 1.0F);
 
-					ShapeRenderer var123 = ShapeRenderer.instance;
 					if (var112.block != null) {
 					    var34 = 0.4F;
 					    GL11.glScalef(0.4F, var34, var34);
@@ -1827,7 +1820,7 @@ public final class Minecraft implements Runnable {
 							var112.minecraft.textureManager
 								.load("/terrain.png"));
 						var112.block
-							.renderPreview(var123);
+							.renderPreview(shapeRenderer);
 					    }
 					} else {
 					    var116.bindTexture(var112.minecraft.textureManager);
@@ -1850,7 +1843,7 @@ public final class Minecraft implements Runnable {
 					GL11.glPopMatrix();
 					var112.minecraft.renderer
 						.setLighting(false);
-					if (!var82.minecraft.settings.anaglyph) {
+					if (!renderer.minecraft.settings.anaglyph) {
 					    break;
 					}
 
@@ -1929,7 +1922,7 @@ public final class Minecraft implements Runnable {
 		    var2.printStackTrace();
 		}
 
-		if (this.canvas == null) {
+		if (this.canvas != null) { // check this, changed @FindBugs
 		    this.canvas.requestFocus();
 		}
 	    } else {
@@ -2087,18 +2080,19 @@ public final class Minecraft implements Runnable {
 	}
 
 	GL11.glBindTexture(3553, this.textureManager.load("/terrain.png"));
-	TextureManager var19 = this.textureManager;
+	TextureManager texManager = this.textureManager;
 
-	for (var16 = 0; var16 < var19.animations.size(); ++var16) {
-	    TextureFX var3;
-	    (var3 = var19.animations.get(var16)).anaglyph = var19.settings.anaglyph;
-	    var3.animate();
-	    var19.textureBuffer.clear();
-	    var19.textureBuffer.put(var3.textureData);
-	    var19.textureBuffer.position(0).limit(var3.textureData.length);
-	    GL11.glTexSubImage2D(3553, 0, var3.textureId % 16 << 4,
-		    var3.textureId / 16 << 4, 16, 16, 6408, 5121,
-		    var19.textureBuffer);
+	for (var16 = 0; var16 < texManager.animations.size(); ++var16) {
+	    TextureFX texFX;
+	    (texFX = texManager.animations.get(var16)).anaglyph = texManager.settings.anaglyph;
+	    texFX.animate();
+	    texManager.textureBuffer.clear();
+	    texManager.textureBuffer.put(texFX.textureData);
+	    texManager.textureBuffer.position(0)
+		    .limit(texFX.textureData.length);
+	    GL11.glTexSubImage2D(3553, 0, texFX.textureId % 16 << 4,
+		    texFX.textureId / 16 << 4, 16, 16, 6408, 5121,
+		    texManager.textureBuffer);
 	}
 
 	int var4;
@@ -2162,12 +2156,11 @@ public final class Minecraft implements Runnable {
 						.size()) {
 					    List<ExtData> temp = new ArrayList<ExtData>();
 					    for (int j = 0; j < PacketType.packets.length - 1; j++) {
-						if (PacketType.packets[j] != null) {
-						    if (PacketType.packets[j].extName != "") {
-							temp.add(new ExtData(
-								PacketType.packets[j].extName,
-								PacketType.packets[j].Version));
-						    }
+						if (PacketType.packets[j] != null
+							&& PacketType.packets[j].extName != "") {
+						    temp.add(new ExtData(
+							    PacketType.packets[j].extName,
+							    PacketType.packets[j].Version));
 						}
 					    }
 					    String AppName = "ClassiCube Client";
@@ -2536,7 +2529,7 @@ public final class Minecraft implements Runnable {
 						var47 = (short) (var47 - 22);
 						var33 = new NetworkPlayer(
 							networkManager.minecraft,
-							var5, var34, var36,
+							var34, var36,
 							var47, var10,
 							var9 * 360 / 256.0F,
 							var58 * 360 / 256.0F);
@@ -2946,6 +2939,8 @@ public final class Minecraft implements Runnable {
 			    // SelectionBoxData((byte) 1,"",new
 			    // ColorCache(0F,0F,0F,0.6F), new
 			    // CustomAABB(12,45,30, 20, 30, 40)));
+			    // this.textureManager.customEdgeBlock =
+			    // textureManager.textureAtlas.get(5);
 			}
 
 			if (Keyboard.getEventKey() == this.settings.chatKey.key
@@ -3016,10 +3011,9 @@ public final class Minecraft implements Runnable {
 	}
 
 	if (this.level != null && player != null) {
-	    com.mojang.minecraft.render.Renderer var29 = this.renderer;
 	    ++this.renderer.levelTicks;
-	    HeldBlock var41 = var29.heldBlock;
-	    var29.heldBlock.lastPos = var41.pos;
+	    HeldBlock var41 = renderer.heldBlock;
+	    renderer.heldBlock.lastPos = var41.pos;
 	    if (var41.moving) {
 		++var41.offset;
 		if (var41.offset == 7) {
@@ -3050,23 +3044,22 @@ public final class Minecraft implements Runnable {
 		var41.block = var43;
 	    }
 
-	    if (var29.minecraft.raining) {
-		com.mojang.minecraft.render.Renderer var39 = var29;
-		var27 = var29.minecraft.player;
-		Level var32 = var29.minecraft.level;
+	    if (renderer.minecraft.raining) {
+		var27 = renderer.minecraft.player;
+		Level var32 = renderer.minecraft.level;
 		var40 = (int) var27.x;
 		var46 = (int) var27.y;
 		var45 = (int) var27.z;
 
 		for (i = 0; i < 50; ++i) {
-		    int var60 = var40 + var39.random.nextInt(9) - 4;
-		    int var52 = var45 + var39.random.nextInt(9) - 4;
+		    int var60 = var40 + renderer.random.nextInt(9) - 4;
+		    int var52 = var45 + renderer.random.nextInt(9) - 4;
 		    int var57;
 		    if ((var57 = var32.getHighestTile(var60, var52)) <= var46 + 4
 			    && var57 >= var46 - 4) {
-			float var56 = var39.random.nextFloat();
-			float var62 = var39.random.nextFloat();
-			var39.minecraft.particleManager
+			float var56 = renderer.random.nextFloat();
+			float var62 = renderer.random.nextFloat();
+			renderer.minecraft.particleManager
 				.spawnParticle(new WaterDropParticle(var32,
 					var60 + var56, var57 + 0.1F, var52
 						+ var62));

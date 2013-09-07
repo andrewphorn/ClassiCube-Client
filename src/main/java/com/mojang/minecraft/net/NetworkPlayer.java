@@ -12,8 +12,8 @@ import org.lwjgl.opengl.GL11;
 public class NetworkPlayer extends HumanoidMob {
 
     public static final long serialVersionUID = 77479605454997290L;
-    private List<PositionUpdate> moveQueue = new LinkedList<PositionUpdate>();
-    private Minecraft minecraft;
+    private transient List<PositionUpdate> moveQueue = new LinkedList<PositionUpdate>();
+    private transient Minecraft minecraft;
     private int xp;
     private int yp;
     private int zp;
@@ -22,10 +22,10 @@ public class NetworkPlayer extends HumanoidMob {
     public String name;
     public String displayName;
     int tickCount = 0;
-    private TextureManager textures;
+    private transient TextureManager textures;
     public String SkinName = null;
 
-    public NetworkPlayer(Minecraft var1, int var2, String var3, int var4,
+    public NetworkPlayer(Minecraft var1, String var3, int var4,
 	    int var5, int var6, float var7, float var8) {
 	super(var1.level, (float) var4, (float) var5, (float) var6);
 	this.minecraft = var1;

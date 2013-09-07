@@ -22,7 +22,7 @@ public final class Chunk {
     private boolean[] dirty = new boolean[2];
     public boolean loaded;
 
-    public Chunk(Level var1, int var2, int var3, int var4, int var5, int var6) {
+    public Chunk(Level var1, int var2, int var3, int var4, int var6) {
 	this.level = var1;
 	this.x = var2;
 	this.y = var3;

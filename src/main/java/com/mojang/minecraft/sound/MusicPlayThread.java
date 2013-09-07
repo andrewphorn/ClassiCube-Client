@@ -23,44 +23,39 @@ final class MusicPlayThread extends Thread {
 		}
 
 		ByteBuffer var2;
-		if (this.music.playing == null) {
-		    if (this.music.current != null) {
-			var2 = this.music.current;
-			this.music.playing = var2;
-			var2 = null;
-			this.music.current = null;
-			this.music.playing.clear();
-		    }
+		if (this.music.playing == null && this.music.current != null) {
+		    var2 = this.music.current;
+		    this.music.playing = var2;
+		    var2 = null;
+		    this.music.current = null;
+		    this.music.playing.clear();
 		}
 
-		if (this.music.playing != null) {
-		    if (this.music.playing.remaining() != 0) {
-			while (true) {
-			    if (this.music.playing.remaining() == 0) {
-				break;
-			    }
+		if (this.music.playing != null
+			&& this.music.playing.remaining() != 0) {
+		    while (true) {
+			if (this.music.playing.remaining() == 0) {
+			    break;
+			}
 
-			    var2 = this.music.playing;
-			    int var10 = this.music.stream.readPcm(var2.array(),
-				    var2.position(), var2.remaining());
-			    var2.position(var2.position() + var10);
-			    if (var10 <= 0) {
-				this.music.finished = true;
-				this.music.stopped = true;
-				break;
-			    }
+			var2 = this.music.playing;
+			int var10 = this.music.stream.readPcm(var2.array(),
+				var2.position(), var2.remaining());
+			var2.position(var2.position() + var10);
+			if (var10 <= 0) {
+			    this.music.finished = true;
+			    this.music.stopped = true;
+			    break;
 			}
 		    }
 		}
 
-		if (this.music.playing != null) {
-		    if (this.music.previous == null) {
-			this.music.playing.flip();
-			var2 = this.music.playing;
-			this.music.previous = var2;
-			var2 = null;
-			this.music.playing = var2;
-		    }
+		if (this.music.playing != null && this.music.previous == null) {
+		    this.music.playing.flip();
+		    var2 = this.music.playing;
+		    this.music.previous = var2;
+		    var2 = null;
+		    this.music.playing = var2;
 		}
 
 		Thread.sleep(10L);

@@ -2,10 +2,7 @@ package com.mojang.minecraft.gui;
 
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
-import java.net.URL;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 

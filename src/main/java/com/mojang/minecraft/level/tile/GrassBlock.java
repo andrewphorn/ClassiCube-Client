@@ -7,7 +7,7 @@ import java.util.Random;
 public final class GrassBlock extends Block {
 
     protected GrassBlock(int var1) {
-	super(2);
+	super(var1);
 	this.textureId = 3;
 	this.setPhysics(true);
     }

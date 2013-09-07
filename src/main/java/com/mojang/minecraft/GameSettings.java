@@ -3,6 +3,7 @@ package com.mojang.minecraft;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -10,7 +11,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 public final class GameSettings implements Serializable {
     /**
@@ -44,7 +44,7 @@ public final class GameSettings implements Serializable {
     public boolean music = true;
     public boolean sound = true;
     public boolean invertMouse = false;
-    public boolean canServerChangeTextures = false;
+    public boolean canServerChangeTextures = true;
     public boolean showFrameRate = false;
     public int viewDistance = 0;
     public boolean viewBobbing = true;
@@ -163,6 +163,9 @@ public final class GameSettings implements Serializable {
 
 	if (setting == 7) {
 	    limitFramerate = !limitFramerate;
+	    if (Display.isCreated()) {
+		Display.setVSyncEnabled(limitFramerate);
+	    }
 	}
 
 	if (setting == 8) {
@@ -290,6 +293,7 @@ public final class GameSettings implements Serializable {
 
 		    if (setting[0].equals("limitFramerate")) {
 			limitFramerate = setting[1].equals("true");
+			Display.setVSyncEnabled(limitFramerate);
 		    }
 
 		    if (setting[0].equals("smoothing")) {

@@ -7,7 +7,7 @@ import java.util.Random;
 public final class DarkGrassBlock extends Block {
 
     protected DarkGrassBlock(int var1) {
-	super(51);
+	super(var1);
 	this.textureId = 47;
 	this.setPhysics(true);
     }

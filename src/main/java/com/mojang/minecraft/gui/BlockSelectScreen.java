@@ -104,7 +104,7 @@ public final class BlockSelectScreen extends GuiScreen {
 
     String GetBlockName(int id) {
 	String s;
-	if (id == 0 || id == 255)
+	if (id < 0 || id > 255)
 	    return "";
 	try {
 	    Block b = (Block) SessionData.allowedBlocks.get(id);

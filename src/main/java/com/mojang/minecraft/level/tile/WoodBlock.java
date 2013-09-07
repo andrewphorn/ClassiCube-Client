@@ -3,7 +3,7 @@ package com.mojang.minecraft.level.tile;
 public final class WoodBlock extends Block {
 
     protected WoodBlock(int var1) {
-	super(17);
+	super(var1);
 	this.textureId = 20;
     }
 

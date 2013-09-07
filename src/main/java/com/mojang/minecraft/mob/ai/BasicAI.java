@@ -139,9 +139,9 @@ public class BasicAI extends AI {
 		    } else {
 			this.mob.yd = 0.06F;
 		    }
-		} else if (this.jumping && this.mob.isInOrOnRope()) {
-		    if (this.mob.yd > 0.02f)
-			this.mob.yd = 0.02F;
+		} else if (this.jumping && this.mob.isInOrOnRope()
+			&& this.mob.yd > 0.02f) {
+		    this.mob.yd = 0.02F;
 		}
 	    }
 	}
@@ -215,7 +215,7 @@ public class BasicAI extends AI {
 
 	boolean var1 = this.mob.isInWater();
 	boolean isInLava = this.mob.isInLava();
-	if (var1 || isInLava ) {
+	if (var1 || isInLava) {
 	    this.jumping = this.random.nextFloat() < 0.8F;
 	}
     }

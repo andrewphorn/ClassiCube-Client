@@ -5,7 +5,7 @@ import com.mojang.minecraft.level.Level;
 public final class SpongeBlock extends Block {
 
     protected SpongeBlock(int var1) {
-	super(19);
+	super(var1);
 	this.textureId = 48;
     }
 

@@ -7,7 +7,7 @@ public final class Sound implements Audio {
     private SoundPos pos;
     private float pitch = 0.0F;
     private float volume = 1.0F;
-    private static short[] data = new short[1];
+    private short[] data = new short[1];
 
     public Sound(AudioInfo var1, SoundPos var2) {
 	this.info = var1;

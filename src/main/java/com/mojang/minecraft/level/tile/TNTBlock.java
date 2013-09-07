@@ -7,7 +7,7 @@ import com.mojang.minecraft.particle.ParticleManager;
 public final class TNTBlock extends Block {
 
     public TNTBlock(int var1, int var2) {
-	super(46, 8);
+	super(var1, var2);
     }
 
     protected final int getTextureId(int texture) {

@@ -3,7 +3,7 @@ package com.mojang.minecraft.model;
 public final class SheepFurModel extends AnimalModel {
 
     public SheepFurModel() {
-	super(12, 0.0F);
+	super(12);
 	this.head = new ModelPart(0, 0);
 	this.head.setBounds(-3.0F, -4.0F, -4.0F, 6, 6, 6, 0.6F);
 	this.head.setPosition(0.0F, 6.0F, -8.0F);

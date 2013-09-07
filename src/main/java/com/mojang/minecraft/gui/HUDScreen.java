@@ -52,7 +52,7 @@ public final class HUDScreen extends Screen {
 		this.height - 22 - 1, 0, 22, 24, 22);
 	GL11.glBindTexture(3553, this.mc.textureManager.load("/gui/icons.png"));
 	this.drawImage(this.width / 2 - 7, this.height / 2 - 7, 0, 0, 16, 16);
-	boolean var9 = this.mc.player.invulnerableTime / 3 % 2 == 1;
+	boolean var9 = (this.mc.player.invulnerableTime / 3 & 1) == 1;
 	if (this.mc.player.invulnerableTime < 10) {
 	    var9 = false;
 	}
@@ -284,7 +284,7 @@ public final class HUDScreen extends Screen {
 
 		    y += 9;
 		    PlayerListNameData pi = namesToPrint.get(var11);
-		    if (lastGroupName != pi.groupName) {
+		    if (!lastGroupName.equals(pi.groupName)) {
 			lastGroupName = pi.groupName;
 			var5.render(lastGroupName, x + 2, y, 51455);
 			groupsOnThisPage++;
@@ -325,7 +325,7 @@ public final class HUDScreen extends Screen {
 	for (int var11 = 0; var11 < namesToPrint.size(); ++var11) {
 	    PlayerListNameData pi = (PlayerListNameData) namesToPrint
 		    .get(var11);
-	    if (lastGroupName != pi.groupName) {
+	    if (!lastGroupName.equals(pi.groupName)) {
 		lastGroupName = pi.groupName;
 		groupChanges++;
 	    }

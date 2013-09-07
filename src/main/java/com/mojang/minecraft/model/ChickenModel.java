@@ -2,8 +2,6 @@ package com.mojang.minecraft.model;
 
 import com.mojang.util.MathHelper;
 
-import org.lwjgl.opengl.GL11;
-
 public class ChickenModel extends Model
 {
     public ModelPart head;

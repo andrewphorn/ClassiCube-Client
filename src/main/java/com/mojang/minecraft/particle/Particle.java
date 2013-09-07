@@ -9,9 +9,6 @@ import com.mojang.util.MathHelper;
 public class Particle extends Entity {
 
     private static final long serialVersionUID = 1L;
-    protected float xd;
-    protected float yd;
-    protected float zd;
     protected int tex;
     protected float uo;
     protected float vo;

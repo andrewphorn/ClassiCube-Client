@@ -30,10 +30,6 @@ public class LiquidBlock extends Block {
 	this.setBounds(var4 + 0.0F, 0.0F - var3 + var4, var4 + 0.0F,
 		var4 + 1.0F, 1.0F - var3 + var4, var4 + 1.0F);
 	this.setPhysics(true);
-	if (var2 == LiquidType.LAVA) {
-	    this.setTickDelay(16);
-	}
-
     }
 
     public final boolean isCube() {

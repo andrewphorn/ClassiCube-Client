@@ -269,9 +269,9 @@ public class Level implements Serializable {
 		if (var4 == 0
 			&& (var1 == 0 || var3 == 0 || var1 == this.width - 1 || var3 == this.height - 1)
 			&& (float) var2 >= this.getGroundLevel()
-			&& (float) var2 < this.getWaterLevel()) {
-			if(!this.networkMode)
-			    var4 = Block.WATER.id;
+			&& (float) var2 < this.getWaterLevel()
+			&& !this.networkMode) {
+		    var4 = Block.WATER.id;
 		}
 
 		byte var5 = this.blocks[(var2 * this.height + var3)
@@ -809,26 +809,22 @@ public class Level implements Serializable {
 		var14 = var2 * var14 - var3 * var12;
 		int var15 = 0;
 
-		while (true) {
-		    if (var15 < 10) {
-			float var18 = var6 + var17 * (float) var15 * 0.8F;
-			float var19 = var7 + var16 * (float) var15 * 0.8F;
-			float var20 = var21 + var14 * (float) var15 * 0.8F;
-			if (!this.isSolid(var18, var19, var20)) {
-			    ++var9;
-			    if (this.isLit((int) var18, (int) var19,
-				    (int) var20)) {
-				++var10;
-			    }
-
-			    ++var15;
-			    continue;
+		//here
+		if (var15 < 10) {
+		    float var18 = var6 + var17 * (float) var15 * 0.8F;
+		    float var19 = var7 + var16 * (float) var15 * 0.8F;
+		    float var20 = var21 + var14 * (float) var15 * 0.8F;
+		    if (!this.isSolid(var18, var19, var20)) {
+			++var9;
+			if (this.isLit((int) var18, (int) var19, (int) var20)) {
+			    ++var10;
 			}
-		    }
 
-		    ++var13;
-		    break;
+			++var15;
+		    }
 		}
+
+		++var13;
 	    }
 	}
 

@@ -1,7 +1,5 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.GameSettings;
-
 public class ScaledResolution {
     private int scaledWidth;
     private int scaledHeight;
@@ -9,7 +7,7 @@ public class ScaledResolution {
     public double scaledHeightD;
     public int scaleFactor;
 
-    public ScaledResolution(GameSettings par1GameSettings, int par2, int par3) {
+    public ScaledResolution(int par2, int par3) {
 	this.scaledWidth = par2;
 	this.scaledHeight = par3;
 	this.scaleFactor = 1;

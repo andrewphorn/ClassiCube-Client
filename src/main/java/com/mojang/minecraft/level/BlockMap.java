@@ -15,8 +15,8 @@ public class BlockMap implements Serializable {
     private int width;
     private int depth;
     private int height;
-    private BlockMap$Slot slot = new BlockMap$Slot(this, (SyntheticClass) null);
-    private BlockMap$Slot slot2 = new BlockMap$Slot(this, (SyntheticClass) null);
+    private BlockMap$Slot slot = new BlockMap$Slot(this);
+    private BlockMap$Slot slot2 = new BlockMap$Slot(this);
     public List<Entity>[] entityGrid;
     public List<Entity> all = new ArrayList<Entity>();
     private List<Entity> tmp = new ArrayList<Entity>();

@@ -13,7 +13,7 @@ class BlockMap$Slot implements Serializable {
     // $FF: synthetic field
     final BlockMap blockMap;
 
-    private BlockMap$Slot(BlockMap var1) {
+    public BlockMap$Slot(BlockMap var1) {
 	this.blockMap = var1;
     }
 
@@ -65,11 +65,6 @@ class BlockMap$Slot implements Serializable {
 		    .remove(var1);
 	}
 
-    }
-
-    // $FF: synthetic method
-    BlockMap$Slot(BlockMap var1, SyntheticClass var2) {
-	this(var1);
     }
 
     // $FF: synthetic method

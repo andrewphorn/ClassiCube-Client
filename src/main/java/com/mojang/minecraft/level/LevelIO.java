@@ -82,12 +82,12 @@ public final class LevelIO {
 	    var4 = "";
 	}
 
-	if (this.progressBar != null && this.progressBar != null) {
+	if (this.progressBar != null) {
 	    this.progressBar.setTitle("Saving level");
 	}
 
 	try {
-	    if (this.progressBar != null && this.progressBar != null) {
+	    if (this.progressBar != null) {
 		this.progressBar.setText("Compressing..");
 	    }
 
@@ -95,7 +95,7 @@ public final class LevelIO {
 	    save(var1, (OutputStream) var7);
 	    var7.close();
 	    byte[] var10 = var7.toByteArray();
-	    if (this.progressBar != null && this.progressBar != null) {
+	    if (this.progressBar != null) {
 		this.progressBar.setText("Connecting..");
 	    }
 
@@ -117,9 +117,10 @@ public final class LevelIO {
 
 	    var13.write(var10);
 	    var13.close();
-	    BufferedReader var11;
-	    if (!(var11 = new BufferedReader(new InputStreamReader(
-		    var12.getInputStream()))).readLine().equalsIgnoreCase("ok")) {
+	    BufferedReader var11 = new BufferedReader(new InputStreamReader(
+		    var12.getInputStream()));
+	    String s = var11.readLine();
+	    if (s == null || !(s.equalsIgnoreCase("ok"))) {
 		if (this.progressBar != null) {
 		    this.progressBar.setText("Failed: " + var11.readLine());
 		}

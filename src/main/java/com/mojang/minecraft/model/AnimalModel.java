@@ -11,7 +11,7 @@ public class AnimalModel extends Model {
     public ModelPart leg3;
     public ModelPart leg4;
 
-    public AnimalModel(int var1, float var2) {
+    public AnimalModel(int var1) {
 	this.head.setBounds(-4.0F, -4.0F, -8.0F, 8, 8, 8, 0.0F);
 	this.head.setPosition(0.0F, (float) (18 - var1), -6.0F);
 	this.body = new ModelPart(28, 8);

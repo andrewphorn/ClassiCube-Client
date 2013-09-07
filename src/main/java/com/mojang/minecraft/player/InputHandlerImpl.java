@@ -3,9 +3,6 @@ package com.mojang.minecraft.player;
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
 public class InputHandlerImpl extends InputHandler {
     public InputHandlerImpl(GameSettings gameSettings) {
 	settings = gameSettings;

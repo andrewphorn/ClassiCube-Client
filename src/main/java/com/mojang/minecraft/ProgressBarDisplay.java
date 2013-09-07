@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
@@ -139,61 +138,7 @@ public final class ProgressBarDisplay {
 	return localHashMap;
     }
 
-    @SuppressWarnings({ "deprecation", "static-access" })
-    public void downloadSkin(Minecraft minecraft) {
-	try {
-	    File File1 = minecraft.mcDir; // my folder
-	    File File2 = new File(File1, "/resources/Skins"); // skins
-							      // folder
-	    if (!File2.exists() && !File2.mkdirs()) {
-		// dunno yet
-	    }
-	    File File3;
-	    File File4;
-	    if (terrainId != null)
-		if (terrainId != "") {
-		    terrainId = terrainId.replaceAll("[^0-9a-fA-F]+", "");
-		    File3 = new File(File2, "terrain.png");
-		    File4 = new File(File2, "terrain-" + terrainId);
-
-		    if (!File4.exists()) {
-			System.out.println("Fetching file to " + File4);
-			fetchUrl(File4,
-				"http://files.worldofminecraft.com/skin.php?type=terrain&id="
-					+ URLEncoder.encode(terrainId), "");
-			System.out.println("Fetched file to " + File4);
-		    }
-		    System.out.println("Copying " + File4 + " to " + File3);
-		    copyFile(File4, File3);
-		    System.out.println("Copied " + File4 + " to " + File3);
-		    this.minecraft.levelRenderer.refresh();
-		}
-	    if (edgeId != null) {
-		edgeId = edgeId.replaceAll("[^0-9a-fA-F]+", "");
-		File3 = new File(File2, "water.png");
-		File4 = new File(File2, "edge-" + edgeId);
-		if (!File4.exists()) {
-		    fetchUrl(File4,
-			    "http://files.worldofminecraft.com/skin.php?type=edge&id="
-				    + URLEncoder.encode(edgeId), "");
-		}
-		copyFile(File4, File3);
-	    }
-	    if (sideId != null) {
-		sideId = sideId.replaceAll("[^0-9a-fA-F]+", "");
-		File3 = new File(File2, "rock.png");
-		File4 = new File(File2, "side-" + sideId);
-		if (!File4.exists()) {
-		    fetchUrl(File4,
-			    "http://files.worldofminecraft.com/skin.php?type=side&id="
-				    + URLEncoder.encode(sideId), "");
-		}
-		copyFile(File4, File3);
-	    }
-	} catch (Exception e) {
-	    System.out.println(e.getMessage());
-	}
-    }
+    
 
     public static void copyFile(File paramFile1, File paramFile2) {
 	FileChannel fileChannel1 = null;

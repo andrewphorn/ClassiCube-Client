@@ -6,7 +6,7 @@ public class LeavesBaseBlock extends Block {
 
     private boolean showNeighborSides = true;
 
-    protected LeavesBaseBlock(int var1, int var2, boolean var3) {
+    protected LeavesBaseBlock(int var1, int var2) {
 	super(var1, var2);
     }
 

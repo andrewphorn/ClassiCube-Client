@@ -90,39 +90,35 @@ public class TextureManager {
 	if (file.contains("terrain") && textures.containsKey("customTerrain")) {
 	    return textures.get("customTerrain");
 	}
-	if (file.contains("terrain") && !textures.containsKey("customTerrain")) {
-	    if (currentTerrainPng != null) {
-		int id = load(currentTerrainPng);
-		textures.put("customTerrain", id);
-		return id;
-	    }
+	if (file.contains("terrain") && !textures.containsKey("customTerrain")
+		&& currentTerrainPng != null) {
+	    int id = load(currentTerrainPng);
+	    textures.put("customTerrain", id);
+	    return id;
 	}
 	if (file.contains("rock") && textures.containsKey("customEdge")) {
 	    return textures.get("customEdge");
 	}
-	if (file.contains("rock") && !textures.containsKey("customEdge")) {
-	    if (customEdgeBlock != null) {
-		int id = load(customEdgeBlock);
-		textures.put("customEdge", id);
-		return id;
-	    }
+	if (file.contains("rock") && !textures.containsKey("customEdge")
+		&& customEdgeBlock != null) {
+	    int id = load(customEdgeBlock);
+	    textures.put("customEdge", id);
+	    return id;
 	}
 	if (file.contains("water") && textures.containsKey("customSide")) {
 	    return textures.get("customSide");
 	}
-	if (file.contains("water") && !textures.containsKey("customSide")) {
-	    if (customEdgeBlock != null) {
+	if (file.contains("water") && !textures.containsKey("customSide") && customSideBlock != null) {
 		int id = load(customSideBlock);
 		textures.put("customSide", id);
 		return id;
-	    }
 	}
 
 	if (textures.get(file) != null) {
 	    return textures.get(file);
 	} else {
 	    try {
-		
+
 		idBuffer.clear();
 
 		GL11.glGenTextures(idBuffer);
@@ -165,48 +161,46 @@ public class TextureManager {
 	    }
 	}
     }
-    
-    public List<BufferedImage> Atlas2dInto1d(BufferedImage atlas2d, int tiles, int atlassizezlimit)
-    {
 
-        int tilesize = atlas2d.getWidth() / tiles;
+    public List<BufferedImage> Atlas2dInto1d(BufferedImage atlas2d, int tiles,
+	    int atlassizezlimit) {
 
-        int atlasescount = Math.max(1, (tiles * tiles * tilesize) / atlassizezlimit);
-        List<BufferedImage> atlases = new ArrayList<BufferedImage>();
+	int tilesize = atlas2d.getWidth() / tiles;
 
-        //256 x 1
-        BufferedImage atlas1d = null;
+	int atlasescount = Math.max(1, (tiles * tiles * tilesize)
+		/ atlassizezlimit);
+	List<BufferedImage> atlases = new ArrayList<BufferedImage>();
 
-        for (int i = 0; i < tiles * tiles; i++)
-        {
-            int x = i % tiles;
-            int y = i / tiles;
-            int tilesinatlas = (tiles * tiles / atlasescount);
-            if (i % tilesinatlas == 0)
-            {
-                if (atlas1d != null)
-                {
-                    atlases.add(atlas1d);
-                }
-                atlas1d = new BufferedImage(tilesize, atlassizezlimit, BufferedImage.TYPE_INT_ARGB_PRE);
-            }
-            for (int xx = 0; xx < tilesize; xx++)
-            {
-                for (int yy = 0; yy < tilesize; yy++)
-                {
-                    int c = atlas2d.getRGB(x * tilesize + xx, y * tilesize + yy);
-                    atlas1d.setRGB(xx, (i % tilesinatlas) * tilesize + yy, c);
-                }
-            }
-        }
-        atlases.add(atlas1d);
-        return atlases;
+	// 256 x 1
+	BufferedImage atlas1d = null;
+
+	for (int i = 0; i < tiles * tiles; i++) {
+	    int x = i % tiles;
+	    int y = i / tiles;
+	    int tilesinatlas = (tiles * tiles / atlasescount);
+	    if (i % tilesinatlas == 0) {
+		if (atlas1d != null) {
+		    atlases.add(atlas1d);
+		}
+		atlas1d = new BufferedImage(tilesize, atlassizezlimit,
+			BufferedImage.TYPE_INT_ARGB);
+	    }
+	    for (int xx = 0; xx < tilesize; xx++) {
+		for (int yy = 0; yy < tilesize; yy++) {
+		    int c = atlas2d
+			    .getRGB(x * tilesize + xx, y * tilesize + yy);
+		    atlas1d.setRGB(xx, (i % tilesinatlas) * tilesize + yy, c);
+		}
+	    }
+	}
+	atlases.add(atlas1d);
+	return atlases;
     }
 
     public static BufferedImage load1(BufferedImage image) {
 	int charWidth = image.getWidth() / 16;
 	BufferedImage image1 = new BufferedImage(16, image.getHeight()
-		* charWidth, BufferedImage.TYPE_INT_ARGB_PRE);
+		* charWidth, BufferedImage.TYPE_INT_ARGB);
 	Graphics graphics = image1.getGraphics();
 
 	for (int i = 0; i < charWidth; i++) {
@@ -216,27 +210,6 @@ public class TextureManager {
 	graphics.dispose();
 
 	return image1;
-    }
-
-    public BufferedImage getBlockTexture(String file, int textureID) {
-	BufferedImage src = null;
-	try {
-	    src = ImageIO.read(TextureManager.class
-		    .getResourceAsStream("/resources" + file));
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	int x = (textureID * 16) % 16;
-	int y = x % 16;
-	Rectangle rect = new Rectangle();
-	rect.x = x;
-	rect.y = y;
-	rect.width = 16;
-	rect.height = 16;
-	BufferedImage dest = src.getSubimage(rect.x, rect.y, rect.width,
-		rect.height);
-	return dest;
     }
 
     public int load(BufferedImage image) {
@@ -254,6 +227,11 @@ public class TextureManager {
     }
 
     public void load(BufferedImage image, int textureID) {
+	if (image == null)
+	    return;
+	int width = image.getWidth();
+	int height = image.getHeight();
+
 	GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
 	if (settings.smoothing > 0) {
 	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
@@ -275,10 +253,8 @@ public class TextureManager {
 	// GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
 	// GL11.GL_MODULATE);
 
-	int width = image.getWidth();
-	int height = image.getHeight();
 	int[] pixels = new int[width * height];
-	byte[] color = new byte[width * height << 2];
+	byte[] color = new byte[(width * height) << 2];
 
 	image.getRGB(0, 0, width, height, pixels, 0, width);
 
@@ -296,13 +272,18 @@ public class TextureManager {
 		red = rgba3D;
 	    }
 
-	    color[pixel << 2] = (byte) red;
-	    color[(pixel << 2) + 1] = (byte) green;
-	    color[(pixel << 2) + 2] = (byte) blue;
-	    color[(pixel << 2) + 3] = (byte) alpha;
+	    int i = pixel << 2;
+	    color[i] = (byte) red;
+	    color[i + 1] = (byte) green;
+	    color[i + 2] = (byte) blue;
+	    color[i + 3] = (byte) alpha;
 	}
 
-	textureBuffer.clear();
+	if (this.textureBuffer.capacity() != color.length) {
+	    this.textureBuffer = BufferUtils.createByteBuffer(color.length);
+	} else {
+	    this.textureBuffer.clear();
+	}
 	textureBuffer.put(color);
 	textureBuffer.position(0).limit(color.length);
 

@@ -6,8 +6,8 @@ public class GlassBlock extends Block {
 
     private boolean showNeighborSides = false;
 
-    protected GlassBlock(int var1, int var2, boolean var3) {
-	super(20, 49);
+    protected GlassBlock(int var1, int var2) {
+	super(var1, var2);
     }
 
     public final boolean isSolid() {

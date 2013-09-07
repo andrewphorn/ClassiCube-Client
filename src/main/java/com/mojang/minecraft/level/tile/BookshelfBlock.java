@@ -3,7 +3,7 @@ package com.mojang.minecraft.level.tile;
 public final class BookshelfBlock extends Block {
 
     public BookshelfBlock(int var1, int var2) {
-	super(47, 35);
+	super(var1, var2);
     }
 
     protected final int getTextureId(int texture) {

@@ -34,20 +34,20 @@ public class ClassiCubeStandalone {
 	int port = 0;
 	String mppass = null;
 	String skinServer = null;
-	if (args != null) {
-	    if (args.length > 3) {
-		server = args[0];
-		port = Integer.parseInt(args[1]);
-		player = args[2];
-		mppass = args[3];
-		skinServer = args[4];
-	    }
+	if (args != null && args.length > 3) {
+	    server = args[0];
+	    port = Integer.parseInt(args[1]);
+	    player = args[2];
+	    mppass = args[3];
+	    skinServer = args[4];
 	}
 	ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
 	if (player == null || server == null || mppass == null || port <= 0) {
-	    classicubeStandalone.startMinecraft(null, null, null, 0, skinServer);
+	    classicubeStandalone
+		    .startMinecraft(null, null, null, 0, skinServer);
 	} else {
-	    classicubeStandalone.startMinecraft(player, server, mppass, port, skinServer);
+	    classicubeStandalone.startMinecraft(player, server, mppass, port,
+		    skinServer);
 	}
     }
 
@@ -117,13 +117,13 @@ public class ClassiCubeStandalone {
 	    minecraft.session.haspaid = true;
 	    minecraft.server = Server;
 	    minecraft.port = Port;
-	    if(skinServer!=null){
+	    if (skinServer != null) {
 		minecraft.skinServer = skinServer;
 	    }
-	    
-	    if(Player == null && Server == null && Mppass == null)
+
+	    if (Player == null && Server == null && Mppass == null)
 		minecraft.session = null;
-	    
+
 	    boolean RunFakeNetwork = false;
 
 	    if (RunFakeNetwork) {
