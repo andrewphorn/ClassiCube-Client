@@ -313,9 +313,9 @@ public final class Minecraft implements Runnable {
 	}
     }
 
-    public static File GetMinecraftDirectory() {
+    public static File getMinecraftDirectory() {
 	String folder = "net.classicube.client";
-	String home = System.getProperty("user.home", ".");
+	String home = System.getProperty("user.home");
 	File minecraftFolder;
 	Minecraft$OS os = getOs();
 	switch (os.id) {
@@ -323,15 +323,15 @@ public final class Minecraft implements Runnable {
 	    minecraftFolder = new File(home, folder + '/');
 	    break;
 	case 1:
-	    minecraftFolder = new File(home, '.' + folder + '/');
+	    minecraftFolder = new File(home, folder + '/');
 	    break;
 	case 2:
 	    String appData = System.getenv("APPDATA");
 
 	    if (appData != null) {
-		minecraftFolder = new File(appData, "." + folder + '/');
+		minecraftFolder = new File(appData, folder + '/');
 	    } else {
-		minecraftFolder = new File(home, '.' + folder + '/');
+		minecraftFolder = new File(home, folder + '/');
 	    }
 	    break;
 	case 3:
@@ -446,7 +446,7 @@ public final class Minecraft implements Runnable {
 	    e1.printStackTrace();
 	}
 
-	mcDir = GetMinecraftDirectory();
+	mcDir = getMinecraftDirectory();
 
 	try {
 	    Minecraft var1 = this;
@@ -463,7 +463,7 @@ public final class Minecraft implements Runnable {
 	    }
 	    if (this.session == null) {
 		SessionData.SetAllowedBlocks((byte) 1);
-		this.isSinglePlayer = true;
+		isSinglePlayer = true;
 	    }
 	    if (this.canvas != null) {
 		Display.setParent(this.canvas);
@@ -2311,7 +2311,7 @@ public final class Minecraft implements Runnable {
 					}
 					if (textureUrl.length() > 0) {
 					    File path = new File(
-						    GetMinecraftDirectory(),
+						    getMinecraftDirectory(),
 						    "/skins/terrain");
 					    if (!path.exists()) {
 						path.mkdirs();

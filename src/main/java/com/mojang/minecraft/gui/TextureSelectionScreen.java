@@ -36,7 +36,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
 	    this.status = "Getting texture list..";
 	    TexturePackData data;
-	    for (String file : (new File(minecraft.GetMinecraftDirectory()
+	    for (String file : (new File(minecraft.getMinecraftDirectory()
 		    + "/texturepacks").list())) {
 		if (!file.endsWith(".zip"))
 		    continue;

@@ -119,7 +119,7 @@ public class ClassiCubeStandalone {
 	    if(Player == null && Server == null && Mppass == null)
 		minecraft.session = null;
 	    
-	    boolean RunFakeNetwork = false;
+	    boolean RunFakeNetwork = true;
 
 	    if (RunFakeNetwork) {
 		minecraft.host = "127.0.0.1";

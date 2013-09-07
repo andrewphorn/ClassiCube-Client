@@ -25,7 +25,7 @@ public class MinecraftApplet$1 extends Canvas {
 
     void SetImage() throws IOException {
 
-	File file = new File(Minecraft.GetMinecraftDirectory().getPath()
+	File file = new File(Minecraft.getMinecraftDirectory().getPath()
 		+ "/rsbg.jpg");
 	if (!file.exists()) {
 	    download("http://classicube.net/static/client/rsbg.jpg",
@@ -36,7 +36,7 @@ public class MinecraftApplet$1 extends Canvas {
     }
 
     void SetImage2() throws IOException {
-	File file = new File(Minecraft.GetMinecraftDirectory().getPath()
+	File file = new File(Minecraft.getMinecraftDirectory().getPath()
 		+ "/bg.jpg");
 	if (!file.exists()) {
 	    download("http://classicube.net/static/client/bg.jpg",
