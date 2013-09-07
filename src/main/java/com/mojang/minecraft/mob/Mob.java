@@ -7,6 +7,7 @@ import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.ai.AI;
 import com.mojang.minecraft.mob.ai.BasicAI;
 import com.mojang.minecraft.model.ModelManager;
+import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 import org.lwjgl.opengl.GL11;
@@ -509,7 +510,7 @@ public class Mob extends Entity {
 		    xd *= y1;
 		    zd *= y1;
 		}
-	    }else{
+	    }else if (((Player)this).settings.minecraft.session == null){
 		if(xd > 0.90f || xd < -0.90f || zd < -0.90f ||  zd > 0.90f)
 		    this.tilt = -60.0f;
 	    }

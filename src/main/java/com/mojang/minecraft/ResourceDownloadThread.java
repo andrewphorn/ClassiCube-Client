@@ -63,9 +63,9 @@ public class ResourceDownloadThread extends Thread {
 
 	    int Percent = 5;
 	    for (int i = 0; i < files.length; i++) {
-		if (Percent >= 50)
-		    Percent = 50;
-		Percent += 1;
+		if (Percent >= 80)
+		    Percent = 80;
+		Percent += 3;
 		file = new File(dir, files[i]);
 
 		if (!file.exists()) {
@@ -88,10 +88,10 @@ public class ResourceDownloadThread extends Thread {
 				    + files[i] + "!");
 		}
 	    }
-	    GameSettings.PercentString = "65%";
+	    GameSettings.PercentString = "85%";
 	    GameSettings.StatusString = "Downloaded music and sounds!";
 	    System.out.println("Downloaded music and sounds!");
-	    GameSettings.StatusString = "Downloading lwjgl...";
+	    /*GameSettings.StatusString = "Downloading lwjgl...";
 	    System.out.println("Downloading lwjgl...");
 
 	    file = new File(Minecraft.mcDir, "lwjgl-2.9.0.zip");
@@ -118,7 +118,7 @@ public class ResourceDownloadThread extends Thread {
 	    deleteDir(file);
 
 	    GameSettings.StatusString = "Downloaded lwjgl...";
-	    System.out.println("Downloaded lwjgl...");
+	    System.out.println("Downloaded lwjgl...");*/
 	    GameSettings.StatusString = "";
 	    GameSettings.PercentString = "";
 	    Done = true;

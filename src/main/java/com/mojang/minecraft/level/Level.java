@@ -270,7 +270,8 @@ public class Level implements Serializable {
 			&& (var1 == 0 || var3 == 0 || var1 == this.width - 1 || var3 == this.height - 1)
 			&& (float) var2 >= this.getGroundLevel()
 			&& (float) var2 < this.getWaterLevel()) {
-		    var4 = Block.WATER.id;
+			if(!this.networkMode)
+			    var4 = Block.WATER.id;
 		}
 
 		byte var5 = this.blocks[(var2 * this.height + var3)

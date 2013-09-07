@@ -1,5 +1,6 @@
 package com.mojang.minecraft.level.tile;
 
+import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
 
@@ -19,6 +20,7 @@ public final class SandBlock extends Block {
     }
 
     private void fall(Level var1, int var2, int var3, int var4) {
+	if(!Minecraft.isSinglePlayer)return;
 	int var11 = var2;
 	int var5 = var3;
 	int var6 = var4;

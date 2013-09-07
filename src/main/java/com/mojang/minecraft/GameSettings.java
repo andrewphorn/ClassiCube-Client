@@ -63,7 +63,7 @@ public final class GameSettings implements Serializable {
     public KeyBinding loadLocationKey = new KeyBinding("Load location", 19);
     public KeyBinding runKey = new KeyBinding("Run", 42);
     public KeyBinding[] bindings;
-    private Minecraft minecraft;
+    public transient Minecraft minecraft;
     private File settingsFile;
     public int settingCount;
     public boolean CanSpeed = true;

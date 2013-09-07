@@ -312,7 +312,7 @@ public class Player extends Mob {
 		this.xd *= f2;
 		this.zd *= f2;
 		this.tilt = 0f;
-	    } else {
+	    } else if (this.settings.minecraft.session == null){
 		this.xd *= 0.751F;
 		this.yd *= 0.758F;
 		this.zd *= 0.751F;

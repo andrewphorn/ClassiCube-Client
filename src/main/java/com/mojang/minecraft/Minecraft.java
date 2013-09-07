@@ -126,6 +126,8 @@ public final class Minecraft implements Runnable {
     public List<Block> DisallowPlacementBlocks = new ArrayList<Block>();
     public List<Block> DisallowedBreakingBlocks = new ArrayList<Block>();
 
+    public static boolean isSinglePlayer = false;
+
     public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4,
 	    boolean var5, boolean IsApplet) {
 	// this.selectionBoxes.add(new SelectionBoxData((byte) 1, "",
@@ -312,7 +314,7 @@ public final class Minecraft implements Runnable {
     }
 
     public static File GetMinecraftDirectory() {
-	String folder = "mcraft/client";
+	String folder = "net.classicube.client";
 	String home = System.getProperty("user.home", ".");
 	File minecraftFolder;
 	Minecraft$OS os = getOs();
@@ -459,8 +461,10 @@ public final class Minecraft implements Runnable {
 		System.setProperty("net.java.games.input.librarypath", mcDir
 			+ "/native/" + getOSfolderName(s));
 	    }
-	    if (this.session == null)
+	    if (this.session == null) {
 		SessionData.SetAllowedBlocks((byte) 1);
+		this.isSinglePlayer = true;
+	    }
 	    if (this.canvas != null) {
 		Display.setParent(this.canvas);
 	    } else if (this.fullscreen) {
@@ -1903,11 +1907,6 @@ public final class Minecraft implements Runnable {
 				    renderer.enableGuiMode();
 				}
 
-				if (renderer.minecraft.notifyScreen != null) {
-				    renderer.minecraft.notifyScreen.render(
-					    var94, var70);
-				}
-
 				if (renderer.minecraft.currentScreen != null) {
 				    renderer.minecraft.currentScreen.render(
 					    var94, var70);
@@ -2085,23 +2084,6 @@ public final class Minecraft implements Runnable {
 			    if (this.isOnline()) {
 				this.networkManager.sendBlockChange(x, y, z,
 					var1, blockID);
-			    }
-			    File file = new File(mcDir, "Achievements.txt");
-			    if (!file.exists()) {
-				try {
-				    file.createNewFile();
-				} catch (IOException e) {
-				    // TODO Auto-generated catch block
-				    e.printStackTrace();
-				}
-				this.notifyScreen = new GuiNotificationScreen(
-					"Achievement Get: This is where it all begins!",
-					"Congratulations, you have figured out how to place a block! Good for you :)",
-					6000);
-				int var21 = this.width * 240 / this.height;
-				int var3 = this.height * 240 / this.height;
-				((GuiScreen) this.notifyScreen).open(this,
-					var21, var3);
 			    }
 
 			    this.level.netSetTile(x, y, z, blockID);
@@ -2346,6 +2328,9 @@ public final class Minecraft implements Runnable {
 							    file.getAbsolutePath());
 						}
 						image = ImageIO.read(file);
+						if (image.getWidth() != 256
+							|| image.getHeight() != 256)
+						    return;
 						this.textureManager.currentTerrainPng = image;
 					    }
 					}
@@ -2912,7 +2897,8 @@ public final class Minecraft implements Runnable {
 
 			if (this.gamemode instanceof CreativeGameMode) {
 			    if (Keyboard.getEventKey() == this.settings.loadLocationKey.key) {
-				this.player.resetPos();
+				if (!(this.currentScreen instanceof ChatInputScreen))
+				    this.player.resetPos();
 			    }
 
 			    if (Keyboard.getEventKey() == this.settings.saveLocationKey.key) {
