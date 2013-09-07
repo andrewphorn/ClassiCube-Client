@@ -39,8 +39,6 @@ import com.oyasunadev.mcraft.client.util.ExtData;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
-import org.lwjgl.input.Controller;
-import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -498,37 +496,6 @@ public final class Minecraft implements Runnable {
 
 	    Keyboard.create();
 	    Mouse.create();
-	    int cc = 0;
-	    Controller[] c;
-	    int gp = -1; // to store controller number of the gamepad
-	    try {
-		System.out.println("Creating controllers");
-		Controllers.create();
-		if (Controllers.isCreated()) {
-		    cc = Controllers.getControllerCount();
-		    c = new Controller[cc];
-
-		    for (int i = 0; i < cc; i++) {
-			c[i] = Controllers.getController(i);
-			if (c[i].getName().indexOf("Controller") > -1) {
-			    gp = i;
-			}
-		    }
-		    if (gp == -1) {
-			System.out.println("No gamepad controller exists.");
-		    } else {
-			int bc = c[gp].getButtonCount();
-			int ac = c[gp].getAxisCount();
-			System.out.println("The controller has " + bc
-				+ " buttons and " + ac + " axis.");
-			// for (int i = 0; i < bc; i++) {
-			// System.out.println(c[gp].getButtonName(i));
-			// }
-		    }
-		}
-	    } catch (Exception var55) {
-		var55.printStackTrace();
-	    }
 
 	    checkGLError("Pre startup");
 	    GL11.glEnable(3553);
