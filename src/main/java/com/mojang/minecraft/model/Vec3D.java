@@ -14,16 +14,6 @@ public final class Vec3D {
 	this.z = var3;
     }
 
-    public final Vec3D subtract(Vec3D var1) {
-	return new Vec3D(this.x - var1.x, this.y - var1.y, this.z - var1.z);
-    }
-
-    public final Vec3D normalize() {
-	float var1 = MathHelper.sqrt(this.x * this.x + this.y * this.y + this.z
-		* this.z);
-	return new Vec3D(this.x / var1, this.y / var1, this.z / var1);
-    }
-
     public final Vec3D add(float var1, float var2, float var3) {
 	return new Vec3D(this.x + var1, this.y + var2, this.z + var3);
     }
@@ -70,6 +60,16 @@ public final class Vec3D {
 		: ((var2 = (var2 - this.z) / var5) >= 0.0F && var2 <= 1.0F ? new Vec3D(
 			this.x + var3 * var2, this.y + var4 * var2, this.z
 				+ var5 * var2) : null);
+    }
+
+    public final Vec3D normalize() {
+	float var1 = MathHelper.sqrt(this.x * this.x + this.y * this.y + this.z
+		* this.z);
+	return new Vec3D(this.x / var1, this.y / var1, this.z / var1);
+    }
+
+    public final Vec3D subtract(Vec3D var1) {
+	return new Vec3D(this.x - var1.x, this.y - var1.y, this.z - var1.z);
     }
 
     public final String toString() {

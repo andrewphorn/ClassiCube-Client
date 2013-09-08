@@ -44,37 +44,8 @@ public class Particle extends Entity {
 	this.makeStepSound = false;
     }
 
-    public Particle setPower(float var1) {
-	this.xd *= var1;
-	this.yd = (this.yd - 0.1F) * var1 + 0.1F;
-	this.zd *= var1;
-	return this;
-    }
-
-    public Particle scale(float var1) {
-	this.setSize(0.2F * var1, 0.2F * var1);
-	this.size *= var1;
-	return this;
-    }
-
-    public void tick() {
-	this.xo = this.x;
-	this.yo = this.y;
-	this.zo = this.z;
-	if (this.age++ >= this.lifetime) {
-	    this.remove();
-	}
-
-	this.yd = (float) ((double) this.yd - 0.04D * (double) this.gravity);
-	this.move(this.xd, this.yd, this.zd);
-	this.xd *= 0.98F;
-	this.yd *= 0.98F;
-	this.zd *= 0.98F;
-	if (this.onGround) {
-	    this.xd *= 0.7F;
-	    this.zd *= 0.7F;
-	}
-
+    public int getParticleTexture() {
+	return 0;
     }
 
     public void render(ShapeRenderer var1, float var2, float var3, float var4,
@@ -104,7 +75,36 @@ public class Particle extends Entity {
 		var9, var11);
     }
 
-    public int getParticleTexture() {
-	return 0;
+    public Particle scale(float var1) {
+	this.setSize(0.2F * var1, 0.2F * var1);
+	this.size *= var1;
+	return this;
+    }
+
+    public Particle setPower(float var1) {
+	this.xd *= var1;
+	this.yd = (this.yd - 0.1F) * var1 + 0.1F;
+	this.zd *= var1;
+	return this;
+    }
+
+    public void tick() {
+	this.xo = this.x;
+	this.yo = this.y;
+	this.zo = this.z;
+	if (this.age++ >= this.lifetime) {
+	    this.remove();
+	}
+
+	this.yd = (float) ((double) this.yd - 0.04D * (double) this.gravity);
+	this.move(this.xd, this.yd, this.zd);
+	this.xd *= 0.98F;
+	this.yd *= 0.98F;
+	this.zd *= 0.98F;
+	if (this.onGround) {
+	    this.xd *= 0.7F;
+	    this.zd *= 0.7F;
+	}
+
     }
 }

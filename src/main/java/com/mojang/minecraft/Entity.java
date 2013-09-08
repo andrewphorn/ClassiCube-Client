@@ -62,77 +62,52 @@ public abstract class Entity implements Serializable {
 	this.setPos(0.0F, 0.0F, 0.0F);
     }
 
-    public void resetPos() {
-	if (this.level != null) {
-	    float var1 = (float) this.level.xSpawn + 0.5F;
-	    float var2 = (float) this.level.ySpawn;
-
-	    for (double var3 = (float) this.level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
-		this.setPos(var1, var2, (float) var3);
-		if (this.level.getCubes(this.bb).size() == 0) {
-		    break;
-		}
-	    }
-
-	    this.xd = this.yd = this.zd = 0.0F;
-	    this.yRot = this.level.rotSpawn;
-	    this.xRot = 0.0F;
-	}
+    public void awardKillScore(Entity var1, int var2) {
     }
 
-    public void remove() {
-	this.removed = true;
+    protected void causeFallDamage(float var1) {
     }
 
-    public void setSize(float var1, float var2) {
-	this.bbWidth = var1;
-	this.bbHeight = var2;
+    public float distanceTo(Entity var1) {
+	float var2 = this.x - var1.x;
+	float var3 = this.y - var1.y;
+	float var4 = this.z - var1.z;
+	return MathHelper.sqrt(var2 * var2 + var3 * var3 + var4 * var4);
     }
 
-    public void setPos(PositionUpdate var1) {
-	if (var1.position) {
-	    this.setPos(var1.x, var1.y, var1.z);
-	} else {
-	    this.setPos(this.x, this.y, this.z);
-	}
-
-	if (var1.rotation) {
-	    this.setRot(var1.yaw, var1.pitch);
-	} else {
-	    this.setRot(this.yRot, this.xRot);
-	}
+    public float distanceTo(float var1, float var2, float var3) {
+	var1 = this.x - var1;
+	var2 = this.y - var2;
+	float var4 = this.z - var3;
+	return MathHelper.sqrt(var1 * var1 + var2 * var2 + var4 * var4);
     }
 
-    protected void setRot(float var1, float var2) {
-	this.yRot = var1;
-	this.xRot = var2;
+    public float distanceToSqr(Entity var1) {
+	float var2 = this.x - var1.x;
+	float var3 = this.y - var1.y;
+	float var4 = this.z - var1.z;
+	return var2 * var2 + var3 * var3 + var4 * var4;
     }
 
-    public void setPos(float var1, float var2, float var3) {
-	this.x = var1;
-	this.y = var2;
-	this.z = var3;
-	float var4 = this.bbWidth / 2.0F;
-	float var5 = this.bbHeight / 2.0F;
-	this.bb = new AABB(var1 - var4, var2 - var5, var3 - var4, var1 + var4,
-		var2 + var5, var3 + var4);
+    public float getBrightness(float var1) {
+	int var4 = (int) this.x;
+	int var2 = (int) (this.y + this.heightOffset / 2.0F - 0.5F);
+	int var3 = (int) this.z;
+	return this.level.getBrightness(var4, var2, var3);
     }
 
-    public void turn(float var1, float var2) {
-	float var3 = this.xRot;
-	float var4 = this.yRot;
-	this.yRot = (float) ((double) this.yRot + (double) var1 * 0.15D);
-	this.xRot = (float) ((double) this.xRot - (double) var2 * 0.15D);
-	if (this.xRot < -90.0F) {
-	    this.xRot = -90.0F;
-	}
+    public ColorCache getBrightnessColor(float var1) {
+	int var4 = (int) this.x;
+	int var2 = (int) (this.y + this.heightOffset / 2.0F - 0.5F);
+	int var3 = (int) this.z;
+	return this.level.getBrightnessColor(var4, var2, var3);
+    }
 
-	if (this.xRot > 90.0F) {
-	    this.xRot = 90.0F;
-	}
+    public int getTexture() {
+	return this.textureId;
+    }
 
-	this.xRotO += this.xRot - var3;
-	this.yRotO += this.yRot - var4;
+    public void hurt(Entity var1, int var2) {
     }
 
     public void interpolateTurn(float var1, float var2) {
@@ -148,13 +123,19 @@ public abstract class Entity implements Serializable {
 
     }
 
-    public void tick() {
-	this.walkDistO = this.walkDist;
-	this.xo = this.x;
-	this.yo = this.y;
-	this.zo = this.z;
-	this.xRotO = this.xRot;
-	this.yRotO = this.yRot;
+    public boolean intersects(float var1, float var2, float var3, float var4,
+	    float var5, float var6) {
+	return this.bb.intersects(var1, var2, var3, var4, var5, var6);
+    }
+
+    public boolean isCreativeModeAllowed() {
+	return false;
+    }
+
+    public boolean isFree(float var1, float var2, float var3) {
+	AABB var4 = this.bb.cloneMove(var1, var2, var3);
+	return this.level.getCubes(var4).size() > 0 ? false : !this.level
+		.containsAnyLiquid(var4);
     }
 
     public boolean isFree(float var1, float var2, float var3, float var4) {
@@ -163,10 +144,45 @@ public abstract class Entity implements Serializable {
 		.containsAnyLiquid(var5);
     }
 
-    public boolean isFree(float var1, float var2, float var3) {
-	AABB var4 = this.bb.cloneMove(var1, var2, var3);
-	return this.level.getCubes(var4).size() > 0 ? false : !this.level
-		.containsAnyLiquid(var4);
+    public boolean isInLava() {
+	return this.level.containsLiquid(this.bb.grow(0.0F, -0.4F, 0.0F),
+		LiquidType.LAVA);
+    }
+
+    public boolean isInOrOnRope() {
+	return this.level.containsBlock(this.bb.grow(-0.5F, 0.0F, -0.5F),
+		Block.ROPE);
+    }
+
+    public boolean isInWater() {
+	return this.level.containsLiquid(this.bb.grow(0.0F, -0.4F, 0.0F),
+		LiquidType.WATER);
+    }
+
+    public boolean isLit() {
+	int var1 = (int) this.x;
+	int var2 = (int) this.y;
+	int var3 = (int) this.z;
+	return this.level.isLit(var1, var2, var3);
+    }
+
+    public boolean isPickable() {
+	return false;
+    }
+
+    public boolean isPushable() {
+	return false;
+    }
+
+    public boolean isShootable() {
+	return false;
+    }
+
+    public boolean isUnderWater() {
+	int var1;
+	return (var1 = this.level.getTile((int) this.x, (int) (this.y + 0.12F),
+		(int) this.z)) != 0 ? Block.blocks[var1].getLiquidType()
+		.equals(LiquidType.WATER) : false;
     }
 
     public void move(float var1, float var2, float var3) {
@@ -338,31 +354,6 @@ public abstract class Entity implements Serializable {
 
     }
 
-    protected void causeFallDamage(float var1) {
-    }
-
-    public boolean isInWater() {
-	return this.level.containsLiquid(this.bb.grow(0.0F, -0.4F, 0.0F),
-		LiquidType.WATER);
-    }
-
-    public boolean isUnderWater() {
-	int var1;
-	return (var1 = this.level.getTile((int) this.x, (int) (this.y + 0.12F),
-		(int) this.z)) != 0 ? Block.blocks[var1].getLiquidType()
-		.equals(LiquidType.WATER) : false;
-    }
-
-    public boolean isInLava() {
-	return this.level.containsLiquid(this.bb.grow(0.0F, -0.4F, 0.0F),
-		LiquidType.LAVA);
-    }
-
-    public boolean isInOrOnRope() {
-	return this.level.containsBlock(this.bb.grow(-0.5F, 0.0F, -0.5F),
-		Block.ROPE);
-    }
-
     public void moveRelative(float x, float y, float z) {
 
 	float var4;
@@ -381,38 +372,6 @@ public abstract class Entity implements Serializable {
 	}
     }
 
-    public boolean isLit() {
-	int var1 = (int) this.x;
-	int var2 = (int) this.y;
-	int var3 = (int) this.z;
-	return this.level.isLit(var1, var2, var3);
-    }
-
-    public float getBrightness(float var1) {
-	int var4 = (int) this.x;
-	int var2 = (int) (this.y + this.heightOffset / 2.0F - 0.5F);
-	int var3 = (int) this.z;
-	return this.level.getBrightness(var4, var2, var3);
-    }
-
-    public ColorCache getBrightnessColor(float var1) {
-	int var4 = (int) this.x;
-	int var2 = (int) (this.y + this.heightOffset / 2.0F - 0.5F);
-	int var3 = (int) this.z;
-	return this.level.getBrightnessColor(var4, var2, var3);
-    }
-
-    public void render(TextureManager var1, float var2) {
-    }
-
-    public void setLevel(Level var1) {
-	this.level = var1;
-    }
-
-    public void playSound(String var1, float var2, float var3) {
-	this.level.playSound(var1, this, var2, var3);
-    }
-
     public void moveTo(float var1, float var2, float var3, float var4,
 	    float var5) {
 	this.xo = this.x = var1;
@@ -423,28 +382,11 @@ public abstract class Entity implements Serializable {
 	this.setPos(var1, var2, var3);
     }
 
-    public float distanceTo(Entity var1) {
-	float var2 = this.x - var1.x;
-	float var3 = this.y - var1.y;
-	float var4 = this.z - var1.z;
-	return MathHelper.sqrt(var2 * var2 + var3 * var3 + var4 * var4);
-    }
-
-    public float distanceTo(float var1, float var2, float var3) {
-	var1 = this.x - var1;
-	var2 = this.y - var2;
-	float var4 = this.z - var3;
-	return MathHelper.sqrt(var1 * var1 + var2 * var2 + var4 * var4);
-    }
-
-    public float distanceToSqr(Entity var1) {
-	float var2 = this.x - var1.x;
-	float var3 = this.y - var1.y;
-	float var4 = this.z - var1.z;
-	return var2 * var2 + var3 * var3 + var4 * var4;
-    }
-
     public void playerTouch(Entity var1) {
+    }
+
+    public void playSound(String var1, float var2, float var3) {
+	this.level.playSound(var1, this, var2, var3);
     }
 
     public void push(Entity var1) {
@@ -473,27 +415,70 @@ public abstract class Entity implements Serializable {
 	this.zd += var3;
     }
 
-    public void hurt(Entity var1, int var2) {
+    public void remove() {
+	this.removed = true;
     }
 
-    public boolean intersects(float var1, float var2, float var3, float var4,
-	    float var5, float var6) {
-	return this.bb.intersects(var1, var2, var3, var4, var5, var6);
+    public void render(TextureManager var1, float var2) {
     }
 
-    public boolean isPickable() {
-	return false;
+    public void renderHover(TextureManager var1, float var2) {
     }
 
-    public boolean isPushable() {
-	return false;
+    public void resetPos() {
+	if (this.level != null) {
+	    float var1 = (float) this.level.xSpawn + 0.5F;
+	    float var2 = (float) this.level.ySpawn;
+
+	    for (double var3 = (float) this.level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
+		this.setPos(var1, var2, (float) var3);
+		if (this.level.getCubes(this.bb).size() == 0) {
+		    break;
+		}
+	    }
+
+	    this.xd = this.yd = this.zd = 0.0F;
+	    this.yRot = this.level.rotSpawn;
+	    this.xRot = 0.0F;
+	}
     }
 
-    public boolean isShootable() {
-	return false;
+    public void setLevel(Level var1) {
+	this.level = var1;
     }
 
-    public void awardKillScore(Entity var1, int var2) {
+    public void setPos(float var1, float var2, float var3) {
+	this.x = var1;
+	this.y = var2;
+	this.z = var3;
+	float var4 = this.bbWidth / 2.0F;
+	float var5 = this.bbHeight / 2.0F;
+	this.bb = new AABB(var1 - var4, var2 - var5, var3 - var4, var1 + var4,
+		var2 + var5, var3 + var4);
+    }
+
+    public void setPos(PositionUpdate var1) {
+	if (var1.position) {
+	    this.setPos(var1.x, var1.y, var1.z);
+	} else {
+	    this.setPos(this.x, this.y, this.z);
+	}
+
+	if (var1.rotation) {
+	    this.setRot(var1.yaw, var1.pitch);
+	} else {
+	    this.setRot(this.yRot, this.xRot);
+	}
+    }
+
+    protected void setRot(float var1, float var2) {
+	this.yRot = var1;
+	this.xRot = var2;
+    }
+
+    public void setSize(float var1, float var2) {
+	this.bbWidth = var1;
+	this.bbHeight = var2;
     }
 
     public boolean shouldRender(Vec3D var1) {
@@ -509,14 +494,29 @@ public abstract class Entity implements Serializable {
 	return var1 < var2 * var2;
     }
 
-    public int getTexture() {
-	return this.textureId;
+    public void tick() {
+	this.walkDistO = this.walkDist;
+	this.xo = this.x;
+	this.yo = this.y;
+	this.zo = this.z;
+	this.xRotO = this.xRot;
+	this.yRotO = this.yRot;
     }
 
-    public boolean isCreativeModeAllowed() {
-	return false;
-    }
+    public void turn(float var1, float var2) {
+	float var3 = this.xRot;
+	float var4 = this.yRot;
+	this.yRot = (float) ((double) this.yRot + (double) var1 * 0.15D);
+	this.xRot = (float) ((double) this.xRot - (double) var2 * 0.15D);
+	if (this.xRot < -90.0F) {
+	    this.xRot = -90.0F;
+	}
 
-    public void renderHover(TextureManager var1, float var2) {
+	if (this.xRot > 90.0F) {
+	    this.xRot = 90.0F;
+	}
+
+	this.xRotO += this.xRot - var3;
+	this.yRotO += this.yRot - var4;
     }
 }

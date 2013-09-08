@@ -47,6 +47,8 @@ public class OnDemandUrlStream implements PhysicalOggStream {
     private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
     private OggPage firstPage;
 
+    int pageNumber = 2;
+
     public OnDemandUrlStream(URL source) throws OggFormatException, IOException {
 	this.source = source.openConnection();
 	this.sourceStream = this.source.getInputStream();
@@ -60,14 +62,6 @@ public class OnDemandUrlStream implements PhysicalOggStream {
 	los.checkFormat(firstPage);
     }
 
-    public Collection<LogicalOggStreamImpl> getLogicalStreams() {
-	return logicalStreams.values();
-    }
-
-    public boolean isOpen() {
-	return !closed;
-    }
-
     public void close() throws IOException {
 	closed = true;
 	sourceStream.close();
@@ -77,11 +71,9 @@ public class OnDemandUrlStream implements PhysicalOggStream {
 	return contentLength;
     }
 
-    public int getPosition() {
-	return position;
+    public Collection<LogicalOggStreamImpl> getLogicalStreams() {
+	return logicalStreams.values();
     }
-
-    int pageNumber = 2;
 
     public OggPage getOggPage(int index) throws IOException {
 	if (firstPage != null) {
@@ -95,9 +87,12 @@ public class OnDemandUrlStream implements PhysicalOggStream {
 	}
     }
 
-    public void setTime(long granulePosition) throws IOException {
-	throw new UnsupportedOperationException(
-		"Method not supported by this class");
+    public int getPosition() {
+	return position;
+    }
+
+    public boolean isOpen() {
+	return !closed;
     }
 
     /**
@@ -106,6 +101,11 @@ public class OnDemandUrlStream implements PhysicalOggStream {
 
     public boolean isSeekable() {
 	return false;
+    }
+
+    public void setTime(long granulePosition) throws IOException {
+	throw new UnsupportedOperationException(
+		"Method not supported by this class");
     }
 
 }

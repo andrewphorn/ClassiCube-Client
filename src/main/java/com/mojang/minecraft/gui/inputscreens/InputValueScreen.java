@@ -28,24 +28,6 @@ public class InputValueScreen extends GuiScreen {
 
     }
 
-    public final void onOpen() {
-	this.buttons.clear();
-	Keyboard.enableRepeatEvents(true);
-	this.buttons.add(new Button(0, this.width / 2 - 100,
-		this.height / 4 + 120, "Save"));
-	this.buttons.add(new Button(1, this.width / 2 - 100,
-		this.height / 4 + 144, "Cancel"));
-	((Button) this.buttons.get(0)).active = this.name.trim().length() > 1;
-    }
-
-    public final void onClose() {
-	Keyboard.enableRepeatEvents(false);
-    }
-
-    public final void tick() {
-	++this.counter;
-    }
-
     protected void onButtonClick(Button var1) {
 	if (var1.active) {
 	    if (var1.id == 0 && this.name.trim().length() > 1) {
@@ -68,21 +50,35 @@ public class InputValueScreen extends GuiScreen {
 	}
     }
 
+    public final void onClose() {
+	Keyboard.enableRepeatEvents(false);
+    }
+
     public final void onKeyPress(char var1, int var2) {
 	if (var2 == 14 && this.name.length() > 0) {
 	    this.name = this.name.substring(0, this.name.length() - 1);
 	}
 
 	String canUse = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_\'*!\"#%/()=+?[]{}<>";
-	if(this.numbersOnly)
+	if (this.numbersOnly)
 	    canUse = "0123456789";
-	if(this.allowedChars!=null)
+	if (this.allowedChars != null)
 	    canUse = allowedChars;
 	if (canUse.indexOf(var1) >= 0 && this.name.length() < stringLimit) {
 	    this.name = this.name + var1;
 	}
 
 	((Button) this.buttons.get(0)).active = this.name.trim().length() > 0;
+    }
+
+    public final void onOpen() {
+	this.buttons.clear();
+	Keyboard.enableRepeatEvents(true);
+	this.buttons.add(new Button(0, this.width / 2 - 100,
+		this.height / 4 + 120, "Save"));
+	this.buttons.add(new Button(1, this.width / 2 - 100,
+		this.height / 4 + 144, "Cancel"));
+	((Button) this.buttons.get(0)).active = this.name.trim().length() > 1;
     }
 
     public final void render(int var1, int var2) {
@@ -97,5 +93,9 @@ public class InputValueScreen extends GuiScreen {
 		+ (this.counter / 6 % 2 == 0 ? "_" : ""), var3 + 4, var4 + 6,
 		14737632);
 	super.render(var1, var2);
+    }
+
+    public final void tick() {
+	++this.counter;
     }
 }

@@ -14,9 +14,6 @@ public final class StillLiquidBlock extends LiquidBlock {
 	this.setPhysics(false);
     }
 
-    public final void update(Level level, int x, int y, int z, Random rand) {
-    }
-
     public final void onNeighborChange(Level var1, int var2, int var3,
 	    int var4, int var5) {
 	boolean var6 = false;
@@ -54,5 +51,8 @@ public final class StillLiquidBlock extends LiquidBlock {
 	    var1.addToTickNextTick(var2, var3, var4, this.movingId);
 	}
 
+    }
+
+    public final void update(Level level, int x, int y, int z, Random rand) {
     }
 }

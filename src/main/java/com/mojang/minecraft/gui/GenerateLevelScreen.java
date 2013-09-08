@@ -8,6 +8,16 @@ public final class GenerateLevelScreen extends GuiScreen {
 	this.parent = var1;
     }
 
+    protected final void onButtonClick(Button var1) {
+	if (var1.id == 3) {
+	    this.minecraft.setCurrentScreen(this.parent);
+	} else {
+	    this.minecraft.generateLevel(var1.id);
+	    this.minecraft.setCurrentScreen((GuiScreen) null);
+	    this.minecraft.grabMouse();
+	}
+    }
+
     public final void onOpen() {
 	this.buttons.clear();
 	this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4,
@@ -18,16 +28,6 @@ public final class GenerateLevelScreen extends GuiScreen {
 		this.height / 4 + 48, "Huge"));
 	this.buttons.add(new Button(3, this.width / 2 - 100,
 		this.height / 4 + 120, "Cancel"));
-    }
-
-    protected final void onButtonClick(Button var1) {
-	if (var1.id == 3) {
-	    this.minecraft.setCurrentScreen(this.parent);
-	} else {
-	    this.minecraft.generateLevel(var1.id);
-	    this.minecraft.setCurrentScreen((GuiScreen) null);
-	    this.minecraft.grabMouse();
-	}
     }
 
     public final void render(int var1, int var2) {

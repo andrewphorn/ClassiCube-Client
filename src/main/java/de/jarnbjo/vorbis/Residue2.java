@@ -39,8 +39,10 @@ class Residue2 extends Residue {
 	super(source, header);
     }
 
-    protected int getType() {
-	return 2;
+    public Object clone() {
+	Residue2 clone = new Residue2();
+	fill(clone);
+	return clone;
     }
 
     protected void decodeResidue(VorbisStream vorbis, BitInputStream source,
@@ -105,13 +107,11 @@ class Residue2 extends Residue {
 	}
     }
 
-    public Object clone() {
-	Residue2 clone = new Residue2();
-	fill(clone);
-	return clone;
-    }
-
     protected double[][] getDecodedVectors() {
 	return decodedVectors;
+    }
+
+    protected int getType() {
+	return 2;
     }
 }

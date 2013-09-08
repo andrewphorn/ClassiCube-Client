@@ -1,13 +1,8 @@
 package com.mojang.minecraft;
 
 public class Timer {
-    public Timer(float tps) {
-	this.tps = tps;
-	lastSysClock = System.currentTimeMillis();
-	lastHRClock = System.nanoTime() / 1000000L;
-    }
-
     float tps;
+
     double lastHR;
     public int elapsedTicks;
     public float delta;
@@ -16,4 +11,9 @@ public class Timer {
     long lastSysClock;
     long lastHRClock;
     double adjustment = 1.0D;
+    public Timer(float tps) {
+	this.tps = tps;
+	lastSysClock = System.currentTimeMillis();
+	lastHRClock = System.nanoTime() / 1000000L;
+    }
 }

@@ -2,6 +2,30 @@ package com.mojang.minecraft.gui;
 
 public final class PauseScreen extends GuiScreen {
 
+    protected final void onButtonClick(Button var1) {
+	if (var1.id == 0) {
+	    this.minecraft.setCurrentScreen(new OptionsScreen(this,
+		    this.minecraft.settings));
+	}
+
+	if (var1.id == 1) {
+	    this.minecraft.setCurrentScreen(new GenerateLevelScreen(this));
+	}
+	if (var1.id == 2) {
+	    this.minecraft.setCurrentScreen(new SaveLevelScreen(this));
+	}
+
+	if (var1.id == 3) {
+	    this.minecraft.setCurrentScreen(new TextureSelectionScreen(this));
+	}
+
+	if (var1.id == 4) {
+	    this.minecraft.setCurrentScreen((GuiScreen) null);
+	    this.minecraft.grabMouse();
+	}
+
+    }
+
     public final void onOpen() {
 	this.buttons.clear();
 	this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4,
@@ -23,30 +47,6 @@ public final class PauseScreen extends GuiScreen {
 	    ((Button) this.buttons.get(1)).active = false;
 	    ((Button) this.buttons.get(2)).active = true;
 	    ((Button) this.buttons.get(3)).active = true;
-	}
-
-    }
-
-    protected final void onButtonClick(Button var1) {
-	if (var1.id == 0) {
-	    this.minecraft.setCurrentScreen(new OptionsScreen(this,
-		    this.minecraft.settings));
-	}
-
-	if (var1.id == 1) {
-	    this.minecraft.setCurrentScreen(new GenerateLevelScreen(this));
-	}
-	if (var1.id == 2) {
-	    this.minecraft.setCurrentScreen(new SaveLevelScreen(this));
-	}
-
-	if (var1.id == 3) {
-	    this.minecraft.setCurrentScreen(new TextureSelectionScreen(this));
-	}
-
-	if (var1.id == 4) {
-	    this.minecraft.setCurrentScreen((GuiScreen) null);
-	    this.minecraft.grabMouse();
 	}
 
     }

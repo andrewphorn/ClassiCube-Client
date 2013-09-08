@@ -28,6 +28,48 @@ public final class SoundManager {
 	}
     }
 
+    public boolean playMusic(SoundPlayer var1, String var2) {
+	List<?> var3 = null;
+	synchronized (this.music) {
+	    var3 = (List<?>) this.music.get(var2);
+	}
+
+	if (var3 == null) {
+	    return false;
+	} else {
+	    File var8 = (File) var3.get(this.random.nextInt(var3.size()));
+
+	    try {
+		var1.play(new Music(var1, var8.toURI().toURL()));
+	    } catch (MalformedURLException var5) {
+		var5.printStackTrace();
+	    } catch (@SuppressWarnings("hiding") IOException var6) {
+		var6.printStackTrace();
+	    }
+
+	    return true;
+	}
+    }
+
+    @SuppressWarnings("unchecked")
+    public final void registerMusic(String var1, File var2) {
+	synchronized (this.music) {
+	    for (var1 = var1.substring(0, var1.length() - 4).replaceAll("/",
+		    "."); Character.isDigit(var1.charAt(var1.length() - 1)); var1 = var1
+		    .substring(0, var1.length() - 1)) {
+		;
+	    }
+
+	    Object var4;
+	    if ((var4 = (List<?>) this.music.get(var1)) == null) {
+		var4 = new ArrayList<Object>();
+		this.music.put(var1, var4);
+	    }
+
+	    ((List<File>) var4).add(var2);
+	}
+    }
+
     @SuppressWarnings("unchecked")
     public void registerSound(File var1, String var2) {
 	try {
@@ -51,47 +93,5 @@ public final class SoundManager {
 	    var6.printStackTrace();
 	}
 
-    }
-
-    @SuppressWarnings("unchecked")
-    public final void registerMusic(String var1, File var2) {
-	synchronized (this.music) {
-	    for (var1 = var1.substring(0, var1.length() - 4).replaceAll("/",
-		    "."); Character.isDigit(var1.charAt(var1.length() - 1)); var1 = var1
-		    .substring(0, var1.length() - 1)) {
-		;
-	    }
-
-	    Object var4;
-	    if ((var4 = (List<?>) this.music.get(var1)) == null) {
-		var4 = new ArrayList<Object>();
-		this.music.put(var1, var4);
-	    }
-
-	    ((List<File>) var4).add(var2);
-	}
-    }
-
-    public boolean playMusic(SoundPlayer var1, String var2) {
-	List<?> var3 = null;
-	synchronized (this.music) {
-	    var3 = (List<?>) this.music.get(var2);
-	}
-
-	if (var3 == null) {
-	    return false;
-	} else {
-	    File var8 = (File) var3.get(this.random.nextInt(var3.size()));
-
-	    try {
-		var1.play(new Music(var1, var8.toURI().toURL()));
-	    } catch (MalformedURLException var5) {
-		var5.printStackTrace();
-	    } catch (@SuppressWarnings("hiding") IOException var6) {
-		var6.printStackTrace();
-	    }
-
-	    return true;
-	}
     }
 }

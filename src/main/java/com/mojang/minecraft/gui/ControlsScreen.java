@@ -14,17 +14,6 @@ public final class ControlsScreen extends GuiScreen {
 	this.settings = var2;
     }
 
-    public final void onOpen() {
-	for (int var1 = 0; var1 < this.settings.bindings.length; ++var1) {
-	    this.buttons.add(new OptionButton(var1, this.width / 2 - 155 + var1
-		    % 2 * 160, this.height / 6 + 24 * (var1 >> 1),
-		    this.settings.getBinding(var1)));
-	}
-
-	this.buttons.add(new Button(200, this.width / 2 - 100,
-		this.height / 6 + 168, "Done"));
-    }
-
     protected final void onButtonClick(Button var1) {
 	for (int var2 = 0; var2 < this.settings.bindings.length; ++var2) {
 	    ((Button) this.buttons.get(var2)).text = this.settings
@@ -48,6 +37,17 @@ public final class ControlsScreen extends GuiScreen {
 	} else {
 	    super.onKeyPress(var1, var2);
 	}
+    }
+
+    public final void onOpen() {
+	for (int var1 = 0; var1 < this.settings.bindings.length; ++var1) {
+	    this.buttons.add(new OptionButton(var1, this.width / 2 - 155 + var1
+		    % 2 * 160, this.height / 6 + 24 * (var1 >> 1),
+		    this.settings.getBinding(var1)));
+	}
+
+	this.buttons.add(new Button(200, this.width / 2 - 100,
+		this.height / 6 + 168, "Done"));
     }
 
     public final void render(int var1, int var2) {

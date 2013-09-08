@@ -3,6 +3,27 @@ package com.mojang.minecraft.level.generator.noise;
 import java.util.Random;
 
 public class PerlinNoise extends Noise {
+    private static double a(double unknown0) {
+	return unknown0 * unknown0 * unknown0
+		* (unknown0 * (unknown0 * 6.0D - 15.0D) + 10.0D);
+    }
+
+    private static double grad(int unknown0, double unknown1, double unknown2,
+	    double unknown3) {
+	double unknown4 = (unknown0 &= 15) < 8 ? unknown1 : unknown2;
+	double unknown5 = unknown0 < 4 ? unknown2 : (unknown0 != 12
+		&& unknown0 != 14 ? unknown3 : unknown1);
+
+	return ((unknown0 & 1) == 0 ? unknown4 : -unknown4)
+		+ ((unknown0 & 2) == 0 ? unknown5 : -unknown5);
+    }
+
+    private static double lerp(double unknown0, double unknown1, double unknown2) {
+	return unknown1 + unknown0 * (unknown2 - unknown1);
+    }
+
+    private int[] noise;
+
     public PerlinNoise() {
 	this(new Random());
     }
@@ -75,26 +96,5 @@ public class PerlinNoise extends Noise {
 					unknown1 - 1.0D, unknown0 - 1.0D),
 				grad(noise[unknown3 + 1], unknown2 - 1.0D,
 					unknown1 - 1.0D, unknown0 - 1.0D))));
-    }
-
-    private int[] noise;
-
-    private static double a(double unknown0) {
-	return unknown0 * unknown0 * unknown0
-		* (unknown0 * (unknown0 * 6.0D - 15.0D) + 10.0D);
-    }
-
-    private static double lerp(double unknown0, double unknown1, double unknown2) {
-	return unknown1 + unknown0 * (unknown2 - unknown1);
-    }
-
-    private static double grad(int unknown0, double unknown1, double unknown2,
-	    double unknown3) {
-	double unknown4 = (unknown0 &= 15) < 8 ? unknown1 : unknown2;
-	double unknown5 = unknown0 < 4 ? unknown2 : (unknown0 != 12
-		&& unknown0 != 14 ? unknown3 : unknown1);
-
-	return ((unknown0 & 1) == 0 ? unknown4 : -unknown4)
-		+ ((unknown0 & 2) == 0 ? unknown5 : -unknown5);
     }
 }

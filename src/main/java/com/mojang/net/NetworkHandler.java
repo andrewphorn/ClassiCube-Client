@@ -68,6 +68,41 @@ public final class NetworkHandler {
     }
 
     @SuppressWarnings("rawtypes")
+    public Object readObject(Class var1) {
+	if (!this.connected) {
+	    return null;
+	} else {
+	    try {
+		if (var1 == Long.TYPE) {
+		    return Long.valueOf(this.in.getLong());
+		} else if (var1 == Integer.TYPE) {
+		    return Integer.valueOf(this.in.getInt());
+		} else if (var1 == Short.TYPE) {
+		    return Short.valueOf(this.in.getShort());
+		} else if (var1 == Byte.TYPE) {
+		    return Byte.valueOf(this.in.get());
+		} else if (var1 == Double.TYPE) {
+		    return Double.valueOf(this.in.getDouble());
+		} else if (var1 == Float.TYPE) {
+		    return Float.valueOf(this.in.getFloat());
+		} else if (var1 == String.class) {
+		    this.in.get(this.stringBytes);
+		    return (new String(this.stringBytes, "UTF-8")).trim();
+		} else if (var1 == byte[].class) {
+		    byte[] var3 = new byte[1024];
+		    this.in.get(var3);
+		    return var3;
+		} else {
+		    return null;
+		}
+	    } catch (Exception var2) {
+		this.netManager.error(var2);
+		return null;
+	    }
+	}
+    }
+
+    @SuppressWarnings("rawtypes")
     public final void send(PacketType var1, Object... var2) {
 	if (this.connected) {
 	    this.out.put(var1.opcode);
@@ -123,41 +158,6 @@ public final class NetworkHandler {
 		}
 	    }
 
-	}
-    }
-
-    @SuppressWarnings("rawtypes")
-    public Object readObject(Class var1) {
-	if (!this.connected) {
-	    return null;
-	} else {
-	    try {
-		if (var1 == Long.TYPE) {
-		    return Long.valueOf(this.in.getLong());
-		} else if (var1 == Integer.TYPE) {
-		    return Integer.valueOf(this.in.getInt());
-		} else if (var1 == Short.TYPE) {
-		    return Short.valueOf(this.in.getShort());
-		} else if (var1 == Byte.TYPE) {
-		    return Byte.valueOf(this.in.get());
-		} else if (var1 == Double.TYPE) {
-		    return Double.valueOf(this.in.getDouble());
-		} else if (var1 == Float.TYPE) {
-		    return Float.valueOf(this.in.getFloat());
-		} else if (var1 == String.class) {
-		    this.in.get(this.stringBytes);
-		    return (new String(this.stringBytes, "UTF-8")).trim();
-		} else if (var1 == byte[].class) {
-		    byte[] var3 = new byte[1024];
-		    this.in.get(var3);
-		    return var3;
-		} else {
-		    return null;
-		}
-	    } catch (Exception var2) {
-		this.netManager.error(var2);
-		return null;
-	    }
 	}
     }
 }

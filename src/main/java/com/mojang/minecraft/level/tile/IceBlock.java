@@ -16,14 +16,6 @@ public final class IceBlock extends Block {
 	Block.liquid[var1] = true;
     }
 
-    public final boolean isOpaque() {
-	return true;
-    }
-
-    public final boolean isSolid() {
-	return false;
-    }
-
     public final boolean canRenderSide(Level level, int x, int y, int z,
 	    int side) {
 	int var6 = level.getTile(x, y, z);
@@ -33,6 +25,14 @@ public final class IceBlock extends Block {
 
     public final int getRenderPass() {
 	return 1;
+    }
+
+    public final boolean isOpaque() {
+	return true;
+    }
+
+    public final boolean isSolid() {
+	return false;
     }
 
     @Override

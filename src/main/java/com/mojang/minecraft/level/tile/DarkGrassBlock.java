@@ -12,6 +12,10 @@ public final class DarkGrassBlock extends Block {
 	this.setPhysics(true);
     }
 
+    public final int getDrop() {
+	return DIRT.getDrop();
+    }
+
     protected final int getTextureId(int texture) {
 	return texture == 1 ? 31 : (texture == 31 ? 2 : 47);
     }
@@ -33,9 +37,5 @@ public final class DarkGrassBlock extends Block {
 
 	    }
 	}
-    }
-
-    public final int getDrop() {
-	return DIRT.getDrop();
     }
 }

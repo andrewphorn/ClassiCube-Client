@@ -17,14 +17,9 @@ public class MinecraftApplet extends Applet {
 
     private Thread thread = null;
 
-    public URL getDocumentBase() {
-	try {
-	    return new URL("http://minecraft.net:80/play.jsp");
-	} catch (MalformedURLException e) {
-	    e.printStackTrace();
-	}
-
-	return null;
+    @Override
+    public void destroy() {
+	stopGameThread();
     }
 
     public URL getCodeBase() {
@@ -33,6 +28,16 @@ public class MinecraftApplet extends Applet {
 	} catch (MalformedURLException e) {
 	    e.printStackTrace();
 	}
+	return null;
+    }
+
+    public URL getDocumentBase() {
+	try {
+	    return new URL("http://minecraft.net:80/play.jsp");
+	} catch (MalformedURLException e) {
+	    e.printStackTrace();
+	}
+
 	return null;
     }
 
@@ -116,6 +121,11 @@ public class MinecraftApplet extends Applet {
 	validate();
     }
 
+    @Override
+    public void start() {
+	minecraft.waiting = false;
+    }
+
     public void startGameThread() {
 	if (thread == null) {
 	    thread = new Thread(minecraft);
@@ -125,18 +135,8 @@ public class MinecraftApplet extends Applet {
     }
 
     @Override
-    public void start() {
-	minecraft.waiting = false;
-    }
-
-    @Override
     public void stop() {
 	minecraft.waiting = true;
-    }
-
-    @Override
-    public void destroy() {
-	stopGameThread();
     }
 
     public void stopGameThread() {

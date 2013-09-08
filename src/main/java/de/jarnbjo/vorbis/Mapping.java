@@ -44,9 +44,9 @@ abstract class Mapping {
 	}
     }
 
-    protected abstract int getType();
-
     protected abstract int[] getAngles();
+
+    protected abstract int getCouplingSteps();
 
     protected abstract int[] getMagnitudes();
 
@@ -56,8 +56,8 @@ abstract class Mapping {
 
     protected abstract int[] getSubmapResidues();
 
-    protected abstract int getCouplingSteps();
-
     protected abstract int getSubmaps();
+
+    protected abstract int getType();
 
 }

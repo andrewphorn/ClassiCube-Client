@@ -104,56 +104,24 @@ public class VorbisStream {
 	// new BufferThread().start();
     }
 
-    public IdentificationHeader getIdentificationHeader() {
-	return identificationHeader;
+    public void close() throws IOException {
+	oggStream.close();
     }
 
     public CommentHeader getCommentHeader() {
 	return commentHeader;
     }
 
-    protected SetupHeader getSetupHeader() {
-	return setupHeader;
+    public int getCurrentBitRate() {
+	return currentBitRate;
     }
 
-    public boolean isOpen() {
-	return oggStream.isOpen();
+    public long getCurrentGranulePosition() {
+	return currentGranulePosition;
     }
 
-    public void close() throws IOException {
-	oggStream.close();
-    }
-
-    public int readPcm(byte[] buffer, int offset, int length)
-	    throws IOException {
-	synchronized (streamLock) {
-	    identificationHeader.getChannels();
-
-	    if (lastAudioPacket == null) {
-		lastAudioPacket = getNextAudioPacket();
-	    }
-	    if (currentPcm == null || currentPcmIndex >= currentPcmLimit) {
-		AudioPacket ap = getNextAudioPacket();
-		try {
-		    ap.getPcm(lastAudioPacket, currentPcm);
-		    currentPcmLimit = ap.getNumberOfSamples()
-			    * identificationHeader.getChannels() * 2;
-		} catch (ArrayIndexOutOfBoundsException e) {
-		    return 0;
-		}
-		currentPcmIndex = 0;
-		lastAudioPacket = ap;
-	    }
-	    int written = 0;
-	    int i = 0;
-	    int arrIx = 0;
-	    for (i = currentPcmIndex; i < currentPcmLimit && arrIx < length; i++) {
-		buffer[offset + arrIx++] = currentPcm[i];
-		written++;
-	    }
-	    currentPcmIndex = i;
-	    return written;
-	}
+    public IdentificationHeader getIdentificationHeader() {
+	return identificationHeader;
     }
 
     private AudioPacket getNextAudioPacket() throws VorbisFormatException,
@@ -173,12 +141,12 @@ public class VorbisStream {
 	return res;
     }
 
-    public long getCurrentGranulePosition() {
-	return currentGranulePosition;
+    protected SetupHeader getSetupHeader() {
+	return setupHeader;
     }
 
-    public int getCurrentBitRate() {
-	return currentBitRate;
+    public boolean isOpen() {
+	return oggStream.isOpen();
     }
 
     public byte[] processPacket(byte[] packet) throws VorbisFormatException,
@@ -232,6 +200,38 @@ public class VorbisStream {
 	    lastAudioPacket = ap;
 
 	    return res;
+	}
+    }
+
+    public int readPcm(byte[] buffer, int offset, int length)
+	    throws IOException {
+	synchronized (streamLock) {
+	    identificationHeader.getChannels();
+
+	    if (lastAudioPacket == null) {
+		lastAudioPacket = getNextAudioPacket();
+	    }
+	    if (currentPcm == null || currentPcmIndex >= currentPcmLimit) {
+		AudioPacket ap = getNextAudioPacket();
+		try {
+		    ap.getPcm(lastAudioPacket, currentPcm);
+		    currentPcmLimit = ap.getNumberOfSamples()
+			    * identificationHeader.getChannels() * 2;
+		} catch (ArrayIndexOutOfBoundsException e) {
+		    return 0;
+		}
+		currentPcmIndex = 0;
+		lastAudioPacket = ap;
+	    }
+	    int written = 0;
+	    int i = 0;
+	    int arrIx = 0;
+	    for (i = currentPcmIndex; i < currentPcmLimit && arrIx < length; i++) {
+		buffer[offset + arrIx++] = currentPcm[i];
+		written++;
+	    }
+	    currentPcmIndex = i;
+	    return written;
 	}
     }
 

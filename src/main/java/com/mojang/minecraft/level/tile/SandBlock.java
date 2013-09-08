@@ -10,17 +10,9 @@ public final class SandBlock extends Block {
 	super(var1, var2);
     }
 
-    public final void onPlace(Level level, int x, int y, int z) {
-	this.fall(level, x, y, z);
-    }
-
-    public final void onNeighborChange(Level var1, int var2, int var3,
-	    int var4, int var5) {
-	this.fall(var1, var2, var3, var4);
-    }
-
     private void fall(Level var1, int var2, int var3, int var4) {
-	if(!Minecraft.isSinglePlayer)return;
+	if (!Minecraft.isSinglePlayer)
+	    return;
 	int var11 = var2;
 	int var5 = var3;
 	int var6 = var4;
@@ -47,5 +39,14 @@ public final class SandBlock extends Block {
 
 	    --var5;
 	}
+    }
+
+    public final void onNeighborChange(Level var1, int var2, int var3,
+	    int var4, int var5) {
+	this.fall(var1, var2, var3, var4);
+    }
+
+    public final void onPlace(Level level, int x, int y, int z) {
+	this.fall(level, x, y, z);
     }
 }

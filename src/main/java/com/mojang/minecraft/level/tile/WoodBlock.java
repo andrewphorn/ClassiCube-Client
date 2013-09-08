@@ -7,12 +7,12 @@ public final class WoodBlock extends Block {
 	this.textureId = 20;
     }
 
-    public final int getDropCount() {
-	return random.nextInt(3) + 3;
-    }
-
     public final int getDrop() {
 	return WOOD.id;
+    }
+
+    public final int getDropCount() {
+	return random.nextInt(3) + 3;
     }
 
     protected final int getTextureId(int texture) {

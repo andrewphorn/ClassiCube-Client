@@ -10,15 +10,6 @@ public final class TNTBlock extends Block {
 	super(var1, var2);
     }
 
-    protected final int getTextureId(int texture) {
-	return texture == 0 ? this.textureId + 2
-		: (texture == 1 ? this.textureId + 1 : this.textureId);
-    }
-
-    public final int getDropCount() {
-	return 0;
-    }
-
     public final void explode(Level var1, int var2, int var3, int var4) {
 	if (!var1.creativeMode) {
 	    PrimedTnt var5;
@@ -28,6 +19,15 @@ public final class TNTBlock extends Block {
 	    var1.addEntity(var5);
 	}
 
+    }
+
+    public final int getDropCount() {
+	return 0;
+    }
+
+    protected final int getTextureId(int texture) {
+	return texture == 0 ? this.textureId + 2
+		: (texture == 1 ? this.textureId + 1 : this.textureId);
     }
 
     public final void spawnBreakParticles(Level level, int x, int y, int z,

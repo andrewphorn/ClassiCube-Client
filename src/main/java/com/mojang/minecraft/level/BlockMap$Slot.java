@@ -7,14 +7,38 @@ import java.io.Serializable;
 class BlockMap$Slot implements Serializable {
 
     public static final long serialVersionUID = 0L;
+    // $FF: synthetic method
+    static int getXSlot(BlockMap$Slot var0) {
+	return var0.xSlot;
+    }
+    // $FF: synthetic method
+    static int getYSlot(BlockMap$Slot var0) {
+	return var0.ySlot;
+    }
+    // $FF: synthetic method
+    static int getZSlot(BlockMap$Slot var0) {
+	return var0.zSlot;
+    }
     private int xSlot;
+
     private int ySlot;
+
     private int zSlot;
+
     // $FF: synthetic field
     final BlockMap blockMap;
 
     public BlockMap$Slot(BlockMap var1) {
 	this.blockMap = var1;
+    }
+
+    public void add(Entity var1) {
+	if (this.xSlot >= 0 && this.ySlot >= 0 && this.zSlot >= 0) {
+	    this.blockMap.entityGrid[(this.zSlot
+		    * BlockMap.getDepth(this.blockMap) + this.ySlot)
+		    * BlockMap.getWidth(this.blockMap) + this.xSlot].add(var1);
+	}
+
     }
 
     public BlockMap$Slot init(float var1, float var2, float var3) {
@@ -48,15 +72,6 @@ class BlockMap$Slot implements Serializable {
 	return this;
     }
 
-    public void add(Entity var1) {
-	if (this.xSlot >= 0 && this.ySlot >= 0 && this.zSlot >= 0) {
-	    this.blockMap.entityGrid[(this.zSlot
-		    * BlockMap.getDepth(this.blockMap) + this.ySlot)
-		    * BlockMap.getWidth(this.blockMap) + this.xSlot].add(var1);
-	}
-
-    }
-
     public void remove(Entity var1) {
 	if (this.xSlot >= 0 && this.ySlot >= 0 && this.zSlot >= 0) {
 	    this.blockMap.entityGrid[(this.zSlot
@@ -65,20 +80,5 @@ class BlockMap$Slot implements Serializable {
 		    .remove(var1);
 	}
 
-    }
-
-    // $FF: synthetic method
-    static int getXSlot(BlockMap$Slot var0) {
-	return var0.xSlot;
-    }
-
-    // $FF: synthetic method
-    static int getYSlot(BlockMap$Slot var0) {
-	return var0.ySlot;
-    }
-
-    // $FF: synthetic method
-    static int getZSlot(BlockMap$Slot var0) {
-	return var0.zSlot;
     }
 }

@@ -5,6 +5,8 @@ import com.mojang.minecraft.model.TexturedQuad;
 import com.mojang.minecraft.model.Vertex;
 
 public class ItemModel {
+    private ModelPart model = new ModelPart(0, 0);
+
     public ItemModel(int tex) {
 	float var3 = -2.0F;
 	float var4 = -2.0F;
@@ -50,8 +52,6 @@ public class ItemModel {
 	model.quads[4] = new TexturedQuad(vertexes5, u1, v1, u2, v2);
 	model.quads[5] = new TexturedQuad(vertexes6, u1, v1, u2, v2);
     }
-
-    private ModelPart model = new ModelPart(0, 0);
 
     public void generateList() {
 	model.render(0.0625F);

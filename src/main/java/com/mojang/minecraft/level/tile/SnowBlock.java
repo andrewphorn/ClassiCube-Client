@@ -15,26 +15,6 @@ public final class SnowBlock extends Block {
 	this.setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.20F, 1.0F);
     }
 
-    protected final int getTextureId(int texture) {
-	return Texture;
-    }
-
-    public final boolean isSolid() {
-	return false;
-    }
-
-    public final boolean isOpaque() {
-	return true;
-    }
-
-    public final int getDrop() {
-	return SNOW.id;
-    }
-
-    public final boolean isCube() {
-	return false;
-    }
-
     public final boolean canRenderSide(Level level, int x, int y, int z,
 	    int side) {
 	if (this != SNOW) {
@@ -49,5 +29,25 @@ public final class SnowBlock extends Block {
     @Override
     public AABB getCollisionBox(int x, int y, int z) {
 	return null;
+    }
+
+    public final int getDrop() {
+	return SNOW.id;
+    }
+
+    protected final int getTextureId(int texture) {
+	return Texture;
+    }
+
+    public final boolean isCube() {
+	return false;
+    }
+
+    public final boolean isOpaque() {
+	return true;
+    }
+
+    public final boolean isSolid() {
+	return false;
     }
 }

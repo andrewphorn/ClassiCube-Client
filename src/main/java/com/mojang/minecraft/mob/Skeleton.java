@@ -7,6 +7,19 @@ public class Skeleton extends Zombie {
 
     public static final long serialVersionUID = 0L;
 
+    // $FF: synthetic method
+    static void shootRandomArrow(Skeleton var0) {
+	int var1 = (int) ((Math.random() + Math.random()) * 3.0D + 4.0D);
+
+	for (int var2 = 0; var2 < var1; ++var2) {
+	    var0.level.addEntity(new Arrow(var0.level, var0.level.getPlayer(),
+		    var0.x, var0.y - 0.2F, var0.z,
+		    (float) Math.random() * 360.0F,
+		    -((float) Math.random()) * 60.0F, 0.4F));
+	}
+
+    }
+
     public Skeleton(Level var1, float var2, float var3, float var4) {
 	super(var1, var2, var3, var4);
 	this.modelName = "skeleton";
@@ -22,18 +35,5 @@ public class Skeleton extends Zombie {
 	var1.addEntity(new Arrow(var1, this, this.x, this.y, this.z, this.yRot
 		+ 180.0F + (float) (Math.random() * 45.0D - 22.5D), this.xRot
 		- (float) (Math.random() * 45.0D - 10.0D), 1.0F));
-    }
-
-    // $FF: synthetic method
-    static void shootRandomArrow(Skeleton var0) {
-	int var1 = (int) ((Math.random() + Math.random()) * 3.0D + 4.0D);
-
-	for (int var2 = 0; var2 < var1; ++var2) {
-	    var0.level.addEntity(new Arrow(var0.level, var0.level.getPlayer(),
-		    var0.x, var0.y - 0.2F, var0.z,
-		    (float) Math.random() * 360.0F,
-		    -((float) Math.random()) * 60.0F, 0.4F));
-	}
-
     }
 }

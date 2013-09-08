@@ -17,12 +17,12 @@ public enum Tile$SoundType {
 	this.pitch = var5;
     }
 
-    public final float getVolume() {
-	return this.volume / (Block.random.nextFloat() * 0.4F + 1.0F) * 0.5F;
-    }
-
     public final float getPitch() {
 	return this.pitch / (Block.random.nextFloat() * 0.2F + 0.9F);
+    }
+
+    public final float getVolume() {
+	return this.volume / (Block.random.nextFloat() * 0.4F + 1.0F) * 0.5F;
     }
 
 }

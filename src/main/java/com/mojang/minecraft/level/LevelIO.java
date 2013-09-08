@@ -20,10 +20,156 @@ import java.util.zip.GZIPOutputStream;
 
 public final class LevelIO {
 
+    public static byte[] decompress(InputStream var0) {
+	try {
+	    DataInputStream var3;
+	    byte[] var1 = new byte[(var3 = new DataInputStream(
+		    new GZIPInputStream(var0))).readInt()];
+	    var3.readFully(var1);
+	    var3.close();
+	    return var1;
+	} catch (Exception var2) {
+	    throw new RuntimeException(var2);
+	}
+    }
+
+    public static void save(Level var0, OutputStream var1) {
+	try {
+	    DataOutputStream var3;
+	    (var3 = new DataOutputStream(new GZIPOutputStream(var1)))
+		    .writeInt(656127880);
+	    var3.writeByte(2);
+	    ObjectOutputStream var4;
+	    (var4 = new ObjectOutputStream(var3)).writeObject(var0);
+	    var4.close();
+	} catch (Exception var2) {
+	    var2.printStackTrace();
+	}
+    }
+
     private ProgressBarDisplay progressBar;
 
     public LevelIO(ProgressBarDisplay var1) {
 	this.progressBar = var1;
+    }
+
+    public final Level load(File var1) {
+	try {
+	    FileInputStream var5 = new FileInputStream(var1);
+	    Level var2 = this.load((InputStream) var5);
+	    var5.close();
+	    return var2;
+	} catch (Exception var4) {
+	    var4.printStackTrace();
+	    if (this.progressBar != null) {
+		this.progressBar.setText("Failed!");
+	    }
+
+	    try {
+		Thread.sleep(1000L);
+	    } catch (InterruptedException var3) {
+		;
+	    }
+
+	    return null;
+	}
+    }
+
+    public final Level load(InputStream var1) {
+	if (this.progressBar != null) {
+	    this.progressBar.setTitle("Loading level");
+	}
+
+	if (this.progressBar != null) {
+	    this.progressBar.setText("Reading..");
+	}
+
+	try {
+	    DataInputStream var10;
+	    if ((var10 = new DataInputStream(new GZIPInputStream(var1)))
+		    .readInt() != 656127880) {
+		return null;
+	    } else {
+		byte var12;
+		if ((var12 = var10.readByte()) > 2) {
+		    return null;
+		} else if (var12 <= 1) {
+		    String var14 = var10.readUTF();
+		    String var15 = var10.readUTF();
+		    long var3 = var10.readLong();
+		    short var5 = var10.readShort();
+		    short var6 = var10.readShort();
+		    short var7 = var10.readShort();
+		    byte[] var8 = new byte[var5 * var6 * var7];
+		    var10.readFully(var8);
+		    var10.close();
+		    Level var11;
+		    (var11 = new Level()).setData(var5, var7, var6, var8);
+		    var11.name = var14;
+		    var11.creator = var15;
+		    var11.createTime = var3;
+		    return var11;
+		} else {
+		    Level var2;
+		    LevelObjectInputStream var13;
+		    (var2 = (Level) (var13 = new LevelObjectInputStream(var10))
+			    .readObject()).initTransient();
+		    var13.close();
+		    return var2;
+		}
+	    }
+	} catch (Exception var9) {
+	    var9.printStackTrace();
+	    System.out.println("Failed to load level: " + var9.toString());
+	    return null;
+	}
+    }
+
+    public final Level loadOnline(String var1, String var2, int var3) {
+	if (this.progressBar != null) {
+	    this.progressBar.setTitle("Loading level");
+	}
+
+	try {
+	    if (this.progressBar != null) {
+		this.progressBar.setText("Connecting..");
+	    }
+
+	    HttpURLConnection var6;
+	    (var6 = (HttpURLConnection) (new URL("http://" + var1
+		    + "/level/load.html?id=" + var3 + "&user=" + var2))
+		    .openConnection()).setDoInput(true);
+	    if (this.progressBar != null) {
+		this.progressBar.setText("Loading..");
+	    }
+
+	    DataInputStream var7;
+	    if ((var7 = new DataInputStream(var6.getInputStream())).readUTF()
+		    .equalsIgnoreCase("ok")) {
+		return this.load((InputStream) var7);
+	    } else {
+		if (this.progressBar != null) {
+		    this.progressBar.setText("Failed: " + var7.readUTF());
+		}
+
+		var7.close();
+		Thread.sleep(1000L);
+		return null;
+	    }
+	} catch (Exception var5) {
+	    var5.printStackTrace();
+	    if (this.progressBar != null) {
+		this.progressBar.setText("Failed!");
+	    }
+
+	    try {
+		Thread.sleep(3000L);
+	    } catch (InterruptedException var4) {
+		;
+	    }
+
+	    return null;
+	}
     }
 
     public final boolean save(Level var1, File var2) {
@@ -51,28 +197,6 @@ public final class LevelIO {
 	    }
 
 	    return false;
-	}
-    }
-
-    public final Level load(File var1) {
-	try {
-	    FileInputStream var5 = new FileInputStream(var1);
-	    Level var2 = this.load((InputStream) var5);
-	    var5.close();
-	    return var2;
-	} catch (Exception var4) {
-	    var4.printStackTrace();
-	    if (this.progressBar != null) {
-		this.progressBar.setText("Failed!");
-	    }
-
-	    try {
-		Thread.sleep(1000L);
-	    } catch (InterruptedException var3) {
-		;
-	    }
-
-	    return null;
 	}
     }
 
@@ -145,130 +269,6 @@ public final class LevelIO {
 	    }
 
 	    return false;
-	}
-    }
-
-    public final Level loadOnline(String var1, String var2, int var3) {
-	if (this.progressBar != null) {
-	    this.progressBar.setTitle("Loading level");
-	}
-
-	try {
-	    if (this.progressBar != null) {
-		this.progressBar.setText("Connecting..");
-	    }
-
-	    HttpURLConnection var6;
-	    (var6 = (HttpURLConnection) (new URL("http://" + var1
-		    + "/level/load.html?id=" + var3 + "&user=" + var2))
-		    .openConnection()).setDoInput(true);
-	    if (this.progressBar != null) {
-		this.progressBar.setText("Loading..");
-	    }
-
-	    DataInputStream var7;
-	    if ((var7 = new DataInputStream(var6.getInputStream())).readUTF()
-		    .equalsIgnoreCase("ok")) {
-		return this.load((InputStream) var7);
-	    } else {
-		if (this.progressBar != null) {
-		    this.progressBar.setText("Failed: " + var7.readUTF());
-		}
-
-		var7.close();
-		Thread.sleep(1000L);
-		return null;
-	    }
-	} catch (Exception var5) {
-	    var5.printStackTrace();
-	    if (this.progressBar != null) {
-		this.progressBar.setText("Failed!");
-	    }
-
-	    try {
-		Thread.sleep(3000L);
-	    } catch (InterruptedException var4) {
-		;
-	    }
-
-	    return null;
-	}
-    }
-
-    public final Level load(InputStream var1) {
-	if (this.progressBar != null) {
-	    this.progressBar.setTitle("Loading level");
-	}
-
-	if (this.progressBar != null) {
-	    this.progressBar.setText("Reading..");
-	}
-
-	try {
-	    DataInputStream var10;
-	    if ((var10 = new DataInputStream(new GZIPInputStream(var1)))
-		    .readInt() != 656127880) {
-		return null;
-	    } else {
-		byte var12;
-		if ((var12 = var10.readByte()) > 2) {
-		    return null;
-		} else if (var12 <= 1) {
-		    String var14 = var10.readUTF();
-		    String var15 = var10.readUTF();
-		    long var3 = var10.readLong();
-		    short var5 = var10.readShort();
-		    short var6 = var10.readShort();
-		    short var7 = var10.readShort();
-		    byte[] var8 = new byte[var5 * var6 * var7];
-		    var10.readFully(var8);
-		    var10.close();
-		    Level var11;
-		    (var11 = new Level()).setData(var5, var7, var6, var8);
-		    var11.name = var14;
-		    var11.creator = var15;
-		    var11.createTime = var3;
-		    return var11;
-		} else {
-		    Level var2;
-		    LevelObjectInputStream var13;
-		    (var2 = (Level) (var13 = new LevelObjectInputStream(var10))
-			    .readObject()).initTransient();
-		    var13.close();
-		    return var2;
-		}
-	    }
-	} catch (Exception var9) {
-	    var9.printStackTrace();
-	    System.out.println("Failed to load level: " + var9.toString());
-	    return null;
-	}
-    }
-
-    public static void save(Level var0, OutputStream var1) {
-	try {
-	    DataOutputStream var3;
-	    (var3 = new DataOutputStream(new GZIPOutputStream(var1)))
-		    .writeInt(656127880);
-	    var3.writeByte(2);
-	    ObjectOutputStream var4;
-	    (var4 = new ObjectOutputStream(var3)).writeObject(var0);
-	    var4.close();
-	} catch (Exception var2) {
-	    var2.printStackTrace();
-	}
-    }
-
-    public static byte[] decompress(InputStream var0) {
-	try {
-	    DataInputStream var3;
-	    byte[] var1 = new byte[(var3 = new DataInputStream(
-		    new GZIPInputStream(var0))).readInt()];
-	    var3.readFully(var1);
-	    var3.close();
-	    return var1;
-	} catch (Exception var2) {
-	    throw new RuntimeException(var2);
 	}
     }
 }

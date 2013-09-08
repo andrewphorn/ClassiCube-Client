@@ -60,6 +60,77 @@ public class ShapeRenderer {
 	}
     }
 
+    public void addTranslation(float var1, float var2, float var3) {
+	this.xOffset += (double) var1;
+	this.yOffset += (double) var2;
+	this.zOffset += (double) var3;
+    }
+
+    public void begin() {
+	this.startDrawing(7);
+    }
+
+    public void color(float var1, float var2, float var3) {
+	this.setColorOpaque((int) (var1 * 255.0F), (int) (var2 * 255.0F),
+		(int) (var3 * 255.0F));
+    }
+
+    public void color(float var1, float var2, float var3, float var4) {
+	this.colorClampRGBA((int) (var1 * 255.0F), (int) (var2 * 255.0F),
+		(int) (var3 * 255.0F), (int) (var4 * 255.0F));
+    }
+
+    public void color(int var1) {
+	int var2 = var1 >> 16 & 255;
+	int var3 = var1 >> 8 & 255;
+	int var4 = var1 & 255;
+	this.setColorOpaque(var2, var3, var4);
+    }
+
+    public void colorClampRGBA(int var1, int var2, int var3, int var4) {
+	if (!this.isColorDisabled) {
+	    if (var1 > 255) {
+		var1 = 255;
+	    }
+
+	    if (var2 > 255) {
+		var2 = 255;
+	    }
+
+	    if (var3 > 255) {
+		var3 = 255;
+	    }
+
+	    if (var4 > 255) {
+		var4 = 255;
+	    }
+
+	    if (var1 < 0) {
+		var1 = 0;
+	    }
+
+	    if (var2 < 0) {
+		var2 = 0;
+	    }
+
+	    if (var3 < 0) {
+		var3 = 0;
+	    }
+
+	    if (var4 < 0) {
+		var4 = 0;
+	    }
+
+	    this.hasColor = true;
+
+	    if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
+		this.color = var4 << 24 | var3 << 16 | var2 << 8 | var1;
+	    } else {
+		this.color = var1 << 24 | var2 << 16 | var3 << 8 | var4;
+	    }
+	}
+    }
+
     public int end() {
 	if (!this.isDrawing) {
 	    throw new IllegalStateException("Not tesselating!");
@@ -176,6 +247,14 @@ public class ShapeRenderer {
 	}
     }
 
+    public void noColor() {
+	this.isColorDisabled = true;
+    }
+
+    public final void normal(float var1, float var2, float var3) {
+	GL11.glNormal3f(var1, var2, var3);
+    }
+
     private void reset() {
 	this.vertexCount = 0;
 	this.byteBuffer.clear();
@@ -183,8 +262,32 @@ public class ShapeRenderer {
 	this.addedVertices = 0;
     }
 
-    public void begin() {
-	this.startDrawing(7);
+    public void setBrightness(int var1) {
+	this.hasBrightness = true;
+	this.brightness = var1;
+    }
+
+    public void setColorOpaque(int var1, int var2, int var3) {
+	this.colorClampRGBA(var1, var2, var3, 255);
+    }
+
+    public void setColorRGBA_I(int var1, int var2) {
+	int var3 = var1 >> 16 & 255;
+	int var4 = var1 >> 8 & 255;
+	int var5 = var1 & 255;
+	this.colorClampRGBA(var3, var4, var5, var2);
+    }
+
+    public void setTextureUV(double var1, double var3) {
+	this.hasTexture = true;
+	this.textureU = var1;
+	this.textureV = var3;
+    }
+
+    public void setTranslation(double var1, double var3, double var5) {
+	this.xOffset = var1;
+	this.yOffset = var3;
+	this.zOffset = var5;
     }
 
     public void startDrawing(int var1) {
@@ -202,79 +305,12 @@ public class ShapeRenderer {
 	}
     }
 
-    public void setTextureUV(double var1, double var3) {
-	this.hasTexture = true;
-	this.textureU = var1;
-	this.textureV = var3;
-    }
-
-    public void setBrightness(int var1) {
-	this.hasBrightness = true;
-	this.brightness = var1;
-    }
-
-    public void color(float var1, float var2, float var3) {
-	this.setColorOpaque((int) (var1 * 255.0F), (int) (var2 * 255.0F),
-		(int) (var3 * 255.0F));
-    }
-
-    public void color(float var1, float var2, float var3, float var4) {
-	this.colorClampRGBA((int) (var1 * 255.0F), (int) (var2 * 255.0F),
-		(int) (var3 * 255.0F), (int) (var4 * 255.0F));
-    }
-
-    public void setColorOpaque(int var1, int var2, int var3) {
-	this.colorClampRGBA(var1, var2, var3, 255);
-    }
-
-    public void colorClampRGBA(int var1, int var2, int var3, int var4) {
-	if (!this.isColorDisabled) {
-	    if (var1 > 255) {
-		var1 = 255;
-	    }
-
-	    if (var2 > 255) {
-		var2 = 255;
-	    }
-
-	    if (var3 > 255) {
-		var3 = 255;
-	    }
-
-	    if (var4 > 255) {
-		var4 = 255;
-	    }
-
-	    if (var1 < 0) {
-		var1 = 0;
-	    }
-
-	    if (var2 < 0) {
-		var2 = 0;
-	    }
-
-	    if (var3 < 0) {
-		var3 = 0;
-	    }
-
-	    if (var4 < 0) {
-		var4 = 0;
-	    }
-
-	    this.hasColor = true;
-
-	    if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
-		this.color = var4 << 24 | var3 << 16 | var2 << 8 | var1;
-	    } else {
-		this.color = var1 << 24 | var2 << 16 | var3 << 8 | var4;
-	    }
-	}
-    }
-
-    public void vertexUV(double var1, double var3, double var5, double var7,
-	    double var9) {
-	this.setTextureUV(var7, var9);
-	this.vertex(var1, var3, var5);
+    public void useNormal(float var1, float var2, float var3) {
+	this.hasNormals = true;
+	byte var4 = (byte) ((int) (var1 * 127.0F));
+	byte var5 = (byte) ((int) (var2 * 127.0F));
+	byte var6 = (byte) ((int) (var3 * 127.0F));
+	this.normal = var4 & 255 | (var5 & 255) << 8 | (var6 & 255) << 16;
     }
 
     public void vertex(double var1, double var3, double var5) {
@@ -348,45 +384,10 @@ public class ShapeRenderer {
 	}
     }
 
-    public void color(int var1) {
-	int var2 = var1 >> 16 & 255;
-	int var3 = var1 >> 8 & 255;
-	int var4 = var1 & 255;
-	this.setColorOpaque(var2, var3, var4);
+    public void vertexUV(double var1, double var3, double var5, double var7,
+	    double var9) {
+	this.setTextureUV(var7, var9);
+	this.vertex(var1, var3, var5);
     }
 
-    public void setColorRGBA_I(int var1, int var2) {
-	int var3 = var1 >> 16 & 255;
-	int var4 = var1 >> 8 & 255;
-	int var5 = var1 & 255;
-	this.colorClampRGBA(var3, var4, var5, var2);
-    }
-
-    public void noColor() {
-	this.isColorDisabled = true;
-    }
-
-    public void useNormal(float var1, float var2, float var3) {
-	this.hasNormals = true;
-	byte var4 = (byte) ((int) (var1 * 127.0F));
-	byte var5 = (byte) ((int) (var2 * 127.0F));
-	byte var6 = (byte) ((int) (var3 * 127.0F));
-	this.normal = var4 & 255 | (var5 & 255) << 8 | (var6 & 255) << 16;
-    }
-
-    public void setTranslation(double var1, double var3, double var5) {
-	this.xOffset = var1;
-	this.yOffset = var3;
-	this.zOffset = var5;
-    }
-
-    public void addTranslation(float var1, float var2, float var3) {
-	this.xOffset += (double) var1;
-	this.yOffset += (double) var2;
-	this.zOffset += (double) var3;
-    }
-    public final void normal(float var1, float var2, float var3) {
-	GL11.glNormal3f(var1, var2, var3);
-    }
-    
 }

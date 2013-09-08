@@ -18,21 +18,42 @@ public class ChatInputScreenExtension extends GuiScreen {
     public int caretPos = 0;
     private int historyPos = 0;
 
-    public final void onOpen() {
-	Keyboard.enableRepeatEvents(true);
+    public static Vector<String> history = new Vector<String>();
+
+    int j;
+
+    private String getClipboard() {
+	Transferable localTransferable = Toolkit.getDefaultToolkit()
+		.getSystemClipboard().getContents(null);
+	try {
+	    if ((localTransferable != null)
+		    && (localTransferable
+			    .isDataFlavorSupported(DataFlavor.stringFlavor)))
+		return (String) localTransferable
+			.getTransferData(DataFlavor.stringFlavor);
+	} catch (UnsupportedFlavorException localUnsupportedFlavorException) {
+	} catch (IOException localIOException) {
+	}
+	return null;
+    }
+
+    private void insertTextAtCaret(String paramString) {
+	int i = 64 - this.minecraft.session.username.length() - 2;
+
+	int j = paramString.length();
+	this.inputLine = (this.inputLine.substring(0, this.caretPos)
+		+ paramString + this.inputLine.substring(this.caretPos));
+	this.caretPos += j;
+	if (this.inputLine.length() > i) {
+	    this.inputLine = this.inputLine.substring(0, i);
+	}
+	if (this.caretPos > this.inputLine.length())
+	    this.caretPos = this.inputLine.length();
     }
 
     public final void onClose() {
 	Keyboard.enableRepeatEvents(false);
     }
-
-    public final void tick() {
-	++this.tickCount;
-    }
-
-    public static Vector<String> history = new Vector<String>();
-
-    int j;
 
     @Override
     protected final void onKeyPress(char paramChar, int paramInt) {
@@ -124,18 +145,14 @@ public class ChatInputScreenExtension extends GuiScreen {
 	    insertTextAtCaret(String.valueOf(paramChar));
     }
 
-    private void insertTextAtCaret(String paramString) {
-	int i = 64 - this.minecraft.session.username.length() - 2;
+    protected final void onMouseClick(int paramInt1, int paramInt2,
+	    int paramInt3) {
+	if ((paramInt3 == 0) && (this.minecraft.hud.hoveredPlayer != null))
+	    insertTextAtCaret(this.minecraft.hud.hoveredPlayer + " ");
+    }
 
-	int j = paramString.length();
-	this.inputLine = (this.inputLine.substring(0, this.caretPos)
-		+ paramString + this.inputLine.substring(this.caretPos));
-	this.caretPos += j;
-	if (this.inputLine.length() > i) {
-	    this.inputLine = this.inputLine.substring(0, i);
-	}
-	if (this.caretPos > this.inputLine.length())
-	    this.caretPos = this.inputLine.length();
+    public final void onOpen() {
+	Keyboard.enableRepeatEvents(true);
     }
 
     public void render(int paramInt1, int paramInt2) {
@@ -160,30 +177,13 @@ public class ChatInputScreenExtension extends GuiScreen {
 		14737632);
     }
 
-    protected final void onMouseClick(int paramInt1, int paramInt2,
-	    int paramInt3) {
-	if ((paramInt3 == 0) && (this.minecraft.hud.hoveredPlayer != null))
-	    insertTextAtCaret(this.minecraft.hud.hoveredPlayer + " ");
-    }
-
-    private String getClipboard() {
-	Transferable localTransferable = Toolkit.getDefaultToolkit()
-		.getSystemClipboard().getContents(null);
-	try {
-	    if ((localTransferable != null)
-		    && (localTransferable
-			    .isDataFlavorSupported(DataFlavor.stringFlavor)))
-		return (String) localTransferable
-			.getTransferData(DataFlavor.stringFlavor);
-	} catch (UnsupportedFlavorException localUnsupportedFlavorException) {
-	} catch (IOException localIOException) {
-	}
-	return null;
-    }
-
     private void setClipboard(String paramString) {
 	StringSelection localStringSelection = new StringSelection(paramString);
 	Toolkit.getDefaultToolkit().getSystemClipboard()
 		.setContents(localStringSelection, null);
+    }
+
+    public final void tick() {
+	++this.tickCount;
     }
 }

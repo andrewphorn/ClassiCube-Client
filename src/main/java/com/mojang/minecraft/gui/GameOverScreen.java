@@ -4,18 +4,6 @@ import org.lwjgl.opengl.GL11;
 
 public final class GameOverScreen extends GuiScreen {
 
-    public final void onOpen() {
-	this.buttons.clear();
-	this.buttons.add(new Button(1, this.width / 2 - 100,
-		this.height / 4 + 72, "Generate new level..."));
-	this.buttons.add(new Button(2, this.width / 2 - 100,
-		this.height / 4 + 96, "Load level.."));
-	if (this.minecraft.session == null) {
-	    ((Button) this.buttons.get(2)).active = false;
-	}
-
-    }
-
     protected final void onButtonClick(Button var1) {
 	if (var1.id == 0) {
 	    this.minecraft.setCurrentScreen(new OptionsScreen(this,
@@ -28,6 +16,18 @@ public final class GameOverScreen extends GuiScreen {
 
 	if (this.minecraft.session != null && var1.id == 2) {
 	    this.minecraft.setCurrentScreen(new LoadLevelScreen(this));
+	}
+
+    }
+
+    public final void onOpen() {
+	this.buttons.clear();
+	this.buttons.add(new Button(1, this.width / 2 - 100,
+		this.height / 4 + 72, "Generate new level..."));
+	this.buttons.add(new Button(2, this.width / 2 - 100,
+		this.height / 4 + 96, "Load level.."));
+	if (this.minecraft.session == null) {
+	    ((Button) this.buttons.get(2)).active = false;
 	}
 
     }

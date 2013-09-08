@@ -111,10 +111,10 @@ public abstract class Floor {
 	}
     }
 
-    abstract int getType();
+    abstract void computeFloor(float[] vector);
 
     abstract Floor decodeFloor(VorbisStream vorbis, BitInputStream source)
 	    throws VorbisFormatException, IOException;
 
-    abstract void computeFloor(float[] vector);
+    abstract int getType();
 }

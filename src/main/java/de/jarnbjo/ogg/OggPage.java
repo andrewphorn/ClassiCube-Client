@@ -52,58 +52,19 @@ import de.jarnbjo.util.io.*;
 
 public class OggPage {
 
-    private int version;
-    private boolean continued, bos, eos;
-    private long absoluteGranulePosition;
-    private int streamSerialNumber, pageSequenceNumber, pageCheckSum;
-    private int[] segmentOffsets;
-    private int[] segmentLengths;
-    private int totalLength;
-    private byte[] header, segmentTable, data;
-
-    protected OggPage() {
-    }
-
-    private OggPage(int version, boolean continued, boolean bos, boolean eos,
-	    long absoluteGranulePosition, int streamSerialNumber,
-	    int pageSequenceNumber, int pageCheckSum, int[] segmentOffsets,
-	    int[] segmentLengths, int totalLength, byte[] header,
-	    byte[] segmentTable, byte[] data) {
-
-	this.version = version;
-	this.continued = continued;
-	this.bos = bos;
-	this.eos = eos;
-	this.absoluteGranulePosition = absoluteGranulePosition;
-	this.streamSerialNumber = streamSerialNumber;
-	this.pageSequenceNumber = pageSequenceNumber;
-	this.pageCheckSum = pageCheckSum;
-	this.segmentOffsets = segmentOffsets;
-	this.segmentLengths = segmentLengths;
-	this.totalLength = totalLength;
-	this.header = header;
-	this.segmentTable = segmentTable;
-	this.data = data;
-    }
-
     /**
-     * this method equals to create(RandomAccessFile source, false)
+     * this method equals to create(byte[] source, false)
      * 
-     * @see #create(RandomAccessFile, boolean)
+     * @see #create(byte[], boolean)
      */
 
-    public static OggPage create(RandomAccessFile source) throws IOException,
+    public static OggPage create(byte[] source) throws IOException,
 	    EndOfOggStreamException, OggFormatException {
 	return create(source, false);
     }
-
     /**
-     * This method is called to read data from the current position in the
-     * specified RandomAccessFile and create a new OggPage instance based on the
-     * data read. If the parameter <code>skipData</code> is set to
-     * <code>true</code>, the actual page segments (page data) is skipped and
-     * not read into memory. This mode is useful when scanning through an ogg
-     * file to build a seek table.
+     * This method is called to create a new OggPage instance based on the
+     * specified byte array.
      * 
      * @param source
      *            the source from which the ogg page is generated
@@ -122,14 +83,13 @@ public class OggPage {
      *             if some other I/O error is detected when reading from the
      *             source
      * 
-     * @see #create(RandomAccessFile)
+     * @see #create(byte[])
      */
 
-    public static OggPage create(RandomAccessFile source, boolean skipData)
+    public static OggPage create(byte[] source, boolean skipData)
 	    throws IOException, EndOfOggStreamException, OggFormatException {
 	return create((Object) source, skipData);
     }
-
     /**
      * this method equals to create(InputStream source, false)
      * 
@@ -140,7 +100,6 @@ public class OggPage {
 	    EndOfOggStreamException, OggFormatException {
 	return create(source, false);
     }
-
     /**
      * This method is called to read data from the current position in the
      * specified InpuStream and create a new OggPage instance based on the data
@@ -173,47 +132,6 @@ public class OggPage {
 	    throws IOException, EndOfOggStreamException, OggFormatException {
 	return create((Object) source, skipData);
     }
-
-    /**
-     * this method equals to create(byte[] source, false)
-     * 
-     * @see #create(byte[], boolean)
-     */
-
-    public static OggPage create(byte[] source) throws IOException,
-	    EndOfOggStreamException, OggFormatException {
-	return create(source, false);
-    }
-
-    /**
-     * This method is called to create a new OggPage instance based on the
-     * specified byte array.
-     * 
-     * @param source
-     *            the source from which the ogg page is generated
-     * @param skipData
-     *            if set to <code>true</code>, the actual page data is not read
-     *            into memory
-     * @return an ogg page created by reading data from the specified source,
-     *         starting at the current position
-     * @throws FormatException
-     *             if the data read from the specified source is not matching
-     *             the specification for an ogg page
-     * @throws EndOfStreamException
-     *             if it is not possible to read an entire ogg page from the
-     *             specified source
-     * @throws IOException
-     *             if some other I/O error is detected when reading from the
-     *             source
-     * 
-     * @see #create(byte[])
-     */
-
-    public static OggPage create(byte[] source, boolean skipData)
-	    throws IOException, EndOfOggStreamException, OggFormatException {
-	return create((Object) source, skipData);
-    }
-
     private static OggPage create(Object source, boolean skipData)
 	    throws IOException, EndOfOggStreamException, OggFormatException {
 
@@ -326,7 +244,48 @@ public class OggPage {
 	    throw new EndOfOggStreamException();
 	}
     }
+    /**
+     * this method equals to create(RandomAccessFile source, false)
+     * 
+     * @see #create(RandomAccessFile, boolean)
+     */
 
+    public static OggPage create(RandomAccessFile source) throws IOException,
+	    EndOfOggStreamException, OggFormatException {
+	return create(source, false);
+    }
+    /**
+     * This method is called to read data from the current position in the
+     * specified RandomAccessFile and create a new OggPage instance based on the
+     * data read. If the parameter <code>skipData</code> is set to
+     * <code>true</code>, the actual page segments (page data) is skipped and
+     * not read into memory. This mode is useful when scanning through an ogg
+     * file to build a seek table.
+     * 
+     * @param source
+     *            the source from which the ogg page is generated
+     * @param skipData
+     *            if set to <code>true</code>, the actual page data is not read
+     *            into memory
+     * @return an ogg page created by reading data from the specified source,
+     *         starting at the current position
+     * @throws FormatException
+     *             if the data read from the specified source is not matching
+     *             the specification for an ogg page
+     * @throws EndOfStreamException
+     *             if it is not possible to read an entire ogg page from the
+     *             specified source
+     * @throws IOException
+     *             if some other I/O error is detected when reading from the
+     *             source
+     * 
+     * @see #create(RandomAccessFile)
+     */
+
+    public static OggPage create(RandomAccessFile source, boolean skipData)
+	    throws IOException, EndOfOggStreamException, OggFormatException {
+	return create((Object) source, skipData);
+    }
     private static void readFully(InputStream source, byte[] buffer)
 	    throws IOException {
 	int total = 0;
@@ -337,6 +296,47 @@ public class OggPage {
 	    }
 	    total += read;
 	}
+    }
+
+    private int version;
+
+    private boolean continued, bos, eos;
+
+    private long absoluteGranulePosition;
+
+    private int streamSerialNumber, pageSequenceNumber, pageCheckSum;
+
+    private int[] segmentOffsets;
+
+    private int[] segmentLengths;
+
+    private int totalLength;
+
+    private byte[] header, segmentTable, data;
+
+    protected OggPage() {
+    }
+
+    private OggPage(int version, boolean continued, boolean bos, boolean eos,
+	    long absoluteGranulePosition, int streamSerialNumber,
+	    int pageSequenceNumber, int pageCheckSum, int[] segmentOffsets,
+	    int[] segmentLengths, int totalLength, byte[] header,
+	    byte[] segmentTable, byte[] data) {
+
+	this.version = version;
+	this.continued = continued;
+	this.bos = bos;
+	this.eos = eos;
+	this.absoluteGranulePosition = absoluteGranulePosition;
+	this.streamSerialNumber = streamSerialNumber;
+	this.pageSequenceNumber = pageSequenceNumber;
+	this.pageCheckSum = pageCheckSum;
+	this.segmentOffsets = segmentOffsets;
+	this.segmentLengths = segmentLengths;
+	this.totalLength = totalLength;
+	this.header = header;
+	this.segmentTable = segmentTable;
+	this.data = data;
     }
 
     /**
@@ -355,13 +355,25 @@ public class OggPage {
     }
 
     /**
-     * Returns the stream serial number of this ogg page.
-     * 
-     * @return this page's serial number
+     * @return a ByteBuffer containing the page data
      */
 
-    public int getStreamSerialNumber() {
-	return streamSerialNumber;
+    public byte[] getData() {
+	return data;
+    }
+
+    public byte[] getHeader() {
+	return header;
+    }
+
+    /**
+     * Return the check sum of this ogg page.
+     * 
+     * @return this page's check sum
+     */
+
+    public int getPageCheckSum() {
+	return pageCheckSum;
     }
 
     /**
@@ -374,14 +386,26 @@ public class OggPage {
 	return pageSequenceNumber;
     }
 
+    public int[] getSegmentLengths() {
+	return segmentLengths;
+    }
+
+    public int[] getSegmentOffsets() {
+	return segmentOffsets;
+    }
+
+    public byte[] getSegmentTable() {
+	return segmentTable;
+    }
+
     /**
-     * Return the check sum of this ogg page.
+     * Returns the stream serial number of this ogg page.
      * 
-     * @return this page's check sum
+     * @return this page's serial number
      */
 
-    public int getPageCheckSum() {
-	return pageCheckSum;
+    public int getStreamSerialNumber() {
+	return streamSerialNumber;
     }
 
     /**
@@ -397,27 +421,12 @@ public class OggPage {
     }
 
     /**
-     * @return a ByteBuffer containing the page data
+     * @return <code>true</code> if this page is the beginning of a logical
+     *         stream
      */
 
-    public byte[] getData() {
-	return data;
-    }
-
-    public byte[] getHeader() {
-	return header;
-    }
-
-    public byte[] getSegmentTable() {
-	return segmentTable;
-    }
-
-    public int[] getSegmentOffsets() {
-	return segmentOffsets;
-    }
-
-    public int[] getSegmentLengths() {
-	return segmentLengths;
+    public boolean isBos() {
+	return bos;
     }
 
     /**
@@ -429,28 +438,19 @@ public class OggPage {
     }
 
     /**
-     * @return <code>true</code> if this page begins with a fresh packet
-     */
-
-    public boolean isFresh() {
-	return !continued;
-    }
-
-    /**
-     * @return <code>true</code> if this page is the beginning of a logical
-     *         stream
-     */
-
-    public boolean isBos() {
-	return bos;
-    }
-
-    /**
      * @return <code>true</code> if this page is the end of a logical stream
      */
 
     public boolean isEos() {
 	return eos;
+    }
+
+    /**
+     * @return <code>true</code> if this page begins with a fresh packet
+     */
+
+    public boolean isFresh() {
+	return !continued;
     }
 
 }

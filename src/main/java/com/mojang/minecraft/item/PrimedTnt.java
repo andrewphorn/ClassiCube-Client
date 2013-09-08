@@ -14,6 +14,18 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 public class PrimedTnt extends Entity {
+    public static final long serialVersionUID = 0L;
+
+    private float xd;
+
+    private float yd;
+
+    private float zd;
+
+    public int life = 0;
+
+    private boolean defused;
+
     public PrimedTnt(Level level1, float x, float y, float z) {
 	super(level1);
 
@@ -37,7 +49,82 @@ public class PrimedTnt extends Entity {
 	yo = y;
 	zo = z;
     }
+    @Override
+    public void hurt(Entity entity, int damage) {
+	if (!removed) {
+	    super.hurt(entity, damage);
 
+	    if (entity instanceof Player) {
+		remove();
+
+		Item item = new Item(level, x, y, z, Block.TNT.id);
+
+		level.addEntity(item);
+	    }
+
+	}
+    }
+    @Override
+    public boolean isPickable() {
+	return !this.removed;
+    }
+    @Override
+    public void playerTouch(Entity entity) {
+	if (defused) {
+	    Player player = (Player) entity;
+
+	    if (player.addResource(Block.TNT.id)) {
+		TakeEntityAnim takeEntityAnim = new TakeEntityAnim(this.level,
+			this, player);
+
+		level.addEntity(takeEntityAnim);
+
+		remove();
+	    }
+
+	}
+    }
+    @Override
+    public void render(TextureManager textureManager, float unknown0) {
+	int textureID = textureManager.load("/terrain.png");
+
+	GL11.glBindTexture(3553, textureID);
+
+	float brightness = level.getBrightness((int) x, (int) y, (int) z);
+
+	GL11.glPushMatrix();
+	GL11.glColor4f(brightness, brightness, brightness, 1.0F);
+	GL11.glTranslatef(xo + (x - xo) * unknown0 - 0.5F, yo + (y - yo)
+		* unknown0 - 0.5F, zo + (z - zo) * unknown0 - 0.5F);
+	GL11.glPushMatrix();
+
+	ShapeRenderer shapeRenderer = ShapeRenderer.instance;
+
+	Block.TNT.renderPreview(shapeRenderer);
+
+	GL11.glDisable(3553);
+	GL11.glDisable(2896);
+	GL11.glColor4f(1.0F, 1.0F, 1.0F, (float) ((life / 4 + 1) % 2) * 0.4F);
+
+	if (life <= 16) {
+	    GL11.glColor4f(1.0F, 1.0F, 1.0F, (float) ((life + 1) % 2) * 0.6F);
+	}
+
+	if (life <= 2) {
+	    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
+	}
+
+	GL11.glEnable(3042);
+	GL11.glBlendFunc(770, 1);
+
+	Block.TNT.renderPreview(shapeRenderer);
+
+	GL11.glDisable(3042);
+	GL11.glEnable(3553);
+	GL11.glEnable(2896);
+	GL11.glPopMatrix();
+	GL11.glPopMatrix();
+    }
     @Override
     public void tick() {
 	xo = x;
@@ -96,91 +183,4 @@ public class PrimedTnt extends Entity {
 	    }
 	}
     }
-
-    @Override
-    public void render(TextureManager textureManager, float unknown0) {
-	int textureID = textureManager.load("/terrain.png");
-
-	GL11.glBindTexture(3553, textureID);
-
-	float brightness = level.getBrightness((int) x, (int) y, (int) z);
-
-	GL11.glPushMatrix();
-	GL11.glColor4f(brightness, brightness, brightness, 1.0F);
-	GL11.glTranslatef(xo + (x - xo) * unknown0 - 0.5F, yo + (y - yo)
-		* unknown0 - 0.5F, zo + (z - zo) * unknown0 - 0.5F);
-	GL11.glPushMatrix();
-
-	ShapeRenderer shapeRenderer = ShapeRenderer.instance;
-
-	Block.TNT.renderPreview(shapeRenderer);
-
-	GL11.glDisable(3553);
-	GL11.glDisable(2896);
-	GL11.glColor4f(1.0F, 1.0F, 1.0F, (float) ((life / 4 + 1) % 2) * 0.4F);
-
-	if (life <= 16) {
-	    GL11.glColor4f(1.0F, 1.0F, 1.0F, (float) ((life + 1) % 2) * 0.6F);
-	}
-
-	if (life <= 2) {
-	    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
-	}
-
-	GL11.glEnable(3042);
-	GL11.glBlendFunc(770, 1);
-
-	Block.TNT.renderPreview(shapeRenderer);
-
-	GL11.glDisable(3042);
-	GL11.glEnable(3553);
-	GL11.glEnable(2896);
-	GL11.glPopMatrix();
-	GL11.glPopMatrix();
-    }
-
-    @Override
-    public void playerTouch(Entity entity) {
-	if (defused) {
-	    Player player = (Player) entity;
-
-	    if (player.addResource(Block.TNT.id)) {
-		TakeEntityAnim takeEntityAnim = new TakeEntityAnim(this.level,
-			this, player);
-
-		level.addEntity(takeEntityAnim);
-
-		remove();
-	    }
-
-	}
-    }
-
-    @Override
-    public void hurt(Entity entity, int damage) {
-	if (!removed) {
-	    super.hurt(entity, damage);
-
-	    if (entity instanceof Player) {
-		remove();
-
-		Item item = new Item(level, x, y, z, Block.TNT.id);
-
-		level.addEntity(item);
-	    }
-
-	}
-    }
-
-    @Override
-    public boolean isPickable() {
-	return !this.removed;
-    }
-
-    public static final long serialVersionUID = 0L;
-    private float xd;
-    private float yd;
-    private float zd;
-    public int life = 0;
-    private boolean defused;
 }

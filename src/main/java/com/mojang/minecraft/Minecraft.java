@@ -126,6 +126,101 @@ public final class Minecraft implements Runnable {
 
     public static boolean isSinglePlayer = false;
 
+    private static final List<DisplayMode> displayModes = new ArrayList<DisplayMode>();
+
+    private static void checkGLError(String var0) {
+	int var1;
+	if ((var1 = GL11.glGetError()) != 0) {
+	    String var2 = GLU.gluErrorString(var1);
+	    System.out.println("########## GL ERROR ##########");
+	    System.out.println("@ " + var0);
+	    System.out.println(var1 + ": " + var2);
+	    System.exit(0);
+	}
+
+    }
+
+    public static boolean doesUrlExistAndIsImage(String URLName) {
+	try {
+	    HttpURLConnection.setFollowRedirects(false);
+	    HttpURLConnection con = (HttpURLConnection) new URL(URLName)
+		    .openConnection();
+	    con.setRequestMethod("HEAD");
+	    return (con.getResponseCode() == HttpURLConnection.HTTP_OK && con
+		    .getContentType().contains("image"));
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    return false;
+	}
+    }
+
+    public static File getMinecraftDirectory() {
+	String folder = "net.classicube.client";
+	String home = System.getProperty("user.home");
+	File minecraftFolder;
+	Minecraft$OS os = getOs();
+	switch (os.id) {
+	case 0:
+	    minecraftFolder = new File(home, folder + '/');
+	    break;
+	case 1:
+	    minecraftFolder = new File(home, folder + '/');
+	    break;
+	case 2:
+	    String appData = System.getenv("APPDATA");
+
+	    if (appData != null) {
+		minecraftFolder = new File(appData, folder + '/');
+	    } else {
+		minecraftFolder = new File(home, folder + '/');
+	    }
+	    break;
+	case 3:
+	    minecraftFolder = new File(home, "Library/Application Support/"
+		    + folder);
+	    break;
+	default:
+	    minecraftFolder = new File(home, folder + '/');
+	}
+
+	if (!minecraftFolder.exists() && !minecraftFolder.mkdirs()) {
+	    throw new RuntimeException(
+		    "The working directory could not be created: "
+			    + minecraftFolder);
+	}
+
+	return minecraftFolder;
+
+    }
+
+    private static Minecraft$OS getOs() {
+	String s = System.getProperty("os.name").toLowerCase();
+	if (s.contains("win")) {
+	    return Minecraft$OS.windows;
+	}
+	if (s.contains("mac")) {
+	    return Minecraft$OS.macos;
+	}
+	if (s.contains("solaris")) {
+	    return Minecraft$OS.solaris;
+	}
+	if (s.contains("sunos")) {
+	    return Minecraft$OS.solaris;
+	}
+	if (s.contains("linux")) {
+	    return Minecraft$OS.linux;
+	}
+	if (s.contains("unix")) {
+	    return Minecraft$OS.linux;
+	} else {
+	    return Minecraft$OS.unknown;
+	}
+    }
+
+    float cameraDistance = -0.1F;
+
+    int recievedExtensionLength;
+
     public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4,
 	    boolean var5, boolean IsApplet) {
 	// this.selectionBoxes.add(new SelectionBoxData((byte) 1, "",
@@ -183,171 +278,46 @@ public final class Minecraft implements Runnable {
 
     }
 
-    public final void setCurrentScreen(GuiScreen var1) {
-	if (!(this.currentScreen instanceof ErrorScreen)) {
-	    if (this.currentScreen != null) {
-		this.currentScreen.onClose();
-	    }
-
-	    if (var1 == null && this.player.health <= 0) {
-		var1 = new GameOverScreen();
-	    }
-
-	    this.currentScreen = var1;
-	    if (var1 != null) {
-		if (this.hasMouse) {
-		    this.player.releaseAllKeys();
-		    this.hasMouse = false;
-		    if (this.levelLoaded) {
-			try {
-			    Mouse.setNativeCursor((Cursor) null);
-			} catch (LWJGLException var4) {
-			    var4.printStackTrace();
-			}
-		    } else {
-			Mouse.setGrabbed(false);
-		    }
-		}
-
-		int var2 = this.width * 240 / this.height;
-		int var3 = this.height * 240 / this.height;
-		var1.open(this, var2, var3);
-		this.online = false;
+    void downloadImage(String source, String dest) {
+	URL url;
+	try {
+	    if (!doesUrlExistAndIsImage(source))
 		return;
+	    url = new URL(source);
+
+	    InputStream in = new BufferedInputStream(url.openStream());
+	    ByteArrayOutputStream out = new ByteArrayOutputStream();
+	    byte[] buf = new byte[1024];
+	    int n = 0;
+	    while (-1 != (n = in.read(buf))) {
+		out.write(buf, 0, n);
 	    }
-	    this.grabMouse();
+	    out.close();
+	    in.close();
+	    byte[] response = out.toByteArray();
+	    FileOutputStream fos = new FileOutputStream(dest);
+	    fos.write(response);
+	    fos.close();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    return;
 	}
     }
 
-    private static void checkGLError(String var0) {
-	int var1;
-	if ((var1 = GL11.glGetError()) != 0) {
-	    String var2 = GLU.gluErrorString(var1);
-	    System.out.println("########## GL ERROR ##########");
-	    System.out.println("@ " + var0);
-	    System.out.println(var1 + ": " + var2);
-	    System.exit(0);
-	}
-
+    public final void generateLevel(int var1) {
+	String var2 = this.session != null ? this.session.username
+		: "anonymous";
+	Level var4 = (new LevelGenerator(this.progressBar)).generate(var2,
+		128 << var1, 128 << var1, 64);
+	this.gamemode.prepareLevel(var4);
+	this.setLevel(var4);
     }
 
-    private boolean isSystemShuttingDown() {
-	try {
-	    java.lang.reflect.Field running = Class.forName(
-		    "java.lang.Shutdown").getDeclaredField("RUNNING");
-	    java.lang.reflect.Field state = Class.forName("java.lang.Shutdown")
-		    .getDeclaredField("state");
-
-	    running.setAccessible(true);
-	    state.setAccessible(true);
-
-	    return state.getInt(null) > running.getInt(null);
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	    return false;
-	}
-    }
-
-    public final void shutdown() {
-	try {
-	    if (this.soundPlayer != null) {
-		this.soundPlayer.running = false;
-	    }
-
-	    if (this.resourceThread != null) {
-		this.resourceThread.running = true;
-	    }
-	} catch (Exception var3) {
-	    ;
-	}
-
-	Minecraft var5 = this;
-	if (!this.levelLoaded) {
-	    try {
-		if (var5 != null) {
-		    if (var5.level != null) {
-			if (var5.level.creativeMode) {
-			    LevelIO.save(var5.level, (new FileOutputStream(
-				    new File(mcDir, "levelc.dat"))));
-			} else {
-			    LevelIO.save(var5.level, (new FileOutputStream(
-				    new File(mcDir, "levels.dat"))));
-			}
-		    }
-		}
-	    } catch (Exception var2) {
-		var2.printStackTrace();
-	    }
-	}
-
-	Mouse.destroy();
-	Keyboard.destroy();
-	if (!isSystemShuttingDown()) {
-	    Display.destroy();
-	}
-    }
-
-    private static Minecraft$OS getOs() {
-	String s = System.getProperty("os.name").toLowerCase();
-	if (s.contains("win")) {
-	    return Minecraft$OS.windows;
-	}
-	if (s.contains("mac")) {
-	    return Minecraft$OS.macos;
-	}
-	if (s.contains("solaris")) {
-	    return Minecraft$OS.solaris;
-	}
-	if (s.contains("sunos")) {
-	    return Minecraft$OS.solaris;
-	}
-	if (s.contains("linux")) {
-	    return Minecraft$OS.linux;
-	}
-	if (s.contains("unix")) {
-	    return Minecraft$OS.linux;
-	} else {
-	    return Minecraft$OS.unknown;
-	}
-    }
-
-    public static File getMinecraftDirectory() {
-	String folder = "net.classicube.client";
-	String home = System.getProperty("user.home");
-	File minecraftFolder;
-	Minecraft$OS os = getOs();
-	switch (os.id) {
-	case 0:
-	    minecraftFolder = new File(home, folder + '/');
-	    break;
-	case 1:
-	    minecraftFolder = new File(home, folder + '/');
-	    break;
-	case 2:
-	    String appData = System.getenv("APPDATA");
-
-	    if (appData != null) {
-		minecraftFolder = new File(appData, folder + '/');
-	    } else {
-		minecraftFolder = new File(home, folder + '/');
-	    }
-	    break;
-	case 3:
-	    minecraftFolder = new File(home, "Library/Application Support/"
-		    + folder);
-	    break;
-	default:
-	    minecraftFolder = new File(home, folder + '/');
-	}
-
-	if (!minecraftFolder.exists() && !minecraftFolder.mkdirs()) {
-	    throw new RuntimeException(
-		    "The working directory could not be created: "
-			    + minecraftFolder);
-	}
-
-	return minecraftFolder;
-
+    public String getHash(String urlString) throws Exception {
+	MessageDigest md = MessageDigest.getInstance("MD5");
+	byte[] urlBytes = urlString.getBytes(StandardCharsets.US_ASCII);
+	byte[] hashBytes = md.digest(urlBytes);
+	return new BigInteger(1, hashBytes).toString(16);
     }
 
     public String getOSfolderName(String s) {
@@ -373,60 +343,199 @@ public final class Minecraft implements Runnable {
 	}
     }
 
-    private static final List<DisplayMode> displayModes = new ArrayList<DisplayMode>();
-
-    private void setDisplayMode() throws LWJGLException {
-	if (displayModes.size() == 0) {
-	    displayModes.add(new DisplayMode(2560, 1600));
-	    displayModes.add(new DisplayMode(2880, 1800));
-	}
-	HashSet<DisplayMode> var1 = new HashSet<DisplayMode>();
-	Collections.addAll(var1, Display.getAvailableDisplayModes());
-	DisplayMode var2 = Display.getDesktopDisplayMode();
-
-	if (!var1.contains(var2) && getOs() == Minecraft$OS.macos) {
-	    Iterator<DisplayMode> var3 = displayModes.iterator();
-
-	    while (var3.hasNext()) {
-		DisplayMode var4 = (DisplayMode) var3.next();
-		boolean var5 = true;
-		Iterator<DisplayMode> var6 = var1.iterator();
-		DisplayMode var7;
-
-		while (var6.hasNext()) {
-		    var7 = (DisplayMode) var6.next();
-
-		    if (var7.getBitsPerPixel() == 32
-			    && var7.getWidth() == var4.getWidth()
-			    && var7.getHeight() == var4.getHeight()) {
-			var5 = false;
-			break;
-		    }
+    public final void grabMouse() {
+	if (!this.hasMouse) {
+	    this.hasMouse = true;
+	    if (this.levelLoaded) {
+		try {
+		    Mouse.setNativeCursor(this.cursor);
+		    Mouse.setCursorPosition(this.width / 2, this.height / 2);
+		} catch (LWJGLException var2) {
+		    var2.printStackTrace();
 		}
 
-		if (!var5) {
-		    var6 = var1.iterator();
+		if (this.canvas != null) { // check this, changed @FindBugs
+		    this.canvas.requestFocus();
+		}
+	    } else {
+		Mouse.setGrabbed(true);
+	    }
 
-		    while (var6.hasNext()) {
-			var7 = (DisplayMode) var6.next();
+	    this.setCurrentScreen((GuiScreen) null);
+	    this.lastClick = this.ticks + 10000;
+	}
+    }
 
-			if (var7.getBitsPerPixel() == 32
-				&& var7.getWidth() == var4.getWidth() / 2
-				&& var7.getHeight() == var4.getHeight() / 2) {
-			    var2 = var7;
-			    break;
+    public final boolean isOnline() {
+	return this.networkManager != null;
+    }
+
+    private boolean isSystemShuttingDown() {
+	try {
+	    java.lang.reflect.Field running = Class.forName(
+		    "java.lang.Shutdown").getDeclaredField("RUNNING");
+	    java.lang.reflect.Field state = Class.forName("java.lang.Shutdown")
+		    .getDeclaredField("state");
+
+	    running.setAccessible(true);
+	    state.setAccessible(true);
+
+	    return state.getInt(null) > running.getInt(null);
+	} catch (Exception ex) {
+	    ex.printStackTrace();
+	    return false;
+	}
+    }
+
+    public final boolean loadOnlineLevel(String var1, int var2) {
+	Level var3;
+	if ((var3 = this.levelIo.loadOnline(this.host, var1, var2)) == null) {
+	    return false;
+	} else {
+	    this.setLevel(var3);
+	    return true;
+	}
+    }
+
+    private void onMouseClick(int var1) {
+	if (var1 != 0 || this.blockHitTime <= 0) {
+	    HeldBlock var2;
+	    if (var1 == 0) {
+		var2 = this.renderer.heldBlock;
+		this.renderer.heldBlock.offset = -1;
+		var2.moving = true;
+	    }
+
+	    int x;
+	    if (var1 == 1 && (x = this.player.inventory.getSelected()) > 0
+		    && this.gamemode.useItem(this.player, x)) {
+		var2 = this.renderer.heldBlock;
+		this.renderer.heldBlock.pos = 0.0F;
+	    } else if (this.selected == null) {
+		if (var1 == 0 && !(this.gamemode instanceof CreativeGameMode)) {
+		    this.blockHitTime = 10;
+		}
+
+	    } else {
+		if (this.selected.entityPos == 1) {
+		    if (var1 == 0) {
+			this.selected.entity.hurt(this.player, 4);
+			return;
+		    }
+		} else if (this.selected.entityPos == 0) {
+		    x = this.selected.x;
+		    int y = this.selected.y;
+		    int z = this.selected.z;
+		    if (var1 != 0) {
+			if (this.selected.face == 0) {
+			    --y;
+			}
+
+			if (this.selected.face == 1) {
+			    ++y;
+			}
+
+			if (this.selected.face == 2) {
+			    --z;
+			}
+
+			if (this.selected.face == 3) {
+			    ++z;
+			}
+
+			if (this.selected.face == 4) {
+			    --x;
+			}
+
+			if (this.selected.face == 5) {
+			    ++x;
+			}
+		    }
+
+		    Block block = Block.blocks[this.level.getTile(x, y, z)];
+		    // if mouse click left
+		    if (var1 == 0) {
+			if (block != Block.BEDROCK
+				|| this.player.userType >= 100
+				|| this.DisallowedBreakingBlocks
+					.contains(block)) {
+			    this.gamemode.hitBlock(x, y, z);
+			    return;
+			}
+			// else if its right click
+		    } else {
+			int blockID = this.player.inventory.getSelected();
+			if (blockID <= 0
+				|| this.DisallowPlacementBlocks
+					.contains(Block.blocks[blockID])) {
+			    return; // if air or not allowed, return
+			}
+			AABB aabb = Block.blocks[blockID].getCollisionBox(x, y,
+				z);
+			if ((block == null || block == Block.WATER
+				|| block == Block.STATIONARY_WATER
+				|| block == Block.LAVA || block == Block.STATIONARY_LAVA)
+				&& (aabb == null || (this.player.bb
+					.intersects(aabb) ? false : this.level
+					.isFree(aabb)))) {
+			    if (!this.gamemode.canPlace(blockID)) {
+				return;
+			    }
+			    if (this.session == null) {
+				Block toCheck = Block.blocks[this.level
+					.getTile(x, y - 1, z)];
+				if (toCheck != null) {
+				    if (toCheck.id > 0) {
+					if (toCheck == Block.SNOW) {
+					    if (this.selected.face == 1) {
+						if (block == Block.SNOW)
+						    return;
+						else
+						    y -= 1;
+					    }
+					}
+				    }
+				}
+			    }
+
+			    if (this.isOnline()) {
+				this.networkManager.sendBlockChange(x, y, z,
+					var1, blockID);
+			    }
+
+			    this.level.netSetTile(x, y, z, blockID);
+			    var2 = this.renderer.heldBlock;
+			    this.renderer.heldBlock.pos = 0.0F;
+			    Block.blocks[blockID].onPlace(this.level, x, y, z);
 			}
 		    }
 		}
 	    }
 	}
-
-	Display.setDisplayMode(var2);
-	this.width = var2.getWidth();
-	this.height = var2.getHeight();
     }
 
-    float cameraDistance = -0.1F;
+    public final void pause() {
+	if (this.currentScreen == null) {
+	    this.setCurrentScreen(new PauseScreen());
+	}
+    }
+
+    public void resize() {
+	width = Display.getDisplayMode().getWidth();
+	height = Display.getDisplayMode().getHeight();
+
+	if (hud != null) {
+	    hud.width = width * 240 / height;
+	    hud.height = height * 240 / height;
+	}
+
+	if (currentScreen != null) {
+	    currentScreen.width = width * 240 / height;
+	    currentScreen.height = height * 240 / height;
+
+	    currentScreen.onOpen();
+	}
+    }
 
     public final void run() {
 	this.running = true;
@@ -903,8 +1012,8 @@ public final class Minecraft implements Runnable {
 					}
 
 					GL11.glClearColor(renderer.fogRed,
-						renderer.fogBlue, renderer.fogGreen,
-						0.0F);
+						renderer.fogBlue,
+						renderer.fogGreen, 0.0F);
 					GL11.glClear(16640);
 					renderer.fogColorMultiplier = 1.0F;
 					GL11.glEnable(2884);
@@ -1911,153 +2020,208 @@ public final class Minecraft implements Runnable {
 
     }
 
-    public final void grabMouse() {
-	if (!this.hasMouse) {
-	    this.hasMouse = true;
-	    if (this.levelLoaded) {
-		try {
-		    Mouse.setNativeCursor(this.cursor);
-		    Mouse.setCursorPosition(this.width / 2, this.height / 2);
-		} catch (LWJGLException var2) {
-		    var2.printStackTrace();
-		}
-
-		if (this.canvas != null) { // check this, changed @FindBugs
-		    this.canvas.requestFocus();
-		}
-	    } else {
-		Mouse.setGrabbed(true);
+    public final void setCurrentScreen(GuiScreen var1) {
+	if (!(this.currentScreen instanceof ErrorScreen)) {
+	    if (this.currentScreen != null) {
+		this.currentScreen.onClose();
 	    }
 
-	    this.setCurrentScreen((GuiScreen) null);
-	    this.lastClick = this.ticks + 10000;
-	}
-    }
-
-    public final void pause() {
-	if (this.currentScreen == null) {
-	    this.setCurrentScreen(new PauseScreen());
-	}
-    }
-
-    private void onMouseClick(int var1) {
-	if (var1 != 0 || this.blockHitTime <= 0) {
-	    HeldBlock var2;
-	    if (var1 == 0) {
-		var2 = this.renderer.heldBlock;
-		this.renderer.heldBlock.offset = -1;
-		var2.moving = true;
+	    if (var1 == null && this.player.health <= 0) {
+		var1 = new GameOverScreen();
 	    }
 
-	    int x;
-	    if (var1 == 1 && (x = this.player.inventory.getSelected()) > 0
-		    && this.gamemode.useItem(this.player, x)) {
-		var2 = this.renderer.heldBlock;
-		this.renderer.heldBlock.pos = 0.0F;
-	    } else if (this.selected == null) {
-		if (var1 == 0 && !(this.gamemode instanceof CreativeGameMode)) {
-		    this.blockHitTime = 10;
-		}
-
-	    } else {
-		if (this.selected.entityPos == 1) {
-		    if (var1 == 0) {
-			this.selected.entity.hurt(this.player, 4);
-			return;
-		    }
-		} else if (this.selected.entityPos == 0) {
-		    x = this.selected.x;
-		    int y = this.selected.y;
-		    int z = this.selected.z;
-		    if (var1 != 0) {
-			if (this.selected.face == 0) {
-			    --y;
+	    this.currentScreen = var1;
+	    if (var1 != null) {
+		if (this.hasMouse) {
+		    this.player.releaseAllKeys();
+		    this.hasMouse = false;
+		    if (this.levelLoaded) {
+			try {
+			    Mouse.setNativeCursor((Cursor) null);
+			} catch (LWJGLException var4) {
+			    var4.printStackTrace();
 			}
-
-			if (this.selected.face == 1) {
-			    ++y;
-			}
-
-			if (this.selected.face == 2) {
-			    --z;
-			}
-
-			if (this.selected.face == 3) {
-			    ++z;
-			}
-
-			if (this.selected.face == 4) {
-			    --x;
-			}
-
-			if (this.selected.face == 5) {
-			    ++x;
-			}
-		    }
-
-		    Block block = Block.blocks[this.level.getTile(x, y, z)];
-		    // if mouse click left
-		    if (var1 == 0) {
-			if (block != Block.BEDROCK
-				|| this.player.userType >= 100
-				|| this.DisallowedBreakingBlocks
-					.contains(block)) {
-			    this.gamemode.hitBlock(x, y, z);
-			    return;
-			}
-			// else if its right click
 		    } else {
-			int blockID = this.player.inventory.getSelected();
-			if (blockID <= 0
-				|| this.DisallowPlacementBlocks
-					.contains(Block.blocks[blockID])) {
-			    return; // if air or not allowed, return
-			}
-			AABB aabb = Block.blocks[blockID].getCollisionBox(x, y,
-				z);
-			if ((block == null || block == Block.WATER
-				|| block == Block.STATIONARY_WATER
-				|| block == Block.LAVA || block == Block.STATIONARY_LAVA)
-				&& (aabb == null || (this.player.bb
-					.intersects(aabb) ? false : this.level
-					.isFree(aabb)))) {
-			    if (!this.gamemode.canPlace(blockID)) {
-				return;
-			    }
-			    if (this.session == null) {
-				Block toCheck = Block.blocks[this.level
-					.getTile(x, y - 1, z)];
-				if (toCheck != null) {
-				    if (toCheck.id > 0) {
-					if (toCheck == Block.SNOW) {
-					    if (this.selected.face == 1) {
-						if (block == Block.SNOW)
-						    return;
-						else
-						    y -= 1;
-					    }
-					}
-				    }
-				}
-			    }
+			Mouse.setGrabbed(false);
+		    }
+		}
 
-			    if (this.isOnline()) {
-				this.networkManager.sendBlockChange(x, y, z,
-					var1, blockID);
-			    }
+		int var2 = this.width * 240 / this.height;
+		int var3 = this.height * 240 / this.height;
+		var1.open(this, var2, var3);
+		this.online = false;
+		return;
+	    }
+	    this.grabMouse();
+	}
+    }
 
-			    this.level.netSetTile(x, y, z, blockID);
-			    var2 = this.renderer.heldBlock;
-			    this.renderer.heldBlock.pos = 0.0F;
-			    Block.blocks[blockID].onPlace(this.level, x, y, z);
+    private void setDisplayMode() throws LWJGLException {
+	if (displayModes.size() == 0) {
+	    displayModes.add(new DisplayMode(2560, 1600));
+	    displayModes.add(new DisplayMode(2880, 1800));
+	}
+	HashSet<DisplayMode> var1 = new HashSet<DisplayMode>();
+	Collections.addAll(var1, Display.getAvailableDisplayModes());
+	DisplayMode var2 = Display.getDesktopDisplayMode();
+
+	if (!var1.contains(var2) && getOs() == Minecraft$OS.macos) {
+	    Iterator<DisplayMode> var3 = displayModes.iterator();
+
+	    while (var3.hasNext()) {
+		DisplayMode var4 = (DisplayMode) var3.next();
+		boolean var5 = true;
+		Iterator<DisplayMode> var6 = var1.iterator();
+		DisplayMode var7;
+
+		while (var6.hasNext()) {
+		    var7 = (DisplayMode) var6.next();
+
+		    if (var7.getBitsPerPixel() == 32
+			    && var7.getWidth() == var4.getWidth()
+			    && var7.getHeight() == var4.getHeight()) {
+			var5 = false;
+			break;
+		    }
+		}
+
+		if (!var5) {
+		    var6 = var1.iterator();
+
+		    while (var6.hasNext()) {
+			var7 = (DisplayMode) var6.next();
+
+			if (var7.getBitsPerPixel() == 32
+				&& var7.getWidth() == var4.getWidth() / 2
+				&& var7.getHeight() == var4.getHeight() / 2) {
+			    var2 = var7;
+			    break;
 			}
 		    }
 		}
 	    }
 	}
+
+	Display.setDisplayMode(var2);
+	this.width = var2.getWidth();
+	this.height = var2.getHeight();
     }
 
-    int recievedExtensionLength;
+    public final void setLevel(Level var1) {
+	if (this.applet == null
+		|| !this.applet.getDocumentBase().getHost()
+			.equalsIgnoreCase("minecraft.net")
+		&& !this.applet.getDocumentBase().getHost()
+			.equalsIgnoreCase("www.minecraft.net")
+		|| !this.applet.getCodeBase().getHost()
+			.equalsIgnoreCase("minecraft.net")
+		&& !this.applet.getCodeBase().getHost()
+			.equalsIgnoreCase("www.minecraft.net")) {
+	    var1 = null;
+	}
+
+	this.level = var1;
+	if (var1 != null) {
+	    var1.initTransient();
+	    this.gamemode.apply(var1);
+	    var1.font = this.fontRenderer;
+	    var1.rendererContext$5cd64a7f = this;
+	    if (!this.isOnline()) {
+		this.player = (Player) var1.findSubclassOf(Player.class);
+		if (this.player == null) {
+		    this.player = new Player(var1, this.settings);
+		}
+		this.player.settings = this.settings;
+		this.player.resetPos();
+	    } else if (this.player != null) {
+		this.player.resetPos();
+		this.gamemode.preparePlayer(this.player);
+		if (var1 != null) {
+		    var1.player = this.player;
+		    var1.addEntity(this.player);
+		}
+	    }
+	}
+
+	if (this.player == null) {
+	    this.player = new Player(var1, this.settings);
+	    this.player.resetPos();
+	    this.gamemode.preparePlayer(this.player);
+	    if (var1 != null) {
+		var1.player = this.player;
+	    }
+	}
+
+	if (this.player != null) {
+	    this.player.input = new InputHandlerImpl(this.settings);
+	    this.gamemode.apply(this.player);
+	}
+
+	if (this.levelRenderer != null) {
+	    LevelRenderer var3 = this.levelRenderer;
+	    if (this.levelRenderer.level != null) {
+		var3.level.removeListener(var3);
+	    }
+
+	    var3.level = var1;
+	    if (var1 != null) {
+		var1.addListener(var3);
+		var3.refresh();
+	    }
+	}
+
+	if (this.particleManager != null) {
+	    ParticleManager var5 = this.particleManager;
+	    if (var1 != null) {
+		var1.particleEngine = var5;
+	    }
+
+	    for (int var4 = 0; var4 < 2; ++var4) {
+		var5.particles[var4].clear();
+	    }
+	}
+
+	System.gc();
+    }
+
+    public final void shutdown() {
+	try {
+	    if (this.soundPlayer != null) {
+		this.soundPlayer.running = false;
+	    }
+
+	    if (this.resourceThread != null) {
+		this.resourceThread.running = true;
+	    }
+	} catch (Exception var3) {
+	    ;
+	}
+
+	Minecraft var5 = this;
+	if (!this.levelLoaded) {
+	    try {
+		if (var5 != null) {
+		    if (var5.level != null) {
+			if (var5.level.creativeMode) {
+			    LevelIO.save(var5.level, (new FileOutputStream(
+				    new File(mcDir, "levelc.dat"))));
+			} else {
+			    LevelIO.save(var5.level, (new FileOutputStream(
+				    new File(mcDir, "levels.dat"))));
+			}
+		    }
+		}
+	    } catch (Exception var2) {
+		var2.printStackTrace();
+	    }
+	}
+
+	Mouse.destroy();
+	Keyboard.destroy();
+	if (!isSystemShuttingDown()) {
+	    Display.destroy();
+	}
+    }
 
     private void tick() {
 	if (this.soundPlayer != null) {
@@ -2529,8 +2693,8 @@ public final class Minecraft implements Runnable {
 						var47 = (short) (var47 - 22);
 						var33 = new NetworkPlayer(
 							networkManager.minecraft,
-							var34, var36,
-							var47, var10,
+							var34, var36, var47,
+							var10,
 							var9 * 360 / 256.0F,
 							var58 * 360 / 256.0F);
 						networkManager.players.put(
@@ -3076,169 +3240,5 @@ public final class Minecraft implements Runnable {
 	    this.particleManager.tick();
 	}
 
-    }
-
-    public final boolean isOnline() {
-	return this.networkManager != null;
-    }
-
-    public final void generateLevel(int var1) {
-	String var2 = this.session != null ? this.session.username
-		: "anonymous";
-	Level var4 = (new LevelGenerator(this.progressBar)).generate(var2,
-		128 << var1, 128 << var1, 64);
-	this.gamemode.prepareLevel(var4);
-	this.setLevel(var4);
-    }
-
-    public final boolean loadOnlineLevel(String var1, int var2) {
-	Level var3;
-	if ((var3 = this.levelIo.loadOnline(this.host, var1, var2)) == null) {
-	    return false;
-	} else {
-	    this.setLevel(var3);
-	    return true;
-	}
-    }
-
-    public final void setLevel(Level var1) {
-	if (this.applet == null
-		|| !this.applet.getDocumentBase().getHost()
-			.equalsIgnoreCase("minecraft.net")
-		&& !this.applet.getDocumentBase().getHost()
-			.equalsIgnoreCase("www.minecraft.net")
-		|| !this.applet.getCodeBase().getHost()
-			.equalsIgnoreCase("minecraft.net")
-		&& !this.applet.getCodeBase().getHost()
-			.equalsIgnoreCase("www.minecraft.net")) {
-	    var1 = null;
-	}
-
-	this.level = var1;
-	if (var1 != null) {
-	    var1.initTransient();
-	    this.gamemode.apply(var1);
-	    var1.font = this.fontRenderer;
-	    var1.rendererContext$5cd64a7f = this;
-	    if (!this.isOnline()) {
-		this.player = (Player) var1.findSubclassOf(Player.class);
-		if (this.player == null) {
-		    this.player = new Player(var1, this.settings);
-		}
-		this.player.settings = this.settings;
-		this.player.resetPos();
-	    } else if (this.player != null) {
-		this.player.resetPos();
-		this.gamemode.preparePlayer(this.player);
-		if (var1 != null) {
-		    var1.player = this.player;
-		    var1.addEntity(this.player);
-		}
-	    }
-	}
-
-	if (this.player == null) {
-	    this.player = new Player(var1, this.settings);
-	    this.player.resetPos();
-	    this.gamemode.preparePlayer(this.player);
-	    if (var1 != null) {
-		var1.player = this.player;
-	    }
-	}
-
-	if (this.player != null) {
-	    this.player.input = new InputHandlerImpl(this.settings);
-	    this.gamemode.apply(this.player);
-	}
-
-	if (this.levelRenderer != null) {
-	    LevelRenderer var3 = this.levelRenderer;
-	    if (this.levelRenderer.level != null) {
-		var3.level.removeListener(var3);
-	    }
-
-	    var3.level = var1;
-	    if (var1 != null) {
-		var1.addListener(var3);
-		var3.refresh();
-	    }
-	}
-
-	if (this.particleManager != null) {
-	    ParticleManager var5 = this.particleManager;
-	    if (var1 != null) {
-		var1.particleEngine = var5;
-	    }
-
-	    for (int var4 = 0; var4 < 2; ++var4) {
-		var5.particles[var4].clear();
-	    }
-	}
-
-	System.gc();
-    }
-
-    void downloadImage(String source, String dest) {
-	URL url;
-	try {
-	    if (!doesUrlExistAndIsImage(source))
-		return;
-	    url = new URL(source);
-
-	    InputStream in = new BufferedInputStream(url.openStream());
-	    ByteArrayOutputStream out = new ByteArrayOutputStream();
-	    byte[] buf = new byte[1024];
-	    int n = 0;
-	    while (-1 != (n = in.read(buf))) {
-		out.write(buf, 0, n);
-	    }
-	    out.close();
-	    in.close();
-	    byte[] response = out.toByteArray();
-	    FileOutputStream fos = new FileOutputStream(dest);
-	    fos.write(response);
-	    fos.close();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    return;
-	}
-    }
-
-    public String getHash(String urlString) throws Exception {
-	MessageDigest md = MessageDigest.getInstance("MD5");
-	byte[] urlBytes = urlString.getBytes(StandardCharsets.US_ASCII);
-	byte[] hashBytes = md.digest(urlBytes);
-	return new BigInteger(1, hashBytes).toString(16);
-    }
-
-    public static boolean doesUrlExistAndIsImage(String URLName) {
-	try {
-	    HttpURLConnection.setFollowRedirects(false);
-	    HttpURLConnection con = (HttpURLConnection) new URL(URLName)
-		    .openConnection();
-	    con.setRequestMethod("HEAD");
-	    return (con.getResponseCode() == HttpURLConnection.HTTP_OK && con
-		    .getContentType().contains("image"));
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    return false;
-	}
-    }
-
-    public void resize() {
-	width = Display.getDisplayMode().getWidth();
-	height = Display.getDisplayMode().getHeight();
-
-	if (hud != null) {
-	    hud.width = width * 240 / height;
-	    hud.height = height * 240 / height;
-	}
-
-	if (currentScreen != null) {
-	    currentScreen.width = width * 240 / height;
-	    currentScreen.height = height * 240 / height;
-
-	    currentScreen.onOpen();
-	}
     }
 }

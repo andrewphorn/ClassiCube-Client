@@ -23,11 +23,13 @@ public class WaterLevelInputScreen extends InputValueScreen {
 		Minecraft var4 = var10000;
 		var4.level.waterLevel = Integer.parseInt(var2);
 		var4.levelRenderer.refresh();
-		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, this.minecraft.settings));
+		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(
+			parent, this.minecraft.settings));
 	    }
 
 	    if (var1.id == 1) {
-		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, this.minecraft.settings));
+		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(
+			parent, this.minecraft.settings));
 	    }
 
 	}

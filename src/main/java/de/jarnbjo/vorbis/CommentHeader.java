@@ -85,8 +85,20 @@ public class CommentHeader {
 	al.add(value);
     }
 
-    public String getVendor() {
-	return vendor;
+    public String getAlbum() {
+	return getComment(ALBUM);
+    }
+
+    public String[] getAlbums() {
+	return getComments(ALBUM);
+    }
+
+    public String getArtist() {
+	return getComment(ARTIST);
+    }
+
+    public String[] getArtists() {
+	return getComments(ARTIST);
     }
 
     public String getComment(String key) {
@@ -100,52 +112,12 @@ public class CommentHeader {
 		.size()]);
     }
 
-    public String getTitle() {
-	return getComment(TITLE);
+    public String getContact() {
+	return getComment(CONTACT);
     }
 
-    public String[] getTitles() {
-	return getComments(TITLE);
-    }
-
-    public String getVersion() {
-	return getComment(VERSION);
-    }
-
-    public String[] getVersions() {
-	return getComments(VERSION);
-    }
-
-    public String getAlbum() {
-	return getComment(ALBUM);
-    }
-
-    public String[] getAlbums() {
-	return getComments(ALBUM);
-    }
-
-    public String getTrackNumber() {
-	return getComment(TRACKNUMBER);
-    }
-
-    public String[] getTrackNumbers() {
-	return getComments(TRACKNUMBER);
-    }
-
-    public String getArtist() {
-	return getComment(ARTIST);
-    }
-
-    public String[] getArtists() {
-	return getComments(ARTIST);
-    }
-
-    public String getPerformer() {
-	return getComment(PERFORMER);
-    }
-
-    public String[] getPerformers() {
-	return getComments(PERFORMER);
+    public String[] getContacts() {
+	return getComments(CONTACT);
     }
 
     public String getCopyright() {
@@ -156,20 +128,12 @@ public class CommentHeader {
 	return getComments(COPYRIGHT);
     }
 
-    public String getLicense() {
-	return getComment(LICENSE);
+    public String getDate() {
+	return getComment(DATE);
     }
 
-    public String[] getLicenses() {
-	return getComments(LICENSE);
-    }
-
-    public String getOrganization() {
-	return getComment(ORGANIZATION);
-    }
-
-    public String[] getOrganizations() {
-	return getComments(ORGANIZATION);
+    public String[] getDates() {
+	return getComments(DATE);
     }
 
     public String getDescription() {
@@ -188,12 +152,20 @@ public class CommentHeader {
 	return getComments(GENRE);
     }
 
-    public String getDate() {
-	return getComment(DATE);
+    public String getIsrc() {
+	return getComment(ISRC);
     }
 
-    public String[] getDates() {
-	return getComments(DATE);
+    public String[] getIsrcs() {
+	return getComments(ISRC);
+    }
+
+    public String getLicense() {
+	return getComment(LICENSE);
+    }
+
+    public String[] getLicenses() {
+	return getComments(LICENSE);
     }
 
     public String getLocation() {
@@ -204,20 +176,20 @@ public class CommentHeader {
 	return getComments(LOCATION);
     }
 
-    public String getContact() {
-	return getComment(CONTACT);
+    public String getOrganization() {
+	return getComment(ORGANIZATION);
     }
 
-    public String[] getContacts() {
-	return getComments(CONTACT);
+    public String[] getOrganizations() {
+	return getComments(ORGANIZATION);
     }
 
-    public String getIsrc() {
-	return getComment(ISRC);
+    public String getPerformer() {
+	return getComment(PERFORMER);
     }
 
-    public String[] getIsrcs() {
-	return getComments(ISRC);
+    public String[] getPerformers() {
+	return getComments(PERFORMER);
     }
 
     private String getString(BitInputStream source) throws IOException,
@@ -232,6 +204,34 @@ public class CommentHeader {
 	}
 
 	return new String(strArray, "UTF-8");
+    }
+
+    public String getTitle() {
+	return getComment(TITLE);
+    }
+
+    public String[] getTitles() {
+	return getComments(TITLE);
+    }
+
+    public String getTrackNumber() {
+	return getComment(TRACKNUMBER);
+    }
+
+    public String[] getTrackNumbers() {
+	return getComments(TRACKNUMBER);
+    }
+
+    public String getVendor() {
+	return vendor;
+    }
+
+    public String getVersion() {
+	return getComment(VERSION);
+    }
+
+    public String[] getVersions() {
+	return getComments(VERSION);
     }
 
 }

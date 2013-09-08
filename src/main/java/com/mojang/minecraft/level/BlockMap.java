@@ -12,13 +12,28 @@ import java.util.List;
 public class BlockMap implements Serializable {
 
     public static final long serialVersionUID = 0L;
+    // $FF: synthetic method
+    static int getDepth(BlockMap var0) {
+	return var0.depth;
+    }
+    // $FF: synthetic method
+    static int getHeight(BlockMap var0) {
+	return var0.height;
+    }
+    // $FF: synthetic method
+    static int getWidth(BlockMap var0) {
+	return var0.width;
+    }
     private int width;
     private int depth;
     private int height;
     private BlockMap$Slot slot = new BlockMap$Slot(this);
     private BlockMap$Slot slot2 = new BlockMap$Slot(this);
+
     public List<Entity>[] entityGrid;
+
     public List<Entity> all = new ArrayList<Entity>();
+
     private List<Entity> tmp = new ArrayList<Entity>();
 
     @SuppressWarnings("unchecked")
@@ -51,30 +66,27 @@ public class BlockMap implements Serializable {
 
     }
 
-    public void insert(Entity var1) {
-	this.all.add(var1);
-	this.slot.init(var1.x, var1.y, var1.z).add(var1);
-	var1.xOld = var1.x;
-	var1.yOld = var1.y;
-	var1.zOld = var1.z;
-	var1.blockMap = this;
-    }
-
-    public void remove(Entity var1) {
-	this.slot.init(var1.xOld, var1.yOld, var1.zOld).remove(var1);
-	this.all.remove(var1);
-    }
-
-    public void moved(Entity var1) {
-	BlockMap$Slot var2 = this.slot.init(var1.xOld, var1.yOld, var1.zOld);
-	BlockMap$Slot var3 = this.slot2.init(var1.x, var1.y, var1.z);
-	if (!var2.equals(var3)) {
-	    var2.remove(var1);
-	    var3.add(var1);
-	    var1.xOld = var1.x;
-	    var1.yOld = var1.y;
-	    var1.zOld = var1.z;
+    public void clear() {
+	for (int var1 = 0; var1 < this.width; ++var1) {
+	    for (int var2 = 0; var2 < this.depth; ++var2) {
+		for (int var3 = 0; var3 < this.height; ++var3) {
+		    this.entityGrid[(var3 * this.depth + var2) * this.width
+			    + var1].clear();
+		}
+	    }
 	}
+
+    }
+
+    public List<Entity> getEntities(Entity var1, AABB var2) {
+	this.tmp.clear();
+	return this.getEntities(var1, var2.x0, var2.y0, var2.z0, var2.x1,
+		var2.y1, var2.z1, this.tmp);
+    }
+
+    public List<Entity> getEntities(Entity var1, AABB var2, List<Entity> var3) {
+	return this.getEntities(var1, var2.x0, var2.y0, var2.z0, var2.x1,
+		var2.y1, var2.z1, var3);
     }
 
     public List<Entity> getEntities(Entity var1, float var2, float var3,
@@ -117,6 +129,32 @@ public class BlockMap implements Serializable {
 	return var8;
     }
 
+    public void insert(Entity var1) {
+	this.all.add(var1);
+	this.slot.init(var1.x, var1.y, var1.z).add(var1);
+	var1.xOld = var1.x;
+	var1.yOld = var1.y;
+	var1.zOld = var1.z;
+	var1.blockMap = this;
+    }
+
+    public void moved(Entity var1) {
+	BlockMap$Slot var2 = this.slot.init(var1.xOld, var1.yOld, var1.zOld);
+	BlockMap$Slot var3 = this.slot2.init(var1.x, var1.y, var1.z);
+	if (!var2.equals(var3)) {
+	    var2.remove(var1);
+	    var3.add(var1);
+	    var1.xOld = var1.x;
+	    var1.yOld = var1.y;
+	    var1.zOld = var1.z;
+	}
+    }
+
+    public void remove(Entity var1) {
+	this.slot.init(var1.xOld, var1.yOld, var1.zOld).remove(var1);
+	this.all.remove(var1);
+    }
+
     public void removeAllNonCreativeModeEntities() {
 	for (int var1 = 0; var1 < this.width; ++var1) {
 	    for (int var2 = 0; var2 < this.depth; ++var2) {
@@ -129,51 +167,6 @@ public class BlockMap implements Serializable {
 			    var4.remove(var5--);
 			}
 		    }
-		}
-	    }
-	}
-
-    }
-
-    public void clear() {
-	for (int var1 = 0; var1 < this.width; ++var1) {
-	    for (int var2 = 0; var2 < this.depth; ++var2) {
-		for (int var3 = 0; var3 < this.height; ++var3) {
-		    this.entityGrid[(var3 * this.depth + var2) * this.width
-			    + var1].clear();
-		}
-	    }
-	}
-
-    }
-
-    public List<Entity> getEntities(Entity var1, AABB var2) {
-	this.tmp.clear();
-	return this.getEntities(var1, var2.x0, var2.y0, var2.z0, var2.x1,
-		var2.y1, var2.z1, this.tmp);
-    }
-
-    public List<Entity> getEntities(Entity var1, AABB var2, List<Entity> var3) {
-	return this.getEntities(var1, var2.x0, var2.y0, var2.z0, var2.x1,
-		var2.y1, var2.z1, var3);
-    }
-
-    public void tickAll() {
-	for (int var1 = 0; var1 < this.all.size(); ++var1) {
-	    Entity var2;
-	    (var2 = this.all.get(var1)).tick();
-	    if (var2.removed) {
-		this.all.remove(var1--);
-		this.slot.init(var2.xOld, var2.yOld, var2.zOld).remove(var2);
-	    } else {
-		int var3 = (int) (var2.xOld / 16.0F);
-		int var4 = (int) (var2.yOld / 16.0F);
-		int var5 = (int) (var2.zOld / 16.0F);
-		int var6 = (int) (var2.x / 16.0F);
-		int var7 = (int) (var2.y / 16.0F);
-		int var8 = (int) (var2.z / 16.0F);
-		if (var3 != var6 || var4 != var7 || var5 != var8) {
-		    this.moved(var2);
 		}
 	    }
 	}
@@ -307,18 +300,25 @@ public class BlockMap implements Serializable {
 
     }
 
-    // $FF: synthetic method
-    static int getWidth(BlockMap var0) {
-	return var0.width;
-    }
+    public void tickAll() {
+	for (int var1 = 0; var1 < this.all.size(); ++var1) {
+	    Entity var2;
+	    (var2 = this.all.get(var1)).tick();
+	    if (var2.removed) {
+		this.all.remove(var1--);
+		this.slot.init(var2.xOld, var2.yOld, var2.zOld).remove(var2);
+	    } else {
+		int var3 = (int) (var2.xOld / 16.0F);
+		int var4 = (int) (var2.yOld / 16.0F);
+		int var5 = (int) (var2.zOld / 16.0F);
+		int var6 = (int) (var2.x / 16.0F);
+		int var7 = (int) (var2.y / 16.0F);
+		int var8 = (int) (var2.z / 16.0F);
+		if (var3 != var6 || var4 != var7 || var5 != var8) {
+		    this.moved(var2);
+		}
+	    }
+	}
 
-    // $FF: synthetic method
-    static int getDepth(BlockMap var0) {
-	return var0.depth;
-    }
-
-    // $FF: synthetic method
-    static int getHeight(BlockMap var0) {
-	return var0.height;
     }
 }

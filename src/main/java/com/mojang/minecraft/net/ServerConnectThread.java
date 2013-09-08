@@ -6,6 +6,16 @@ import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.net.NetworkHandler;
 
 public class ServerConnectThread extends Thread {
+    private String server;
+
+    private int port;
+
+    private String username;
+    private String key;
+
+    private Minecraft minecraft;
+    private NetworkManager netManager;
+
     public ServerConnectThread(NetworkManager networkManager, String server,
 	    int port, String username, String key, Minecraft minecraft) {
 	super();
@@ -44,14 +54,4 @@ public class ServerConnectThread extends Thread {
 	    netManager.successful = false;
 	}
     }
-
-    private String server;
-    private int port;
-
-    private String username;
-    private String key;
-
-    private Minecraft minecraft;
-
-    private NetworkManager netManager;
 }

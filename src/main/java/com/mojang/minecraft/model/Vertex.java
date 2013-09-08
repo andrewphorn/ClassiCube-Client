@@ -10,8 +10,10 @@ public final class Vertex {
 	this(new Vec3D(var1, var2, var3), var4, var5);
     }
 
-    public final Vertex create(float var1, float var2) {
-	return new Vertex(this, var1, var2);
+    private Vertex(Vec3D var1, float var2, float var3) {
+	this.vector = var1;
+	this.u = var2;
+	this.v = var3;
     }
 
     private Vertex(Vertex var1, float var2, float var3) {
@@ -20,9 +22,7 @@ public final class Vertex {
 	this.v = var3;
     }
 
-    private Vertex(Vec3D var1, float var2, float var3) {
-	this.vector = var1;
-	this.u = var2;
-	this.v = var3;
+    public final Vertex create(float var1, float var2) {
+	return new Vertex(this, var1, var2);
     }
 }

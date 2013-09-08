@@ -59,15 +59,15 @@ class Mode {
 	return blockFlag;
     }
 
-    protected int getWindowType() {
-	return windowType;
+    protected int getMapping() {
+	return mapping;
     }
 
     protected int getTransformType() {
 	return transformType;
     }
 
-    protected int getMapping() {
-	return mapping;
+    protected int getWindowType() {
+	return windowType;
     }
 }

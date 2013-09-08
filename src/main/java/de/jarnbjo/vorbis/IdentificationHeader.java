@@ -69,26 +69,6 @@ public class IdentificationHeader {
 	// mdctInt[1]=new MdctLong(blockSize1);
     }
 
-    public int getSampleRate() {
-	return sampleRate;
-    }
-
-    public int getMaximumBitrate() {
-	return bitrateMaximum;
-    }
-
-    public int getNominalBitrate() {
-	return bitrateNominal;
-    }
-
-    public int getMinimumBitrate() {
-	return bitrateMinimum;
-    }
-
-    public int getChannels() {
-	return channels;
-    }
-
     public int getBlockSize0() {
 	return blockSize0;
     }
@@ -97,12 +77,32 @@ public class IdentificationHeader {
 	return blockSize1;
     }
 
+    public int getChannels() {
+	return channels;
+    }
+
+    public int getMaximumBitrate() {
+	return bitrateMaximum;
+    }
+
     protected MdctFloat getMdct0() {
 	return mdct[0];
     }
 
     protected MdctFloat getMdct1() {
 	return mdct[1];
+    }
+
+    public int getMinimumBitrate() {
+	return bitrateMinimum;
+    }
+
+    public int getNominalBitrate() {
+	return bitrateNominal;
+    }
+
+    public int getSampleRate() {
+	return sampleRate;
     }
 
     public int getVersion() {

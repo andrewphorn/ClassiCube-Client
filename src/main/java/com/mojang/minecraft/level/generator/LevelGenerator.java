@@ -25,6 +25,119 @@ public final class LevelGenerator {
 	this.progressBar = var1;
     }
 
+    private long flood(int var1, int var2, int var3, int var5) {
+	byte var20 = (byte) var5;
+	ArrayList<int[]> var21 = new ArrayList<int[]>();
+	byte var6 = 0;
+	int var7 = 1;
+
+	int var8;
+	for (var8 = 1; 1 << var7 < this.width; ++var7) {
+	    ;
+	}
+
+	while (1 << var8 < this.depth) {
+	    ++var8;
+	}
+
+	int var9 = this.depth - 1;
+	int var10 = this.width - 1;
+	int var22 = var6 + 1;
+	this.h[0] = ((var2 << var8) + var3 << var7) + var1;
+	long var11 = 0L;
+	var1 = this.width * this.depth;
+
+	while (var22 > 0) {
+	    --var22;
+	    var2 = this.h[var22];
+	    if (var22 == 0 && var21.size() > 0) {
+		this.h = (int[]) var21.remove(var21.size() - 1);
+		var22 = this.h.length;
+	    }
+
+	    var3 = var2 >> var7 & var9;
+	    int var13 = var2 >> var7 + var8;
+
+	    int var14;
+	    int var15;
+	    for (var15 = var14 = var2 & var10; var14 > 0
+		    && this.blocks[var2 - 1] == 0; --var2) {
+		--var14;
+	    }
+
+	    while (var15 < this.width && this.blocks[var2 + var15 - var14] == 0) {
+		++var15;
+	    }
+
+	    int var16 = var2 >> var7 & var9;
+	    int var17 = var2 >> var7 + var8;
+	    if (var16 != var3 || var17 != var13) {
+		System.out.println("Diagonal flood!?");
+	    }
+
+	    boolean var23 = false;
+	    boolean var24 = false;
+	    boolean var18 = false;
+	    var11 += (long) (var15 - var14);
+
+	    for (; var14 < var15; ++var14) {
+		this.blocks[var2] = var20;
+		boolean var19;
+		if (var3 > 0) {
+		    if ((var19 = this.blocks[var2 - this.width] == 0) && !var23) {
+			if (var22 == this.h.length) {
+			    var21.add(this.h);
+			    this.h = new int[1048576];
+			    var22 = 0;
+			}
+
+			this.h[var22++] = var2 - this.width;
+		    }
+
+		    var23 = var19;
+		}
+
+		if (var3 < this.depth - 1) {
+		    if ((var19 = this.blocks[var2 + this.width] == 0) && !var24) {
+			if (var22 == this.h.length) {
+			    var21.add(this.h);
+			    this.h = new int[1048576];
+			    var22 = 0;
+			}
+
+			this.h[var22++] = var2 + this.width;
+		    }
+
+		    var24 = var19;
+		}
+
+		if (var13 > 0) {
+		    byte var25 = this.blocks[var2 - var1];
+		    if ((var20 == Block.LAVA.id || var20 == Block.STATIONARY_LAVA.id)
+			    && (var25 == Block.WATER.id || var25 == Block.STATIONARY_WATER.id)) {
+			this.blocks[var2 - var1] = (byte) Block.STONE.id;
+		    }
+
+		    if ((var19 = var25 == 0) && !var18) {
+			if (var22 == this.h.length) {
+			    var21.add(this.h);
+			    this.h = new int[1048576];
+			    var22 = 0;
+			}
+
+			this.h[var22++] = var2 - var1;
+		    }
+
+		    var18 = var19;
+		}
+
+		++var2;
+	    }
+	}
+
+	return var11;
+    }
+
     public final Level generate(String var1, int var2, int var3, int var4) {
 	this.progressBar.setTitle("Generating level");
 	this.width = var2;
@@ -489,118 +602,5 @@ public final class LevelGenerator {
 
     private void setProgress(int var1) {
 	this.progressBar.setProgress(var1);
-    }
-
-    private long flood(int var1, int var2, int var3, int var5) {
-	byte var20 = (byte) var5;
-	ArrayList<int[]> var21 = new ArrayList<int[]>();
-	byte var6 = 0;
-	int var7 = 1;
-
-	int var8;
-	for (var8 = 1; 1 << var7 < this.width; ++var7) {
-	    ;
-	}
-
-	while (1 << var8 < this.depth) {
-	    ++var8;
-	}
-
-	int var9 = this.depth - 1;
-	int var10 = this.width - 1;
-	int var22 = var6 + 1;
-	this.h[0] = ((var2 << var8) + var3 << var7) + var1;
-	long var11 = 0L;
-	var1 = this.width * this.depth;
-
-	while (var22 > 0) {
-	    --var22;
-	    var2 = this.h[var22];
-	    if (var22 == 0 && var21.size() > 0) {
-		this.h = (int[]) var21.remove(var21.size() - 1);
-		var22 = this.h.length;
-	    }
-
-	    var3 = var2 >> var7 & var9;
-	    int var13 = var2 >> var7 + var8;
-
-	    int var14;
-	    int var15;
-	    for (var15 = var14 = var2 & var10; var14 > 0
-		    && this.blocks[var2 - 1] == 0; --var2) {
-		--var14;
-	    }
-
-	    while (var15 < this.width && this.blocks[var2 + var15 - var14] == 0) {
-		++var15;
-	    }
-
-	    int var16 = var2 >> var7 & var9;
-	    int var17 = var2 >> var7 + var8;
-	    if (var16 != var3 || var17 != var13) {
-		System.out.println("Diagonal flood!?");
-	    }
-
-	    boolean var23 = false;
-	    boolean var24 = false;
-	    boolean var18 = false;
-	    var11 += (long) (var15 - var14);
-
-	    for (; var14 < var15; ++var14) {
-		this.blocks[var2] = var20;
-		boolean var19;
-		if (var3 > 0) {
-		    if ((var19 = this.blocks[var2 - this.width] == 0) && !var23) {
-			if (var22 == this.h.length) {
-			    var21.add(this.h);
-			    this.h = new int[1048576];
-			    var22 = 0;
-			}
-
-			this.h[var22++] = var2 - this.width;
-		    }
-
-		    var23 = var19;
-		}
-
-		if (var3 < this.depth - 1) {
-		    if ((var19 = this.blocks[var2 + this.width] == 0) && !var24) {
-			if (var22 == this.h.length) {
-			    var21.add(this.h);
-			    this.h = new int[1048576];
-			    var22 = 0;
-			}
-
-			this.h[var22++] = var2 + this.width;
-		    }
-
-		    var24 = var19;
-		}
-
-		if (var13 > 0) {
-		    byte var25 = this.blocks[var2 - var1];
-		    if ((var20 == Block.LAVA.id || var20 == Block.STATIONARY_LAVA.id)
-			    && (var25 == Block.WATER.id || var25 == Block.STATIONARY_WATER.id)) {
-			this.blocks[var2 - var1] = (byte) Block.STONE.id;
-		    }
-
-		    if ((var19 = var25 == 0) && !var18) {
-			if (var22 == this.h.length) {
-			    var21.add(this.h);
-			    this.h = new int[1048576];
-			    var22 = 0;
-			}
-
-			this.h[var22++] = var2 - var1;
-		    }
-
-		    var18 = var19;
-		}
-
-		++var2;
-	    }
-	}
-
-	return var11;
     }
 }

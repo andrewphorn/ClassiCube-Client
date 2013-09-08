@@ -39,6 +39,8 @@ public class BasicStream implements PhysicalOggStream {
     private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
     private OggPage firstPage;
 
+    int pageNumber = 2;
+
     public BasicStream(InputStream sourceStream) throws OggFormatException,
 	    IOException {
 	firstPage = OggPage.create(sourceStream);
@@ -46,14 +48,6 @@ public class BasicStream implements PhysicalOggStream {
 	LogicalOggStreamImpl los = new LogicalOggStreamImpl(this);
 	logicalStreams.put(new Integer(firstPage.getStreamSerialNumber()), los);
 	los.checkFormat(firstPage);
-    }
-
-    public Collection<LogicalOggStreamImpl> getLogicalStreams() {
-	return logicalStreams.values();
-    }
-
-    public boolean isOpen() {
-	return !closed;
     }
 
     public void close() throws IOException {
@@ -65,11 +59,9 @@ public class BasicStream implements PhysicalOggStream {
 	return -1;
     }
 
-    public int getPosition() {
-	return position;
+    public Collection<LogicalOggStreamImpl> getLogicalStreams() {
+	return logicalStreams.values();
     }
-
-    int pageNumber = 2;
 
     public OggPage getOggPage(int index) throws IOException {
 	if (firstPage != null) {
@@ -83,9 +75,12 @@ public class BasicStream implements PhysicalOggStream {
 	}
     }
 
-    public void setTime(long granulePosition) throws IOException {
-	throw new UnsupportedOperationException(
-		"Method not supported by this class");
+    public int getPosition() {
+	return position;
+    }
+
+    public boolean isOpen() {
+	return !closed;
     }
 
     /**
@@ -94,6 +89,11 @@ public class BasicStream implements PhysicalOggStream {
 
     public boolean isSeekable() {
 	return false;
+    }
+
+    public void setTime(long granulePosition) throws IOException {
+	throw new UnsupportedOperationException(
+		"Method not supported by this class");
     }
 
 }

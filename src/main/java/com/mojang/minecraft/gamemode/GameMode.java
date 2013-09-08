@@ -7,30 +7,27 @@ import com.mojang.minecraft.level.tile.Tile$SoundType;
 import com.mojang.minecraft.player.Player;
 
 public class GameMode {
+    public Minecraft minecraft;
+
+    public boolean instantBreak;
+
+    public float reachDistance = 5.0F;
+
     public GameMode(Minecraft minecraft) {
 	this.minecraft = minecraft;
 
 	instantBreak = false;
     }
 
-    public Minecraft minecraft;
-
-    public boolean instantBreak;
-
     public void apply(Level level) {
 	level.creativeMode = false;
 	level.growTrees = true;
     }
 
-    public void openInventory() {
+    public void apply(Player player) {
     }
 
-    public void hitBlock(int x, int y, int z) {
-	this.breakBlock(x, y, z);
-    }
-
-    public boolean canPlace(int block) {
-	return true;
+    public void applyCracks(float time) {
     }
 
     public void breakBlock(int x, int y, int z) {
@@ -57,38 +54,41 @@ public class GameMode {
 
     }
 
-    public void hitBlock(int x, int y, int z, int side) {
+    public boolean canPlace(int block) {
+	return true;
     }
-
-    public void resetHits() {
-    }
-
-    public void applyCracks(float time) {
-    }
-
-    public float reachDistance = 5.0F;
 
     public float getReachDistance() {
 	return reachDistance;
     }
 
-    public boolean useItem(Player player, int type) {
-	return false;
+    public void hitBlock(int x, int y, int z) {
+	this.breakBlock(x, y, z);
     }
 
-    public void preparePlayer(Player player) {
-    }
-
-    public void spawnMob() {
-    }
-
-    public void prepareLevel(Level level) {
+    public void hitBlock(int x, int y, int z, int side) {
     }
 
     public boolean isSurvival() {
 	return true;
     }
 
-    public void apply(Player player) {
+    public void openInventory() {
+    }
+
+    public void prepareLevel(Level level) {
+    }
+
+    public void preparePlayer(Player player) {
+    }
+
+    public void resetHits() {
+    }
+
+    public void spawnMob() {
+    }
+
+    public boolean useItem(Player player, int type) {
+	return false;
     }
 }

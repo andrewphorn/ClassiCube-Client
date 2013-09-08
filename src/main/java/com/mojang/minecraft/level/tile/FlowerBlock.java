@@ -19,14 +19,29 @@ public class FlowerBlock extends Block {
 		var3 * 3.0F, var3 + 0.5F);
     }
 
-    public void update(Level level, int x, int y, int z, Random rand) {
-	if (!level.growTrees) {
-	    int var6 = level.getTile(x, y - 1, z);
-		if (this.id != 53 && !level.isLit(x, y, z) || var6 != DIRT.id
-			&& var6 != GRASS.id) {
-		    level.setTile(x, y, z, 0);
-	    }
-	}
+    @Override
+    public AABB getCollisionBox(int x, int y, int z) {
+	return null;
+    }
+
+    public final boolean isCube() {
+	return false;
+    }
+
+    public final boolean isOpaque() {
+	return false;
+    }
+
+    public final boolean isSolid() {
+	return false;
+    }
+
+    public final boolean render(Level var1, int var2, int var3, int var4,
+	    ShapeRenderer var5) {
+	ColorCache var6 = var1.getBrightnessColor(var2, var3, var4);
+	var5.color(var6.R, var6.G, var6.B);
+	this.render(var5, (float) var2, (float) var3, (float) var4);
+	return true;
     }
 
     private void render(ShapeRenderer var1, float var2, float var3, float var4) {
@@ -60,12 +75,9 @@ public class FlowerBlock extends Block {
 
     }
 
-    public final boolean isOpaque() {
-	return false;
-    }
-
-    public final boolean isSolid() {
-	return false;
+    public final void renderFullbright(ShapeRenderer shapeRenderer) {
+	shapeRenderer.color(1.0F, 1.0F, 1.0F);
+	this.render(shapeRenderer, (float) -2, 0.0F, 0.0F);
     }
 
     public final void renderPreview(ShapeRenderer var1) {
@@ -75,25 +87,13 @@ public class FlowerBlock extends Block {
 	var1.end();
     }
 
-    public final boolean isCube() {
-	return false;
-    }
-
-    public final boolean render(Level var1, int var2, int var3, int var4,
-	    ShapeRenderer var5) {
-	ColorCache var6 = var1.getBrightnessColor(var2, var3, var4);
-	var5.color(var6.R, var6.G, var6.B);
-	this.render(var5, (float) var2, (float) var3, (float) var4);
-	return true;
-    }
-
-    public final void renderFullbright(ShapeRenderer shapeRenderer) {
-	shapeRenderer.color(1.0F, 1.0F, 1.0F);
-	this.render(shapeRenderer, (float) -2, 0.0F, 0.0F);
-    }
-
-    @Override
-    public AABB getCollisionBox(int x, int y, int z) {
-	return null;
+    public void update(Level level, int x, int y, int z, Random rand) {
+	if (!level.growTrees) {
+	    int var6 = level.getTile(x, y - 1, z);
+	    if (this.id != 53 && !level.isLit(x, y, z) || var6 != DIRT.id
+		    && var6 != GRASS.id) {
+		level.setTile(x, y, z, 0);
+	    }
+	}
     }
 }

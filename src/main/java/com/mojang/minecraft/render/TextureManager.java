@@ -21,19 +21,22 @@ import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_AN
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 
 public class TextureManager {
-    public boolean Applet;
+    public static BufferedImage load1(BufferedImage image) {
+	int charWidth = image.getWidth() / 16;
+	BufferedImage image1 = new BufferedImage(16, image.getHeight()
+		* charWidth, BufferedImage.TYPE_INT_ARGB);
+	Graphics graphics = image1.getGraphics();
 
-    public TextureManager(GameSettings settings, boolean Applet) {
-	this.Applet = Applet;
-	this.settings = settings;
-
-	minecraftFolder = Minecraft.mcDir;
-	texturesFolder = new File(minecraftFolder, "texturepacks");
-
-	if (!texturesFolder.exists()) {
-	    texturesFolder.mkdir();
+	for (int i = 0; i < charWidth; i++) {
+	    graphics.drawImage(image, -i << 4, i * image.getHeight(), null);
 	}
+
+	graphics.dispose();
+
+	return image1;
     }
+
+    public boolean Applet;
 
     public HashMap<String, Integer> textures = new HashMap<String, Integer>();
     public HashMap<Integer, BufferedImage> textureImages = new HashMap<Integer, BufferedImage>();
@@ -52,113 +55,15 @@ public class TextureManager {
 
     public int previousMipmapMode;
 
-    public int loadTexturePack(String file) throws IOException {
-	int textureID = 0;
-	if (file.endsWith(".zip")) {
-	    ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/"
-		    + file));
+    public TextureManager(GameSettings settings, boolean Applet) {
+	this.Applet = Applet;
+	this.settings = settings;
 
-	    String terrainPNG = "terrain.png";
+	minecraftFolder = Minecraft.mcDir;
+	texturesFolder = new File(minecraftFolder, "texturepacks");
 
-	    if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(
-		    1, terrainPNG.length()) : terrainPNG) != null) {
-		currentTerrainPng = ImageIO
-			.read(zip.getInputStream(zip.getEntry(terrainPNG
-				.startsWith("/") ? terrainPNG.substring(1,
-				terrainPNG.length()) : terrainPNG)));
-	    } else {
-		try {
-		    currentTerrainPng = ImageIO.read(TextureManager.class
-			    .getResourceAsStream(terrainPNG));
-		} catch (Exception e) {
-		    zip.close();
-		    return textureID;
-		}
-	    }
-
-	    zip.close();
-
-	}
-
-	return textureID;
-    }
-
-    public int load(String file) {
-	if (!Applet && !file.endsWith(".zip")) {
-	    file = "/resources" + file;
-	}
-	if (file.contains("terrain") && textures.containsKey("customTerrain")) {
-	    return textures.get("customTerrain");
-	}
-	if (file.contains("terrain") && !textures.containsKey("customTerrain")
-		&& currentTerrainPng != null) {
-	    int id = load(currentTerrainPng);
-	    textures.put("customTerrain", id);
-	    return id;
-	}
-	if (file.contains("rock") && textures.containsKey("customEdge")) {
-	    return textures.get("customEdge");
-	}
-	if (file.contains("rock") && !textures.containsKey("customEdge")
-		&& customEdgeBlock != null) {
-	    int id = load(customEdgeBlock);
-	    textures.put("customEdge", id);
-	    return id;
-	}
-	if (file.contains("water") && textures.containsKey("customSide")) {
-	    return textures.get("customSide");
-	}
-	if (file.contains("water") && !textures.containsKey("customSide") && customSideBlock != null) {
-		int id = load(customSideBlock);
-		textures.put("customSide", id);
-		return id;
-	}
-
-	if (textures.get(file) != null) {
-	    return textures.get(file);
-	} else {
-	    try {
-
-		idBuffer.clear();
-
-		GL11.glGenTextures(idBuffer);
-
-		int textureID = idBuffer.get(0);
-
-		if (file.endsWith(".png")) {
-		    if (file.startsWith("##")) {
-			load(load1(ImageIO.read(TextureManager.class
-				.getResourceAsStream(file.substring(2)))),
-				textureID);
-		    } else {
-			load(ImageIO.read(TextureManager.class
-				.getResourceAsStream(file)), textureID);
-		    }
-
-		    textures.put(file, textureID);
-		} else if (file.endsWith(".zip")) {
-		    ZipFile zip = new ZipFile(new File(minecraftFolder,
-			    "texturepacks/" + file));
-
-		    String terrainPNG = "terrain.png";
-
-		    if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG
-			    .substring(1, terrainPNG.length()) : terrainPNG) != null) {
-			load(ImageIO.read(zip.getInputStream(zip.getEntry(terrainPNG
-				.startsWith("/") ? terrainPNG.substring(1,
-				terrainPNG.length()) : terrainPNG))), textureID);
-		    } else {
-			load(ImageIO.read(TextureManager.class
-				.getResourceAsStream(terrainPNG)), textureID);
-		    }
-
-		    zip.close();
-		}
-
-		return textureID;
-	    } catch (IOException e) {
-		throw new RuntimeException("!!", e);
-	    }
+	if (!texturesFolder.exists()) {
+	    texturesFolder.mkdir();
 	}
     }
 
@@ -197,19 +102,77 @@ public class TextureManager {
 	return atlases;
     }
 
-    public static BufferedImage load1(BufferedImage image) {
-	int charWidth = image.getWidth() / 16;
-	BufferedImage image1 = new BufferedImage(16, image.getHeight()
-		* charWidth, BufferedImage.TYPE_INT_ARGB);
-	Graphics graphics = image1.getGraphics();
+    private int b(int c1, int c2) {
+	int a1 = (c1 & 0xFF000000) >> 24 & 0xFF;
+	int a2 = (c2 & 0xFF000000) >> 24 & 0xFF;
 
-	for (int i = 0; i < charWidth; i++) {
-	    graphics.drawImage(image, -i << 4, i * image.getHeight(), null);
+	int ax = (a1 + a2) / 2;
+	if (ax > 255) {
+	    ax = 255;
+	}
+	if (a1 + a2 <= 0) {
+	    a1 = 1;
+	    a2 = 1;
+	    ax = 0;
 	}
 
-	graphics.dispose();
+	int r1 = (c1 >> 16 & 0xFF) * a1;
+	int g1 = (c1 >> 8 & 0xFF) * a1;
+	int b1 = (c1 & 0xFF) * a1;
 
-	return image1;
+	int r2 = (c2 >> 16 & 0xFF) * a2;
+	int g2 = (c2 >> 8 & 0xFF) * a2;
+	int b2 = (c2 & 0xFF) * a2;
+
+	int rx = (r1 + r2) / (a1 + a2);
+	int gx = (g1 + g2) / (a1 + a2);
+	int bx = (b1 + b2) / (a1 + a2);
+	return ax << 24 | rx << 16 | gx << 8 | bx;
+    }
+
+    public void generateMipMaps(ByteBuffer data, int width, int height,
+	    boolean test) {
+	ByteBuffer mipData = data;
+
+	for (int level = test ? 0 : 1; level <= 4; level++) {
+	    int parWidth = width >> level - 1;
+	    int mipWidth = width >> level;
+	    int mipHeight = height >> level;
+
+	    if (mipWidth <= 0 || mipHeight <= 0) {
+		break;
+	    }
+
+	    ByteBuffer mipData1 = BufferUtils.createByteBuffer(data.capacity());
+
+	    mipData1.clear();
+
+	    for (int mipX = 0; mipX < mipWidth; mipX++) {
+		for (int mipY = 0; mipY < mipHeight; mipY++) {
+		    int p1 = mipData.getInt((mipX * 2 + 0 + (mipY * 2 + 0)
+			    * parWidth) * 4);
+		    int p2 = mipData.getInt((mipX * 2 + 1 + (mipY * 2 + 0)
+			    * parWidth) * 4);
+		    int p3 = mipData.getInt((mipX * 2 + 1 + (mipY * 2 + 1)
+			    * parWidth) * 4);
+		    int p4 = mipData.getInt((mipX * 2 + 0 + (mipY * 2 + 1)
+			    * parWidth) * 4);
+
+		    int pixel = b(b(p1, p2), b(p3, p4));
+
+		    mipData1.putInt((mipX + mipY * mipWidth) * 4, pixel);
+		}
+	    }
+
+	    GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA,
+		    mipWidth, mipHeight, 0, GL11.GL_RGBA,
+		    GL11.GL_UNSIGNED_BYTE, mipData1);
+	    GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F * level); // Create
+							    // transparency for
+							    // each level.
+
+	    mipData = mipData1;
+	}
     }
 
     public int load(BufferedImage image) {
@@ -337,77 +300,115 @@ public class TextureManager {
 	previousMipmapMode = settings.smoothing;
     }
 
-    public void generateMipMaps(ByteBuffer data, int width, int height,
-	    boolean test) {
-	ByteBuffer mipData = data;
+    public int load(String file) {
+	if (!Applet && !file.endsWith(".zip")) {
+	    file = "/resources" + file;
+	}
+	if (file.contains("terrain") && textures.containsKey("customTerrain")) {
+	    return textures.get("customTerrain");
+	}
+	if (file.contains("terrain") && !textures.containsKey("customTerrain")
+		&& currentTerrainPng != null) {
+	    int id = load(currentTerrainPng);
+	    textures.put("customTerrain", id);
+	    return id;
+	}
+	if (file.contains("rock") && textures.containsKey("customEdge")) {
+	    return textures.get("customEdge");
+	}
+	if (file.contains("rock") && !textures.containsKey("customEdge")
+		&& customEdgeBlock != null) {
+	    int id = load(customEdgeBlock);
+	    textures.put("customEdge", id);
+	    return id;
+	}
+	if (file.contains("water") && textures.containsKey("customSide")) {
+	    return textures.get("customSide");
+	}
+	if (file.contains("water") && !textures.containsKey("customSide")
+		&& customSideBlock != null) {
+	    int id = load(customSideBlock);
+	    textures.put("customSide", id);
+	    return id;
+	}
 
-	for (int level = test ? 0 : 1; level <= 4; level++) {
-	    int parWidth = width >> level - 1;
-	    int mipWidth = width >> level;
-	    int mipHeight = height >> level;
+	if (textures.get(file) != null) {
+	    return textures.get(file);
+	} else {
+	    try {
 
-	    if (mipWidth <= 0 || mipHeight <= 0) {
-		break;
-	    }
+		idBuffer.clear();
 
-	    ByteBuffer mipData1 = BufferUtils.createByteBuffer(data.capacity());
+		GL11.glGenTextures(idBuffer);
 
-	    mipData1.clear();
+		int textureID = idBuffer.get(0);
 
-	    for (int mipX = 0; mipX < mipWidth; mipX++) {
-		for (int mipY = 0; mipY < mipHeight; mipY++) {
-		    int p1 = mipData.getInt((mipX * 2 + 0 + (mipY * 2 + 0)
-			    * parWidth) * 4);
-		    int p2 = mipData.getInt((mipX * 2 + 1 + (mipY * 2 + 0)
-			    * parWidth) * 4);
-		    int p3 = mipData.getInt((mipX * 2 + 1 + (mipY * 2 + 1)
-			    * parWidth) * 4);
-		    int p4 = mipData.getInt((mipX * 2 + 0 + (mipY * 2 + 1)
-			    * parWidth) * 4);
+		if (file.endsWith(".png")) {
+		    if (file.startsWith("##")) {
+			load(load1(ImageIO.read(TextureManager.class
+				.getResourceAsStream(file.substring(2)))),
+				textureID);
+		    } else {
+			load(ImageIO.read(TextureManager.class
+				.getResourceAsStream(file)), textureID);
+		    }
 
-		    int pixel = b(b(p1, p2), b(p3, p4));
+		    textures.put(file, textureID);
+		} else if (file.endsWith(".zip")) {
+		    ZipFile zip = new ZipFile(new File(minecraftFolder,
+			    "texturepacks/" + file));
 
-		    mipData1.putInt((mipX + mipY * mipWidth) * 4, pixel);
+		    String terrainPNG = "terrain.png";
+
+		    if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG
+			    .substring(1, terrainPNG.length()) : terrainPNG) != null) {
+			load(ImageIO.read(zip.getInputStream(zip.getEntry(terrainPNG
+				.startsWith("/") ? terrainPNG.substring(1,
+				terrainPNG.length()) : terrainPNG))), textureID);
+		    } else {
+			load(ImageIO.read(TextureManager.class
+				.getResourceAsStream(terrainPNG)), textureID);
+		    }
+
+		    zip.close();
 		}
+
+		return textureID;
+	    } catch (IOException e) {
+		throw new RuntimeException("!!", e);
 	    }
-
-	    GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA,
-		    mipWidth, mipHeight, 0, GL11.GL_RGBA,
-		    GL11.GL_UNSIGNED_BYTE, mipData1);
-	    GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F * level); // Create
-							    // transparency for
-							    // each level.
-
-	    mipData = mipData1;
 	}
     }
 
-    private int b(int c1, int c2) {
-	int a1 = (c1 & 0xFF000000) >> 24 & 0xFF;
-	int a2 = (c2 & 0xFF000000) >> 24 & 0xFF;
+    public int loadTexturePack(String file) throws IOException {
+	int textureID = 0;
+	if (file.endsWith(".zip")) {
+	    ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/"
+		    + file));
 
-	int ax = (a1 + a2) / 2;
-	if (ax > 255) {
-	    ax = 255;
+	    String terrainPNG = "terrain.png";
+
+	    if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(
+		    1, terrainPNG.length()) : terrainPNG) != null) {
+		currentTerrainPng = ImageIO
+			.read(zip.getInputStream(zip.getEntry(terrainPNG
+				.startsWith("/") ? terrainPNG.substring(1,
+				terrainPNG.length()) : terrainPNG)));
+	    } else {
+		try {
+		    currentTerrainPng = ImageIO.read(TextureManager.class
+			    .getResourceAsStream(terrainPNG));
+		} catch (Exception e) {
+		    zip.close();
+		    return textureID;
+		}
+	    }
+
+	    zip.close();
+
 	}
-	if (a1 + a2 <= 0) {
-	    a1 = 1;
-	    a2 = 1;
-	    ax = 0;
-	}
 
-	int r1 = (c1 >> 16 & 0xFF) * a1;
-	int g1 = (c1 >> 8 & 0xFF) * a1;
-	int b1 = (c1 & 0xFF) * a1;
-
-	int r2 = (c2 >> 16 & 0xFF) * a2;
-	int g2 = (c2 >> 8 & 0xFF) * a2;
-	int b2 = (c2 & 0xFF) * a2;
-
-	int rx = (r1 + r2) / (a1 + a2);
-	int gx = (g1 + g2) / (a1 + a2);
-	int bx = (b1 + b2) / (a1 + a2);
-	return ax << 24 | rx << 16 | gx << 8 | bx;
+	return textureID;
     }
 
     public void registerAnimation(TextureFX FX) {

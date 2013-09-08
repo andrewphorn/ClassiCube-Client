@@ -8,23 +8,60 @@ import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.player.Player;
 
 public final class SurvivalGameMode extends GameMode {
-    public SurvivalGameMode(Minecraft minecraft) {
-	super(minecraft);
-    }
-
     private int hitX;
+
     private int hitY;
     private int hitZ;
     private int hits;
     private int hardness;
     private int hitDelay;
     private MobSpawner spawner;
+    public SurvivalGameMode(Minecraft minecraft) {
+	super(minecraft);
+    }
 
     @Override
     public void apply(Level level) {
 	super.apply(level);
 
 	spawner = new MobSpawner(level);
+    }
+
+    @Override
+    public void applyCracks(float time) {
+	if (hits <= 0) {
+	    minecraft.levelRenderer.cracks = 0.0F;
+	} else {
+	    minecraft.levelRenderer.cracks = ((float) hits + time - 1.0F)
+		    / (float) hardness;
+	}
+    }
+
+    @Override
+    public void breakBlock(int x, int y, int z) {
+	int block = minecraft.level.getTile(x, y, z);
+	Block.blocks[block].onBreak(minecraft.level, x, y, z);
+
+	super.breakBlock(x, y, z);
+    }
+
+    @Override
+    public boolean canPlace(int block) {
+	return minecraft.player.inventory.removeResource(block);
+    }
+
+    @Override
+    public float getReachDistance() {
+	return 4.0F;
+    }
+
+    @Override
+    public void hitBlock(int x, int y, int z) {
+	int block = this.minecraft.level.getTile(x, y, z);
+
+	if (block > 0 && Block.blocks[block].getHardness() == 0) {
+	    breakBlock(x, y, z);
+	}
     }
 
     @Override
@@ -64,25 +101,20 @@ public final class SurvivalGameMode extends GameMode {
     }
 
     @Override
-    public boolean canPlace(int block) {
-	return minecraft.player.inventory.removeResource(block);
+    public void prepareLevel(Level level) {
+	spawner = new MobSpawner(level);
+
+	minecraft.progressBar.setText("Spawning..");
+
+	int area = level.width * level.height * level.depth / 800;
+
+	spawner.spawn(area, null, minecraft.progressBar);
     }
 
     @Override
-    public void breakBlock(int x, int y, int z) {
-	int block = minecraft.level.getTile(x, y, z);
-	Block.blocks[block].onBreak(minecraft.level, x, y, z);
-
-	super.breakBlock(x, y, z);
-    }
-
-    @Override
-    public void hitBlock(int x, int y, int z) {
-	int block = this.minecraft.level.getTile(x, y, z);
-
-	if (block > 0 && Block.blocks[block].getHardness() == 0) {
-	    breakBlock(x, y, z);
-	}
+    public void preparePlayer(Player player) {
+	player.inventory.slots[8] = Block.TNT.id;
+	player.inventory.count[8] = 10;
     }
 
     @Override
@@ -92,18 +124,15 @@ public final class SurvivalGameMode extends GameMode {
     }
 
     @Override
-    public void applyCracks(float time) {
-	if (hits <= 0) {
-	    minecraft.levelRenderer.cracks = 0.0F;
-	} else {
-	    minecraft.levelRenderer.cracks = ((float) hits + time - 1.0F)
-		    / (float) hardness;
-	}
-    }
+    public void spawnMob() {
+	int area = spawner.level.width * spawner.level.height
+		* spawner.level.depth / 64 / 64 / 64;
 
-    @Override
-    public float getReachDistance() {
-	return 4.0F;
+	if (spawner.level.random.nextInt(100) < area
+		&& spawner.level.countInstanceOf(Mob.class) < area * 20) {
+	    spawner.spawn(area, spawner.level.player, null);
+	}
+
     }
 
     @Override
@@ -122,34 +151,5 @@ public final class SurvivalGameMode extends GameMode {
 	} else {
 	    return false;
 	}
-    }
-
-    @Override
-    public void preparePlayer(Player player) {
-	player.inventory.slots[8] = Block.TNT.id;
-	player.inventory.count[8] = 10;
-    }
-
-    @Override
-    public void spawnMob() {
-	int area = spawner.level.width * spawner.level.height
-		* spawner.level.depth / 64 / 64 / 64;
-
-	if (spawner.level.random.nextInt(100) < area
-		&& spawner.level.countInstanceOf(Mob.class) < area * 20) {
-	    spawner.spawn(area, spawner.level.player, null);
-	}
-
-    }
-
-    @Override
-    public void prepareLevel(Level level) {
-	spawner = new MobSpawner(level);
-
-	minecraft.progressBar.setText("Spawning..");
-
-	int area = level.width * level.height * level.depth / 800;
-
-	spawner.spawn(area, null, minecraft.progressBar);
     }
 }

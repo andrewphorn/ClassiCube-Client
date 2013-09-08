@@ -223,43 +223,24 @@ class AudioPacket {
 	return w;
     }
 
+    public float[][] getFreqencyDomain() {
+	return pcm;
+    }
+
+    protected int getLeftWindowEnd() {
+	return leftWindowEnd;
+    }
+
+    protected int getLeftWindowStart() {
+	return leftWindowStart;
+    }
+
     protected int getNumberOfSamples() {
 	return rightWindowStart - leftWindowStart;
     }
 
-    protected int getPcm(final AudioPacket previousPacket, final int[][] buffer) {
-	int channels = pcm.length;
-	int val;
-
-	// copy left window flank and mix with right window flank from
-	// the previous audio packet
-	for (int i = 0; i < channels; i++) {
-	    int j1 = 0, j2 = previousPacket.rightWindowStart;
-	    final int[] ppcm = previousPacket.pcmInt[i];
-	    final int[] tpcm = pcmInt[i];
-	    final int[] target = buffer[i];
-
-	    for (int j = leftWindowStart; j < leftWindowEnd; j++) {
-		val = ppcm[j2++] + tpcm[j];
-		if (val > 32767)
-		    val = 32767;
-		if (val < -32768)
-		    val = -32768;
-		target[j1++] = val;
-	    }
-	}
-
-	// use System.arraycopy to copy the middle part (if any)
-	// of the window
-	if (leftWindowEnd + 1 < rightWindowStart) {
-	    for (int i = 0; i < channels; i++) {
-		System.arraycopy(pcmInt[i], leftWindowEnd, buffer[i],
-			leftWindowEnd - leftWindowStart, rightWindowStart
-				- leftWindowEnd);
-	    }
-	}
-
-	return rightWindowStart - leftWindowStart;
+    public int[][] getPcm() {
+	return pcmInt;
     }
 
     protected void getPcm(final AudioPacket previousPacket, final byte[] buffer) {
@@ -297,31 +278,50 @@ class AudioPacket {
 	}
     }
 
-    protected float[] getWindow() {
-	return window;
-    }
+    protected int getPcm(final AudioPacket previousPacket, final int[][] buffer) {
+	int channels = pcm.length;
+	int val;
 
-    protected int getLeftWindowStart() {
-	return leftWindowStart;
-    }
+	// copy left window flank and mix with right window flank from
+	// the previous audio packet
+	for (int i = 0; i < channels; i++) {
+	    int j1 = 0, j2 = previousPacket.rightWindowStart;
+	    final int[] ppcm = previousPacket.pcmInt[i];
+	    final int[] tpcm = pcmInt[i];
+	    final int[] target = buffer[i];
 
-    protected int getLeftWindowEnd() {
-	return leftWindowEnd;
-    }
+	    for (int j = leftWindowStart; j < leftWindowEnd; j++) {
+		val = ppcm[j2++] + tpcm[j];
+		if (val > 32767)
+		    val = 32767;
+		if (val < -32768)
+		    val = -32768;
+		target[j1++] = val;
+	    }
+	}
 
-    protected int getRightWindowStart() {
-	return rightWindowStart;
+	// use System.arraycopy to copy the middle part (if any)
+	// of the window
+	if (leftWindowEnd + 1 < rightWindowStart) {
+	    for (int i = 0; i < channels; i++) {
+		System.arraycopy(pcmInt[i], leftWindowEnd, buffer[i],
+			leftWindowEnd - leftWindowStart, rightWindowStart
+				- leftWindowEnd);
+	    }
+	}
+
+	return rightWindowStart - leftWindowStart;
     }
 
     protected int getRightWindowEnd() {
 	return rightWindowEnd;
     }
 
-    public int[][] getPcm() {
-	return pcmInt;
+    protected int getRightWindowStart() {
+	return rightWindowStart;
     }
 
-    public float[][] getFreqencyDomain() {
-	return pcm;
+    protected float[] getWindow() {
+	return window;
     }
 }

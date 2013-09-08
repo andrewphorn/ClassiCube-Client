@@ -12,6 +12,31 @@ import org.lwjgl.opengl.GL11;
 import java.util.List;
 
 public class Arrow extends Entity {
+    public static final long serialVersionUID = 0L;
+
+    private float xd;
+
+    private float yd;
+
+    private float zd;
+
+    private float yRot;
+
+    private float xRot;
+
+    private float yRotO;
+    private float xRotO;
+    private boolean hasHit = false;
+
+    private int stickTime = 0;
+    private Entity owner;
+    private int time = 0;
+    private int type = 0;
+
+    private float gravity = 0.0F;
+
+    private int damage;
+
     public Arrow(Level level1, Entity owner, float x, float y, float z,
 	    float unknown0, float unknown1, float unknown2) {
 	super(level1);
@@ -59,6 +84,96 @@ public class Arrow extends Entity {
 	xRotO = xRot = (float) (Math.atan2((double) yd, (double) unknown3) * 180.0D / 3.1415927410125732D);
 
 	makeStepSound = false;
+    }
+
+    @Override
+    public void awardKillScore(Entity entity, int score) {
+	owner.awardKillScore(entity, score);
+    }
+    public Entity getOwner() {
+	return owner;
+    }
+
+    @Override
+    public void playerTouch(Entity entity) {
+	Player player = (Player) entity;
+
+	if (hasHit && owner == player && player.arrows < 99) {
+	    TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this,
+		    player);
+
+	    level.addEntity(takeEntityAnim);
+
+	    player.arrows++;
+
+	    remove();
+	}
+    }
+
+    @Override
+    public void render(TextureManager textureManager, float unknown0) {
+	textureId = textureManager.load("/item/arrows.png");
+
+	GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
+
+	float brightness = level.getBrightness((int) x, (int) y, (int) z);
+
+	GL11.glPushMatrix();
+	GL11.glColor4f(brightness, brightness, brightness, 1.0F);
+	GL11.glTranslatef(xo + (x - xo) * unknown0, this.yo
+		+ (this.y - this.yo) * unknown0 - this.heightOffset / 2.0F,
+		this.zo + (this.z - this.zo) * unknown0);
+	GL11.glRotatef(yRotO + (yRot - yRotO) * unknown0 - 90.0F, 0.0F, 1.0F,
+		0.0F);
+	GL11.glRotatef(xRotO + (xRot - xRotO) * unknown0, 0.0F, 0.0F, 1.0F);
+	GL11.glRotatef(45.0F, 1.0F, 0.0F, 0.0F);
+
+	ShapeRenderer shapeRenderer = ShapeRenderer.instance;
+
+	unknown0 = 0.5F;
+
+	float unknown1 = (float) (0 + type * 10) / 32.0F;
+	float unknown2 = (float) (5 + type * 10) / 32.0F;
+	float unknown3 = 0.15625F;
+
+	float unknown4 = (float) (5 + type * 10) / 32.0F;
+	float unknown5 = (float) (10 + type * 10) / 32.0F;
+	float unknown6 = 0.05625F;
+
+	GL11.glScalef(0.05625F, unknown6, unknown6);
+
+	GL11.glNormal3f(unknown6, 0.0F, 0.0F);
+
+	shapeRenderer.begin();
+	shapeRenderer.vertexUV(-7.0F, -2.0F, -2.0F, 0.0F, unknown4);
+	shapeRenderer.vertexUV(-7.0F, -2.0F, 2.0F, unknown3, unknown4);
+	shapeRenderer.vertexUV(-7.0F, 2.0F, 2.0F, unknown3, unknown5);
+	shapeRenderer.vertexUV(-7.0F, 2.0F, -2.0F, 0.0F, unknown5);
+	shapeRenderer.end();
+
+	GL11.glNormal3f(-unknown6, 0.0F, 0.0F);
+
+	shapeRenderer.begin();
+	shapeRenderer.vertexUV(-7.0F, 2.0F, -2.0F, 0.0F, unknown4);
+	shapeRenderer.vertexUV(-7.0F, 2.0F, 2.0F, unknown3, unknown4);
+	shapeRenderer.vertexUV(-7.0F, -2.0F, 2.0F, unknown3, unknown5);
+	shapeRenderer.vertexUV(-7.0F, -2.0F, -2.0F, 0.0F, unknown5);
+	shapeRenderer.end();
+
+	for (int unknown7 = 0; unknown7 < 4; unknown7++) {
+	    GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+
+	    GL11.glNormal3f(0.0F, -unknown6, 0.0F);
+
+	    shapeRenderer.vertexUV(-8.0F, -2.0F, 0.0F, 0.0F, unknown1);
+	    shapeRenderer.vertexUV(8.0F, -2.0F, 0.0F, unknown0, unknown1);
+	    shapeRenderer.vertexUV(8.0F, 2.0F, 0.0F, unknown0, unknown2);
+	    shapeRenderer.vertexUV(-8.0F, 2.0F, 0.0F, 0.0F, unknown2);
+	    shapeRenderer.end();
+	}
+
+	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	GL11.glPopMatrix();
     }
 
     @Override
@@ -162,120 +277,5 @@ public class Arrow extends Entity {
 		}
 	    }
 	}
-    }
-
-    @Override
-    public void render(TextureManager textureManager, float unknown0) {
-	textureId = textureManager.load("/item/arrows.png");
-
-	GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
-
-	float brightness = level.getBrightness((int) x, (int) y, (int) z);
-
-	GL11.glPushMatrix();
-	GL11.glColor4f(brightness, brightness, brightness, 1.0F);
-	GL11.glTranslatef(xo + (x - xo) * unknown0, this.yo
-		+ (this.y - this.yo) * unknown0 - this.heightOffset / 2.0F,
-		this.zo + (this.z - this.zo) * unknown0);
-	GL11.glRotatef(yRotO + (yRot - yRotO) * unknown0 - 90.0F, 0.0F, 1.0F,
-		0.0F);
-	GL11.glRotatef(xRotO + (xRot - xRotO) * unknown0, 0.0F, 0.0F, 1.0F);
-	GL11.glRotatef(45.0F, 1.0F, 0.0F, 0.0F);
-
-	ShapeRenderer shapeRenderer = ShapeRenderer.instance;
-
-	unknown0 = 0.5F;
-
-	float unknown1 = (float) (0 + type * 10) / 32.0F;
-	float unknown2 = (float) (5 + type * 10) / 32.0F;
-	float unknown3 = 0.15625F;
-
-	float unknown4 = (float) (5 + type * 10) / 32.0F;
-	float unknown5 = (float) (10 + type * 10) / 32.0F;
-	float unknown6 = 0.05625F;
-
-	GL11.glScalef(0.05625F, unknown6, unknown6);
-
-	GL11.glNormal3f(unknown6, 0.0F, 0.0F);
-
-	shapeRenderer.begin();
-	shapeRenderer.vertexUV(-7.0F, -2.0F, -2.0F, 0.0F, unknown4);
-	shapeRenderer.vertexUV(-7.0F, -2.0F, 2.0F, unknown3, unknown4);
-	shapeRenderer.vertexUV(-7.0F, 2.0F, 2.0F, unknown3, unknown5);
-	shapeRenderer.vertexUV(-7.0F, 2.0F, -2.0F, 0.0F, unknown5);
-	shapeRenderer.end();
-
-	GL11.glNormal3f(-unknown6, 0.0F, 0.0F);
-
-	shapeRenderer.begin();
-	shapeRenderer.vertexUV(-7.0F, 2.0F, -2.0F, 0.0F, unknown4);
-	shapeRenderer.vertexUV(-7.0F, 2.0F, 2.0F, unknown3, unknown4);
-	shapeRenderer.vertexUV(-7.0F, -2.0F, 2.0F, unknown3, unknown5);
-	shapeRenderer.vertexUV(-7.0F, -2.0F, -2.0F, 0.0F, unknown5);
-	shapeRenderer.end();
-
-	for (int unknown7 = 0; unknown7 < 4; unknown7++) {
-	    GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
-
-	    GL11.glNormal3f(0.0F, -unknown6, 0.0F);
-
-	    shapeRenderer.vertexUV(-8.0F, -2.0F, 0.0F, 0.0F, unknown1);
-	    shapeRenderer.vertexUV(8.0F, -2.0F, 0.0F, unknown0, unknown1);
-	    shapeRenderer.vertexUV(8.0F, 2.0F, 0.0F, unknown0, unknown2);
-	    shapeRenderer.vertexUV(-8.0F, 2.0F, 0.0F, 0.0F, unknown2);
-	    shapeRenderer.end();
-	}
-
-	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-	GL11.glPopMatrix();
-    }
-
-    @Override
-    public void playerTouch(Entity entity) {
-	Player player = (Player) entity;
-
-	if (hasHit && owner == player && player.arrows < 99) {
-	    TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this,
-		    player);
-
-	    level.addEntity(takeEntityAnim);
-
-	    player.arrows++;
-
-	    remove();
-	}
-    }
-
-    @Override
-    public void awardKillScore(Entity entity, int score) {
-	owner.awardKillScore(entity, score);
-    }
-
-    public static final long serialVersionUID = 0L;
-
-    private float xd;
-    private float yd;
-    private float zd;
-
-    private float yRot;
-    private float xRot;
-    private float yRotO;
-    private float xRotO;
-
-    private boolean hasHit = false;
-
-    private int stickTime = 0;
-
-    private Entity owner;
-
-    private int time = 0;
-    private int type = 0;
-
-    private float gravity = 0.0F;
-
-    private int damage;
-
-    public Entity getOwner() {
-	return owner;
     }
 }

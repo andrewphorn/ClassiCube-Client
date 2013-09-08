@@ -4,6 +4,8 @@ import com.mojang.minecraft.player.Player;
 import java.util.Comparator;
 
 public class ChunkDistanceComparator implements Comparator<Chunk> {
+    private Player player;
+
     public ChunkDistanceComparator(Player player) {
 	this.player = player;
     }
@@ -22,6 +24,4 @@ public class ChunkDistanceComparator implements Comparator<Chunk> {
 	    return 1;
 	}
     }
-
-    private Player player;
 }

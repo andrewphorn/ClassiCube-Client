@@ -37,8 +37,10 @@ final class LevelDialog extends Thread {
 	    if (var7 == 0) {
 		(this.screen).selectedFile = this.screen.chooser
 			.getSelectedFile();
-		(this.screen).selectedFile = new File((this.screen).selectedFile +".dat");
-		this.screen.minecraft.levelIo.save(this.screen.minecraft.level, (this.screen).selectedFile);
+		(this.screen).selectedFile = new File(
+			(this.screen).selectedFile + ".dat");
+		this.screen.minecraft.levelIo.save(this.screen.minecraft.level,
+			(this.screen).selectedFile);
 	    }
 	} finally {
 	    this.screen.frozen = false;

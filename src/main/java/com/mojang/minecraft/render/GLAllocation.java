@@ -16,10 +16,16 @@ public class GLAllocation {
     private static final Map<Integer, Integer> displayLists = new HashMap<Integer, Integer>();
     private static final List<?> textures = new ArrayList();
 
-    public static synchronized int generateDisplayLists(int par0) {
-	int var1 = GL11.glGenLists(par0);
-	displayLists.put(Integer.valueOf(var1), Integer.valueOf(par0));
-	return var1;
+    public static synchronized ByteBuffer createDirectByteBuffer(int par0) {
+	return ByteBuffer.allocateDirect(par0).order(ByteOrder.nativeOrder());
+    }
+
+    public static FloatBuffer createDirectFloatBuffer(int par0) {
+	return createDirectByteBuffer(par0 << 2).asFloatBuffer();
+    }
+
+    public static IntBuffer createDirectIntBuffer(int par0) {
+	return createDirectByteBuffer(par0 << 2).asIntBuffer();
     }
 
     public static synchronized void deleteDisplayLists(int par0) {
@@ -48,15 +54,9 @@ public class GLAllocation {
 	deleteTextures();
     }
 
-    public static synchronized ByteBuffer createDirectByteBuffer(int par0) {
-	return ByteBuffer.allocateDirect(par0).order(ByteOrder.nativeOrder());
-    }
-
-    public static IntBuffer createDirectIntBuffer(int par0) {
-	return createDirectByteBuffer(par0 << 2).asIntBuffer();
-    }
-
-    public static FloatBuffer createDirectFloatBuffer(int par0) {
-	return createDirectByteBuffer(par0 << 2).asFloatBuffer();
+    public static synchronized int generateDisplayLists(int par0) {
+	int var1 = GL11.glGenLists(par0);
+	displayLists.put(Integer.valueOf(var1), Integer.valueOf(par0));
+	return var1;
     }
 }

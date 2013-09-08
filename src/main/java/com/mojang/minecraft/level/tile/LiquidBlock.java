@@ -32,12 +32,117 @@ public class LiquidBlock extends Block {
 	this.setPhysics(true);
     }
 
+    private boolean canFlow(Level var1, int var2, int var3, int var4) {
+	if (this.type == LiquidType.WATER) {
+	    for (int var7 = var2 - 2; var7 <= var2 + 2; ++var7) {
+		for (int var5 = var3 - 2; var5 <= var3 + 2; ++var5) {
+		    for (int var6 = var4 - 2; var6 <= var4 + 2; ++var6) {
+			if (var1.getTile(var7, var5, var6) == Block.SPONGE.id) {
+			    return false;
+			}
+		    }
+		}
+	    }
+	}
+
+	return true;
+    }
+
+    public final boolean canRenderSide(Level level, int x, int y, int z,
+	    int side) {
+	int var6;
+	return x >= 0 && y >= 0 && z >= 0 && x < level.width
+		&& z < level.height ? ((var6 = level.getTile(x, y, z)) != this.movingId
+		&& var6 != this.stillId ? (side == 1
+		&& (level.getTile(x - 1, y, z) == 0
+			|| level.getTile(x + 1, y, z) == 0
+			|| level.getTile(x, y, z - 1) == 0 || level.getTile(x,
+			y, z + 1) == 0) ? true : super.canRenderSide(level, x,
+		y, z, side)) : false) : false;
+    }
+
+    public final void dropItems(Level var1, int var2, int var3, int var4,
+	    float var5) {
+    }
+
+    private boolean flow(Level var1, int var2, int var3, int var4) {
+	if (var1.getTile(var2, var3, var4) == 0) {
+	    if (!this.canFlow(var1, var2, var3, var4)) {
+		return false;
+	    }
+
+	    if (var1.setTile(var2, var3, var4, this.movingId)) {
+		var1.addToTickNextTick(var2, var3, var4, this.movingId);
+	    }
+	}
+
+	return false;
+    }
+
+    protected final ColorCache getBrightness(Level level, int x, int y, int z) {
+	return this.type == LiquidType.LAVA ? new ColorCache(255.0F / 255.0F,
+		255.0F / 255.0F, 255.0F / 255.0F) : level.getBrightnessColor(x,
+		y, z);
+    }
+
+    @Override
+    public AABB getCollisionBox(int x, int y, int z) {
+	return null;
+    }
+
+    public final int getDropCount() {
+	return 0;
+    }
+
+    public final LiquidType getLiquidType() {
+	return this.type;
+    }
+
+    public final int getRenderPass() {
+	return this.type == LiquidType.WATER ? 1 : 0;
+    }
+
+    public final int getTickDelay() {
+	return this.type == LiquidType.LAVA ? 5 : 0;
+    }
+
     public final boolean isCube() {
 	return false;
     }
 
+    public final boolean isOpaque() {
+	return true;
+    }
+
+    public final boolean isSolid() {
+	return false;
+    }
+
+    public final void onBreak(Level var1, int var2, int var3, int var4) {
+    }
+
+    public void onNeighborChange(Level var1, int var2, int var3, int var4,
+	    int var5) {
+	if (var5 != 0) {
+	    LiquidType var6 = Block.blocks[var5].getLiquidType();
+	    if (this.type == LiquidType.WATER && var6 == LiquidType.LAVA
+		    || var6 == LiquidType.WATER && this.type == LiquidType.LAVA) {
+		var1.setTile(var2, var3, var4, Block.STONE.id);
+		return;
+	    }
+	}
+
+	var1.addToTickNextTick(var2, var3, var4, var5);
+    }
+
     public final void onPlace(Level level, int x, int y, int z) {
 	level.addToTickNextTick(x, y, z, this.movingId);
+    }
+
+    public final void renderInside(ShapeRenderer shapeRenderer, int x, int y,
+	    int z, int side) {
+	super.renderInside(shapeRenderer, x, y, z, side);
+	super.renderSide(shapeRenderer, x, y, z, side);
     }
 
     public void update(Level level, int x, int y, int z, Random rand) {
@@ -69,110 +174,5 @@ public class LiquidBlock extends Block {
 	    level.addToTickNextTick(x, y, z, this.movingId);
 	}
 
-    }
-
-    private boolean canFlow(Level var1, int var2, int var3, int var4) {
-	if (this.type == LiquidType.WATER) {
-	    for (int var7 = var2 - 2; var7 <= var2 + 2; ++var7) {
-		for (int var5 = var3 - 2; var5 <= var3 + 2; ++var5) {
-		    for (int var6 = var4 - 2; var6 <= var4 + 2; ++var6) {
-			if (var1.getTile(var7, var5, var6) == Block.SPONGE.id) {
-			    return false;
-			}
-		    }
-		}
-	    }
-	}
-
-	return true;
-    }
-
-    private boolean flow(Level var1, int var2, int var3, int var4) {
-	if (var1.getTile(var2, var3, var4) == 0) {
-	    if (!this.canFlow(var1, var2, var3, var4)) {
-		return false;
-	    }
-
-	    if (var1.setTile(var2, var3, var4, this.movingId)) {
-		var1.addToTickNextTick(var2, var3, var4, this.movingId);
-	    }
-	}
-
-	return false;
-    }
-
-    protected final ColorCache getBrightness(Level level, int x, int y, int z) {
-	return this.type == LiquidType.LAVA ? new ColorCache(255.0F / 255.0F,
-		255.0F / 255.0F, 255.0F / 255.0F) : level.getBrightnessColor(x,
-		y, z);
-    }
-
-    public final boolean canRenderSide(Level level, int x, int y, int z,
-	    int side) {
-	int var6;
-	return x >= 0 && y >= 0 && z >= 0 && x < level.width
-		&& z < level.height ? ((var6 = level.getTile(x, y, z)) != this.movingId
-		&& var6 != this.stillId ? (side == 1
-		&& (level.getTile(x - 1, y, z) == 0
-			|| level.getTile(x + 1, y, z) == 0
-			|| level.getTile(x, y, z - 1) == 0 || level.getTile(x,
-			y, z + 1) == 0) ? true : super.canRenderSide(level, x,
-		y, z, side)) : false) : false;
-    }
-
-    public final void renderInside(ShapeRenderer shapeRenderer, int x, int y,
-	    int z, int side) {
-	super.renderInside(shapeRenderer, x, y, z, side);
-	super.renderSide(shapeRenderer, x, y, z, side);
-    }
-
-    public final boolean isOpaque() {
-	return true;
-    }
-
-    public final boolean isSolid() {
-	return false;
-    }
-
-    public final LiquidType getLiquidType() {
-	return this.type;
-    }
-
-    public void onNeighborChange(Level var1, int var2, int var3, int var4,
-	    int var5) {
-	if (var5 != 0) {
-	    LiquidType var6 = Block.blocks[var5].getLiquidType();
-	    if (this.type == LiquidType.WATER && var6 == LiquidType.LAVA
-		    || var6 == LiquidType.WATER && this.type == LiquidType.LAVA) {
-		var1.setTile(var2, var3, var4, Block.STONE.id);
-		return;
-	    }
-	}
-
-	var1.addToTickNextTick(var2, var3, var4, var5);
-    }
-
-    public final int getTickDelay() {
-	return this.type == LiquidType.LAVA ? 5 : 0;
-    }
-
-    public final void dropItems(Level var1, int var2, int var3, int var4,
-	    float var5) {
-    }
-
-    public final void onBreak(Level var1, int var2, int var3, int var4) {
-    }
-
-    public final int getDropCount() {
-	return 0;
-    }
-
-    public final int getRenderPass() {
-	return this.type == LiquidType.WATER ? 1 : 0;
-    }
-
-    @Override
-    public AABB getCollisionBox(int x, int y, int z) {
-	return null;
     }
 }

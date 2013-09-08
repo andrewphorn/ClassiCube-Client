@@ -11,8 +11,23 @@ import javax.imageio.ImageIO;
 import org.lwjgl.opengl.GL11;
 
 public final class FontRenderer {
+    public static String stripColor(String var0) {
+	char[] var3 = var0.toCharArray();
+	String var1 = "";
+
+	for (int var2 = 0; var2 < var3.length; ++var2) {
+	    if (var3[var2] == 38) {
+		++var2;
+	    } else {
+		var1 = var1 + var3[var2];
+	    }
+	}
+
+	return var1;
+    }
     private int fontId = 0;
     private GameSettings settings;
+
     private int[] font = new int[256];
 
     public FontRenderer(GameSettings settings, String fontImage,
@@ -61,13 +76,26 @@ public final class FontRenderer {
 	this.fontId = textures.load(fontImage);
     }
 
+    public int getWidth(String paramString) {
+	if (paramString == null) {
+	    return 0;
+	}
+	char[] arrayOfChar = paramString.toCharArray();
+	int i = 0;
+	for (int j = 0; j < arrayOfChar.length; j++) {
+	    int k = arrayOfChar[j];
+	    if (k == 38) {
+		j++;
+	    } else {
+		i += this.font[k];
+	    }
+	}
+	return (int) Math.floor(i);
+    }
+
     public final void render(String text, int x, int y, int color) {
 	this.render(text, x + 1, y + 1, color, true);
 	this.renderNoShadow(text, x, y, color);
-    }
-
-    public final void renderNoShadow(String text, int x, int y, int color) {
-	this.render(text, x, y, color, false);
     }
 
     private void render(String text, int x, int y, int color, boolean shadow) {
@@ -135,35 +163,7 @@ public final class FontRenderer {
 	}
     }
 
-    public int getWidth(String paramString) {
-	if (paramString == null) {
-	    return 0;
-	}
-	char[] arrayOfChar = paramString.toCharArray();
-	int i = 0;
-	for (int j = 0; j < arrayOfChar.length; j++) {
-	    int k = arrayOfChar[j];
-	    if (k == 38) {
-		j++;
-	    } else {
-		i += this.font[k];
-	    }
-	}
-	return (int) Math.floor(i);
-    }
-
-    public static String stripColor(String var0) {
-	char[] var3 = var0.toCharArray();
-	String var1 = "";
-
-	for (int var2 = 0; var2 < var3.length; ++var2) {
-	    if (var3[var2] == 38) {
-		++var2;
-	    } else {
-		var1 = var1 + var3[var2];
-	    }
-	}
-
-	return var1;
+    public final void renderNoShadow(String text, int x, int y, int color) {
+	this.render(text, x, y, color, false);
     }
 }

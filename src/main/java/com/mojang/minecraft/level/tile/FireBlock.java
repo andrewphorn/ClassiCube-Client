@@ -20,6 +20,27 @@ public final class FireBlock extends Block {
 	return new ColorCache(255.0F / 255.0F, 255.0F / 255.0F, 255.0F / 255.0F);
     }
 
+    @Override
+    public AABB getCollisionBox(int x, int y, int z) {
+	return null;
+    }
+
+    public final boolean isCube() {
+	return false;
+    }
+
+    public final boolean isSolid() {
+	return false;
+    }
+
+    public final boolean render(Level var1, int var2, int var3, int var4,
+	    ShapeRenderer var5) {
+	ColorCache var6 = getBrightness(var1, var2, var3, var4);
+	var5.color(var6.R, var6.G, var6.B);
+	this.render(var5, (float) var2, (float) var3, (float) var4);
+	return true;
+    }
+
     private void render(ShapeRenderer var1, float var2, float var3, float var4) {
 	int var15;
 	int var5 = (var15 = this.getTextureId(15)) % 16 << 4;
@@ -51,12 +72,9 @@ public final class FireBlock extends Block {
 
     }
 
-    public final boolean isCube() {
-	return false;
-    }
-
-    public final boolean isSolid() {
-	return false;
+    public final void renderFullbright(ShapeRenderer shapeRenderer) {
+	shapeRenderer.color(1.0F, 1.0F, 1.0F);
+	this.render(shapeRenderer, (float) -2, 0.0F, 0.0F);
     }
 
     public final void renderPreview(ShapeRenderer var1) {
@@ -64,24 +82,6 @@ public final class FireBlock extends Block {
 	var1.begin();
 	this.render(var1, 0.0F, 0.4F, -0.3F);
 	var1.end();
-    }
-
-    public final boolean render(Level var1, int var2, int var3, int var4,
-	    ShapeRenderer var5) {
-	ColorCache var6 = getBrightness(var1, var2, var3, var4);
-	var5.color(var6.R, var6.G, var6.B);
-	this.render(var5, (float) var2, (float) var3, (float) var4);
-	return true;
-    }
-
-    public final void renderFullbright(ShapeRenderer shapeRenderer) {
-	shapeRenderer.color(1.0F, 1.0F, 1.0F);
-	this.render(shapeRenderer, (float) -2, 0.0F, 0.0F);
-    }
-
-    @Override
-    public AABB getCollisionBox(int x, int y, int z) {
-	return null;
     }
 
 }

@@ -24,6 +24,73 @@ public final class ModelPart {
 	this.v = var2;
     }
 
+    public void generateList(float var1) {
+	this.list = GL11.glGenLists(1);
+	GL11.glNewList(this.list, 4864);
+	GL11.glBegin(7);
+
+	for (int var2 = 0; var2 < this.quads.length; ++var2) {
+	    TexturedQuad var10000 = this.quads[var2];
+	    float var3 = var1;
+	    TexturedQuad var4 = var10000;
+	    Vec3D var5 = var10000.vertices[1].vector.subtract(
+		    var4.vertices[0].vector).normalize();
+	    Vec3D var6 = var4.vertices[1].vector.subtract(
+		    var4.vertices[2].vector).normalize();
+	    GL11.glNormal3f((var5 = (new Vec3D(var5.y * var6.z - var5.z
+		    * var6.y, var5.z * var6.x - var5.x * var6.z, var5.x
+		    * var6.y - var5.y * var6.x)).normalize()).x, var5.y, var5.z);
+
+	    for (int var7 = 0; var7 < 4; ++var7) {
+		Vertex var8;
+		GL11.glTexCoord2f((var8 = var4.vertices[var7]).u, var8.v);
+		GL11.glVertex3f(var8.vector.x * var3, var8.vector.y * var3,
+			var8.vector.z * var3);
+	    }
+	}
+
+	GL11.glEnd();
+	GL11.glEndList();
+	this.hasList = true;
+    }
+
+    public final void render(float var1) {
+	if (this.render) {
+	    if (!this.hasList) {
+		this.generateList(var1);
+	    }
+
+	    if (this.pitch == 0.0F && this.yaw == 0.0F && this.roll == 0.0F) {
+		if (this.x == 0.0F && this.y == 0.0F && this.z == 0.0F) {
+		    GL11.glCallList(this.list);
+		} else {
+		    GL11.glTranslatef(this.x * var1, this.y * var1, this.z
+			    * var1);
+		    GL11.glCallList(this.list);
+		    GL11.glTranslatef(-this.x * var1, -this.y * var1, -this.z
+			    * var1);
+		}
+	    } else {
+		GL11.glPushMatrix();
+		GL11.glTranslatef(this.x * var1, this.y * var1, this.z * var1);
+		if (this.roll != 0.0F) {
+		    GL11.glRotatef(this.roll * 57.295776F, 0.0F, 0.0F, 1.0F);
+		}
+
+		if (this.yaw != 0.0F) {
+		    GL11.glRotatef(this.yaw * 57.295776F, 0.0F, 1.0F, 0.0F);
+		}
+
+		if (this.pitch != 0.0F) {
+		    GL11.glRotatef(this.pitch * 57.295776F, 1.0F, 0.0F, 0.0F);
+		}
+
+		GL11.glCallList(this.list);
+		GL11.glPopMatrix();
+	    }
+	}
+    }
+
     public final void setBounds(float var1, float var2, float var3, int var4,
 	    int var5, int var6, float var7) {
 	this.vertices = new Vertex[8];
@@ -97,72 +164,5 @@ public final class ModelPart {
 	this.x = var1;
 	this.y = var2;
 	this.z = var3;
-    }
-
-    public final void render(float var1) {
-	if (this.render) {
-	    if (!this.hasList) {
-		this.generateList(var1);
-	    }
-
-	    if (this.pitch == 0.0F && this.yaw == 0.0F && this.roll == 0.0F) {
-		if (this.x == 0.0F && this.y == 0.0F && this.z == 0.0F) {
-		    GL11.glCallList(this.list);
-		} else {
-		    GL11.glTranslatef(this.x * var1, this.y * var1, this.z
-			    * var1);
-		    GL11.glCallList(this.list);
-		    GL11.glTranslatef(-this.x * var1, -this.y * var1, -this.z
-			    * var1);
-		}
-	    } else {
-		GL11.glPushMatrix();
-		GL11.glTranslatef(this.x * var1, this.y * var1, this.z * var1);
-		if (this.roll != 0.0F) {
-		    GL11.glRotatef(this.roll * 57.295776F, 0.0F, 0.0F, 1.0F);
-		}
-
-		if (this.yaw != 0.0F) {
-		    GL11.glRotatef(this.yaw * 57.295776F, 0.0F, 1.0F, 0.0F);
-		}
-
-		if (this.pitch != 0.0F) {
-		    GL11.glRotatef(this.pitch * 57.295776F, 1.0F, 0.0F, 0.0F);
-		}
-
-		GL11.glCallList(this.list);
-		GL11.glPopMatrix();
-	    }
-	}
-    }
-
-    public void generateList(float var1) {
-	this.list = GL11.glGenLists(1);
-	GL11.glNewList(this.list, 4864);
-	GL11.glBegin(7);
-
-	for (int var2 = 0; var2 < this.quads.length; ++var2) {
-	    TexturedQuad var10000 = this.quads[var2];
-	    float var3 = var1;
-	    TexturedQuad var4 = var10000;
-	    Vec3D var5 = var10000.vertices[1].vector.subtract(
-		    var4.vertices[0].vector).normalize();
-	    Vec3D var6 = var4.vertices[1].vector.subtract(
-		    var4.vertices[2].vector).normalize();
-	    GL11.glNormal3f((var5 = (new Vec3D(var5.y * var6.z - var5.z
-		    * var6.y, var5.z * var6.x - var5.x * var6.z, var5.x
-		    * var6.y - var5.y * var6.x)).normalize()).x, var5.y, var5.z);
-
-	    for (int var7 = 0; var7 < 4; ++var7) {
-		Vertex var8;
-		GL11.glTexCoord2f((var8 = var4.vertices[var7]).u, var8.v);
-		GL11.glVertex3f(var8.vector.x * var3, var8.vector.y * var3,
-			var8.vector.z * var3);
-	    }
-	}
-
-	GL11.glEnd();
-	GL11.glEndList();
-	this.hasList = true;
     }
 }

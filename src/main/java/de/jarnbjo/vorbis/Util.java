@@ -28,13 +28,6 @@ package de.jarnbjo.vorbis;
 
 final public class Util {
 
-    public static final int ilog(int x) {
-	int res = 0;
-	for (; x > 0; x >>= 1, res++)
-	    ;
-	return res;
-    }
-
     public static final float float32unpack(int x) {
 	float mantissa = x & 0x1fffff;
 	float e = (x & 0x7fe00000) >> 21;
@@ -42,42 +35,6 @@ final public class Util {
 	    mantissa = -mantissa;
 	}
 	return mantissa * (float) Math.pow(2.0, e - 788.0);
-    }
-
-    public static final int lookup1Values(int a, int b) {
-	int res = (int) Math.pow(Math.E, Math.log(a) / b);
-	return intPow(res + 1, b) <= a ? res + 1 : res;
-    }
-
-    public static final int intPow(int base, int e) {
-	int res = 1;
-	for (; e > 0; e--, res *= base)
-	    ;
-	return res;
-    }
-
-    public static final boolean isBitSet(int value, int bit) {
-	return (value & (1 << bit)) != 0;
-    }
-
-    public static final int icount(int value) {
-	int res = 0;
-	while (value > 0) {
-	    res += value & 1;
-	    value >>= 1;
-	}
-	return res;
-    }
-
-    public static final int lowNeighbour(int[] v, int x) {
-	int max = -1, n = 0;
-	for (int i = 0; i < v.length && i < x; i++) {
-	    if (v[i] > max && v[i] < v[x]) {
-		max = v[i];
-		n = i;
-	    }
-	}
-	return n;
     }
 
     public static final int highNeighbour(int[] v, int x) {
@@ -91,11 +48,47 @@ final public class Util {
 	return n;
     }
 
-    public static final int renderPoint(int x0, int x1, int y0, int y1, int x) {
-	int dy = y1 - y0;
-	int ady = dy < 0 ? -dy : dy;
-	int off = (ady * (x - x0)) / (x1 - x0);
-	return dy < 0 ? y0 - off : y0 + off;
+    public static final int icount(int value) {
+	int res = 0;
+	while (value > 0) {
+	    res += value & 1;
+	    value >>= 1;
+	}
+	return res;
+    }
+
+    public static final int ilog(int x) {
+	int res = 0;
+	for (; x > 0; x >>= 1, res++)
+	    ;
+	return res;
+    }
+
+    public static final int intPow(int base, int e) {
+	int res = 1;
+	for (; e > 0; e--, res *= base)
+	    ;
+	return res;
+    }
+
+    public static final boolean isBitSet(int value, int bit) {
+	return (value & (1 << bit)) != 0;
+    }
+
+    public static final int lookup1Values(int a, int b) {
+	int res = (int) Math.pow(Math.E, Math.log(a) / b);
+	return intPow(res + 1, b) <= a ? res + 1 : res;
+    }
+
+    public static final int lowNeighbour(int[] v, int x) {
+	int max = -1, n = 0;
+	for (int i = 0; i < v.length && i < x; i++) {
+	    if (v[i] > max && v[i] < v[x]) {
+		max = v[i];
+		n = i;
+	    }
+	}
+	return n;
     }
 
     public static final void renderLine(final int x0, final int y0,
@@ -120,5 +113,12 @@ final public class Util {
 		v[x] *= Floor.DB_STATIC_TABLE[y += base];
 	    }
 	}
+    }
+
+    public static final int renderPoint(int x0, int x1, int y0, int y1, int x) {
+	int dy = y1 - y0;
+	int ady = dy < 0 ? -dy : dy;
+	int off = (ady * (x - x0)) / (x1 - x0);
+	return dy < 0 ? y0 - off : y0 + off;
     }
 }

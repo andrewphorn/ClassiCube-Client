@@ -23,6 +23,24 @@ public class Inventory implements Serializable {
 
     }
 
+    public boolean addResource(int var1) {
+	int var2;
+	if ((var2 = this.getSlot(var1)) < 0) {
+	    var2 = this.getSlot(-1);
+	}
+
+	if (var2 < 0) {
+	    return false;
+	} else if (this.count[var2] >= 99) {
+	    return false;
+	} else {
+	    this.slots[var2] = var1;
+	    ++this.count[var2];
+	    this.popTime[var2] = 5;
+	    return true;
+	}
+    }
+
     public int getSelected() {
 	return this.slots[this.selected];
     }
@@ -54,6 +72,36 @@ public class Inventory implements Serializable {
 	}
     }
 
+    public boolean removeResource(int var1) {
+	if ((var1 = this.getSlot(var1)) < 0) {
+	    return false;
+	} else {
+	    if (--this.count[var1] <= 0) {
+		this.slots[var1] = -1;
+	    }
+
+	    return true;
+	}
+    }
+
+    public void replaceSlot(Block var1) {
+	if (GameSettings.CanReplaceSlot && var1 != null) {
+	    int var2;
+	    if ((var2 = this.getSlot(var1.id)) >= 0) {
+		this.slots[var2] = this.slots[this.selected];
+	    }
+
+	    this.slots[this.selected] = var1.id;
+	}
+    }
+
+    public void replaceSlot(int var1) {
+	if (GameSettings.CanReplaceSlot && var1 >= 0) {
+	    this.replaceSlot((Block) SessionData.allowedBlocks.get(var1));
+	}
+
+    }
+
     public void swapPaint(int var1) {
 	if (GameSettings.CanReplaceSlot) {
 	    if (var1 > 0) {
@@ -75,42 +123,6 @@ public class Inventory implements Serializable {
 
     }
 
-    public void replaceSlot(int var1) {
-	if (GameSettings.CanReplaceSlot && var1 >= 0) {
-	    this.replaceSlot((Block) SessionData.allowedBlocks.get(var1));
-	}
-
-    }
-
-    public void replaceSlot(Block var1) {
-	if (GameSettings.CanReplaceSlot && var1 != null) {
-	    int var2;
-	    if ((var2 = this.getSlot(var1.id)) >= 0) {
-		this.slots[var2] = this.slots[this.selected];
-	    }
-
-	    this.slots[this.selected] = var1.id;
-	}
-    }
-
-    public boolean addResource(int var1) {
-	int var2;
-	if ((var2 = this.getSlot(var1)) < 0) {
-	    var2 = this.getSlot(-1);
-	}
-
-	if (var2 < 0) {
-	    return false;
-	} else if (this.count[var2] >= 99) {
-	    return false;
-	} else {
-	    this.slots[var2] = var1;
-	    ++this.count[var2];
-	    this.popTime[var2] = 5;
-	    return true;
-	}
-    }
-
     public void tick() {
 	for (int var1 = 0; var1 < this.popTime.length; ++var1) {
 	    if (this.popTime[var1] > 0) {
@@ -118,17 +130,5 @@ public class Inventory implements Serializable {
 	    }
 	}
 
-    }
-
-    public boolean removeResource(int var1) {
-	if ((var1 = this.getSlot(var1)) < 0) {
-	    return false;
-	} else {
-	    if (--this.count[var1] <= 0) {
-		this.slots[var1] = -1;
-	    }
-
-	    return true;
-	}
     }
 }

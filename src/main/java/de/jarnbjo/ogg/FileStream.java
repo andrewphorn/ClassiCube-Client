@@ -106,17 +106,17 @@ public class FileStream implements PhysicalOggStream {
 	}
     }
 
-    public Collection<LogicalOggStreamImpl> getLogicalStreams() {
-	return logicalStreams.values();
-    }
-
-    public boolean isOpen() {
-	return !closed;
-    }
-
     public void close() throws IOException {
 	closed = true;
 	source.close();
+    }
+
+    private LogicalOggStream getLogicalStream(int serialNumber) {
+	return (LogicalOggStream) logicalStreams.get(new Integer(serialNumber));
+    }
+
+    public Collection<LogicalOggStreamImpl> getLogicalStreams() {
+	return logicalStreams.values();
     }
 
     private OggPage getNextPage(boolean skipData)
@@ -129,16 +129,8 @@ public class FileStream implements PhysicalOggStream {
 	return OggPage.create(source);
     }
 
-    private LogicalOggStream getLogicalStream(int serialNumber) {
-	return (LogicalOggStream) logicalStreams.get(new Integer(serialNumber));
-    }
-
-    public void setTime(long granulePosition) throws IOException {
-	for (Iterator<LogicalOggStreamImpl> iter = logicalStreams.values()
-		.iterator(); iter.hasNext();) {
-	    LogicalOggStream los = (LogicalOggStream) iter.next();
-	    los.setTime(granulePosition);
-	}
+    public boolean isOpen() {
+	return !closed;
     }
 
     /**
@@ -147,5 +139,13 @@ public class FileStream implements PhysicalOggStream {
 
     public boolean isSeekable() {
 	return true;
+    }
+
+    public void setTime(long granulePosition) throws IOException {
+	for (Iterator<LogicalOggStreamImpl> iter = logicalStreams.values()
+		.iterator(); iter.hasNext();) {
+	    LogicalOggStream los = (LogicalOggStream) iter.next();
+	    los.setTime(granulePosition);
+	}
     }
 }

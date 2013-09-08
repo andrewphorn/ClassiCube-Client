@@ -33,128 +33,6 @@ import de.jarnbjo.util.io.*;
 
 abstract class Residue {
 
-    protected int begin, end;
-    protected int partitionSize; // grouping
-    protected int classifications; // partitions
-    protected int classBook; // groupbook
-    protected int[] cascade; // secondstages
-    protected int[][] books;
-    protected HashMap<Mode, Look> looks = new HashMap<Mode, Look>();
-
-    protected Residue() {
-    }
-
-    protected Residue(BitInputStream source, SetupHeader header)
-	    throws VorbisFormatException, IOException {
-	begin = source.getInt(24);
-	end = source.getInt(24);
-	partitionSize = source.getInt(24) + 1;
-	classifications = source.getInt(6) + 1;
-	classBook = source.getInt(8);
-
-	cascade = new int[classifications];
-
-	for (int i = 0; i < classifications; i++) {
-	    int highBits = 0, lowBits = 0;
-	    lowBits = source.getInt(3);
-	    if (source.getBit()) {
-		highBits = source.getInt(5);
-	    }
-	    cascade[i] = (highBits << 3) | lowBits;
-	}
-
-	books = new int[classifications][8];
-
-	for (int i = 0; i < classifications; i++) {
-	    for (int j = 0; j < 8; j++) {
-		if ((cascade[i] & (1 << j)) != 0) {
-		    books[i][j] = source.getInt(8);
-		    if (books[i][j] > header.getCodeBooks().length) {
-			throw new VorbisFormatException(
-				"Reference to invalid codebook entry in residue header.");
-		    }
-		}
-	    }
-	}
-    }
-
-    protected static Residue createInstance(BitInputStream source,
-	    SetupHeader header) throws VorbisFormatException, IOException {
-
-	int type = source.getInt(16);
-	switch (type) {
-	case 0:
-	    // System.out.println("residue type 0");
-	    return new Residue0(source, header);
-	case 1:
-	    // System.out.println("residue type 1");
-	    return new Residue2(source, header);
-	case 2:
-	    // System.out.println("residue type 2");
-	    return new Residue2(source, header);
-	default:
-	    throw new VorbisFormatException("Residue type " + type
-		    + " is not supported.");
-	}
-    }
-
-    protected abstract int getType();
-
-    protected abstract void decodeResidue(VorbisStream vorbis,
-	    BitInputStream source, Mode mode, int ch,
-	    boolean[] doNotDecodeFlags, float[][] vectors)
-	    throws VorbisFormatException, IOException;
-
-    // public abstract double[][] getDecodedVectors();
-
-    protected int getBegin() {
-	return begin;
-    }
-
-    protected int getEnd() {
-	return end;
-    }
-
-    protected int getPartitionSize() {
-	return partitionSize;
-    }
-
-    protected int getClassifications() {
-	return classifications;
-    }
-
-    protected int getClassBook() {
-	return classBook;
-    }
-
-    protected int[] getCascade() {
-	return cascade;
-    }
-
-    protected int[][] getBooks() {
-	return books;
-    }
-
-    protected final void fill(Residue clone) {
-	clone.begin = begin;
-	clone.books = books;
-	clone.cascade = cascade;
-	clone.classBook = classBook;
-	clone.classifications = classifications;
-	clone.end = end;
-	clone.partitionSize = partitionSize;
-    }
-
-    protected Look getLook(VorbisStream source, Mode key) {
-	// return new Look(source, key);
-	Look look = (Look) looks.get(key);
-	if (look == null) {
-	    look = new Look(source, key);
-	    looks.put(key, look);
-	}
-	return look;
-    }
-
     class Look {
 	int map;
 	int parts;
@@ -253,5 +131,127 @@ abstract class Residue {
 	    return stages;
 	}
     }
+    protected static Residue createInstance(BitInputStream source,
+	    SetupHeader header) throws VorbisFormatException, IOException {
+
+	int type = source.getInt(16);
+	switch (type) {
+	case 0:
+	    // System.out.println("residue type 0");
+	    return new Residue0(source, header);
+	case 1:
+	    // System.out.println("residue type 1");
+	    return new Residue2(source, header);
+	case 2:
+	    // System.out.println("residue type 2");
+	    return new Residue2(source, header);
+	default:
+	    throw new VorbisFormatException("Residue type " + type
+		    + " is not supported.");
+	}
+    }
+    protected int begin, end;
+    protected int partitionSize; // grouping
+    protected int classifications; // partitions
+    protected int classBook; // groupbook
+    protected int[] cascade; // secondstages
+
+    protected int[][] books;
+
+    protected HashMap<Mode, Look> looks = new HashMap<Mode, Look>();
+
+    protected Residue() {
+    }
+
+    protected Residue(BitInputStream source, SetupHeader header)
+	    throws VorbisFormatException, IOException {
+	begin = source.getInt(24);
+	end = source.getInt(24);
+	partitionSize = source.getInt(24) + 1;
+	classifications = source.getInt(6) + 1;
+	classBook = source.getInt(8);
+
+	cascade = new int[classifications];
+
+	for (int i = 0; i < classifications; i++) {
+	    int highBits = 0, lowBits = 0;
+	    lowBits = source.getInt(3);
+	    if (source.getBit()) {
+		highBits = source.getInt(5);
+	    }
+	    cascade[i] = (highBits << 3) | lowBits;
+	}
+
+	books = new int[classifications][8];
+
+	for (int i = 0; i < classifications; i++) {
+	    for (int j = 0; j < 8; j++) {
+		if ((cascade[i] & (1 << j)) != 0) {
+		    books[i][j] = source.getInt(8);
+		    if (books[i][j] > header.getCodeBooks().length) {
+			throw new VorbisFormatException(
+				"Reference to invalid codebook entry in residue header.");
+		    }
+		}
+	    }
+	}
+    }
+
+    protected abstract void decodeResidue(VorbisStream vorbis,
+	    BitInputStream source, Mode mode, int ch,
+	    boolean[] doNotDecodeFlags, float[][] vectors)
+	    throws VorbisFormatException, IOException;
+
+    // public abstract double[][] getDecodedVectors();
+
+    protected final void fill(Residue clone) {
+	clone.begin = begin;
+	clone.books = books;
+	clone.cascade = cascade;
+	clone.classBook = classBook;
+	clone.classifications = classifications;
+	clone.end = end;
+	clone.partitionSize = partitionSize;
+    }
+
+    protected int getBegin() {
+	return begin;
+    }
+
+    protected int[][] getBooks() {
+	return books;
+    }
+
+    protected int[] getCascade() {
+	return cascade;
+    }
+
+    protected int getClassBook() {
+	return classBook;
+    }
+
+    protected int getClassifications() {
+	return classifications;
+    }
+
+    protected int getEnd() {
+	return end;
+    }
+
+    protected Look getLook(VorbisStream source, Mode key) {
+	// return new Look(source, key);
+	Look look = (Look) looks.get(key);
+	if (look == null) {
+	    look = new Look(source, key);
+	    looks.put(key, look);
+	}
+	return look;
+    }
+
+    protected int getPartitionSize() {
+	return partitionSize;
+    }
+
+    protected abstract int getType();
 
 }

@@ -23,57 +23,6 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
 	this.parent = var1;
     }
 
-    public void run() {
-	try {
-	    if (this.frozen) {
-		try {
-		    Thread.sleep(100L);
-		} catch (InterruptedException var2) {
-		    var2.printStackTrace();
-		}
-	    }
-	    this.levels = new String[]{""};
-	    if (this.levels.length >= 5) {
-		this.setLevels(this.levels);
-		this.loaded = true;
-		return;
-	    }
-
-	    this.status = this.levels[0];
-	    this.finished = true;
-	} catch (Exception var3) {
-	    var3.printStackTrace();
-	    this.status = "Failed to load levels";
-	    //this.finished = true;
-	}
-
-    }
-
-    protected void setLevels(String[] var1) {
-	for (int var2 = 0; var2 < 5; ++var2) {
-	    ((Button) this.buttons.get(var2)).active = !var1[var2].equals("-");
-	    ((Button) this.buttons.get(var2)).text = var1[var2];
-	    ((Button) this.buttons.get(var2)).visible = true;
-	}
-
-    }
-
-    public void onOpen() {
-	(new Thread(this)).start();
-
-	for (int var1 = 0; var1 < 5; ++var1) {
-	    this.buttons.add(new Button(var1, this.width / 2 - 100, this.height
-		    / 6 + var1 * 24, "---"));
-	    ((Button) this.buttons.get(var1)).visible = false;
-	    ((Button) this.buttons.get(var1)).active = false;
-	}
-
-	this.buttons.add(new Button(5, this.width / 2 - 100,
-		this.height / 6 + 120 + 12, "Load file..."));
-	this.buttons.add(new Button(6, this.width / 2 - 100,
-		this.height / 6 + 168, "Cancel"));
-    }
-
     protected final void onButtonClick(Button var1) {
 	if (!this.frozen) {
 	    if (var1.active) {
@@ -93,6 +42,30 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
 		}
 	    }
 	}
+    }
+
+    public final void onClose() {
+	super.onClose();
+	if (this.chooser != null) {
+	    this.chooser.cancelSelection();
+	}
+
+    }
+
+    public void onOpen() {
+	(new Thread(this)).start();
+
+	for (int var1 = 0; var1 < 5; ++var1) {
+	    this.buttons.add(new Button(var1, this.width / 2 - 100, this.height
+		    / 6 + var1 * 24, "---"));
+	    ((Button) this.buttons.get(var1)).visible = false;
+	    ((Button) this.buttons.get(var1)).active = false;
+	}
+
+	this.buttons.add(new Button(5, this.width / 2 - 100,
+		this.height / 6 + 120 + 12, "Load file..."));
+	this.buttons.add(new Button(6, this.width / 2 - 100,
+		this.height / 6 + 168, "Cancel"));
     }
 
     protected void openLevel(File var1) {
@@ -136,10 +109,37 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
 	}
     }
 
-    public final void onClose() {
-	super.onClose();
-	if (this.chooser != null) {
-	    this.chooser.cancelSelection();
+    public void run() {
+	try {
+	    if (this.frozen) {
+		try {
+		    Thread.sleep(100L);
+		} catch (InterruptedException var2) {
+		    var2.printStackTrace();
+		}
+	    }
+	    this.levels = new String[] { "" };
+	    if (this.levels.length >= 5) {
+		this.setLevels(this.levels);
+		this.loaded = true;
+		return;
+	    }
+
+	    this.status = this.levels[0];
+	    this.finished = true;
+	} catch (Exception var3) {
+	    var3.printStackTrace();
+	    this.status = "Failed to load levels";
+	    // this.finished = true;
+	}
+
+    }
+
+    protected void setLevels(String[] var1) {
+	for (int var2 = 0; var2 < 5; ++var2) {
+	    ((Button) this.buttons.get(var2)).active = !var1[var2].equals("-");
+	    ((Button) this.buttons.get(var2)).text = var1[var2];
+	    ((Button) this.buttons.get(var2)).visible = true;
 	}
 
     }

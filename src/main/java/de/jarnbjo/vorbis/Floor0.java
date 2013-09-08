@@ -46,8 +46,9 @@ class Floor0 extends Floor {
 	}
     }
 
-    protected int getType() {
-	return 0;
+    protected void computeFloor(float[] vector) {
+	/** @todo implement */
+	throw new UnsupportedOperationException();
     }
 
     protected Floor decodeFloor(VorbisStream vorbis, BitInputStream source)
@@ -56,9 +57,8 @@ class Floor0 extends Floor {
 	throw new UnsupportedOperationException();
     }
 
-    protected void computeFloor(float[] vector) {
-	/** @todo implement */
-	throw new UnsupportedOperationException();
+    protected int getType() {
+	return 0;
     }
 
 }

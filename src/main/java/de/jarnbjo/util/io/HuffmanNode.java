@@ -57,14 +57,6 @@ final public class HuffmanNode {
 	full = true;
     }
 
-    protected int read(BitInputStream bis) throws IOException {
-	HuffmanNode iter = this;
-	while (iter.value == null) {
-	    iter = bis.getBit() ? iter.o1 : iter.o0;
-	}
-	return iter.value.intValue();
-    }
-
     protected HuffmanNode get0() {
 	return o0 == null ? set0(new HuffmanNode(this)) : o0;
     }
@@ -73,17 +65,25 @@ final public class HuffmanNode {
 	return o1 == null ? set1(new HuffmanNode(this)) : o1;
     }
 
-    protected Integer getValue() {
-	return value;
-    }
-
     protected int getDepth() {
 	return depth;
+    }
+
+    protected Integer getValue() {
+	return value;
     }
 
     private boolean isFull() {
 	return full ? true : (full = o0 != null && o0.isFull() && o1 != null
 		&& o1.isFull());
+    }
+
+    protected int read(BitInputStream bis) throws IOException {
+	HuffmanNode iter = this;
+	while (iter.value == null) {
+	    iter = bis.getBit() ? iter.o1 : iter.o0;
+	}
+	return iter.value.intValue();
     }
 
     private HuffmanNode set0(HuffmanNode value) {

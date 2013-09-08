@@ -13,6 +13,10 @@ final class Skeleton$1 extends BasicAttackAI {
 	this.parent = var1;
     }
 
+    public final void beforeRemove() {
+	Skeleton.shootRandomArrow(this.parent);
+    }
+
     public final void tick(Level var1, Mob var2) {
 	super.tick(var1, var2);
 	if (var2.health > 0 && this.random.nextInt(30) == 0
@@ -20,9 +24,5 @@ final class Skeleton$1 extends BasicAttackAI {
 	    this.parent.shootArrow(var1);
 	}
 
-    }
-
-    public final void beforeRemove() {
-	Skeleton.shootRandomArrow(this.parent);
     }
 }

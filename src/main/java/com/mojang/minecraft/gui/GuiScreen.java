@@ -17,6 +17,76 @@ public class GuiScreen extends Screen {
     public boolean grabsMouse = false;
     protected FontRenderer fontRenderer;
 
+    public final void doInput() {
+	while (Mouse.next()) {
+	    this.mouseEvent();
+	}
+
+	while (Keyboard.next()) {
+	    this.keyboardEvent();
+	}
+
+    }
+
+    public final void keyboardEvent() {
+	if (Keyboard.getEventKeyState()) {
+	    this.onKeyPress(Keyboard.getEventCharacter(),
+		    Keyboard.getEventKey());
+	}
+
+    }
+
+    public final void mouseEvent() {
+	if (Mouse.getEventButtonState()) {
+	    int var1 = Mouse.getEventX() * this.width / this.minecraft.width;
+	    int var2 = this.height - Mouse.getEventY() * this.height
+		    / this.minecraft.height - 1;
+	    this.onMouseClick(var1, var2, Mouse.getEventButton());
+	}
+
+    }
+
+    protected void onButtonClick(Button var1) {
+    }
+
+    public void onClose() {
+    }
+
+    protected void onKeyPress(char var1, int var2) {
+	if (var2 == 1) {
+	    this.minecraft.setCurrentScreen((GuiScreen) null);
+	    this.minecraft.grabMouse();
+	}
+
+    }
+
+    protected void onMouseClick(int var1, int var2, int var3) {
+	if (var3 == 0) {
+	    for (var3 = 0; var3 < this.buttons.size(); ++var3) {
+		Button var4;
+		Button var7;
+		if ((var7 = var4 = (Button) this.buttons.get(var3)).active
+			&& var1 >= var7.x && var2 >= var7.y
+			&& var1 < var7.x + var7.width
+			&& var2 < var7.y + var7.height) {
+		    this.onButtonClick(var4);
+		}
+	    }
+	}
+
+    }
+
+    public void onOpen() {
+    }
+
+    public final void open(Minecraft var1, int var2, int var3) {
+	this.minecraft = var1;
+	this.fontRenderer = var1.fontRenderer;
+	this.width = var2;
+	this.height = var3;
+	this.onOpen();
+    }
+
     public void render(int var1, int var2) {
 	for (int var3 = 0; var3 < this.buttons.size(); ++var3) {
 	    Button var10000 = (Button) this.buttons.get(var3);
@@ -60,76 +130,6 @@ public class GuiScreen extends Screen {
 
     }
 
-    protected void onKeyPress(char var1, int var2) {
-	if (var2 == 1) {
-	    this.minecraft.setCurrentScreen((GuiScreen) null);
-	    this.minecraft.grabMouse();
-	}
-
-    }
-
-    protected void onMouseClick(int var1, int var2, int var3) {
-	if (var3 == 0) {
-	    for (var3 = 0; var3 < this.buttons.size(); ++var3) {
-		Button var4;
-		Button var7;
-		if ((var7 = var4 = (Button) this.buttons.get(var3)).active
-			&& var1 >= var7.x && var2 >= var7.y
-			&& var1 < var7.x + var7.width
-			&& var2 < var7.y + var7.height) {
-		    this.onButtonClick(var4);
-		}
-	    }
-	}
-
-    }
-
-    protected void onButtonClick(Button var1) {
-    }
-
-    public final void open(Minecraft var1, int var2, int var3) {
-	this.minecraft = var1;
-	this.fontRenderer = var1.fontRenderer;
-	this.width = var2;
-	this.height = var3;
-	this.onOpen();
-    }
-
-    public void onOpen() {
-    }
-
-    public final void doInput() {
-	while (Mouse.next()) {
-	    this.mouseEvent();
-	}
-
-	while (Keyboard.next()) {
-	    this.keyboardEvent();
-	}
-
-    }
-
-    public final void mouseEvent() {
-	if (Mouse.getEventButtonState()) {
-	    int var1 = Mouse.getEventX() * this.width / this.minecraft.width;
-	    int var2 = this.height - Mouse.getEventY() * this.height
-		    / this.minecraft.height - 1;
-	    this.onMouseClick(var1, var2, Mouse.getEventButton());
-	}
-
-    }
-
-    public final void keyboardEvent() {
-	if (Keyboard.getEventKeyState()) {
-	    this.onKeyPress(Keyboard.getEventCharacter(),
-		    Keyboard.getEventKey());
-	}
-
-    }
-
     public void tick() {
-    }
-
-    public void onClose() {
     }
 }

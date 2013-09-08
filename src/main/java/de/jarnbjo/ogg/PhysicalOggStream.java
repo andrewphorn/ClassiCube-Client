@@ -39,6 +39,15 @@ import java.util.Collection;
 public interface PhysicalOggStream {
 
     /**
+     * Closes this stream. After invoking this method, no further access to the
+     * streams data is possible.
+     * 
+     * @throws IOException
+     */
+
+    public void close() throws IOException;
+
+    /**
      * Returns a collection of objects implementing
      * <code>LogicalOggStream</code> for accessing the separate logical streams
      * within this physical Ogg stream.
@@ -84,13 +93,11 @@ public interface PhysicalOggStream {
     public boolean isOpen();
 
     /**
-     * Closes this stream. After invoking this method, no further access to the
-     * streams data is possible.
-     * 
-     * @throws IOException
+     * @return <code>true</code> if the stream is seekable, <code>false</code>
+     *         otherwise
      */
 
-    public void close() throws IOException;
+    public boolean isSeekable();
 
     /**
      * Sets this stream's (and its logical stream's) position to the granule
@@ -116,11 +123,4 @@ public interface PhysicalOggStream {
 
     public void setTime(long granulePosition) throws OggFormatException,
 	    IOException;
-
-    /**
-     * @return <code>true</code> if the stream is seekable, <code>false</code>
-     *         otherwise
-     */
-
-    public boolean isSeekable();
 }

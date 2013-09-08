@@ -115,15 +115,15 @@ class SetupHeader {
 	return floors;
     }
 
-    public Residue[] getResidues() {
-	return residues;
-    }
-
     public Mapping[] getMappings() {
 	return mappings;
     }
 
     public Mode[] getModes() {
 	return modes;
+    }
+
+    public Residue[] getResidues() {
+	return residues;
     }
 }

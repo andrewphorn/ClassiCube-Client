@@ -34,14 +34,14 @@ class Residue0 extends Residue {
 	super(source, header);
     }
 
-    protected int getType() {
-	return 0;
-    }
-
     protected void decodeResidue(VorbisStream vorbis, BitInputStream source,
 	    Mode mode, int ch, boolean[] doNotDecodeFlags, float[][] vectors)
 	    throws VorbisFormatException, IOException {
 	/** @todo implement */
 	throw new UnsupportedOperationException();
+    }
+
+    protected int getType() {
+	return 0;
     }
 }

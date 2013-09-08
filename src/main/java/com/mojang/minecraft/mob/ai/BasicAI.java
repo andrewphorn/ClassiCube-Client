@@ -31,6 +31,21 @@ public class BasicAI extends AI {
 
     public boolean flyingDown = false;
 
+    public void beforeRemove() {
+    }
+
+    public void hurt(Entity var1, int var2) {
+	super.hurt(var1, var2);
+	this.noActionTime = 0;
+    }
+
+    protected void jumpFromGround() {
+	if (!running)
+	    this.mob.yd = 0.42F;
+	else
+	    this.mob.yd = 0.84F;
+    }
+
     public void tick(Level var1, Mob var2) {
 	++this.noActionTime;
 	Entity var3;
@@ -188,13 +203,6 @@ public class BasicAI extends AI {
 	}
     }
 
-    protected void jumpFromGround() {
-	if (!running)
-	    this.mob.yd = 0.42F;
-	else
-	    this.mob.yd = 0.84F;
-    }
-
     protected void update() {
 	if (this.random.nextFloat() < 0.07F) {
 	    this.xxa = (this.random.nextFloat() - 0.5F) * this.runSpeed;
@@ -218,13 +226,5 @@ public class BasicAI extends AI {
 	if (var1 || isInLava) {
 	    this.jumping = this.random.nextFloat() < 0.8F;
 	}
-    }
-
-    public void beforeRemove() {
-    }
-
-    public void hurt(Entity var1, int var2) {
-	super.hurt(var1, var2);
-	this.noActionTime = 0;
     }
 }

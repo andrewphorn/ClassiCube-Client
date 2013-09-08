@@ -32,9 +32,9 @@ public class TextureFireFX extends TextureFX {
 
 		b[i + j * 16] = f / ((float) k * 1.06F);
 		if (j >= 19) {
-		    b[i + j * 16] = (float) (Math.random()
-			    * Math.random() * Math.random() * 4D
-			    + Math.random() * 0.10000000149011612D + 0.20000000298023224D);
+		    b[i + j * 16] = (float) (Math.random() * Math.random()
+			    * Math.random() * 4D + Math.random()
+			    * 0.10000000149011612D + 0.20000000298023224D);
 		}
 	    }
 

@@ -111,12 +111,12 @@ class Mapping0 extends Mapping {
 	}
     }
 
-    protected int getType() {
-	return 0;
-    }
-
     protected int[] getAngles() {
 	return angles;
+    }
+
+    protected int getCouplingSteps() {
+	return angles.length;
     }
 
     protected int[] getMagnitudes() {
@@ -135,11 +135,11 @@ class Mapping0 extends Mapping {
 	return submapResidues;
     }
 
-    protected int getCouplingSteps() {
-	return angles.length;
-    }
-
     protected int getSubmaps() {
 	return submapFloors.length;
+    }
+
+    protected int getType() {
+	return 0;
     }
 }

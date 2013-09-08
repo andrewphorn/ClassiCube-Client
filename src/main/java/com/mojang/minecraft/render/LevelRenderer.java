@@ -39,6 +39,55 @@ public final class LevelRenderer {
 	this.baseListId = GL11.glGenLists(4096 << 6 << 1);
     }
 
+    public final void queueChunks(int var1, int var2, int var3, int var4,
+	    int var5, int var6) {
+	var1 /= 16;
+	var2 /= 16;
+	var3 /= 16;
+	var4 /= 16;
+	var5 /= 16;
+	var6 /= 16;
+	if (var1 < 0) {
+	    var1 = 0;
+	}
+
+	if (var2 < 0) {
+	    var2 = 0;
+	}
+
+	if (var3 < 0) {
+	    var3 = 0;
+	}
+
+	if (var4 > this.xChunks - 1) {
+	    var4 = this.xChunks - 1;
+	}
+
+	if (var5 > this.yChunks - 1) {
+	    var5 = this.yChunks - 1;
+	}
+
+	if (var6 > this.zChunks - 1) {
+	    var6 = this.zChunks - 1;
+	}
+
+	for (; var1 <= var4; ++var1) {
+	    for (int var7 = var2; var7 <= var5; ++var7) {
+		for (int var8 = var3; var8 <= var6; ++var8) {
+		    Chunk var9;
+		    if (!(var9 = this.chunkCache[(var8 * this.yChunks + var7)
+			    * this.xChunks + var1]).loaded) {
+			var9.loaded = true;
+			this.chunks
+				.add(this.chunkCache[(var8 * this.yChunks + var7)
+					* this.xChunks + var1]);
+		    }
+		}
+	    }
+	}
+
+    }
+
     public final void refresh() {
 	int var1;
 	if (this.chunkCache != null) {
@@ -78,9 +127,11 @@ public final class LevelRenderer {
 	GL11.glNewList(this.listId, 4864);
 	LevelRenderer var9 = this;
 	float waterLevel = 0.5F;
-	if(this.level.customLightColour!=null){
-	    GL11.glColor4f(this.level.customLightColour.R,this.level.customLightColour.G, this.level.customLightColour.B, 1.0F);
-	}else{
+	if (this.level.customLightColour != null) {
+	    GL11.glColor4f(this.level.customLightColour.R,
+		    this.level.customLightColour.G,
+		    this.level.customLightColour.B, 1.0F);
+	} else {
 	    GL11.glColor4f(0.5F, waterLevel, waterLevel, 1.0F);
 	}
 	ShapeRenderer var11 = ShapeRenderer.instance;
@@ -118,9 +169,9 @@ public final class LevelRenderer {
 	}
 
 	var11.end();
-	if(this.level.customLightColour!=null){
-	   GL11.glColor4f(this.level.customLightColour.R,
-		    this.level.customLightColour.G, 
+	if (this.level.customLightColour != null) {
+	    GL11.glColor4f(this.level.customLightColour.R,
+		    this.level.customLightColour.G,
 		    this.level.customLightColour.B, 1.0F);
 	}
 	var11.begin();
@@ -142,11 +193,11 @@ public final class LevelRenderer {
 		    0.0F);
 	}
 
-	if(this.level.customLightColour!=null){
-		   GL11.glColor4f(this.level.customLightColour.R,
-			    this.level.customLightColour.G, 
-			    this.level.customLightColour.B, 1.0F);
-		}
+	if (this.level.customLightColour != null) {
+	    GL11.glColor4f(this.level.customLightColour.R,
+		    this.level.customLightColour.G,
+		    this.level.customLightColour.B, 1.0F);
+	}
 
 	for (var7 = 0; var7 < var9.level.height; var7 += var5) {
 	    var11.vertexUV(0.0F, groundLevel, (float) var7, 0.0F, 0.0F);
@@ -170,11 +221,11 @@ public final class LevelRenderer {
 
 	GL11.glNewList(this.listId + 1, 4864);
 	var9 = this;
-	if(this.level.customLightColour!=null){
-		   GL11.glColor4f(this.level.customLightColour.R,
-			    this.level.customLightColour.G, 
-			    this.level.customLightColour.B, 1.0F);
-		}
+	if (this.level.customLightColour != null) {
+	    GL11.glColor4f(this.level.customLightColour.R,
+		    this.level.customLightColour.G,
+		    this.level.customLightColour.B, 1.0F);
+	}
 	waterLevel = this.level.getWaterLevel();
 
 	GL11.glBlendFunc(770, 771);
@@ -250,54 +301,5 @@ public final class LevelRenderer {
 	}
 
 	return this.buffer.remaining();
-    }
-
-    public final void queueChunks(int var1, int var2, int var3, int var4,
-	    int var5, int var6) {
-	var1 /= 16;
-	var2 /= 16;
-	var3 /= 16;
-	var4 /= 16;
-	var5 /= 16;
-	var6 /= 16;
-	if (var1 < 0) {
-	    var1 = 0;
-	}
-
-	if (var2 < 0) {
-	    var2 = 0;
-	}
-
-	if (var3 < 0) {
-	    var3 = 0;
-	}
-
-	if (var4 > this.xChunks - 1) {
-	    var4 = this.xChunks - 1;
-	}
-
-	if (var5 > this.yChunks - 1) {
-	    var5 = this.yChunks - 1;
-	}
-
-	if (var6 > this.zChunks - 1) {
-	    var6 = this.zChunks - 1;
-	}
-
-	for (; var1 <= var4; ++var1) {
-	    for (int var7 = var2; var7 <= var5; ++var7) {
-		for (int var8 = var3; var8 <= var6; ++var8) {
-		    Chunk var9;
-		    if (!(var9 = this.chunkCache[(var8 * this.yChunks + var7)
-			    * this.xChunks + var1]).loaded) {
-			var9.loaded = true;
-			this.chunks
-				.add(this.chunkCache[(var8 * this.yChunks + var7)
-					* this.xChunks + var1]);
-		    }
-		}
-	    }
-	}
-
     }
 }

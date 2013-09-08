@@ -26,19 +26,6 @@ public class CreativeGameMode extends GameMode {
     }
 
     @Override
-    public void openInventory() {
-	BlockSelectScreen blockSelectScreen = new BlockSelectScreen();
-
-	if (GameSettings.CanReplaceSlot)
-	    minecraft.setCurrentScreen(blockSelectScreen);
-    }
-
-    @Override
-    public boolean isSurvival() {
-	return false;
-    }
-
-    @Override
     public void apply(Player player) {
 	// default starting blocks
 	Block[] blocks = new Block[] { Block.STONE, Block.COBBLESTONE,
@@ -64,5 +51,18 @@ public class CreativeGameMode extends GameMode {
 	for (int i = 0; i < blocks.length; i++) {
 	    player.inventory.slots[i] = blocks[i].id;
 	}
+    }
+
+    @Override
+    public boolean isSurvival() {
+	return false;
+    }
+
+    @Override
+    public void openInventory() {
+	BlockSelectScreen blockSelectScreen = new BlockSelectScreen();
+
+	if (GameSettings.CanReplaceSlot)
+	    minecraft.setCurrentScreen(blockSelectScreen);
     }
 }

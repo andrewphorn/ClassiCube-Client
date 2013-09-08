@@ -12,6 +12,14 @@ import org.lwjgl.opengl.GL11;
 public class NetworkPlayer extends HumanoidMob {
 
     public static final long serialVersionUID = 77479605454997290L;
+    public static boolean isInteger(String s) {
+	try {
+	    Integer.parseInt(s);
+	} catch (NumberFormatException e) {
+	    return false;
+	}
+	return true;
+    }
     private transient List<PositionUpdate> moveQueue = new LinkedList<PositionUpdate>();
     private transient Minecraft minecraft;
     private int xp;
@@ -23,10 +31,11 @@ public class NetworkPlayer extends HumanoidMob {
     public String displayName;
     int tickCount = 0;
     private transient TextureManager textures;
+
     public String SkinName = null;
 
-    public NetworkPlayer(Minecraft var1, String var3, int var4,
-	    int var5, int var6, float var7, float var8) {
+    public NetworkPlayer(Minecraft var1, String var3, int var4, int var5,
+	    int var6, float var7, float var8) {
 	super(var1.level, (float) var4, (float) var5, (float) var6);
 	this.minecraft = var1;
 	this.displayName = var3;
@@ -49,15 +58,9 @@ public class NetworkPlayer extends HumanoidMob {
 	}
 	if (this.modelName == "humanoid") {
 	    downloadSkin();
-	}else if(isInteger(this.modelName)){
-	    GL11.glBindTexture(
-		    3553,
-		    var1.textureManager.load("/terrain.png"));
+	} else if (isInteger(this.modelName)) {
+	    GL11.glBindTexture(3553, var1.textureManager.load("/terrain.png"));
 	}
-    }
-
-    public void downloadSkin() {
-	(new SkinDownloadThread(this, this.minecraft.skinServer)).start();
     }
 
     public void aiStep() {
@@ -102,9 +105,7 @@ public class NetworkPlayer extends HumanoidMob {
 	    this.newTexture = null;
 	}
 	if (isInteger(this.modelName)) {
-	    GL11.glBindTexture(
-		    3553,
-		    var1.load("/terrain.png"));
+	    GL11.glBindTexture(3553, var1.load("/terrain.png"));
 	    return;
 	} else if (this.modelName != "humanoid") {
 	    GL11.glBindTexture(3553,
@@ -119,13 +120,93 @@ public class NetworkPlayer extends HumanoidMob {
 	}
     }
 
-    public static boolean isInteger(String s) {
-	try {
-	    Integer.parseInt(s);
-	} catch (NumberFormatException e) {
-	    return false;
+    public void clear() {
+	if (this.a >= 0 && this.textures != null) {
+	    TextureManager var10000 = this.textures;
+	    int var1 = this.a;
+	    TextureManager var2 = this.textures;
+	    var10000.textureImages.remove(Integer.valueOf(var1));
+	    var2.idBuffer.clear();
+	    var2.idBuffer.put(var1);
+	    var2.idBuffer.flip();
+	    GL11.glDeleteTextures(var2.idBuffer);
 	}
-	return true;
+
+    }
+
+    public void downloadSkin() {
+	(new SkinDownloadThread(this, this.minecraft.skinServer)).start();
+    }
+
+    public void queue(byte var1, byte var2, byte var3) {
+	this.moveQueue.add(new PositionUpdate(
+		((float) this.xp + (float) var1 / 2.0F) / 32.0F,
+		((float) this.yp + (float) var2 / 2.0F) / 32.0F,
+		((float) this.zp + (float) var3 / 2.0F) / 32.0F));
+	this.xp += var1;
+	this.yp += var2;
+	this.zp += var3;
+	this.moveQueue.add(new PositionUpdate((float) this.xp / 32.0F,
+		(float) this.yp / 32.0F, (float) this.zp / 32.0F));
+    }
+
+    public void queue(byte var1, byte var2, byte var3, float var4, float var5) {
+	float var6 = var4 - this.yRot;
+
+	float var7;
+	for (var7 = var5 - this.xRot; var6 >= 180.0F; var6 -= 360.0F) {
+	    ;
+	}
+
+	while (var6 < -180.0F) {
+	    var6 += 360.0F;
+	}
+
+	while (var7 >= 180.0F) {
+	    var7 -= 360.0F;
+	}
+
+	while (var7 < -180.0F) {
+	    var7 += 360.0F;
+	}
+
+	var6 = this.yRot + var6 * 0.5F;
+	var7 = this.xRot + var7 * 0.5F;
+	this.moveQueue.add(new PositionUpdate(
+		((float) this.xp + (float) var1 / 2.0F) / 32.0F,
+		((float) this.yp + (float) var2 / 2.0F) / 32.0F,
+		((float) this.zp + (float) var3 / 2.0F) / 32.0F, var6, var7));
+	this.xp += var1;
+	this.yp += var2;
+	this.zp += var3;
+	this.moveQueue.add(new PositionUpdate((float) this.xp / 32.0F,
+		(float) this.yp / 32.0F, (float) this.zp / 32.0F, var4, var5));
+    }
+
+    public void queue(float var1, float var2) {
+	float var3 = var1 - this.yRot;
+
+	float var4;
+	for (var4 = var2 - this.xRot; var3 >= 180.0F; var3 -= 360.0F) {
+	    ;
+	}
+
+	while (var3 < -180.0F) {
+	    var3 += 360.0F;
+	}
+
+	while (var4 >= 180.0F) {
+	    var4 -= 360.0F;
+	}
+
+	while (var4 < -180.0F) {
+	    var4 += 360.0F;
+	}
+
+	var3 = this.yRot + var3 * 0.5F;
+	var4 = this.xRot + var4 * 0.5F;
+	this.moveQueue.add(new PositionUpdate(var3, var4));
+	this.moveQueue.add(new PositionUpdate(var1, var2));
     }
 
     public void renderHover(TextureManager var1, float var2) {
@@ -165,39 +246,6 @@ public class NetworkPlayer extends HumanoidMob {
 	GL11.glPopMatrix();
     }
 
-    public void queue(byte var1, byte var2, byte var3, float var4, float var5) {
-	float var6 = var4 - this.yRot;
-
-	float var7;
-	for (var7 = var5 - this.xRot; var6 >= 180.0F; var6 -= 360.0F) {
-	    ;
-	}
-
-	while (var6 < -180.0F) {
-	    var6 += 360.0F;
-	}
-
-	while (var7 >= 180.0F) {
-	    var7 -= 360.0F;
-	}
-
-	while (var7 < -180.0F) {
-	    var7 += 360.0F;
-	}
-
-	var6 = this.yRot + var6 * 0.5F;
-	var7 = this.xRot + var7 * 0.5F;
-	this.moveQueue.add(new PositionUpdate(
-		((float) this.xp + (float) var1 / 2.0F) / 32.0F,
-		((float) this.yp + (float) var2 / 2.0F) / 32.0F,
-		((float) this.zp + (float) var3 / 2.0F) / 32.0F, var6, var7));
-	this.xp += var1;
-	this.yp += var2;
-	this.zp += var3;
-	this.moveQueue.add(new PositionUpdate((float) this.xp / 32.0F,
-		(float) this.yp / 32.0F, (float) this.zp / 32.0F, var4, var5));
-    }
-
     public void teleport(short var1, short var2, short var3, float var4,
 	    float var5) {
 	float var6 = var4 - this.yRot;
@@ -229,57 +277,5 @@ public class NetworkPlayer extends HumanoidMob {
 	this.zp = var3;
 	this.moveQueue.add(new PositionUpdate((float) this.xp / 32.0F,
 		(float) this.yp / 32.0F, (float) this.zp / 32.0F, var4, var5));
-    }
-
-    public void queue(byte var1, byte var2, byte var3) {
-	this.moveQueue.add(new PositionUpdate(
-		((float) this.xp + (float) var1 / 2.0F) / 32.0F,
-		((float) this.yp + (float) var2 / 2.0F) / 32.0F,
-		((float) this.zp + (float) var3 / 2.0F) / 32.0F));
-	this.xp += var1;
-	this.yp += var2;
-	this.zp += var3;
-	this.moveQueue.add(new PositionUpdate((float) this.xp / 32.0F,
-		(float) this.yp / 32.0F, (float) this.zp / 32.0F));
-    }
-
-    public void queue(float var1, float var2) {
-	float var3 = var1 - this.yRot;
-
-	float var4;
-	for (var4 = var2 - this.xRot; var3 >= 180.0F; var3 -= 360.0F) {
-	    ;
-	}
-
-	while (var3 < -180.0F) {
-	    var3 += 360.0F;
-	}
-
-	while (var4 >= 180.0F) {
-	    var4 -= 360.0F;
-	}
-
-	while (var4 < -180.0F) {
-	    var4 += 360.0F;
-	}
-
-	var3 = this.yRot + var3 * 0.5F;
-	var4 = this.xRot + var4 * 0.5F;
-	this.moveQueue.add(new PositionUpdate(var3, var4));
-	this.moveQueue.add(new PositionUpdate(var1, var2));
-    }
-
-    public void clear() {
-	if (this.a >= 0 && this.textures != null) {
-	    TextureManager var10000 = this.textures;
-	    int var1 = this.a;
-	    TextureManager var2 = this.textures;
-	    var10000.textureImages.remove(Integer.valueOf(var1));
-	    var2.idBuffer.clear();
-	    var2.idBuffer.put(var1);
-	    var2.idBuffer.flip();
-	    GL11.glDeleteTextures(var2.idBuffer);
-	}
-
     }
 }

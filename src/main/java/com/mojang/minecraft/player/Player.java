@@ -17,6 +17,42 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 public class Player extends Mob {
+    private int nox = 0;
+
+    private int noc = 0;
+    private int nos = 0;
+    private int jumpCount = 0;
+
+    boolean HacksEnabled;
+    boolean isOnIce = false;
+
+    public static boolean noPush = false;
+
+    public transient GameSettings settings;
+    public static final long serialVersionUID = 0L;
+
+    public static final int MAX_HEALTH = 20;
+
+    public static final int MAX_ARROWS = 99;
+
+    public transient InputHandler input;
+
+    public Inventory inventory = new Inventory();
+
+    public byte userType = 0;
+
+    public float oBob;
+
+    public float bob;
+
+    public int score = 0;
+
+    public int arrows = 20;
+
+    private static int newTextureId = -1;
+
+    public static BufferedImage newTexture;
+
     public Player(Level var1, GameSettings gs) {
 	super(var1);
 	if (var1 != null) {
@@ -32,19 +68,9 @@ public class Player extends Mob {
 	this.ai = new Player$1(this);
 	this.settings = gs;
     }
-
-    private int nox = 0;
-    private int noc = 0;
-    private int nos = 0;
-
-    private int jumpCount = 0;
-    boolean HacksEnabled;
-
-    boolean isOnIce = false;
-
-    public static boolean noPush = false;
-    public transient GameSettings settings;
-
+    public boolean addResource(int var1) {
+	return this.inventory.addResource(var1);
+    }
     @Override
     public void aiStep() {
 	if (settings.HackType == 0) {
@@ -84,20 +110,20 @@ public class Player extends Mob {
 	    float fx = xd;
 	    float fy = yd;
 	    float fz = zd;
-	    if(fx > 0.1f)
+	    if (fx > 0.1f)
 		fx = 0.1f;
-	    if(fy > 0.1f)
+	    if (fy > 0.1f)
 		fy = 0.1f;
-	    if(fz > 0.1f)
+	    if (fz > 0.1f)
 		fz = 0.1f;
-	    
-	    if(fx < -0.1f)
+
+	    if (fx < -0.1f)
 		fx = -0.1f;
-	    if(fy < -0.1f)
+	    if (fy < -0.1f)
 		fy = -0.1f;
-	    if(fz < -0.1f)
+	    if (fz < -0.1f)
 		fz = -0.1f;
-	    
+
 	    float aaa = MathHelper.sqrt(fx * fx + fz * fz);
 	    float bbb = (float) Math.atan((double) (-fy * 0.2F)) * 15.0F;
 	    this.bob += (aaa - this.bob) * 0.4F;
@@ -309,20 +335,84 @@ public class Player extends Mob {
 		this.xd *= f2;
 		this.zd *= f2;
 		this.tilt = 0f;
-	    } else if (this.settings.minecraft.session == null){
+	    } else if (this.settings.minecraft.session == null) {
 		this.xd *= 0.751F;
 		this.yd *= 0.758F;
 		this.zd *= 0.751F;
 		yd = (float) ((double) yd - 0.08D);
 		isOnIce = true;
-		//System.out.println(xd);
+		// System.out.println(xd);
 		if (xd > 0.237f || xd < -0.237f || zd < -0.237f || zd > 0.237f)
 		    this.tilt = -15.0f;
-		else{
+		else {
 		    this.tilt = 0f;
 		}
 	    }
 	}
+    }
+    @Override
+    public void awardKillScore(Entity var1, int var2) {
+	this.score += var2;
+    }
+    @Override
+    public void bindTexture(TextureManager var1) {
+	if (newTexture != null) {
+	    newTextureId = var1.load(newTexture);
+	    newTexture = null;
+	}
+
+	int var2;
+	if (newTextureId < 0) {
+	    var2 = var1.load("/char.png");
+	    GL11.glBindTexture(3553, var2);
+	} else {
+	    var2 = newTextureId;
+	    GL11.glBindTexture(3553, var2);
+	}
+    }
+    @Override
+    public void die(Entity var1) {
+	this.setSize(0.2F, 0.2F);
+	this.setPos(this.x, this.y, this.z);
+	this.yd = 0.1F;
+	if (var1 != null) {
+	    this.xd = -MathHelper
+		    .cos((this.hurtDir + this.yRot) * 3.1415927F / 180.0F) * 0.1F;
+	    this.zd = -MathHelper
+		    .sin((this.hurtDir + this.yRot) * 3.1415927F / 180.0F) * 0.1F;
+	} else {
+	    this.xd = this.zd = 0.0F;
+	}
+
+	this.heightOffset = 0.1F;
+    }
+    public HumanoidModel getModel() {
+	return (HumanoidModel) modelCache.getModel(this.modelName);
+    }
+    public int getScore() {
+	return this.score;
+    }
+    @Override
+    public void hurt(Entity var1, int var2) {
+	if (!this.level.creativeMode) {
+	    super.hurt(var1, var2);
+	}
+
+    }
+    @Override
+    public boolean isCreativeModeAllowed() {
+	return true;
+    }
+    @Override
+    public boolean isShootable() {
+	return true;
+    }
+    public void releaseAllKeys() {
+	this.input.resetKeys();
+    }
+
+    @Override
+    public void remove() {
     }
 
     @Override
@@ -446,23 +536,6 @@ public class Player extends Mob {
     }
 
     @Override
-    public void bindTexture(TextureManager var1) {
-	if (newTexture != null) {
-	    newTextureId = var1.load(newTexture);
-	    newTexture = null;
-	}
-
-	int var2;
-	if (newTextureId < 0) {
-	    var2 = var1.load("/char.png");
-	    GL11.glBindTexture(3553, var2);
-	} else {
-	    var2 = newTextureId;
-	    GL11.glBindTexture(3553, var2);
-	}
-    }
-
-    @Override
     public void resetPos() {
 	this.heightOffset = 1.62F;
 	this.setSize(0.6F, 1.8F);
@@ -475,80 +548,7 @@ public class Player extends Mob {
 	this.deathTime = 0;
     }
 
-    @Override
-    public void die(Entity var1) {
-	this.setSize(0.2F, 0.2F);
-	this.setPos(this.x, this.y, this.z);
-	this.yd = 0.1F;
-	if (var1 != null) {
-	    this.xd = -MathHelper
-		    .cos((this.hurtDir + this.yRot) * 3.1415927F / 180.0F) * 0.1F;
-	    this.zd = -MathHelper
-		    .sin((this.hurtDir + this.yRot) * 3.1415927F / 180.0F) * 0.1F;
-	} else {
-	    this.xd = this.zd = 0.0F;
-	}
-
-	this.heightOffset = 0.1F;
-    }
-
-    @Override
-    public boolean isShootable() {
-	return true;
-    }
-
-    @Override
-    public void awardKillScore(Entity var1, int var2) {
-	this.score += var2;
-    }
-
-    @Override
-    public void remove() {
-    }
-
-    @Override
-    public void hurt(Entity var1, int var2) {
-	if (!this.level.creativeMode) {
-	    super.hurt(var1, var2);
-	}
-
-    }
-
-    @Override
-    public boolean isCreativeModeAllowed() {
-	return true;
-    }
-
-    public static final long serialVersionUID = 0L;
-    public static final int MAX_HEALTH = 20;
-    public static final int MAX_ARROWS = 99;
-    public transient InputHandler input;
-    public Inventory inventory = new Inventory();
-    public byte userType = 0;
-    public float oBob;
-    public float bob;
-    public int score = 0;
-    public int arrows = 20;
-    private static int newTextureId = -1;
-    public static BufferedImage newTexture;
-
-    public void releaseAllKeys() {
-	this.input.resetKeys();
-    }
-
     public void setKey(int var1, boolean var2) {
 	this.input.setKeyState(var1, var2);
-    }
-
-    public boolean addResource(int var1) {
-	return this.inventory.addResource(var1);
-    }
-
-    public int getScore() {
-	return this.score;
-    }
-
-    public HumanoidModel getModel() {
-	return (HumanoidModel) modelCache.getModel(this.modelName);
     }
 }

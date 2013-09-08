@@ -15,28 +15,37 @@ public final class BlockSelectScreen extends GuiScreen {
     int BlocksPerRow = 13;
     int Spacing = 20;
 
+    private final Timer timer = new Timer();
+
+    private final int miliseconds = 30;
+    public TimerTask timertask;
+
+    float lastRotation = 0;
+
     public BlockSelectScreen() {
 	this.grabsMouse = true;
 	start();
     }
 
-    private final Timer timer = new Timer();
-    private final int miliseconds = 30;
-
-    public void start() {
-	timer.scheduleAtFixedRate(new TimerTask() {
-	    public void run() {
-		Rotate();
-		// timer.cancel();
-	    }
-	}, miliseconds, miliseconds);
+    String GetBlockName(int id) {
+	String s;
+	if (id < 0 || id > 255)
+	    return "";
+	try {
+	    Block b = (Block) SessionData.allowedBlocks.get(id);
+	    if (b == null)
+		return "";
+	    int ID = b.id;
+	    BlockID bid = BlockID.values()[ID + 1];
+	    if (bid == null)
+		s = "";
+	    else
+		s = bid.name();
+	} catch (Exception e) {
+	    return "";
+	}
+	return s;
     }
-
-    void Rotate() {
-	this.lastRotation += 2.7F;
-    }
-
-    public TimerTask timertask;
 
     private int getBlockOnScreen(int var1, int var2) {
 	for (int var3 = 0; var3 < SessionData.allowedBlocks.size(); ++var3) {
@@ -54,7 +63,14 @@ public final class BlockSelectScreen extends GuiScreen {
 	return -1;
     }
 
-    float lastRotation = 0;
+    protected final void onMouseClick(int var1, int var2, int var3) {
+	if (var3 == 0) {
+	    this.minecraft.player.inventory.replaceSlot(this.getBlockOnScreen(
+		    var1, var2));
+	    this.minecraft.setCurrentScreen((GuiScreen) null);
+	}
+
+    }
 
     public final void render(int var1, int var2) {
 	var1 = this.getBlockOnScreen(var1, var2);
@@ -102,32 +118,16 @@ public final class BlockSelectScreen extends GuiScreen {
 
     }
 
-    String GetBlockName(int id) {
-	String s;
-	if (id < 0 || id > 255)
-	    return "";
-	try {
-	    Block b = (Block) SessionData.allowedBlocks.get(id);
-	    if (b == null)
-		return "";
-	    int ID = b.id;
-	    BlockID bid = BlockID.values()[ID + 1];
-	    if (bid == null)
-		s = "";
-	    else
-		s = bid.name();
-	} catch (Exception e) {
-	    return "";
-	}
-	return s;
+    void Rotate() {
+	this.lastRotation += 2.7F;
     }
 
-    protected final void onMouseClick(int var1, int var2, int var3) {
-	if (var3 == 0) {
-	    this.minecraft.player.inventory.replaceSlot(this.getBlockOnScreen(
-		    var1, var2));
-	    this.minecraft.setCurrentScreen((GuiScreen) null);
-	}
-
+    public void start() {
+	timer.scheduleAtFixedRate(new TimerTask() {
+	    public void run() {
+		Rotate();
+		// timer.cancel();
+	    }
+	}, miliseconds, miliseconds);
     }
 }

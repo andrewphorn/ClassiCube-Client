@@ -56,6 +56,16 @@ public class ByteArrayBitInputStream implements BitInputStream {
 	bitIndex = (endian == LITTLE_ENDIAN) ? 0 : 7;
     }
 
+    public void align() {
+	if (endian == BIG_ENDIAN && bitIndex >= 0) {
+	    bitIndex = 7;
+	    byteIndex++;
+	} else if (endian == LITTLE_ENDIAN && bitIndex <= 7) {
+	    bitIndex = 0;
+	    byteIndex++;
+	}
+    }
+
     public boolean getBit() throws IOException {
 	if (endian == LITTLE_ENDIAN) {
 	    if (bitIndex > 7) {
@@ -70,6 +80,17 @@ public class ByteArrayBitInputStream implements BitInputStream {
 	    }
 	    return (currentByte & (1 << (bitIndex--))) != 0;
 	}
+    }
+
+    public int getInt(HuffmanNode root) throws IOException {
+	while (root.value == null) {
+	    if (bitIndex > 7) {
+		bitIndex = 0;
+		currentByte = source[++byteIndex];
+	    }
+	    root = (currentByte & (1 << (bitIndex++))) != 0 ? root.o1 : root.o0;
+	}
+	return root.value.intValue();
     }
 
     public int getInt(int bits) throws IOException {
@@ -119,25 +140,6 @@ public class ByteArrayBitInputStream implements BitInputStream {
 	return res;
     }
 
-    public int getSignedInt(int bits) throws IOException {
-	int raw = getInt(bits);
-	if (raw >= 1 << (bits - 1)) {
-	    raw -= 1 << bits;
-	}
-	return raw;
-    }
-
-    public int getInt(HuffmanNode root) throws IOException {
-	while (root.value == null) {
-	    if (bitIndex > 7) {
-		bitIndex = 0;
-		currentByte = source[++byteIndex];
-	    }
-	    root = (currentByte & (1 << (bitIndex++))) != 0 ? root.o1 : root.o0;
-	}
-	return root.value.intValue();
-    }
-
     public long getLong(int bits) throws IOException {
 	if (bits > 64) {
 	    throw new IllegalArgumentException(
@@ -158,6 +160,22 @@ public class ByteArrayBitInputStream implements BitInputStream {
 	    }
 	}
 	return res;
+    }
+
+    public int getSignedInt(int bits) throws IOException {
+	int raw = getInt(bits);
+	if (raw >= 1 << (bits - 1)) {
+	    raw -= 1 << bits;
+	}
+	return raw;
+    }
+
+    /**
+     * @return the byte array used as a source for this instance
+     */
+
+    public byte[] getSource() {
+	return source;
     }
 
     /**
@@ -322,16 +340,6 @@ public class ByteArrayBitInputStream implements BitInputStream {
 	}
     }
 
-    public void align() {
-	if (endian == BIG_ENDIAN && bitIndex >= 0) {
-	    bitIndex = 7;
-	    byteIndex++;
-	} else if (endian == LITTLE_ENDIAN && bitIndex <= 7) {
-	    bitIndex = 0;
-	    byteIndex++;
-	}
-    }
-
     public void setEndian(int endian) {
 	if (this.endian == BIG_ENDIAN && endian == LITTLE_ENDIAN) {
 	    bitIndex = 0;
@@ -341,13 +349,5 @@ public class ByteArrayBitInputStream implements BitInputStream {
 	    byteIndex++;
 	}
 	this.endian = endian;
-    }
-
-    /**
-     * @return the byte array used as a source for this instance
-     */
-
-    public byte[] getSource() {
-	return source;
     }
 }

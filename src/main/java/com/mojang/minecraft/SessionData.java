@@ -12,13 +12,16 @@ public final class SessionData {
     public String mppass;
     public boolean haspaid;
 
-    public SessionData(String var1, String var2) {
-	this.username = var1;
-	this.sessionId = var2;
-    }
-
     static {
 	AddStandardMinecraftBlocks();
+    }
+
+    public static void AddStandardMinecraftBlocks() {
+	ArrayList<Block> ab = new ArrayList<Block>();
+	for (int i = 1; i < 50; i++) { // ignore air
+	    ab.add(Block.blocks[i]);
+	}
+	allowedBlocks = ab;
     }
 
     public static void SetAllowedBlocks(byte SupportLevel) {
@@ -43,12 +46,9 @@ public final class SessionData {
 
     }
 
-    public static void AddStandardMinecraftBlocks() {
-	ArrayList<Block> ab = new ArrayList<Block>();
-	for (int i = 1; i < 50; i++) { // ignore air
-	    ab.add(Block.blocks[i]);
-	}
-	allowedBlocks = ab;
+    public SessionData(String var1, String var2) {
+	this.username = var1;
+	this.sessionId = var2;
     }
 
 }

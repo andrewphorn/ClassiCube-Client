@@ -4,6 +4,8 @@ import com.mojang.minecraft.player.Player;
 import java.util.Comparator;
 
 public class ChunkDirtyDistanceComparator implements Comparator<Chunk> {
+    private Player player;
+
     public ChunkDirtyDistanceComparator(Player player) {
 	this.player = player;
     }
@@ -29,6 +31,4 @@ public class ChunkDirtyDistanceComparator implements Comparator<Chunk> {
 	    return -1;
 	}
     }
-
-    private Player player;
 }

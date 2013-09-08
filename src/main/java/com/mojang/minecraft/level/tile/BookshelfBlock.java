@@ -6,11 +6,11 @@ public final class BookshelfBlock extends Block {
 	super(var1, var2);
     }
 
-    protected final int getTextureId(int texture) {
-	return texture <= 1 ? 4 : this.textureId;
-    }
-
     public final int getDropCount() {
 	return 0;
+    }
+
+    protected final int getTextureId(int texture) {
+	return texture <= 1 ? 4 : this.textureId;
     }
 }

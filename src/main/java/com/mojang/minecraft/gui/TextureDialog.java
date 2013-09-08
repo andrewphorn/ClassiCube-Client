@@ -12,10 +12,22 @@ final class TextureDialog extends Thread {
     // $FF: synthetic field
     private TextureSelectionScreen screen;
     private Minecraft mc;
+
     TextureDialog(TextureSelectionScreen var1, Minecraft minecraft) {
 	super();
 	this.screen = var1;
 	this.mc = minecraft;
+    }
+
+    protected void openTexture(String file) {
+	try {
+	    this.mc.textureManager.loadTexturePack(file);
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	this.mc.setCurrentScreen((GuiScreen) null);
+	this.mc.grabMouse();
     }
 
     public final void run() {
@@ -40,9 +52,8 @@ final class TextureDialog extends Thread {
 	    if (var7 == 0) {
 		(this.screen).selectedFile = this.screen.chooser
 			.getSelectedFile();
-		openTexture(this.screen.chooser
-			.getSelectedFile().getName());
-		
+		openTexture(this.screen.chooser.getSelectedFile().getName());
+
 	    }
 	} finally {
 	    this.screen.frozen = false;
@@ -50,15 +61,5 @@ final class TextureDialog extends Thread {
 	    this.screen.chooser = var1;
 	}
 
-    }
-    protected void openTexture(String file) {
-	try {
-	    this.mc.textureManager.loadTexturePack(file);
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	this.mc.setCurrentScreen((GuiScreen) null);
-	this.mc.grabMouse();
     }
 }

@@ -50,29 +50,45 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
 	this.source = source;
     }
 
-    public void addPageNumberMapping(int physicalPageNumber) {
-	pageNumberMapping.add(new Integer(physicalPageNumber));
-    }
-
     public void addGranulePosition(long granulePosition) {
 	granulePositions.add(new Long(granulePosition));
     }
 
-    public synchronized void reset() throws OggFormatException, IOException {
-	currentPage = null;
-	currentSegmentIndex = 0;
-	pageIndex = 0;
+    public void addPageNumberMapping(int physicalPageNumber) {
+	pageNumberMapping.add(new Integer(physicalPageNumber));
     }
 
-    public synchronized OggPage getNextOggPage()
-	    throws EndOfOggStreamException, OggFormatException, IOException {
-	if (source.isSeekable()) {
-	    currentPage = source.getOggPage(((Integer) pageNumberMapping
-		    .get(pageIndex++)).intValue());
-	} else {
-	    currentPage = source.getOggPage(-1);
+    public void checkFormat(OggPage page) {
+	byte[] data = page.getData();
+
+	if (data.length >= 7 && data[1] == 0x76 && data[2] == 0x6f
+		&& data[3] == 0x72 && data[4] == 0x62 && data[5] == 0x69
+		&& data[6] == 0x73) {
+
+	    format = FORMAT_VORBIS;
+	} else if (data.length >= 7 && data[1] == 0x74 && data[2] == 0x68
+		&& data[3] == 0x65 && data[4] == 0x6f && data[5] == 0x72
+		&& data[6] == 0x61) {
+
+	    format = FORMAT_THEORA;
+	} else if (data.length == 4 && data[0] == 0x66 && data[1] == 0x4c
+		&& data[2] == 0x61 && data[3] == 0x43) {
+
+	    format = FORMAT_FLAC;
 	}
-	return currentPage;
+    }
+
+    public void close() throws IOException {
+	open = false;
+    }
+
+    public String getFormat() {
+	return format;
+    }
+
+    public long getMaximumGranulePosition() {
+	Long mgp = (Long) granulePositions.get(granulePositions.size() - 1);
+	return mgp.longValue();
     }
 
     public synchronized byte[] getNextOggPacket()
@@ -128,22 +144,30 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
 	return res.toByteArray();
     }
 
-    public boolean isOpen() {
-	return open;
-    }
-
-    public void close() throws IOException {
-	open = false;
-    }
-
-    public long getMaximumGranulePosition() {
-	Long mgp = (Long) granulePositions.get(granulePositions.size() - 1);
-	return mgp.longValue();
+    public synchronized OggPage getNextOggPage()
+	    throws EndOfOggStreamException, OggFormatException, IOException {
+	if (source.isSeekable()) {
+	    currentPage = source.getOggPage(((Integer) pageNumberMapping
+		    .get(pageIndex++)).intValue());
+	} else {
+	    currentPage = source.getOggPage(-1);
+	}
+	return currentPage;
     }
 
     public synchronized long getTime() {
 	return currentPage != null ? currentPage.getAbsoluteGranulePosition()
 		: -1;
+    }
+
+    public boolean isOpen() {
+	return open;
+    }
+
+    public synchronized void reset() throws OggFormatException, IOException {
+	currentPage = null;
+	currentSegmentIndex = 0;
+	pageIndex = 0;
     }
 
     public synchronized void setTime(long granulePosition) throws IOException {
@@ -173,29 +197,5 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
 	    segmentLength = currentPage.getSegmentLengths()[currentSegmentIndex];
 	    currentSegmentIndex++;
 	} while (segmentLength == 255);
-    }
-
-    public void checkFormat(OggPage page) {
-	byte[] data = page.getData();
-
-	if (data.length >= 7 && data[1] == 0x76 && data[2] == 0x6f
-		&& data[3] == 0x72 && data[4] == 0x62 && data[5] == 0x69
-		&& data[6] == 0x73) {
-
-	    format = FORMAT_VORBIS;
-	} else if (data.length >= 7 && data[1] == 0x74 && data[2] == 0x68
-		&& data[3] == 0x65 && data[4] == 0x6f && data[5] == 0x72
-		&& data[6] == 0x61) {
-
-	    format = FORMAT_THEORA;
-	} else if (data.length == 4 && data[0] == 0x66 && data[1] == 0x4c
-		&& data[2] == 0x61 && data[3] == 0x43) {
-
-	    format = FORMAT_FLAC;
-	}
-    }
-
-    public String getFormat() {
-	return format;
     }
 }

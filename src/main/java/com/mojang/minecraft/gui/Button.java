@@ -11,12 +11,7 @@ public class Button extends Screen {
     public boolean active;
     public boolean visible;
 
-    public Button(int var1, int var2, int var3, String var4) {
-	this(var1, var2, var3, 200, var4);
-    }
-
-    protected Button(int var1, int var2, int var3, int var4,
-	    String var6) {
+    protected Button(int var1, int var2, int var3, int var4, String var6) {
 	this.width = 200;
 	this.height = 20;
 	this.active = true;
@@ -27,5 +22,9 @@ public class Button extends Screen {
 	this.width = var4;
 	this.height = 20;
 	this.text = var6;
+    }
+
+    public Button(int var1, int var2, int var3, String var4) {
+	this(var1, var2, var3, 200, var4);
     }
 }

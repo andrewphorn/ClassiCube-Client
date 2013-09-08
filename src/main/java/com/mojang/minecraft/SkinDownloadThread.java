@@ -7,6 +7,9 @@ import javax.imageio.ImageIO;
 
 public class SkinDownloadThread extends Thread {
     String skinServer;
+
+    private Minecraft minecraft;
+
     public SkinDownloadThread(Minecraft minecraft, String skinServer) {
 	super();
 	this.skinServer = skinServer;
@@ -19,10 +22,8 @@ public class SkinDownloadThread extends Thread {
 	    HttpURLConnection connection = null;
 
 	    try {
-		connection = (HttpURLConnection) new URL(
-			skinServer
-				+ minecraft.session.username + ".png")
-			.openConnection();
+		connection = (HttpURLConnection) new URL(skinServer
+			+ minecraft.session.username + ".png").openConnection();
 
 		connection.setDoInput(true);
 		connection.setDoOutput(false);
@@ -53,6 +54,4 @@ public class SkinDownloadThread extends Thread {
 
 	}
     }
-
-    private Minecraft minecraft;
 }

@@ -6,7 +6,9 @@ import javax.imageio.ImageIO;
 
 public class SkinDownloadThread extends Thread {
     String skinServer;
-    
+
+    private NetworkPlayer player;
+
     public SkinDownloadThread(NetworkPlayer networkPlayer, String skinServer) {
 	super();
 
@@ -19,11 +21,9 @@ public class SkinDownloadThread extends Thread {
 	HttpURLConnection connection = null;
 
 	try {
-	    connection = (HttpURLConnection) new URL(
-		    skinServer
-			    + (player.SkinName == null ? player.name
-				    : player.SkinName) + ".png")
-		    .openConnection();
+	    connection = (HttpURLConnection) new URL(skinServer
+		    + (player.SkinName == null ? player.name : player.SkinName)
+		    + ".png").openConnection();
 	    connection.setRequestProperty("Content-Type",
 		    "application/x-www-form-urlencoded");
 	    connection.setRequestProperty("Content-Language", "en-US");
@@ -51,6 +51,4 @@ public class SkinDownloadThread extends Thread {
 	    }
 	}
     }
-
-    private NetworkPlayer player;
 }

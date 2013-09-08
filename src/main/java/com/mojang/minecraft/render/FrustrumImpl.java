@@ -8,10 +8,15 @@ import org.lwjgl.opengl.GL11;
 public final class FrustrumImpl extends Frustrum {
 
     private static FrustrumImpl instance = new FrustrumImpl();
-    private FloatBuffer projectionBuff = BufferUtils.createFloatBuffer(16);
-    private FloatBuffer modelviewBuff = BufferUtils.createFloatBuffer(16);
-    private FloatBuffer unused = BufferUtils.createFloatBuffer(16);
-
+    private static void normalize(float[][] var0, int var1) {
+	float var2 = MathHelper
+		.sqrt(var0[var1][0] * var0[var1][0] + var0[var1][1]
+			* var0[var1][1] + var0[var1][2] * var0[var1][2]);
+	var0[var1][0] /= var2;
+	var0[var1][1] /= var2;
+	var0[var1][2] /= var2;
+	var0[var1][3] /= var2;
+    }
     public static Frustrum update() {
 	FrustrumImpl var0 = instance;
 	instance.projectionBuff.clear();
@@ -107,15 +112,10 @@ public final class FrustrumImpl extends Frustrum {
 	normalize(var0.frustrum, 5);
 	return instance;
     }
+    private FloatBuffer projectionBuff = BufferUtils.createFloatBuffer(16);
 
-    private static void normalize(float[][] var0, int var1) {
-	float var2 = MathHelper
-		.sqrt(var0[var1][0] * var0[var1][0] + var0[var1][1]
-			* var0[var1][1] + var0[var1][2] * var0[var1][2]);
-	var0[var1][0] /= var2;
-	var0[var1][1] /= var2;
-	var0[var1][2] /= var2;
-	var0[var1][3] /= var2;
-    }
+    private FloatBuffer modelviewBuff = BufferUtils.createFloatBuffer(16);
+
+    private FloatBuffer unused = BufferUtils.createFloatBuffer(16);
 
 }

@@ -5,8 +5,6 @@ import org.lwjgl.opengl.GL11;
 
 public class Screen {
 
-    protected float imgZ = 0.0F;
-
     protected static void drawBox(int var0, int var1, int var2, int var3,
 	    int var4) {
 	float var5 = (float) (var4 >>> 24) / 255.0F;
@@ -26,6 +24,11 @@ public class Screen {
 	var8.end();
 	GL11.glEnable(3553);
 	GL11.glDisable(3042);
+    }
+
+    public static void drawCenteredString(FontRenderer var0, String var1,
+	    int var2, int var3, int var4) {
+	var0.render(var1, var2 - var0.getWidth(var1) / 2, var3, var4);
     }
 
     protected static void drawFadingBox(int var0, int var1, int var2, int var3,
@@ -53,15 +56,12 @@ public class Screen {
 	GL11.glEnable(3553);
     }
 
-    public static void drawCenteredString(FontRenderer var0, String var1,
-	    int var2, int var3, int var4) {
-	var0.render(var1, var2 - var0.getWidth(var1) / 2, var3, var4);
-    }
-
     public static void drawString(FontRenderer var0, String var1, int var2,
 	    int var3, int var4) {
 	var0.render(var1, var2, var3, var4);
     }
+
+    protected float imgZ = 0.0F;
 
     public final void drawImage(int var1, int var2, int var3, int var4,
 	    int var5, int var6) {

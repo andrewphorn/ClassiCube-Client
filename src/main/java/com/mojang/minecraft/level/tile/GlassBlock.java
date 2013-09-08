@@ -10,10 +10,6 @@ public class GlassBlock extends Block {
 	super(var1, var2);
     }
 
-    public final boolean isSolid() {
-	return false;
-    }
-
     public final boolean canRenderSide(Level level, int x, int y, int z,
 	    int side) {
 	int var6 = level.getTile(x, y, z);
@@ -22,6 +18,10 @@ public class GlassBlock extends Block {
     }
 
     public final boolean isOpaque() {
+	return false;
+    }
+
+    public final boolean isSolid() {
 	return false;
     }
 }

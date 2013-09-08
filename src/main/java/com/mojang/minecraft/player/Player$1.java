@@ -4,6 +4,10 @@ import com.mojang.minecraft.mob.ai.BasicAI;
 
 // PlayerAI
 public class Player$1 extends BasicAI {
+    public static final long serialVersionUID = 0L;
+
+    private Player player;
+
     public Player$1(Player player) {
 	this.player = player;
     }
@@ -18,8 +22,4 @@ public class Player$1 extends BasicAI {
 	this.xxa = player.input.xxa;
 	this.yya = player.input.yya;
     }
-
-    public static final long serialVersionUID = 0L;
-
-    private Player player;
 }

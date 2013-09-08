@@ -10,6 +10,17 @@ import java.util.Iterator;
 import java.util.List;
 
 public class NetworkManager {
+    public ByteArrayOutputStream levelData;
+
+    public NetworkHandler netHandler;
+
+    public Minecraft minecraft;
+
+    public boolean successful = false;
+
+    public boolean levelLoaded = false;
+    public HashMap<Byte, NetworkPlayer> players;
+
     public NetworkManager(Minecraft minecraft, String server, int port,
 	    String username, String key) {
 	minecraft.online = true;
@@ -22,22 +33,6 @@ public class NetworkManager {
 		.start();
     }
 
-    public ByteArrayOutputStream levelData;
-
-    public NetworkHandler netHandler;
-
-    public Minecraft minecraft;
-
-    public boolean successful = false;
-    public boolean levelLoaded = false;
-
-    public HashMap<Byte, NetworkPlayer> players;
-
-    public void sendBlockChange(int x, int y, int z, int mode, int block) {
-	netHandler.send(PacketType.PLAYER_SET_BLOCK, new Object[] { x, y, z,
-		mode, block });
-    }
-
     public void error(Exception e) {
 	netHandler.close();
 
@@ -47,10 +42,6 @@ public class NetworkManager {
 	minecraft.setCurrentScreen(errorScreen);
 
 	e.printStackTrace();
-    }
-
-    public boolean isConnected() {
-	return netHandler != null && netHandler.connected;
     }
 
     public List<String> getPlayers() {
@@ -68,5 +59,14 @@ public class NetworkManager {
 	}
 
 	return list;
+    }
+
+    public boolean isConnected() {
+	return netHandler != null && netHandler.connected;
+    }
+
+    public void sendBlockChange(int x, int y, int z, int mode, int block) {
+	netHandler.send(PacketType.PLAYER_SET_BLOCK, new Object[] { x, y, z,
+		mode, block });
     }
 }

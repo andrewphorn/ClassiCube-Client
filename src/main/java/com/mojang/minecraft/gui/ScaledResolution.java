@@ -31,11 +31,11 @@ public class ScaledResolution {
 	this.scaledHeight = (int) Math.ceil(this.scaledHeightD);
     }
 
-    public int getScaledWidth() {
-	return this.scaledWidth;
-    }
-
     public int getScaledHeight() {
 	return this.scaledHeight;
+    }
+
+    public int getScaledWidth() {
+	return this.scaledWidth;
     }
 }

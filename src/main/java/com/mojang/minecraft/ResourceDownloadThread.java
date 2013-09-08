@@ -12,6 +12,57 @@ import java.util.zip.ZipFile;
 public class ResourceDownloadThread extends Thread {
     public static boolean Done = false;
 
+    public static FileOutputStream fos;
+
+    public static void copyFolder(File src, File dest) {
+	try {
+	    if (src.isDirectory()) {
+
+		if (!dest.exists()) {
+		    dest.mkdir();
+
+		    System.out.println("Directory copied from " + src + "  to "
+			    + dest);
+		}
+
+		String files[] = src.list();
+
+		for (String file : files) {
+		    File srcFile = new File(src, file);
+		    File destFile = new File(dest, file);
+
+		    copyFolder(srcFile, destFile);
+		}
+	    } else {
+		InputStream in = new FileInputStream(src);
+		OutputStream out = new FileOutputStream(dest);
+
+		byte[] buffer = new byte[1024];
+
+		int length;
+
+		while ((length = in.read(buffer)) > 0) {
+		    out.write(buffer, 0, length);
+		}
+
+		in.close();
+		out.close();
+
+		System.out.println("File copied from " + src + " to " + dest);
+	    }
+	} catch (FileNotFoundException e) {
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    private File dir;
+
+    private Minecraft minecraft;
+    boolean running = false;
+    private boolean finished = false;
+
     public ResourceDownloadThread(File minecraftFolder, Minecraft minecraft)
 	    throws IOException {
 	this.minecraft = minecraft;
@@ -27,7 +78,25 @@ public class ResourceDownloadThread extends Thread {
 	}
     }
 
-    public static FileOutputStream fos;
+    public boolean deleteDir(File dir) {
+	if (dir.isDirectory()) {
+	    String[] children = dir.list();
+
+	    for (int i = 0; i < children.length; i++) {
+		boolean success = deleteDir(new File(dir, children[i]));
+
+		if (!success) {
+		    return false;
+		}
+	    }
+	}
+
+	return dir.delete();
+    }
+
+    public boolean isFinished() {
+	return finished;
+    }
 
     @Override
     public void run() {
@@ -132,28 +201,6 @@ public class ResourceDownloadThread extends Thread {
 	finished = true;
     }
 
-    private File dir;
-    private Minecraft minecraft;
-    boolean running = false;
-
-    private boolean finished = false;
-
-    public boolean deleteDir(File dir) {
-	if (dir.isDirectory()) {
-	    String[] children = dir.list();
-
-	    for (int i = 0; i < children.length; i++) {
-		boolean success = deleteDir(new File(dir, children[i]));
-
-		if (!success) {
-		    return false;
-		}
-	    }
-	}
-
-	return dir.delete();
-    }
-
     public void unpack(String filename1) {
 	String filename = filename1;
 
@@ -214,52 +261,5 @@ public class ResourceDownloadThread extends Thread {
 		System.out.println("Error while closing zip file" + e2);
 	    }
 	}
-    }
-
-    public static void copyFolder(File src, File dest) {
-	try {
-	    if (src.isDirectory()) {
-
-		if (!dest.exists()) {
-		    dest.mkdir();
-
-		    System.out.println("Directory copied from " + src + "  to "
-			    + dest);
-		}
-
-		String files[] = src.list();
-
-		for (String file : files) {
-		    File srcFile = new File(src, file);
-		    File destFile = new File(dest, file);
-
-		    copyFolder(srcFile, destFile);
-		}
-	    } else {
-		InputStream in = new FileInputStream(src);
-		OutputStream out = new FileOutputStream(dest);
-
-		byte[] buffer = new byte[1024];
-
-		int length;
-
-		while ((length = in.read(buffer)) > 0) {
-		    out.write(buffer, 0, length);
-		}
-
-		in.close();
-		out.close();
-
-		System.out.println("File copied from " + src + " to " + dest);
-	    }
-	} catch (FileNotFoundException e) {
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
-    }
-
-    public boolean isFinished() {
-	return finished;
     }
 }

@@ -3,6 +3,10 @@ package com.mojang.minecraft.level.generator.noise;
 import java.util.Random;
 
 public class OctaveNoise extends Noise {
+    private PerlinNoise[] perlin;
+
+    private int octaves;
+
     public OctaveNoise(Random random, int octaves) {
 	this.octaves = octaves;
 	perlin = new PerlinNoise[octaves];
@@ -12,7 +16,6 @@ public class OctaveNoise extends Noise {
 	}
 
     }
-
     @Override
     public double compute(double x, double z) {
 	double result = 0.0D;
@@ -27,7 +30,4 @@ public class OctaveNoise extends Noise {
 
 	return result;
     }
-
-    private PerlinNoise[] perlin;
-    private int octaves;
 }

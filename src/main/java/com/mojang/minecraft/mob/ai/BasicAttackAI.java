@@ -10,12 +10,19 @@ public class BasicAttackAI extends BasicAI {
     public static final long serialVersionUID = 0L;
     public int damage = 6;
 
-    protected void update() {
-	super.update();
-	if (this.mob.health > 0) {
-	    this.doAttack();
+    public boolean attack(Entity var1) {
+	if (this.level.clip(new Vec3D(this.mob.x, this.mob.y, this.mob.z),
+		new Vec3D(var1.x, var1.y, var1.z)) != null) {
+	    return false;
+	} else {
+	    this.mob.attackTime = 5;
+	    this.attackDelay = this.random.nextInt(20) + 10;
+	    int var2 = (int) ((this.random.nextFloat() + this.random
+		    .nextFloat()) / 2.0F * (float) this.damage + 1.0F);
+	    var1.hurt(this.mob, var2);
+	    this.noActionTime = 0;
+	    return true;
 	}
-
     }
 
     protected void doAttack() {
@@ -63,21 +70,6 @@ public class BasicAttackAI extends BasicAI {
 	}
     }
 
-    public boolean attack(Entity var1) {
-	if (this.level.clip(new Vec3D(this.mob.x, this.mob.y, this.mob.z),
-		new Vec3D(var1.x, var1.y, var1.z)) != null) {
-	    return false;
-	} else {
-	    this.mob.attackTime = 5;
-	    this.attackDelay = this.random.nextInt(20) + 10;
-	    int var2 = (int) ((this.random.nextFloat() + this.random
-		    .nextFloat()) / 2.0F * (float) this.damage + 1.0F);
-	    var1.hurt(this.mob, var2);
-	    this.noActionTime = 0;
-	    return true;
-	}
-    }
-
     public void hurt(Entity var1, int var2) {
 	super.hurt(var1, var2);
 	if (var1 instanceof Arrow) {
@@ -86,6 +78,14 @@ public class BasicAttackAI extends BasicAI {
 
 	if (var1 != null && !var1.getClass().equals(this.mob.getClass())) {
 	    this.attackTarget = var1;
+	}
+
+    }
+
+    protected void update() {
+	super.update();
+	if (this.mob.health > 0) {
+	    this.doAttack();
 	}
 
     }

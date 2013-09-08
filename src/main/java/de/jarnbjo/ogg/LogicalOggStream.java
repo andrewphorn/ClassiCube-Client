@@ -41,21 +41,33 @@ public interface LogicalOggStream {
     public static final String FORMAT_THEORA = "video/x-theora";
 
     /**
-     * <i>Note:</i> To read from the stream, you must use either this method or
-     * the method <code>getNextOggPacket</code>. Mixing calls to the two methods
-     * will cause data corruption.
+     * Closes this stream. After invoking this method, no further access to the
+     * streams data is possible.
      * 
-     * @return the next Ogg page
-     * 
-     * @see #getNextOggPacket()
-     * 
-     * @throws OggFormatException
-     *             if the ogg stream is corrupted
      * @throws IOException
-     *             if some other IO error occurs
+     *             if an IO error occurs
      */
 
-    public OggPage getNextOggPage() throws OggFormatException, IOException;
+    public void close() throws IOException;
+
+    /**
+     * @return the content type of this stream
+     * 
+     * @see #FORMAT_UNKNOWN
+     * @see #FORMAT_VORBIS
+     * @see #FORMAT_FLAC
+     * @see #FORMAT_THEORA
+     */
+
+    public String getFormat();
+
+    /**
+     * This method does not work if the physical Ogg stream is not seekable.
+     * 
+     * @return the granule position of the last page within this stream
+     */
+
+    public long getMaximumGranulePosition();
 
     /**
      * <i>Note:</i> To read from the stream, you must use either this method or
@@ -75,6 +87,29 @@ public interface LogicalOggStream {
     public byte[] getNextOggPacket() throws OggFormatException, IOException;
 
     /**
+     * <i>Note:</i> To read from the stream, you must use either this method or
+     * the method <code>getNextOggPacket</code>. Mixing calls to the two methods
+     * will cause data corruption.
+     * 
+     * @return the next Ogg page
+     * 
+     * @see #getNextOggPacket()
+     * 
+     * @throws OggFormatException
+     *             if the ogg stream is corrupted
+     * @throws IOException
+     *             if some other IO error occurs
+     */
+
+    public OggPage getNextOggPage() throws OggFormatException, IOException;
+
+    /**
+     * @return the last parsed granule position of this stream
+     */
+
+    public long getTime();
+
+    /**
      * Checks if this stream is open for reading.
      * 
      * @return <code>true</code> if this stream is open for reading,
@@ -82,16 +117,6 @@ public interface LogicalOggStream {
      */
 
     public boolean isOpen();
-
-    /**
-     * Closes this stream. After invoking this method, no further access to the
-     * streams data is possible.
-     * 
-     * @throws IOException
-     *             if an IO error occurs
-     */
-
-    public void close() throws IOException;
 
     /**
      * Sets the stream's position to the beginning of the stream. This method
@@ -104,14 +129,6 @@ public interface LogicalOggStream {
      */
 
     public void reset() throws OggFormatException, IOException;
-
-    /**
-     * This method does not work if the physical Ogg stream is not seekable.
-     * 
-     * @return the granule position of the last page within this stream
-     */
-
-    public long getMaximumGranulePosition();
 
     /**
      * This method is invoked on all logical streams when calling the same
@@ -128,21 +145,4 @@ public interface LogicalOggStream {
      */
 
     public void setTime(long granulePosition) throws IOException;
-
-    /**
-     * @return the last parsed granule position of this stream
-     */
-
-    public long getTime();
-
-    /**
-     * @return the content type of this stream
-     * 
-     * @see #FORMAT_UNKNOWN
-     * @see #FORMAT_VORBIS
-     * @see #FORMAT_FLAC
-     * @see #FORMAT_THEORA
-     */
-
-    public String getFormat();
 }

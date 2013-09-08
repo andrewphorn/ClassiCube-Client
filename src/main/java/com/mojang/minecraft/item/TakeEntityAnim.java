@@ -5,6 +5,19 @@ import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.render.TextureManager;
 
 public class TakeEntityAnim extends Entity {
+    private static final long serialVersionUID = 1L;
+
+    private int time = 0;
+
+    private Entity item;
+
+    private Entity player;
+
+    private float xorg;
+
+    private float yorg;
+    private float zorg;
+
     public TakeEntityAnim(Level level1, Entity item, Entity player) {
 	super(level1);
 
@@ -17,7 +30,10 @@ public class TakeEntityAnim extends Entity {
 	yorg = item.y;
 	zorg = item.z;
     }
-
+    @Override
+    public void render(TextureManager textureManager, float unknown0) {
+	item.render(textureManager, unknown0);
+    }
     @Override
     public void tick() {
 	time++;
@@ -39,20 +55,4 @@ public class TakeEntityAnim extends Entity {
 
 	setPos(x, y, z);
     }
-
-    @Override
-    public void render(TextureManager textureManager, float unknown0) {
-	item.render(textureManager, unknown0);
-    }
-
-    private static final long serialVersionUID = 1L;
-
-    private int time = 0;
-
-    private Entity item;
-    private Entity player;
-
-    private float xorg;
-    private float yorg;
-    private float zorg;
 }

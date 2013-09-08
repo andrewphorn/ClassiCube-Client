@@ -34,6 +34,43 @@ public final class Chunk {
 	this.setAllDirty();
     }
 
+    public final int appendLists(int[] var1, int var2, int var3) {
+	if (!this.visible) {
+	    return var2;
+	} else {
+	    if (!this.dirty[var3]) {
+		var1[var2++] = this.baseListId + var3;
+	    }
+
+	    return var2;
+	}
+    }
+
+    public final void clip(Frustrum var1) {
+	this.visible = var1.isBoxInFrustrum((float) this.x, (float) this.y,
+		(float) this.z, (float) (this.x + this.width),
+		(float) (this.y + this.height), (float) (this.z + this.depth));
+    }
+
+    public final void dispose() {
+	this.setAllDirty();
+	this.level = null;
+    }
+
+    public final float distanceSquared(Player var1) {
+	float var2 = var1.x - (float) this.x;
+	float var3 = var1.y - (float) this.y;
+	float var4 = var1.z - (float) this.z;
+	return var2 * var2 + var3 * var3 + var4 * var4;
+    }
+
+    private void setAllDirty() {
+	for (int var1 = 0; var1 < 2; ++var1) {
+	    this.dirty[var1] = true;
+	}
+
+    }
+
     public final void update() {
 	++chunkUpdates;
 	int var1 = this.x;
@@ -82,43 +119,6 @@ public final class Chunk {
 	    }
 	}
 
-    }
-
-    public final float distanceSquared(Player var1) {
-	float var2 = var1.x - (float) this.x;
-	float var3 = var1.y - (float) this.y;
-	float var4 = var1.z - (float) this.z;
-	return var2 * var2 + var3 * var3 + var4 * var4;
-    }
-
-    private void setAllDirty() {
-	for (int var1 = 0; var1 < 2; ++var1) {
-	    this.dirty[var1] = true;
-	}
-
-    }
-
-    public final void dispose() {
-	this.setAllDirty();
-	this.level = null;
-    }
-
-    public final int appendLists(int[] var1, int var2, int var3) {
-	if (!this.visible) {
-	    return var2;
-	} else {
-	    if (!this.dirty[var3]) {
-		var1[var2++] = this.baseListId + var3;
-	    }
-
-	    return var2;
-	}
-    }
-
-    public final void clip(Frustrum var1) {
-	this.visible = var1.isBoxInFrustrum((float) this.x, (float) this.y,
-		(float) this.z, (float) (this.x + this.width),
-		(float) (this.y + this.height), (float) (this.z + this.depth));
     }
 
 }

@@ -25,22 +25,9 @@ public final class GameSettings implements Serializable {
     public static List<String> typinglog = new ArrayList<String>();
     public static int typinglogpos = 0;
 
-    public GameSettings(Minecraft minecraft, File minecraftFolder) {
-	bindings = new KeyBinding[] { forwardKey, leftKey, backKey, rightKey,
-		jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey,
-		loadLocationKey, runKey };
-
-	settingCount = 14;
-
-	this.minecraft = minecraft;
-
-	settingsFile = new File(minecraftFolder, "options.txt");
-
-	load();
-    }
-
     private static final String[] renderDistances = new String[] { "FAR",
 	    "NORMAL", "SHORT", "TINY" };
+
     public boolean music = true;
     public boolean sound = true;
     public boolean invertMouse = false;
@@ -68,151 +55,37 @@ public final class GameSettings implements Serializable {
     public int settingCount;
     public boolean CanSpeed = true;
     public int HackType = 0;
-
     public boolean VBOs = false;
 
     public boolean HacksEnabled = true;
 
     public int smoothing = 0;
+
     public String[] smoothingOptions = new String[] { "OFF", "Automatic",
 	    "Universal" };
     public int anisotropic = 0;
     public String[] anisotropicOptions = new String[] { "OFF", "ON" };
-
     public KeyBinding flyKey = new KeyBinding("Fly", Keyboard.KEY_Z);
+
     public KeyBinding flyUp = new KeyBinding("Fly Up", Keyboard.KEY_Q);
     public KeyBinding flyDown = new KeyBinding("Fly Down", Keyboard.KEY_E);
+    public GameSettings(Minecraft minecraft, File minecraftFolder) {
+	bindings = new KeyBinding[] { forwardKey, leftKey, backKey, rightKey,
+		jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey,
+		loadLocationKey, runKey };
+
+	settingCount = 14;
+
+	this.minecraft = minecraft;
+
+	settingsFile = new File(minecraftFolder, "options.txt");
+
+	load();
+    }
 
     public String getBinding(int key) {
 	return bindings[key].name + ": "
 		+ Keyboard.getKeyName(bindings[key].key);
-    }
-
-    public void setBinding(int key, int keyID) {
-	bindings[key].key = keyID;
-
-	save();
-    }
-
-    public void toggleSetting(int setting, int fogValue) {
-	if (setting == 0) {
-	    music = !music;
-	}
-
-	if (setting == 1) {
-	    sound = !sound;
-	}
-
-	if (setting == 2) {
-	    invertMouse = !invertMouse;
-	}
-
-	if (setting == 3) {
-	    showFrameRate = !showFrameRate;
-	}
-
-	if (setting == 4) {
-	    viewDistance = viewDistance + fogValue & 3;
-	}
-
-	if (setting == 5) {
-	    viewBobbing = !viewBobbing;
-	}
-
-	if (setting == 6) {
-	    anaglyph = !anaglyph;
-
-	    TextureManager textureManager = minecraft.textureManager;
-	    Iterator<?> iterator = this.minecraft.textureManager.textureImages
-		    .keySet().iterator();
-
-	    int i;
-	    BufferedImage image;
-
-	    while (iterator.hasNext()) {
-		i = (Integer) iterator.next();
-		image = (BufferedImage) textureManager.textureImages
-			.get(Integer.valueOf(i));
-
-		textureManager.load(image, i);
-	    }
-
-	    iterator = textureManager.textures.keySet().iterator();
-
-	    while (iterator.hasNext()) {
-		String s = (String) iterator.next();
-
-		try {
-		    if (s.startsWith("##")) {
-			image = TextureManager.load1(ImageIO
-				.read(TextureManager.class
-					.getResourceAsStream(s.substring(2))));
-		    } else {
-			image = ImageIO.read(TextureManager.class
-				.getResourceAsStream(s));
-		    }
-
-		    i = (Integer) textureManager.textures.get(s);
-
-		    textureManager.load(image, i);
-		} catch (IOException var6) {
-		    var6.printStackTrace();
-		}
-	    }
-	}
-
-	if (setting == 7) {
-	    limitFramerate = !limitFramerate;
-	    if (Display.isCreated()) {
-		Display.setVSyncEnabled(limitFramerate);
-	    }
-	}
-
-	if (setting == 8) {
-	    if (smoothing == smoothingOptions.length - 1) {
-		smoothing = 0;
-	    } else {
-		smoothing++;
-	    }
-
-	    minecraft.textureManager.textures.clear();
-
-	    minecraft.levelRenderer.refresh();
-	}
-
-	if (setting == 9) {
-	    if (anisotropic == anisotropicOptions.length - 1) {
-		anisotropic = 0;
-	    } else {
-		anisotropic++;
-	    }
-
-	    minecraft.textureManager.textures.clear();
-
-	    minecraft.levelRenderer.refresh();
-	}
-	if (setting == 10) {
-	    canServerChangeTextures = !canServerChangeTextures;
-	}
-	if (setting == 11) {
-	    if (HackType == 1) {
-		this.minecraft.player.input.fly = false;
-		this.minecraft.player.input.noclip = false;
-		HackType = 0;
-	    } else {
-		this.minecraft.player.flyingMode = false;
-		this.minecraft.player.input.noClip = false;
-		HackType++;
-	    }
-	}
-	if (setting == 12) {
-	    VBOs = !VBOs;
-	}
-	if (setting == 13) {
-	    HacksEnabled = !HacksEnabled;
-	}
-
-	save();
     }
 
     public String getSetting(int id) {
@@ -363,6 +236,133 @@ public final class GameSettings implements Serializable {
 
 	    e.printStackTrace();
 	}
+    }
+
+    public void setBinding(int key, int keyID) {
+	bindings[key].key = keyID;
+
+	save();
+    }
+
+    public void toggleSetting(int setting, int fogValue) {
+	if (setting == 0) {
+	    music = !music;
+	}
+
+	if (setting == 1) {
+	    sound = !sound;
+	}
+
+	if (setting == 2) {
+	    invertMouse = !invertMouse;
+	}
+
+	if (setting == 3) {
+	    showFrameRate = !showFrameRate;
+	}
+
+	if (setting == 4) {
+	    viewDistance = viewDistance + fogValue & 3;
+	}
+
+	if (setting == 5) {
+	    viewBobbing = !viewBobbing;
+	}
+
+	if (setting == 6) {
+	    anaglyph = !anaglyph;
+
+	    TextureManager textureManager = minecraft.textureManager;
+	    Iterator<?> iterator = this.minecraft.textureManager.textureImages
+		    .keySet().iterator();
+
+	    int i;
+	    BufferedImage image;
+
+	    while (iterator.hasNext()) {
+		i = (Integer) iterator.next();
+		image = (BufferedImage) textureManager.textureImages
+			.get(Integer.valueOf(i));
+
+		textureManager.load(image, i);
+	    }
+
+	    iterator = textureManager.textures.keySet().iterator();
+
+	    while (iterator.hasNext()) {
+		String s = (String) iterator.next();
+
+		try {
+		    if (s.startsWith("##")) {
+			image = TextureManager.load1(ImageIO
+				.read(TextureManager.class
+					.getResourceAsStream(s.substring(2))));
+		    } else {
+			image = ImageIO.read(TextureManager.class
+				.getResourceAsStream(s));
+		    }
+
+		    i = (Integer) textureManager.textures.get(s);
+
+		    textureManager.load(image, i);
+		} catch (IOException var6) {
+		    var6.printStackTrace();
+		}
+	    }
+	}
+
+	if (setting == 7) {
+	    limitFramerate = !limitFramerate;
+	    if (Display.isCreated()) {
+		Display.setVSyncEnabled(limitFramerate);
+	    }
+	}
+
+	if (setting == 8) {
+	    if (smoothing == smoothingOptions.length - 1) {
+		smoothing = 0;
+	    } else {
+		smoothing++;
+	    }
+
+	    minecraft.textureManager.textures.clear();
+
+	    minecraft.levelRenderer.refresh();
+	}
+
+	if (setting == 9) {
+	    if (anisotropic == anisotropicOptions.length - 1) {
+		anisotropic = 0;
+	    } else {
+		anisotropic++;
+	    }
+
+	    minecraft.textureManager.textures.clear();
+
+	    minecraft.levelRenderer.refresh();
+	}
+	if (setting == 10) {
+	    canServerChangeTextures = !canServerChangeTextures;
+	}
+	if (setting == 11) {
+	    if (HackType == 1) {
+		this.minecraft.player.input.fly = false;
+		this.minecraft.player.input.noclip = false;
+		HackType = 0;
+	    } else {
+		this.minecraft.player.flyingMode = false;
+		this.minecraft.player.input.noClip = false;
+		HackType++;
+	    }
+	}
+	if (setting == 12) {
+	    VBOs = !VBOs;
+	}
+	if (setting == 13) {
+	    HacksEnabled = !HacksEnabled;
+	}
+
+	save();
     }
 
 }

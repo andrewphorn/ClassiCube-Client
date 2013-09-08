@@ -1,45 +1,11 @@
 package com.mojang.minecraft.net;
 
 public class PacketType {
-    @SuppressWarnings("rawtypes")
-    private PacketType(Class... classes) {
-	opcode = (byte) (nextOpcode++);
-	packets[opcode] = this;
-	params = new Class[classes.length];
-
-	int length = 0;
-
-	for (int classNumber = 0; classNumber < classes.length; classNumber++) {
-	    Class class_ = classes[classNumber];
-
-	    params[classNumber] = class_;
-
-	    if (class_ == Long.TYPE) {
-		length += 8;
-	    } else if (class_ == Integer.TYPE) {
-		length += 4;
-	    } else if (class_ == Short.TYPE) {
-		length += 2;
-	    } else if (class_ == Byte.TYPE) {
-		++length;
-	    } else if (class_ == Float.TYPE) {
-		length += 4;
-	    } else if (class_ == Double.TYPE) {
-		length += 8;
-	    } else if (class_ == byte[].class) {
-		length += 1024;
-	    } else if (class_ == String.class) {
-		length += 64;
-	    }
-	}
-
-	this.length = length;
-    }
-
     public static final PacketType[] packets = new PacketType[256];
 
     public static final PacketType IDENTIFICATION = new PacketType(new Class[] {
 	    Byte.TYPE, String.class, String.class, Byte.TYPE });
+
     public static final PacketType LEVEL_INIT;
     public static final PacketType LEVEL_DATA;
     public static final PacketType LEVEL_FINALIZE;
@@ -69,16 +35,15 @@ public class PacketType {
     public static final PacketType REMOVE_SELECTION_CUBOID; // 27
     public static final PacketType SET_BLOCK_PERMISSIONS; // 28
     public static final PacketType CHANGE_MODEL; // 29
-    public static final PacketType ENV_SET_MAP_APPEARANCE; //30
-
+    public static final PacketType ENV_SET_MAP_APPEARANCE; // 30
     public int length;
+
     private static int nextOpcode;
     public byte opcode;
     @SuppressWarnings("rawtypes")
     public Class[] params;
     public String extName = "";
     public int Version = 1;
-
     static {
 	new PacketType(new Class[0]);
 
@@ -119,15 +84,19 @@ public class PacketType {
 	EXT_ADD_ENTITY = new PacketType(new Class[] { Byte.TYPE, String.class,
 		String.class });
 	EXT_REMOVE_PLAYER_NAME = new PacketType(new Class[] { Short.TYPE });
-	ENV_SET_COLOR = new PacketType(new Class[] { Byte.TYPE, Short.TYPE, Short.TYPE, Short.TYPE });
+	ENV_SET_COLOR = new PacketType(new Class[] { Byte.TYPE, Short.TYPE,
+		Short.TYPE, Short.TYPE });
 	SELECTION_CUBOID = new PacketType(new Class[] { Byte.TYPE,
 		String.class, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE,
-		Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE });
+		Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE,
+		Short.TYPE });
 	REMOVE_SELECTION_CUBOID = new PacketType(new Class[] { Byte.TYPE });
-	SET_BLOCK_PERMISSIONS = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE, Integer.TYPE });
+	SET_BLOCK_PERMISSIONS = new PacketType(new Class[] { Byte.TYPE,
+		Byte.TYPE, Integer.TYPE });
 	CHANGE_MODEL = new PacketType(new Class[] { Byte.TYPE, String.class });
-	ENV_SET_MAP_APPEARANCE = new PacketType(new Class[] { String.class, Byte.TYPE, Byte.TYPE, Short.TYPE });
-	
+	ENV_SET_MAP_APPEARANCE = new PacketType(new Class[] { String.class,
+		Byte.TYPE, Byte.TYPE, Short.TYPE });
+
 	// set names
 	EXT_INFO.extName = "ExtInfo";
 	EXT_ENTRY.extName = "ExtEntry";
@@ -146,5 +115,40 @@ public class PacketType {
 	ENV_SET_MAP_APPEARANCE.extName = "EnvSetMapAppearance";
 
 	nextOpcode = 0;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private PacketType(Class... classes) {
+	opcode = (byte) (nextOpcode++);
+	packets[opcode] = this;
+	params = new Class[classes.length];
+
+	int length = 0;
+
+	for (int classNumber = 0; classNumber < classes.length; classNumber++) {
+	    Class class_ = classes[classNumber];
+
+	    params[classNumber] = class_;
+
+	    if (class_ == Long.TYPE) {
+		length += 8;
+	    } else if (class_ == Integer.TYPE) {
+		length += 4;
+	    } else if (class_ == Short.TYPE) {
+		length += 2;
+	    } else if (class_ == Byte.TYPE) {
+		++length;
+	    } else if (class_ == Float.TYPE) {
+		length += 4;
+	    } else if (class_ == Double.TYPE) {
+		length += 8;
+	    } else if (class_ == byte[].class) {
+		length += 1024;
+	    } else if (class_ == String.class) {
+		length += 64;
+	    }
+	}
+
+	this.length = length;
     }
 }

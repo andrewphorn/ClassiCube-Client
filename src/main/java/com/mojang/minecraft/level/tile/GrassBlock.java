@@ -12,6 +12,10 @@ public final class GrassBlock extends Block {
 	this.setPhysics(true);
     }
 
+    public final int getDrop() {
+	return DIRT.getDrop();
+    }
+
     protected final int getTextureId(int texture) {
 	return texture == 1 ? 0 : (texture == 0 ? 2 : 3);
     }
@@ -33,9 +37,5 @@ public final class GrassBlock extends Block {
 
 	    }
 	}
-    }
-
-    public final int getDrop() {
-	return DIRT.getDrop();
     }
 }

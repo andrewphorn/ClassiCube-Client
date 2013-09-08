@@ -38,6 +38,15 @@ class MdctFloat {
 
     private float dtmp1, dtmp2, dtmp3, dtmp4;
 
+    private float[] _x = new float[1024];
+
+    // void clear(){
+    // }
+
+    // void forward(float[] in, float[] out){
+    // }
+
+    private float[] _w = new float[1024];
     protected MdctFloat(int n) {
 	bitrev = new int[n / 4];
 	trig = new float[n + n / 4];
@@ -78,19 +87,6 @@ class MdctFloat {
 		bitrev[i * 2 + 1] = acc;
 	    }
 	}
-    }
-
-    // void clear(){
-    // }
-
-    // void forward(float[] in, float[] out){
-    // }
-
-    private float[] _x = new float[1024];
-    private float[] _w = new float[1024];
-
-    protected void setEqualizer(float[] equalizer) {
-	this.equalizer = equalizer;
     }
 
     protected float[] getEqualizer() {
@@ -303,6 +299,10 @@ class MdctFloat {
 	    }
 	}
 	return x;
+    }
+
+    protected void setEqualizer(float[] equalizer) {
+	this.equalizer = equalizer;
     }
 
 }

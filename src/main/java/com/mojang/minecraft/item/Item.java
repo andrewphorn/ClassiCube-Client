@@ -9,6 +9,33 @@ import com.mojang.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 public class Item extends Entity {
+    public static final long serialVersionUID = 0L;
+
+    private static ItemModel[] models = new ItemModel[256];
+
+    public static void initModels() {
+	for (int unknown0 = 0; unknown0 < 256; unknown0++) {
+	    Block var1 = Block.blocks[unknown0];
+
+	    if (var1 != null) {
+		models[unknown0] = new ItemModel(var1.textureId);
+	    }
+	}
+
+    }
+
+    private float xd;
+
+    private float yd;
+
+    private float zd;
+
+    private float rot;
+    private int resource;
+    private int tickCount;
+
+    private int age = 0;
+
     public Item(Level level1, float x, float y, float z, int block) {
 	super(level1);
 
@@ -30,32 +57,18 @@ public class Item extends Entity {
     }
 
     @Override
-    public void tick() {
-	xo = x;
-	yo = y;
-	zo = z;
+    public void playerTouch(Entity entity) {
+	Player player = (Player) entity;
 
-	yd -= 0.04F;
+	if (player.addResource(resource)) {
+	    TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this,
+		    player);
 
-	move(xd, yd, zd);
+	    level.addEntity(takeEntityAnim);
 
-	xd *= 0.98F;
-	yd *= 0.98F;
-	zd *= 0.98F;
-
-	if (onGround) {
-	    xd *= 0.7F;
-	    zd *= 0.7F;
-	    yd *= -0.5F;
-	}
-
-	tickCount++;
-
-	age++;
-
-	if (age >= 6000) {
 	    remove();
 	}
+
     }
 
     @Override
@@ -99,44 +112,31 @@ public class Item extends Entity {
     }
 
     @Override
-    public void playerTouch(Entity entity) {
-	Player player = (Player) entity;
+    public void tick() {
+	xo = x;
+	yo = y;
+	zo = z;
 
-	if (player.addResource(resource)) {
-	    TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this,
-		    player);
+	yd -= 0.04F;
 
-	    level.addEntity(takeEntityAnim);
+	move(xd, yd, zd);
 
+	xd *= 0.98F;
+	yd *= 0.98F;
+	zd *= 0.98F;
+
+	if (onGround) {
+	    xd *= 0.7F;
+	    zd *= 0.7F;
+	    yd *= -0.5F;
+	}
+
+	tickCount++;
+
+	age++;
+
+	if (age >= 6000) {
 	    remove();
 	}
-
-    }
-
-    public static final long serialVersionUID = 0L;
-
-    private static ItemModel[] models = new ItemModel[256];
-
-    private float xd;
-    private float yd;
-    private float zd;
-
-    private float rot;
-
-    private int resource;
-
-    private int tickCount;
-
-    private int age = 0;
-
-    public static void initModels() {
-	for (int unknown0 = 0; unknown0 < 256; unknown0++) {
-	    Block var1 = Block.blocks[unknown0];
-
-	    if (var1 != null) {
-		models[unknown0] = new ItemModel(var1.textureId);
-	    }
-	}
-
     }
 }

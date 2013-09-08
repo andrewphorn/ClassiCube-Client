@@ -36,122 +36,6 @@ import java.util.*;
 
 public class CachedUrlStream implements PhysicalOggStream {
 
-    private boolean closed = false;
-    private URLConnection source;
-    private InputStream sourceStream;
-    private Object drainLock = new Object();
-    private RandomAccessFile drain;
-    private byte[] memoryCache;
-    private ArrayList<Long> pageOffsets = new ArrayList<Long>();
-    private ArrayList<Long> pageLengths = new ArrayList<Long>();
-    private long cacheLength;
-
-    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
-
-    private LoaderThread loaderThread;
-
-    /**
-     * Creates an instance of this class, using a memory cache.
-     */
-
-    public CachedUrlStream(URL source) throws OggFormatException, IOException {
-	this(source, null);
-    }
-
-    /**
-     * Creates an instance of this class, using the specified file as cache. The
-     * file is not automatically deleted when this class is disposed.
-     */
-
-    public CachedUrlStream(URL source, RandomAccessFile drain)
-	    throws OggFormatException, IOException {
-
-	this.source = source.openConnection();
-
-	if (drain == null) {
-	    int contentLength = this.source.getContentLength();
-	    if (contentLength == -1) {
-		throw new IOException(
-			"The URLConncetion's content length must be set when operating with a in-memory cache.");
-	    }
-	    memoryCache = new byte[contentLength];
-	}
-
-	this.drain = drain;
-	this.sourceStream = this.source.getInputStream();
-
-	loaderThread = new LoaderThread(sourceStream, drain, memoryCache);
-	new Thread(loaderThread).start();
-
-	while (!loaderThread.isBosDone() || pageOffsets.size() < 20) {
-	    // System.out.print("pageOffsets.size(): "+pageOffsets.size()+"\r");
-	    try {
-		Thread.sleep(200);
-	    } catch (InterruptedException ex) {
-	    }
-	}
-	// System.out.println();
-	// System.out.println("caching "+pageOffsets.size()+"/20 pages\r");
-    }
-
-    public Collection<LogicalOggStreamImpl> getLogicalStreams() {
-	return logicalStreams.values();
-    }
-
-    public boolean isOpen() {
-	return !closed;
-    }
-
-    public void close() throws IOException {
-	closed = true;
-	sourceStream.close();
-    }
-
-    public long getCacheLength() {
-	return cacheLength;
-    }
-
-    /*
-     * private OggPage getNextPage() throws EndOfOggStreamException,
-     * IOException, OggFormatException { return getNextPage(false); }
-     * 
-     * private OggPage getNextPage(boolean skipData) throws
-     * EndOfOggStreamException, IOException, OggFormatException { return
-     * OggPage.create(sourceStream, skipData); }
-     */
-
-    public OggPage getOggPage(int index) throws IOException {
-	synchronized (drainLock) {
-	    Long offset = (Long) pageOffsets.get(index);
-	    Long length = (Long) pageLengths.get(index);
-	    if (offset != null) {
-		if (drain != null) {
-		    drain.seek(offset.longValue());
-		    return OggPage.create(drain);
-		} else {
-		    byte[] tmpArray = new byte[length.intValue()];
-		    System.arraycopy(memoryCache, offset.intValue(), tmpArray,
-			    0, length.intValue());
-		    return OggPage.create(tmpArray);
-		}
-	    } else {
-		return null;
-	    }
-	}
-    }
-
-    private LogicalOggStream getLogicalStream(int serialNumber) {
-	return (LogicalOggStream) logicalStreams.get(new Integer(serialNumber));
-    }
-
-    public void setTime(long granulePosition) throws IOException {
-	for (Iterator<LogicalOggStreamImpl> iter = logicalStreams.values()
-		.iterator(); iter.hasNext();) {
-	    LogicalOggStream los = (LogicalOggStream) iter.next();
-	    los.setTime(granulePosition);
-	}
-    }
-
     public class LoaderThread implements Runnable {
 
 	private InputStream source;
@@ -167,6 +51,10 @@ public class CachedUrlStream implements PhysicalOggStream {
 	    this.source = source;
 	    this.drain = drain;
 	    this.memoryCache = memoryCache;
+	}
+
+	public boolean isBosDone() {
+	    return bosDone;
 	}
 
 	public void run() {
@@ -235,13 +123,125 @@ public class CachedUrlStream implements PhysicalOggStream {
 		e.printStackTrace();
 	    }
 	}
+    }
+    private boolean closed = false;
+    private URLConnection source;
+    private InputStream sourceStream;
+    private Object drainLock = new Object();
+    private RandomAccessFile drain;
+    private byte[] memoryCache;
+    private ArrayList<Long> pageOffsets = new ArrayList<Long>();
+    private ArrayList<Long> pageLengths = new ArrayList<Long>();
 
-	public boolean isBosDone() {
-	    return bosDone;
+    private long cacheLength;
+
+    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
+
+    private LoaderThread loaderThread;
+
+    /**
+     * Creates an instance of this class, using a memory cache.
+     */
+
+    public CachedUrlStream(URL source) throws OggFormatException, IOException {
+	this(source, null);
+    }
+
+    /**
+     * Creates an instance of this class, using the specified file as cache. The
+     * file is not automatically deleted when this class is disposed.
+     */
+
+    public CachedUrlStream(URL source, RandomAccessFile drain)
+	    throws OggFormatException, IOException {
+
+	this.source = source.openConnection();
+
+	if (drain == null) {
+	    int contentLength = this.source.getContentLength();
+	    if (contentLength == -1) {
+		throw new IOException(
+			"The URLConncetion's content length must be set when operating with a in-memory cache.");
+	    }
+	    memoryCache = new byte[contentLength];
 	}
+
+	this.drain = drain;
+	this.sourceStream = this.source.getInputStream();
+
+	loaderThread = new LoaderThread(sourceStream, drain, memoryCache);
+	new Thread(loaderThread).start();
+
+	while (!loaderThread.isBosDone() || pageOffsets.size() < 20) {
+	    // System.out.print("pageOffsets.size(): "+pageOffsets.size()+"\r");
+	    try {
+		Thread.sleep(200);
+	    } catch (InterruptedException ex) {
+	    }
+	}
+	// System.out.println();
+	// System.out.println("caching "+pageOffsets.size()+"/20 pages\r");
+    }
+
+    public void close() throws IOException {
+	closed = true;
+	sourceStream.close();
+    }
+
+    public long getCacheLength() {
+	return cacheLength;
+    }
+
+    private LogicalOggStream getLogicalStream(int serialNumber) {
+	return (LogicalOggStream) logicalStreams.get(new Integer(serialNumber));
+    }
+
+    /*
+     * private OggPage getNextPage() throws EndOfOggStreamException,
+     * IOException, OggFormatException { return getNextPage(false); }
+     * 
+     * private OggPage getNextPage(boolean skipData) throws
+     * EndOfOggStreamException, IOException, OggFormatException { return
+     * OggPage.create(sourceStream, skipData); }
+     */
+
+    public Collection<LogicalOggStreamImpl> getLogicalStreams() {
+	return logicalStreams.values();
+    }
+
+    public OggPage getOggPage(int index) throws IOException {
+	synchronized (drainLock) {
+	    Long offset = (Long) pageOffsets.get(index);
+	    Long length = (Long) pageLengths.get(index);
+	    if (offset != null) {
+		if (drain != null) {
+		    drain.seek(offset.longValue());
+		    return OggPage.create(drain);
+		} else {
+		    byte[] tmpArray = new byte[length.intValue()];
+		    System.arraycopy(memoryCache, offset.intValue(), tmpArray,
+			    0, length.intValue());
+		    return OggPage.create(tmpArray);
+		}
+	    } else {
+		return null;
+	    }
+	}
+    }
+
+    public boolean isOpen() {
+	return !closed;
     }
 
     public boolean isSeekable() {
 	return true;
+    }
+
+    public void setTime(long granulePosition) throws IOException {
+	for (Iterator<LogicalOggStreamImpl> iter = logicalStreams.values()
+		.iterator(); iter.hasNext();) {
+	    LogicalOggStream los = (LogicalOggStream) iter.next();
+	    los.setTime(granulePosition);
+	}
     }
 }

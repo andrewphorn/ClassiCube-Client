@@ -4,53 +4,17 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 
 public class InputHandlerImpl extends InputHandler {
+    private boolean[] keylist = new boolean[10];
+
+    public static final long serialVersionUID = 0L;
+
+    private boolean[] keyStates = new boolean[100];
+
+    private transient GameSettings settings;
+
     public InputHandlerImpl(GameSettings gameSettings) {
 	settings = gameSettings;
     }
-
-    @Override
-    public void updateMovement(int hackMode) {
-	HackState = hackMode;
-	if (HackState == 0) {
-	    xxa = 0.0F;
-	    yya = 0.0F;
-
-	    if (keyStates[0]) {
-		yya--;
-	    }
-
-	    if (keyStates[1]) {
-		yya++;
-	    }
-
-	    if (keyStates[2]) {
-		xxa--;
-	    }
-
-	    if (keyStates[3]) {
-		xxa++;
-	    }
-
-	    jumping = keyStates[4];
-	    if (this.settings.HacksEnabled) {
-		if (settings.CanSpeed) {
-		    running = keyStates[5];
-		    Minecraft.PlayerIsRunning = keyStates[5];
-		}
-		flyingUp = keyStates[6];
-		flyingDown = keyStates[7];
-	    }
-	}
-    }
-
-    private boolean[] keylist = new boolean[10];
-
-    public final void clear() {
-	for (int i = 0; i < 10; i++)
-	    this.keylist[i] = false;
-    }
-
-    public static final long serialVersionUID = 0L;
 
     public final void calc() {
 	this.move = 0.0F;
@@ -82,6 +46,11 @@ public class InputHandlerImpl extends InputHandler {
 	}
 
 	this.jump = this.keylist[4];
+    }
+
+    public final void clear() {
+	for (int i = 0; i < 10; i++)
+	    this.keylist[i] = false;
     }
 
     @Override
@@ -156,7 +125,38 @@ public class InputHandlerImpl extends InputHandler {
 	}
     }
 
-    private boolean[] keyStates = new boolean[100];
+    @Override
+    public void updateMovement(int hackMode) {
+	HackState = hackMode;
+	if (HackState == 0) {
+	    xxa = 0.0F;
+	    yya = 0.0F;
 
-    private transient GameSettings settings;
+	    if (keyStates[0]) {
+		yya--;
+	    }
+
+	    if (keyStates[1]) {
+		yya++;
+	    }
+
+	    if (keyStates[2]) {
+		xxa--;
+	    }
+
+	    if (keyStates[3]) {
+		xxa++;
+	    }
+
+	    jumping = keyStates[4];
+	    if (this.settings.HacksEnabled) {
+		if (settings.CanSpeed) {
+		    running = keyStates[5];
+		    Minecraft.PlayerIsRunning = keyStates[5];
+		}
+		flyingUp = keyStates[6];
+		flyingDown = keyStates[7];
+	    }
+	}
+    }
 }

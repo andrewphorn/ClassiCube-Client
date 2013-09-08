@@ -23,26 +23,19 @@ public class MinecraftApplet$1 extends Canvas {
     private Image image;
     private Image image2;
 
-    void SetImage() throws IOException {
+    private static final long serialVersionUID = 1L;
 
-	File file = new File(Minecraft.getMinecraftDirectory().getPath()
-		+ "/rsbg.jpg");
-	if (!file.exists()) {
-	    download("http://classicube.net/static/client/rsbg.jpg",
-		    file.getAbsolutePath());
-	}
-	image = ImageIO.read(new File(file.getAbsolutePath()));
+    private MinecraftApplet applet;
 
+    public MinecraftApplet$1(MinecraftApplet minecraftApplet) {
+	this.applet = minecraftApplet;
     }
 
-    void SetImage2() throws IOException {
-	File file = new File(Minecraft.getMinecraftDirectory().getPath()
-		+ "/bg.jpg");
-	if (!file.exists()) {
-	    download("http://classicube.net/static/client/bg.jpg",
-		    file.getAbsolutePath());
-	}
-	image2 = ImageIO.read(new File(file.getAbsolutePath()));
+    @Override
+    public synchronized void addNotify() {
+	super.addNotify();
+
+	applet.startGameThread();
     }
 
     public void download(String address, String localFileName) {
@@ -137,17 +130,6 @@ public class MinecraftApplet$1 extends Canvas {
 	}
     }
 
-    public MinecraftApplet$1(MinecraftApplet minecraftApplet) {
-	this.applet = minecraftApplet;
-    }
-
-    @Override
-    public synchronized void addNotify() {
-	super.addNotify();
-
-	applet.startGameThread();
-    }
-
     @Override
     public synchronized void removeNotify() {
 	applet.stopGameThread();
@@ -155,7 +137,25 @@ public class MinecraftApplet$1 extends Canvas {
 	super.removeNotify();
     }
 
-    private static final long serialVersionUID = 1L;
+    void SetImage() throws IOException {
 
-    private MinecraftApplet applet;
+	File file = new File(Minecraft.getMinecraftDirectory().getPath()
+		+ "/rsbg.jpg");
+	if (!file.exists()) {
+	    download("http://classicube.net/static/client/rsbg.jpg",
+		    file.getAbsolutePath());
+	}
+	image = ImageIO.read(new File(file.getAbsolutePath()));
+
+    }
+
+    void SetImage2() throws IOException {
+	File file = new File(Minecraft.getMinecraftDirectory().getPath()
+		+ "/bg.jpg");
+	if (!file.exists()) {
+	    download("http://classicube.net/static/client/bg.jpg",
+		    file.getAbsolutePath());
+	}
+	image2 = ImageIO.read(new File(file.getAbsolutePath()));
+    }
 }

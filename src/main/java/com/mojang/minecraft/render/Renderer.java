@@ -34,6 +34,44 @@ public final class Renderer {
 	this.heldBlock = new HeldBlock(var1);
     }
 
+    public void applyBobbing(float var1, boolean enabled) {
+	Player var4;
+	float var2 = (var4 = this.minecraft.player).walkDist - var4.walkDistO;
+	var2 = var4.walkDist + var2 * var1;
+	float var3 = var4.oBob + (var4.bob - var4.oBob) * var1;
+	float var5 = var4.oTilt + (var4.tilt - var4.oTilt) * var1;
+	if (enabled) {
+	    GL11.glTranslatef(MathHelper.sin(var2 * 3.1415927F) * var3 * 0.5F,
+		    -Math.abs(MathHelper.cos(var2 * 3.1415927F) * var3), 0.0F);
+	    GL11.glRotatef(MathHelper.sin(var2 * 3.1415927F) * var3 * 3.0F,
+		    0.0F, 0.0F, 1.0F);
+	    GL11.glRotatef(
+		    Math.abs(MathHelper.cos(var2 * 3.1415927F + 0.2F) * var3) * 5.0F,
+		    1.0F, 0.0F, 0.0F);
+	}
+	GL11.glRotatef(var5, 1.0F, 0.0F, 0.0F);
+    }
+
+    private FloatBuffer createBuffer(float var1, float var2, float var3,
+	    float var4) {
+	this.buffer.clear();
+	this.buffer.put(var1).put(var2).put(var3).put(var4);
+	this.buffer.flip();
+	return this.buffer;
+    }
+
+    public final void enableGuiMode() {
+	int var1 = this.minecraft.width * 240 / this.minecraft.height;
+	int var2 = this.minecraft.height * 240 / this.minecraft.height;
+	GL11.glClear(256);
+	GL11.glMatrixMode(5889);
+	GL11.glLoadIdentity();
+	GL11.glOrtho(0.0D, (double) var1, (double) var2, 0.0D, 100.0D, 300.0D);
+	GL11.glMatrixMode(5888);
+	GL11.glLoadIdentity();
+	GL11.glTranslatef(0.0F, 0.0F, -200.0F);
+    }
+
     public Vec3D getPlayerVector(float var1) {
 	Player var4;
 	float var2 = (var4 = this.minecraft.player).xo + (var4.x - var4.xo)
@@ -61,24 +99,6 @@ public final class Renderer {
 	}
     }
 
-    public void applyBobbing(float var1, boolean enabled) {
-	Player var4;
-	float var2 = (var4 = this.minecraft.player).walkDist - var4.walkDistO;
-	var2 = var4.walkDist + var2 * var1;
-	float var3 = var4.oBob + (var4.bob - var4.oBob) * var1;
-	float var5 = var4.oTilt + (var4.tilt - var4.oTilt) * var1;
-	if(enabled){
-	    GL11.glTranslatef(MathHelper.sin(var2 * 3.1415927F) * var3 * 0.5F,
-		    -Math.abs(MathHelper.cos(var2 * 3.1415927F) * var3), 0.0F);
-	    GL11.glRotatef(MathHelper.sin(var2 * 3.1415927F) * var3 * 3.0F, 0.0F,
-		    0.0F, 1.0F);
-	    GL11.glRotatef(
-		    Math.abs(MathHelper.cos(var2 * 3.1415927F + 0.2F) * var3) * 5.0F,
-		    1.0F, 0.0F, 0.0F);
-	}
-	GL11.glRotatef(var5, 1.0F, 0.0F, 0.0F);
-    }
-
     public final void setLighting(boolean var1) {
 	if (!var1) {
 	    GL11.glDisable(2896);
@@ -97,18 +117,6 @@ public final class Renderer {
 	    GL11.glLight(16384, 4608, this.createBuffer(0.0F, 0.0F, 0.0F, 1.0F));
 	    GL11.glLightModel(2899, this.createBuffer(var4, var4, var4, 1.0F));
 	}
-    }
-
-    public final void enableGuiMode() {
-	int var1 = this.minecraft.width * 240 / this.minecraft.height;
-	int var2 = this.minecraft.height * 240 / this.minecraft.height;
-	GL11.glClear(256);
-	GL11.glMatrixMode(5889);
-	GL11.glLoadIdentity();
-	GL11.glOrtho(0.0D, (double) var1, (double) var2, 0.0D, 100.0D, 300.0D);
-	GL11.glMatrixMode(5888);
-	GL11.glLoadIdentity();
-	GL11.glTranslatef(0.0F, 0.0F, -200.0F);
     }
 
     public void updateFog() {
@@ -166,13 +174,5 @@ public final class Renderer {
 
 	GL11.glEnable(2903);
 	GL11.glColorMaterial(1028, 4608);
-    }
-
-    private FloatBuffer createBuffer(float var1, float var2, float var3,
-	    float var4) {
-	this.buffer.clear();
-	this.buffer.put(var1).put(var2).put(var3).put(var4);
-	this.buffer.flip();
-	return this.buffer;
     }
 }

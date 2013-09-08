@@ -18,8 +18,8 @@ public final class ModelManager {
     private CrocModel croc = new CrocModel();
 
     public final Model getModel(String var1) {
-	for(int i=1; i< SessionData.allowedBlocks.size(); i++){
-	    if(var1.equals("" + i)){
+	for (int i = 1; i < SessionData.allowedBlocks.size(); i++) {
+	    if (var1.equals("" + i)) {
 		return new BlockModel();
 	    }
 	}

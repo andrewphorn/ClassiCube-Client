@@ -29,13 +29,55 @@ public final class HUDScreen extends Screen {
     public static String ServerName = "";
     public static String UserDetail = "";
 
+    public static void drawCenteredString(FontRenderer var0, String var1,
+	    int var2, int var3, int var4) {
+	var0.render(var1, var2 - var0.getWidth(var1) / 2, var3, var4);
+    }
+
+    int Page = 0;
+
     public HUDScreen(Minecraft var1, int var2, int var3) {
 	this.mc = var1;
 	this.width = var2 * 240 / var3;
 	this.height = var3 * 240 / var3;
     }
 
-    int Page = 0;
+    public final void addChat(String var1) {
+	if (var1.contains("^detail.user=")) {
+	    Compass = var1.replace("^detail.user=", "");
+	    return;
+	}
+
+	this.chat.add(0, new ChatLine(var1));
+
+	while (this.chat.size() > 50) {
+	    this.chat.remove(this.chat.size() - 1);
+	}
+
+    }
+
+    public int FindGroupChanges(int Page,
+	    List<PlayerListNameData> playerListNames) {
+	int groupChanges = 0;
+	String lastGroupName = "";
+	int rangeA = (28 * (Page));
+	int rangeB = (rangeA + (28));
+	rangeB = Math.min(rangeB, playerListNames.size());
+	List<PlayerListNameData> namesToPrint = new ArrayList<PlayerListNameData>();
+	for (int k = rangeA; k < rangeB; k++) {
+	    namesToPrint.add((PlayerListNameData) playerListNames.get(k));
+	}
+	for (int var11 = 0; var11 < namesToPrint.size(); ++var11) {
+	    PlayerListNameData pi = (PlayerListNameData) namesToPrint
+		    .get(var11);
+	    if (!lastGroupName.equals(pi.groupName)) {
+		lastGroupName = pi.groupName;
+		groupChanges++;
+	    }
+
+	}
+	return groupChanges;
+    }
 
     public final void render(float var1, boolean var2, int var3, int var4) {
 	FontRenderer var5 = this.mc.fontRenderer;
@@ -163,11 +205,14 @@ public final class HUDScreen extends Screen {
 
 	    var5.render(this.mc.debug, 2, 12, 16777215);
 
-	    if ((this.mc.player.flyingMode || this.mc.player.input.fly) && !(this.mc.player.noPhysics || this.mc.player.input.noclip))
+	    if ((this.mc.player.flyingMode || this.mc.player.input.fly)
+		    && !(this.mc.player.noPhysics || this.mc.player.input.noclip))
 		var5.render("Fly: ON.", 2, 32, 16777215);
-	    else if (!(this.mc.player.flyingMode || this.mc.player.input.fly) && (this.mc.player.noPhysics || this.mc.player.input.noclip))
+	    else if (!(this.mc.player.flyingMode || this.mc.player.input.fly)
+		    && (this.mc.player.noPhysics || this.mc.player.input.noclip))
 		var5.render("NoClip: ON.", 2, 32, 16777215);
-	    else if ((this.mc.player.flyingMode || this.mc.player.input.fly) && (this.mc.player.noPhysics || this.mc.player.input.noclip))
+	    else if ((this.mc.player.flyingMode || this.mc.player.input.fly)
+		    && (this.mc.player.noPhysics || this.mc.player.input.noclip))
 		var5.render("Fly: ON. NoClip: ON", 2, 32, 16777215);
 	    GL11.glPopMatrix();
 
@@ -302,48 +347,6 @@ public final class HUDScreen extends Screen {
 		    }
 		}
 	    }
-	}
-
-    }
-    
-    public static void drawCenteredString(FontRenderer var0, String var1,
-	    int var2, int var3, int var4) {
-	var0.render(var1, var2 - var0.getWidth(var1) / 2, var3, var4);
-    }
-
-    public int FindGroupChanges(int Page,
-	    List<PlayerListNameData> playerListNames) {
-	int groupChanges = 0;
-	String lastGroupName = "";
-	int rangeA = (28 * (Page));
-	int rangeB = (rangeA + (28));
-	rangeB = Math.min(rangeB, playerListNames.size());
-	List<PlayerListNameData> namesToPrint = new ArrayList<PlayerListNameData>();
-	for (int k = rangeA; k < rangeB; k++) {
-	    namesToPrint.add((PlayerListNameData) playerListNames.get(k));
-	}
-	for (int var11 = 0; var11 < namesToPrint.size(); ++var11) {
-	    PlayerListNameData pi = (PlayerListNameData) namesToPrint
-		    .get(var11);
-	    if (!lastGroupName.equals(pi.groupName)) {
-		lastGroupName = pi.groupName;
-		groupChanges++;
-	    }
-
-	}
-	return groupChanges;
-    }
-
-    public final void addChat(String var1) {
-	if (var1.contains("^detail.user=")) {
-	    Compass = var1.replace("^detail.user=", "");
-	    return;
-	}
-
-	this.chat.add(0, new ChatLine(var1));
-
-	while (this.chat.size() > 50) {
-	    this.chat.remove(this.chat.size() - 1);
 	}
 
     }
