@@ -540,9 +540,6 @@ public final class Minecraft implements Runnable {
     public final void run() {
 	this.running = true;
 	String textureFile = "/terrain.png";
-	if (!isApplet) {
-	    textureFile = "/resources" + textureFile;
-	}
 	BufferedImage image = null;
 	try {
 	    image = ImageIO.read(TextureManager.class
@@ -562,10 +559,10 @@ public final class Minecraft implements Runnable {
 
 	    if (!isApplet) {
 		String s = System.getProperty("os.name").toLowerCase();
-		System.setProperty("org.lwjgl.librarypath", mcDir + "/native/"
+		System.setProperty("org.lwjgl.librarypath", mcDir + "/natives/"
 			+ getOSfolderName(s));
 		System.setProperty("net.java.games.input.librarypath", mcDir
-			+ "/native/" + getOSfolderName(s));
+			+ "/natives/" + getOSfolderName(s));
 	    }
 	    if (this.session == null) {
 		SessionData.SetAllowedBlocks((byte) 1);

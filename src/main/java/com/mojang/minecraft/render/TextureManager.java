@@ -301,9 +301,6 @@ public class TextureManager {
     }
 
     public int load(String file) {
-	if (!Applet && !file.endsWith(".zip")) {
-	    file = "/resources" + file;
-	}
 	if (file.contains("terrain") && textures.containsKey("customTerrain")) {
 	    return textures.get("customTerrain");
 	}

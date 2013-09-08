@@ -1,6 +1,11 @@
 package com.mojang.minecraft.gui;
 
+import java.awt.Canvas;
+
+import org.lwjgl.opengl.Display;
+
 import com.mojang.minecraft.Minecraft;
+import com.oyasunadev.mcraft.client.core.ClassiCubeStandalone.MinecraftFrame.MinecraftCanvas;
 
 public final class ErrorScreen extends GuiScreen {
 
@@ -16,6 +21,7 @@ public final class ErrorScreen extends GuiScreen {
 	if (var1.id == 0) {
 	    Minecraft cache = this.minecraft;
 	    this.minecraft.shutdown();
+	    Display.destroy();
 	    if (cache.session != null) {
 		this.minecraft.networkManager.netHandler.close();
 	    }

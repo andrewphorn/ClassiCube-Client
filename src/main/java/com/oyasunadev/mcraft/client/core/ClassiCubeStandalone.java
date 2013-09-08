@@ -37,12 +37,12 @@ public class ClassiCubeStandalone {
     /**
      * A class representing the Minecraft Classic game.
      */
-    private class MinecraftFrame extends JFrame {
+    public class MinecraftFrame extends JFrame {
 	/**
 	 * Override the MinecraftApplet class because we need to fake the
 	 * Document Base and Code Base.
 	 */
-	private class MCraftApplet extends MinecraftApplet {
+	public class MCraftApplet extends MinecraftApplet {
 
 	    /**
 	     * 
@@ -108,8 +108,8 @@ public class ClassiCubeStandalone {
 	/**
 	 * A canvas for the Minecraft thread.
 	 */
-	private class MinecraftCanvas extends Canvas {
-	    private Image image;
+	public class MinecraftCanvas extends Canvas {
+	    public Image image;
 	    private Image image2;
 
 	    private static final long serialVersionUID = 1L;
@@ -285,7 +285,7 @@ public class ClassiCubeStandalone {
 	    /**
 	     * Start the Minecraft client thread.
 	     */
-	    private synchronized void startThread() {
+	    public synchronized void startThread() {
 		if (thread == null) {
 		    thread = new Thread(minecraft, "Client");
 

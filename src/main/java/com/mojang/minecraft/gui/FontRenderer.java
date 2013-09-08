@@ -36,13 +36,8 @@ public final class FontRenderer {
 	BufferedImage font;
 
 	try {
-	    if (textures.Applet) {
 		font = ImageIO.read(TextureManager.class
 			.getResourceAsStream(fontImage));
-	    } else {
-		font = ImageIO.read(TextureManager.class
-			.getResourceAsStream("/resources" + fontImage));
-	    }
 	} catch (IOException e) {
 	    throw new IOException("Missing resource");
 	}

@@ -199,13 +199,13 @@ public class MinecraftStandalone {
 
 	    void SetImage() throws IOException {
 		image = ImageIO.read(getClass().getResourceAsStream(
-			"/resources" + "/rsbg.jpg"));
+			"/rsbg.jpg"));
 
 	    }
 
 	    void SetImage2() throws IOException {
 		image2 = ImageIO.read(getClass().getResourceAsStream(
-			"/resources" + "/bg.jpg"));
+			"/bg.jpg"));
 	    }
 
 	    /**
@@ -296,7 +296,7 @@ public class MinecraftStandalone {
 	    if (Player == null && Server == null && Mppass == null)
 		minecraft.session = null;
 
-	    boolean RunFakeNetwork = false;
+	    boolean RunFakeNetwork = true;
 
 	    if (RunFakeNetwork) {
 		minecraft.host = "127.0.0.1";
