@@ -9,6 +9,8 @@ import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
+import com.mojang.minecraft.Minecraft;
+
 public class ShapeRenderer {
     private static boolean convertQuadsToTriangles;
     public static boolean tryVBO;
@@ -34,22 +36,24 @@ public class ShapeRenderer {
     private double yOffset;
     private double zOffset;
     private int normal;
-    public static final ShapeRenderer instance = new ShapeRenderer(2097152);
+    public static ShapeRenderer instance;
     private boolean isDrawing;
     private boolean useVBO;
     private IntBuffer vertexBuffers;
     private int vboIndex;
     private int vboCount = 10;
     private int bufferSize;
-
-    private ShapeRenderer(int var1) {
+    private Minecraft mc;
+    private boolean vboSet = false;
+    public ShapeRenderer(int var1, Minecraft minecraft) {
+	this.mc = minecraft;
 	this.bufferSize = var1;
 	this.byteBuffer = GLAllocation.createDirectByteBuffer(var1 * 4);
 	this.intBuffer = this.byteBuffer.asIntBuffer();
 	this.floatBuffer = this.byteBuffer.asFloatBuffer();
 	this.shortBuffer = this.byteBuffer.asShortBuffer();
 	this.rawBuffer = new int[var1];
-	this.useVBO = tryVBO
+	this.useVBO = mc.settings.VBOs
 		&& GLContext.getCapabilities().GL_ARB_vertex_buffer_object;
 
 	if (this.useVBO) {
@@ -67,6 +71,11 @@ public class ShapeRenderer {
     }
 
     public void begin() {
+	if(!vboSet){
+	    this.useVBO = mc.settings.VBOs
+		    && GLContext.getCapabilities().GL_ARB_vertex_buffer_object;
+	    vboSet = true;
+	}
 	this.startDrawing(7);
     }
 

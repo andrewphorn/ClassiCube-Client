@@ -354,9 +354,10 @@ public final class Minecraft implements Runnable {
 		    var2.printStackTrace();
 		}
 
-		/*if (this.canvas != null) { // check this, changed @FindBugs
-		    this.canvas.requestFocus();
-		}*/
+		/*
+		 * if (this.canvas != null) { // check this, changed @FindBugs
+		 * this.canvas.requestFocus(); }
+		 */
 	    } else {
 		Mouse.setGrabbed(true);
 	    }
@@ -618,6 +619,7 @@ public final class Minecraft implements Runnable {
 	    checkGLError("Startup");
 	    //
 	    this.settings = new GameSettings(this, mcDir);
+	    ShapeRenderer.instance = new ShapeRenderer(2097152, this);
 	    this.textureManager = new TextureManager(this.settings, isApplet);
 	    this.textureManager.registerAnimation(new TextureFireFX());
 	    this.textureManager.registerAnimation(new TextureLavaFX());
@@ -1050,6 +1052,7 @@ public final class Minecraft implements Runnable {
 						renderer.minecraft.settings.viewBobbing);
 
 					var116 = renderer.minecraft.player;
+
 					GL11.glTranslatef(0.0F, 0.0F,
 						cameraDistance);
 
@@ -1105,7 +1108,6 @@ public final class Minecraft implements Runnable {
 					var89.sortChunks(var126, 0);
 					int var83;
 					int var110;
-					ShapeRenderer.tryVBO = settings.VBOs;
 					ShapeRenderer shapeRenderer = ShapeRenderer.instance;
 					int var114;
 					int var125;

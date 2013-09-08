@@ -184,7 +184,6 @@ public final class GameSettings implements Serializable {
 		    }
 		    if (setting[0].equals("VBOs")) {
 			VBOs = setting[1].equals("true");
-			ShapeRenderer.tryVBO = VBOs;
 		    }
 		    if (setting[0].equals("HacksEnabled")) {
 			HacksEnabled = setting[1].equals("true");

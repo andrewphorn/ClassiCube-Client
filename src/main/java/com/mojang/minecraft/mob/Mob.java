@@ -502,7 +502,6 @@ public class Mob extends Entity {
 	    zd *= 0.91F;
 	    yd = (float) ((double) yd - 0.08D);
 	    if (Block.blocks[var1] != Block.ICE) {
-
 		if (this.flyingMode) {
 		    y1 = 0.0F;
 		    xd *= y1;
@@ -514,9 +513,18 @@ public class Mob extends Entity {
 		    xd *= y1;
 		    zd *= y1;
 		}
-	    } else if (((Player) this).settings.minecraft.session == null) {
-		if (xd > 0.90f || xd < -0.90f || zd < -0.90f || zd > 0.90f)
-		    this.tilt = -60.0f;
+	    } else {
+		double limit = 0.256D;
+		if (xd > limit || xd < -limit || zd < -limit || zd > limit)
+			this.tilt = -20f;
+		if (xd > limit)
+		    xd = (float) limit;
+		if (xd < -limit)
+		    xd = (float) -limit;
+		if (zd < -limit)
+		    zd = (float) -limit;
+		if (zd > limit)
+		    zd = (float) limit;
 	    }
 	}
     }
