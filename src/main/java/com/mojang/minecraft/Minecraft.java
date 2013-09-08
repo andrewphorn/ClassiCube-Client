@@ -354,9 +354,9 @@ public final class Minecraft implements Runnable {
 		    var2.printStackTrace();
 		}
 
-		if (this.canvas != null) { // check this, changed @FindBugs
+		/*if (this.canvas != null) { // check this, changed @FindBugs
 		    this.canvas.requestFocus();
-		}
+		}*/
 	    } else {
 		Mouse.setGrabbed(true);
 	    }
