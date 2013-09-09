@@ -38,7 +38,7 @@ public final class Music implements Audio {
 	(new MusicPlayThread(this)).start();
     }
 
-    public final boolean play(int[] var1, int[] var2, int var3) {
+    public final boolean play(short[] var1, short[] var2, int var3) {
 	if (!this.player.settings.music) {
 	    this.stopped = true;
 	    return false;

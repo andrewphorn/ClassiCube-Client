@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public final class BlockSelectScreen extends GuiScreen {
 
+    boolean lessThan49 = SessionData.allowedBlocks.size() <= 49;
     int BlocksPerRow = 13;
     int Spacing = 20;
 
@@ -25,6 +26,10 @@ public final class BlockSelectScreen extends GuiScreen {
     public BlockSelectScreen() {
 	this.grabsMouse = true;
 	start();
+	if (lessThan49) {
+	    BlocksPerRow = 11;
+	    Spacing = 24;
+	}
     }
 
     String GetBlockName(int id) {
@@ -74,12 +79,22 @@ public final class BlockSelectScreen extends GuiScreen {
 
     public final void render(int var1, int var2) {
 	var1 = this.getBlockOnScreen(var1, var2);
-	drawFadingBox(this.width / 2 - 140, 30, this.width / 2 + 140, 180,
-		-1878719232, -1070583712);
+	if (lessThan49) {
+	    drawFadingBox(this.width / 2 - 140, 30, this.width / 2 + 140, 195,
+		    -1878719232, -1070583712);
+	} else {
+	    drawFadingBox(this.width / 2 - 140, 30, this.width / 2 + 140, 180,
+		    -1878719232, -1070583712);
+	}
 	if (var1 >= 0) {
 	    var2 = this.width / 2 + var1 % BlocksPerRow * Spacing + -128;
-	    drawCenteredString(this.fontRenderer, GetBlockName(var1),
-		    this.width / 2, 165, 16777215);
+	    if (lessThan49) {
+		drawCenteredString(this.fontRenderer, GetBlockName(var1),
+			this.width / 2, 180, 16777215);
+	    } else {
+		drawCenteredString(this.fontRenderer, GetBlockName(var1),
+			this.width / 2, 165, 16777215);
+	    }
 	}
 
 	drawCenteredString(this.fontRenderer, "Select block", this.width / 2,

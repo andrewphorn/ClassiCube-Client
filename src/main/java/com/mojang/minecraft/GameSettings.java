@@ -1,6 +1,5 @@
 package com.mojang.minecraft;
 
-import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;

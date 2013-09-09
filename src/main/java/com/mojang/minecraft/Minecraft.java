@@ -124,6 +124,10 @@ public final class Minecraft implements Runnable {
     public List<Block> DisallowPlacementBlocks = new ArrayList<Block>();
     public List<Block> DisallowedBreakingBlocks = new ArrayList<Block>();
 
+    private int tempDisplayWidth;
+
+    private int tempDisplayHeight;
+
     public static boolean isSinglePlayer = false;
 
     private static final List<DisplayMode> displayModes = new ArrayList<DisplayMode>();
@@ -262,10 +266,11 @@ public final class Minecraft implements Runnable {
 	}
 
 	this.applet = var2;
-	new SleepForeverThread();
 	this.canvas = var1;
 	this.width = var3;
 	this.height = var4;
+	this.tempDisplayHeight = height;
+	this.tempDisplayWidth = width;
 	this.fullscreen = var5;
 	if (var1 != null) {
 	    try {
@@ -1074,6 +1079,7 @@ public final class Minecraft implements Runnable {
 					GL11.glTranslatef(-var69, -var74,
 						-var33);
 					Frustrum var76 = FrustrumImpl.update();
+					// var76.init();
 					Frustrum var100 = var76;
 					LevelRenderer var101 = renderer.minecraft.levelRenderer;
 
@@ -2056,12 +2062,9 @@ public final class Minecraft implements Runnable {
     }
 
     private void setDisplayMode() throws LWJGLException {
-	if (displayModes.size() == 0) {
-	    displayModes.add(new DisplayMode(2560, 1600));
-	    displayModes.add(new DisplayMode(2880, 1800));
-	}
 	HashSet<DisplayMode> var1 = new HashSet<DisplayMode>();
 	Collections.addAll(var1, Display.getAvailableDisplayModes());
+	var1.add(new DisplayMode(1216, 684));
 	DisplayMode var2 = Display.getDesktopDisplayMode();
 
 	if (!var1.contains(var2) && getOs() == Minecraft$OS.macos) {
@@ -2433,6 +2436,20 @@ public final class Minecraft implements Runnable {
 						    .get(edgeBlock);
 					}
 					if (textureUrl.length() > 0) {
+					    if (textureUrl
+						    .equalsIgnoreCase("default")) {
+						this.textureManager.currentTerrainPng = null;
+						this.textureManager.animations
+							.clear();
+						this.textureManager
+							.registerAnimation(new TextureWaterFX());
+						this.textureManager
+							.registerAnimation(new TextureLavaFX());
+						this.textureManager
+							.registerAnimation(new TextureFireFX());
+						return;
+					    }
+
 					    File path = new File(
 						    getMinecraftDirectory(),
 						    "/skins/terrain");
@@ -2455,6 +2472,8 @@ public final class Minecraft implements Runnable {
 							|| image.getHeight() != 256)
 						    return;
 						this.textureManager.currentTerrainPng = image;
+						this.textureManager.animations
+							.clear();
 					    }
 					}
 					this.textureManager.textures.clear();
@@ -3046,6 +3065,10 @@ public final class Minecraft implements Runnable {
 			    s.caretPos++;
 			}
 
+			if (Keyboard.getEventKey() == Keyboard.KEY_F11) {
+			    toggleFullscreen();
+			}
+
 			if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
 			    if (this.cameraDistance == -0.1F) {
 				this.cameraDistance = -5.1f;
@@ -3238,6 +3261,46 @@ public final class Minecraft implements Runnable {
 
 	    this.particleManager.tick();
 	}
+    }
 
+    public void toggleFullscreen() {
+	try {
+	    this.fullscreen = !this.fullscreen;
+
+	    if (this.fullscreen) {
+		setDisplayMode();
+
+		this.width = Display.getDisplayMode().getWidth();
+		this.height = Display.getDisplayMode().getHeight();
+		if (this.width <= 0) {
+		    this.width = 1;
+		}
+
+		if (this.height <= 0) {
+		    this.height = 1;
+		}
+	    } else {
+		Display.setDisplayMode(new DisplayMode(this.tempDisplayWidth,
+			this.tempDisplayHeight));
+		this.width = this.tempDisplayWidth;
+		this.height = this.tempDisplayHeight;
+
+		if (this.width <= 0) {
+		    this.width = 1;
+		}
+
+		if (this.height <= 0) {
+		    this.height = 1;
+		}
+	    }
+
+	    this.resize();
+
+	    Display.setFullscreen(this.fullscreen);
+	    Display.setVSyncEnabled(this.settings.limitFramerate);
+	    Display.update();
+	} catch (Exception var2) {
+	    var2.printStackTrace();
+	}
     }
 }

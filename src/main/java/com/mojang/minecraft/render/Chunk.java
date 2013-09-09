@@ -34,12 +34,12 @@ public final class Chunk {
 	this.setAllDirty();
     }
 
-    public final int appendLists(int[] var1, int var2, int var3) {
+    public final int appendLists(short[] var1, int var2, int var3) {
 	if (!this.visible) {
 	    return var2;
 	} else {
 	    if (!this.dirty[var3]) {
-		var1[var2++] = this.baseListId + var3;
+		var1[var2++] = (short) (this.baseListId + var3);
 	    }
 
 	    return var2;

@@ -21,21 +21,7 @@ import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_AN
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 
 public class TextureManager {
-    public static BufferedImage load1(BufferedImage image) {
-	int charWidth = image.getWidth() / 16;
-	BufferedImage image1 = new BufferedImage(16, image.getHeight()
-		* charWidth, BufferedImage.TYPE_INT_ARGB);
-	Graphics graphics = image1.getGraphics();
-
-	for (int i = 0; i < charWidth; i++) {
-	    graphics.drawImage(image, -i << 4, i * image.getHeight(), null);
-	}
-
-	graphics.dispose();
-
-	return image1;
-    }
-
+    
     public boolean Applet;
 
     public HashMap<String, Integer> textures = new HashMap<String, Integer>();
@@ -44,7 +30,7 @@ public class TextureManager {
     public ByteBuffer textureBuffer = BufferUtils.createByteBuffer(262144);
     public List<TextureFX> animations = new ArrayList<TextureFX>();
     public GameSettings settings;
-    public List<BufferedImage> textureAtlas = new ArrayList();
+    public List<BufferedImage> textureAtlas = new ArrayList<BufferedImage>();
 
     public BufferedImage currentTerrainPng = null;
     public BufferedImage customSideBlock = null;
@@ -65,6 +51,21 @@ public class TextureManager {
 	if (!texturesFolder.exists()) {
 	    texturesFolder.mkdir();
 	}
+    }
+    
+    public static BufferedImage load1(BufferedImage image) {
+	int charWidth = image.getWidth() / 16;
+	BufferedImage image1 = new BufferedImage(16, image.getHeight()
+		* charWidth, BufferedImage.TYPE_INT_ARGB);
+	Graphics graphics = image1.getGraphics();
+
+	for (int i = 0; i < charWidth; i++) {
+	    graphics.drawImage(image, -i << 4, i * image.getHeight(), null);
+	}
+
+	graphics.dispose();
+
+	return image1;
     }
 
     public List<BufferedImage> Atlas2dInto1d(BufferedImage atlas2d, int tiles,
@@ -380,6 +381,7 @@ public class TextureManager {
     public int loadTexturePack(String file) throws IOException {
 	int textureID = 0;
 	if (file.endsWith(".zip")) {
+	    animations.clear();
 	    ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/"
 		    + file));
 

@@ -22,21 +22,21 @@ public class PerlinNoise extends Noise {
 	return unknown1 + unknown0 * (unknown2 - unknown1);
     }
 
-    private int[] noise;
+    private short[] noise;
 
     public PerlinNoise() {
 	this(new Random());
     }
 
     public PerlinNoise(Random random) {
-	noise = new int[512];
+	noise = new short[512];
 
-	for (int count = 0; count < 256; noise[count] = count++) {
+	for (short count = 0; count < 256; noise[count] = count++) {
 	}
 
-	for (int count = 0; count < 256; count++) {
-	    int unknown0 = random.nextInt(256 - count) + count;
-	    int unknown1 = noise[count];
+	for (short count = 0; count < 256; count++) {
+	    short unknown0 = (short) (random.nextInt(256 - count) + count);
+	    short unknown1 = noise[count];
 
 	    noise[count] = noise[unknown0];
 	    noise[unknown0] = unknown1;

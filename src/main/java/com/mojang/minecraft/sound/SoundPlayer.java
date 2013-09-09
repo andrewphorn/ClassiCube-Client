@@ -31,8 +31,8 @@ public final class SoundPlayer implements Runnable {
     }
 
     public final void run() {
-	int[] var1 = new int[4410];
-	int[] var2 = new int[4410];
+	short[] var1 = new short[4410];
+	short[] var2 = new short[4410];
 
 	for (byte[] var3 = new byte[17640]; this.running; this.dataLine.write(
 		var3, 0, 17640)) {
@@ -52,10 +52,10 @@ public final class SoundPlayer implements Runnable {
 		e.printStackTrace();
 	    }
 
-	    Arrays.fill(var1, 0, 4410, 0);
-	    Arrays.fill(var2, 0, 4410, 0);
-	    int[] var5 = var2;
-	    int[] var6 = var1;
+	    Arrays.fill(var1, 0, 4410, (short)0);
+	    Arrays.fill(var2, 0, 4410, (short)0);
+	    short[] var5 = var2;
+	    short[] var6 = var1;
 	    synchronized (audioQueue) {
 		int i = 0;
 		while (true) {

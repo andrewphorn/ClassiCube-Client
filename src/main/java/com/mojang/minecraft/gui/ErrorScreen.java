@@ -1,11 +1,9 @@
 package com.mojang.minecraft.gui;
 
-import java.awt.Canvas;
 
 import org.lwjgl.opengl.Display;
 
 import com.mojang.minecraft.Minecraft;
-import com.oyasunadev.mcraft.client.core.ClassiCubeStandalone.MinecraftFrame.MinecraftCanvas;
 
 public final class ErrorScreen extends GuiScreen {
 

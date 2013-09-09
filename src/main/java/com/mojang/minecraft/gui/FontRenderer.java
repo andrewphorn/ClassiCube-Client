@@ -29,7 +29,7 @@ public final class FontRenderer {
     private int fontId = 0;
     private GameSettings settings;
 
-    private int[] font = new int[256];
+    private short[] font = new short[256];
 
     public FontRenderer(GameSettings settings, String fontImage,
 	    TextureManager textureManager) throws IOException {
@@ -67,7 +67,7 @@ public final class FontRenderer {
 	    if (character == 32) {
 		chWidth = (int) (4);
 	    }
-	    this.font[character] = chWidth;
+	    this.font[character] = (short) chWidth;
 	}
 	this.fontId = textureManager.load(fontImage);
     }
