@@ -54,6 +54,7 @@ public final class GameSettings implements Serializable {
     public int settingCount;
     public boolean CanSpeed = true;
     public int HackType = 0;
+    public int ShowNames = 0;
     public boolean VBOs = false;
 
     public boolean HacksEnabled = true;
@@ -68,12 +69,13 @@ public final class GameSettings implements Serializable {
 
     public KeyBinding flyUp = new KeyBinding("Fly Up", Keyboard.KEY_Q);
     public KeyBinding flyDown = new KeyBinding("Fly Down", Keyboard.KEY_E);
+
     public GameSettings(Minecraft minecraft, File minecraftFolder) {
 	bindings = new KeyBinding[] { forwardKey, leftKey, backKey, rightKey,
 		jumpKey, inventoryKey, chatKey, toggleFogKey, saveLocationKey,
 		loadLocationKey, runKey };
 
-	settingCount = 14;
+	settingCount = 15;
 
 	this.minecraft = minecraft;
 
@@ -121,7 +123,10 @@ public final class GameSettings implements Serializable {
 														: (id == 13 ? "Enable Hacks: "
 															+ (HacksEnabled ? "Yes"
 																: "No")
-															: "")))))))))))));
+															: (id == 14 ? "Show Names: "
+																+ (ShowNames == 0 ? "Hover"
+																	: "Always")
+																: ""))))))))))))));
     }
 
     private void load() {
@@ -187,6 +192,9 @@ public final class GameSettings implements Serializable {
 		    if (setting[0].equals("HacksEnabled")) {
 			HacksEnabled = setting[1].equals("true");
 		    }
+		    if (setting[0].equals("ShowNames")) {
+			ShowNames = Integer.parseInt(setting[1]);
+		    }
 
 		    for (int index = 0; index < this.bindings.length; index++) {
 			if (setting[0].equals("key_" + bindings[index].name)) {
@@ -223,6 +231,7 @@ public final class GameSettings implements Serializable {
 	    writer.println("HackType:" + HackType);
 	    writer.println("VBOs:" + VBOs);
 	    writer.println("HacksEnabled:" + HacksEnabled);
+	    writer.println("ShowNames:" + ShowNames);
 	    for (int binding = 0; binding < bindings.length; binding++) {
 		writer.println("key_" + bindings[binding].name + ":"
 			+ bindings[binding].key);
@@ -358,6 +367,12 @@ public final class GameSettings implements Serializable {
 	}
 	if (setting == 13) {
 	    HacksEnabled = !HacksEnabled;
+	}
+	if (setting == 14) {
+	    if(ShowNames == 0)
+		ShowNames = 1;
+	    else 
+		ShowNames = 0;
 	}
 
 	save();
