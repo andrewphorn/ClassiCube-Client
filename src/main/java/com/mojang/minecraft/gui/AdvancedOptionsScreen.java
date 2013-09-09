@@ -164,6 +164,8 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 
 	this.buttons.add(new Button(700, this.width / 2 - 100,
 		this.height / 6 + 168, "Done"));
+	
+	//buttons.get(13).active = this.minecraft.networkManager!=null;
     }
 
     public final void render(int var1, int var2) {

@@ -38,7 +38,7 @@ public class SkinDownloadThread extends Thread {
 
 	    connection.connect();
 
-	    if (connection.getResponseCode() == 404) {
+	    if (connection.getResponseCode() == 404 || connection.getResponseCode() == 403) {
 		return;
 	    }
 
