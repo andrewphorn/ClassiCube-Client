@@ -1848,10 +1848,26 @@ public final class Minecraft implements Runnable {
 					    GL11.glDisable(3042);
 					}
 					if (renderer.entity != null) {
-					    renderer.entity
-						    .renderHover(
-							    renderer.minecraft.textureManager,
-							    var80);
+					    if (this.settings.ShowNames == 0) {
+						renderer.entity
+							.renderHover(
+								renderer.minecraft.textureManager,
+								var80);
+					    }
+					}
+					if (this.networkManager != null
+						&& this.networkManager.players != null) {
+					    if (this.settings.ShowNames == 1) {
+						for (int n = 0; n < this.networkManager.players
+							.values().size(); n++) {
+						    NetworkPlayer np = (NetworkPlayer) this.networkManager.players
+							    .values().toArray()[n];
+						    if (np != null)
+							np.renderHover(
+								renderer.minecraft.textureManager,
+								var80);
+						}
+					    }
 					}
 
 					GL11.glClear(256);
