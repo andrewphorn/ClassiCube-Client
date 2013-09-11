@@ -70,9 +70,9 @@ public final class PauseScreen extends GuiScreen {
 	}
 	int w = this.fontRenderer.getWidth("Screenshots...");
 	this.buttons.add(new Button(5, this.width - this.fontRenderer.getWidth("Screenshots...") - 15,
-		this.height - 30, this.fontRenderer.getWidth("Screenshots..."), "Screenshots"));
+		this.height - 36, this.fontRenderer.getWidth("Screenshots..."), "Screenshots"));
 	this.buttons.add(new Button(6, this.width - w - 15,
-		this.height - 52, w, "Chat Logs"));
+		this.height - 58, w, "Chat Logs"));
 
 	if (this.minecraft.networkManager != null) {
 	    ((Button) this.buttons.get(1)).active = false;

@@ -341,20 +341,14 @@ public class ClassiCubeStandalone {
 	 * Start Minecraft Classic.
 	 */
 	public void startMinecraft(String Player, String Server, String Mppass,
-		int Port, String skinServer) {
+		int Port, String skinServer, boolean fullscreen) {
 
 	    MCraftApplet applet = new MCraftApplet();
 	    final MinecraftCanvas canvas = new MinecraftCanvas();
 	    
 	    
 	    minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
-		    false, true);
-	    
-	    /*String s = System.getProperty("os.name").toLowerCase();
-		System.setProperty("org.lwjgl.librarypath", minecraft.getMinecraftDirectory() + "/native/"
-			+ minecraft.getOSfolderName(s));
-		System.setProperty("net.java.games.input.librarypath", minecraft.getMinecraftDirectory()
-			+ "/native/" + minecraft.getOSfolderName(s)); */
+		    fullscreen, true);
 	    
 	    minecraft.session = new SessionData(Player, "noidea");
 	    minecraft.session.mppass = Mppass;
@@ -367,18 +361,7 @@ public class ClassiCubeStandalone {
 
 	    if (Player == null && Server == null && Mppass == null)
 		minecraft.session = null;
-
-	    boolean RunFakeNetwork = false;
-
-	    if (RunFakeNetwork) {
-		minecraft.host = "127.0.0.1";
-		minecraft.host = minecraft.host + ":" + "25566";
-		minecraft.session = new SessionData("Scoot", "noidea");
-		minecraft.session.mppass = "c0dd4746a88c5785952cd0190e8214a6";
-		minecraft.session.haspaid = true;
-		minecraft.server = "127.0.0.1";
-		minecraft.port = 25566;
-	    }
+	    
 	    canvas.setMinecraft(minecraft);
 	    canvas.setSize(getSize());
 
@@ -433,20 +416,22 @@ public class ClassiCubeStandalone {
 	int port = 0;
 	String mppass = null;
 	String skinServer = null;
+	boolean startFullScreen = false;
 	if (args != null && args.length > 3) {
 	    server = args[0];
 	    port = Integer.parseInt(args[1]);
 	    player = args[2];
 	    mppass = args[3];
 	    skinServer = args[4];
+	    startFullScreen = Boolean.parseBoolean(args[5]);
 	}
 	ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
 	if (player == null || server == null || mppass == null || port <= 0) {
 	    classicubeStandalone
-		    .startMinecraft(null, null, null, 0, skinServer);
+		    .startMinecraft(null, null, null, 0, skinServer, startFullScreen);
 	} else {
 	    classicubeStandalone.startMinecraft(player, server, mppass, port,
-		    skinServer);
+		    skinServer, startFullScreen);
 	}
     }
 
@@ -460,13 +445,13 @@ public class ClassiCubeStandalone {
     public void startMinecraft() {
 	MinecraftFrame minecraftFrame = new MinecraftFrame();
 
-	minecraftFrame.startMinecraft(null, null, null, 0, null);
+	minecraftFrame.startMinecraft(null, null, null, 0, null, false);
     }
 
     public void startMinecraft(String Player, String Server, String Mppass,
-	    int Port, String skinServer) {
+	    int Port, String skinServer, boolean fullscreen) {
 	MinecraftFrame minecraftFrame = new MinecraftFrame();
 
-	minecraftFrame.startMinecraft(Player, Server, Mppass, Port, skinServer);
+	minecraftFrame.startMinecraft(Player, Server, Mppass, Port, skinServer, fullscreen);
     }
 }

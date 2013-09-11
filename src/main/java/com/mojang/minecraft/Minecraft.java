@@ -649,7 +649,7 @@ public final class Minecraft implements Runnable {
 	    }
 	    if (this.canvas != null) {
 		Display.setParent(this.canvas);
-	    } else if (this.fullscreen) {
+	    } if (this.fullscreen) {
 		setDisplayMode();
 		Display.setFullscreen(true);
 		this.width = Display.getDisplayMode().getWidth();
