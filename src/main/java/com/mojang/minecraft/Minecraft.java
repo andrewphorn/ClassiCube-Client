@@ -27,9 +27,6 @@ import com.mojang.minecraft.player.InputHandlerImpl;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.*;
 import com.mojang.minecraft.render.texture.TextureFX;
-import com.mojang.minecraft.render.texture.TextureLavaFX;
-import com.mojang.minecraft.render.texture.TextureFireFX;
-import com.mojang.minecraft.render.texture.TextureWaterFX;
 import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
 import com.mojang.net.NetworkHandler;
@@ -626,7 +623,7 @@ public final class Minecraft implements Runnable {
 	   this.textureManager.initAtlas();
 		    
 	    if (this.session == null)
-		this.HackState = HackState.HacksTagEnabled;
+		this.HackState = com.mojang.minecraft.HackState.HacksTagEnabled;
 	    IntBuffer var9;
 	    (var9 = BufferUtils.createIntBuffer(256)).clear().limit(256);
 	    this.levelRenderer = new LevelRenderer(this, this.textureManager);
@@ -1716,7 +1713,6 @@ public final class Minecraft implements Runnable {
 					}
 					if (renderer.minecraft.raining) {
 					    float var97 = var80;
-					    renderer = renderer;
 					    Level var109 = renderer.minecraft.level;
 					    var104 = (int) player.x;
 					    var108 = (int) player.y;
@@ -2533,7 +2529,7 @@ public final class Minecraft implements Runnable {
 				    } else if (packetType == PacketType.EXT_ADD_ENTITY) {
 					byte playerID = ((Byte) packetParams[0])
 						.byteValue();
-					String playerName = (String) packetParams[1];
+					//String playerName = (String) packetParams[1];
 					String skinName = (String) packetParams[2];
 
 					NetworkPlayer player = networkManager.players

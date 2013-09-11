@@ -228,11 +228,8 @@ public class ClassiCubeStandalone {
 		    byte[] buffer = new byte[1024];
 
 		    int numRead;
-		    long numWritten = 0;
-
 		    while ((numRead = in.read(buffer)) != -1) {
 			out.write(buffer, 0, numRead);
-			numWritten += numRead;
 		    }
 
 		} catch (Exception exception) {
