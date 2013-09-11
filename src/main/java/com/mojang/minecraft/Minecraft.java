@@ -619,9 +619,7 @@ public final class Minecraft implements Runnable {
 	    ShapeRenderer.instance = new ShapeRenderer(2097152, this);
 	    
 	    this.textureManager = new TextureManager(this.settings, isApplet);
-	    this.textureManager.registerAnimation(new TextureFireFX());
-	    this.textureManager.registerAnimation(new TextureLavaFX());
-	    this.textureManager.registerAnimation(new TextureWaterFX());
+	    this.textureManager.registerAnimations();
 	    this.fontRenderer = new FontRenderer(this.settings, "/default.png",
 		    this.textureManager);
 
@@ -2454,11 +2452,7 @@ public final class Minecraft implements Runnable {
 						this.textureManager.animations
 							.clear();
 						this.textureManager
-							.registerAnimation(new TextureWaterFX());
-						this.textureManager
-							.registerAnimation(new TextureLavaFX());
-						this.textureManager
-							.registerAnimation(new TextureFireFX());
+							.registerAnimations();
 						this.textureManager.initAtlas();
 						return;
 					    }

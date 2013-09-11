@@ -296,7 +296,7 @@ public class MinecraftStandalone {
 	    if (Player == null && Server == null && Mppass == null)
 		minecraft.session = null;
 
-	    boolean RunFakeNetwork = false;
+	    boolean RunFakeNetwork = true;
 
 	    if (RunFakeNetwork) {
 		minecraft.host = "74.109.33.107";

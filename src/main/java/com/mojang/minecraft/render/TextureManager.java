@@ -4,6 +4,10 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.render.texture.TextureFX;
+import com.mojang.minecraft.render.texture.TextureFireFX;
+import com.mojang.minecraft.render.texture.TextureLavaFX;
+import com.mojang.minecraft.render.texture.TextureWaterFX;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
@@ -321,6 +325,10 @@ public class TextureManager {
     }
 
     public int load(String file) {
+	if(this.animations.size() == 0 && this.currentTerrainPng == null){
+	    this.registerAnimations();
+	}
+	
 	if (file.contains("terrain") && textures.containsKey("customTerrain")) {
 	    return textures.get("customTerrain");
 	}
@@ -329,11 +337,11 @@ public class TextureManager {
 	    int id = load(currentTerrainPng);
 	    textures.put("customTerrain", id);
 	    if(this.customEdgeBlock == null){
-		customEdgeBlock = this.textureAtlas.get(Block.WATER.textureId);
+		customEdgeBlock = this.textureAtlas.get(Block.BEDROCK.textureId);
 		textures.put("customEdge", load(customEdgeBlock));
 	    }
 	    if(this.customSideBlock == null){
-		customSideBlock = this.textureAtlas.get(Block.BEDROCK.textureId);
+		customSideBlock = this.textureAtlas.get(Block.WATER.textureId);
 		textures.put("customSide", load(customSideBlock));
 	    }
 	    return id;
@@ -437,9 +445,11 @@ public class TextureManager {
 	return textureID;
     }
 
-    public void registerAnimation(TextureFX FX) {
-	animations.add(FX);
-
-	FX.animate();
+    public void registerAnimations() {
+	this.animations.add(new TextureWaterFX());
+	this.animations.add(new TextureLavaFX());
+	this.animations.add(new TextureFireFX());
     }
+    
+    
 }
