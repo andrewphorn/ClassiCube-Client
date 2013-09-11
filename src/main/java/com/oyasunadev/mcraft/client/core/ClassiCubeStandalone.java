@@ -418,12 +418,14 @@ public class ClassiCubeStandalone {
 	String skinServer = null;
 	boolean startFullScreen = false;
 	if (args != null && args.length > 3) {
+	    try{
 	    server = args[0];
 	    port = Integer.parseInt(args[1]);
 	    player = args[2];
 	    mppass = args[3];
 	    skinServer = args[4];
 	    startFullScreen = Boolean.parseBoolean(args[5]);
+	    }catch(Exception e){}
 	}
 	ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
 	if (player == null || server == null || mppass == null || port <= 0) {

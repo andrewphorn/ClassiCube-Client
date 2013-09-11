@@ -4,6 +4,7 @@ import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.player.Player;
 
+import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +17,7 @@ public final class LevelRenderer {
     public Level level;
     public TextureManager textureManager;
     public int listId;
-    public ShortBuffer buffer = BufferUtils.createShortBuffer(65536);
+    public IntBuffer buffer = BufferUtils.createIntBuffer(65536);
     public List<Chunk> chunks = new ArrayList<Chunk>();
     private Chunk[] loadQueue;
     public Chunk[] chunkCache;
@@ -25,7 +26,7 @@ public final class LevelRenderer {
     private int zChunks;
     private int baseListId;
     public Minecraft minecraft;
-    private short[] chunkDataCache = new short['\uc350'];
+    private int[] chunkDataCache = new int['\uc350'];
     public int ticks = 0;
     private float lastLoadX = -9999.0F;
     private float lastLoadY = -9999.0F;

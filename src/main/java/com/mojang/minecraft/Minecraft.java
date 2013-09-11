@@ -640,10 +640,9 @@ public final class Minecraft implements Runnable {
 
 	    if (!isApplet) {
 		String s = System.getProperty("os.name").toLowerCase();
-		System.setProperty("org.lwjgl.librarypath", mcDir + "/natives/"
-			+ getOSfolderName(s));
+		System.setProperty("org.lwjgl.librarypath", mcDir + "/natives");
 		System.setProperty("net.java.games.input.librarypath", mcDir
-			+ "/natives/" + getOSfolderName(s));
+			+ "/natives");
 	    }
 	    if (this.session == null) {
 		SessionData.SetAllowedBlocks((byte) 1);

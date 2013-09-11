@@ -36,7 +36,7 @@ public class Level implements Serializable {
     public int zSpawn;
     public float rotSpawn;
     private transient ArrayList<LevelRenderer> listeners = new ArrayList<LevelRenderer>();
-    private transient short[] blockers;
+    private transient int[] blockers;
     public transient Random random = new Random();
     private transient int randId;
     private transient ArrayList<NextTickListEntry> tickList;
@@ -99,7 +99,7 @@ public class Level implements Serializable {
 		    ;
 		}
 
-		this.blockers[var5 + var6 * this.width] = (short) var8;
+		this.blockers[var5 + var6 * this.width] = var8;
 		if (var7 != var8) {
 		    int var9 = var7 < var8 ? var7 : var8;
 		    var7 = var7 > var8 ? var7 : var8;
@@ -771,8 +771,8 @@ public class Level implements Serializable {
 	    throw new RuntimeException("The level is corrupt!");
 	} else {
 	    this.listeners = new ArrayList<LevelRenderer>();
-	    this.blockers = new short[this.width * this.height];
-	    Arrays.fill(this.blockers, (short)this.depth);
+	    this.blockers = new int[this.width * this.height];
+	    Arrays.fill(this.blockers, this.depth);
 	    this.calcLightDepths(0, 0, this.width, this.height);
 	    this.random = new Random();
 	    this.randId = this.random.nextInt();
@@ -1041,8 +1041,8 @@ public class Level implements Serializable {
 	this.height = var3;
 	this.depth = var2;
 	this.blocks = var4;
-	this.blockers = new short[var1 * var3];
-	Arrays.fill(this.blockers, (short)this.depth);
+	this.blockers = new int[var1 * var3];
+	Arrays.fill(this.blockers, this.depth);
 	this.calcLightDepths(0, 0, var1, var3);
 
 	for (var1 = 0; var1 < this.listeners.size(); ++var1) {
