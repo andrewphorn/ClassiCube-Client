@@ -1,16 +1,22 @@
 package com.mojang.minecraft.gui;
 
+import com.mojang.minecraft.ChatClickData;
+import com.mojang.minecraft.ChatClickData.LinkData;
 import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.PacketType;
+import com.mojang.minecraft.phys.AABB;
 
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Vector;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public class ChatInputScreenExtension extends GuiScreen {
     public String inputLine = "";
@@ -145,10 +151,49 @@ public class ChatInputScreenExtension extends GuiScreen {
 	    insertTextAtCaret(String.valueOf(paramChar));
     }
 
-    protected final void onMouseClick(int paramInt1, int paramInt2,
-	    int paramInt3) {
-	if ((paramInt3 == 0) && (this.minecraft.hud.hoveredPlayer != null))
+    protected final void onMouseClick(int x, int y, int clickType) {
+	if ((clickType == 0) && (this.minecraft.hud.hoveredPlayer != null))
 	    insertTextAtCaret(this.minecraft.hud.hoveredPlayer + " ");
+	if (clickType == 0) {
+	    for (int i = 0; i < this.minecraft.hud.chat.size(); i++) {
+		for (ChatScreenData data : this.minecraft.hud.chatsOnScreen) {
+		    if (x > data.bounds.x0 && x < data.bounds.x1
+			    && y > data.bounds.y0 && y < data.bounds.y1) {
+			ChatClickData chatClickData = new ChatClickData(
+				fontRenderer, this.minecraft.hud.chat.get(i),
+				x, y);
+			if (data.string == chatClickData.message) {
+			    for (LinkData ld : chatClickData.getClickedUrls()) {
+				if (ld != null) {
+				    if (x > ld.x0 && x < ld.x1
+					    && y > data.bounds.y0
+					    && y < data.bounds.y1) {
+					String s = FontRenderer
+						.stripColor(ld.link);
+					URI uri = chatClickData.getURI(s);
+					if (uri != null) {
+					    this.openWebpage(uri);
+					}
+				    }
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+    public void openWebpage(URI uri) {
+	Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop()
+		: null;
+	if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+	    try {
+		desktop.browse(uri);
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
+	}
     }
 
     public final void onOpen() {
@@ -156,7 +201,7 @@ public class ChatInputScreenExtension extends GuiScreen {
     }
 
     public void render(int paramInt1, int paramInt2) {
-	drawBox(2, this.height - 14, this.width - 2, this.height - 2,
+	super.drawBox(2, this.height - 14, this.width - 2, this.height - 2,
 		-2147483648);
 	char[] temp = new char[128];
 	for (int a = 0; a < this.inputLine.length(); a++) {
@@ -175,6 +220,31 @@ public class ChatInputScreenExtension extends GuiScreen {
 	}
 	drawString(this.fontRenderer, "> " + string, 4, this.height - 12,
 		14737632);
+
+	int x = Mouse.getEventX() * this.width / this.minecraft.width;
+	int y = this.height - Mouse.getEventY() * this.height
+		/ this.minecraft.height - 1;
+	for (int i = 0; i < this.minecraft.hud.chat.size(); i++) {
+	    for (ChatScreenData data : this.minecraft.hud.chatsOnScreen) {
+		if (x > data.bounds.x0 && x < data.bounds.x1
+			&& y > data.bounds.y0 && y < data.bounds.y1) {
+		    ChatClickData chatClickData = new ChatClickData(
+			    fontRenderer, this.minecraft.hud.chat.get(i), x, y);
+		    if (data.string == chatClickData.message) {
+			for (LinkData ld : chatClickData.getClickedUrls()) {
+			    if (ld != null) {
+				if (x > ld.x0 && x < ld.x1
+					&& y > data.bounds.y0
+					&& y < data.bounds.y1) {
+				    super.drawBox(ld.x0, data.y - 1, ld.x1 + 3,
+					    data.y + 9, -2147483648);
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
     }
 
     private void setClipboard(String paramString) {

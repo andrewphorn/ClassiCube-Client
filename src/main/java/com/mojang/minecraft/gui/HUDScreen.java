@@ -28,6 +28,7 @@ public final class HUDScreen extends Screen {
     public static String Compass = "";
     public static String ServerName = "";
     public static String UserDetail = "";
+    public List<ChatScreenData> chatsOnScreen = new ArrayList<ChatScreenData>();
 
     public static void drawCenteredString(FontRenderer var0, String var1,
 	    int var2, int var3, int var4) {
@@ -241,113 +242,124 @@ public final class HUDScreen extends Screen {
 	    var27 = true;
 	}
 
+	this.chatsOnScreen.clear();
 	for (i = 0; i < this.chat.size() && i < var25; ++i) {
 	    if (((ChatLine) this.chat.get(i)).time < 200 || var27) {
 		var5.render(((ChatLine) this.chat.get(i)).message, 2,
 			this.height - 8 - i * 9 - 20, 16777215);
+		this.chatsOnScreen.add(new ChatScreenData(1, 8, 2, this.height
+			- 8 - i * 9 - 20, this.chat.get(i).message, var5));
 	    }
 	}
 
 	i = this.width / 2;
 	var15 = this.height / 2;
 	this.hoveredPlayer = null;
-	if (Keyboard.isKeyDown(15) && this.mc.networkManager != null
-		&& this.mc.networkManager.isConnected()) {
-	    for (int l = 2; l < 11; l++)
-		if (Keyboard.isKeyDown(l)) {
-		    Page = l - 2;
-		}
-	    List<String> playersOnWorld = this.mc.networkManager.getPlayers();
-	    GL11.glEnable(3042);
-	    GL11.glDisable(3553);
-	    GL11.glBlendFunc(770, 771);
-	    GL11.glBegin(7);
-	    GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.7F);
-	    GL11.glVertex2f((float) (i + 132), (float) (var15 - 72 - 12));
-	    GL11.glVertex2f((float) (i - 132), (float) (var15 - 72 - 12));
-	    GL11.glColor4f(0.2F, 0.2F, 0.2F, 0.8F);
-	    GL11.glVertex2f((float) (i - 132), (float) (var15 + 72));
-	    GL11.glVertex2f((float) (i + 132), (float) (var15 + 72));
-	    GL11.glEnd();
-	    GL11.glDisable(3042);
-	    GL11.glEnable(3553);
-	    boolean drawDefault = false;
-	    List<PlayerListNameData> playerListNames = this.mc.playerListNameData;
-	    if (playerListNames.isEmpty()) {
-		drawDefault = true;
-	    }
-	    int maxStringsPerColumn = 14;
-	    int maxStringsPerScreen = 28;
-	    var23 = "Players online: (Page " + (Page + 1) + ")";
-	    var5.render(var23, i - var5.getWidth(var23) / 2, var15 - 64 - 12,
-		    25855);
-	    if (drawDefault) {
-		for (var11 = 0; var11 < playersOnWorld.size(); ++var11) {
-		    int var28 = i + var11 % 2 * 120 - 120;
-		    int var17 = var15 - 64 + (var11 / 2 << 3);
-		    if (var2 && var3 >= var28 && var4 >= var17
-			    && var3 < var28 + 120 && var4 < var17 + 8) {
-			this.hoveredPlayer = (String) playersOnWorld.get(var11);
-			var5.renderNoShadow((String) playersOnWorld.get(var11),
-				var28 + 2, var17, 16777215);
-		    } else {
-			var5.renderNoShadow((String) playersOnWorld.get(var11),
-				var28, var17, 15658734);
+	if (Keyboard.isCreated()) {
+	    if (Keyboard.isKeyDown(15) && this.mc.networkManager != null
+		    && this.mc.networkManager.isConnected()) {
+		for (int l = 2; l < 11; l++)
+		    if (Keyboard.isKeyDown(l)) {
+			Page = l - 2;
 		    }
+		List<String> playersOnWorld = this.mc.networkManager
+			.getPlayers();
+		GL11.glEnable(3042);
+		GL11.glDisable(3553);
+		GL11.glBlendFunc(770, 771);
+		GL11.glBegin(7);
+		GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.7F);
+		GL11.glVertex2f((float) (i + 132), (float) (var15 - 72 - 12));
+		GL11.glVertex2f((float) (i - 132), (float) (var15 - 72 - 12));
+		GL11.glColor4f(0.2F, 0.2F, 0.2F, 0.8F);
+		GL11.glVertex2f((float) (i - 132), (float) (var15 + 72));
+		GL11.glVertex2f((float) (i + 132), (float) (var15 + 72));
+		GL11.glEnd();
+		GL11.glDisable(3042);
+		GL11.glEnable(3553);
+		boolean drawDefault = false;
+		List<PlayerListNameData> playerListNames = this.mc.playerListNameData;
+		if (playerListNames.isEmpty()) {
+		    drawDefault = true;
 		}
-	    } else {
-		String lastGroupName = "";
-		int x = i + 8;
-		int y = var15 - 73;
-		int groupChanges = 0;
-		boolean hasStartedNewColumn = false;
-
-		List<PlayerListNameData> namesToPrint = new ArrayList<PlayerListNameData>();
-
-		for (int m = 0; m < Page; m++) {
-		    groupChanges += FindGroupChanges(m, playerListNames);
-		}
-		int rangeA = (maxStringsPerScreen * (Page)) - groupChanges;
-		int rangeB = rangeA + (maxStringsPerScreen)
-			- FindGroupChanges(Page, playerListNames);
-		rangeB = Math.min(rangeB, playerListNames.size());
-		for (int k = rangeA; k < rangeB; k++) {
-		    namesToPrint.add(playerListNames.get(k));
-		}
-		int groupsOnThisPage = 0;
-		for (var11 = 0; var11 < namesToPrint.size(); ++var11) {
-		    if (var11 < maxStringsPerColumn - groupsOnThisPage) {
-			x = (i - 128) + 8;
-		    } else {
-			if ((var11 >= maxStringsPerColumn - groupsOnThisPage)
-				&& !hasStartedNewColumn) {
-			    y = var15 - 73;
-			    hasStartedNewColumn = true;
+		int maxStringsPerColumn = 14;
+		int maxStringsPerScreen = 28;
+		var23 = "Players online: (Page " + (Page + 1) + ")";
+		var5.render(var23, i - var5.getWidth(var23) / 2,
+			var15 - 64 - 12, 25855);
+		if (drawDefault) {
+		    for (var11 = 0; var11 < playersOnWorld.size(); ++var11) {
+			int var28 = i + var11 % 2 * 120 - 120;
+			int var17 = var15 - 64 + (var11 / 2 << 3);
+			if (var2 && var3 >= var28 && var4 >= var17
+				&& var3 < var28 + 120 && var4 < var17 + 8) {
+			    this.hoveredPlayer = (String) playersOnWorld
+				    .get(var11);
+			    var5.renderNoShadow(
+				    (String) playersOnWorld.get(var11),
+				    var28 + 2, var17, 16777215);
+			} else {
+			    var5.renderNoShadow(
+				    (String) playersOnWorld.get(var11), var28,
+				    var17, 15658734);
 			}
-			x = i + 8;
 		    }
+		} else {
+		    String lastGroupName = "";
+		    int x = i + 8;
+		    int y = var15 - 73;
+		    int groupChanges = 0;
+		    boolean hasStartedNewColumn = false;
 
-		    y += 9;
-		    PlayerListNameData pi = namesToPrint.get(var11);
-		    if (!lastGroupName.equals(pi.groupName)) {
-			lastGroupName = pi.groupName;
-			var5.render(lastGroupName, x + 2, y, 51455);
-			groupsOnThisPage++;
-			y += 9;
+		    List<PlayerListNameData> namesToPrint = new ArrayList<PlayerListNameData>();
+
+		    for (int m = 0; m < Page; m++) {
+			groupChanges += FindGroupChanges(m, playerListNames);
 		    }
-		    String playerName = FontRenderer.stripColor(pi.playerName);
-		    String listName = FontRenderer.stripColor(pi.listName);
-		    if (var2 && var3 >= x && var4 >= y && var3 < x + 120
-			    && var4 < y + 8) { // if your mouse if hovered over
-					       // this name
-			this.hoveredPlayer = playerName;
-			var5.renderNoShadow(listName, x + 8, y, 16777215);
-		    } else { // else render a normal name
-			var5.renderNoShadow(listName, x + 6, y, 15658734);
+		    int rangeA = (maxStringsPerScreen * (Page)) - groupChanges;
+		    int rangeB = rangeA + (maxStringsPerScreen)
+			    - FindGroupChanges(Page, playerListNames);
+		    rangeB = Math.min(rangeB, playerListNames.size());
+		    for (int k = rangeA; k < rangeB; k++) {
+			namesToPrint.add(playerListNames.get(k));
+		    }
+		    int groupsOnThisPage = 0;
+		    for (var11 = 0; var11 < namesToPrint.size(); ++var11) {
+			if (var11 < maxStringsPerColumn - groupsOnThisPage) {
+			    x = (i - 128) + 8;
+			} else {
+			    if ((var11 >= maxStringsPerColumn
+				    - groupsOnThisPage)
+				    && !hasStartedNewColumn) {
+				y = var15 - 73;
+				hasStartedNewColumn = true;
+			    }
+			    x = i + 8;
+			}
+
+			y += 9;
+			PlayerListNameData pi = namesToPrint.get(var11);
+			if (!lastGroupName.equals(pi.groupName)) {
+			    lastGroupName = pi.groupName;
+			    var5.render(lastGroupName, x + 2, y, 51455);
+			    groupsOnThisPage++;
+			    y += 9;
+			}
+			String playerName = FontRenderer
+				.stripColor(pi.playerName);
+			String listName = FontRenderer.stripColor(pi.listName);
+			if (var2 && var3 >= x && var4 >= y && var3 < x + 120
+				&& var4 < y + 8) { // if your mouse if hovered
+						   // over
+						   // this name
+			    this.hoveredPlayer = playerName;
+			    var5.renderNoShadow(listName, x + 8, y, 16777215);
+			} else { // else render a normal name
+			    var5.renderNoShadow(listName, x + 6, y, 15658734);
+			}
 		    }
 		}
 	    }
 	}
-
     }
 }

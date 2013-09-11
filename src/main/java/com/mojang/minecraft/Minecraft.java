@@ -621,7 +621,9 @@ public final class Minecraft implements Runnable {
 		    this.textureManager);
 
 	   this.textureManager.initAtlas();
-		    
+	   
+	   OpenGlHelper.initializeTextures();
+	   
 	    if (this.session == null)
 		this.HackState = com.mojang.minecraft.HackState.HacksTagEnabled;
 	    IntBuffer var9;

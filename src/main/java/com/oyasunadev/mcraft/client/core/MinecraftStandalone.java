@@ -304,8 +304,8 @@ public class MinecraftStandalone {
 		minecraft.session = new SessionData("Jonty800", "noidea");
 		minecraft.session.mppass = "3650b66daa0b04004be4285e471ad69d";
 		minecraft.session.haspaid = true;
-		minecraft.server = "74.109.33.107";
-		minecraft.port = 25569;
+		minecraft.server = "127.0.0.1";
+		minecraft.port = 25566;
 	    }
 	    canvas.setMinecraft(minecraft);
 	    canvas.setSize(getSize());
