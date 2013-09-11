@@ -50,16 +50,26 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -194,6 +204,8 @@ public final class Minecraft implements Runnable {
 
     }
 
+    boolean canRenderGUI = true;
+
     private static Minecraft$OS getOs() {
 	String s = System.getProperty("os.name").toLowerCase();
 	if (s.contains("win")) {
@@ -322,6 +334,79 @@ public final class Minecraft implements Runnable {
 	return new BigInteger(1, hashBytes).toString(16);
     }
 
+    public void takeAndSaveScreenshot(int width, int height) {
+	try {
+	    int i = 6400;
+	    int j = height;
+	    int size = i * j * 3;
+
+	    GL11.glReadBuffer(1028);
+	    ByteBuffer buffer = ByteBuffer.allocateDirect(size);
+	    GL11.glReadPixels(0, 0, i, j, 6407, 5121, buffer);
+
+	    byte[] pixels = new byte[size];
+	    buffer.get(pixels);
+	    pixels = flipPixels(pixels, i, height);
+
+	    ColorSpace colorSpace = ColorSpace.getInstance(1000);
+	    int[] a = { 8, 8, 8 };
+	    int[] b = { 0, 1, 2 };
+
+	    ComponentColorModel colorComp = new ComponentColorModel(colorSpace,
+		    a, false, false, 3, 0);
+
+	    WritableRaster raster = Raster.createInterleavedRaster(
+		    new DataBufferByte(pixels, pixels.length), width, height,
+		    i * 3, 3, b, null);
+
+	    BufferedImage image = new BufferedImage(colorComp, raster, false,
+		    null);
+
+	    String str = String.format(
+		    "screenshot_%1$tY%1$tm%1$td%1$tH%1$tM%1$tS.png",
+		    new Object[] { Calendar.getInstance() });
+	    Calendar cal = Calendar.getInstance();
+	    String month = new SimpleDateFormat("MMM").format(cal.getTime());
+	    String serverName = ProgressBarDisplay.title.toLowerCase()
+		    .contains("connecting...") ? "" : ProgressBarDisplay.title;
+	    if (serverName == "")
+		return;
+	    serverName = FontRenderer.stripColor(serverName);
+	    serverName = serverName.replaceAll("[^A-Za-z0-9\\._-]+", "_");
+	    File logDir = new File(Minecraft.getMinecraftDirectory(),
+		    "/Screenshots/");
+	    File serverDir = new File(logDir, serverName);
+	    File monthDir = new File(serverDir, "/" + month + "/");
+	    if (!logDir.exists())
+		logDir.mkdir();
+	    if (!serverDir.exists())
+		serverDir.mkdir();
+	    if (!monthDir.exists())
+		monthDir.mkdir();
+	    if (ImageIO.write(image, "png", new File(monthDir, str))) {
+		this.hud.addChat("&2Screenshot saved into the Screenshots folder");
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+    }
+
+    public byte[] flipPixels(byte[] paramArrayOfByte, int paramInt1,
+	    int paramInt2) {
+	paramInt1 *= 3;
+	byte[] arrayOfByte = null;
+	if (paramArrayOfByte != null) {
+	    arrayOfByte = new byte[paramInt1 * paramInt2];
+	    for (int i = 0; i < paramInt2; i++) {
+		for (int j = 0; j < paramInt1; j++) {
+		    arrayOfByte[((paramInt2 - i - 1) * paramInt1 + j)] = paramArrayOfByte[(i
+			    * paramInt1 + j)];
+		}
+	    }
+	}
+	return arrayOfByte;
+    }
+
     public String getOSfolderName(String s) {
 	if (s.contains("win")) {
 	    return "windows";
@@ -402,17 +487,17 @@ public final class Minecraft implements Runnable {
 
     private void onMouseClick(int var1) {
 	if (var1 != 0 || this.blockHitTime <= 0) {
-	    HeldBlock var2;
+	    HeldBlock heldBlock;
 	    if (var1 == 0) {
-		var2 = this.renderer.heldBlock;
+		heldBlock = this.renderer.heldBlock;
 		this.renderer.heldBlock.offset = -1;
-		var2.moving = true;
+		heldBlock.moving = true;
 	    }
 
 	    int x;
 	    if (var1 == 1 && (x = this.player.inventory.getSelected()) > 0
 		    && this.gamemode.useItem(this.player, x)) {
-		var2 = this.renderer.heldBlock;
+		heldBlock = this.renderer.heldBlock;
 		this.renderer.heldBlock.pos = 0.0F;
 	    } else if (this.selected == null) {
 		if (var1 == 0 && !(this.gamemode instanceof CreativeGameMode)) {
@@ -507,7 +592,7 @@ public final class Minecraft implements Runnable {
 			    }
 
 			    this.level.netSetTile(x, y, z, blockID);
-			    var2 = this.renderer.heldBlock;
+			    heldBlock = this.renderer.heldBlock;
 			    this.renderer.heldBlock.pos = 0.0F;
 			    Block.blocks[blockID].onPlace(this.level, x, y, z);
 			}
@@ -614,16 +699,16 @@ public final class Minecraft implements Runnable {
 
 	    this.settings = new GameSettings(this, mcDir);
 	    ShapeRenderer.instance = new ShapeRenderer(2097152, this);
-	    
+
 	    this.textureManager = new TextureManager(this.settings, isApplet);
 	    this.textureManager.registerAnimations();
 	    this.fontRenderer = new FontRenderer(this.settings, "/default.png",
 		    this.textureManager);
 
-	   this.textureManager.initAtlas();
-	   
-	   OpenGlHelper.initializeTextures();
-	   
+	    this.textureManager.initAtlas();
+
+	    OpenGlHelper.initializeTextures();
+
 	    if (this.session == null)
 		this.HackState = com.mojang.minecraft.HackState.HacksTagEnabled;
 	    IntBuffer var9;
@@ -789,7 +874,7 @@ public final class Minecraft implements Runnable {
 
 			checkGLError("Pre render");
 			GL11.glEnable(3553);
-			//Shader.draw();
+			// Shader.draw();
 			if (!this.online) {
 			    this.gamemode.applyCracks(this.timer.delta);
 			    float var65 = this.timer.delta;
@@ -1077,7 +1162,7 @@ public final class Minecraft implements Runnable {
 					    var101.chunkCache[var98]
 						    .clip(var100);
 					}
-					
+
 					var101 = renderer.minecraft.levelRenderer;
 					Collections
 						.sort(renderer.minecraft.levelRenderer.chunks,
@@ -1347,7 +1432,7 @@ public final class Minecraft implements Runnable {
 					    var35 = var69;
 					    var87 = var74;
 					}
-					
+
 					shapeRenderer
 						.color(var34, var35, var87);
 					var74 = var101.level.depth + 10;
@@ -1511,7 +1596,7 @@ public final class Minecraft implements Runnable {
 					renderer.updateFog();
 					GL11.glEnable(3553);
 					GL11.glEnable(3042);
-					
+
 					GL11.glBindTexture(3553,
 						var89.textureManager
 							.load("/water.png"));
@@ -1521,7 +1606,7 @@ public final class Minecraft implements Runnable {
 					GL11.glEnable(3042);
 					GL11.glColorMask(false, false, false,
 						false);
-					
+
 					var120 = var89.sortChunks(var126, 1);
 					GL11.glColorMask(true, true, true, true);
 					if (renderer.minecraft.settings.anaglyph) {
@@ -1533,7 +1618,7 @@ public final class Minecraft implements Runnable {
 							false, false);
 					    }
 					}
-					
+
 					if (var120 > 0) {
 					    GL11.glBindTexture(
 						    3553,
@@ -1541,7 +1626,7 @@ public final class Minecraft implements Runnable {
 							    .load("/terrain.png"));
 					    GL11.glCallLists(var89.buffer);
 					}
-					//Shader.endDraw();
+					// Shader.endDraw();
 					GL11.glDepthMask(true);
 					GL11.glDisable(3042);
 					GL11.glDisable(2912);
@@ -1875,11 +1960,11 @@ public final class Minecraft implements Runnable {
 						var80,
 						renderer.minecraft.settings.viewBobbing);
 
-					HeldBlock var112 = renderer.heldBlock;
+					HeldBlock heldBlock = renderer.heldBlock;
 					var117 = renderer.heldBlock.lastPos
-						+ (var112.pos - var112.lastPos)
+						+ (heldBlock.pos - heldBlock.lastPos)
 						* var80;
-					var116 = var112.minecraft.player;
+					var116 = heldBlock.minecraft.player;
 					GL11.glPushMatrix();
 					GL11.glRotatef(var116.xRotO
 						+ (var116.xRot - var116.xRotO)
@@ -1887,14 +1972,14 @@ public final class Minecraft implements Runnable {
 					GL11.glRotatef(var116.yRotO
 						+ (var116.yRot - var116.yRotO)
 						* var80, 0.0F, 1.0F, 0.0F);
-					var112.minecraft.renderer
+					heldBlock.minecraft.renderer
 						.setLighting(true);
 					GL11.glPopMatrix();
 					GL11.glPushMatrix();
 					var69 = 0.8F;
-					if (var112.moving) {
+					if (heldBlock.moving) {
 					    var33 = MathHelper
-						    .sin((var74 = (var112.offset + var80) / 7.0F) * 3.1415927F);
+						    .sin((var74 = (heldBlock.offset + var80) / 7.0F) * 3.1415927F);
 					    GL11.glTranslatef(
 						    -MathHelper
 							    .sin(MathHelper
@@ -1909,9 +1994,9 @@ public final class Minecraft implements Runnable {
 						* 0.6F, -0.9F * var69);
 					GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
 					GL11.glEnable(2977);
-					if (var112.moving) {
+					if (heldBlock.moving) {
 					    var33 = MathHelper
-						    .sin((var74 = (var112.offset + var80) / 7.0F)
+						    .sin((var74 = (heldBlock.offset + var80) / 7.0F)
 							    * var74
 							    * 3.1415927F);
 					    GL11.glRotatef(
@@ -1923,7 +2008,7 @@ public final class Minecraft implements Runnable {
 						    1.0F, 0.0F, 0.0F);
 					}
 
-					ColorCache color = var112.minecraft.level
+					ColorCache color = heldBlock.minecraft.level
 						.getBrightnessColor(
 							(int) var116.x,
 							(int) var116.y,
@@ -1931,21 +2016,22 @@ public final class Minecraft implements Runnable {
 					GL11.glColor4f(color.R, color.G,
 						color.B, 1.0F);
 
-					if (var112.block != null) {
+					if (heldBlock.block != null) {
 					    var34 = 0.4F;
 					    GL11.glScalef(0.4F, var34, var34);
 					    GL11.glTranslatef(-0.5F, -0.5F,
 						    -0.5F);
-					    if (!this.settings.thirdPersonMode) {
+					    if (!this.settings.thirdPersonMode
+						    && this.canRenderGUI) {
 						GL11.glBindTexture(
 							3553,
-							var112.minecraft.textureManager
+							heldBlock.minecraft.textureManager
 								.load("/terrain.png"));
-						var112.block
+						heldBlock.block
 							.renderPreview(shapeRenderer);
 					    }
 					} else {
-					    var116.bindTexture(var112.minecraft.textureManager);
+					    var116.bindTexture(heldBlock.minecraft.textureManager);
 					    GL11.glScalef(1.0F, -1.0F, -1.0F);
 					    GL11.glTranslatef(0.0F, 0.2F, 0.0F);
 					    GL11.glRotatef(-120.0F, 0.0F, 0.0F,
@@ -1953,7 +2039,7 @@ public final class Minecraft implements Runnable {
 					    GL11.glScalef(1.0F, 1.0F, 1.0F);
 					    var34 = 0.0625F;
 					    ModelPart var127;
-					    if (!(var127 = var112.minecraft.player
+					    if (!(var127 = heldBlock.minecraft.player
 						    .getModel().leftArm).hasList) {
 						var127.generateList(var34);
 					    }
@@ -1963,7 +2049,7 @@ public final class Minecraft implements Runnable {
 
 					GL11.glDisable(2977);
 					GL11.glPopMatrix();
-					var112.minecraft.renderer
+					heldBlock.minecraft.renderer
 						.setLighting(false);
 					if (!renderer.minecraft.settings.anaglyph) {
 					    break;
@@ -1972,10 +2058,13 @@ public final class Minecraft implements Runnable {
 					++var77;
 				    }
 
-				    renderer.minecraft.hud
-					    .render(var65,
-						    renderer.minecraft.currentScreen != null,
-						    var94, var70);
+				    if (this.canRenderGUI
+					    || this.currentScreen != null) {
+					renderer.minecraft.hud
+						.render(var65,
+							renderer.minecraft.currentScreen != null,
+							var94, var70);
+				    }
 				} else {
 				    GL11.glViewport(0, 0,
 					    renderer.minecraft.width,
@@ -2246,11 +2335,12 @@ public final class Minecraft implements Runnable {
 
 	this.gamemode.spawnMob();
 	HUDScreen var17 = this.hud;
-	++this.hud.ticks;
-
 	int var16;
-	for (var16 = 0; var16 < var17.chat.size(); ++var16) {
-	    ++((ChatLine) var17.chat.get(var16)).time;
+	if (this.canRenderGUI) {
+	    ++this.hud.ticks;
+	    for (var16 = 0; var16 < var17.chat.size(); ++var16) {
+		++((ChatLine) var17.chat.get(var16)).time;
+	    }
 	}
 
 	GL11.glBindTexture(3553, this.textureManager.load("/terrain.png"));
@@ -2531,7 +2621,8 @@ public final class Minecraft implements Runnable {
 				    } else if (packetType == PacketType.EXT_ADD_ENTITY) {
 					byte playerID = ((Byte) packetParams[0])
 						.byteValue();
-					//String playerName = (String) packetParams[1];
+					// String playerName = (String)
+					// packetParams[1];
 					String skinName = (String) packetParams[2];
 
 					NetworkPlayer player = networkManager.players
@@ -3074,6 +3165,12 @@ public final class Minecraft implements Runnable {
 			if (Keyboard.getEventKey() == Keyboard.KEY_F11) {
 			    toggleFullscreen();
 			}
+			if (Keyboard.getEventKey() == Keyboard.KEY_F1) {
+			    this.canRenderGUI = !this.canRenderGUI;
+			}
+			if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
+			    takeAndSaveScreenshot(this.width, this.height);
+			}
 
 			if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
 			    if (this.cameraDistance == -0.1F) {
@@ -3309,5 +3406,5 @@ public final class Minecraft implements Runnable {
 	    var2.printStackTrace();
 	}
     }
-    
+
 }

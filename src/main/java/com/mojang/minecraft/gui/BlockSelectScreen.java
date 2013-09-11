@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public final class BlockSelectScreen extends GuiScreen {
 
-    boolean lessThan49 = SessionData.allowedBlocks.size() <= 49;
+    boolean lessThan49 = SessionData.allowedBlocks.size() <= 50;
     int BlocksPerRow = 13;
     int Spacing = 20;
 

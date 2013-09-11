@@ -1,5 +1,11 @@
 package com.mojang.minecraft.gui;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+
+import com.mojang.minecraft.Minecraft;
+
 public final class PauseScreen extends GuiScreen {
 
     protected final void onButtonClick(Button var1) {
@@ -23,6 +29,26 @@ public final class PauseScreen extends GuiScreen {
 	    this.minecraft.setCurrentScreen((GuiScreen) null);
 	    this.minecraft.grabMouse();
 	}
+	if(var1.id == 5){
+	    File file = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
+	    file.mkdirs();
+	    try {
+		Desktop.getDesktop().open(file);
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+	}
+	if(var1.id == 6){
+	    File file = new File(Minecraft.getMinecraftDirectory(), "/logs/");
+	    file.mkdirs();
+	    try {
+		Desktop.getDesktop().open(file);
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+	}
 
     }
 
@@ -42,6 +68,11 @@ public final class PauseScreen extends GuiScreen {
 	    ((Button) this.buttons.get(2)).active = true;
 	    ((Button) this.buttons.get(3)).active = true;
 	}
+	int w = this.fontRenderer.getWidth("Screenshots...");
+	this.buttons.add(new Button(5, this.width - this.fontRenderer.getWidth("Screenshots...") - 15,
+		this.height - 30, this.fontRenderer.getWidth("Screenshots..."), "Screenshots"));
+	this.buttons.add(new Button(6, this.width - w - 15,
+		this.height - 52, w, "Chat Logs"));
 
 	if (this.minecraft.networkManager != null) {
 	    ((Button) this.buttons.get(1)).active = false;

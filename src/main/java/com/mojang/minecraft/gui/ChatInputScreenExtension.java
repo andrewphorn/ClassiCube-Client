@@ -67,6 +67,12 @@ public class ChatInputScreenExtension extends GuiScreen {
 	    this.minecraft.setCurrentScreen((GuiScreen) null);
 	    return;
 	}
+	if(paramInt == Keyboard.KEY_F2){
+	    this.minecraft.setCurrentScreen((GuiScreen) null);
+	    this.minecraft.takeAndSaveScreenshot(this.minecraft.width, this.minecraft.height);
+	    this.minecraft.setCurrentScreen(this);
+	}
+	
 	if (Keyboard.isKeyDown(Keyboard.KEY_TAB))
 	    return;
 
