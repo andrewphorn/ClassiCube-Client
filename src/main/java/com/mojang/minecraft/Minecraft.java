@@ -277,6 +277,7 @@ public final class Minecraft implements Runnable {
 	}
 
 	this.applet = var2;
+	new SleepForeverThread();
 	this.canvas = var1;
 	this.width = var3;
 	this.height = var4;
@@ -710,7 +711,7 @@ public final class Minecraft implements Runnable {
 
 	    this.textureManager.initAtlas();
 
-	    OpenGlHelper.initializeTextures();
+	    //OpenGlHelper.initializeTextures();
 
 	    if (this.session == null)
 		this.HackState = com.mojang.minecraft.HackState.HacksTagEnabled;
