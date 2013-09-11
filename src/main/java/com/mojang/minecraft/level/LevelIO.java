@@ -1,5 +1,6 @@
 package com.mojang.minecraft.level;
 
+import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.ProgressBarDisplay;
 
 import java.io.BufferedReader;
@@ -34,6 +35,8 @@ public final class LevelIO {
     }
 
     public static void save(Level var0, OutputStream var1) {
+	if (!Minecraft.isSinglePlayer)
+	    return;
 	try {
 	    DataOutputStream var3;
 	    (var3 = new DataOutputStream(new GZIPOutputStream(var1)))

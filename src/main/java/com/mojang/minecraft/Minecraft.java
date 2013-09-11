@@ -545,15 +545,6 @@ public final class Minecraft implements Runnable {
 
     public final void run() {
 	this.running = true;
-	String textureFile = "/terrain.png";
-	BufferedImage image = null;
-	try {
-	    image = ImageIO.read(TextureManager.class
-		    .getResourceAsStream(textureFile));
-	} catch (IOException e1) {
-	    // TODO Auto-generated catch block
-	    e1.printStackTrace();
-	}
 
 	mcDir = getMinecraftDirectory();
 
@@ -634,10 +625,7 @@ public final class Minecraft implements Runnable {
 	    this.fontRenderer = new FontRenderer(this.settings, "/default.png",
 		    this.textureManager);
 
-	    this.textureManager.textureAtlas = this.textureManager
-		    .Atlas2dInto1d(image, 16, image.getWidth() / 16);;
-		//   Shader.loadShader(getMinecraftDirectory() +"/shaders/water.vert", null);
-		    
+	   this.textureManager.initAtlas();
 		    
 	    if (this.session == null)
 		this.HackState = HackState.HacksTagEnabled;
@@ -2471,6 +2459,7 @@ public final class Minecraft implements Runnable {
 							.registerAnimation(new TextureLavaFX());
 						this.textureManager
 							.registerAnimation(new TextureFireFX());
+						this.textureManager.initAtlas();
 						return;
 					    }
 
@@ -2498,6 +2487,7 @@ public final class Minecraft implements Runnable {
 						this.textureManager.currentTerrainPng = image;
 						this.textureManager.animations
 							.clear();
+						this.textureManager.initAtlas();
 					    }
 					}
 					this.textureManager.textures.clear();

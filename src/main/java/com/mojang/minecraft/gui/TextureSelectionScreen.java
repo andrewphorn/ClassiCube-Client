@@ -44,6 +44,9 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	    }
 	    if (var1.id == 8) {
 		this.minecraft.textureManager.currentTerrainPng = null;
+		this.minecraft.textureManager.customEdgeBlock = null;
+		this.minecraft.textureManager.customSideBlock = null;
+		this.minecraft.textureManager.initAtlas();
 		this.minecraft.textureManager.load("/terrain.png");
 		this.minecraft.setCurrentScreen((GuiScreen) null);
 		this.minecraft.grabMouse();

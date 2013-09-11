@@ -2,6 +2,7 @@ package com.mojang.minecraft.render;
 
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.render.texture.TextureFX;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
@@ -21,7 +22,7 @@ import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_AN
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 
 public class TextureManager {
-    
+
     public boolean Applet;
 
     public HashMap<String, Integer> textures = new HashMap<String, Integer>();
@@ -52,7 +53,7 @@ public class TextureManager {
 	    texturesFolder.mkdir();
 	}
     }
-    
+
     public static BufferedImage load1(BufferedImage image) {
 	int charWidth = image.getWidth() / 16;
 	BufferedImage image1 = new BufferedImage(16, image.getHeight()
@@ -213,7 +214,7 @@ public class TextureManager {
 	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
 		    GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 	}
-	
+
 	// GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
 	// GL11.GL_MODULATE);
 
@@ -257,7 +258,7 @@ public class TextureManager {
 	if (settings.smoothing > 0) {
 	    if (settings.smoothing == 1) {
 		ContextCapabilities capabilities = GLContext.getCapabilities();
-		
+
 		if (capabilities.OpenGL30) {
 		    if (previousMipmapMode != settings.smoothing) {
 			System.out
@@ -301,6 +302,24 @@ public class TextureManager {
 	previousMipmapMode = settings.smoothing;
     }
 
+    public void initAtlas() {
+	String textureFile = "/terrain.png";
+	BufferedImage image = null;
+	if (this.currentTerrainPng != null) {
+	    image = currentTerrainPng;
+	} else {
+	    try {
+		image = ImageIO.read(TextureManager.class
+			.getResourceAsStream(textureFile));
+	    } catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	    }
+	}
+	textureAtlas.clear();
+	textureAtlas = Atlas2dInto1d(image, 16, image.getWidth() / 16);
+    }
+
     public int load(String file) {
 	if (file.contains("terrain") && textures.containsKey("customTerrain")) {
 	    return textures.get("customTerrain");
@@ -309,6 +328,14 @@ public class TextureManager {
 		&& currentTerrainPng != null) {
 	    int id = load(currentTerrainPng);
 	    textures.put("customTerrain", id);
+	    if(this.customEdgeBlock == null){
+		customEdgeBlock = this.textureAtlas.get(Block.WATER.textureId);
+		textures.put("customEdge", load(customEdgeBlock));
+	    }
+	    if(this.customSideBlock == null){
+		customSideBlock = this.textureAtlas.get(Block.BEDROCK.textureId);
+		textures.put("customSide", load(customSideBlock));
+	    }
 	    return id;
 	}
 	if (file.contains("rock") && textures.containsKey("customEdge")) {
@@ -406,7 +433,7 @@ public class TextureManager {
 	    zip.close();
 
 	}
-
+	initAtlas();
 	return textureID;
     }
 
