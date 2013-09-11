@@ -13,6 +13,7 @@ import java.util.Random;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
 
 public final class Renderer {
 
@@ -167,7 +168,17 @@ public final class Renderer {
 	    }
 	} else {
 	    GL11.glFogi(2917, 9729);
-	    GL11.glFogf(2915, 0.0F);
+	    boolean useFancyFog = true;
+	    if (GLContext.getCapabilities().GL_NV_fog_distance) {
+		if (useFancyFog) {
+		    GL11.glFogi(34138, 34139);
+		} else {
+		    GL11.glFogi(34138, 34140);
+		}
+	    } else {
+		GL11.glFogi(34138, 34139);
+	    }
+	    GL11.glFogf(2915, 0.05F);
 	    GL11.glFogf(2916, this.fogEnd);
 	    GL11.glLightModel(2899, this.createBuffer(1.0F, 1.0F, 1.0F, 1.0F));
 	}

@@ -45,14 +45,14 @@ public class ShapeRenderer {
     private int bufferSize;
     private Minecraft mc;
     private boolean vboSet = false;
-    public ShapeRenderer(int var1, Minecraft minecraft) {
+    public ShapeRenderer(int size, Minecraft minecraft) {
 	this.mc = minecraft;
-	this.bufferSize = var1;
-	this.byteBuffer = GLAllocation.createDirectByteBuffer(var1 * 4);
+	this.bufferSize = size;
+	this.byteBuffer = GLAllocation.createDirectByteBuffer(size * 4);
 	this.intBuffer = this.byteBuffer.asIntBuffer();
 	this.floatBuffer = this.byteBuffer.asFloatBuffer();
 	this.shortBuffer = this.byteBuffer.asShortBuffer();
-	this.rawBuffer = new int[var1];
+	this.rawBuffer = new int[size];
 	this.useVBO = mc.settings.VBOs
 		&& GLContext.getCapabilities().GL_ARB_vertex_buffer_object;
 

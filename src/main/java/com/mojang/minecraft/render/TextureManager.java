@@ -213,7 +213,7 @@ public class TextureManager {
 	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
 		    GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 	}
-
+	
 	// GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
 	// GL11.GL_MODULATE);
 
@@ -257,7 +257,7 @@ public class TextureManager {
 	if (settings.smoothing > 0) {
 	    if (settings.smoothing == 1) {
 		ContextCapabilities capabilities = GLContext.getCapabilities();
-
+		
 		if (capabilities.OpenGL30) {
 		    if (previousMipmapMode != settings.smoothing) {
 			System.out

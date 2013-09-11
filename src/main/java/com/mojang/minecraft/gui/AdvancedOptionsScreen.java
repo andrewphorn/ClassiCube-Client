@@ -175,7 +175,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 	if (drawWarning) {
 	    drawCenteredString(this.minecraft.fontRenderer,
 		    this.optionWarningMessage, this.minecraft.width / 2 / 2,
-		    this.height / 6 + 128, 16711680);
+		    this.height / 6 + 152, 16711680);
 	}
 	super.render(var1, var2);
     }

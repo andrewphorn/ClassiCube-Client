@@ -354,11 +354,11 @@ public final class GameSettings implements Serializable {
 	if (setting == 11) {
 	    if (HackType == 1) {
 		this.minecraft.player.input.fly = false;
-		this.minecraft.player.input.noclip = false;
+		this.minecraft.player.input.noClip = false;
 		HackType = 0;
 	    } else {
 		this.minecraft.player.flyingMode = false;
-		this.minecraft.player.input.noClip = false;
+		this.minecraft.player.input.noclip = false;
 		HackType++;
 	    }
 	}

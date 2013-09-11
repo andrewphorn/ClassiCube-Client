@@ -623,8 +623,10 @@ public final class Minecraft implements Runnable {
 	    GL11.glMatrixMode(5888);
 	    checkGLError("Startup");
 	    //
+
 	    this.settings = new GameSettings(this, mcDir);
 	    ShapeRenderer.instance = new ShapeRenderer(2097152, this);
+	    
 	    this.textureManager = new TextureManager(this.settings, isApplet);
 	    this.textureManager.registerAnimation(new TextureFireFX());
 	    this.textureManager.registerAnimation(new TextureLavaFX());
@@ -633,7 +635,10 @@ public final class Minecraft implements Runnable {
 		    this.textureManager);
 
 	    this.textureManager.textureAtlas = this.textureManager
-		    .Atlas2dInto1d(image, 16, image.getWidth() / 16);
+		    .Atlas2dInto1d(image, 16, image.getWidth() / 16);;
+		//   Shader.loadShader(getMinecraftDirectory() +"/shaders/water.vert", null);
+		    
+		    
 	    if (this.session == null)
 		this.HackState = HackState.HacksTagEnabled;
 	    IntBuffer var9;
@@ -799,7 +804,7 @@ public final class Minecraft implements Runnable {
 
 			checkGLError("Pre render");
 			GL11.glEnable(3553);
-
+			//Shader.draw();
 			if (!this.online) {
 			    this.gamemode.applyCracks(this.timer.delta);
 			    float var65 = this.timer.delta;
@@ -1079,7 +1084,6 @@ public final class Minecraft implements Runnable {
 					GL11.glTranslatef(-var69, -var74,
 						-var33);
 					Frustrum var76 = FrustrumImpl.update();
-					// var76.init();
 					Frustrum var100 = var76;
 					LevelRenderer var101 = renderer.minecraft.levelRenderer;
 
@@ -1088,7 +1092,7 @@ public final class Minecraft implements Runnable {
 					    var101.chunkCache[var98]
 						    .clip(var100);
 					}
-
+					
 					var101 = renderer.minecraft.levelRenderer;
 					Collections
 						.sort(renderer.minecraft.levelRenderer.chunks,
@@ -1358,7 +1362,7 @@ public final class Minecraft implements Runnable {
 					    var35 = var69;
 					    var87 = var74;
 					}
-
+					
 					shapeRenderer
 						.color(var34, var35, var87);
 					var74 = var101.level.depth + 10;
@@ -1522,6 +1526,7 @@ public final class Minecraft implements Runnable {
 					renderer.updateFog();
 					GL11.glEnable(3553);
 					GL11.glEnable(3042);
+					
 					GL11.glBindTexture(3553,
 						var89.textureManager
 							.load("/water.png"));
@@ -1531,7 +1536,7 @@ public final class Minecraft implements Runnable {
 					GL11.glEnable(3042);
 					GL11.glColorMask(false, false, false,
 						false);
-
+					
 					var120 = var89.sortChunks(var126, 1);
 					GL11.glColorMask(true, true, true, true);
 					if (renderer.minecraft.settings.anaglyph) {
@@ -1543,7 +1548,7 @@ public final class Minecraft implements Runnable {
 							false, false);
 					    }
 					}
-
+					
 					if (var120 > 0) {
 					    GL11.glBindTexture(
 						    3553,
@@ -1551,7 +1556,7 @@ public final class Minecraft implements Runnable {
 							    .load("/terrain.png"));
 					    GL11.glCallLists(var89.buffer);
 					}
-
+					//Shader.endDraw();
 					GL11.glDepthMask(true);
 					GL11.glDisable(3042);
 					GL11.glDisable(2912);
@@ -1855,8 +1860,11 @@ public final class Minecraft implements Runnable {
 								var80);
 					    }
 					}
-					if (this.networkManager != null
-						&& this.networkManager.players != null) {
+					if (!isSinglePlayer
+						&& this.networkManager != null
+						&& this.networkManager.players != null
+						&& this.networkManager.players
+							.size() > 0) {
 					    if (this.settings.ShowNames == 1) {
 						for (int n = 0; n < this.networkManager.players
 							.values().size(); n++) {
@@ -3319,4 +3327,5 @@ public final class Minecraft implements Runnable {
 	    var2.printStackTrace();
 	}
     }
+    
 }
