@@ -7,7 +7,7 @@ public final class Sound implements Audio {
     private SoundPos pos;
     private float pitch = 0.0F;
     private float volume = 1.0F;
-    private short[] data = new short[1];
+    private int[] data = new int[1];
 
     public Sound(AudioInfo var1, SoundPos var2) {
 	this.info = var1;
@@ -16,9 +16,9 @@ public final class Sound implements Audio {
 	this.volume = var2.getDistanceSq() * var1.volume;
     }
 
-    public final boolean play(short[] var1, short[] var2, int var3) {
+    public final boolean play(int[] var1, int[] var2, int var3) {
 	if (data.length < var3) {
-	    data = new short[var3];
+	    data = new int[var3];
 	}
 
 	int var4;
