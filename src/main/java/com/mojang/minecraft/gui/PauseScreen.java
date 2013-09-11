@@ -3,8 +3,15 @@ package com.mojang.minecraft.gui;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import javax.management.MBeanServerConnection;
 
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.ProgressBarDisplay;
+import com.sun.management.OperatingSystemMXBean;
 
 public final class PauseScreen extends GuiScreen {
 
@@ -86,6 +93,17 @@ public final class PauseScreen extends GuiScreen {
 	drawFadingBox(0, 0, this.width, this.height, 1610941696, -1607454624);
 	drawCenteredString(this.fontRenderer, "Game menu", this.width / 2, 40,
 		16777215);
+	drawString(this.fontRenderer, ProgressBarDisplay.title, this.width - this.fontRenderer.getWidth(ProgressBarDisplay.title) - 15, 2,
+		11835030);
+	drawString(this.fontRenderer, "ClassiCube 0.1", this.width - this.fontRenderer.getWidth("ClassiCube 0.1") - 15, 13,
+		13158600);
+	String s = "Average CPU: " + this.minecraft.monitoringThread.getAvarageUsagePerCPU() + "%";
+	drawString(this.fontRenderer, s, this.width - this.fontRenderer.getWidth(s) - 15, 24,
+		9868980);
+	String s2 = "Usage: " + this.minecraft.monitoringThread.getTotalUsage() + "MB";
+	drawString(this.fontRenderer, s2, this.width - this.fontRenderer.getWidth(s2) - 15, 35,
+		9868980);
 	super.render(var1, var2);
     }
+    
 }

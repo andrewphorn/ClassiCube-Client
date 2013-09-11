@@ -233,6 +233,8 @@ public final class Minecraft implements Runnable {
     float cameraDistance = -0.1F;
 
     int recievedExtensionLength;
+    
+    public MonitoringThread monitoringThread;
 
     public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4,
 	    boolean var5, boolean IsApplet) {
@@ -704,6 +706,8 @@ public final class Minecraft implements Runnable {
 	    this.textureManager.registerAnimations();
 	    this.fontRenderer = new FontRenderer(this.settings, "/default.png",
 		    this.textureManager);
+	    
+	    monitoringThread = new MonitoringThread(1000);
 
 	    this.textureManager.initAtlas();
 
