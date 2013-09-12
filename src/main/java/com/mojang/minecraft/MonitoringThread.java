@@ -1,6 +1,8 @@
 package com.mojang.minecraft;
 
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.ThreadMXBean;
 import java.util.Collection;
@@ -18,11 +20,15 @@ public class MonitoringThread extends Thread {
     private ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
     private OperatingSystemMXBean opBean = ManagementFactory.getOperatingSystemMXBean();
 
+    private Runtime runtime;
+    public long maxMemory, totalMemory, freeMemory;
+    
     public MonitoringThread(long refreshInterval) {
         this.refreshInterval = refreshInterval;
 
         setName("MonitoringThread");
 
+        runtime = Runtime.getRuntime();
         start();
     }
 
@@ -50,6 +56,9 @@ public class MonitoringThread extends Thread {
                     threadTime.setCurrent(threadBean.getThreadCpuTime(threadTime.getId())); 
                 }
             }
+            maxMemory = runtime.maxMemory();
+            totalMemory = runtime.totalMemory();
+            freeMemory = runtime.freeMemory();
 
             try {
                 Thread.sleep(refreshInterval);

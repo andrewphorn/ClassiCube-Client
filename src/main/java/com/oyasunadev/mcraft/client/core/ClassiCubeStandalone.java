@@ -424,7 +424,9 @@ public class ClassiCubeStandalone {
 	    player = args[2];
 	    mppass = args[3];
 	    skinServer = args[4];
-	    startFullScreen = Boolean.parseBoolean(args[5]);
+	    if(args.length>=4){
+		startFullScreen = Boolean.parseBoolean(args[5]);
+	    }
 	    }catch(Exception e){}
 	}
 	ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();

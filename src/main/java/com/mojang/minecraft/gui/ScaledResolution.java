@@ -1,17 +1,19 @@
 package com.mojang.minecraft.gui;
 
+import com.mojang.minecraft.GameSettings;
+
 public class ScaledResolution {
     private int scaledWidth;
     private int scaledHeight;
-    public double scaledWidthD;
-    public double scaledHeightD;
-    public int scaleFactor;
+    private double scaledWidthD;
+    private double scaledHeightD;
+    private int scaleFactor;
 
-    public ScaledResolution(int par2, int par3) {
+    public ScaledResolution(GameSettings par1GameSettings, int par2, int par3) {
 	this.scaledWidth = par2;
 	this.scaledHeight = par3;
 	this.scaleFactor = 1;
-	int var4 = 0;
+	int var4 = 1000; // scale
 
 	if (var4 == 0) {
 	    var4 = 1000;
@@ -27,15 +29,32 @@ public class ScaledResolution {
 		/ (double) this.scaleFactor;
 	this.scaledHeightD = (double) this.scaledHeight
 		/ (double) this.scaleFactor;
-	this.scaledWidth = (int) Math.ceil(this.scaledWidthD);
-	this.scaledHeight = (int) Math.ceil(this.scaledHeightD);
+	this.scaledWidth = ceiling_double_int(this.scaledWidthD);
+	this.scaledHeight = ceiling_double_int(this.scaledHeightD);
+    }
+
+    public static int ceiling_double_int(double par0) {
+	int var2 = (int) par0;
+	return par0 > (double) var2 ? var2 + 1 : var2;
+    }
+
+    public int getScaledWidth() {
+	return this.scaledWidth;
     }
 
     public int getScaledHeight() {
 	return this.scaledHeight;
     }
 
-    public int getScaledWidth() {
-	return this.scaledWidth;
+    public double getScaledWidth_double() {
+	return this.scaledWidthD;
+    }
+
+    public double getScaledHeight_double() {
+	return this.scaledHeightD;
+    }
+
+    public int getScaleFactor() {
+	return this.scaleFactor;
     }
 }

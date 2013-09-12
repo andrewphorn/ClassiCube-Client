@@ -20,8 +20,8 @@ public class ChatLine {
 	Calendar cal = Calendar.getInstance();
 	String month = new SimpleDateFormat("MMM").format(cal.getTime());
 	String serverName = ProgressBarDisplay.title.toLowerCase().contains(
-		"connecting...") ? "" : ProgressBarDisplay.title;
-	if (serverName == "")
+		"connecting..") ? "" : ProgressBarDisplay.title;
+	if (serverName == "" || Minecraft.isSinglePlayer)
 	    return;
 	serverName = FontRenderer.stripColor(serverName);
 	serverName = serverName.replaceAll("[^A-Za-z0-9\\._-]+", "_");
