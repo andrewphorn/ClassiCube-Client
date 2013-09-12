@@ -25,20 +25,19 @@ public final class FontRenderer {
 
 	return var1;
     }
-
     private int fontId = 0;
     private GameSettings settings;
 
-    private short[] font = new short[256];
+    private int[] font = new int[256];
 
     public FontRenderer(GameSettings settings, String fontImage,
-	    TextureManager textureManager) throws IOException {
+	    TextureManager textures) throws IOException {
 	this.settings = settings;
 	BufferedImage font;
 
 	try {
-	    font = ImageIO.read(TextureManager.class
-		    .getResourceAsStream(fontImage));
+		font = ImageIO.read(TextureManager.class
+			.getResourceAsStream(fontImage));
 	} catch (IOException e) {
 	    throw new IOException("Missing resource");
 	}
@@ -52,14 +51,14 @@ public final class FontRenderer {
 	    int var7 = (int) (character / 16);
 	    int chWidth = 0;
 
-	    for (boolean empty = false; chWidth < 8 && !empty; chWidth++) {
+	    for (boolean var9 = false; chWidth < 8 && !var9; chWidth++) {
 		int var10 = (var6 << 3) + chWidth;
-		empty = true;
+		var9 = true;
 
-		for (int var11 = 0; var11 < 8 && empty; ++var11) {
+		for (int var11 = 0; var11 < 8 && var9; ++var11) {
 		    int var12 = ((var7 << 3) + var11) * width;
 		    if ((fontData[var10 + var12] & 255) > 128) {
-			empty = false;
+			var9 = false;
 		    }
 		}
 	    }
@@ -67,9 +66,9 @@ public final class FontRenderer {
 	    if (character == 32) {
 		chWidth = (int) (4);
 	    }
-	    this.font[character] = (short) chWidth;
+	    this.font[character] = chWidth;
 	}
-	this.fontId = textureManager.load(fontImage);
+	this.fontId = textures.load(fontImage);
     }
 
     public int getWidth(String paramString) {

@@ -20,10 +20,11 @@ public class Button extends Screen {
 	this.x = var2;
 	this.y = var3;
 	this.width = var4;
+	this.height = 20;
 	this.text = var6;
     }
 
-    public Button(int var1, int var2, int var3,  String var4) {
+    public Button(int var1, int var2, int var3, String var4) {
 	this(var1, var2, var3, 200, var4);
     }
 }

@@ -12,9 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public final class GameSettings implements Serializable {
-    /**
-     * 
-     */
+    
     private static final long serialVersionUID = 1L;
     public static String StatusString = "";
     public static String PercentString = "";

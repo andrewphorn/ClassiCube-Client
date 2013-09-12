@@ -65,7 +65,7 @@ public class NetworkPlayer extends HumanoidMob {
 
     public void aiStep() {
 	int var1 = 5;
-	if(this.moveQueue == null)return;
+
 	do {
 	    if (this.moveQueue.size() > 0) {
 		this.setPos((PositionUpdate) this.moveQueue.remove(0));

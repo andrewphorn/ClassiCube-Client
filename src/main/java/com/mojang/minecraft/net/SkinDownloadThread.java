@@ -38,9 +38,11 @@ public class SkinDownloadThread extends Thread {
 
 	    connection.connect();
 
-	    if (connection.getResponseCode() != 404) {
-		player.newTexture = ImageIO.read(connection.getInputStream());
+	    if (connection.getResponseCode() == 404) {
+		return;
 	    }
+
+	    player.newTexture = ImageIO.read(connection.getInputStream());
 	} catch (Exception e) {
 	    e.printStackTrace();
 	} finally {
@@ -48,6 +50,5 @@ public class SkinDownloadThread extends Thread {
 		connection.disconnect();
 	    }
 	}
-
     }
 }

@@ -5,7 +5,6 @@ import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.player.Player;
 
 import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -100,7 +99,6 @@ public final class LevelRenderer {
 	this.xChunks = this.level.width / 16;
 	this.yChunks = this.level.depth / 16;
 	this.zChunks = this.level.height / 16;
-	
 	this.chunkCache = new Chunk[this.xChunks * this.yChunks * this.zChunks];
 	this.loadQueue = new Chunk[this.xChunks * this.yChunks * this.zChunks];
 	var1 = 0;

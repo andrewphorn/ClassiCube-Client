@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GLAllocation {
     private static final Map<Integer, Integer> displayLists = new HashMap<Integer, Integer>();
-    private static final List<Integer> textures = new ArrayList<Integer>();
+    private static final List<?> textures = new ArrayList();
 
     public static synchronized ByteBuffer createDirectByteBuffer(int par0) {
 	return ByteBuffer.allocateDirect(par0).order(ByteOrder.nativeOrder());
@@ -29,8 +29,8 @@ public class GLAllocation {
     }
 
     public static synchronized void deleteDisplayLists(int par0) {
-	GL11.glDeleteLists(par0, displayLists.remove(Integer
-		.valueOf(par0)).intValue());
+	GL11.glDeleteLists(par0, ((Integer) displayLists.remove(Integer
+		.valueOf(par0))).intValue());
     }
 
     public static synchronized void deleteTextures() {
@@ -42,7 +42,7 @@ public class GLAllocation {
     }
 
     public static synchronized void deleteTexturesAndDisplayLists() {
-	Iterator<Entry<Integer, Integer>> var0 = displayLists.entrySet().iterator();
+	Iterator<?> var0 = displayLists.entrySet().iterator();
 
 	while (var0.hasNext()) {
 	    Entry<?, ?> var1 = (Entry<?, ?>) var0.next();

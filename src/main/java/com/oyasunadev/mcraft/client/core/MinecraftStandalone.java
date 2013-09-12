@@ -299,10 +299,10 @@ public class MinecraftStandalone {
 	    boolean RunFakeNetwork = true;
 
 	    if (RunFakeNetwork) {
-		minecraft.host = "74.109.33.107";
+		minecraft.host = "127.0.0.1";
 		minecraft.host = minecraft.host + ":" + "25566";
-		minecraft.session = new SessionData("Jonty800", "noidea");
-		minecraft.session.mppass = "3650b66daa0b04004be4285e471ad69d";
+		minecraft.session = new SessionData("Scoot", "noidea");
+		minecraft.session.mppass = "c0dd4746a88c5785952cd0190e8214a6";
 		minecraft.session.haspaid = true;
 		minecraft.server = "127.0.0.1";
 		minecraft.port = 25566;

@@ -52,8 +52,8 @@ public final class SoundPlayer implements Runnable {
 		e.printStackTrace();
 	    }
 
-	    Arrays.fill(var1, 0, 4410, (short)0);
-	    Arrays.fill(var2, 0, 4410, (short)0);
+	    Arrays.fill(var1, 0, 4410, 0);
+	    Arrays.fill(var2, 0, 4410, 0);
 	    int[] var5 = var2;
 	    int[] var6 = var1;
 	    synchronized (audioQueue) {
