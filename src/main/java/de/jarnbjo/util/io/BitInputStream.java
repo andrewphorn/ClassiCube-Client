@@ -46,146 +46,145 @@ import java.io.IOException;
 
 public interface BitInputStream {
 
-    /**
-     * constant for setting this stream's mode to little endian
-     * 
-     * @see #setEndian(int)
-     */
+	/**
+	 * constant for setting this stream's mode to little endian
+	 * 
+	 * @see #setEndian(int)
+	 */
 
-    public static final int LITTLE_ENDIAN = 0;
+	public static final int LITTLE_ENDIAN = 0;
 
-    /**
-     * constant for setting this stream's mode to big endian
-     * 
-     * @see #setEndian(int)
-     */
+	/**
+	 * constant for setting this stream's mode to big endian
+	 * 
+	 * @see #setEndian(int)
+	 */
 
-    public static final int BIG_ENDIAN = 1;
+	public static final int BIG_ENDIAN = 1;
 
-    /**
-     * causes the read pointer to be moved to the beginning of the next byte,
-     * remaining bits in the current byte are discarded
-     * 
-     * @throws UnsupportedOperationException
-     *             if the method is not supported by the implementation
-     */
+	/**
+	 * causes the read pointer to be moved to the beginning of the next byte,
+	 * remaining bits in the current byte are discarded
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             if the method is not supported by the implementation
+	 */
 
-    public void align();
+	public void align();
 
-    /**
-     * reads one bit (as a boolean) from the input stream
-     * 
-     * @return <code>true</code> if the next bit is 1, <code>false</code>
-     *         otherwise
-     * 
-     * @throws IOException
-     *             if an I/O error occurs
-     * @throws UnsupportedOperationException
-     *             if the method is not supported by the implementation
-     */
+	/**
+	 * reads one bit (as a boolean) from the input stream
+	 * 
+	 * @return <code>true</code> if the next bit is 1, <code>false</code>
+	 *         otherwise
+	 * 
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws UnsupportedOperationException
+	 *             if the method is not supported by the implementation
+	 */
 
-    public boolean getBit() throws IOException;
+	public boolean getBit() throws IOException;
 
-    /**
-     * reads a huffman codeword based on the <code>root</code> parameter and
-     * returns the decoded value
-     * 
-     * @param root
-     *            the root of the Huffman tree used to decode the codeword
-     * @return the decoded unsigned integer value read from the stream
-     * 
-     * @throws IOException
-     *             if an I/O error occurs
-     * @throws UnsupportedOperationException
-     *             if the method is not supported by the implementation
-     */
+	/**
+	 * reads a huffman codeword based on the <code>root</code> parameter and
+	 * returns the decoded value
+	 * 
+	 * @param root
+	 *            the root of the Huffman tree used to decode the codeword
+	 * @return the decoded unsigned integer value read from the stream
+	 * 
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws UnsupportedOperationException
+	 *             if the method is not supported by the implementation
+	 */
 
-    public int getInt(HuffmanNode root) throws IOException;
+	public int getInt(HuffmanNode root) throws IOException;
 
-    /**
-     * reads <code>bits</code> number of bits from the input stream
-     * 
-     * @return the unsigned integer value read from the stream
-     * 
-     * @throws IOException
-     *             if an I/O error occurs
-     * @throws UnsupportedOperationException
-     *             if the method is not supported by the implementation
-     */
+	/**
+	 * reads <code>bits</code> number of bits from the input stream
+	 * 
+	 * @return the unsigned integer value read from the stream
+	 * 
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws UnsupportedOperationException
+	 *             if the method is not supported by the implementation
+	 */
 
-    public int getInt(int bits) throws IOException;
+	public int getInt(int bits) throws IOException;
 
-    /**
-     * reads <code>bits</code> number of bits from the input stream
-     * 
-     * @return the unsigned long value read from the stream
-     * 
-     * @throws IOException
-     *             if an I/O error occurs
-     * @throws UnsupportedOperationException
-     *             if the method is not supported by the implementation
-     */
+	/**
+	 * reads <code>bits</code> number of bits from the input stream
+	 * 
+	 * @return the unsigned long value read from the stream
+	 * 
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws UnsupportedOperationException
+	 *             if the method is not supported by the implementation
+	 */
 
-    public long getLong(int bits) throws IOException;
+	public long getLong(int bits) throws IOException;
 
-    /**
-     * reads <code>bits</code> number of bits from the input stream
-     * 
-     * @return the signed integer value read from the stream
-     * 
-     * @throws IOException
-     *             if an I/O error occurs
-     * @throws UnsupportedOperationException
-     *             if the method is not supported by the implementation
-     */
+	/**
+	 * reads <code>bits</code> number of bits from the input stream
+	 * 
+	 * @return the signed integer value read from the stream
+	 * 
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws UnsupportedOperationException
+	 *             if the method is not supported by the implementation
+	 */
 
-    public int getSignedInt(int bits) throws IOException;
+	public int getSignedInt(int bits) throws IOException;
 
-    /**
-     * reads an integer encoded as "signed rice" as described in the FLAC audio
-     * format specification
-     * 
-     * @param order
-     * @return the decoded integer value read from the stream
-     * 
-     * @throws IOException
-     *             if an I/O error occurs
-     * @throws UnsupportedOperationException
-     *             if the method is not supported by the implementation
-     */
+	/**
+	 * reads an integer encoded as "signed rice" as described in the FLAC audio
+	 * format specification
+	 * 
+	 * @param order
+	 * @return the decoded integer value read from the stream
+	 * 
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws UnsupportedOperationException
+	 *             if the method is not supported by the implementation
+	 */
 
-    public int readSignedRice(int order) throws IOException;
+	public int readSignedRice(int order) throws IOException;
 
-    /**
-     * fills the array from <code>offset</code> with <code>len</code> integers
-     * encoded as "signed rice" as described in the FLAC audio format
-     * specification
-     * 
-     * @param order
-     * @param buffer
-     * @param offset
-     * @param len
-     * @return the decoded integer value read from the stream
-     * 
-     * @throws IOException
-     *             if an I/O error occurs
-     * @throws UnsupportedOperationException
-     *             if the method is not supported by the implementation
-     */
+	/**
+	 * fills the array from <code>offset</code> with <code>len</code> integers
+	 * encoded as "signed rice" as described in the FLAC audio format
+	 * specification
+	 * 
+	 * @param order
+	 * @param buffer
+	 * @param offset
+	 * @param len
+	 * @return the decoded integer value read from the stream
+	 * 
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws UnsupportedOperationException
+	 *             if the method is not supported by the implementation
+	 */
 
-    public void readSignedRice(int order, int[] buffer, int offset, int len)
-	    throws IOException;
+	public void readSignedRice(int order, int[] buffer, int offset, int len) throws IOException;
 
-    /**
-     * changes the endian mode used when reading bit-wise from the stream,
-     * changing the mode mid-stream will cause the read cursor to move to the
-     * beginning of the next byte (as if calling the <code>allign</code> method
-     * 
-     * @see #align()
-     * 
-     * @throws UnsupportedOperationException
-     *             if the method is not supported by the implementation
-     */
+	/**
+	 * changes the endian mode used when reading bit-wise from the stream,
+	 * changing the mode mid-stream will cause the read cursor to move to the
+	 * beginning of the next byte (as if calling the <code>allign</code> method
+	 * 
+	 * @see #align()
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             if the method is not supported by the implementation
+	 */
 
-    public void setEndian(int endian);
+	public void setEndian(int endian);
 }

@@ -5,11 +5,11 @@ import com.mojang.minecraft.ColorCache;
 
 public final class MagmaBlock extends Block {
 
-    protected MagmaBlock(int var1, int var2) {
-	super(var1, var2);
-    }
+	protected MagmaBlock(int var1, int var2) {
+		super(var1, var2);
+	}
 
-    protected final ColorCache getBrightness(Level level, int x, int y, int z) {
-	return new ColorCache(255.0F / 255.0F, 255.0F / 255.0F, 255.0F / 255.0F);
-    }
+	protected final ColorCache getBrightness(Level level, int x, int y, int z) {
+		return new ColorCache(255.0F / 255.0F, 255.0F / 255.0F, 255.0F / 255.0F);
+	}
 }

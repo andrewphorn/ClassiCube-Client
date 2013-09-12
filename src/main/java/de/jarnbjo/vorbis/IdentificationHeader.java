@@ -35,77 +35,75 @@ import de.jarnbjo.util.io.BitInputStream;
 
 public class IdentificationHeader {
 
-    private int version, channels, sampleRate, bitrateMaximum, bitrateNominal,
-	    bitrateMinimum, blockSize0, blockSize1;
-    private MdctFloat[] mdct = new MdctFloat[2];
-    // private MdctLong[] mdctInt=new MdctLong[2];
+	private int version, channels, sampleRate, bitrateMaximum, bitrateNominal, bitrateMinimum,
+			blockSize0, blockSize1;
+	private MdctFloat[] mdct = new MdctFloat[2];
+	// private MdctLong[] mdctInt=new MdctLong[2];
 
-    private static final long HEADER = 0x736962726f76L; // 'vorbis'
+	private static final long HEADER = 0x736962726f76L; // 'vorbis'
 
-    public IdentificationHeader(BitInputStream source)
-	    throws VorbisFormatException, IOException {
-	// equalizer=new Equalizer();
-	// equalizer.pack();
-	// equalizer.show();
+	public IdentificationHeader(BitInputStream source) throws VorbisFormatException, IOException {
+		// equalizer=new Equalizer();
+		// equalizer.pack();
+		// equalizer.show();
 
-	long leading = source.getLong(48);
-	if (leading != HEADER) {
-	    throw new VorbisFormatException(
-		    "The identification header has an illegal leading.");
+		long leading = source.getLong(48);
+		if (leading != HEADER) {
+			throw new VorbisFormatException("The identification header has an illegal leading.");
+		}
+		version = source.getInt(32);
+		channels = source.getInt(8);
+		sampleRate = source.getInt(32);
+		bitrateMaximum = source.getInt(32);
+		bitrateNominal = source.getInt(32);
+		bitrateMinimum = source.getInt(32);
+		int bs = source.getInt(8);
+		blockSize0 = 1 << (bs & 0xf);
+		blockSize1 = 1 << (bs >> 4);
+
+		mdct[0] = new MdctFloat(blockSize0);
+		mdct[1] = new MdctFloat(blockSize1);
+		// mdctInt[0]=new MdctLong(blockSize0);
+		// mdctInt[1]=new MdctLong(blockSize1);
 	}
-	version = source.getInt(32);
-	channels = source.getInt(8);
-	sampleRate = source.getInt(32);
-	bitrateMaximum = source.getInt(32);
-	bitrateNominal = source.getInt(32);
-	bitrateMinimum = source.getInt(32);
-	int bs = source.getInt(8);
-	blockSize0 = 1 << (bs & 0xf);
-	blockSize1 = 1 << (bs >> 4);
 
-	mdct[0] = new MdctFloat(blockSize0);
-	mdct[1] = new MdctFloat(blockSize1);
-	// mdctInt[0]=new MdctLong(blockSize0);
-	// mdctInt[1]=new MdctLong(blockSize1);
-    }
+	public int getBlockSize0() {
+		return blockSize0;
+	}
 
-    public int getBlockSize0() {
-	return blockSize0;
-    }
+	public int getBlockSize1() {
+		return blockSize1;
+	}
 
-    public int getBlockSize1() {
-	return blockSize1;
-    }
+	public int getChannels() {
+		return channels;
+	}
 
-    public int getChannels() {
-	return channels;
-    }
+	public int getMaximumBitrate() {
+		return bitrateMaximum;
+	}
 
-    public int getMaximumBitrate() {
-	return bitrateMaximum;
-    }
+	protected MdctFloat getMdct0() {
+		return mdct[0];
+	}
 
-    protected MdctFloat getMdct0() {
-	return mdct[0];
-    }
+	protected MdctFloat getMdct1() {
+		return mdct[1];
+	}
 
-    protected MdctFloat getMdct1() {
-	return mdct[1];
-    }
+	public int getMinimumBitrate() {
+		return bitrateMinimum;
+	}
 
-    public int getMinimumBitrate() {
-	return bitrateMinimum;
-    }
+	public int getNominalBitrate() {
+		return bitrateNominal;
+	}
 
-    public int getNominalBitrate() {
-	return bitrateNominal;
-    }
+	public int getSampleRate() {
+		return sampleRate;
+	}
 
-    public int getSampleRate() {
-	return sampleRate;
-    }
-
-    public int getVersion() {
-	return version;
-    }
+	public int getVersion() {
+		return version;
+	}
 }

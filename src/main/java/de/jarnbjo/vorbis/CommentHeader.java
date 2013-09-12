@@ -34,204 +34,200 @@ import de.jarnbjo.util.io.BitInputStream;
 
 public class CommentHeader {
 
-    public static final String TITLE = "TITLE";
-    public static final String ARTIST = "ARTIST";
-    public static final String ALBUM = "ALBUM";
-    public static final String TRACKNUMBER = "TRACKNUMBER";
-    public static final String VERSION = "VERSION";
-    public static final String PERFORMER = "PERFORMER";
-    public static final String COPYRIGHT = "COPYRIGHT";
-    public static final String LICENSE = "LICENSE";
-    public static final String ORGANIZATION = "ORGANIZATION";
-    public static final String DESCRIPTION = "DESCRIPTION";
-    public static final String GENRE = "GENRE";
-    public static final String DATE = "DATE";
-    public static final String LOCATION = "LOCATION";
-    public static final String CONTACT = "CONTACT";
-    public static final String ISRC = "ISRC";
+	public static final String TITLE = "TITLE";
+	public static final String ARTIST = "ARTIST";
+	public static final String ALBUM = "ALBUM";
+	public static final String TRACKNUMBER = "TRACKNUMBER";
+	public static final String VERSION = "VERSION";
+	public static final String PERFORMER = "PERFORMER";
+	public static final String COPYRIGHT = "COPYRIGHT";
+	public static final String LICENSE = "LICENSE";
+	public static final String ORGANIZATION = "ORGANIZATION";
+	public static final String DESCRIPTION = "DESCRIPTION";
+	public static final String GENRE = "GENRE";
+	public static final String DATE = "DATE";
+	public static final String LOCATION = "LOCATION";
+	public static final String CONTACT = "CONTACT";
+	public static final String ISRC = "ISRC";
 
-    private String vendor;
-    private HashMap<String, ArrayList<String>> comments = new HashMap<String, ArrayList<String>>();
+	private String vendor;
+	private HashMap<String, ArrayList<String>> comments = new HashMap<String, ArrayList<String>>();
 
-    private static final long HEADER = 0x736962726f76L; // 'vorbis'
+	private static final long HEADER = 0x736962726f76L; // 'vorbis'
 
-    public CommentHeader(BitInputStream source) throws VorbisFormatException,
-	    IOException {
-	if (source.getLong(48) != HEADER) {
-	    throw new VorbisFormatException(
-		    "The identification header has an illegal leading.");
+	public CommentHeader(BitInputStream source) throws VorbisFormatException, IOException {
+		if (source.getLong(48) != HEADER) {
+			throw new VorbisFormatException("The identification header has an illegal leading.");
+		}
+
+		vendor = getString(source);
+
+		int ucLength = source.getInt(32);
+
+		for (int i = 0; i < ucLength; i++) {
+			String comment = getString(source);
+			int ix = comment.indexOf('=');
+			String key = comment.substring(0, ix);
+			String value = comment.substring(ix + 1);
+			// comments.put(key, value);
+			addComment(key, value);
+		}
 	}
 
-	vendor = getString(source);
-
-	int ucLength = source.getInt(32);
-
-	for (int i = 0; i < ucLength; i++) {
-	    String comment = getString(source);
-	    int ix = comment.indexOf('=');
-	    String key = comment.substring(0, ix);
-	    String value = comment.substring(ix + 1);
-	    // comments.put(key, value);
-	    addComment(key, value);
-	}
-    }
-
-    private void addComment(String key, String value) {
-	ArrayList<String> al = comments.get(key);
-	if (al == null) {
-	    al = new ArrayList<String>();
-	    comments.put(key, al);
-	}
-	al.add(value);
-    }
-
-    public String getAlbum() {
-	return getComment(ALBUM);
-    }
-
-    public String[] getAlbums() {
-	return getComments(ALBUM);
-    }
-
-    public String getArtist() {
-	return getComment(ARTIST);
-    }
-
-    public String[] getArtists() {
-	return getComments(ARTIST);
-    }
-
-    public String getComment(String key) {
-	ArrayList<String> al = comments.get(key);
-	return al == null ? (String) null : (String) al.get(0);
-    }
-
-    public String[] getComments(String key) {
-	ArrayList<String> al = comments.get(key);
-	return al == null ? new String[0] : (String[]) al.toArray(new String[al
-		.size()]);
-    }
-
-    public String getContact() {
-	return getComment(CONTACT);
-    }
-
-    public String[] getContacts() {
-	return getComments(CONTACT);
-    }
-
-    public String getCopyright() {
-	return getComment(COPYRIGHT);
-    }
-
-    public String[] getCopyrights() {
-	return getComments(COPYRIGHT);
-    }
-
-    public String getDate() {
-	return getComment(DATE);
-    }
-
-    public String[] getDates() {
-	return getComments(DATE);
-    }
-
-    public String getDescription() {
-	return getComment(DESCRIPTION);
-    }
-
-    public String[] getDescriptions() {
-	return getComments(DESCRIPTION);
-    }
-
-    public String getGenre() {
-	return getComment(GENRE);
-    }
-
-    public String[] getGenres() {
-	return getComments(GENRE);
-    }
-
-    public String getIsrc() {
-	return getComment(ISRC);
-    }
-
-    public String[] getIsrcs() {
-	return getComments(ISRC);
-    }
-
-    public String getLicense() {
-	return getComment(LICENSE);
-    }
-
-    public String[] getLicenses() {
-	return getComments(LICENSE);
-    }
-
-    public String getLocation() {
-	return getComment(LOCATION);
-    }
-
-    public String[] getLocations() {
-	return getComments(LOCATION);
-    }
-
-    public String getOrganization() {
-	return getComment(ORGANIZATION);
-    }
-
-    public String[] getOrganizations() {
-	return getComments(ORGANIZATION);
-    }
-
-    public String getPerformer() {
-	return getComment(PERFORMER);
-    }
-
-    public String[] getPerformers() {
-	return getComments(PERFORMER);
-    }
-
-    private String getString(BitInputStream source) throws IOException,
-	    VorbisFormatException {
-
-	int length = source.getInt(32);
-
-	byte[] strArray = new byte[length];
-
-	for (int i = 0; i < length; i++) {
-	    strArray[i] = (byte) source.getInt(8);
+	private void addComment(String key, String value) {
+		ArrayList<String> al = comments.get(key);
+		if (al == null) {
+			al = new ArrayList<String>();
+			comments.put(key, al);
+		}
+		al.add(value);
 	}
 
-	return new String(strArray, "UTF-8");
-    }
+	public String getAlbum() {
+		return getComment(ALBUM);
+	}
 
-    public String getTitle() {
-	return getComment(TITLE);
-    }
+	public String[] getAlbums() {
+		return getComments(ALBUM);
+	}
 
-    public String[] getTitles() {
-	return getComments(TITLE);
-    }
+	public String getArtist() {
+		return getComment(ARTIST);
+	}
 
-    public String getTrackNumber() {
-	return getComment(TRACKNUMBER);
-    }
+	public String[] getArtists() {
+		return getComments(ARTIST);
+	}
 
-    public String[] getTrackNumbers() {
-	return getComments(TRACKNUMBER);
-    }
+	public String getComment(String key) {
+		ArrayList<String> al = comments.get(key);
+		return al == null ? (String) null : (String) al.get(0);
+	}
 
-    public String getVendor() {
-	return vendor;
-    }
+	public String[] getComments(String key) {
+		ArrayList<String> al = comments.get(key);
+		return al == null ? new String[0] : (String[]) al.toArray(new String[al.size()]);
+	}
 
-    public String getVersion() {
-	return getComment(VERSION);
-    }
+	public String getContact() {
+		return getComment(CONTACT);
+	}
 
-    public String[] getVersions() {
-	return getComments(VERSION);
-    }
+	public String[] getContacts() {
+		return getComments(CONTACT);
+	}
+
+	public String getCopyright() {
+		return getComment(COPYRIGHT);
+	}
+
+	public String[] getCopyrights() {
+		return getComments(COPYRIGHT);
+	}
+
+	public String getDate() {
+		return getComment(DATE);
+	}
+
+	public String[] getDates() {
+		return getComments(DATE);
+	}
+
+	public String getDescription() {
+		return getComment(DESCRIPTION);
+	}
+
+	public String[] getDescriptions() {
+		return getComments(DESCRIPTION);
+	}
+
+	public String getGenre() {
+		return getComment(GENRE);
+	}
+
+	public String[] getGenres() {
+		return getComments(GENRE);
+	}
+
+	public String getIsrc() {
+		return getComment(ISRC);
+	}
+
+	public String[] getIsrcs() {
+		return getComments(ISRC);
+	}
+
+	public String getLicense() {
+		return getComment(LICENSE);
+	}
+
+	public String[] getLicenses() {
+		return getComments(LICENSE);
+	}
+
+	public String getLocation() {
+		return getComment(LOCATION);
+	}
+
+	public String[] getLocations() {
+		return getComments(LOCATION);
+	}
+
+	public String getOrganization() {
+		return getComment(ORGANIZATION);
+	}
+
+	public String[] getOrganizations() {
+		return getComments(ORGANIZATION);
+	}
+
+	public String getPerformer() {
+		return getComment(PERFORMER);
+	}
+
+	public String[] getPerformers() {
+		return getComments(PERFORMER);
+	}
+
+	private String getString(BitInputStream source) throws IOException, VorbisFormatException {
+
+		int length = source.getInt(32);
+
+		byte[] strArray = new byte[length];
+
+		for (int i = 0; i < length; i++) {
+			strArray[i] = (byte) source.getInt(8);
+		}
+
+		return new String(strArray, "UTF-8");
+	}
+
+	public String getTitle() {
+		return getComment(TITLE);
+	}
+
+	public String[] getTitles() {
+		return getComments(TITLE);
+	}
+
+	public String getTrackNumber() {
+		return getComment(TRACKNUMBER);
+	}
+
+	public String[] getTrackNumbers() {
+		return getComments(TRACKNUMBER);
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public String getVersion() {
+		return getComment(VERSION);
+	}
+
+	public String[] getVersions() {
+		return getComments(VERSION);
+	}
 
 }

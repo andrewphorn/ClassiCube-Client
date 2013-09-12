@@ -5,49 +5,47 @@ import com.mojang.minecraft.phys.AABB;
 
 public final class SnowBlock extends Block {
 
-    int Texture;
-    int id;
+	int Texture;
+	int id;
 
-    public SnowBlock(int var1, int var2) {
-	super(var1, var2);
-	id = var1;
-	Texture = var2;
-	this.setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.20F, 1.0F);
-    }
-
-    public final boolean canRenderSide(Level level, int x, int y, int z,
-	    int side) {
-	if (this != SNOW) {
-	    super.canRenderSide(level, x, y, z, side);
+	public SnowBlock(int var1, int var2) {
+		super(var1, var2);
+		id = var1;
+		Texture = var2;
+		this.setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.20F, 1.0F);
 	}
 
-	return side == 1 ? true
-		: (!super.canRenderSide(level, x, y, z, side) ? false
-			: (side == 0 ? true : level.getTile(x, y, z) != this.id));
-    }
+	public final boolean canRenderSide(Level level, int x, int y, int z, int side) {
+		if (this != SNOW) {
+			super.canRenderSide(level, x, y, z, side);
+		}
 
-    @Override
-    public AABB getCollisionBox(int x, int y, int z) {
-	return null;
-    }
+		return side == 1 ? true : (!super.canRenderSide(level, x, y, z, side) ? false
+				: (side == 0 ? true : level.getTile(x, y, z) != this.id));
+	}
 
-    public final int getDrop() {
-	return SNOW.id;
-    }
+	@Override
+	public AABB getCollisionBox(int x, int y, int z) {
+		return null;
+	}
 
-    protected final int getTextureId(int texture) {
-	return Texture;
-    }
+	public final int getDrop() {
+		return SNOW.id;
+	}
 
-    public final boolean isCube() {
-	return false;
-    }
+	protected final int getTextureId(int texture) {
+		return Texture;
+	}
 
-    public final boolean isOpaque() {
-	return true;
-    }
+	public final boolean isCube() {
+		return false;
+	}
 
-    public final boolean isSolid() {
-	return false;
-    }
+	public final boolean isOpaque() {
+		return true;
+	}
+
+	public final boolean isSolid() {
+		return false;
+	}
 }

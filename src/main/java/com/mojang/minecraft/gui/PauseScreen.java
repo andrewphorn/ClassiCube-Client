@@ -97,12 +97,15 @@ public final class PauseScreen extends GuiScreen {
 		String s = "Average CPU: " + this.minecraft.monitoringThread.getAvarageUsagePerCPU() + "%";
 		drawString(this.fontRenderer, s, this.width - this.fontRenderer.getWidth(s) - 15, 24,
 				9868980);
-		
-		long d = this.minecraft.monitoringThread.totalMemory -  this.minecraft.monitoringThread.freeMemory;
-        String Usage = "Used memory: " + d * 100L /  this.minecraft.monitoringThread.maxMemory + "% (" + d / 1024L / 1024L + "MB)";
-		drawString(this.fontRenderer, Usage, this.width - this.fontRenderer.getWidth(Usage) - 15, 35,
-				9868980);
-		String max = "Allocated memory: " + this.minecraft.monitoringThread.maxMemory / 1024L / 1024L + "MB";
+
+		long d = this.minecraft.monitoringThread.totalMemory
+				- this.minecraft.monitoringThread.freeMemory;
+		String Usage = "Used memory: " + d * 100L / this.minecraft.monitoringThread.maxMemory
+				+ "% (" + d / 1024L / 1024L + "MB)";
+		drawString(this.fontRenderer, Usage, this.width - this.fontRenderer.getWidth(Usage) - 15,
+				35, 9868980);
+		String max = "Allocated memory: " + this.minecraft.monitoringThread.maxMemory / 1024L
+				/ 1024L + "MB";
 		drawString(this.fontRenderer, max, this.width - this.fontRenderer.getWidth(max) - 15, 46,
 				9868980);
 		super.render(var1, var2);

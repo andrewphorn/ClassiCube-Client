@@ -29,117 +29,115 @@ import de.jarnbjo.util.io.BitInputStream;
 
 class Mapping0 extends Mapping {
 
-    private int[] magnitudes, angles, mux, submapFloors, submapResidues;
+	private int[] magnitudes, angles, mux, submapFloors, submapResidues;
 
-    protected Mapping0(VorbisStream vorbis, BitInputStream source,
-	    SetupHeader header) throws VorbisFormatException, IOException {
+	protected Mapping0(VorbisStream vorbis, BitInputStream source, SetupHeader header)
+			throws VorbisFormatException, IOException {
 
-	int submaps = 1;
+		int submaps = 1;
 
-	if (source.getBit()) {
-	    submaps = source.getInt(4) + 1;
-	}
-
-	// System.out.println("submaps: "+submaps);
-
-	int channels = vorbis.getIdentificationHeader().getChannels();
-	int ilogChannels = Util.ilog(channels - 1);
-
-	// System.out.println("ilogChannels: "+ilogChannels);
-
-	if (source.getBit()) {
-	    int couplingSteps = source.getInt(8) + 1;
-	    magnitudes = new int[couplingSteps];
-	    angles = new int[couplingSteps];
-
-	    for (int i = 0; i < couplingSteps; i++) {
-		magnitudes[i] = source.getInt(ilogChannels);
-		angles[i] = source.getInt(ilogChannels);
-		if (magnitudes[i] == angles[i] || magnitudes[i] >= channels
-			|| angles[i] >= channels) {
-		    System.err.println(magnitudes[i]);
-		    System.err.println(angles[i]);
-		    throw new VorbisFormatException(
-			    "The channel magnitude and/or angle mismatch.");
+		if (source.getBit()) {
+			submaps = source.getInt(4) + 1;
 		}
-	    }
-	} else {
-	    magnitudes = new int[0];
-	    angles = new int[0];
-	}
 
-	if (source.getInt(2) != 0) {
-	    throw new VorbisFormatException(
-		    "A reserved mapping field has an invalid value.");
-	}
+		// System.out.println("submaps: "+submaps);
 
-	mux = new int[channels];
-	if (submaps > 1) {
-	    for (int i = 0; i < channels; i++) {
-		mux[i] = source.getInt(4);
-		if (mux[i] > submaps) {
-		    throw new VorbisFormatException(
-			    "A mapping mux value is higher than the number of submaps");
+		int channels = vorbis.getIdentificationHeader().getChannels();
+		int ilogChannels = Util.ilog(channels - 1);
+
+		// System.out.println("ilogChannels: "+ilogChannels);
+
+		if (source.getBit()) {
+			int couplingSteps = source.getInt(8) + 1;
+			magnitudes = new int[couplingSteps];
+			angles = new int[couplingSteps];
+
+			for (int i = 0; i < couplingSteps; i++) {
+				magnitudes[i] = source.getInt(ilogChannels);
+				angles[i] = source.getInt(ilogChannels);
+				if (magnitudes[i] == angles[i] || magnitudes[i] >= channels
+						|| angles[i] >= channels) {
+					System.err.println(magnitudes[i]);
+					System.err.println(angles[i]);
+					throw new VorbisFormatException("The channel magnitude and/or angle mismatch.");
+				}
+			}
+		} else {
+			magnitudes = new int[0];
+			angles = new int[0];
 		}
-	    }
-	} else {
-	    for (int i = 0; i < channels; i++) {
-		mux[i] = 0;
-	    }
+
+		if (source.getInt(2) != 0) {
+			throw new VorbisFormatException("A reserved mapping field has an invalid value.");
+		}
+
+		mux = new int[channels];
+		if (submaps > 1) {
+			for (int i = 0; i < channels; i++) {
+				mux[i] = source.getInt(4);
+				if (mux[i] > submaps) {
+					throw new VorbisFormatException(
+							"A mapping mux value is higher than the number of submaps");
+				}
+			}
+		} else {
+			for (int i = 0; i < channels; i++) {
+				mux[i] = 0;
+			}
+		}
+
+		submapFloors = new int[submaps];
+		submapResidues = new int[submaps];
+
+		int floorCount = header.getFloors().length;
+		int residueCount = header.getResidues().length;
+
+		for (int i = 0; i < submaps; i++) {
+			source.getInt(8); // discard time placeholder
+			submapFloors[i] = source.getInt(8);
+			submapResidues[i] = source.getInt(8);
+
+			if (submapFloors[i] > floorCount) {
+				throw new VorbisFormatException(
+						"A mapping floor value is higher than the number of floors.");
+			}
+
+			if (submapResidues[i] > residueCount) {
+				throw new VorbisFormatException(
+						"A mapping residue value is higher than the number of residues.");
+			}
+		}
 	}
 
-	submapFloors = new int[submaps];
-	submapResidues = new int[submaps];
-
-	int floorCount = header.getFloors().length;
-	int residueCount = header.getResidues().length;
-
-	for (int i = 0; i < submaps; i++) {
-	    source.getInt(8); // discard time placeholder
-	    submapFloors[i] = source.getInt(8);
-	    submapResidues[i] = source.getInt(8);
-
-	    if (submapFloors[i] > floorCount) {
-		throw new VorbisFormatException(
-			"A mapping floor value is higher than the number of floors.");
-	    }
-
-	    if (submapResidues[i] > residueCount) {
-		throw new VorbisFormatException(
-			"A mapping residue value is higher than the number of residues.");
-	    }
+	protected int[] getAngles() {
+		return angles;
 	}
-    }
 
-    protected int[] getAngles() {
-	return angles;
-    }
+	protected int getCouplingSteps() {
+		return angles.length;
+	}
 
-    protected int getCouplingSteps() {
-	return angles.length;
-    }
+	protected int[] getMagnitudes() {
+		return magnitudes;
+	}
 
-    protected int[] getMagnitudes() {
-	return magnitudes;
-    }
+	protected int[] getMux() {
+		return mux;
+	}
 
-    protected int[] getMux() {
-	return mux;
-    }
+	protected int[] getSubmapFloors() {
+		return submapFloors;
+	}
 
-    protected int[] getSubmapFloors() {
-	return submapFloors;
-    }
+	protected int[] getSubmapResidues() {
+		return submapResidues;
+	}
 
-    protected int[] getSubmapResidues() {
-	return submapResidues;
-    }
+	protected int getSubmaps() {
+		return submapFloors.length;
+	}
 
-    protected int getSubmaps() {
-	return submapFloors.length;
-    }
-
-    protected int getType() {
-	return 0;
-    }
+	protected int getType() {
+		return 0;
+	}
 }
