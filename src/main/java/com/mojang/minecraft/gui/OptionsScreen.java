@@ -19,6 +19,7 @@ public final class OptionsScreen extends GuiScreen {
 		this.settings.toggleSetting(var1.id, 1);
 		var1.text = this.settings.getSetting(var1.id);
 	    }
+	    this.buttons.get(9).active = this.minecraft.settings.smoothing > 0;
 
 	    if (var1.id == 100) {
 		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(this,
@@ -51,6 +52,8 @@ public final class OptionsScreen extends GuiScreen {
 		this.height / 6 + 120 + 26, "Controls..."));
 	this.buttons.add(new Button(300, this.width / 2 - 100,
 		this.height / 6 + 168, "Done"));
+	
+	this.buttons.get(9).active = this.minecraft.settings.smoothing > 0;
     }
 
     public final void render(int var1, int var2) {

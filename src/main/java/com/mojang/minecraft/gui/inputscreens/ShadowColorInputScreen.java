@@ -8,8 +8,6 @@ import com.mojang.minecraft.gui.AdvancedOptionsScreen;
 import com.mojang.minecraft.gui.Button;
 import com.mojang.minecraft.gui.GuiScreen;
 
-;
-
 public class ShadowColorInputScreen extends InputValueScreen {
 
     public static ColorCache hex2Rgb(String colorStr) {
@@ -39,6 +37,12 @@ public class ShadowColorInputScreen extends InputValueScreen {
 	    }
 
 	    if (var1.id == 1) {
+		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(
+			parent, this.minecraft.settings));
+	    }
+	    if(var1.id == 800){
+		this.minecraft.level.customShadowColour = new ColorCache(0.6f,0.6f,0.6f);
+		this.minecraft.levelRenderer.refresh();
 		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(
 			parent, this.minecraft.settings));
 	    }

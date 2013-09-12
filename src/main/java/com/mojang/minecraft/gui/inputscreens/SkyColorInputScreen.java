@@ -31,6 +31,13 @@ public class SkyColorInputScreen extends InputValueScreen {
 		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(
 			parent, this.minecraft.settings));
 	    }
+	    if(var1.id == 800){
+		this.minecraft.level.skyColor = Integer.parseInt("99ccff", 16);
+		this.minecraft.levelRenderer.refresh();
+		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(
+			parent, this.minecraft.settings));
+	    }
+	    
 
 	}
     }

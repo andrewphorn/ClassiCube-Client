@@ -65,7 +65,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -327,7 +326,7 @@ public final class Minecraft implements Runnable {
 
     public String getHash(String urlString) throws Exception {
 	MessageDigest md = MessageDigest.getInstance("MD5");
-	byte[] urlBytes = urlString.getBytes(StandardCharsets.US_ASCII);
+	byte[] urlBytes = urlString.getBytes();
 	byte[] hashBytes = md.digest(urlBytes);
 	return new BigInteger(1, hashBytes).toString(16);
     }
@@ -1851,7 +1850,7 @@ public final class Minecraft implements Runnable {
 						&& this.networkManager.players != null
 						&& this.networkManager.players
 							.size() > 0) {
-					    if (this.settings.ShowNames == 1) {
+					    if (this.settings.ShowNames == 1 && this.player.userType >= 100) {
 						for (int n = 0; n < this.networkManager.players
 							.values().size(); n++) {
 						    NetworkPlayer np = (NetworkPlayer) this.networkManager.players

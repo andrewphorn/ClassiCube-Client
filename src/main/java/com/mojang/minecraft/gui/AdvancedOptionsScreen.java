@@ -89,7 +89,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 	    }
 	    if (var1.id == 500) {
 		ColorCache c = this.minecraft.level.customLightColour;
-		Color color = new Color(254, 254, 254);
+		Color color = new Color(255, 255, 255);
 		String colorString = "";
 		if (c != null)
 		    colorString = String.format("%02x%02x%02x",
@@ -107,7 +107,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 	    }
 	    if (var1.id == 600) {
 		ColorCache c = this.minecraft.level.customShadowColour;
-		Color color = new Color(254, 254, 254);
+		Color color = new Color(155, 155, 155);
 		String colorString = "";
 		if (c != null)
 		    colorString = String.format("%02x%02x%02x",
@@ -165,7 +165,8 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 	this.buttons.add(new Button(700, this.width / 2 - 100,
 		this.height / 6 + 168, "Done"));
 	
-	//buttons.get(13).active = this.minecraft.networkManager!=null;
+	buttons.get(0).active = this.minecraft.session != null;
+	buttons.get(4).active = this.minecraft.player.userType >= 100;
     }
 
     public final void render(int var1, int var2) {

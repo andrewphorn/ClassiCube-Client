@@ -12,9 +12,9 @@ public class FogColorInputScreen extends InputValueScreen {
     public FogColorInputScreen(GuiScreen var1, String var2, int var3,
 	    String Title) {
 	super(var1, var2, var3, Title);
-	// TODO Auto-generated constructor stub
     }
 
+    String defaultHex = "ffffff";
     protected final void onButtonClick(Button var1) {
 	if (var1.active) {
 	    if (var1.id == 0 && this.name.length() > 0) {
@@ -31,7 +31,12 @@ public class FogColorInputScreen extends InputValueScreen {
 		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(
 			parent, this.minecraft.settings));
 	    }
-
+	    if(var1.id == 800){
+		this.minecraft.level.fogColor = Integer.parseInt(this.defaultHex, 16);
+		this.minecraft.levelRenderer.refresh();
+		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(
+			parent, this.minecraft.settings));
+	    }
 	}
     }
 }

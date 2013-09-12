@@ -7,6 +7,7 @@ public class Screen {
 
     protected static void drawBox(int var0, int var1, int var2, int var3,
 	    int var4) {
+	
 	float var5 = (float) (var4 >>> 24) / 255.0F;
 	float var6 = (float) (var4 >> 16 & 255) / 255.0F;
 	float var7 = (float) (var4 >> 8 & 255) / 255.0F;
@@ -33,6 +34,7 @@ public class Screen {
 
     protected static void drawFadingBox(int var0, int var1, int var2, int var3,
 	    int var4, int var5) {
+	GL11.glAlphaFunc(516, 0.0F);
 	float var6 = (float) (var4 >>> 24) / 255.0F;
 	float var7 = (float) (var4 >> 16 & 255) / 255.0F;
 	float var8 = (float) (var4 >> 8 & 255) / 255.0F;

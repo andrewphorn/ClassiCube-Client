@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 import com.mojang.minecraft.gui.FontRenderer;
 
 public class ChatClickData {
-    public static final Pattern pattern = Pattern
-	    .compile("^(?:(https?)://)?([-\\w_\\.]{2,}\\.[a-z]{2,4})(/\\S*)?$");
+    String urlPattern = "((https?|ftp|sftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
+    Pattern pattern = Pattern.compile(urlPattern, Pattern.CASE_INSENSITIVE);
     public final String message;
     private final ArrayList<LinkData> clickedUrls;
 
@@ -31,7 +31,7 @@ public class ChatClickData {
 	    try {
 		String url = urlMatcher.group(0);
 
-		if (urlMatcher.group(1) == null) {
+		if (urlMatcher.group(1) == null) { //will dis happen?
 		    url = "http://" + url;
 		}
 
@@ -45,9 +45,7 @@ public class ChatClickData {
 
     private ArrayList<LinkData> pullLinks(String text, FontRenderer fr) {
 	ArrayList<LinkData> links = new ArrayList<LinkData>();
-	String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
-	Pattern p = Pattern.compile(regex);
-	Matcher m = p.matcher(text);
+	Matcher m = pattern.matcher(text);
 	while (m.find()) {
 	    String urlStr = m.group();
 	    if (urlStr.startsWith("(") && urlStr.endsWith(")")) {

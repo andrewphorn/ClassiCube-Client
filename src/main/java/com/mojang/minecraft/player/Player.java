@@ -254,7 +254,8 @@ public class Player extends Mob {
 		f1 *= 2.5F;
 		if (!this.isOnIce) {
 		    f1 *= this.jumpCount;
-		}
+		}else
+		    this.jumpCount = 0;
 	    }
 
 	    if ((bool1) && (i == 0) && (j == 0)) {
@@ -335,18 +336,6 @@ public class Player extends Mob {
 		this.xd *= f2;
 		this.zd *= f2;
 		this.tilt = 0f;
-	    } else if (this.settings.minecraft.session == null) {
-		this.xd *= 0.751F;
-		this.yd *= 0.758F;
-		this.zd *= 0.751F;
-		yd = (float) ((double) yd - 0.08D);
-		isOnIce = true;
-		// System.out.println(xd);
-		if (xd > 0.237f || xd < -0.237f || zd < -0.237f || zd > 0.237f)
-		    this.tilt = -15.0f;
-		else {
-		    this.tilt = 0f;
-		}
 	    }
 	}
     }

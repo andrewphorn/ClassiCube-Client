@@ -42,6 +42,12 @@ public class LightColorInputScreen extends InputValueScreen {
 		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(
 			parent, this.minecraft.settings));
 	    }
+	    if(var1.id == 800){
+		this.minecraft.level.customLightColour = new ColorCache(0.99f, 0.99f, 0.99f);
+		this.minecraft.levelRenderer.refresh();
+		this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(
+			parent, this.minecraft.settings));
+	    }
 
 	}
     }

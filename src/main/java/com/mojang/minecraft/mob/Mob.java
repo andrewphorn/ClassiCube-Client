@@ -514,9 +514,18 @@ public class Mob extends Entity {
 		    xd *= y1;
 		    zd *= y1;
 		}
-	    } else if (((Player) this).settings.minecraft.session == null) {
-		if (xd > 0.90f || xd < -0.90f || zd < -0.90f || zd > 0.90f)
-		    this.tilt = -60.0f;
+	    } else {
+		double limit = 0.246D;
+		if (xd > limit || xd < -limit || zd < -limit || zd > limit)
+			this.tilt = -20f;
+		if (xd > limit)
+		    xd = (float) limit;
+		if (xd < -limit)
+		    xd = (float) -limit;
+		if (zd < -limit)
+		    zd = (float) -limit;
+		if (zd > limit)
+		    zd = (float) limit;
 	    }
 	}
     }

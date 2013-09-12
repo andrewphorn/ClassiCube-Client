@@ -79,6 +79,9 @@ public class InputValueScreen extends GuiScreen {
 	this.buttons.add(new Button(1, this.width / 2 - 100,
 		this.height / 4 + 144, "Cancel"));
 	((Button) this.buttons.get(0)).active = this.name.trim().length() > 1;
+	int w = this.minecraft.fontRenderer.getWidth("Screenshots...");
+	this.buttons.add(new Button(800, this.width - w - 15,
+		this.height - 36, w, "Default"));
     }
 
     public final void render(int var1, int var2) {

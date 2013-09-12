@@ -6,6 +6,7 @@ import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.PacketType;
 import com.mojang.minecraft.phys.AABB;
 
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -67,12 +68,13 @@ public class ChatInputScreenExtension extends GuiScreen {
 	    this.minecraft.setCurrentScreen((GuiScreen) null);
 	    return;
 	}
-	if(paramInt == Keyboard.KEY_F2){
+	if (paramInt == Keyboard.KEY_F2) {
 	    this.minecraft.setCurrentScreen((GuiScreen) null);
-	    this.minecraft.takeAndSaveScreenshot(this.minecraft.width, this.minecraft.height);
+	    this.minecraft.takeAndSaveScreenshot(this.minecraft.width,
+		    this.minecraft.height);
 	    this.minecraft.setCurrentScreen(this);
 	}
-	
+
 	if (Keyboard.isKeyDown(Keyboard.KEY_TAB))
 	    return;
 
@@ -242,8 +244,15 @@ public class ChatInputScreenExtension extends GuiScreen {
 				if (x > ld.x0 && x < ld.x1
 					&& y > data.bounds.y0
 					&& y < data.bounds.y1) {
-				    super.drawBox(ld.x0, data.y - 1, ld.x1 + 3,
-					    data.y + 9, -2147483648);
+				    if (ld.link.startsWith("https")) {
+					super.drawBox(ld.x0, data.y - 1,
+						ld.x1 + 3, data.y + 9,
+						16737380);
+				    } else {
+					super.drawBox(ld.x0, data.y - 1,
+						ld.x1 + 3, data.y + 9,
+						-2147483648);
+				    }
 				}
 			    }
 			}

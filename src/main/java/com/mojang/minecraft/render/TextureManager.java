@@ -49,7 +49,7 @@ public class TextureManager {
     public ByteBuffer textureBuffer = BufferUtils.createByteBuffer(262144);
     public List<TextureFX> animations = new ArrayList<TextureFX>();
     public GameSettings settings;
-    public List<BufferedImage> textureAtlas = new ArrayList();
+    public List<BufferedImage> textureAtlas = new ArrayList<BufferedImage>();
 
     public BufferedImage currentTerrainPng = null;
     public BufferedImage customSideBlock = null;
@@ -132,9 +132,10 @@ public class TextureManager {
 	int rx = (r1 + r2) / (a1 + a2);
 	int gx = (g1 + g2) / (a1 + a2);
 	int bx = (b1 + b2) / (a1 + a2);
+	
 	return ax << 24 | rx << 16 | gx << 8 | bx;
     }
-
+    
     public void generateMipMaps(ByteBuffer data, int width, int height,
 	    boolean test) {
 	ByteBuffer mipData = data;
@@ -175,7 +176,6 @@ public class TextureManager {
 	    GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F * level); // Create
 							    // transparency for
 							    // each level.
-
 	    mipData = mipData1;
 	}
     }
@@ -261,7 +261,6 @@ public class TextureManager {
 	if (settings.smoothing > 0) {
 	    if (settings.smoothing == 1) {
 		ContextCapabilities capabilities = GLContext.getCapabilities();
-
 		if (capabilities.OpenGL30) {
 		    if (previousMipmapMode != settings.smoothing) {
 			System.out
@@ -282,7 +281,7 @@ public class TextureManager {
 			System.out
 				.println("Using OpenGL 1.4 for mipmap generation.");
 		    }
-
+		    
 		    GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
 			    GL14.GL_GENERATE_MIPMAP, GL11.GL_TRUE);
 		}
@@ -298,7 +297,6 @@ public class TextureManager {
 		float max = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
 		GL11.glTexParameterf(GL11.GL_TEXTURE_2D,
 			GL_TEXTURE_MAX_ANISOTROPY_EXT, max);
-
 	    }
 	}
 
