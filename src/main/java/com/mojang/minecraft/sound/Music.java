@@ -78,4 +78,10 @@ public final class Music implements Audio {
 		    || !this.finished;
 	}
     }
+
+    @Override
+    public boolean isFootStep(boolean really) {
+	// TODO Auto-generated method stub
+	return false;
+    }
 }

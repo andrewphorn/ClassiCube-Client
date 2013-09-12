@@ -25,7 +25,7 @@ public final class FireBlock extends Block {
 	return null;
     }
 
-    public final boolean isCube() {
+    public final boolean isOpaque() {
 	return false;
     }
 

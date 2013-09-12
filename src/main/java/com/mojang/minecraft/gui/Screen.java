@@ -56,6 +56,7 @@ public class Screen {
 	GL11.glEnd();
 	GL11.glDisable(3042);
 	GL11.glEnable(3553);
+	GL11.glAlphaFunc(516, 0.5F);
     }
 
     public static void drawString(FontRenderer var0, String var1, int var2,

@@ -988,7 +988,7 @@ public class Level implements Serializable {
 	}
     }
 
-    public void playSound(String var1, Entity var2, float var3, float var4) {
+    public void playSound(String var1, Entity var2, float var3, float var4, boolean footStep) {
 	if (this.rendererContext$5cd64a7f != null) {
 	    Minecraft var5;
 	    if ((var5 = this.rendererContext$5cd64a7f).soundPlayer == null

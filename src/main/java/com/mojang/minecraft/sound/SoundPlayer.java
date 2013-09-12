@@ -30,21 +30,16 @@ public final class SoundPlayer implements Runnable {
 	this.play(new Sound(var1, var2));
     }
 
+    public void clear() {
+	this.audioQueue.clear();
+    }
+
     public final void run() {
 	int[] var1 = new int[4410];
 	int[] var2 = new int[4410];
 
 	for (byte[] var3 = new byte[17640]; this.running; this.dataLine.write(
 		var3, 0, 17640)) {
-	    if (audioQueue.size() > 5) {
-		List<Audio> audioQueueTemp = new ArrayList<Audio>();
-		audioQueueTemp.add(audioQueue.get(0));
-		audioQueueTemp.add(audioQueue.get(1));
-		audioQueueTemp.add(audioQueue.get(2));
-		audioQueueTemp.add(audioQueue.get(3));
-		audioQueueTemp.add(audioQueue.get(4));
-		audioQueue = audioQueueTemp;
-	    }
 	    try {
 		Thread.sleep(1L);
 

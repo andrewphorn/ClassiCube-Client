@@ -9,10 +9,13 @@ import com.mojang.minecraft.model.Vec3D;
 import com.mojang.minecraft.net.PositionUpdate;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.sound.AudioInfo;
+import com.mojang.minecraft.sound.EntitySoundPos;
 import com.mojang.util.MathHelper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class Entity implements Serializable {
 
@@ -42,7 +45,13 @@ public abstract class Entity implements Serializable {
     public float bbHeight = 1.8F;
     public float walkDistO = 0.0F;
     public float walkDist = 0.0F;
+    private int nextStepDistance;
     public boolean makeStepSound = true;
+
+    public float prevDistanceWalkedModified;
+    public float distanceWalkedModified;
+    public float distanceWalkedOnStepModified;
+
     public float fallDistance = 0.0F;
     private int nextStep = 1;
     public BlockMap blockMap;
@@ -331,24 +340,39 @@ public abstract class Entity implements Serializable {
 	    this.z = (this.bb.z0 + this.bb.z1) / 2.0F;
 	    var18 = this.x - var4;
 	    var17 = this.z - var5;
-	    this.walkDist = (float) ((double) this.walkDist + (double) MathHelper
-		    .sqrt(var18 * var18 + var17 * var17) * 0.6D);
+	    this.walkDist = (float) ((float) ((double) this.walkDist + (double) MathHelper
+		    .sqrt(var18 * var18 + var17 * var17) * 0.6D) * 0.55);
 	}
-	if (this.makeStepSound) {
-	    int var19 = this.level.getTile((int) this.x,
-		    (int) (this.y - 0.2F - this.heightOffset), (int) this.z);
-	    if (this.walkDist > (float) nextStep && var19 > 0) {
-		++this.nextStep;
-		Tile$SoundType TileSoundType = Block.blocks[var19].stepsound;
-		if (TileSoundType == null)
-		    TileSoundType = Tile$SoundType.none;
 
-		if (TileSoundType != Tile$SoundType.none) {
-		    this.playSound("step." + TileSoundType.name,
+	int var39 = (int) Math.floor(this.x);
+	int var30 = (int) Math.floor(this.y - 0.20000000298023224D
+		- (double) this.heightOffset);
+	int var31 = (int) Math.floor(this.z);
+	int var32 = this.level.getTile(var39, var30, var31);
+	if (this.makeStepSound && this.onGround) {
+	    this.distanceWalkedModified = (float) ((double) this.distanceWalkedModified + (double) Math
+		    .sqrt(var1 * var1 + var3 * var3) * 0.6D);
+	    this.distanceWalkedOnStepModified = (float) ((double) this.distanceWalkedOnStepModified + (double) Math
+		    .sqrt(var1 * var1 + var2 * var2 + var3 * var3) * 0.6D);
+
+	    if (this.distanceWalkedOnStepModified > (float) this.nextStepDistance
+		    && var32 > 0) {
+		this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
+
+		Tile$SoundType TileSoundType = Block.blocks[var32].stepsound;
+		if (TileSoundType == null)
+		    return;
+
+		if (TileSoundType != Tile$SoundType.none && this.onGround) {
+		    playSound("step." + TileSoundType.name,
 			    TileSoundType.getVolume() * 0.75F,
 			    TileSoundType.getPitch());
 		}
 	    }
+	}
+
+	if (this.walkDist > (float) nextStep && var32 > 0) {
+	    ++this.nextStep;
 	}
 	this.ySlideOffset *= 0.4F;
 
@@ -386,7 +410,7 @@ public abstract class Entity implements Serializable {
     }
 
     public void playSound(String var1, float var2, float var3) {
-	this.level.playSound(var1, this, var2, var3);
+	this.level.playSound(var1, this, var2, var3, true);
     }
 
     public void push(Entity var1) {

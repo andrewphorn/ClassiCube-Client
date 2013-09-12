@@ -60,4 +60,10 @@ public final class Sound implements Audio {
 	return var5;
     }
 
+    @Override
+    public boolean isFootStep(boolean really) {
+	// TODO Auto-generated method stub
+	return really;
+    }
+
 }

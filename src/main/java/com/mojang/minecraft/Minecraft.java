@@ -27,9 +27,6 @@ import com.mojang.minecraft.player.InputHandlerImpl;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.*;
 import com.mojang.minecraft.render.texture.TextureFX;
-import com.mojang.minecraft.render.texture.TextureLavaFX;
-import com.mojang.minecraft.render.texture.TextureFireFX;
-import com.mojang.minecraft.render.texture.TextureWaterFX;
 import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
 import com.mojang.net.NetworkHandler;
@@ -615,7 +612,7 @@ public final class Minecraft implements Runnable {
 	    GL11.glEnable(2929);
 	    GL11.glDepthFunc(515);
 	    GL11.glEnable(3008);
-	    GL11.glAlphaFunc(516, 0.0F);
+	    GL11.glAlphaFunc(516, 0.5F);
 	    GL11.glCullFace(1029);
 	    GL11.glMatrixMode(5889);
 	    GL11.glLoadIdentity();
@@ -1859,6 +1856,13 @@ public final class Minecraft implements Runnable {
 							np.renderHover(
 								renderer.minecraft.textureManager,
 								var80);
+						}
+					    }else{
+						if (renderer.entity != null) {
+						    renderer.entity
+							    .renderHover(
+								    renderer.minecraft.textureManager,
+								    var80);
 						}
 					    }
 					}

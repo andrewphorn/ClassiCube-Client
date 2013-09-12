@@ -173,7 +173,7 @@ public class TextureManager {
 	    GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA,
 		    mipWidth, mipHeight, 0, GL11.GL_RGBA,
 		    GL11.GL_UNSIGNED_BYTE, mipData1);
-	    GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F * level); // Create
+	    //GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F * level); // Create
 							    // transparency for
 							    // each level.
 	    mipData = mipData1;
