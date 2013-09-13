@@ -328,6 +328,8 @@ public class Player extends Mob {
 				this.xd *= f2;
 				this.zd *= f2;
 				this.tilt = 0f;
+			} else {
+				isOnIce = true;
 			}
 		}
 	}

@@ -44,7 +44,7 @@ public final class IceBlock extends Block {
 				var1.normal(0.0F, 1.0F, 0.0F);
 			}
 
-			if (var2 == 1) {
+			if (var2 == 1) { 
 				var1.normal(0.0F, -1.0F, 0.0F);
 			}
 

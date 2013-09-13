@@ -1574,22 +1574,22 @@ public final class Minecraft implements Runnable {
 										renderer.applyBobbing(var80,
 												renderer.minecraft.settings.viewBobbing);
 
-										HeldBlock var112 = renderer.heldBlock;
+										HeldBlock heldBlock = renderer.heldBlock;
 										var117 = renderer.heldBlock.lastPos
-												+ (var112.pos - var112.lastPos) * var80;
-										var116 = var112.minecraft.player;
+												+ (heldBlock.pos - heldBlock.lastPos) * var80;
+										var116 = heldBlock.minecraft.player;
 										GL11.glPushMatrix();
 										GL11.glRotatef(var116.xRotO + (var116.xRot - var116.xRotO)
 												* var80, 1.0F, 0.0F, 0.0F);
 										GL11.glRotatef(var116.yRotO + (var116.yRot - var116.yRotO)
 												* var80, 0.0F, 1.0F, 0.0F);
-										var112.minecraft.renderer.setLighting(true);
+										heldBlock.minecraft.renderer.setLighting(true);
 										GL11.glPopMatrix();
 										GL11.glPushMatrix();
 										var69 = 0.8F;
-										if (var112.moving) {
+										if (heldBlock.moving) {
 											var33 = MathHelper
-													.sin((var74 = (var112.offset + var80) / 7.0F) * 3.1415927F);
+													.sin((var74 = (heldBlock.offset + var80) / 7.0F) * 3.1415927F);
 											GL11.glTranslatef(
 													-MathHelper
 															.sin(MathHelper.sqrt(var74) * 3.1415927F) * 0.4F,
@@ -1601,9 +1601,9 @@ public final class Minecraft implements Runnable {
 												- (1.0F - var117) * 0.6F, -0.9F * var69);
 										GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
 										GL11.glEnable(2977);
-										if (var112.moving) {
+										if (heldBlock.moving) {
 											var33 = MathHelper
-													.sin((var74 = (var112.offset + var80) / 7.0F)
+													.sin((var74 = (heldBlock.offset + var80) / 7.0F)
 															* var74 * 3.1415927F);
 											GL11.glRotatef(
 													MathHelper
@@ -1612,30 +1612,30 @@ public final class Minecraft implements Runnable {
 											GL11.glRotatef(-var33 * 20.0F, 1.0F, 0.0F, 0.0F);
 										}
 
-										ColorCache color = var112.minecraft.level
+										ColorCache color = heldBlock.minecraft.level
 												.getBrightnessColor((int) var116.x, (int) var116.y,
 														(int) var116.z);
 										GL11.glColor4f(color.R, color.G, color.B, 1.0F);
 
-										if (var112.block != null) {
+										if (heldBlock.block != null) {
 											var34 = 0.4F;
 											GL11.glScalef(0.4F, var34, var34);
 											GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
 											if (!this.settings.thirdPersonMode && canRenderGUI) {
 												GL11.glBindTexture(3553,
-														var112.minecraft.textureManager
+														heldBlock.minecraft.textureManager
 																.load("/terrain.png"));
-												var112.block.renderPreview(shapeRenderer);
+												heldBlock.block.renderPreview(shapeRenderer);
 											}
 										} else {
-											var116.bindTexture(var112.minecraft.textureManager);
+											var116.bindTexture(heldBlock.minecraft.textureManager);
 											GL11.glScalef(1.0F, -1.0F, -1.0F);
 											GL11.glTranslatef(0.0F, 0.2F, 0.0F);
 											GL11.glRotatef(-120.0F, 0.0F, 0.0F, 1.0F);
 											GL11.glScalef(1.0F, 1.0F, 1.0F);
 											var34 = 0.0625F;
 											ModelPart var127;
-											if (!(var127 = var112.minecraft.player.getModel().leftArm).hasList) {
+											if (!(var127 = heldBlock.minecraft.player.getModel().leftArm).hasList) {
 												var127.generateList(var34);
 											}
 
@@ -1644,7 +1644,7 @@ public final class Minecraft implements Runnable {
 
 										GL11.glDisable(2977);
 										GL11.glPopMatrix();
-										var112.minecraft.renderer.setLighting(false);
+										heldBlock.minecraft.renderer.setLighting(false);
 										if (!renderer.minecraft.settings.anaglyph) {
 											break;
 										}

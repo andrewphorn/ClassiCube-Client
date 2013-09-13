@@ -232,13 +232,8 @@ public class ChatInputScreenExtension extends GuiScreen {
 							if (ld != null) {
 								if (x > ld.x0 && x < ld.x1 && y > data.bounds.y0
 										&& y < data.bounds.y1) {
-									if (ld.link.startsWith("https")) {
-										super.drawBox(ld.x0, data.y - 1, ld.x1 + 3, data.y + 9,
-												16737380);
-									} else {
-										super.drawBox(ld.x0, data.y - 1, ld.x1 + 3, data.y + 9,
-												-2147483648);
-									}
+									super.drawBox(ld.x0, data.y - 1, ld.x1 + 3, data.y + 9,
+											-2147483648);
 								}
 							}
 						}
