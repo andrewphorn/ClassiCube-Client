@@ -53,6 +53,8 @@ public final class GameSettings implements Serializable {
 	public int HackType = 0;
 	public int ShowNames = 0;
 	public boolean VBOs = false;
+	
+	public String lastUsedTexturePack;
 
 	public boolean HacksEnabled = true;
 
@@ -98,7 +100,8 @@ public final class GameSettings implements Serializable {
 				+ (HackType == 0 ? "Normal" : "Adv") : (id == 12 ? "Use VBOs: "
 				+ (VBOs ? "Yes" : "No") : (id == 13 ? "Enable Hacks: "
 				+ (HacksEnabled ? "Yes" : "No") : (id == 14 ? "Show Names: "
-				+ (ShowNames == 0 ? "Hover" : "Always") : ""))))))))))))));
+				+ (ShowNames == 0 ? "Hover" : "Always") : ""
+					))))))))))))));
 	}
 
 	private void load() {
@@ -167,6 +170,9 @@ public final class GameSettings implements Serializable {
 					if (setting[0].equals("ShowNames")) {
 						ShowNames = Integer.parseInt(setting[1]);
 					}
+					if (setting[0].equals("texturepack")) {
+						this.lastUsedTexturePack = setting[1];
+					}
 
 					for (int index = 0; index < this.bindings.length; index++) {
 						if (setting[0].equals("key_" + bindings[index].name)) {
@@ -184,7 +190,7 @@ public final class GameSettings implements Serializable {
 		}
 	}
 
-	private void save() {
+	public void save() {
 		try {
 			FileWriter fileWriter = new FileWriter(this.settingsFile);
 			PrintWriter writer = new PrintWriter(fileWriter);
@@ -204,6 +210,7 @@ public final class GameSettings implements Serializable {
 			writer.println("VBOs:" + VBOs);
 			writer.println("HacksEnabled:" + HacksEnabled);
 			writer.println("ShowNames:" + ShowNames);
+			writer.println("texturepack:" + lastUsedTexturePack);
 			for (int binding = 0; binding < bindings.length; binding++) {
 				writer.println("key_" + bindings[binding].name + ":" + bindings[binding].key);
 			}

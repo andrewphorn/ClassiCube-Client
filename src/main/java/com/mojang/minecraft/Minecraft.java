@@ -618,6 +618,9 @@ public final class Minecraft implements Runnable {
 
 			monitoringThread = new MonitoringThread(1000); // 1s refresh
 
+			if(settings.lastUsedTexturePack!= null){
+				this.textureManager.loadTexturePack(settings.lastUsedTexturePack);
+			}
 			this.textureManager.initAtlas();
 
 			if (this.session == null)

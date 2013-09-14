@@ -343,43 +343,35 @@ public class TextureManager {
 					int id = load(customCreeper);
 					textures.put("custom" + mobName, id);
 					return id;
-				}
-				else if (mobName.equalsIgnoreCase("zombie") && this.customZombie != null) {
+				} else if (mobName.equalsIgnoreCase("zombie") && this.customZombie != null) {
 					int id = load(customZombie);
 					textures.put("custom" + mobName, id);
 					return id;
-				}
-				else if (mobName.equalsIgnoreCase("sheep") && this.customSheep != null) {
+				} else if (mobName.equalsIgnoreCase("sheep") && this.customSheep != null) {
 					int id = load(customSheep);
 					textures.put("custom" + mobName, id);
 					return id;
-				}
-				else if (mobName.equalsIgnoreCase("skeleton") && this.customSkeleton != null) {
+				} else if (mobName.equalsIgnoreCase("skeleton") && this.customSkeleton != null) {
 					int id = load(customSkeleton);
 					textures.put("custom" + mobName, id);
 					return id;
-				}
-				else if (mobName.equalsIgnoreCase("spider") && this.customSpider != null) {
+				} else if (mobName.equalsIgnoreCase("spider") && this.customSpider != null) {
 					int id = load(customSpider);
 					textures.put("custom" + mobName, id);
 					return id;
-				}
-				else if (mobName.equalsIgnoreCase("printer") && this.customPrinter != null) {
+				} else if (mobName.equalsIgnoreCase("printer") && this.customPrinter != null) {
 					int id = load(customPrinter);
 					textures.put("custom" + mobName, id);
 					return id;
-				}
-				else if (mobName.equalsIgnoreCase("pig") && this.customPig != null) {
+				} else if (mobName.equalsIgnoreCase("pig") && this.customPig != null) {
 					int id = load(customPig);
 					textures.put("custom" + mobName, id);
 					return id;
-				}
-				else if (mobName.equalsIgnoreCase("chicken") && this.customChicken != null) {
+				} else if (mobName.equalsIgnoreCase("chicken") && this.customChicken != null) {
 					int id = load(customChicken);
 					textures.put("custom" + mobName, id);
 					return id;
-				}
-				else if (mobName.equalsIgnoreCase("croc") && this.customCrocodile != null) {
+				} else if (mobName.equalsIgnoreCase("croc") && this.customCrocodile != null) {
 					int id = load(customCrocodile);
 					textures.put("custom" + mobName, id);
 					return id;
@@ -632,12 +624,15 @@ public class TextureManager {
 			zip.close();
 		}
 		initAtlas();
-		for (NetworkPlayer p : this.settings.minecraft.networkManager.players.values()) {
-			p.bindTexture(this);
-			System.out.println("binding texture for: " + p.name);
+		if (this.settings.minecraft.networkManager != null) {
+			for (NetworkPlayer p : this.settings.minecraft.networkManager.players.values()) {
+				p.bindTexture(this);
+				System.out.println("binding texture for: " + p.name);
+			}
+			this.settings.minecraft.player.bindTexture(this);
 		}
-		this.settings.minecraft.player.bindTexture(this);
 		return textureID;
+
 	}
 
 	public void resetAllMods() {

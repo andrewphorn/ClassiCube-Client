@@ -55,6 +55,8 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				this.minecraft.settings.lastUsedTexturePack = null;
+				this.minecraft.settings.save();
 			}
 		}
 	}
@@ -88,6 +90,8 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 		try {
 			this.minecraft.textureManager.loadTexturePack(file);
 			this.minecraft.fontRenderer = new FontRenderer(this.minecraft.settings, "/default.png", this.minecraft.textureManager);
+			this.minecraft.settings.lastUsedTexturePack = file;
+			this.minecraft.settings.save();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
