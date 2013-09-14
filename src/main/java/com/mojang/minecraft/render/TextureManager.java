@@ -2,38 +2,35 @@ package com.mojang.minecraft.render;
 
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.SessionData;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.level.tile.BlockID;
 import com.mojang.minecraft.net.NetworkPlayer;
-import com.mojang.minecraft.render.texture.AnimatedTextureFX;
 import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.render.texture.TextureFireFX;
 import com.mojang.minecraft.render.texture.TextureLavaFX;
 import com.mojang.minecraft.render.texture.TextureWaterFX;
+import com.mojang.util.Stopwatch;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
@@ -98,6 +95,7 @@ public class TextureManager {
 		if (!texturesFolder.exists()) {
 			texturesFolder.mkdir();
 		}
+		ImageIO.setUseCache(false);
 	}
 
 	public List<BufferedImage> Atlas2dInto1d(BufferedImage atlas2d, int tiles, int atlassizezlimit) {
@@ -120,16 +118,29 @@ public class TextureManager {
 				}
 				atlas1d = new BufferedImage(tilesize, atlassizezlimit, BufferedImage.TYPE_INT_ARGB);
 			}
-			for (int xx = 0; xx < tilesize; xx++) {
-				for (int yy = 0; yy < tilesize; yy++) {
-					int c = atlas2d.getRGB(x * tilesize + xx, y * tilesize + yy);
-					atlas1d.setRGB(xx, (i % tilesinatlas) * tilesize + yy, c);
-				}
+			try {
+				atlas1d = crop(atlas2d,tilesize, tilesize, x * tilesize, y * tilesize );
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		atlases.add(atlas1d);
 		return atlases;
 	}
+	
+	public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y) throws IOException { 
+        
+//      System.out.println("---" + src.getWidth() + " - " + src.getHeight() + " - " + x + " - " + y);
+      
+      BufferedImage clipping = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);//src.getType());  
+      Graphics2D area = (Graphics2D) clipping.getGraphics().create();  
+      area.drawImage(src, 0, 0, clipping.getWidth(), clipping.getHeight(), x, y, x + clipping.getWidth(),  
+          y + clipping.getHeight(), null);  
+      area.dispose(); 
+      
+      return clipping;
+  }  
 
 	private int b(int c1, int c2) {
 		int a1 = (c1 & 0xFF000000) >> 24 & 0xFF;
@@ -317,7 +328,7 @@ public class TextureManager {
 			image = currentTerrainPng;
 		} else {
 			try {
-				image = ImageIO.read(TextureManager.class.getResourceAsStream(textureFile));
+				image = loadImageFast(TextureManager.class.getResourceAsStream(textureFile));
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -475,10 +486,10 @@ public class TextureManager {
 
 				if (file.endsWith(".png")) {
 					if (file.startsWith("##")) {
-						load(load1(ImageIO.read(TextureManager.class.getResourceAsStream(file
+						load(load1(loadImageFast(TextureManager.class.getResourceAsStream(file
 								.substring(2)))), textureID);
 					} else {
-						load(ImageIO.read(TextureManager.class.getResourceAsStream(file)),
+						load(loadImageFast(TextureManager.class.getResourceAsStream(file)),
 								textureID);
 					}
 
@@ -490,11 +501,11 @@ public class TextureManager {
 
 					if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1,
 							terrainPNG.length()) : terrainPNG) != null) {
-						load(ImageIO.read(zip.getInputStream(zip.getEntry(terrainPNG
+						load(loadImageFast(zip.getInputStream(zip.getEntry(terrainPNG
 								.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length())
 								: terrainPNG))), textureID);
 					} else {
-						load(ImageIO.read(TextureManager.class.getResourceAsStream(terrainPNG)),
+						load(loadImageFast(TextureManager.class.getResourceAsStream(terrainPNG)),
 								textureID);
 					}
 
@@ -514,109 +525,122 @@ public class TextureManager {
 			animations.clear();
 			resetAllMods();
 			ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/" + file));
-
 			String terrainPNG = "terrain.png";
+			String rainName = "rain.png";
+			String guiName = "gui.png";
+			String fontName = "default.png";
+			String chickenName = "chicken.png";
+			String creeperName = "creeper.png";
+			String crocName = "croc.png";
+			String humanoidName = "char.png";
+			String pigName = "pig.png";
+			String printerName = "printer.png";
+			String sheepName = "sheep.png";
+			String skeletonName = "skeleton.png";
+			String spiderNAme = "spider.png";
+			String zombieName = "zombie.png";
+
 			if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1,
 					terrainPNG.length()) : terrainPNG) != null) {
-				currentTerrainPng = ImageIO.read(zip.getInputStream(zip.getEntry(terrainPNG
+				currentTerrainPng = loadImageFast(zip.getInputStream(zip.getEntry(terrainPNG
 						.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length())
 						: terrainPNG)));
 			}
-			String rainName = "rain.png";
-			if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1, rainName.length())
-					: rainName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(rainName
+
+			if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1,
+					rainName.length()) : rainName) != null) {
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(rainName
 						.startsWith("/") ? rainName.substring(1, rainName.length()) : rainName)));
 				this.customRainPng = image;
 			}
-			String guiName = "gui.png";
+
 			if (zip.getEntry(guiName.startsWith("/") ? guiName.substring(1, guiName.length())
 					: guiName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(guiName
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(guiName
 						.startsWith("/") ? guiName.substring(1, guiName.length()) : guiName)));
 				this.customGUI = image;
 			}
-			String fontName = "default.png";
-			if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1, fontName.length())
-					: fontName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(fontName
+
+			if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1,
+					fontName.length()) : fontName) != null) {
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(fontName
 						.startsWith("/") ? fontName.substring(1, fontName.length()) : fontName)));
 				this.customFont = image;
 			}
-			String chickenName = "chicken.png";
+
 			if (zip.getEntry(chickenName.startsWith("/") ? chickenName.substring(1,
 					chickenName.length()) : chickenName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(chickenName
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(chickenName
 						.startsWith("/") ? chickenName.substring(1, chickenName.length())
 						: chickenName)));
 				this.customChicken = image;
 			}
-			String creeperName = "creeper.png";
+
 			if (zip.getEntry(creeperName.startsWith("/") ? creeperName.substring(1,
 					creeperName.length()) : creeperName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(creeperName
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(creeperName
 						.startsWith("/") ? creeperName.substring(1, creeperName.length())
 						: creeperName)));
 				this.customCreeper = image;
 			}
-			String crocName = "croc.png";
-			if (zip.getEntry(crocName.startsWith("/") ? crocName.substring(1, crocName.length())
-					: crocName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(crocName
+
+			if (zip.getEntry(crocName.startsWith("/") ? crocName.substring(1,
+					crocName.length()) : crocName) != null) {
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(crocName
 						.startsWith("/") ? crocName.substring(1, crocName.length()) : crocName)));
 				this.customCrocodile = image;
 			}
-			String humanoidName = "char.png";
+
 			if (zip.getEntry(humanoidName.startsWith("/") ? humanoidName.substring(1,
 					humanoidName.length()) : humanoidName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(humanoidName
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(humanoidName
 						.startsWith("/") ? humanoidName.substring(1, humanoidName.length())
 						: humanoidName)));
 				this.customHumanoid = image;
 			}
-			String pigName = "pig.png";
+
 			if (zip.getEntry(pigName.startsWith("/") ? pigName.substring(1, pigName.length())
 					: pigName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(pigName
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(pigName
 						.startsWith("/") ? pigName.substring(1, pigName.length()) : pigName)));
 				this.customPig = image;
 			}
-			String printerName = "printer.png";
+
 			if (zip.getEntry(printerName.startsWith("/") ? printerName.substring(1,
 					printerName.length()) : printerName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(printerName
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(printerName
 						.startsWith("/") ? printerName.substring(1, printerName.length())
 						: printerName)));
 				this.customPrinter = image;
 			}
-			String sheepName = "sheep.png";
-			if (zip.getEntry(sheepName.startsWith("/") ? sheepName.substring(1, sheepName.length())
-					: sheepName) != null) {
+
+			if (zip.getEntry(sheepName.startsWith("/") ? sheepName.substring(1,
+					sheepName.length()) : sheepName) != null) {
 				BufferedImage image = ImageIO
 						.read(zip.getInputStream(zip.getEntry(sheepName.startsWith("/") ? sheepName
 								.substring(1, sheepName.length()) : sheepName)));
 				this.customSheep = image;
 			}
-			String skeletonName = "skeleton.png";
+
 			if (zip.getEntry(skeletonName.startsWith("/") ? skeletonName.substring(1,
 					skeletonName.length()) : skeletonName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(skeletonName
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(skeletonName
 						.startsWith("/") ? skeletonName.substring(1, skeletonName.length())
 						: skeletonName)));
 				this.customSkeleton = image;
 			}
-			String spiderNAme = "spider.png";
+
 			if (zip.getEntry(spiderNAme.startsWith("/") ? spiderNAme.substring(1,
 					spiderNAme.length()) : spiderNAme) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(spiderNAme
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(spiderNAme
 						.startsWith("/") ? spiderNAme.substring(1, spiderNAme.length())
 						: spiderNAme)));
 				this.customSpider = image;
 			}
-			String zombieName = "zombie.png";
+
 			if (zip.getEntry(zombieName.startsWith("/") ? zombieName.substring(1,
 					zombieName.length()) : zombieName) != null) {
-				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(zombieName
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(zombieName
 						.startsWith("/") ? zombieName.substring(1, zombieName.length())
 						: zombieName)));
 				this.customZombie = image;
@@ -627,12 +651,14 @@ public class TextureManager {
 		if (this.settings.minecraft.networkManager != null) {
 			for (NetworkPlayer p : this.settings.minecraft.networkManager.players.values()) {
 				p.bindTexture(this);
-				System.out.println("binding texture for: " + p.name);
 			}
 			this.settings.minecraft.player.bindTexture(this);
 		}
 		return textureID;
+	}
 
+	public BufferedImage loadImageFast(InputStream inputStream) throws IOException {
+		return ImageIO.read(inputStream);
 	}
 
 	public void resetAllMods() {

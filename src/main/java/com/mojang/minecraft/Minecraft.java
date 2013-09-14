@@ -461,7 +461,7 @@ public final class Minecraft implements Runnable {
 					Block block = Block.blocks[this.level.getTile(x, y, z)];
 					// if mouse click left
 					if (var1 == 0) {
-						if (block != Block.BEDROCK || this.player.userType >= 100){
+						if (block != Block.BEDROCK || this.player.userType >= 100) {
 							if (!this.DisallowedBreakingBlocks.contains(block)) {
 								this.gamemode.hitBlock(x, y, z);
 								return;
@@ -558,6 +558,13 @@ public final class Minecraft implements Runnable {
 			if (this.session == null) {
 				SessionData.SetAllowedBlocks((byte) 1);
 				isSinglePlayer = true;
+			}else{ //try parse applet coz sessiondata is set
+				if(this.isApplet){
+					if(this.session.mppass == null || this.port < 0){
+						SessionData.SetAllowedBlocks((byte) 1);
+						isSinglePlayer = true;
+					}
+				}
 			}
 			if (this.canvas != null) {
 				Display.setParent(this.canvas);
@@ -618,7 +625,7 @@ public final class Minecraft implements Runnable {
 
 			monitoringThread = new MonitoringThread(1000); // 1s refresh
 
-			if(settings.lastUsedTexturePack!= null){
+			if (settings.lastUsedTexturePack != null) {
 				this.textureManager.loadTexturePack(settings.lastUsedTexturePack);
 			}
 			this.textureManager.initAtlas();
@@ -1356,7 +1363,8 @@ public final class Minecraft implements Runnable {
 										GL11.glDisable(2912);
 										// -------------------
 
-										Collections.sort(selectionBoxes, new SelectionBoxDistanceComparator(this.player));
+										Collections.sort(selectionBoxes,
+												new SelectionBoxDistanceComparator(this.player));
 										for (int i = 0; i < this.selectionBoxes.size(); i++) {
 											CustomAABB bounds = this.selectionBoxes.get(i).Bounds;
 											ColorCache color = this.selectionBoxes.get(i).Color;
@@ -1935,7 +1943,7 @@ public final class Minecraft implements Runnable {
 
 		GL11.glBindTexture(3553, this.textureManager.load("/terrain.png"));
 		TextureManager texManager = this.textureManager;
-		
+
 		for (var16 = 0; var16 < texManager.animations.size(); ++var16) {
 			TextureFX texFX;
 			(texFX = texManager.animations.get(var16)).anaglyph = texManager.settings.anaglyph;
@@ -2042,8 +2050,9 @@ public final class Minecraft implements Runnable {
 										Short g = ((Short) packetParams[9]).shortValue();
 										Short b = ((Short) packetParams[10]).shortValue();
 										Short a = ((Short) packetParams[11]).shortValue();
-										
-										System.out.println(ID +" "+ Name +" " +X1 +" " +Y1 +" " +Z1 +" " +X2 +" " +Y2 +" " +Z2 );
+
+										System.out.println(ID + " " + Name + " " + X1 + " " + Y1
+												+ " " + Z1 + " " + X2 + " " + Y2 + " " + Z2);
 										SelectionBoxData data = new SelectionBoxData(ID, Name,
 												new ColorCache(r / 255.0F, g / 255.0F, b / 255.0F,
 														a / 255.0F), new CustomAABB(X1, Y1, Z1, X2,
@@ -2199,23 +2208,27 @@ public final class Minecraft implements Runnable {
 										if (AllowPlacement == 0) {
 											if (!this.disallowedPlacementBlocks.contains(block)) {
 												this.disallowedPlacementBlocks.add(block);
-												System.out.println("DisallowingPlacement block: " +block);
+												System.out.println("DisallowingPlacement block: "
+														+ block);
 											}
 										} else {
 											if (this.disallowedPlacementBlocks.contains(block)) {
 												this.disallowedPlacementBlocks.remove(block);
-												System.out.println("AllowingPlacement block: " +block);
+												System.out.println("AllowingPlacement block: "
+														+ block);
 											}
 										}
 										if (AllowDeletion == 0) {
 											if (!this.DisallowedBreakingBlocks.contains(block)) {
 												this.DisallowedBreakingBlocks.add(block);
-												System.out.println("DisallowingDeletion block: " +block);
+												System.out.println("DisallowingDeletion block: "
+														+ block);
 											}
 										} else {
 											if (this.DisallowedBreakingBlocks.contains(block)) {
 												this.DisallowedBreakingBlocks.remove(block);
-												System.out.println("AllowingDeletion block: " +block);
+												System.out.println("AllowingDeletion block: "
+														+ block);
 											}
 										}
 									} else if (packetType == PacketType.CHANGE_MODEL) {
@@ -2622,7 +2635,7 @@ public final class Minecraft implements Runnable {
 								this.settings.thirdPersonMode = false;
 							}
 						}
-						
+
 						if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
 							takeAndSaveScreenshot(this.width, this.height);
 						}
