@@ -1,5 +1,7 @@
 package com.mojang.minecraft;
 
+import com.mojang.minecraft.player.Player;
+
 public class SelectionBoxData {
 	public byte ID;
 	public String Name;
@@ -11,5 +13,18 @@ public class SelectionBoxData {
 		this.Name = Name;
 		this.Bounds = Bounds;
 		this.Color = Color;
+	}
+	
+	public final float distanceSquared0(Player var1) {
+		float var2 = var1.x - (float) this.Bounds.x0;
+		float var3 = var1.y - (float) this.Bounds.y0;
+		float var4 = var1.z - (float) this.Bounds.z0;
+		return var2 * var2 + var3 * var3 + var4 * var4;
+	}
+	public final float distanceSquared1(Player var1) {
+		float var2 = var1.x - (float) this.Bounds.x1;
+		float var3 = var1.y - (float) this.Bounds.y1;
+		float var4 = var1.z - (float) this.Bounds.z1;
+		return var2 * var2 + var3 * var3 + var4 * var4;
 	}
 }

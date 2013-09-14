@@ -1,6 +1,9 @@
 package com.mojang.minecraft.level.tile;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.MovingObjectPosition;
+import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.model.Vec3D;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
@@ -141,57 +144,6 @@ public class BlockModelRenderer {
 		return textureId;
 	}
 
-	public boolean render(int var2, int var3, int var4, ShapeRenderer var5) {
-		boolean var6 = false;
-		float var7 = 0.5F;
-		float var8 = 0.8F;
-		float var9 = 0.6F;
-		ColorCache var10;
-		if (this.canRenderSide(var2, var3 - 1, var4, 0)) {
-			var10 = this.getBrightness(var2, var3 - 1, var4);
-			var5.color(var7 * var10.R, var7 * var10.G, var7 * var10.B);
-			this.renderInside(var5, var2, var3, var4, 0);
-			var6 = true;
-		}
-
-		if (this.canRenderSide(var2, var3 + 1, var4, 1)) {
-			var10 = this.getBrightness(var2, var3 + 1, var4);
-			var5.color(var10.R * 1.0F, var10.G * 1.0F, var10.B * 1.0F);
-			this.renderInside(var5, var2, var3, var4, 1);
-			var6 = true;
-		}
-
-		if (this.canRenderSide(var2, var3, var4 - 1, 2)) {
-			var10 = this.getBrightness(var2, var3, var4 - 1);
-			var5.color(var8 * var10.R, var8 * var10.G, var8 * var10.B);
-			this.renderInside(var5, var2, var3, var4, 2);
-			var6 = true;
-		}
-
-		if (this.canRenderSide(var2, var3, var4 + 1, 3)) {
-			var10 = this.getBrightness(var2, var3, var4 + 1);
-			var5.color(var8 * var10.R, var8 * var10.G, var8 * var10.B);
-			this.renderInside(var5, var2, var3, var4, 3);
-			var6 = true;
-		}
-
-		if (this.canRenderSide(var2 - 1, var3, var4, 4)) {
-			var10 = this.getBrightness(var2 - 1, var3, var4);
-			var5.color(var9 * var10.R, var9 * var10.G, var9 * var10.B);
-			this.renderInside(var5, var2, var3, var4, 4);
-			var6 = true;
-		}
-
-		if (this.canRenderSide(var2 + 1, var3, var4, 5)) {
-			var10 = this.getBrightness(var2 + 1, var3, var4);
-			var5.color(var9 * var10.R, var9 * var10.G, var9 * var10.B);
-			this.renderInside(var5, var2, var3, var4, 5);
-			var6 = true;
-		}
-
-		return var6;
-	}
-
 	public void renderFullbright(ShapeRenderer shapeRenderer) {
 		float red = 0.5F;
 		float green = 0.8F;
@@ -223,6 +175,8 @@ public class BlockModelRenderer {
 	}
 
 	public void renderPreview(ShapeRenderer var1) {
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(770, 768);
 		var1.begin();
 
 		for (int var2 = 0; var2 < 6; ++var2) {
@@ -252,7 +206,7 @@ public class BlockModelRenderer {
 
 			this.renderInside(var1, 0, 0, 0, var2);
 		}
-
+		GL11.glDisable(GL11.GL_BLEND);
 		var1.end();
 	}
 

@@ -84,7 +84,7 @@ public class PacketType {
 				Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE,
 				Short.TYPE, Short.TYPE });
 		REMOVE_SELECTION_CUBOID = new PacketType(new Class[] { Byte.TYPE });
-		SET_BLOCK_PERMISSIONS = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE, Integer.TYPE });
+		SET_BLOCK_PERMISSIONS = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE, Byte.TYPE });
 		CHANGE_MODEL = new PacketType(new Class[] { Byte.TYPE, String.class });
 		ENV_SET_MAP_APPEARANCE = new PacketType(new Class[] { String.class, Byte.TYPE, Byte.TYPE,
 				Short.TYPE });
@@ -92,19 +92,16 @@ public class PacketType {
 		// set names
 		EXT_INFO.extName = "ExtInfo";
 		EXT_ENTRY.extName = "ExtEntry";
-		CLICK_DISTANCE.extName = "SetClickDistance";
+		CLICK_DISTANCE.extName = "ClickDistance";
 		CUSTOM_BLOCK_SUPPORT_LEVEL.extName = "CustomBlocks";
-		HOLDTHIS.extName = "HoldThis";
-		SET_TEXT_HOTKEY.extName = "SetTextHotKey";
-		EXT_ADD_PLAYER_NAME.extName = "ExtAddPlayerName";
-		EXT_ADD_ENTITY.extName = "ExtAddEntity";
-		EXT_REMOVE_PLAYER_NAME.extName = "ExtRemovePlayerName";
-		ENV_SET_COLOR.extName = "EnvSetColor";
+		HOLDTHIS.extName = "HeldBlock";
+		SET_TEXT_HOTKEY.extName = "TextHotKey";
+		EXT_ADD_PLAYER_NAME.extName = "ExtPlayerList"; //3 packets in here
+		ENV_SET_COLOR.extName = "EnvColors";
 		SELECTION_CUBOID.extName = "SelectionCuboid";
-		REMOVE_SELECTION_CUBOID.extName = "RemoveSelectionCuboid";
-		SET_BLOCK_PERMISSIONS.extName = "SetBlockPermissions";
+		SET_BLOCK_PERMISSIONS.extName = "BlockPermissions";
 		CHANGE_MODEL.extName = "ChangeModel";
-		ENV_SET_MAP_APPEARANCE.extName = "EnvSetMapAppearance";
+		ENV_SET_MAP_APPEARANCE.extName = "EnvMapAppearance";
 
 		nextOpcode = 0;
 	}

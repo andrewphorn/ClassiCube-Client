@@ -29,7 +29,7 @@ public final class FontRenderer {
 	private int fontId = 0;
 	private GameSettings settings;
 
-	private int[] font = new int[256];
+	public int[] font = new int[256];
 
 	public FontRenderer(GameSettings settings, String fontImage, TextureManager textures)
 			throws IOException {

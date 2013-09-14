@@ -34,27 +34,24 @@ public class HumanoidMob extends Mob {
 		this.modelName = "humanoid";
 		this.setPos(var2, var3, var4);
 	}
-
-	public final void renderBlock(TextureManager var1) {
-		GL11.glPushMatrix();
-		GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
-		block.render(0, 0, 0, ShapeRenderer.instance);
-		GL11.glPopMatrix();
-	}
-
+	
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
 		if (this.modelName == "sheep") {
 			renderSheep(var1, var2, var3, var4, var5, var6, var7);
 			return;
 		}
-		if (isInteger(this.modelName)) {
+		else if (isInteger(this.modelName)) {
 			try {
 				if (block == null) {
 					block = new BlockModelRenderer(
 							Block.blocks[Integer.parseInt(this.modelName)].textureId);
 				}
-				renderBlock(var1);
+				GL11.glPushMatrix();
+				GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
+				GL11.glBindTexture(3553, var1.load("/terrain.png"));
+				block.renderPreview( ShapeRenderer.instance);
+				GL11.glPopMatrix();
 			} catch (Exception e) {
 				this.modelName = "humanoid";
 			}

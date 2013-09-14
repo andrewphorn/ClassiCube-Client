@@ -2,7 +2,11 @@ package com.mojang.minecraft.render;
 
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.SessionData;
 import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.level.tile.BlockID;
+import com.mojang.minecraft.net.NetworkPlayer;
+import com.mojang.minecraft.render.texture.AnimatedTextureFX;
 import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.render.texture.TextureFireFX;
 import com.mojang.minecraft.render.texture.TextureLavaFX;
@@ -14,14 +18,23 @@ import org.lwjgl.opengl.*;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 
@@ -54,6 +67,21 @@ public class TextureManager {
 	public BufferedImage currentTerrainPng = null;
 	public BufferedImage customSideBlock = null;
 	public BufferedImage customEdgeBlock = null;
+	public BufferedImage customDirtPng = null;
+	public BufferedImage customRainPng = null;
+	public BufferedImage customGUI = null;
+	public BufferedImage customFont = null;
+
+	public BufferedImage customChicken = null;
+	public BufferedImage customCreeper = null;
+	public BufferedImage customCrocodile = null;
+	public BufferedImage customHumanoid = null;
+	public BufferedImage customPig = null;
+	public BufferedImage customPrinter = null;
+	public BufferedImage customSheep = null;
+	public BufferedImage customSkeleton = null;
+	public BufferedImage customSpider = null;
+	public BufferedImage customZombie = null;
 
 	public File minecraftFolder;
 	public File texturesFolder;
@@ -291,7 +319,6 @@ public class TextureManager {
 			try {
 				image = ImageIO.read(TextureManager.class.getResourceAsStream(textureFile));
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -303,11 +330,106 @@ public class TextureManager {
 		if (this.animations.size() == 0 && this.currentTerrainPng == null) {
 			this.registerAnimations();
 		}
+		if (file.startsWith("/dirt") && textures.containsKey("customDirt")) {
+			return textures.get("customDirt");
+		}
 
-		if (file.contains("terrain") && textures.containsKey("customTerrain")) {
+		if (file.startsWith("/mob")) {
+			String mobName = file.replace("/mob/", "").replace(".png", "").trim();
+			if (textures.containsKey("custom" + mobName))
+				return textures.get("custom" + mobName);
+			else if (!textures.containsKey("custom" + mobName)) {
+				if (mobName.equalsIgnoreCase("creeper") && this.customCreeper != null) {
+					int id = load(customCreeper);
+					textures.put("custom" + mobName, id);
+					return id;
+				}
+				else if (mobName.equalsIgnoreCase("zombie") && this.customZombie != null) {
+					int id = load(customZombie);
+					textures.put("custom" + mobName, id);
+					return id;
+				}
+				else if (mobName.equalsIgnoreCase("sheep") && this.customSheep != null) {
+					int id = load(customSheep);
+					textures.put("custom" + mobName, id);
+					return id;
+				}
+				else if (mobName.equalsIgnoreCase("skeleton") && this.customSkeleton != null) {
+					int id = load(customSkeleton);
+					textures.put("custom" + mobName, id);
+					return id;
+				}
+				else if (mobName.equalsIgnoreCase("spider") && this.customSpider != null) {
+					int id = load(customSpider);
+					textures.put("custom" + mobName, id);
+					return id;
+				}
+				else if (mobName.equalsIgnoreCase("printer") && this.customPrinter != null) {
+					int id = load(customPrinter);
+					textures.put("custom" + mobName, id);
+					return id;
+				}
+				else if (mobName.equalsIgnoreCase("pig") && this.customPig != null) {
+					int id = load(customPig);
+					textures.put("custom" + mobName, id);
+					return id;
+				}
+				else if (mobName.equalsIgnoreCase("chicken") && this.customChicken != null) {
+					int id = load(customChicken);
+					textures.put("custom" + mobName, id);
+					return id;
+				}
+				else if (mobName.equalsIgnoreCase("croc") && this.customCrocodile != null) {
+					int id = load(customCrocodile);
+					textures.put("custom" + mobName, id);
+					return id;
+				}
+			}
+		}
+
+		if (file.startsWith("/char") && textures.containsKey("customHumanoid")) {
+			return textures.get("customHumanoid");
+		}
+		if (file.startsWith("/char") && !textures.containsKey("customHumanoid")
+				&& customHumanoid != null) {
+			int id = load(customHumanoid);
+			textures.put("customHumanoid", id);
+			return id;
+		}
+
+		if (file.startsWith("/gui/gui") && textures.containsKey("customGUI")) {
+			return textures.get("customGUI");
+		}
+		if (file.startsWith("/gui/gui") && !textures.containsKey("customGUI") && customGUI != null) {
+			int id = load(customGUI);
+			textures.put("customGUI", id);
+			return id;
+		}
+
+		if (file.startsWith("/default") && textures.containsKey("customFont")) {
+			return textures.get("customGUI");
+		}
+		if (file.startsWith("/default") && !textures.containsKey("customFont")
+				&& customFont != null) {
+			int id = load(customFont);
+			textures.put("customFont", id);
+			return id;
+		}
+
+		if (file.startsWith("/rain") && textures.containsKey("customRain")) {
+			return textures.get("customRain");
+		}
+		if (file.startsWith("/rain") && !textures.containsKey("customRain")
+				&& customRainPng != null) {
+			int id = load(customRainPng);
+			textures.put("customRain", id);
+			return id;
+		}
+
+		if (file.startsWith("/terrain") && textures.containsKey("customTerrain")) {
 			return textures.get("customTerrain");
 		}
-		if (file.contains("terrain") && !textures.containsKey("customTerrain")
+		if (file.startsWith("/terrain") && !textures.containsKey("customTerrain")
 				&& currentTerrainPng != null) {
 			int id = load(currentTerrainPng);
 			textures.put("customTerrain", id);
@@ -319,20 +441,29 @@ public class TextureManager {
 				customSideBlock = this.textureAtlas.get(Block.WATER.textureId);
 				textures.put("customSide", load(customSideBlock));
 			}
+			if (this.customDirtPng == null) {
+				customDirtPng = this.textureAtlas.get(Block.DIRT.textureId);
+				textures.put("customDirt", load(customDirtPng));
+			}
 			return id;
 		}
-		if (file.contains("rock") && textures.containsKey("customEdge")) {
+
+		if (file.startsWith("/dirt") && textures.containsKey("customDirt")) {
+			return textures.get("customDirt");
+		}
+		if (file.startsWith("/rock") && textures.containsKey("customEdge")) {
 			return textures.get("customEdge");
 		}
-		if (file.contains("rock") && !textures.containsKey("customEdge") && customEdgeBlock != null) {
+		if (file.startsWith("/rock") && !textures.containsKey("customEdge")
+				&& customEdgeBlock != null) {
 			int id = load(customEdgeBlock);
 			textures.put("customEdge", id);
 			return id;
 		}
-		if (file.contains("water") && textures.containsKey("customSide")) {
+		if (file.startsWith("/water") && textures.containsKey("customSide")) {
 			return textures.get("customSide");
 		}
-		if (file.contains("water") && !textures.containsKey("customSide")
+		if (file.startsWith("/water") && !textures.containsKey("customSide")
 				&& customSideBlock != null) {
 			int id = load(customSideBlock);
 			textures.put("customSide", id);
@@ -389,33 +520,150 @@ public class TextureManager {
 		int textureID = 0;
 		if (file.endsWith(".zip")) {
 			animations.clear();
+			resetAllMods();
 			ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/" + file));
 
 			String terrainPNG = "terrain.png";
-
 			if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1,
 					terrainPNG.length()) : terrainPNG) != null) {
 				currentTerrainPng = ImageIO.read(zip.getInputStream(zip.getEntry(terrainPNG
 						.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length())
 						: terrainPNG)));
-			} else {
-				try {
-					currentTerrainPng = ImageIO.read(TextureManager.class
-							.getResourceAsStream(terrainPNG));
-				} catch (Exception e) {
-					zip.close();
-					return textureID;
-				}
 			}
-
+			String rainName = "rain.png";
+			if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1, rainName.length())
+					: rainName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(rainName
+						.startsWith("/") ? rainName.substring(1, rainName.length()) : rainName)));
+				this.customRainPng = image;
+			}
+			String guiName = "gui.png";
+			if (zip.getEntry(guiName.startsWith("/") ? guiName.substring(1, guiName.length())
+					: guiName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(guiName
+						.startsWith("/") ? guiName.substring(1, guiName.length()) : guiName)));
+				this.customGUI = image;
+			}
+			String fontName = "default.png";
+			if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1, fontName.length())
+					: fontName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(fontName
+						.startsWith("/") ? fontName.substring(1, fontName.length()) : fontName)));
+				this.customFont = image;
+			}
+			String chickenName = "chicken.png";
+			if (zip.getEntry(chickenName.startsWith("/") ? chickenName.substring(1,
+					chickenName.length()) : chickenName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(chickenName
+						.startsWith("/") ? chickenName.substring(1, chickenName.length())
+						: chickenName)));
+				this.customChicken = image;
+			}
+			String creeperName = "creeper.png";
+			if (zip.getEntry(creeperName.startsWith("/") ? creeperName.substring(1,
+					creeperName.length()) : creeperName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(creeperName
+						.startsWith("/") ? creeperName.substring(1, creeperName.length())
+						: creeperName)));
+				this.customCreeper = image;
+			}
+			String crocName = "croc.png";
+			if (zip.getEntry(crocName.startsWith("/") ? crocName.substring(1, crocName.length())
+					: crocName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(crocName
+						.startsWith("/") ? crocName.substring(1, crocName.length()) : crocName)));
+				this.customCrocodile = image;
+			}
+			String humanoidName = "char.png";
+			if (zip.getEntry(humanoidName.startsWith("/") ? humanoidName.substring(1,
+					humanoidName.length()) : humanoidName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(humanoidName
+						.startsWith("/") ? humanoidName.substring(1, humanoidName.length())
+						: humanoidName)));
+				this.customHumanoid = image;
+			}
+			String pigName = "pig.png";
+			if (zip.getEntry(pigName.startsWith("/") ? pigName.substring(1, pigName.length())
+					: pigName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(pigName
+						.startsWith("/") ? pigName.substring(1, pigName.length()) : pigName)));
+				this.customPig = image;
+			}
+			String printerName = "printer.png";
+			if (zip.getEntry(printerName.startsWith("/") ? printerName.substring(1,
+					printerName.length()) : printerName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(printerName
+						.startsWith("/") ? printerName.substring(1, printerName.length())
+						: printerName)));
+				this.customPrinter = image;
+			}
+			String sheepName = "sheep.png";
+			if (zip.getEntry(sheepName.startsWith("/") ? sheepName.substring(1, sheepName.length())
+					: sheepName) != null) {
+				BufferedImage image = ImageIO
+						.read(zip.getInputStream(zip.getEntry(sheepName.startsWith("/") ? sheepName
+								.substring(1, sheepName.length()) : sheepName)));
+				this.customSheep = image;
+			}
+			String skeletonName = "skeleton.png";
+			if (zip.getEntry(skeletonName.startsWith("/") ? skeletonName.substring(1,
+					skeletonName.length()) : skeletonName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(skeletonName
+						.startsWith("/") ? skeletonName.substring(1, skeletonName.length())
+						: skeletonName)));
+				this.customSkeleton = image;
+			}
+			String spiderNAme = "spider.png";
+			if (zip.getEntry(spiderNAme.startsWith("/") ? spiderNAme.substring(1,
+					spiderNAme.length()) : spiderNAme) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(spiderNAme
+						.startsWith("/") ? spiderNAme.substring(1, spiderNAme.length())
+						: spiderNAme)));
+				this.customSpider = image;
+			}
+			String zombieName = "zombie.png";
+			if (zip.getEntry(zombieName.startsWith("/") ? zombieName.substring(1,
+					zombieName.length()) : zombieName) != null) {
+				BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(zombieName
+						.startsWith("/") ? zombieName.substring(1, zombieName.length())
+						: zombieName)));
+				this.customZombie = image;
+			}
 			zip.close();
-
 		}
 		initAtlas();
+		for (NetworkPlayer p : this.settings.minecraft.networkManager.players.values()) {
+			p.bindTexture(this);
+			System.out.println("binding texture for: " + p.name);
+		}
+		this.settings.minecraft.player.bindTexture(this);
 		return textureID;
 	}
 
+	public void resetAllMods() {
+		this.textures.clear();
+		this.currentTerrainPng = null;
+		this.customEdgeBlock = null;
+		this.customSideBlock = null;
+		this.customDirtPng = null;
+		this.customRainPng = null;
+		this.customGUI = null;
+		this.customFont = null;
+
+		this.customChicken = null;
+		this.customCreeper = null;
+		this.customCrocodile = null;
+		this.customHumanoid = null;
+		this.customPig = null;
+		this.customPrinter = null;
+		this.customSheep = null;
+		this.customSkeleton = null;
+		this.customSpider = null;
+		this.customZombie = null;
+	}
+
 	public void registerAnimations() {
+		this.animations.clear();
 		this.animations.add(new TextureWaterFX());
 		this.animations.add(new TextureLavaFX());
 		this.animations.add(new TextureFireFX());

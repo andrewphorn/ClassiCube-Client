@@ -55,7 +55,9 @@ public class GuiScreen extends Screen {
 			this.minecraft.setCurrentScreen((GuiScreen) null);
 			this.minecraft.grabMouse();
 		}
-
+		if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
+			this.minecraft.takeAndSaveScreenshot(this.minecraft.width, this.minecraft.height);
+		}
 	}
 
 	protected void onMouseClick(int var1, int var2, int var3) {

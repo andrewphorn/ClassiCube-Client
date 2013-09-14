@@ -65,6 +65,7 @@ import java.nio.IntBuffer;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
@@ -125,7 +126,7 @@ public final class Minecraft implements Runnable {
 	private Cursor cursor;
 	public static File mcDir;
 	public String skinServer = "http://www.classicube.net/static/skins/";
-	public List<Block> DisallowPlacementBlocks = new ArrayList<Block>();
+	public List<Block> disallowedPlacementBlocks = new ArrayList<Block>();
 	public List<Block> DisallowedBreakingBlocks = new ArrayList<Block>();
 	public MonitoringThread monitoringThread;
 	public int tempDisplayWidth;
@@ -162,7 +163,7 @@ public final class Minecraft implements Runnable {
 	}
 
 	public static File getMinecraftDirectory() {
-		String folder = "net.classicube.client";
+		String folder = ".net.classicube.client";
 		String home = System.getProperty("user.home");
 		File minecraftFolder;
 		Minecraft$OS os = getOs();
@@ -460,16 +461,17 @@ public final class Minecraft implements Runnable {
 					Block block = Block.blocks[this.level.getTile(x, y, z)];
 					// if mouse click left
 					if (var1 == 0) {
-						if (block != Block.BEDROCK || this.player.userType >= 100
-								|| this.DisallowedBreakingBlocks.contains(block)) {
-							this.gamemode.hitBlock(x, y, z);
-							return;
+						if (block != Block.BEDROCK || this.player.userType >= 100){
+							if (!this.DisallowedBreakingBlocks.contains(block)) {
+								this.gamemode.hitBlock(x, y, z);
+								return;
+							}
 						}
 						// else if its right click
 					} else {
 						int blockID = this.player.inventory.getSelected();
 						if (blockID <= 0
-								|| this.DisallowPlacementBlocks.contains(Block.blocks[blockID])) {
+								|| this.disallowedPlacementBlocks.contains(Block.blocks[blockID])) {
 							return; // if air or not allowed, return
 						}
 						AABB aabb = Block.blocks[blockID].getCollisionBox(x, y, z);
@@ -1351,6 +1353,7 @@ public final class Minecraft implements Runnable {
 										GL11.glDisable(2912);
 										// -------------------
 
+										Collections.sort(selectionBoxes, new SelectionBoxDistanceComparator(this.player));
 										for (int i = 0; i < this.selectionBoxes.size(); i++) {
 											CustomAABB bounds = this.selectionBoxes.get(i).Bounds;
 											ColorCache color = this.selectionBoxes.get(i).Color;
@@ -1929,12 +1932,16 @@ public final class Minecraft implements Runnable {
 
 		GL11.glBindTexture(3553, this.textureManager.load("/terrain.png"));
 		TextureManager texManager = this.textureManager;
-
+		
 		for (var16 = 0; var16 < texManager.animations.size(); ++var16) {
 			TextureFX texFX;
 			(texFX = texManager.animations.get(var16)).anaglyph = texManager.settings.anaglyph;
 			texFX.animate();
-			texManager.textureBuffer.clear();
+			if (texManager.textureBuffer.capacity() != texFX.textureData.length) {
+				texManager.textureBuffer = BufferUtils.createByteBuffer(texFX.textureData.length);
+			} else {
+				texManager.textureBuffer.clear();
+			}
 			texManager.textureBuffer.put(texFX.textureData);
 			texManager.textureBuffer.position(0).limit(texFX.textureData.length);
 			GL11.glTexSubImage2D(3553, 0, texFX.textureId % 16 << 4, texFX.textureId / 16 << 4, 16,
@@ -1993,6 +2000,7 @@ public final class Minecraft implements Runnable {
 
 										if (recievedExtensionLength == com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
 												.size()) {
+											System.out.println("Sending client's supported Exts");
 											List<ExtData> temp = new ArrayList<ExtData>();
 											for (int j = 0; j < PacketType.packets.length - 1; j++) {
 												if (PacketType.packets[j] != null
@@ -2004,10 +2012,14 @@ public final class Minecraft implements Runnable {
 											}
 											String AppName = "ClassiCube Client";
 											Object[] toSendParams = new Object[] { AppName,
-													temp.size() };
+													(short) temp.size() };
 											networkManager.netHandler.send(PacketType.EXT_INFO,
 													toSendParams);
 											for (int k = 0; k < temp.size(); k++) {
+												System.out.println("Sending ext: "
+														+ temp.get(k).Name + " with version: "
+														+ temp.get(k).Version + " and packet id: "
+														+ PacketType.EXT_ENTRY.opcode);
 												toSendParams = new Object[] { temp.get(k).Name,
 														temp.get(k).Version };
 												networkManager.netHandler.send(
@@ -2027,6 +2039,8 @@ public final class Minecraft implements Runnable {
 										Short g = ((Short) packetParams[9]).shortValue();
 										Short b = ((Short) packetParams[10]).shortValue();
 										Short a = ((Short) packetParams[11]).shortValue();
+										
+										System.out.println(ID +" "+ Name +" " +X1 +" " +Y1 +" " +Z1 +" " +X2 +" " +Y2 +" " +Z2 );
 										SelectionBoxData data = new SelectionBoxData(ID, Name,
 												new ColorCache(r / 255.0F, g / 255.0F, b / 255.0F,
 														a / 255.0F), new CustomAABB(X1, Y1, Z1, X2,
@@ -2180,21 +2194,25 @@ public final class Minecraft implements Runnable {
 										if (block == null)
 											return;
 										if (AllowPlacement == 0) {
-											if (!this.DisallowPlacementBlocks.contains(block)) {
-												this.DisallowPlacementBlocks.add(block);
+											if (!this.disallowedPlacementBlocks.contains(block)) {
+												this.disallowedPlacementBlocks.add(block);
+												System.out.println("DisallowingPlacement block: " +block);
 											}
 										} else {
-											if (this.DisallowPlacementBlocks.contains(block)) {
-												this.DisallowPlacementBlocks.remove(block);
+											if (this.disallowedPlacementBlocks.contains(block)) {
+												this.disallowedPlacementBlocks.remove(block);
+												System.out.println("AllowingPlacement block: " +block);
 											}
 										}
 										if (AllowDeletion == 0) {
 											if (!this.DisallowedBreakingBlocks.contains(block)) {
 												this.DisallowedBreakingBlocks.add(block);
+												System.out.println("DisallowingDeletion block: " +block);
 											}
 										} else {
 											if (this.DisallowedBreakingBlocks.contains(block)) {
 												this.DisallowedBreakingBlocks.remove(block);
+												System.out.println("AllowingDeletion block: " +block);
 											}
 										}
 									} else if (packetType == PacketType.CHANGE_MODEL) {
@@ -2591,9 +2609,6 @@ public final class Minecraft implements Runnable {
 						if (Keyboard.getEventKey() == Keyboard.KEY_F1) {
 							this.canRenderGUI = !this.canRenderGUI;
 						}
-						if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
-							takeAndSaveScreenshot(this.width, this.height);
-						}
 
 						if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
 							if (this.cameraDistance == -0.1F) {
@@ -2603,6 +2618,10 @@ public final class Minecraft implements Runnable {
 								this.cameraDistance = -0.1F;
 								this.settings.thirdPersonMode = false;
 							}
+						}
+						
+						if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
+							takeAndSaveScreenshot(this.width, this.height);
 						}
 
 						if (this.settings.HacksEnabled) {

@@ -43,15 +43,18 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 				this.minecraft.setCurrentScreen(this.parent);
 			}
 			if (var1.id == 8) {
-				this.minecraft.textureManager.currentTerrainPng = null;
-				this.minecraft.textureManager.customEdgeBlock = null;
-				this.minecraft.textureManager.customSideBlock = null;
-				this.minecraft.textureManager.initAtlas();
+				this.minecraft.textureManager.resetAllMods();
 				this.minecraft.textureManager.load("/terrain.png");
+				this.minecraft.textureManager.initAtlas();
 				this.minecraft.setCurrentScreen((GuiScreen) null);
 				this.minecraft.grabMouse();
 				this.minecraft.textureManager.textures.clear();
 				this.minecraft.levelRenderer.refresh();
+				try {
+					this.minecraft.fontRenderer = new FontRenderer(this.minecraft.settings, "/default.png", this.minecraft.textureManager);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -84,8 +87,8 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	protected void openTexture(String file) {
 		try {
 			this.minecraft.textureManager.loadTexturePack(file);
+			this.minecraft.fontRenderer = new FontRenderer(this.minecraft.settings, "/default.png", this.minecraft.textureManager);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.minecraft.setCurrentScreen((GuiScreen) null);
