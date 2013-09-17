@@ -308,7 +308,7 @@ public final class GameSettings implements Serializable {
 
 			minecraft.textureManager.textures.clear();
 
-			minecraft.levelRenderer.refresh();
+			//minecraft.levelRenderer.refresh();
 		}
 
 		if (setting == 9) {
@@ -320,7 +320,7 @@ public final class GameSettings implements Serializable {
 
 			minecraft.textureManager.textures.clear();
 
-			minecraft.levelRenderer.refresh();
+			//minecraft.levelRenderer.refresh();
 		}
 		if (setting == 10) {
 			canServerChangeTextures = !canServerChangeTextures;

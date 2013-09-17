@@ -49,7 +49,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 				this.minecraft.setCurrentScreen((GuiScreen) null);
 				this.minecraft.grabMouse();
 				this.minecraft.textureManager.textures.clear();
-				this.minecraft.levelRenderer.refresh();
+				//this.minecraft.levelRenderer.refresh();
 				try {
 					this.minecraft.fontRenderer = new FontRenderer(this.minecraft.settings, "/default.png", this.minecraft.textureManager);
 				} catch (IOException e) {

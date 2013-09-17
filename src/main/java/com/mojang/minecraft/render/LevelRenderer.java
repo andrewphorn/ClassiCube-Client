@@ -84,7 +84,6 @@ public final class LevelRenderer {
 				}
 			}
 		}
-
 	}
 
 	public final void refresh() {
