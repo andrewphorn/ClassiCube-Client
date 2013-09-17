@@ -35,13 +35,14 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 
 	boolean drawWarning = false;
 
-	String lastVBOValue = null;
+	boolean lastVBOValue;
 
 	String optionWarningMessage = "Changing to/from VBOs requires a client restart";
 
 	public AdvancedOptionsScreen(GuiScreen var1, GameSettings var2) {
 		this.parent = var1;
 		this.settings = var2;
+		lastVBOValue = this.settings.VBOs;
 	}
 
 	protected final void onButtonClick(Button var1) {
@@ -50,7 +51,11 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 				this.settings.toggleSetting(var1.id, 1);
 				var1.text = this.settings.getSetting(var1.id);
 				if (var1.text.contains("VBO")) {
-					this.drawWarning = true;
+					if (this.settings.VBOs != lastVBOValue) {
+						this.drawWarning = true;
+					} else {
+						this.drawWarning = false;
+					}
 				}
 			}
 
@@ -119,7 +124,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 			}
 
 			if (var1.id == 700) {
-				this.minecraft.setCurrentScreen(this.parent);
+				this.minecraft.setCurrentScreen(new OptionsScreen(this, settings));
 			}
 		}
 	}

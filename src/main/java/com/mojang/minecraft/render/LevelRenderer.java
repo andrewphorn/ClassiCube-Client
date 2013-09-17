@@ -31,6 +31,8 @@ public final class LevelRenderer {
 	private float lastLoadY = -9999.0F;
 	private float lastLoadZ = -9999.0F;
 	public float cracks;
+	
+	public List<BlockData> iceBlocks = new ArrayList<BlockData>();
 
 	public LevelRenderer(Minecraft var1, TextureManager var2) {
 		this.minecraft = var1;
@@ -253,7 +255,7 @@ public final class LevelRenderer {
 			this.lastLoadX = var1.x;
 			this.lastLoadY = var1.y;
 			this.lastLoadZ = var1.z;
-			Arrays.sort(this.loadQueue, new ChunkDistanceComparator(var1));
+			Arrays.sort(this.loadQueue, new ChunkDirtyDistanceComparator(var1));
 		}
 
 		int var6 = 0;

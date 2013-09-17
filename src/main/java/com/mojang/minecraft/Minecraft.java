@@ -65,7 +65,6 @@ import java.nio.IntBuffer;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
@@ -604,6 +603,7 @@ public final class Minecraft implements Runnable {
 			Mouse.create();
 
 			checkGLError("Pre startup");
+			
 			GL11.glEnable(3553);
 			GL11.glShadeModel(7425);
 			GL11.glClearDepth(1.0D);
@@ -621,13 +621,15 @@ public final class Minecraft implements Runnable {
 			ShapeRenderer.instance = new ShapeRenderer(2097152, this.settings);
 			this.textureManager = new TextureManager(this.settings, isApplet);
 			this.textureManager.registerAnimations();
-			this.fontRenderer = new FontRenderer(this.settings, "/default.png", this.textureManager);
-
-			monitoringThread = new MonitoringThread(1000); // 1s refresh
-
+			
 			if (settings.lastUsedTexturePack != null) {
 				this.textureManager.loadTexturePack(settings.lastUsedTexturePack);
 			}
+			
+			this.fontRenderer = new FontRenderer(this.settings, "/default.png", this.textureManager);
+
+			monitoringThread = new MonitoringThread(1000); // 1s refresh
+			
 			this.textureManager.initAtlas();
 
 			if (this.session == null)
@@ -1010,7 +1012,7 @@ public final class Minecraft implements Runnable {
 										var74 = var116.yo + (var116.y - var116.yo) * var80;
 										var33 = var116.zo + (var116.z - var116.zo) * var80;
 										GL11.glTranslatef(-var69, -var74, -var33);
-										Frustrum var76 = FrustrumImpl.update();
+										Frustrum var76 = FrustrumImpl.getInstance();
 										Frustrum var100 = var76;
 										LevelRenderer var101 = renderer.minecraft.levelRenderer;
 
@@ -1030,10 +1032,9 @@ public final class Minecraft implements Runnable {
 
 										int var104;
 										for (var104 = 0; var104 < var105; ++var104) {
-											Chunk var118;
-											(var118 = (Chunk) var101.chunks.remove(var98 - var104))
-													.update();
-											var118.loaded = false;
+											Chunk chunkToUpdate = var101.chunks.remove(var98 - var104);
+											chunkToUpdate.update();
+											chunkToUpdate.loaded = false;
 										}
 
 										renderer.updateFog();
@@ -1041,7 +1042,6 @@ public final class Minecraft implements Runnable {
 										var89.sortChunks(var126, 0);
 										int var83;
 										int var110;
-										ShapeRenderer.tryVBO = settings.VBOs;
 										ShapeRenderer shapeRenderer = ShapeRenderer.instance;
 										int var114;
 										int var125;
@@ -1487,7 +1487,6 @@ public final class Minecraft implements Runnable {
 										}
 										if (renderer.minecraft.raining) {
 											float var97 = var80;
-											renderer = renderer;
 											Level var109 = renderer.minecraft.level;
 											var104 = (int) player.x;
 											var108 = (int) player.y;
@@ -2103,14 +2102,16 @@ public final class Minecraft implements Runnable {
 										if (sideBlock == -1) {
 											this.textureManager.customSideBlock = null;
 										} else if (sideBlock < Block.blocks.length) {
+											int ID = Block.blocks[sideBlock].textureId;
 											this.textureManager.customSideBlock = textureManager.textureAtlas
-													.get(sideBlock);
+													.get(ID);
 										}
 										if (edgeBlock == -1) {
 											this.textureManager.customEdgeBlock = null;
 										} else if (edgeBlock < Block.blocks.length) {
+											int ID = Block.blocks[edgeBlock].textureId;
 											this.textureManager.customEdgeBlock = textureManager.textureAtlas
-													.get(edgeBlock);
+													.get(ID);
 										}
 										if (textureUrl.length() > 0) {
 											File path = new File(getMinecraftDirectory(),
@@ -2891,6 +2892,9 @@ public final class Minecraft implements Runnable {
 					: ProgressBarDisplay.title;
 			if (serverName == "")
 				return;
+			if(serverName == "Loading level"  || serverName == "Connecting.."){
+				serverName = "Singleplayer";
+			}
 			serverName = FontRenderer.stripColor(serverName);
 			serverName = serverName.replaceAll("[^A-Za-z0-9\\._-]+", "_");
 			File logDir = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");

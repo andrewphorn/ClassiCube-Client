@@ -8,21 +8,15 @@ import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.render.texture.TextureFireFX;
 import com.mojang.minecraft.render.texture.TextureLavaFX;
 import com.mojang.minecraft.render.texture.TextureWaterFX;
-import com.mojang.util.Stopwatch;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -68,6 +62,7 @@ public class TextureManager {
 	public BufferedImage customRainPng = null;
 	public BufferedImage customGUI = null;
 	public BufferedImage customFont = null;
+	public BufferedImage customClouds = null;
 
 	public BufferedImage customChicken = null;
 	public BufferedImage customCreeper = null;
@@ -389,6 +384,15 @@ public class TextureManager {
 				}
 			}
 		}
+		if (file.startsWith("/clouds") && textures.containsKey("customClouds")) {
+			return textures.get("customClouds");
+		}
+		if (file.startsWith("/clouds") && !textures.containsKey("customClouds")
+				&& customClouds != null) {
+			int id = load(customClouds);
+			textures.put("customClouds", id);
+			return id;
+		}
 
 		if (file.startsWith("/char") && textures.containsKey("customHumanoid")) {
 			return textures.get("customHumanoid");
@@ -539,6 +543,7 @@ public class TextureManager {
 			String skeletonName = "skeleton.png";
 			String spiderNAme = "spider.png";
 			String zombieName = "zombie.png";
+			String cloudName = "clouds.png";
 
 			if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1,
 					terrainPNG.length()) : terrainPNG) != null) {
@@ -645,6 +650,14 @@ public class TextureManager {
 						: zombieName)));
 				this.customZombie = image;
 			}
+			
+			if (zip.getEntry(cloudName.startsWith("/") ? cloudName.substring(1,
+					cloudName.length()) : cloudName) != null) {
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(cloudName
+						.startsWith("/") ? cloudName.substring(1, cloudName.length())
+						: cloudName)));
+				this.customClouds = image;
+			}
 			zip.close();
 		}
 		initAtlas();
@@ -654,6 +667,7 @@ public class TextureManager {
 			}
 			this.settings.minecraft.player.bindTexture(this);
 		}
+		System.gc();
 		return textureID;
 	}
 
@@ -670,6 +684,7 @@ public class TextureManager {
 		this.customRainPng = null;
 		this.customGUI = null;
 		this.customFont = null;
+		this.customClouds = null;
 
 		this.customChicken = null;
 		this.customCreeper = null;

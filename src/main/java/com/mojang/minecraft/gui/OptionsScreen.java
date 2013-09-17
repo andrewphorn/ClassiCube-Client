@@ -30,7 +30,7 @@ public final class OptionsScreen extends GuiScreen {
 			}
 
 			if (var1.id == 300) {
-				this.minecraft.setCurrentScreen(this.parent);
+				this.minecraft.setCurrentScreen(new PauseScreen());
 			}
 
 		}

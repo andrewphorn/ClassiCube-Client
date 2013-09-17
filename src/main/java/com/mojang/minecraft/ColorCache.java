@@ -28,10 +28,10 @@ public class ColorCache implements Serializable {
 	}
 
 	float FixColor(float color) {
-		if (color > 1)
+		if (color > 1.0F)
 			return 1F;
-		if (color < 0.01F)
-			return 0.01F;
+		if (color < 0.00F)
+			return 0.00F;
 		return color;
 	}
 }
