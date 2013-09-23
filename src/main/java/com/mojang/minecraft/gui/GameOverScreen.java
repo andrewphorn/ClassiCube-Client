@@ -25,7 +25,7 @@ public final class GameOverScreen extends GuiScreen {
 				"Generate new level..."));
 		this.buttons.add(new Button(2, this.width / 2 - 100, this.height / 4 + 96, "Load level.."));
 		if (this.minecraft.session == null) {
-			((Button) this.buttons.get(2)).active = false;
+			((Button) this.buttons.get(1)).active = false;
 		}
 
 	}

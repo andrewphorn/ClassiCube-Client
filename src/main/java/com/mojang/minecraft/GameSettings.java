@@ -28,7 +28,7 @@ public final class GameSettings implements Serializable {
 	public boolean sound = true;
 	public boolean invertMouse = false;
 	public boolean canServerChangeTextures = true;
-	public boolean showFrameRate = false;
+	public boolean showDebug = false;
 	public int viewDistance = 0;
 	public boolean viewBobbing = true;
 	public boolean anaglyph = false;
@@ -88,8 +88,8 @@ public final class GameSettings implements Serializable {
 	public String getSetting(int id) {
 		return id == 0 ? "Music: " + (music ? "ON" : "OFF") : (id == 1 ? "Sound: "
 				+ (sound ? "ON" : "OFF") : (id == 2 ? "Invert mouse: "
-				+ (invertMouse ? "ON" : "OFF") : (id == 3 ? "Show FPS: "
-				+ (showFrameRate ? "ON" : "OFF") : (id == 4 ? "Render distance: "
+				+ (invertMouse ? "ON" : "OFF") : (id == 3 ? "Show Debug: "
+				+ (showDebug ? "ON" : "OFF") : (id == 4 ? "Render distance: "
 				+ renderDistances[viewDistance] : (id == 5 ? "View bobbing: "
 				+ (viewBobbing ? "ON" : "OFF") : (id == 6 ? "3d anaglyph: "
 				+ (anaglyph ? "ON" : "OFF") : (id == 7 ? "Limit framerate: "
@@ -127,8 +127,8 @@ public final class GameSettings implements Serializable {
 						invertMouse = setting[1].equals("true");
 					}
 
-					if (setting[0].equals("showFrameRate")) {
-						showFrameRate = setting[1].equals("true");
+					if (setting[0].equals("showDebug")) {
+						showDebug = setting[1].equals("true");
 					}
 
 					if (setting[0].equals("viewDistance")) {
@@ -198,7 +198,7 @@ public final class GameSettings implements Serializable {
 			writer.println("music:" + music);
 			writer.println("sound:" + sound);
 			writer.println("invertYMouse:" + invertMouse);
-			writer.println("showFrameRate:" + showFrameRate);
+			writer.println("showDebug:" + showDebug);
 			writer.println("viewDistance:" + viewDistance);
 			writer.println("bobView:" + viewBobbing);
 			writer.println("anaglyph3d:" + anaglyph);
@@ -243,7 +243,7 @@ public final class GameSettings implements Serializable {
 		}
 
 		if (setting == 3) {
-			showFrameRate = !showFrameRate;
+			showDebug = !showDebug;
 		}
 
 		if (setting == 4) {

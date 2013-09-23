@@ -32,6 +32,7 @@ public class MinecraftStandalone {
 	 * A class representing the Minecraft Classic game.
 	 */
 	private class MinecraftFrame extends JFrame {
+		
 		/**
 		 * Override the MinecraftApplet class because we need to fake the
 		 * Document Base and Code Base.
@@ -291,7 +292,7 @@ public class MinecraftStandalone {
 			if (Player == null && Server == null && Mppass == null)
 				minecraft.session = null;
 
-			boolean RunFakeNetwork = false;
+			boolean RunFakeNetwork = true;
 
 			if (RunFakeNetwork) {
 				minecraft.host = "127.0.0.1";

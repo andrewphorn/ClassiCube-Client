@@ -7,6 +7,7 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GLContext;
 
 import com.mojang.minecraft.GameSettings;
@@ -43,6 +44,7 @@ public class ShapeRenderer {
 	private int vboIndex;
 	private int vboCount = 10;
 	private int bufferSize;
+	//private FBO fbo;
 
 	public ShapeRenderer(int var1, GameSettings gs) {
 		this.bufferSize = var1;
@@ -137,11 +139,13 @@ public class ShapeRenderer {
 			this.isDrawing = false;
 
 			if (this.vertexCount > 0) {
+				
 				this.intBuffer.clear();
 				this.intBuffer.put(this.rawBuffer, 0, this.rawBufferIndex);
 				this.byteBuffer.position(0);
 				this.byteBuffer.limit(this.rawBufferIndex * 4);
-
+				//fbo.bind(0);
+				
 				if (this.useVBO) {
 					this.vboIndex = (this.vboIndex + 1) % this.vboCount;
 					ARBVertexBufferObject.glBindBufferARB(
@@ -159,7 +163,6 @@ public class ShapeRenderer {
 						this.floatBuffer.position(3);
 						GL11.glTexCoordPointer(2, 32, this.floatBuffer);
 					}
-
 					GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 				}
 
@@ -233,6 +236,8 @@ public class ShapeRenderer {
 				if (this.hasNormals) {
 					GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
 				}
+				//fbo.unbind();
+				
 			}
 
 			int var1 = this.rawBufferIndex * 4;

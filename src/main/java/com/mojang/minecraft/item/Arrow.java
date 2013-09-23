@@ -158,6 +158,7 @@ public class Arrow extends Entity {
 		shapeRenderer.vertexUV(-7.0F, -2.0F, -2.0F, 0.0F, unknown5);
 		shapeRenderer.end();
 
+		shapeRenderer.begin();
 		for (int unknown7 = 0; unknown7 < 4; unknown7++) {
 			GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
 
@@ -167,8 +168,8 @@ public class Arrow extends Entity {
 			shapeRenderer.vertexUV(8.0F, -2.0F, 0.0F, unknown0, unknown1);
 			shapeRenderer.vertexUV(8.0F, 2.0F, 0.0F, unknown0, unknown2);
 			shapeRenderer.vertexUV(-8.0F, 2.0F, 0.0F, 0.0F, unknown2);
-			shapeRenderer.end();
 		}
+		shapeRenderer.end();
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glPopMatrix();

@@ -120,7 +120,7 @@ public final class Minecraft implements Runnable {
 	public static boolean PlayerIsRunning = false;
 	public List<SelectionBoxData> selectionBoxes = new ArrayList<SelectionBoxData>();
 	public List<HotKeyData> hotKeys = new ArrayList<HotKeyData>();
-	public HackState HackState;
+	public HackState hackState;
 	public List<PlayerListNameData> playerListNameData = new ArrayList<PlayerListNameData>();
 	private Cursor cursor;
 	public static File mcDir;
@@ -357,15 +357,9 @@ public final class Minecraft implements Runnable {
 				} catch (LWJGLException var2) {
 					var2.printStackTrace();
 				}
-
-				/*
-				 * if (this.canvas != null) { // check this, changed @FindBugs
-				 * this.canvas.requestFocus(); }
-				 */
 			} else {
 				Mouse.setGrabbed(true);
 			}
-
 			this.setCurrentScreen((GuiScreen) null);
 			this.lastClick = this.ticks + 10000;
 		}
@@ -557,9 +551,9 @@ public final class Minecraft implements Runnable {
 			if (this.session == null) {
 				SessionData.SetAllowedBlocks((byte) 1);
 				isSinglePlayer = true;
-			}else{ //try parse applet coz sessiondata is set
-				if(this.isApplet){
-					if(this.session.mppass == null || this.port < 0){
+			} else { // try parse applet coz sessiondata is set
+				if (this.isApplet) {
+					if (this.session.mppass == null || this.port < 0) {
 						SessionData.SetAllowedBlocks((byte) 1);
 						isSinglePlayer = true;
 					}
@@ -581,29 +575,25 @@ public final class Minecraft implements Runnable {
 			System.out.println("Using LWJGL Version: " + Sys.getVersion());
 			Display.setResizable(true);
 			Display.setTitle("ClassiCube");
-			try {
-				Display.create(new PixelFormat().withDepthBits(16));
-			} catch (LWJGLException var58) {
-				System.out.println("Failed to create display with depth bits");
-				try {
-					Display.create();
-				} catch (LWJGLException var57) {
-					var57.printStackTrace();
-					try {
-						Thread.sleep(1000L);
-					} catch (InterruptedException var56) {
-						;
-					}
 
-					Display.create();
+			try {
+				Display.create();
+			} catch (LWJGLException var57) {
+				var57.printStackTrace();
+				try {
+					Thread.sleep(1000L);
+				} catch (InterruptedException var56) {
+					;
 				}
+
+				Display.create();
 			}
 
 			Keyboard.create();
 			Mouse.create();
 
 			checkGLError("Pre startup");
-			
+
 			GL11.glEnable(3553);
 			GL11.glShadeModel(7425);
 			GL11.glClearDepth(1.0D);
@@ -615,25 +605,27 @@ public final class Minecraft implements Runnable {
 			GL11.glMatrixMode(5889);
 			GL11.glLoadIdentity();
 			GL11.glMatrixMode(5888);
+
 			checkGLError("Startup");
 			//
+
 			this.settings = new GameSettings(this, mcDir);
 			ShapeRenderer.instance = new ShapeRenderer(2097152, this.settings);
 			this.textureManager = new TextureManager(this.settings, isApplet);
 			this.textureManager.registerAnimations();
-			
+
 			if (settings.lastUsedTexturePack != null) {
 				this.textureManager.loadTexturePack(settings.lastUsedTexturePack);
 			}
-			
+
 			this.fontRenderer = new FontRenderer(this.settings, "/default.png", this.textureManager);
 
 			monitoringThread = new MonitoringThread(1000); // 1s refresh
-			
+
 			this.textureManager.initAtlas();
 
-			if (this.session == null)
-				this.HackState = HackState.HacksTagEnabled;
+			if (isSinglePlayer)
+				this.hackState = HackState.HacksTagEnabled;
 			IntBuffer var9;
 			(var9 = BufferUtils.createIntBuffer(256)).clear().limit(256);
 			this.levelRenderer = new LevelRenderer(this, this.textureManager);
@@ -718,7 +710,6 @@ public final class Minecraft implements Runnable {
 
 		long var13 = System.currentTimeMillis();
 		int var15 = 0;
-
 		try {
 			while (this.running) {
 				if (this.waiting) {
@@ -1032,7 +1023,8 @@ public final class Minecraft implements Runnable {
 
 										int var104;
 										for (var104 = 0; var104 < var105; ++var104) {
-											Chunk chunkToUpdate = var101.chunks.remove(var98 - var104);
+											Chunk chunkToUpdate = var101.chunks.remove(var98
+													- var104);
 											chunkToUpdate.update();
 											chunkToUpdate.loaded = false;
 										}
@@ -1264,7 +1256,7 @@ public final class Minecraft implements Runnable {
 												GL11.glTranslatef(var102.x + var74, var102.y
 														+ var33, var102.z + var34);
 												var35 = 1.01F;
-												GL11.glScalef(1.01F, var35, var35);
+												GL11.glScalef(1.0F, var35, var35);
 												GL11.glTranslatef(-(var102.x + var74),
 														-(var102.y + var33), -(var102.z + var34));
 												shapeRenderer.begin();
@@ -1894,22 +1886,17 @@ public final class Minecraft implements Runnable {
 			;
 		}
 
-		Minecraft var5 = this;
 		if (!this.levelLoaded) {
 			try {
-				if (var5 != null) {
-					if (var5.level != null) {
-						if (var5.level.creativeMode) {
-							LevelIO.save(var5.level, (new FileOutputStream(new File(mcDir,
-									"levelc.dat"))));
-						} else {
-							LevelIO.save(var5.level, (new FileOutputStream(new File(mcDir,
-									"levels.dat"))));
-						}
+				if (level != null) {
+					if (level.creativeMode && isSinglePlayer) {
+						LevelIO.save(level, (new FileOutputStream(new File(mcDir, "levelc.dat"))));
+					} else {
+						LevelIO.save(level, (new FileOutputStream(new File(mcDir, "levels.dat"))));
 					}
 				}
-			} catch (Exception var2) {
-				var2.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -2340,7 +2327,7 @@ public final class Minecraft implements Runnable {
 											}
 										} else {
 											byte var53;
-											NetworkPlayer var61;
+											NetworkPlayer networkPlayer;
 											byte var69;
 											if (packetType == PacketType.POSITION_ROTATION) {
 												var10001 = ((Byte) packetParams[0]).byteValue();
@@ -2363,9 +2350,9 @@ public final class Minecraft implements Runnable {
 												} else {
 													var53 = (byte) (var53 + 128);
 													var36 = (short) (var36 - 22);
-													if ((var61 = networkManager.players.get(Byte
+													if ((networkPlayer = networkManager.players.get(Byte
 															.valueOf(var5))) != null) {
-														var61.teleport(var38, var36, var47,
+														networkPlayer.teleport(var38, var36, var47,
 																var53 * 360 / 256.0F,
 																var9 * 360 / 256.0F);
 													}
@@ -2388,12 +2375,12 @@ public final class Minecraft implements Runnable {
 													var49 = var64;
 													var44 = var65;
 													var37 = var67;
-													byte var5 = var10001;
-													if (var5 >= 0) {
+													byte playerID = var10001;
+													if (playerID >= 0) {
 														var53 = (byte) (var53 + 128);
-														if ((var61 = networkManager.players
-																.get(Byte.valueOf(var5))) != null) {
-															var61.queue(var37, var44, var49,
+														if ((networkPlayer = networkManager.players
+																.get(Byte.valueOf(playerID))) != null) {
+															networkPlayer.queue(var37, var44, var49,
 																	var53 * 360 / 256.0F,
 																	var9 * 360 / 256.0F);
 														}
@@ -2644,8 +2631,8 @@ public final class Minecraft implements Runnable {
 						if (this.settings.HacksEnabled) {
 							if (this.settings.HackType == 0) {
 								if (Keyboard.getEventKey() == Keyboard.KEY_X) {
-									if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
-											|| HackState == com.mojang.minecraft.HackState.OpHacks
+									if (hackState == com.mojang.minecraft.HackState.HacksTagEnabled
+											|| hackState == com.mojang.minecraft.HackState.OpHacks
 											&& this.player.userType >= 100) {
 										this.player.noPhysics = !this.player.noPhysics;
 										this.player.hovered = !this.player.hovered;
@@ -2653,9 +2640,9 @@ public final class Minecraft implements Runnable {
 								}
 
 								if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
-									if (HackState == com.mojang.minecraft.HackState.HacksTagEnabled
-											|| HackState == com.mojang.minecraft.HackState.NoHacksTagShown
-											|| HackState == com.mojang.minecraft.HackState.OpHacks
+									if (hackState == com.mojang.minecraft.HackState.HacksTagEnabled
+											|| hackState == com.mojang.minecraft.HackState.NoHacksTagShown
+											|| hackState == com.mojang.minecraft.HackState.OpHacks
 											&& this.player.userType >= 100) {
 										this.player.flyingMode = !this.player.flyingMode;
 									}
@@ -2892,7 +2879,7 @@ public final class Minecraft implements Runnable {
 					: ProgressBarDisplay.title;
 			if (serverName == "")
 				return;
-			if(serverName == "Loading level"  || serverName == "Connecting.."){
+			if (serverName == "Loading level" || serverName == "Connecting..") {
 				serverName = "Singleplayer";
 			}
 			serverName = FontRenderer.stripColor(serverName);

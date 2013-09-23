@@ -60,12 +60,12 @@ public final class HUDScreen extends Screen {
 	public int FindGroupChanges(int Page, List<PlayerListNameData> playerListNames) {
 		int groupChanges = 0;
 		String lastGroupName = "";
-		int rangeA = (28 * (Page));
-		int rangeB = (rangeA + (28));
+		int rangeA = 28 * Page;
+		int rangeB = rangeA + 28;
 		rangeB = Math.min(rangeB, playerListNames.size());
 		List<PlayerListNameData> namesToPrint = new ArrayList<PlayerListNameData>();
 		for (int k = rangeA; k < rangeB; k++) {
-			namesToPrint.add((PlayerListNameData) playerListNames.get(k));
+			namesToPrint.add(playerListNames.get(k));
 		}
 		for (int var11 = 0; var11 < namesToPrint.size(); ++var11) {
 			PlayerListNameData pi = (PlayerListNameData) namesToPrint.get(var11);
@@ -73,7 +73,6 @@ public final class HUDScreen extends Screen {
 				lastGroupName = pi.groupName;
 				groupChanges++;
 			}
-
 		}
 		return groupChanges;
 	}
@@ -193,22 +192,15 @@ public final class HUDScreen extends Screen {
 				}
 			}
 		}
-		if (this.mc.settings.showFrameRate) {
+		if (Minecraft.isSinglePlayer)
+			var5.render("Development Build", 2, 32, 16777215);
+		if (this.mc.settings.showDebug) {
 			GL11.glPushMatrix();
 			GL11.glScalef(0.7F, 0.7F, 1.0F);
 			var5.render("ClassiCube 0.1", 2, 2, 16777215); // lol fuck that.
-
 			var5.render(this.mc.debug, 2, 12, 16777215);
-
-			if ((this.mc.player.flyingMode || this.mc.player.input.fly)
-					&& !(this.mc.player.noPhysics || this.mc.player.input.noclip))
-				var5.render("Fly: ON.", 2, 32, 16777215);
-			else if (!(this.mc.player.flyingMode || this.mc.player.input.fly)
-					&& (this.mc.player.noPhysics || this.mc.player.input.noclip))
-				var5.render("NoClip: ON.", 2, 32, 16777215);
-			else if ((this.mc.player.flyingMode || this.mc.player.input.fly)
-					&& (this.mc.player.noPhysics || this.mc.player.input.noclip))
-				var5.render("Fly: ON. NoClip: ON", 2, 32, 16777215);
+			var5.render("Position: (" + (int) this.mc.player.x + ", " + (int) this.mc.player.y
+					+ ", " + (int) this.mc.player.z + ")", 2, 22, 16777215);
 			GL11.glPopMatrix();
 
 			var5.render(Compass, this.width - (var5.getWidth(Compass) + 2), 12, 16777215);
@@ -218,6 +210,18 @@ public final class HUDScreen extends Screen {
 			var5.render(UserDetail, this.width - (var5.getWidth(UserDetail) + 2), 24, 16777215);
 
 		}
+		GL11.glPushMatrix();
+		GL11.glScalef(0.7F, 0.7F, 1.0F);
+		if ((this.mc.player.flyingMode || this.mc.player.input.fly)
+				&& !(this.mc.player.noPhysics || this.mc.player.input.noclip))
+			var5.render("Fly: ON.", 2, 32, 16777215);
+		else if (!(this.mc.player.flyingMode || this.mc.player.input.fly)
+				&& (this.mc.player.noPhysics || this.mc.player.input.noclip))
+			var5.render("NoClip: ON.", 2, 32, 16777215);
+		else if ((this.mc.player.flyingMode || this.mc.player.input.fly)
+				&& (this.mc.player.noPhysics || this.mc.player.input.noclip))
+			var5.render("Fly: ON. NoClip: ON", 2, 32, 16777215);
+		GL11.glPopMatrix();
 		if (this.mc.gamemode instanceof SurvivalGameMode) {
 			String var24 = "Score: &e" + this.mc.player.getScore();
 			var5.render(var24, this.width - var5.getWidth(var24) - 2, 2, 16777215);
@@ -273,7 +277,8 @@ public final class HUDScreen extends Screen {
 				}
 				int maxStringsPerColumn = 14;
 				int maxStringsPerScreen = 28;
-				var23 = "Players online: (Page " + (Page + 1) + ")";
+				
+				var23 = !drawDefault ? "Players online: (Page " + (Page + 1) + ")" : "Players online:";
 				var5.render(var23, i - var5.getWidth(var23) / 2, var15 - 64 - 12, 25855);
 				if (drawDefault) {
 					for (var11 = 0; var11 < playersOnWorld.size(); ++var11) {
@@ -289,7 +294,7 @@ public final class HUDScreen extends Screen {
 									15658734);
 						}
 					}
-				} else {
+				} else { //draw the new screen
 					String lastGroupName = "";
 					int x = i + 8;
 					int y = var15 - 73;
@@ -301,7 +306,7 @@ public final class HUDScreen extends Screen {
 					for (int m = 0; m < Page; m++) {
 						groupChanges += FindGroupChanges(m, playerListNames);
 					}
-					int rangeA = (maxStringsPerScreen * (Page)) - groupChanges;
+					int rangeA = (maxStringsPerScreen * Page) - groupChanges;
 					int rangeB = rangeA + (maxStringsPerScreen)
 							- FindGroupChanges(Page, playerListNames);
 					rangeB = Math.min(rangeB, playerListNames.size());
@@ -331,13 +336,8 @@ public final class HUDScreen extends Screen {
 						}
 						String playerName = FontRenderer.stripColor(pi.playerName);
 						String listName = FontRenderer.stripColor(pi.listName);
-						if (var2 && var3 >= x && var4 >= y && var3 < x + 120 && var4 < y + 8) { // if
-																								// your
-																								// mouse
-																								// if
-																								// hovered
-							// over
-							// this name
+						if (var2 && var3 >= x && var4 >= y && var3 < x + 120 && var4 < y + 8) { 
+							// if your mouse is hovered over this name
 							this.hoveredPlayer = playerName;
 							var5.renderNoShadow(listName, x + 8, y, 16777215);
 						} else { // else render a normal name

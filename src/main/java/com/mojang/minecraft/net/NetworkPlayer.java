@@ -22,7 +22,7 @@ public class NetworkPlayer extends HumanoidMob {
 		return true;
 	}
 
-	private transient List<PositionUpdate> moveQueue = new LinkedList<PositionUpdate>();
+	public transient List<PositionUpdate> moveQueue = new LinkedList<PositionUpdate>();
 	private transient Minecraft minecraft;
 	private int xp;
 	private int yp;
@@ -66,12 +66,14 @@ public class NetworkPlayer extends HumanoidMob {
 
 	public void aiStep() {
 		int var1 = 5;
+		if (this.moveQueue != null) {
+			do {
 
-		do {
-			if (this.moveQueue.size() > 0) {
-				this.setPos((PositionUpdate) this.moveQueue.remove(0));
-			}
-		} while (var1-- > 0 && this.moveQueue.size() > 10);
+				if (this.moveQueue.size() > 0) {
+					this.setPos((PositionUpdate) this.moveQueue.remove(0));
+				}
+			} while (var1-- > 0 && this.moveQueue.size() > 10);
+		}
 
 		this.onGround = true;
 	}

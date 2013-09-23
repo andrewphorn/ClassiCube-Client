@@ -114,7 +114,7 @@ public class TextureManager {
 				atlas1d = new BufferedImage(tilesize, atlassizezlimit, BufferedImage.TYPE_INT_ARGB);
 			}
 			try {
-				atlas1d = crop(atlas2d,tilesize, tilesize, x * tilesize, y * tilesize );
+				atlas1d = crop(atlas2d,tilesize, tilesize, x * tilesize, y * tilesize);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -123,19 +123,21 @@ public class TextureManager {
 		atlases.add(atlas1d);
 		return atlases;
 	}
-	
-	public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y) throws IOException { 
-        
-//      System.out.println("---" + src.getWidth() + " - " + src.getHeight() + " - " + x + " - " + y);
-      
-      BufferedImage clipping = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);//src.getType());  
-      Graphics2D area = (Graphics2D) clipping.getGraphics().create();  
-      area.drawImage(src, 0, 0, clipping.getWidth(), clipping.getHeight(), x, y, x + clipping.getWidth(),  
-          y + clipping.getHeight(), null);  
-      area.dispose(); 
-      
-      return clipping;
-  }  
+
+	public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y)
+			throws IOException {
+
+		// System.out.println("---" + src.getWidth() + " - " + src.getHeight() +
+		// " - " + x + " - " + y);
+
+		BufferedImage clipping = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);// src.getType());
+		Graphics2D area = (Graphics2D) clipping.getGraphics().create();
+		area.drawImage(src, 0, 0, clipping.getWidth(), clipping.getHeight(), x, y,
+				x + clipping.getWidth(), y + clipping.getHeight(), null);
+		area.dispose();
+
+		return clipping;
+	}
 
 	private int b(int c1, int c2) {
 		int a1 = (c1 & 0xFF000000) >> 24 & 0xFF;
@@ -286,7 +288,8 @@ public class TextureManager {
 					}
 
 					GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-				} else if (capabilities.GL_EXT_framebuffer_object) {
+				}
+				else if (capabilities.GL_EXT_framebuffer_object) {
 					if (previousMipmapMode != settings.smoothing) {
 						System.out
 								.println("Using GL_EXT_framebuffer_object extension for mipmap generation.");
@@ -552,8 +555,8 @@ public class TextureManager {
 						: terrainPNG)));
 			}
 
-			if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1,
-					rainName.length()) : rainName) != null) {
+			if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1, rainName.length())
+					: rainName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(rainName
 						.startsWith("/") ? rainName.substring(1, rainName.length()) : rainName)));
 				this.customRainPng = image;
@@ -566,8 +569,8 @@ public class TextureManager {
 				this.customGUI = image;
 			}
 
-			if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1,
-					fontName.length()) : fontName) != null) {
+			if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1, fontName.length())
+					: fontName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(fontName
 						.startsWith("/") ? fontName.substring(1, fontName.length()) : fontName)));
 				this.customFont = image;
@@ -589,8 +592,8 @@ public class TextureManager {
 				this.customCreeper = image;
 			}
 
-			if (zip.getEntry(crocName.startsWith("/") ? crocName.substring(1,
-					crocName.length()) : crocName) != null) {
+			if (zip.getEntry(crocName.startsWith("/") ? crocName.substring(1, crocName.length())
+					: crocName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(crocName
 						.startsWith("/") ? crocName.substring(1, crocName.length()) : crocName)));
 				this.customCrocodile = image;
@@ -619,8 +622,8 @@ public class TextureManager {
 				this.customPrinter = image;
 			}
 
-			if (zip.getEntry(sheepName.startsWith("/") ? sheepName.substring(1,
-					sheepName.length()) : sheepName) != null) {
+			if (zip.getEntry(sheepName.startsWith("/") ? sheepName.substring(1, sheepName.length())
+					: sheepName) != null) {
 				BufferedImage image = ImageIO
 						.read(zip.getInputStream(zip.getEntry(sheepName.startsWith("/") ? sheepName
 								.substring(1, sheepName.length()) : sheepName)));
@@ -650,12 +653,11 @@ public class TextureManager {
 						: zombieName)));
 				this.customZombie = image;
 			}
-			
-			if (zip.getEntry(cloudName.startsWith("/") ? cloudName.substring(1,
-					cloudName.length()) : cloudName) != null) {
+
+			if (zip.getEntry(cloudName.startsWith("/") ? cloudName.substring(1, cloudName.length())
+					: cloudName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(cloudName
-						.startsWith("/") ? cloudName.substring(1, cloudName.length())
-						: cloudName)));
+						.startsWith("/") ? cloudName.substring(1, cloudName.length()) : cloudName)));
 				this.customClouds = image;
 			}
 			zip.close();

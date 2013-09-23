@@ -2,6 +2,7 @@ package com.mojang.minecraft.gui;
 
 import java.awt.Canvas;
 
+import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
 import com.mojang.minecraft.Minecraft;
@@ -21,14 +22,20 @@ public final class ErrorScreen extends GuiScreen {
 		if (var1.id == 0) {
 			Minecraft cache = this.minecraft;
 			this.minecraft.shutdown();
+			try {
+				Display.releaseContext();
+			} catch (LWJGLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Display.destroy();
-			if (cache.session != null) {
+			if (!Minecraft.isSinglePlayer) {
 				this.minecraft.networkManager.netHandler.close();
 			}
 			this.minecraft = new Minecraft(cache.canvas, cache.applet, cache.width, cache.height,
 					false, cache.isApplet);
 
-			if (cache.session != null) {
+			if (!Minecraft.isSinglePlayer) {
 				this.minecraft.host = cache.host;
 				this.minecraft.port = cache.port;
 				this.minecraft.host = cache.host + ":" + cache.port;

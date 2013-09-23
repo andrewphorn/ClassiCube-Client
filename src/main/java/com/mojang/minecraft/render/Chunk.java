@@ -15,9 +15,7 @@ public final class Chunk {
 	private int x;
 	private int y;
 	private int z;
-	private int width;
-	private int height;
-	private int depth;
+	private int chunkSize;
 	public boolean visible = false;
 	private boolean[] dirty = new boolean[2];
 	public boolean loaded;
@@ -27,9 +25,9 @@ public final class Chunk {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.width = this.height = this.depth = 16;
-		MathHelper.sqrt((float) (this.width * this.width + this.height * this.height + this.depth
-				* this.depth));
+		this.chunkSize = 16;
+		MathHelper.sqrt((float) (this.chunkSize * this.chunkSize + this.chunkSize * this.chunkSize + this.chunkSize
+				* this.chunkSize));
 		this.baseListId = listID;
 		this.setAllDirty();
 	}
@@ -48,8 +46,8 @@ public final class Chunk {
 
 	public final void clip(Frustrum frustrum) {
 		this.visible = frustrum.isBoxInFrustum((float) this.x, (float) this.y, (float) this.z,
-				(float) (this.x + this.width), (float) (this.y + this.height),
-				(float) (this.z + this.depth));
+				(float) (this.x + this.chunkSize), (float) (this.y + this.chunkSize),
+				(float) (this.z + this.chunkSize));
 	}
 
 	public final void dispose() {
@@ -75,9 +73,9 @@ public final class Chunk {
 		int sx = this.x;
 		int sy = this.y;
 		int sz = this.z;
-		int ex = this.x + this.width;
-		int ey = this.y + this.height;
-		int ez = this.z + this.depth;
+		int ex = this.x + this.chunkSize;
+		int ey = this.y + this.chunkSize;
+		int ez = this.z + this.chunkSize;
 
 		int renderPassType;
 		for (renderPassType = 0; renderPassType < 2; ++renderPassType) {

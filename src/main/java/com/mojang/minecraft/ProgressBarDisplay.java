@@ -29,10 +29,9 @@ public final class ProgressBarDisplay {
 	private long start = System.currentTimeMillis();
 
 	public static String terrainId = "";
-
 	public static String sideId = "";
-
 	public static String edgeId = "";
+	
 	public static HashMap<String, String> serverConfig = new HashMap<String, String>();
 
 	public static void copyFile(File paramFile1, File paramFile2) {
@@ -310,25 +309,26 @@ public final class ProgressBarDisplay {
 				text = var1;
 			}
 
-			if (minecraft.HackState == null) { // change only once per session
+			if (minecraft.hackState == null) { // change only once per session
 				if (this.minecraft.session == null) {
 					// presume singleplayer
-					minecraft.HackState = HackState.HacksTagEnabled;
+					minecraft.hackState = HackState.HacksTagEnabled;
 					return;
 				}
-				if (text.toLowerCase().contains("+hax")) {
-					minecraft.HackState = HackState.HacksTagEnabled;
+				if (text.toLowerCase().contains("+hax") 
+						|| text.toLowerCase().contains("+noclip")) {
+					minecraft.hackState = HackState.HacksTagEnabled;
 				} else if (text.toLowerCase().contains("-hax")) {
-					minecraft.HackState = HackState.HacksTagDisabled;
+					minecraft.hackState = HackState.HacksTagDisabled;
 					minecraft.settings.CanSpeed = false;
 				} else if (text.toLowerCase().contains("+ophacks")
 						|| text.toLowerCase().contains("+ophax")) {
-					minecraft.HackState = HackState.OpHacks;
+					minecraft.hackState = HackState.OpHacks;
 					if (this.minecraft.player.userType < 100) {
 						minecraft.settings.CanSpeed = false;
 					}
 				} else {
-					minecraft.HackState = HackState.NoHacksTagShown;
+					minecraft.hackState = HackState.NoHacksTagShown;
 				}
 			}
 			this.setProgress(-1);
