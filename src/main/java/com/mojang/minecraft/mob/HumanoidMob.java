@@ -34,14 +34,13 @@ public class HumanoidMob extends Mob {
 		this.modelName = "humanoid";
 		this.setPos(var2, var3, var4);
 	}
-	
+
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
 		if (this.modelName == "sheep") {
 			renderSheep(var1, var2, var3, var4, var5, var6, var7);
 			return;
-		}
-		else if (isInteger(this.modelName)) {
+		} else if (isInteger(this.modelName)) {
 			try {
 				if (block == null) {
 					block = new BlockModelRenderer(
@@ -50,7 +49,7 @@ public class HumanoidMob extends Mob {
 				GL11.glPushMatrix();
 				GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
 				GL11.glBindTexture(3553, var1.load("/terrain.png"));
-				block.renderPreview( ShapeRenderer.instance);
+				block.renderPreview(ShapeRenderer.instance);
 				GL11.glPopMatrix();
 			} catch (Exception e) {
 				this.modelName = "humanoid";
@@ -58,38 +57,46 @@ public class HumanoidMob extends Mob {
 			return;
 		}
 		super.renderModel(var1, var2, var3, var4, var5, var6, var7);
-
-		Model var9 = modelCache.getModel(this.modelName);
+		Model model = modelCache.getModel(this.modelName);
 		GL11.glEnable(3008);
 		if (this.allowAlpha) {
+			GL11.glEnable(2884);
+		}
+
+		if (this.hasHair) {
+			GL11.glDisable(2884);
+			HumanoidModel modelHeadwear = null;
+			(modelHeadwear = (HumanoidModel) model).headwear.yaw = modelHeadwear.head.yaw;
+			modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
+			modelHeadwear.headwear.render(var7);
 			GL11.glEnable(2884);
 		}
 
 		if (this.armor || this.helmet) {
 			GL11.glBindTexture(3553, var1.load("/armor/plate.png"));
 			GL11.glDisable(2884);
-			HumanoidModel var8;
-			(var8 = (HumanoidModel) modelCache.getModel("humanoid.armor")).head.render = this.helmet;
-			var8.body.render = this.armor;
-			var8.rightArm.render = this.armor;
-			var8.leftArm.render = this.armor;
-			var8.rightLeg.render = false;
-			var8.leftLeg.render = false;
-			HumanoidModel var11 = (HumanoidModel) var9;
-			var8.head.yaw = var11.head.yaw;
-			var8.head.pitch = var11.head.pitch;
-			var8.rightArm.pitch = var11.rightArm.pitch;
-			var8.rightArm.roll = var11.rightArm.roll;
-			var8.leftArm.pitch = var11.leftArm.pitch;
-			var8.leftArm.roll = var11.leftArm.roll;
-			var8.rightLeg.pitch = var11.rightLeg.pitch;
-			var8.leftLeg.pitch = var11.leftLeg.pitch;
-			var8.head.render(var7);
-			var8.body.render(var7);
-			var8.rightArm.render(var7);
-			var8.leftArm.render(var7);
-			var8.rightLeg.render(var7);
-			var8.leftLeg.render(var7);
+			HumanoidModel modelArmour;
+			(modelArmour = (HumanoidModel) modelCache.getModel("humanoid.armor")).head.render = this.helmet;
+			modelArmour.body.render = this.armor;
+			modelArmour.rightArm.render = this.armor;
+			modelArmour.leftArm.render = this.armor;
+			modelArmour.rightLeg.render = false;
+			modelArmour.leftLeg.render = false;
+			HumanoidModel var11 = (HumanoidModel) model;
+			modelArmour.head.yaw = var11.head.yaw;
+			modelArmour.head.pitch = var11.head.pitch;
+			modelArmour.rightArm.pitch = var11.rightArm.pitch;
+			modelArmour.rightArm.roll = var11.rightArm.roll;
+			modelArmour.leftArm.pitch = var11.leftArm.pitch;
+			modelArmour.leftArm.roll = var11.leftArm.roll;
+			modelArmour.rightLeg.pitch = var11.rightLeg.pitch;
+			modelArmour.leftLeg.pitch = var11.leftLeg.pitch;
+			modelArmour.head.render(var7);
+			modelArmour.body.render(var7);
+			modelArmour.rightArm.render(var7);
+			modelArmour.leftArm.render(var7);
+			modelArmour.rightLeg.render(var7);
+			modelArmour.leftLeg.render(var7);
 			GL11.glEnable(2884);
 		}
 

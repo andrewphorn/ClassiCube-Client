@@ -8,6 +8,7 @@ import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.render.texture.TextureFireFX;
 import com.mojang.minecraft.render.texture.TextureLavaFX;
 import com.mojang.minecraft.render.texture.TextureWaterFX;
+import com.mojang.util.AsyncImage;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
