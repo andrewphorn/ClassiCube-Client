@@ -1,8 +1,6 @@
 package com.mojang.minecraft;
 
-public enum HackState {
-	HacksTagEnabled, // +Hax
-	HacksTagDisabled, // -Hax
-	OpHacks, // +ophacks
-	NoHacksTagShown // Just an motd (Default)
+public class HackState {
+	public static boolean Noclip, 
+	Speed, Fly, OpHacks = true;
 }

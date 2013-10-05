@@ -11,9 +11,14 @@ public final class SessionData {
 	public String sessionId;
 	public String mppass;
 	public boolean haspaid;
+	
+	public SessionData(String username, String sessionID) {
+		this.username = username;
+		this.sessionId = sessionID;
+	}
 
 	static {
-		AddStandardMinecraftBlocks();
+		AddStandardMinecraftBlocks(); //init
 	}
 
 	public static void AddStandardMinecraftBlocks() {
@@ -21,6 +26,8 @@ public final class SessionData {
 		for (int i = 1; i < 50; i++) { // ignore air
 			ab.add(Block.blocks[i]);
 		}
+		if(Minecraft.isSinglePlayer)
+			ab.remove(Block.BEDROCK); //players cant delete this
 		allowedBlocks = ab;
 	}
 
@@ -31,24 +38,21 @@ public final class SessionData {
 			for (int i = 1; i < Block.blocks.length; i++) {
 				ab.add(Block.blocks[i]);
 			}
+			if(Minecraft.isSinglePlayer)
+				ab.remove(Block.BEDROCK);
 			allowedBlocks = ab;
 		}
 
-		else if (SupportLevel == 1) {
+		else if (SupportLevel == 1) { //level 1
 			ArrayList<Block> ab = new ArrayList<Block>();
 			for (int i = 1; i < 65; i++) {
 				ab.add(Block.blocks[i]);
 			}
+			if(Minecraft.isSinglePlayer)
+				ab.remove(Block.BEDROCK);
 			allowedBlocks = ab;
-		} else if (SupportLevel <= 0) {
+		} else if (SupportLevel <= 0) { //minecraft
 			AddStandardMinecraftBlocks();
 		}
-
 	}
-
-	public SessionData(String var1, String var2) {
-		this.username = var1;
-		this.sessionId = var2;
-	}
-
 }

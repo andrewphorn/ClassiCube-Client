@@ -552,7 +552,6 @@ public class Block {
 
 	// TODO.
 	public void renderSide(ShapeRenderer var1, int var2, int var3, int var4, int var5) {
-
 		int var6;
 		float var7;
 		float var8 = (var7 = (float) ((var6 = this.getTextureId(var5)) % 16) / 16.0F) + 0.0624375F;

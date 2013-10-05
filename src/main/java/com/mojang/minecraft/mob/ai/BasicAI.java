@@ -1,6 +1,7 @@
 package com.mojang.minecraft.mob.ai;
 
 import com.mojang.minecraft.Entity;
+import com.mojang.minecraft.HackState;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.player.Player;
@@ -75,7 +76,16 @@ public class BasicAI extends AI {
 		} else {
 			this.update();
 		}
-		if (this.mob instanceof Player && ((Player) this.mob).input.HackState == 0) {
+		if (this.mob instanceof Player && ((Player) this.mob).input.HackState == 0) { //if normal hax
+			if (!HackState.Fly) {
+				this.flyingDown = false;
+				this.flyingUp = false;
+			}
+			if (!HackState.Noclip)
+				this.mob.noPhysics = false;
+			if(!HackState.Speed)
+				this.running = false;
+
 			if (this.mob.flyingMode || this.mob.noPhysics) {
 				var2.yd = 0;
 			}

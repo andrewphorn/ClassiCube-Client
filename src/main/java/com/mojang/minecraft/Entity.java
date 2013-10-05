@@ -8,6 +8,7 @@ import com.mojang.minecraft.level.tile.Tile$SoundType;
 import com.mojang.minecraft.model.Vec3D;
 import com.mojang.minecraft.net.PositionUpdate;
 import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 
@@ -332,22 +333,25 @@ public abstract class Entity implements Serializable {
 		int var30 = (int) Math.floor(this.y - 0.20000000298023224D - (double) this.heightOffset);
 		int var31 = (int) Math.floor(this.z);
 		int var32 = this.level.getTile(var39, var30, var31);
-		if (this.makeStepSound && this.onGround) {
-			this.distanceWalkedModified = (float) ((double) this.distanceWalkedModified + (double) Math
-					.sqrt(var1 * var1 + var3 * var3) * 0.6D);
-			this.distanceWalkedOnStepModified = (float) ((double) this.distanceWalkedOnStepModified + (double) Math
-					.sqrt(var1 * var1 + var2 * var2 + var3 * var3) * 0.6D);
+		if (this.makeStepSound && this.onGround && !this.noPhysics) {
+			if (this instanceof Player
+					&& !(((Player) this).input.noclip || ((Player) this).input.noClip)) {
+				this.distanceWalkedModified = (float) ((double) this.distanceWalkedModified + (double) Math
+						.sqrt(var1 * var1 + var3 * var3) * 0.6D);
+				this.distanceWalkedOnStepModified = (float) ((double) this.distanceWalkedOnStepModified + (double) Math
+						.sqrt(var1 * var1 + var2 * var2 + var3 * var3) * 0.6D);
 
-			if (this.distanceWalkedOnStepModified > (float) this.nextStepDistance && var32 > 0) {
-				this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
+				if (this.distanceWalkedOnStepModified > (float) this.nextStepDistance && var32 > 0) {
+					this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
 
-				Tile$SoundType TileSoundType = Block.blocks[var32].stepsound;
-				if (TileSoundType == null)
-					return;
+					Tile$SoundType TileSoundType = Block.blocks[var32].stepsound;
+					if (TileSoundType == null)
+						return;
 
-				if (TileSoundType != Tile$SoundType.none && this.onGround) {
-					playSound("step." + TileSoundType.name, TileSoundType.getVolume() * 0.75F,
-							TileSoundType.getPitch());
+					if (TileSoundType != Tile$SoundType.none && this.onGround) {
+						playSound("step." + TileSoundType.name, TileSoundType.getVolume() * 0.75F,
+								TileSoundType.getPitch());
+					}
 				}
 			}
 		}
@@ -453,8 +457,7 @@ public abstract class Entity implements Serializable {
 		this.z = z;
 		float var4 = this.bbWidth / 2.0F;
 		float var5 = this.bbHeight / 2.0F;
-		this.bb = new AABB(x - var4, y - var5, z - var4, x + var4, y + var5, z
-				+ var4);
+		this.bb = new AABB(x - var4, y - var5, z - var4, x + var4, y + var5, z + var4);
 	}
 
 	public void setPos(PositionUpdate var1) {

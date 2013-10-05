@@ -3,6 +3,7 @@ package com.mojang.minecraft.player;
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.HackState;
 import com.mojang.minecraft.ProgressBarDisplay;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
@@ -17,10 +18,10 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 public class Player extends Mob {
-	private int nox = 0;
+	private int flyTrig = 0;
 
-	private int noc = 0;
-	private int nos = 0;
+	private int noclipTrig = 0;
+	private int speedTrig = 0;
 	private int jumpCount = 0;
 
 	boolean HacksEnabled;
@@ -129,63 +130,38 @@ public class Player extends Mob {
 			float bbb = (float) Math.atan((double) (-fy * 0.2F)) * 15.0F;
 			this.bob += (aaa - this.bob) * 0.4F;
 			this.tilt += (bbb - this.tilt) * 0.8F;
-			if ((this.nox == 0) || (this.nos == 0) || (this.noc == 0)) {
-				try {
-					String title = ProgressBarDisplay.title;
-					String text = ProgressBarDisplay.text;
-					if ((title.length() > 0) && (title != "Connecting..")) {
-						System.err.println(new StringBuilder().append("Got server: ").append(title)
-								.append(": ").append(text).toString());
+			if ((this.flyTrig == 0) || (this.speedTrig == 0) || (this.noclipTrig == 0)) {
 
-						this.nos = -1;
-						this.nox = -1;
-						this.noc = -1;
-
-						String joinedString = new StringBuilder().append(title).append(" ")
-								.append(text).toString().toLowerCase();
-
-						if (joinedString.indexOf("-hax") > -1) {
-							this.nos = 1;
-							this.nox = 1;
-							this.noc = 1;
-						} else if (joinedString.indexOf("+hax") > -1) {
-							this.nos = -1;
-							this.nox = -1;
-							this.noc = -1;
-						}
-						if (joinedString.indexOf("+fly") > -1)
-							this.nox = -1;
-						else if (joinedString.indexOf("-fly") > -1)
-							this.nox = 1;
-						if (joinedString.indexOf("+noclip") > -1)
-							this.noc = -1;
-						else if (joinedString.indexOf("-noclip") > -1)
-							this.noc = 1;
-						if (joinedString.indexOf("+speed") > -1)
-							this.nos = -1;
-						else if (joinedString.indexOf("-speed") > -1)
-							this.nos = 1;
-
-						if ((userType >= 100) && (joinedString.indexOf("+ophax") > -1)) {
-							this.nox = -1;
-							this.noc = -1;
-							this.nos = -1;
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				this.speedTrig = -1; // speed
+				this.flyTrig = -1; // fly
+				this.noclipTrig = -1; // noclip
+				// -1 = yes, 1 = no
+				
+				if(HackState.Fly)
+					flyTrig = -1;
+				else
+					flyTrig = 1;
+				
+				if(HackState.Speed)
+					speedTrig = -1;
+				else
+					speedTrig = 1;
+				
+				if(HackState.Noclip)
+					noclipTrig = -1;
+				else
+					noclipTrig = 1;
 			}
 			int i = 0;
 			int j = 0;
 			int k = 1;
 			float f1 = 1.0F;
 			this.oBob = this.bob;
-			if ((this.input.fly) && (this.nox < 1))
+			if ((this.input.fly) && (this.flyTrig < 1))
 				i = 1;
-			if ((this.input.noclip) && (this.noc < 0))
+			if ((this.input.noclip) && (this.noclipTrig < 0))
 				j = 1;
-			if ((this.input.mult > 1.0F) && (this.nos < 1)) {
+			if ((this.input.mult > 1.0F) && (this.speedTrig < 1)) {
 				f1 = this.input.mult;
 			}
 
@@ -196,7 +172,7 @@ public class Player extends Mob {
 				f1 = 1.0F;
 			}
 
-			if ((this.nox > 0) || (this.nos > 0)) {
+			if ((this.flyTrig > 0) || (this.speedTrig > 0)) {
 				k = 0;
 			}
 

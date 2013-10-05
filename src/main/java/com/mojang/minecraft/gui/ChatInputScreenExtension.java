@@ -15,6 +15,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -30,14 +32,12 @@ public class ChatInputScreenExtension extends GuiScreen {
 	int j;
 
 	private String getClipboard() {
-		Transferable localTransferable = Toolkit.getDefaultToolkit().getSystemClipboard()
-				.getContents(null);
+		Transferable clipboard = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
 		try {
-			if ((localTransferable != null)
-					&& (localTransferable.isDataFlavorSupported(DataFlavor.stringFlavor)))
-				return (String) localTransferable.getTransferData(DataFlavor.stringFlavor);
-		} catch (UnsupportedFlavorException localUnsupportedFlavorException) {
-		} catch (IOException localIOException) {
+			if ((clipboard != null) && (clipboard.isDataFlavorSupported(DataFlavor.stringFlavor)))
+				return (String) clipboard.getTransferData(DataFlavor.stringFlavor);
+		} catch (UnsupportedFlavorException ex) {
+		} catch (IOException e) {
 		}
 		return null;
 	}
@@ -125,6 +125,29 @@ public class ChatInputScreenExtension extends GuiScreen {
 				setClipboard(this.inputLine);
 			}
 		}
+		/*if (paramInt == Keyboard.KEY_TAB) {
+			String namePart = this.inputLine;
+			if (namePart == null || namePart.length() == 0)
+				return;
+			List<String> potentials = new ArrayList<String>();
+			for (int index = 0; index < this.minecraft.networkManager.players.size(); index++) {
+				if (this.minecraft.networkManager.players.get(index).name.toLowerCase().contains(namePart
+						.toLowerCase())) {
+					potentials.add(this.minecraft.networkManager.players.get(index).name);
+				}
+			}
+			if (potentials.size() == 0)
+				return;
+			if (potentials.size() == 1) {
+				this.inputLine = potentials.get(0);
+			} else {
+				try {
+					this.minecraft.hud.addChat(joinToString((String[]) potentials.toArray()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}*/
 
 		if (paramInt == 200) {
 			j = history.size();
@@ -154,6 +177,20 @@ public class ChatInputScreenExtension extends GuiScreen {
 
 		if (j != 0)
 			insertTextAtCaret(String.valueOf(paramChar));
+	}
+
+	public String joinToString(String[] Names) throws Exception {
+		String buildable = "";
+		if (Names == null)
+			throw new Exception("Names cannot be null");
+		if (Names.length == 0)
+			return buildable;
+		for (int i = 0; i < Names.length; i++) {
+			buildable += Names[i];
+			if (i != Names.length)
+				buildable += ", ";
+		}
+		return buildable;
 	}
 
 	protected final void onMouseClick(int x, int y, int clickType) {

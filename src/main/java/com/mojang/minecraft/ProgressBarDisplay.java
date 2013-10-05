@@ -31,7 +31,7 @@ public final class ProgressBarDisplay {
 	public static String terrainId = "";
 	public static String sideId = "";
 	public static String edgeId = "";
-	
+
 	public static HashMap<String, String> serverConfig = new HashMap<String, String>();
 
 	public static void copyFile(File paramFile1, File paramFile2) {
@@ -195,7 +195,7 @@ public final class ProgressBarDisplay {
 	}
 
 	@SuppressWarnings("deprecation")
-	private boolean passServerCommand(String lineText) {
+	public boolean passServerCommand(String lineText) {
 		if (lineText == null)
 			return false;
 		if (lineText.contains("cfg=")) {
@@ -309,30 +309,47 @@ public final class ProgressBarDisplay {
 				text = var1;
 			}
 
-			if (minecraft.hackState == null) { // change only once per session
-				if (this.minecraft.session == null) {
-					// presume singleplayer
-					minecraft.hackState = HackState.HacksTagEnabled;
-					return;
-				}
-				if (text.toLowerCase().contains("+hax") 
-						|| text.toLowerCase().contains("+noclip")) {
-					minecraft.hackState = HackState.HacksTagEnabled;
-				} else if (text.toLowerCase().contains("-hax")) {
-					minecraft.hackState = HackState.HacksTagDisabled;
-					minecraft.settings.CanSpeed = false;
-				} else if (text.toLowerCase().contains("+ophacks")
-						|| text.toLowerCase().contains("+ophax")) {
-					minecraft.hackState = HackState.OpHacks;
-					if (this.minecraft.player.userType < 100) {
-						minecraft.settings.CanSpeed = false;
-					}
-				} else {
-					minecraft.hackState = HackState.NoHacksTagShown;
-				}
+			if (this.minecraft.session == null) {
+				// presume singleplayer
+				//static class states all hacks are initially enabled
+				return;
 			}
-			this.setProgress(-1);
+
+			String joinedString = new StringBuilder().append(title).append(" ").append(text)
+					.toString().toLowerCase();
+
+			if (joinedString.indexOf("-hax") > -1) {
+				HackState.Noclip = false;
+				HackState.Speed = false;
+				HackState.Fly = false;
+				HackState.OpHacks = false;
+			} else if (joinedString.indexOf("+hax") > -1) {
+				HackState.Noclip = true;
+				HackState.Speed = true;
+				HackState.Fly = true;
+				HackState.OpHacks = true;
+			}
+			if (joinedString.indexOf("+fly") > -1)
+				HackState.Fly = true;
+			else if (joinedString.indexOf("-fly") > -1)
+				HackState.Fly = false;
+			if (joinedString.indexOf("+noclip") > -1)
+				HackState.Noclip = true;
+			else if (joinedString.indexOf("-noclip") > -1)
+				HackState.Noclip = false;
+			if (joinedString.indexOf("+speed") > -1)
+				HackState.Speed = true;
+			else if (joinedString.indexOf("-speed") > -1)
+				HackState.Speed = false;
+
+			if ((joinedString.indexOf("+ophax") > -1) && this.minecraft.player.userType >= 100) {
+				HackState.Noclip = true;
+				HackState.Speed = true;
+				HackState.Fly = true;
+				HackState.OpHacks = true;
+			}
 		}
+		this.setProgress(-1);
 	}
 
 	public final void setTitle(String var1) {

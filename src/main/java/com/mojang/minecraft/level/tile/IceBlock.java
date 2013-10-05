@@ -35,38 +35,45 @@ public final class IceBlock extends Block {
 	}
 
 	@Override
-	public void renderPreview(ShapeRenderer var1) {
-		var1.begin();
+	public void renderPreview(ShapeRenderer shapeRenderer) {
+		shapeRenderer.begin();
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(770, 771);
-		for (int var2 = 0; var2 < 6; ++var2) {
-			if (var2 == 0) {
-				var1.normal(0.0F, 1.0F, 0.0F);
+		for (int face = 0; face < 6; ++face) {
+			/*if (face == 0) {
+				shapeRenderer.useNormal(0.0F, 1.0F, 0.0F);
 			}
 
-			if (var2 == 1) { 
-				var1.normal(0.0F, -1.0F, 0.0F);
+			if (face == 1) { 
+				shapeRenderer.useNormal(0.0F, -1.0F, 0.0F);
 			}
 
-			if (var2 == 2) {
-				var1.normal(0.0F, 0.0F, 1.0F);
+			if (face == 2) {
+				shapeRenderer.useNormal(0.0F, 0.0F, 1.0F);
 			}
 
-			if (var2 == 3) {
-				var1.normal(0.0F, 0.0F, -1.0F);
+			if (face == 3) {
+				shapeRenderer.useNormal(0.0F, 0.0F, -1.0F);
 			}
 
-			if (var2 == 4) {
-				var1.normal(1.0F, 0.0F, 0.0F);
+			if (face == 4) {
+				shapeRenderer.useNormal(1.0F, 0.0F, 0.0F);
 			}
 
-			if (var2 == 5) {
-				var1.normal(-1.0F, 0.0F, 0.0F);
-			}
+			if (face == 5) {
+				shapeRenderer.useNormal(-1.0F, 0.0F, 0.0F);
+			}*/
 
-			this.renderInside(var1, 0, 0, 0, var2);
+			this.renderInside(shapeRenderer, 0, 0, 0, face);
 		}
 		GL11.glDisable(GL11.GL_BLEND);
-		var1.end();
+		shapeRenderer.end();
+	}
+	
+	@Override
+	public void renderInside(ShapeRenderer shapeRenderer, int x, int y, int z, int side) {
+		int textureID1 = getTextureId(side);
+
+		renderSide(shapeRenderer, x, y, z, side, textureID1);
 	}
 }

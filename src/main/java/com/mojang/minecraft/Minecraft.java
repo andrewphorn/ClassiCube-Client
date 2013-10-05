@@ -549,8 +549,8 @@ public final class Minecraft implements Runnable {
 				System.setProperty("net.java.games.input.librarypath", mcDir + "/natives");
 			}
 			if (this.session == null) {
-				SessionData.SetAllowedBlocks((byte) 1);
 				isSinglePlayer = true;
+				SessionData.SetAllowedBlocks((byte) 1);
 			} else { // try parse applet coz sessiondata is set
 				if (this.isApplet) {
 					if (this.session.mppass == null || this.port < 0) {
@@ -624,8 +624,6 @@ public final class Minecraft implements Runnable {
 
 			this.textureManager.initAtlas();
 
-			if (isSinglePlayer)
-				this.hackState = HackState.HacksTagEnabled;
 			IntBuffer var9;
 			(var9 = BufferUtils.createIntBuffer(256)).clear().limit(256);
 			this.levelRenderer = new LevelRenderer(this, this.textureManager);
@@ -2631,8 +2629,7 @@ public final class Minecraft implements Runnable {
 						if (this.settings.HacksEnabled) {
 							if (this.settings.HackType == 0) {
 								if (Keyboard.getEventKey() == Keyboard.KEY_X) {
-									if (hackState == com.mojang.minecraft.HackState.HacksTagEnabled
-											|| hackState == com.mojang.minecraft.HackState.OpHacks
+									if (HackState.Noclip
 											&& this.player.userType >= 100) {
 										this.player.noPhysics = !this.player.noPhysics;
 										this.player.hovered = !this.player.hovered;
@@ -2640,10 +2637,7 @@ public final class Minecraft implements Runnable {
 								}
 
 								if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
-									if (hackState == com.mojang.minecraft.HackState.HacksTagEnabled
-											|| hackState == com.mojang.minecraft.HackState.NoHacksTagShown
-											|| hackState == com.mojang.minecraft.HackState.OpHacks
-											&& this.player.userType >= 100) {
+									if (HackState.Fly) {
 										this.player.flyingMode = !this.player.flyingMode;
 									}
 								}
