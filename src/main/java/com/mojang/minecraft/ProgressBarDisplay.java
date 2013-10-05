@@ -301,53 +301,52 @@ public final class ProgressBarDisplay {
 		}
 	}
 
-	public final void setText(String var1) {
+        public final void setText(String message) {
 		if (!this.minecraft.running) {
 			throw new StopGameException();
-		} else {
-			if (!passServerCommand(var1)) {
-				text = var1;
-			}
+		}
+		passServerCommand(message);
+		text = message;
 
-			if (this.minecraft.session == null) {
-				// presume singleplayer
-				//static class states all hacks are initially enabled
-				return;
-			}
+		if (this.minecraft.session == null) {
+			// presume singleplayer
+			// static class states all hacks are initially enabled
+			return;
+		}
 
-			String joinedString = new StringBuilder().append(title).append(" ").append(text)
-					.toString().toLowerCase();
+		final String joinedString = new StringBuilder().append(title)
+				.append(" ").append(text).toString().toLowerCase();
 
-			if (joinedString.indexOf("-hax") > -1) {
-				HackState.Noclip = false;
-				HackState.Speed = false;
-				HackState.Fly = false;
-				HackState.OpHacks = false;
-			} else if (joinedString.indexOf("+hax") > -1) {
-				HackState.Noclip = true;
-				HackState.Speed = true;
-				HackState.Fly = true;
-				HackState.OpHacks = true;
-			}
-			if (joinedString.indexOf("+fly") > -1)
-				HackState.Fly = true;
-			else if (joinedString.indexOf("-fly") > -1)
-				HackState.Fly = false;
-			if (joinedString.indexOf("+noclip") > -1)
-				HackState.Noclip = true;
-			else if (joinedString.indexOf("-noclip") > -1)
-				HackState.Noclip = false;
-			if (joinedString.indexOf("+speed") > -1)
-				HackState.Speed = true;
-			else if (joinedString.indexOf("-speed") > -1)
-				HackState.Speed = false;
+		if (joinedString.indexOf("-hax") > -1) {
+			HackState.Noclip = false;
+			HackState.Speed = false;
+			HackState.Fly = false;
+			HackState.OpHacks = false;
+		} else if (joinedString.indexOf("+hax") > -1) {
+			HackState.Noclip = true;
+			HackState.Speed = true;
+			HackState.Fly = true;
+			HackState.OpHacks = true;
+		}
+		if (joinedString.indexOf("+fly") > -1)
+			HackState.Fly = true;
+		else if (joinedString.indexOf("-fly") > -1)
+			HackState.Fly = false;
+		if (joinedString.indexOf("+noclip") > -1)
+			HackState.Noclip = true;
+		else if (joinedString.indexOf("-noclip") > -1)
+			HackState.Noclip = false;
+		if (joinedString.indexOf("+speed") > -1)
+			HackState.Speed = true;
+		else if (joinedString.indexOf("-speed") > -1)
+			HackState.Speed = false;
 
-			if ((joinedString.indexOf("+ophax") > -1) && this.minecraft.player.userType >= 100) {
-				HackState.Noclip = true;
-				HackState.Speed = true;
-				HackState.Fly = true;
-				HackState.OpHacks = true;
-			}
+		if ((joinedString.indexOf("+ophax") > -1)
+				&& this.minecraft.player.userType >= 100) {
+			HackState.Noclip = true;
+			HackState.Speed = true;
+			HackState.Fly = true;
+			HackState.OpHacks = true;
 		}
 		this.setProgress(-1);
 	}
