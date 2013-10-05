@@ -2238,10 +2238,10 @@ public final class Minecraft implements Runnable {
 									else if (packetType == PacketType.IDENTIFICATION) {
 										networkManager.minecraft.progressBar
 												.setTitle(packetParams[1].toString());
-										networkManager.minecraft.progressBar
-												.setText(packetParams[2].toString());
 										networkManager.minecraft.player.userType = ((Byte) packetParams[3])
 												.byteValue();
+										networkManager.minecraft.progressBar
+												.setText(packetParams[2].toString());
 									} else if (packetType == PacketType.LEVEL_INIT) {
 										networkManager.minecraft.setLevel((Level) null);
 										networkManager.levelData = new ByteArrayOutputStream();
