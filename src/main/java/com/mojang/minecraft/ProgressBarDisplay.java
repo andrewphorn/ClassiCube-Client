@@ -301,13 +301,12 @@ public final class ProgressBarDisplay {
 		}
 	}
 
-	public final void setText(String var1) {
+	public final void setText(String message) {
 		if (!this.minecraft.running) {
 			throw new StopGameException();
 		} else {
-			if (!passServerCommand(var1)) {
-				text = var1;
-			}
+			passServerCommand(message);
+			text = message;
 
 			if (this.minecraft.session == null) {
 				HackState.setAllEnabled();
@@ -319,10 +318,10 @@ public final class ProgressBarDisplay {
 
 			if (joinedString.indexOf("-hax") > -1) {
 				HackState.setAllDisabled();
-			} else { //enable all, it's either +hax or nothing at all
+			} else { // enable all, it's either +hax or nothing at all
 				HackState.setAllEnabled();
 			}
-			//then we can manually disable others here
+			// then we can manually disable others here
 			if (joinedString.indexOf("+fly") > -1)
 				HackState.Fly = true;
 			else if (joinedString.indexOf("-fly") > -1)
