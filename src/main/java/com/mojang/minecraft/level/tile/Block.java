@@ -435,75 +435,55 @@ public class Block {
 	public void onRemoved(Level var1, int var2, int var3, int var4) {
 	}
 
-	public boolean render(Level level, int var2, int var3, int var4,
-			ShapeRenderer renderer) {
-		boolean isRendered = false;
-
-		// Brightness modifiers.
-		float bottomLightMod = 0.5F;
-		float sidesALightMod = 0.8F;
-		float sidesBLightMod = 0.6F;
-
-		// Lava should be equally bright from all sides.
-		if (this.getLiquidType() == LiquidType.LAVA) {
-			bottomLightMod = 1F;
-			sidesALightMod = 1F;
-			sidesBLightMod = 1F;
+	public boolean render(Level var1, int var2, int var3, int var4, ShapeRenderer var5) {
+		boolean var6 = false;
+		float var7 = 0.5F;
+		float var8 = 0.8F;
+		float var9 = 0.6F;
+		ColorCache var10;
+		if (this.canRenderSide(var1, var2, var3 - 1, var4, 0)) {
+			var10 = this.getBrightness(var1, var2, var3 - 1, var4);
+			var5.color(var7 * var10.R, var7 * var10.G, var7 * var10.B);
+			this.renderInside(var5, var2, var3, var4, 0);
+			var6 = true;
 		}
 
-		ColorCache brightness;
-
-		// Renders the bottom side of the block.
-		if (this.canRenderSide(level, var2, var3 - 1, var4, 0)) {
-			brightness = this.getBrightness(level, var2, var3 - 1, var4);
-			renderer.color(bottomLightMod * brightness.R, bottomLightMod
-					* brightness.G, bottomLightMod * brightness.B);
-			this.renderInside(renderer, var2, var3, var4, 0);
-			isRendered = true;
+		if (this.canRenderSide(var1, var2, var3 + 1, var4, 1)) {
+			var10 = this.getBrightness(var1, var2, var3 + 1, var4);
+			var5.color(var10.R * 1.0F, var10.G * 1.0F, var10.B * 1.0F);
+			this.renderInside(var5, var2, var3, var4, 1);
+			var6 = true;
 		}
 
-		// Renders the top side of the block.
-		if (this.canRenderSide(level, var2, var3 + 1, var4, 1)) {
-			brightness = this.getBrightness(level, var2, var3 + 1, var4);
-			renderer.color(brightness.R * 1.0F, brightness.G * 1.0F,
-					brightness.B * 1.0F);
-			this.renderInside(renderer, var2, var3, var4, 1);
-			isRendered = true;
+		if (this.canRenderSide(var1, var2, var3, var4 - 1, 2)) {
+			var10 = this.getBrightness(var1, var2, var3, var4 - 1);
+			var5.color(var8 * var10.R, var8 * var10.G, var8 * var10.B);
+			this.renderInside(var5, var2, var3, var4, 2);
+			var6 = true;
 		}
 
-		if (this.canRenderSide(level, var2, var3, var4 - 1, 2)) {
-			brightness = this.getBrightness(level, var2, var3, var4 - 1);
-			renderer.color(sidesALightMod * brightness.R, sidesALightMod
-					* brightness.G, sidesALightMod * brightness.B);
-			this.renderInside(renderer, var2, var3, var4, 2);
-			isRendered = true;
+		if (this.canRenderSide(var1, var2, var3, var4 + 1, 3)) {
+			var10 = this.getBrightness(var1, var2, var3, var4 + 1);
+			var5.color(var8 * var10.R, var8 * var10.G, var8 * var10.B);
+			this.renderInside(var5, var2, var3, var4, 3);
+			var6 = true;
 		}
 
-		if (this.canRenderSide(level, var2, var3, var4 + 1, 3)) {
-			brightness = this.getBrightness(level, var2, var3, var4 + 1);
-			renderer.color(sidesALightMod * brightness.R, sidesALightMod
-					* brightness.G, sidesALightMod * brightness.B);
-			this.renderInside(renderer, var2, var3, var4, 3);
-			isRendered = true;
+		if (this.canRenderSide(var1, var2 - 1, var3, var4, 4)) {
+			var10 = this.getBrightness(var1, var2 - 1, var3, var4);
+			var5.color(var9 * var10.R, var9 * var10.G, var9 * var10.B);
+			this.renderInside(var5, var2, var3, var4, 4);
+			var6 = true;
 		}
 
-		if (this.canRenderSide(level, var2 - 1, var3, var4, 4)) {
-			brightness = this.getBrightness(level, var2 - 1, var3, var4);
-			renderer.color(sidesBLightMod * brightness.R, sidesBLightMod
-					* brightness.G, sidesBLightMod * brightness.B);
-			this.renderInside(renderer, var2, var3, var4, 4);
-			isRendered = true;
+		if (this.canRenderSide(var1, var2 + 1, var3, var4, 5)) {
+			var10 = this.getBrightness(var1, var2 + 1, var3, var4);
+			var5.color(var9 * var10.R, var9 * var10.G, var9 * var10.B);
+			this.renderInside(var5, var2, var3, var4, 5);
+			var6 = true;
 		}
 
-		if (this.canRenderSide(level, var2 + 1, var3, var4, 5)) {
-			brightness = this.getBrightness(level, var2 + 1, var3, var4);
-			renderer.color(sidesBLightMod * brightness.R, sidesBLightMod
-					* brightness.G, sidesBLightMod * brightness.B);
-			this.renderInside(renderer, var2, var3, var4, 5);
-			isRendered = true;
-		}
-
-		return isRendered;
+		return var6;
 	}
 
 	public void renderFullbright(ShapeRenderer shapeRenderer) {

@@ -2629,7 +2629,7 @@ public final class Minecraft implements Runnable {
 						if (this.settings.HacksEnabled) {
 							if (this.settings.HackType == 0) {
 								if (Keyboard.getEventKey() == Keyboard.KEY_X) {
-									if (HackState.Noclip
+									if (HackState.Noclip && isSinglePlayer || HackState.Noclip
 											&& this.player.userType >= 100) {
 										this.player.noPhysics = !this.player.noPhysics;
 										this.player.hovered = !this.player.hovered;

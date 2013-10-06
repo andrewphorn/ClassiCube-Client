@@ -310,8 +310,7 @@ public final class ProgressBarDisplay {
 			}
 
 			if (this.minecraft.session == null) {
-				// presume singleplayer
-				//static class states all hacks are initially enabled
+				HackState.setAllEnabled();
 				return;
 			}
 
@@ -319,15 +318,9 @@ public final class ProgressBarDisplay {
 					.toString().toLowerCase();
 
 			if (joinedString.indexOf("-hax") > -1) {
-				HackState.Noclip = false;
-				HackState.Speed = false;
-				HackState.Fly = false;
-				HackState.OpHacks = false;
+				HackState.setAllDisabled();
 			} else if (joinedString.indexOf("+hax") > -1) {
-				HackState.Noclip = true;
-				HackState.Speed = true;
-				HackState.Fly = true;
-				HackState.OpHacks = true;
+				HackState.setAllEnabled();
 			}
 			if (joinedString.indexOf("+fly") > -1)
 				HackState.Fly = true;
@@ -343,10 +336,7 @@ public final class ProgressBarDisplay {
 				HackState.Speed = false;
 
 			if ((joinedString.indexOf("+ophax") > -1) && this.minecraft.player.userType >= 100) {
-				HackState.Noclip = true;
-				HackState.Speed = true;
-				HackState.Fly = true;
-				HackState.OpHacks = true;
+				HackState.setAllEnabled();
 			}
 		}
 		this.setProgress(-1);

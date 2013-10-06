@@ -130,28 +130,26 @@ public class Player extends Mob {
 			float bbb = (float) Math.atan((double) (-fy * 0.2F)) * 15.0F;
 			this.bob += (aaa - this.bob) * 0.4F;
 			this.tilt += (bbb - this.tilt) * 0.8F;
-			if ((this.flyTrig == 0) || (this.speedTrig == 0) || (this.noclipTrig == 0)) {
 
-				this.speedTrig = -1; // speed
-				this.flyTrig = -1; // fly
-				this.noclipTrig = -1; // noclip
-				// -1 = yes, 1 = no
-				
-				if(HackState.Fly)
-					flyTrig = -1;
-				else
-					flyTrig = 1;
-				
-				if(HackState.Speed)
-					speedTrig = -1;
-				else
-					speedTrig = 1;
-				
-				if(HackState.Noclip)
-					noclipTrig = -1;
-				else
-					noclipTrig = 1;
-			}
+			this.speedTrig = -1; // speed
+			this.flyTrig = -1; // fly
+			this.noclipTrig = -1; // noclip
+			// -1 = yes, 1 = no
+
+			if (HackState.Fly)
+				flyTrig = -1;
+			else
+				flyTrig = 1;
+
+			if (HackState.Speed)
+				speedTrig = -1;
+			else
+				speedTrig = 1;
+
+			if (HackState.Noclip)
+				noclipTrig = -1;
+			else
+				noclipTrig = 1;
 			int i = 0;
 			int j = 0;
 			int k = 1;
