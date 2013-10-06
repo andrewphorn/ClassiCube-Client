@@ -319,9 +319,10 @@ public final class ProgressBarDisplay {
 
 			if (joinedString.indexOf("-hax") > -1) {
 				HackState.setAllDisabled();
-			} else if (joinedString.indexOf("+hax") > -1) {
+			} else { //enable all, it's either +hax or nothing at all
 				HackState.setAllEnabled();
 			}
+			//then we can manually disable others here
 			if (joinedString.indexOf("+fly") > -1)
 				HackState.Fly = true;
 			else if (joinedString.indexOf("-fly") > -1)

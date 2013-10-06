@@ -2629,8 +2629,8 @@ public final class Minecraft implements Runnable {
 						if (this.settings.HacksEnabled) {
 							if (this.settings.HackType == 0) {
 								if (Keyboard.getEventKey() == Keyboard.KEY_X) {
-									if (HackState.Noclip && isSinglePlayer || HackState.Noclip
-											&& this.player.userType >= 100) {
+									if (HackState.Noclip || (HackState.Noclip
+											&& this.player.userType >= 100)) {
 										this.player.noPhysics = !this.player.noPhysics;
 										this.player.hovered = !this.player.hovered;
 									}
@@ -2658,17 +2658,7 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (Keyboard.getEventKey() == this.settings.inventoryKey.key) {
-							// this.player.inventory.selected = 0;
-							// this.player.inventory.replaceSlot(Block.blocks[6]);
-							// GameSettings.CanReplaceSlot = false;
-
 							this.gamemode.openInventory();
-							// this.selectionBoxes.add(new
-							// SelectionBoxData((byte) 1,"",new
-							// ColorCache(0F,0F,0F,0.6F), new
-							// CustomAABB(12,45,30, 20, 30, 40)));
-							// this.textureManager.customEdgeBlock =
-							// textureManager.textureAtlas.get(5);
 						}
 
 						if (Keyboard.getEventKey() == this.settings.chatKey.key
@@ -2680,7 +2670,7 @@ public final class Minecraft implements Runnable {
 
 					for (var25 = 0; var25 < 9; ++var25) {
 						if (Keyboard.getEventKey() == var25 + 2) {
-							if (Keyboard.isKeyDown(Keyboard.KEY_TAB))
+							if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) //for tabbing player list
 								return;
 							else if (GameSettings.CanReplaceSlot)
 								this.player.inventory.selected = var25;
