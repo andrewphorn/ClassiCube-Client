@@ -305,8 +305,8 @@ public final class ProgressBarDisplay {
 		if (!this.minecraft.running) {
 			throw new StopGameException();
 		} else {
-			passServerCommand(message);
 			text = message;
+			passServerCommand(message);
 
 			if (this.minecraft.session == null) {
 				HackState.setAllEnabled();
