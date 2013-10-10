@@ -80,6 +80,7 @@ public class BasicAI extends AI {
 			if (!HackState.Fly) {
 				this.flyingDown = false;
 				this.flyingUp = false;
+                                this.mob.flyingMode = false;
 			}
 			if (!HackState.Noclip)
 				this.mob.noPhysics = false;
@@ -158,30 +159,25 @@ public class BasicAI extends AI {
 					}
 				}
 			} else {
-				if (this.jumping && this.mob.isInLava()) {
-					if (this.running) {
-						this.mob.yd = 0.08F;
-					} else {
-						this.mob.yd = 0.06F;
-					}
-				} else if (this.jumping && this.mob.isInOrOnRope() && this.mob.yd > 0.02f) {
+                                if (this.jumping && this.mob.isInOrOnRope() && this.mob.yd > 0.02f) {
 					this.mob.yd = 0.02F;
 				}
 			}
 		}
 
 		boolean var7 = var2.isInWater();
+                boolean isInWater = var7; // Unsure if other files use "var7" - will fix later?
 		boolean isInLava = var2.isInLava();
 		boolean isInOrOnRope = var2.isInOrOnRope();
 		if (this.jumping) {
-			if (var7) { // if in water
+			if (isInWater) { // if in water
 				if (!running)
 					var2.yd += 0.04F;
 				else
 					var2.yd += 0.08F;
 			} else if (isInLava) {
 				if (!running)
-					var2.yd += 0.04F;
+					var2.yd += 0.04F; 
 				else
 					var2.yd += 0.08F;
 			} else if (isInOrOnRope) {
