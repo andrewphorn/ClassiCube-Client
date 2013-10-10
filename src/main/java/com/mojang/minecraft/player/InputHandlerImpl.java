@@ -1,6 +1,7 @@
 package com.mojang.minecraft.player;
 
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.HackState;
 import com.mojang.minecraft.Minecraft;
 
 public class InputHandlerImpl extends InputHandler {
@@ -63,7 +64,7 @@ public class InputHandlerImpl extends InputHandler {
 
 	@Override
 	public void setKeyState(int key, boolean state) {
-		if (this.HackState == 0) {
+		if (this.HacksMode == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)) {
 			byte index = -1;
 
 			if (key == settings.forwardKey.key) {
@@ -127,8 +128,8 @@ public class InputHandlerImpl extends InputHandler {
 
 	@Override
 	public void updateMovement(int hackMode) {
-		HackState = hackMode;
-		if (HackState == 0) {
+		HacksMode = hackMode;
+		if (HacksMode == 0) {
 			xxa = 0.0F;
 			yya = 0.0F;
 

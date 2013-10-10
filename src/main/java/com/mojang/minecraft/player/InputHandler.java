@@ -25,7 +25,11 @@ public class InputHandler {
 	public boolean noclip = false;
 	public boolean cliplock = false;
 
-	public int HackState = 0;
+	public int HacksMode = 0; // java doesn't have package aliasing
+        // eg import x as y
+        // so this has to be unique from the module name
+        // so that I can import that module to check status of 
+        // noclip, fly, and speed.
 
 	public void calc() {
 	}

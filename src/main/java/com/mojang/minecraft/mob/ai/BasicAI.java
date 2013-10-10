@@ -76,7 +76,7 @@ public class BasicAI extends AI {
 		} else {
 			this.update();
 		}
-		if (this.mob instanceof Player && ((Player) this.mob).input.HackState == 0) { //if normal hax
+		if (this.mob instanceof Player && ((Player) this.mob).input.HacksMode == 0) { //if normal hax
 			if (!HackState.Fly) {
 				this.flyingDown = false;
 				this.flyingUp = false;
