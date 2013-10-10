@@ -76,10 +76,13 @@ public class Player extends Mob {
 
 	@Override
 	public void aiStep() {
-		if (settings.HackType == 0) {
+		if (settings.HackType == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)) {
 			this.inventory.tick();
 			this.oBob = this.bob;
-			this.input.updateMovement(settings.HackType);
+			this.input.updateMovement(0); // for the event that hacktype
+                        // is 1 but server has -hax.
+                        // Otherwise you won't be able to move without manually setting
+                        // your hacktype back to 'normal' in the options menu.
 			super.aiStep();
 
 			float var1 = MathHelper.sqrt(this.xd * this.xd + this.zd * this.zd);
