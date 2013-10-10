@@ -446,8 +446,8 @@ public class Mob extends Entity {
 		} else if ((this.isInLava()) && !this.flyingMode && !this.noPhysics) {
 			y1 = y;
                         
-                        if (yd > .06F) {
-                            yd = .045F;
+                        if (yd > .05F) {
+                            yd = .04F;
                         }
 
 			moveRelative(yya, xxa * multiply, 0.02F * multiply);
