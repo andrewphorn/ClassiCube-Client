@@ -445,16 +445,19 @@ public class Mob extends Entity {
 
 		} else if ((this.isInLava()) && !this.flyingMode && !this.noPhysics) {
 			y1 = y;
-			if (multiply > 5)
-				multiply = 5F;
-			moveRelative(yya, xxa, 0.02F * multiply);
+                        
+                        if (yd > .06F) {
+                            yd = .045F;
+                        }
+
+			moveRelative(yya, xxa * multiply, 0.02F * multiply);
 			move(xd, yd, zd);
 
 			xd *= 0.5F;
 			yd *= 0.5F;
 			zd *= 0.5F;
 
-			yd = (float) ((double) yd - 0.02D) * multiply;
+			yd = (float) ((double) yd - 0.02D);
 
 			if (horizontalCollision && isFree(xd, yd + 0.6F - y + y1, zd)) {
 				yd = 0.3F;
