@@ -4,23 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>LegacyBuilder</groupId>
-    <artifactId>LegacyBuilder</artifactId>
+    <groupId>ClassiCube</groupId>
+    <artifactId>ClassiCube</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <developers>
         <developer>
-            <id>oyasunadev</id>
-            <name>Oliver Yasuna</name>
+            <id>jonty800</id>
+            <name>Jon Baker</name>
         </developer>
     </developers>
-    <licenses>
-        <license>
-            <name>Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported</name>
-            <url>http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -63,6 +56,12 @@
             <configuration>
                 <source>1.6</source>
                 <target>1.6</target>
+                <archive>
+                    <manifestEntries>
+                        <permissions>all-permissions</permissions>
+                        <codebase>*</codebase>
+                    </manifestEntries>
+                </archive>
             </configuration>
         </plugin>
         <plugin>
