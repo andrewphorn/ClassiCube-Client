@@ -56,12 +56,6 @@
             <configuration>
                 <source>1.6</source>
                 <target>1.6</target>
-                <archive>
-                    <manifestEntries>
-                        <permissions>all-permissions</permissions>
-                        <codebase>*</codebase>
-                    </manifestEntries>
-                </archive>
             </configuration>
         </plugin>
         <plugin>
@@ -70,6 +64,11 @@
             <version>2.2</version>
             <configuration>
                 <archive>
+                    <addMavenDescriptor>false</addMavenDescriptor>
+                    <manifestEntries>
+                        <Permissions>all-permissions</Permissions>
+                        <Codebase>*</Codebase>
+                    </manifestEntries>
                     <manifest>
                         <addClasspath>true</addClasspath>
                         <mainClass>com.oyasunadev.mcraft.client.core.ClassiCubeStandalone</mainClass>
