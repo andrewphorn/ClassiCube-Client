@@ -63,7 +63,7 @@ public class HumanoidMob extends Mob {
 			GL11.glEnable(2884);
 		}
 
-		if (this.hasHair) {
+		if (this.hasHair && model instanceof HumanoidModel) {
 			GL11.glDisable(2884);
 			HumanoidModel modelHeadwear = null;
 			(modelHeadwear = (HumanoidModel) model).headwear.yaw = modelHeadwear.head.yaw;
