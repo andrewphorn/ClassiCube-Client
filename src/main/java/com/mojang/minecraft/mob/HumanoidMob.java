@@ -42,10 +42,8 @@ public class HumanoidMob extends Mob {
 			return;
 		} else if (isInteger(this.modelName)) {
 			try {
-				if (block == null) {
-					block = new BlockModelRenderer(
-							Block.blocks[Integer.parseInt(this.modelName)].textureId);
-				}
+				block = new BlockModelRenderer(
+						Block.blocks[Integer.parseInt(this.modelName)].textureId);
 				GL11.glPushMatrix();
 				GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
 				GL11.glBindTexture(3553, var1.load("/terrain.png"));
