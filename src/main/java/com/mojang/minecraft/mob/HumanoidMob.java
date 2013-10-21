@@ -42,10 +42,8 @@ public class HumanoidMob extends Mob {
 			return;
 		} else if (isInteger(this.modelName)) {
 			try {
-				if (block == null) {
-					block = new BlockModelRenderer(
-							Block.blocks[Integer.parseInt(this.modelName)].textureId);
-				}
+				block = new BlockModelRenderer(
+						Block.blocks[Integer.parseInt(this.modelName)].textureId);
 				GL11.glPushMatrix();
 				GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
 				GL11.glBindTexture(3553, var1.load("/terrain.png"));
@@ -63,7 +61,7 @@ public class HumanoidMob extends Mob {
 			GL11.glEnable(2884);
 		}
 
-		if (this.hasHair) {
+		if (this.hasHair && model instanceof HumanoidModel) {
 			GL11.glDisable(2884);
 			HumanoidModel modelHeadwear = null;
 			(modelHeadwear = (HumanoidModel) model).headwear.yaw = modelHeadwear.head.yaw;
