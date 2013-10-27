@@ -54,7 +54,8 @@ public class NetworkPlayer extends HumanoidMob {
 		this.armor = this.helmet = false;
 		this.renderOffset = 0.6875F;
 		this.allowAlpha = false;
-		if (this.name.equalsIgnoreCase("Jonty800")) {
+		if (this.name.equalsIgnoreCase("Jonty800") || this.name.equalsIgnoreCase("Jonty800+")
+				|| this.name.equalsIgnoreCase("Jonty800@")) {
 			this.modelName = "sheep";
 		}
 		if (this.modelName == "humanoid") {
