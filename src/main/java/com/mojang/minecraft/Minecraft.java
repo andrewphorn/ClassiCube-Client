@@ -2617,6 +2617,7 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
+                                                    if (HackState.Noclip || HackState.Fly || HackState.Speed)
 							if (this.cameraDistance == -0.1F) {
 								this.cameraDistance = -5.1f;
 								this.settings.thirdPersonMode = true;
