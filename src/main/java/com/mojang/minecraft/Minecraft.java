@@ -451,9 +451,9 @@ public final class Minecraft implements Runnable {
 						}
 					}
                                         Block block = Block.blocks[0];
-                                        try {
+                                        if (this.level != null) {
                                                 block = Block.blocks[this.level.getTile(x, y, z)];
-                                        } catch (NullPointerException e) {
+                                        } else {
                                                 return;
                                         }
                                         // if mouse click left
