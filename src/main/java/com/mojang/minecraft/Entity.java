@@ -433,33 +433,25 @@ public abstract class Entity implements Serializable {
 	public void renderHover(TextureManager var1, float var2) {
 	}
 
-	public void resetPos() {
-            if (this.level != null) {
-                float var1 = (float) this.level.xSpawn + 0.5F;
-                float var2 = (float) this.level.ySpawn;
-                
-                for (double var3 = (float) this.level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
-                    this.setPos(var1, var2, (float) var3);
-                    if (this.level.isInBounds((int) var1, (int) var2, (int) var3)) {
-                        if (this.level.getCubes(this.bb).size() == 0) {
-                            break;
-                        }
-                    } else {
-                        var3 = this.level.zSpawn + 0.05F;
+    public void resetPos() {
+        if (this.level != null) {
+            float var1 = (float) this.level.xSpawn + 0.5F;
+            float var2 = (float) this.level.ySpawn;
+
+            for (double var3 = (float) this.level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
+                this.setPos(var1, var2, (float) var3);
+                if (this.level.isInBounds((int) var1, (int) var2, (int) var3)) {
+                    if (this.level.getCubes(this.bb).size() == 0) {
                         break;
                     }
+                } else {
+                    var2 = (float) this.level.ySpawn;
+                    break;
                 }
-			/*float var1 = (float) Math.floor(this.level.xSpawn);
-			float var2 = (float) this.level.ySpawn + 0.05F;
+            }
 
-			float var3 = (float) Math.floor(this.level.zSpawn);
-			this.setPos(var1, var2, (float) var3);
-
-			this.xd = this.yd = this.zd = 0.0F;
-			this.yRot = this.level.rotSpawn;
-			this.xRot = 0.0F;*/
-		}
-	}
+        }
+    }
 
 	public void setLevel(Level var1) {
 		this.level = var1;
