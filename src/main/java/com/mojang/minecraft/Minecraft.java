@@ -116,6 +116,7 @@ public final class Minecraft implements Runnable {
 	public boolean hasMouse;
 	private int lastClick;
 	public boolean raining;
+        public boolean snowing;
 	public MinecraftApplet applet;
 	public static boolean PlayerIsRunning = false;
 	public List<SelectionBoxData> selectionBoxes = new ArrayList<SelectionBoxData>();
@@ -259,6 +260,7 @@ public final class Minecraft implements Runnable {
 		this.hasMouse = false;
 		this.lastClick = 0;
 		this.raining = false;
+                this.snowing = false;
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -1479,8 +1481,10 @@ public final class Minecraft implements Runnable {
 
 											// ------------------
 										}
-										if (renderer.minecraft.raining) {
+                                
+										if (renderer.minecraft.raining || renderer.minecraft.snowing) {
 											float var97 = var80;
+                                                                                        float speed = 1.0F;
 											Level var109 = renderer.minecraft.level;
 											var104 = (int) player.x;
 											var108 = (int) player.y;
@@ -1489,9 +1493,16 @@ public final class Minecraft implements Runnable {
 											GL11.glNormal3f(0.0F, 1.0F, 0.0F);
 											GL11.glEnable(3042);
 											GL11.glBlendFunc(770, 771);
-											GL11.glBindTexture(3553,
-													renderer.minecraft.textureManager
-															.load("/rain.png"));
+                                                                                        if (renderer.minecraft.raining){
+                                                                                            GL11.glBindTexture(3553,
+                                                                                                            renderer.minecraft.textureManager
+                                                                                                                            .load("/rain.png"));
+                                                                                        } else if(renderer.minecraft.snowing) {
+                                                                                            GL11.glBindTexture(3553,
+                                                                                                            renderer.minecraft.textureManager
+                                                                                                                            .load("/snow.png"));
+                                                                                            speed = 0.2F;
+                                                                                        }
 
 											for (var110 = var104 - 5; var110 <= var104 + 5; ++var110) {
 												for (var122 = var114 - 5; var122 <= var114 + 5; ++var122) {
@@ -1508,7 +1519,7 @@ public final class Minecraft implements Runnable {
 
 													if (var86 != var125) {
 														var74 = ((renderer.levelTicks + var110
-																* 3121 + var122 * 418711) % 32 + var97) / 32.0F;
+																* 3121 + var122 * 418711) % 32 + var97) / 32.0F * speed;
 														float var124 = var110 + 0.5F - player.x;
 														var35 = var122 + 0.5F - player.z;
 														float var92 = MathHelper.sqrt(var124
@@ -2599,7 +2610,12 @@ public final class Minecraft implements Runnable {
 						Keyboard.getEventKey();
 						if (Keyboard.getEventKey() == 63) {
 							this.raining = !this.raining;
+                                                        this.snowing = false;
 						}
+                                                if (Keyboard.getEventKey() == 62) {
+                                                    this.snowing = !this.snowing;
+                                                    this.raining = false;
+                                                }
 						if (Keyboard.getEventKey() == 53 && this.networkManager != null
 								&& this.networkManager.isConnected()) {
 							this.player.releaseAllKeys();
