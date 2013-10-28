@@ -780,7 +780,7 @@ public class Level implements Serializable {
 		return this.blockMap.getEntities((Entity) null, var1).size() == 0;
 	}
 
-	private boolean isInBounds(int var1, int var2, int var3) {
+	public boolean isInBounds(int var1, int var2, int var3) {
 		return var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < this.width && var2 < this.depth
 				&& var3 < this.height;
 	}
