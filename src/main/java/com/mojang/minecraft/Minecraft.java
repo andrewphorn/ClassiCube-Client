@@ -450,9 +450,13 @@ public final class Minecraft implements Runnable {
 							++x;
 						}
 					}
-
-					Block block = Block.blocks[this.level.getTile(x, y, z)];
-					// if mouse click left
+                                        Block block = Block.blocks[0];
+                                        try {
+                                                block = Block.blocks[this.level.getTile(x, y, z)];
+                                        } catch (NullPointerException e) {
+                                                return;
+                                        }
+                                        // if mouse click left
 					if (var1 == 0) {
 						if (block != Block.BEDROCK || this.player.userType >= 100) {
 							if (!this.DisallowedBreakingBlocks.contains(block)) {
