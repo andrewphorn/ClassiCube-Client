@@ -2632,16 +2632,20 @@ public final class Minecraft implements Runnable {
 							this.canRenderGUI = !this.canRenderGUI;
 						}
 
-						if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
-                                                    if (HackState.Noclip || HackState.Fly || HackState.Speed)
-							if (this.cameraDistance == -0.1F) {
-								this.cameraDistance = -5.1f;
-								this.settings.thirdPersonMode = true;
-							} else {
-								this.cameraDistance = -0.1F;
-								this.settings.thirdPersonMode = false;
-							}
-						}
+                                            if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
+                                                if (HackState.Noclip || HackState.Fly || HackState.Speed) {
+                                                    if (this.cameraDistance == -0.1F) {
+                                                        this.cameraDistance = -5.1f;
+                                                        this.settings.thirdPersonMode = true;
+                                                    } else {
+                                                        this.cameraDistance = -0.1F;
+                                                        this.settings.thirdPersonMode = false;
+                                                    }
+                                                } else {
+                                                    this.cameraDistance = -0.1F;
+                                                    this.settings.thirdPersonMode = false;
+                                                }
+                                            }
 
 						if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
 							takeAndSaveScreenshot(this.width, this.height);
