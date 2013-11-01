@@ -53,7 +53,7 @@ public final class GameSettings implements Serializable {
 	public int HackType = 0;
 	public int ShowNames = 0;
 	public boolean VBOs = false;
-	
+
 	public String lastUsedTexturePack;
 
 	public boolean HacksEnabled = true;
@@ -100,8 +100,7 @@ public final class GameSettings implements Serializable {
 				+ (HackType == 0 ? "Normal" : "Adv") : (id == 12 ? "Use VBOs: "
 				+ (VBOs ? "Yes" : "No") : (id == 13 ? "Enable Hacks: "
 				+ (HacksEnabled ? "Yes" : "No") : (id == 14 ? "Show Names: "
-				+ (ShowNames == 0 ? "Hover" : "Always") : ""
-					))))))))))))));
+				+ (ShowNames == 0 ? "Hover" : "Always") : ""))))))))))))));
 	}
 
 	private void load() {
@@ -308,7 +307,7 @@ public final class GameSettings implements Serializable {
 
 			minecraft.textureManager.textures.clear();
 
-			//minecraft.levelRenderer.refresh();
+			// minecraft.levelRenderer.refresh();
 		}
 
 		if (setting == 9) {
@@ -320,7 +319,7 @@ public final class GameSettings implements Serializable {
 
 			minecraft.textureManager.textures.clear();
 
-			//minecraft.levelRenderer.refresh();
+			// minecraft.levelRenderer.refresh();
 		}
 		if (setting == 10) {
 			canServerChangeTextures = !canServerChangeTextures;
@@ -328,7 +327,6 @@ public final class GameSettings implements Serializable {
 		if (setting == 11) {
 			if (HackType == 1) {
 				this.minecraft.player.input.fly = false;
-				this.minecraft.player.input.noClip = false;
 				HackType = 0;
 			} else {
 				this.minecraft.player.flyingMode = false;

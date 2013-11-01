@@ -76,6 +76,8 @@ public class Player extends Mob {
 
 	@Override
 	public void aiStep() {
+		if(!this.input.canMove)
+			return;		
 		if (settings.HackType == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)) {
 			this.inventory.tick();
 			this.oBob = this.bob;

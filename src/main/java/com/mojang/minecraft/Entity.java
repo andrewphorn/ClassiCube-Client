@@ -335,7 +335,7 @@ public abstract class Entity implements Serializable {
 		int var32 = this.level.getTile(var39, var30, var31);
 		if (this.makeStepSound && this.onGround && !this.noPhysics) {
 			if (this instanceof Player
-					&& !(((Player) this).input.noclip || ((Player) this).input.noClip)) {
+					&& !(((Player) this).input.noclip)) {
 				this.distanceWalkedModified = (float) ((double) this.distanceWalkedModified + (double) Math
 						.sqrt(var1 * var1 + var3 * var3) * 0.6D);
 				this.distanceWalkedOnStepModified = (float) ((double) this.distanceWalkedOnStepModified + (double) Math

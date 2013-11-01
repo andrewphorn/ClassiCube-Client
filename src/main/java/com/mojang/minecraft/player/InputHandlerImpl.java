@@ -18,6 +18,8 @@ public class InputHandlerImpl extends InputHandler {
 	}
 
 	public final void calc() {
+		if (this.settings.minecraft.currentScreen != null)
+			return;
 		this.move = 0.0F;
 		this.strafe = 0.0F;
 		this.elevate = 0.0F;
@@ -64,8 +66,12 @@ public class InputHandlerImpl extends InputHandler {
 
 	@Override
 	public void setKeyState(int key, boolean state) {
+		if(this.settings.minecraft.currentScreen!=null)
+			canMove = false;
+		else 
+			canMove = true;
+		byte index = -1;
 		if (this.HacksMode == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)) {
-			byte index = -1;
 
 			if (key == settings.forwardKey.key) {
 				index = 0;
@@ -129,6 +135,12 @@ public class InputHandlerImpl extends InputHandler {
 	@Override
 	public void updateMovement(int hackMode) {
 		HacksMode = hackMode;
+		
+		if(this.settings.minecraft.currentScreen!=null)
+			canMove = false;
+		else 
+			canMove = true;
+		
 		if (HacksMode == 0) {
 			xxa = 0.0F;
 			yya = 0.0F;

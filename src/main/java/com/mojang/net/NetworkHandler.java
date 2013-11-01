@@ -103,57 +103,55 @@ public final class NetworkHandler {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public final void send(PacketType var1, Object... var2) {
+	public final void send(PacketType packetType, Object... object) {
 		if (this.connected) {
-			this.out.put(var1.opcode);
+			this.out.put(packetType.opcode);
 
-			for (int var3 = 0; var3 < var2.length; ++var3) {
-				Class var10001 = var1.params[var3];
-				Object var4 = var2[var3];
-				Class var5 = var10001;
-				NetworkHandler var6 = this;
+			for (int i = 0; i < object.length; ++i) {
+				Class packetClass = packetType.params[i];
+				Object packetObject = object[i];
 				if (this.connected) {
 					try {
-						if (var5 == Long.TYPE) {
-							var6.out.putLong(((Long) var4).longValue());
-						} else if (var5 == Integer.TYPE) {
-							var6.out.putInt(((Number) var4).intValue());
-						} else if (var5 == Short.TYPE) {
-							var6.out.putShort(((Number) var4).shortValue());
-						} else if (var5 == Byte.TYPE) {
-							var6.out.put(((Number) var4).byteValue());
-						} else if (var5 == Double.TYPE) {
-							var6.out.putDouble(((Double) var4).doubleValue());
-						} else if (var5 == Float.TYPE) {
-							var6.out.putFloat(((Float) var4).floatValue());
+						if (packetClass == Long.TYPE) {
+							this.out.putLong(((Long) packetObject).longValue());
+						} else if (packetClass == Integer.TYPE) {
+							this.out.putInt(((Number) packetObject).intValue());
+						} else if (packetClass == Short.TYPE) {
+							this.out.putShort(((Number) packetObject).shortValue());
+						} else if (packetClass == Byte.TYPE) {
+							this.out.put(((Number) packetObject).byteValue());
+						} else if (packetClass == Double.TYPE) {
+							this.out.putDouble(((Double) packetObject).doubleValue());
+						} else if (packetClass == Float.TYPE) {
+							this.out.putFloat(((Float) packetObject).floatValue());
 						} else {
 							byte[] var9;
-							if (var5 != String.class) {
-								if (var5 == byte[].class) {
-									if ((var9 = (byte[]) ((byte[]) var4)).length < 1024) {
+							if (packetClass != String.class) {
+								if (packetClass == byte[].class) {
+									if ((var9 = (byte[]) ((byte[]) packetObject)).length < 1024) {
 										var9 = Arrays.copyOf(var9, 1024);
 									}
 
-									var6.out.put(var9);
+									this.out.put(var9);
 								}
 							} else {
-								var9 = ((String) var4).getBytes("UTF-8");
-								Arrays.fill(var6.stringBytes, (byte) 32);
+								var9 = ((String) packetObject).getBytes("UTF-8");
+								Arrays.fill(this.stringBytes, (byte) 32);
 
 								int var8;
 								for (var8 = 0; var8 < 64 && var8 < var9.length; ++var8) {
-									var6.stringBytes[var8] = var9[var8];
+									this.stringBytes[var8] = var9[var8];
 								}
 
 								for (var8 = var9.length; var8 < 64; ++var8) {
-									var6.stringBytes[var8] = 32;
+									this.stringBytes[var8] = 32;
 								}
 
-								var6.out.put(var6.stringBytes);
+								this.out.put(this.stringBytes);
 							}
 						}
-					} catch (Exception var7) {
-						this.netManager.error(var7);
+					} catch (Exception e) {
+						this.netManager.error(e);
 					}
 				}
 			}

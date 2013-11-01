@@ -20,7 +20,7 @@ public final class ControlsScreen extends GuiScreen {
 		}
 
 		if (var1.id == 200) {
-			this.minecraft.setCurrentScreen(this.parent);
+			this.minecraft.setCurrentScreen(new OptionsScreen(this, this.minecraft.settings));
 		} else {
 			this.selected = var1.id;
 			var1.text = "> " + this.settings.getBinding(var1.id) + " <";

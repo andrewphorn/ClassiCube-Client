@@ -24,6 +24,7 @@ import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.WaterDropParticle;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.player.InputHandlerImpl;
+import com.mojang.minecraft.player.Inventory;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.*;
 import com.mojang.minecraft.render.texture.TextureFX;
@@ -116,7 +117,7 @@ public final class Minecraft implements Runnable {
 	public boolean hasMouse;
 	private int lastClick;
 	public boolean raining;
-        public boolean snowing;
+	public boolean snowing;
 	public MinecraftApplet applet;
 	public static boolean PlayerIsRunning = false;
 	public List<SelectionBoxData> selectionBoxes = new ArrayList<SelectionBoxData>();
@@ -260,7 +261,7 @@ public final class Minecraft implements Runnable {
 		this.hasMouse = false;
 		this.lastClick = 0;
 		this.raining = false;
-                this.snowing = false;
+		this.snowing = false;
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -452,13 +453,13 @@ public final class Minecraft implements Runnable {
 							++x;
 						}
 					}
-                                        Block block = Block.blocks[0];
-                                        if (this.level != null) {
-                                                block = Block.blocks[this.level.getTile(x, y, z)];
-                                        } else {
-                                                return;
-                                        }
-                                        // if mouse click left
+					Block block = Block.blocks[0];
+					if (this.level != null) {
+						block = Block.blocks[this.level.getTile(x, y, z)];
+					} else {
+						return;
+					}
+					// if mouse click left
 					if (var1 == 0) {
 						if (block != Block.BEDROCK || this.player.userType >= 100) {
 							if (!this.DisallowedBreakingBlocks.contains(block)) {
@@ -1481,10 +1482,11 @@ public final class Minecraft implements Runnable {
 
 											// ------------------
 										}
-                                
-										if (renderer.minecraft.raining || renderer.minecraft.snowing) {
+
+										if (renderer.minecraft.raining
+												|| renderer.minecraft.snowing) {
 											float var97 = var80;
-                                                                                        float speed = 1.0F;
+											float speed = 1.0F;
 											Level var109 = renderer.minecraft.level;
 											var104 = (int) player.x;
 											var108 = (int) player.y;
@@ -1493,16 +1495,16 @@ public final class Minecraft implements Runnable {
 											GL11.glNormal3f(0.0F, 1.0F, 0.0F);
 											GL11.glEnable(3042);
 											GL11.glBlendFunc(770, 771);
-                                                                                        if (renderer.minecraft.raining){
-                                                                                            GL11.glBindTexture(3553,
-                                                                                                            renderer.minecraft.textureManager
-                                                                                                                            .load("/rain.png"));
-                                                                                        } else if(renderer.minecraft.snowing) {
-                                                                                            GL11.glBindTexture(3553,
-                                                                                                            renderer.minecraft.textureManager
-                                                                                                                            .load("/snow.png"));
-                                                                                            speed = 0.2F;
-                                                                                        }
+											if (renderer.minecraft.raining) {
+												GL11.glBindTexture(3553,
+														renderer.minecraft.textureManager
+																.load("/rain.png"));
+											} else if (renderer.minecraft.snowing) {
+												GL11.glBindTexture(3553,
+														renderer.minecraft.textureManager
+																.load("/snow.png"));
+												speed = 0.2F;
+											}
 
 											for (var110 = var104 - 5; var110 <= var104 + 5; ++var110) {
 												for (var122 = var114 - 5; var122 <= var114 + 5; ++var122) {
@@ -1519,7 +1521,8 @@ public final class Minecraft implements Runnable {
 
 													if (var86 != var125) {
 														var74 = ((renderer.levelTicks + var110
-																* 3121 + var122 * 418711) % 32 + var97) / 32.0F * speed;
+																* 3121 + var122 * 418711) % 32 + var97)
+																/ 32.0F * speed;
 														float var124 = var110 + 0.5F - player.x;
 														var35 = var122 + 0.5F - player.z;
 														float var92 = MathHelper.sqrt(var124
@@ -1813,44 +1816,46 @@ public final class Minecraft implements Runnable {
 		this.height = var2.getHeight();
 	}
 
-	public final void setLevel(Level var1) {
+	public final void setLevel(Level theLevel) {
 		if (this.applet == null
 				|| !this.applet.getDocumentBase().getHost().equalsIgnoreCase("minecraft.net")
 				&& !this.applet.getDocumentBase().getHost().equalsIgnoreCase("www.minecraft.net")
 				|| !this.applet.getCodeBase().getHost().equalsIgnoreCase("minecraft.net")
 				&& !this.applet.getCodeBase().getHost().equalsIgnoreCase("www.minecraft.net")) {
-			var1 = null;
+			theLevel = null;
 		}
 
-		this.level = var1;
-		if (var1 != null) {
-			var1.initTransient();
-			this.gamemode.apply(var1);
-			var1.font = this.fontRenderer;
-			var1.rendererContext$5cd64a7f = this;
-			if (!this.isOnline()) {
-				this.player = (Player) var1.findSubclassOf(Player.class);
+		this.level = theLevel;
+		if (this.player != null && this.player.inventory != null)
+			this.inventoryCache = this.player.inventory.slots.clone();
+		if (theLevel != null) {
+			theLevel.initTransient();
+			this.gamemode.apply(theLevel);
+			theLevel.font = this.fontRenderer;
+			theLevel.rendererContext$5cd64a7f = this;
+			if (!this.isOnline()) { // if not online (singleplayer)
+				this.player = (Player) theLevel.findSubclassOf(Player.class);
 				if (this.player == null) {
-					this.player = new Player(var1, this.settings);
+					this.player = new Player(theLevel, this.settings);
 				}
 				this.player.settings = this.settings;
 				this.player.resetPos();
-			} else if (this.player != null) {
+			} else if (this.player != null) { // if online
 				this.player.resetPos();
 				this.gamemode.preparePlayer(this.player);
-				if (var1 != null) {
-					var1.player = this.player;
-					var1.addEntity(this.player);
+				if (theLevel != null) {
+					theLevel.player = this.player;
+					theLevel.addEntity(this.player);
 				}
 			}
 		}
 
 		if (this.player == null) {
-			this.player = new Player(var1, this.settings);
+			this.player = new Player(theLevel, this.settings);
 			this.player.resetPos();
 			this.gamemode.preparePlayer(this.player);
-			if (var1 != null) {
-				var1.player = this.player;
+			if (theLevel != null) {
+				theLevel.player = this.player;
 			}
 		}
 
@@ -1865,23 +1870,26 @@ public final class Minecraft implements Runnable {
 				var3.level.removeListener(var3);
 			}
 
-			var3.level = var1;
-			if (var1 != null) {
-				var1.addListener(var3);
+			var3.level = theLevel;
+			if (theLevel != null) {
+				theLevel.addListener(var3);
 				var3.refresh();
 			}
 		}
 
 		if (this.particleManager != null) {
 			ParticleManager var5 = this.particleManager;
-			if (var1 != null) {
-				var1.particleEngine = var5;
+			if (theLevel != null) {
+				theLevel.particleEngine = var5;
 			}
 
 			for (int var4 = 0; var4 < 2; ++var4) {
 				var5.particles[var4].clear();
 			}
 		}
+
+		if (this.inventoryCache != null)
+			this.player.inventory.slots = this.inventoryCache;
 
 		System.gc();
 	}
@@ -1919,6 +1927,9 @@ public final class Minecraft implements Runnable {
 			Display.destroy();
 		}
 	}
+
+	boolean canSendHeldBlock = false;
+	int[] inventoryCache;
 
 	private void tick() {
 		if (this.soundPlayer != null) {
@@ -2007,6 +2018,10 @@ public final class Minecraft implements Runnable {
 										Integer Version = ((Integer) packetParams[1]).intValue();
 										com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
 												.add(new ExtData(ExtName, Version));
+
+										if (ExtName.toLowerCase().contains("heldblock")) {
+											this.canSendHeldBlock = true;
+										}
 
 										if (recievedExtensionLength == com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
 												.size()) {
@@ -2363,8 +2378,8 @@ public final class Minecraft implements Runnable {
 												} else {
 													var53 = (byte) (var53 + 128);
 													var36 = (short) (var36 - 22);
-													if ((networkPlayer = networkManager.players.get(Byte
-															.valueOf(var5))) != null) {
+													if ((networkPlayer = networkManager.players
+															.get(Byte.valueOf(var5))) != null) {
 														networkPlayer.teleport(var38, var36, var47,
 																var53 * 360 / 256.0F,
 																var9 * 360 / 256.0F);
@@ -2393,8 +2408,8 @@ public final class Minecraft implements Runnable {
 														var53 = (byte) (var53 + 128);
 														if ((networkPlayer = networkManager.players
 																.get(Byte.valueOf(playerID))) != null) {
-															networkPlayer.queue(var37, var44, var49,
-																	var53 * 360 / 256.0F,
+															networkPlayer.queue(var37, var44,
+																	var49, var53 * 360 / 256.0F,
 																	var9 * 360 / 256.0F);
 														}
 													}
@@ -2487,17 +2502,19 @@ public final class Minecraft implements Runnable {
 					}
 				}
 
-				Player var28 = this.player;
+				Player player = this.player;
 				var20 = this.networkManager;
 				if (this.networkManager.levelLoaded) {
-					int var24 = (int) (var28.x * 32.0F);
-					var4 = (int) (var28.y * 32.0F);
-					var40 = (int) (var28.z * 32.0F);
-					var46 = (int) (var28.yRot * 256.0F / 360.0F) & 255;
-					var45 = (int) (var28.xRot * 256.0F / 360.0F) & 255;
+					int var24 = (int) (player.x * 32.0F);
+					var4 = (int) (player.y * 32.0F);
+					var40 = (int) (player.z * 32.0F);
+					var46 = (int) (player.yRot * 256.0F / 360.0F) & 255;
+					var45 = (int) (player.xRot * 256.0F / 360.0F) & 255;
 					var20.netHandler.send(
 							PacketType.POSITION_ROTATION,
-							new Object[] { Integer.valueOf(-1), Integer.valueOf(var24),
+							new Object[] {
+									this.canSendHeldBlock ? player.inventory.selected : Integer
+											.valueOf(-1), Integer.valueOf(var24),
 									Integer.valueOf(var4), Integer.valueOf(var40),
 									Integer.valueOf(var46), Integer.valueOf(var45) });
 				}
@@ -2508,8 +2525,14 @@ public final class Minecraft implements Runnable {
 			this.setCurrentScreen((GuiScreen) null);
 		}
 
+		int var25;
+		if (this.currentScreen instanceof BlockSelectScreen) {
+			if ((var25 = Mouse.getEventDWheel()) != 0) {
+				this.player.inventory.swapPaint(var25);
+			}
+		}
+
 		if (this.currentScreen == null) {
-			int var25;
 			while (Mouse.next()) {
 				if ((var25 = Mouse.getEventDWheel()) != 0) {
 					this.player.inventory.swapPaint(var25);
@@ -2610,12 +2633,12 @@ public final class Minecraft implements Runnable {
 						Keyboard.getEventKey();
 						if (Keyboard.getEventKey() == 63) {
 							this.raining = !this.raining;
-                                                        this.snowing = false;
+							this.snowing = false;
 						}
-                                                if (Keyboard.getEventKey() == 62) {
-                                                    this.snowing = !this.snowing;
-                                                    this.raining = false;
-                                                }
+						if (Keyboard.getEventKey() == 62) {
+							this.snowing = !this.snowing;
+							this.raining = false;
+						}
 						if (Keyboard.getEventKey() == 53 && this.networkManager != null
 								&& this.networkManager.isConnected()) {
 							this.player.releaseAllKeys();
@@ -2632,20 +2655,20 @@ public final class Minecraft implements Runnable {
 							this.canRenderGUI = !this.canRenderGUI;
 						}
 
-                                            if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
-                                                if (HackState.Noclip || HackState.Fly || HackState.Speed) {
-                                                    if (this.cameraDistance == -0.1F) {
-                                                        this.cameraDistance = -5.1f;
-                                                        this.settings.thirdPersonMode = true;
-                                                    } else {
-                                                        this.cameraDistance = -0.1F;
-                                                        this.settings.thirdPersonMode = false;
-                                                    }
-                                                } else {
-                                                    this.cameraDistance = -0.1F;
-                                                    this.settings.thirdPersonMode = false;
-                                                }
-                                            }
+						if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
+							if (HackState.Noclip || HackState.Fly || HackState.Speed) {
+								if (this.cameraDistance == -0.1F) {
+									this.cameraDistance = -5.1f;
+									this.settings.thirdPersonMode = true;
+								} else {
+									this.cameraDistance = -0.1F;
+									this.settings.thirdPersonMode = false;
+								}
+							} else {
+								this.cameraDistance = -0.1F;
+								this.settings.thirdPersonMode = false;
+							}
+						}
 
 						if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
 							takeAndSaveScreenshot(this.width, this.height);
@@ -2654,8 +2677,8 @@ public final class Minecraft implements Runnable {
 						if (this.settings.HacksEnabled) {
 							if (this.settings.HackType == 0) {
 								if (Keyboard.getEventKey() == Keyboard.KEY_X) {
-									if (HackState.Noclip || (HackState.Noclip
-											&& this.player.userType >= 100)) {
+									if (HackState.Noclip
+											|| (HackState.Noclip && this.player.userType >= 100)) {
 										this.player.noPhysics = !this.player.noPhysics;
 										this.player.hovered = !this.player.hovered;
 									}
@@ -2695,7 +2718,10 @@ public final class Minecraft implements Runnable {
 
 					for (var25 = 0; var25 < 9; ++var25) {
 						if (Keyboard.getEventKey() == var25 + 2) {
-							if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) //for tabbing player list
+							if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) // for
+																	  // tabbing
+																	  // player
+																	  // list
 								return;
 							else if (GameSettings.CanReplaceSlot)
 								this.player.inventory.selected = var25;

@@ -13,7 +13,7 @@ public class InputHandler {
 	public boolean flyingDown = false;
 	public boolean flying = false;
 
-	public boolean noClip = false;
+	public boolean canMove = true;
 
 	public float move = 0.0F;
 	public float strafe = 0.0F;

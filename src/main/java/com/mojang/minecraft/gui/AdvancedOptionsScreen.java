@@ -57,6 +57,14 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 						this.drawWarning = false;
 					}
 				}
+				if(var1.text.contains("SpeedHack")){
+					this.minecraft.player.input.fly = false;
+					this.minecraft.player.input.noclip = false;
+					
+					this.minecraft.player.noPhysics = false;
+					this.minecraft.player.flyingMode = false;
+					this.minecraft.player.hovered = false;
+				}
 			}
 
 			if (var1.id == 100) {
