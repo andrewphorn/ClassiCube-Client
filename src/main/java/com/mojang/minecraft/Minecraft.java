@@ -1930,6 +1930,7 @@ public final class Minecraft implements Runnable {
 
 	boolean canSendHeldBlock = false;
 	int[] inventoryCache;
+	boolean isLoadingMap = false;
 
 	private void tick() {
 		if (this.soundPlayer != null) {
@@ -1978,6 +1979,7 @@ public final class Minecraft implements Runnable {
 			if (!this.networkManager.isConnected()) {
 				this.progressBar.setTitle("Connecting..");
 				this.progressBar.setProgress(0);
+				this.isLoadingMap = true;
 			} else {
 				NetworkManager var20 = this.networkManager;
 				if (this.networkManager.successful) {
@@ -2281,6 +2283,7 @@ public final class Minecraft implements Runnable {
 										byte percentComplete = ((Byte) packetParams[2]).byteValue();
 										networkManager.minecraft.progressBar
 												.setProgress(percentComplete);
+										this.isLoadingMap = false;
 										networkManager.levelData.write(chunkData, 0, chunkLength);
 									} else if (packetType == PacketType.LEVEL_FINALIZE) {
 										try {
@@ -2521,6 +2524,18 @@ public final class Minecraft implements Runnable {
 			}
 		}
 
+		if (this.isLoadingMap) {
+			while (Keyboard.next()) {
+				if (Keyboard.getEventKeyState()) {
+
+					if (Keyboard.getEventKey() == 1) {
+						this.pause();
+					}
+				}
+			}
+			return;
+		}
+
 		if (this.currentScreen == null && this.player != null && this.player.health <= 0) {
 			this.setCurrentScreen((GuiScreen) null);
 		}
@@ -2570,7 +2585,7 @@ public final class Minecraft implements Runnable {
 			if (this.blockHitTime > 0) {
 				--this.blockHitTime;
 			}
-			// s.logic();
+
 			while (Keyboard.next()) {
 				this.player.setKey(Keyboard.getEventKey(), Keyboard.getEventKeyState());
 				if (Keyboard.getEventKeyState()) {

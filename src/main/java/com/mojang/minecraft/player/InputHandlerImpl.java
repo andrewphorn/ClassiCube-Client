@@ -51,17 +51,13 @@ public class InputHandlerImpl extends InputHandler {
 		this.jump = this.keylist[4];
 	}
 
-	public final void clear() {
-		for (int i = 0; i < 10; i++)
-			this.keylist[i] = false;
-	}
-
 	@Override
 	public void resetKeys() {
 		for (int i = 0; i < keyStates.length; ++i) {
 			keyStates[i] = false;
 		}
-
+		for (int i = 0; i < 10; i++)
+			this.keylist[i] = false;
 	}
 
 	@Override
