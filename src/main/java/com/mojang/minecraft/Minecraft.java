@@ -2145,9 +2145,9 @@ public final class Minecraft implements Runnable {
 															file.getAbsolutePath());
 												}
 												image = ImageIO.read(file);
-												if (image.getWidth() != 256
-														|| image.getHeight() != 256)
-													return;
+												//if (image.getWidth() != 256
+													//	|| image.getHeight() != 256)
+												//	return;
 												this.textureManager.currentTerrainPng = image;
 											}
 										}
