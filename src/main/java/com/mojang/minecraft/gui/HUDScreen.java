@@ -192,12 +192,12 @@ public final class HUDScreen extends Screen {
 				}
 			}
 		}
-		if (Minecraft.isSinglePlayer)
-			var5.render("Development Build", 2, 32, 16777215);
+		//if (Minecraft.isSinglePlayer)
+			//var5.render("Development Build", 2, 32, 16777215);
 		if (this.mc.settings.showDebug) {
 			GL11.glPushMatrix();
 			GL11.glScalef(0.7F, 0.7F, 1.0F);
-			var5.render("ClassiCube 0.1", 2, 2, 16777215); // lol fuck that.
+			var5.render("ClassiCube", 2, 2, 16777215); // lol fuck that.
 			var5.render(this.mc.debug, 2, 12, 16777215);
 			var5.render("Position: (" + (int) this.mc.player.x + ", " + (int) this.mc.player.y
 					+ ", " + (int) this.mc.player.z + ")", 2, 22, 16777215);

@@ -90,30 +90,41 @@ public final class PauseScreen extends GuiScreen {
 	int greenColor = 8454016;
 	int orangeColor = 16750160;
 	int redColor = 16737380;
+	
+	String VersionString = "0.11";
 
 	public final void render(int var1, int var2) {
+		
+		String titlePrint = ProgressBarDisplay.title;
+		String t = titlePrint.toLowerCase();
+		if(t.contains("loading level") || t.contains("generating level.."))
+			titlePrint = "SinglePlayer";
+		
 		drawFadingBox(0, 0, this.width, this.height, 1610941696, -1607454624);
 		drawCenteredString(this.fontRenderer, "Game menu", this.width / 2, 40, 16777215);
-		drawString(this.fontRenderer, ProgressBarDisplay.title,
-				this.width - this.fontRenderer.getWidth(ProgressBarDisplay.title) - 15, 2, 16777215);
-		drawString(this.fontRenderer, "ClassiCube 0.1",
-				this.width - this.fontRenderer.getWidth("ClassiCube 0.1") - 15, 13, 14474460);
+		drawString(this.fontRenderer, titlePrint,
+				this.width - this.fontRenderer.getWidth(titlePrint) - 15, 2, 16777215);
+		drawString(this.fontRenderer, "ClassiCube " + this.VersionString,
+				this.width - this.fontRenderer.getWidth("ClassiCube "+ this.VersionString) - 15, 13, 14474460);
+		
+		double cpuUsage = this.minecraft.monitoringThread.getAvarageUsagePerCPU();
+		double roundedCpuUsage = Math.round(cpuUsage * 100.0) / 100.0;
 		
 		int colorToUse = greenColor;
-		if(this.minecraft.monitoringThread.getAvarageUsagePerCPU() >= 21)
+		if(cpuUsage >= 21)
 			colorToUse = orangeColor;
-		else if(this.minecraft.monitoringThread.getAvarageUsagePerCPU() >= 30)
+		else if(cpuUsage >= 30)
 			colorToUse = redColor;
-		else if(this.minecraft.monitoringThread.getAvarageUsagePerCPU() <= 20)
+		else if(cpuUsage <= 20)
 			colorToUse = greenColor;
 		
-		String s = "Average CPU: " + this.minecraft.monitoringThread.getAvarageUsagePerCPU() + "%";
+		String s = "Average CPU: " + roundedCpuUsage + "%";
 		drawString(this.fontRenderer, s, this.width - this.fontRenderer.getWidth(s) - 15, 24,
 				colorToUse);
 		
-		long d = this.minecraft.monitoringThread.totalMemory
+		long dMem = this.minecraft.monitoringThread.totalMemory
 				- this.minecraft.monitoringThread.freeMemory;
-		float percent = d * 100L / this.minecraft.monitoringThread.maxMemory;
+		float percent = dMem * 100L / this.minecraft.monitoringThread.maxMemory;
 		if(percent >=75)
 			colorToUse = redColor;
 		else if(percent >=50)
@@ -122,7 +133,7 @@ public final class PauseScreen extends GuiScreen {
 			colorToUse = greenColor;
 		
 		String Usage = "Used memory: " + percent
-				+ "% (" + d / 1024L / 1024L + "MB)";
+				+ "% (" + dMem / 1024L / 1024L + "MB)";
 		drawString(this.fontRenderer, Usage, this.width - this.fontRenderer.getWidth(Usage) - 15,
 				35, colorToUse);
 		String max = "Allocated memory: " + this.minecraft.monitoringThread.maxMemory / 1024L

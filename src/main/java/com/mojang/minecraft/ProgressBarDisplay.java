@@ -38,7 +38,7 @@ public final class ProgressBarDisplay {
 		FileChannel fileChannel1 = null;
 		FileChannel fileChannel2 = null;
 
-		System.out.println("Copy " + paramFile1 + " to " + paramFile2);
+		//System.out.println("Copy " + paramFile1 + " to " + paramFile2);
 		try {
 			if (!paramFile2.exists()) {
 				paramFile2.createNewFile();
@@ -74,14 +74,14 @@ public final class ProgressBarDisplay {
 					localInputStream));
 			String str;
 			while ((str = bufferedReader.readLine()) != null) {
-				System.out
-						.println(new StringBuilder().append("Read line: ").append(str).toString());
+				//System.out
+						//.println(new StringBuilder().append("Read line: ").append(str).toString());
 				String[] arrayOfString = str.split("=", 2);
 				if (arrayOfString.length > 1) {
 					localHashMap.put(arrayOfString[0].trim(), arrayOfString[1].trim());
-					System.out.println(new StringBuilder().append("Adding config ")
-							.append(arrayOfString[0].trim()).append(" = ")
-							.append(arrayOfString[1].trim()).toString());
+					//System.out.println(new StringBuilder().append("Adding config ")
+						//	.append(arrayOfString[0].trim()).append(" = ")
+						//	.append(arrayOfString[1].trim()).toString());
 				}
 			}
 			bufferedReader.close();
@@ -145,8 +145,8 @@ public final class ProgressBarDisplay {
 
 	private static URLConnection makeConnection(String url, String s1, String s2,
 			boolean AddWomProperty) throws IOException {
-		System.out.println(new StringBuilder().append("Making connection to ").append(url)
-				.toString());
+		//System.out.println(new StringBuilder().append("Making connection to ").append(url)
+				//.toString());
 
 		URLConnection localURLConnection = new URL(url).openConnection();
 		localURLConnection.addRequestProperty("Referer", s2);
@@ -205,7 +205,7 @@ public final class ProgressBarDisplay {
 				String Url = "http://"
 						+ splitlineText.replace("$U", this.minecraft.session.username);
 
-				System.out.println("Fetching config from: " + Url);
+				//System.out.println("Fetching config from: " + Url);
 				serverConfig = fetchConfig(Url);
 				if (serverConfig.containsKey("server.detail")) {
 					try {

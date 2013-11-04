@@ -191,7 +191,7 @@ public class Player extends Mob {
 
 			if (!this.input.canMove) {
 				this.input.resetKeys();
-				return;
+				//return; <- messes up flying, you mug
 			}
 
 			this.input.calc();

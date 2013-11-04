@@ -2045,8 +2045,7 @@ public final class Minecraft implements Runnable {
 											for (int k = 0; k < temp.size(); k++) {
 												System.out.println("Sending ext: "
 														+ temp.get(k).Name + " with version: "
-														+ temp.get(k).Version + " and packet id: "
-														+ PacketType.EXT_ENTRY.opcode);
+														+ temp.get(k).Version);
 												toSendParams = new Object[] { temp.get(k).Name,
 														temp.get(k).Version };
 												networkManager.netHandler.send(
@@ -2067,8 +2066,8 @@ public final class Minecraft implements Runnable {
 										Short b = ((Short) packetParams[10]).shortValue();
 										Short a = ((Short) packetParams[11]).shortValue();
 
-										System.out.println(ID + " " + Name + " " + X1 + " " + Y1
-												+ " " + Z1 + " " + X2 + " " + Y2 + " " + Z2);
+										//System.out.println(ID + " " + Name + " " + X1 + " " + Y1
+											//	+ " " + Z1 + " " + X2 + " " + Y2 + " " + Z2);
 										SelectionBoxData data = new SelectionBoxData(ID, Name,
 												new ColorCache(r / 255.0F, g / 255.0F, b / 255.0F,
 														a / 255.0F), new CustomAABB(X1, Y1, Z1, X2,
@@ -2210,7 +2209,7 @@ public final class Minecraft implements Runnable {
 										}
 										this.playerListNameData = cache;
 									} else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-										System.out.println("Custom block packet");
+										System.out.println("Custom blocks packet recieved");
 										byte SupportLevel = ((Byte) packetParams[0]).byteValue();
 										networkManager.netHandler
 												.send(PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
