@@ -161,11 +161,11 @@ public class Block {
 		ROSE = (new FlowerBlock(38, 12)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
 		BROWN_MUSHROOM = (new MushroomBlock(39, 29)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
 		RED_MUSHROOM = (new MushroomBlock(40, 28)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		block = (new Block(41, 24)).setData(Tile$SoundType.metal, 0.7F, 1.0F, 3.0F);
+		block = (new MetalBlock(41, 40)).setData(Tile$SoundType.metal, 0.7F, 1.0F, 3.0F);
 		blockCache = block;
 		block.explodes = false;
 		GOLD_BLOCK = blockCache;
-		block = (new Block(42, 23)).setData(Tile$SoundType.metal, 0.7F, 1.0F, 5.0F);
+		block = (new MetalBlock(42, 39)).setData(Tile$SoundType.metal, 0.7F, 1.0F, 5.0F);
 		blockCache = block;
 		block.explodes = false;
 		IRON_BLOCK = blockCache;
