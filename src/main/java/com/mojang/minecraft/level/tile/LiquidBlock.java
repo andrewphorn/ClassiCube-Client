@@ -77,10 +77,15 @@ public class LiquidBlock extends Block {
 	}
 
 	protected final ColorCache getBrightness(Level level, int x, int y, int z) {
-		if(this.type == LiquidType.LAVA)
-			return new ColorCache(1.0F, 1.0F, 1.0F);
-		else
+		if(this.type == LiquidType.LAVA) {
+			final ColorCache c = new ColorCache(0,0,0);
+			c.R = 100F;
+			c.G = 100F;
+			c.B = 100F;
+			return c;
+		} else {
 			return level.getBrightnessColor(x, y, z);
+		}
 	}
 
 	@Override
