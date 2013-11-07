@@ -164,6 +164,8 @@ public final class Minecraft implements Runnable {
 	}
 
 	public static File getMinecraftDirectory() {
+		if(mcDir != null)
+			return mcDir;
 		String folder = ".net.classicube.client";
 		String home = System.getProperty("user.home");
 		File minecraftFolder;
@@ -2147,6 +2149,7 @@ public final class Minecraft implements Runnable {
 												//if (image.getWidth() != 256
 													//	|| image.getHeight() != 256)
 												//	return;
+												this.textureManager.animations.clear();
 												this.textureManager.currentTerrainPng = image;
 											}
 										}

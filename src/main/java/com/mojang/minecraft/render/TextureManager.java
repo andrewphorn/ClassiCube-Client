@@ -443,13 +443,13 @@ public class TextureManager {
 				&& currentTerrainPng != null) {
 			int id = load(currentTerrainPng);
 			textures.put("customTerrain", id);
-			if (this.customEdgeBlock == null) {
-				customEdgeBlock = this.textureAtlas.get(Block.BEDROCK.textureId);
-				textures.put("customEdge", load(customEdgeBlock));
-			}
 			if (this.customSideBlock == null) {
-				customSideBlock = this.textureAtlas.get(Block.WATER.textureId);
+				customSideBlock = this.textureAtlas.get(Block.BEDROCK.textureId);
 				textures.put("customSide", load(customSideBlock));
+			}
+			if (this.customEdgeBlock == null) {
+				customEdgeBlock = this.textureAtlas.get(Block.WATER.textureId);
+				textures.put("customEdge", load(customEdgeBlock));
 			}
 			if (this.customDirtPng == null) {
 				customDirtPng = this.textureAtlas.get(Block.DIRT.textureId);
@@ -461,22 +461,22 @@ public class TextureManager {
 		if (file.startsWith("/dirt") && textures.containsKey("customDirt")) {
 			return textures.get("customDirt");
 		}
-		if (file.startsWith("/rock") && textures.containsKey("customEdge")) {
-			return textures.get("customEdge");
-		}
-		if (file.startsWith("/rock") && !textures.containsKey("customEdge")
-				&& customEdgeBlock != null) {
-			int id = load(customEdgeBlock);
-			textures.put("customEdge", id);
-			return id;
-		}
-		if (file.startsWith("/water") && textures.containsKey("customSide")) {
+		if (file.startsWith("/rock") && textures.containsKey("customSide")) {
 			return textures.get("customSide");
 		}
-		if (file.startsWith("/water") && !textures.containsKey("customSide")
+		if (file.startsWith("/rock") && !textures.containsKey("customSide")
 				&& customSideBlock != null) {
 			int id = load(customSideBlock);
 			textures.put("customSide", id);
+			return id;
+		}
+		if (file.startsWith("/water") && textures.containsKey("customEdge")) {
+			return textures.get("customEdge");
+		}
+		if (file.startsWith("/water") && !textures.containsKey("customEdge")
+				&& customEdgeBlock != null) {
+			int id = load(customEdgeBlock);
+			textures.put("customEdge", id);
 			return id;
 		}
 
