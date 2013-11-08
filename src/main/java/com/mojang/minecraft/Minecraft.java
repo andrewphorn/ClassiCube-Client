@@ -164,7 +164,7 @@ public final class Minecraft implements Runnable {
 	}
 
 	public static File getMinecraftDirectory() {
-		if(mcDir != null)
+		if (mcDir != null)
 			return mcDir;
 		String folder = ".net.classicube.client";
 		String home = System.getProperty("user.home");
@@ -2068,8 +2068,10 @@ public final class Minecraft implements Runnable {
 										Short b = ((Short) packetParams[10]).shortValue();
 										Short a = ((Short) packetParams[11]).shortValue();
 
-										//System.out.println(ID + " " + Name + " " + X1 + " " + Y1
-											//	+ " " + Z1 + " " + X2 + " " + Y2 + " " + Z2);
+										// System.out.println(ID + " " + Name +
+										// " " + X1 + " " + Y1
+										// + " " + Z1 + " " + X2 + " " + Y2 +
+										// " " + Z2);
 										SelectionBoxData data = new SelectionBoxData(ID, Name,
 												new ColorCache(r / 255.0F, g / 255.0F, b / 255.0F,
 														a / 255.0F), new CustomAABB(X1, Y1, Z1, X2,
@@ -2146,9 +2148,9 @@ public final class Minecraft implements Runnable {
 															file.getAbsolutePath());
 												}
 												image = ImageIO.read(file);
-												//if (image.getWidth() != 256
-													//	|| image.getHeight() != 256)
-												//	return;
+												// if (image.getWidth() != 256
+												// || image.getHeight() != 256)
+												// return;
 												this.textureManager.animations.clear();
 												this.textureManager.currentTerrainPng = image;
 											}
@@ -2544,12 +2546,15 @@ public final class Minecraft implements Runnable {
 
 		int var25;
 		if (this.currentScreen instanceof BlockSelectScreen) {
-			if ((var25 = Mouse.getEventDWheel()) != 0) {
-				this.player.inventory.swapPaint(var25);
+			while (Mouse.next()) {
+				if ((var25 = Mouse.getEventDWheel()) != 0) {
+					this.player.inventory.swapPaint(var25);
+					break;
+				}
 			}
 		}
 
-		if (this.currentScreen == null) {
+		else if (this.currentScreen == null) {
 			while (Mouse.next()) {
 				if ((var25 = Mouse.getEventDWheel()) != 0) {
 					this.player.inventory.swapPaint(var25);
