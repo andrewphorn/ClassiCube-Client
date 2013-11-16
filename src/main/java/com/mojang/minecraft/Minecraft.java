@@ -71,6 +71,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.ZipFile;
 
 public final class Minecraft implements Runnable {
 
@@ -624,7 +625,15 @@ public final class Minecraft implements Runnable {
 			this.textureManager.registerAnimations();
 
 			if (settings.lastUsedTexturePack != null) {
-				this.textureManager.loadTexturePack(settings.lastUsedTexturePack);
+				File file = new File(getMinecraftDirectory().getAbsolutePath() + "/texturepacks/"
+						+ settings.lastUsedTexturePack);
+
+				if (file.exists()) {
+					this.textureManager.loadTexturePack(settings.lastUsedTexturePack);
+				} else {
+					settings.lastUsedTexturePack = null;
+					settings.save();
+				}
 			}
 
 			this.fontRenderer = new FontRenderer(this.settings, "/default.png", this.textureManager);
