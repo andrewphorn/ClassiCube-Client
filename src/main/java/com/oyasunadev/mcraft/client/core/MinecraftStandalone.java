@@ -292,12 +292,12 @@ public class MinecraftStandalone {
 			if (Player == null && Server == null && Mppass == null)
 				minecraft.session = null;
 
-			boolean RunFakeNetwork = false;
+			boolean RunFakeNetwork = true;
 
 			if (RunFakeNetwork) {
 				minecraft.host = "127.0.0.1";
 				minecraft.host = minecraft.host + ":" + "25565";
-				minecraft.session = new SessionData("Scoot1", "noidea");
+				minecraft.session = new SessionData("Scoot", "noidea");
 				minecraft.session.mppass = "c0dd4746a88c5785952cd0190e8214a6";
 				minecraft.session.haspaid = true;
 				minecraft.server = "127.0.0.1";

@@ -63,6 +63,7 @@ public class TextureManager {
 	public BufferedImage customGUI = null;
 	public BufferedImage customFont = null;
 	public BufferedImage customClouds = null;
+	public BufferedImage customSnow = null;
 
 	public BufferedImage customChicken = null;
 	public BufferedImage customCreeper = null;
@@ -396,6 +397,16 @@ public class TextureManager {
 			textures.put("customClouds", id);
 			return id;
 		}
+		
+		if (file.startsWith("/snow") && textures.containsKey("customSnow")) {
+			return textures.get("customSnow");
+		}
+		if (file.startsWith("/snow") && !textures.containsKey("customSnow")
+				&& customSnow != null) {
+			int id = load(customSnow);
+			textures.put("customSnow", id);
+			return id;
+		}
 
 		if (file.startsWith("/char") && textures.containsKey("customHumanoid")) {
 			return textures.get("customHumanoid");
@@ -547,6 +558,7 @@ public class TextureManager {
 			String spiderNAme = "spider.png";
 			String zombieName = "zombie.png";
 			String cloudName = "clouds.png";
+			String snowName = "clouds.png";
 
 			if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1,
 					terrainPNG.length()) : terrainPNG) != null) {
@@ -567,6 +579,13 @@ public class TextureManager {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(guiName
 						.startsWith("/") ? guiName.substring(1, guiName.length()) : guiName)));
 				this.customGUI = image;
+			}
+			
+			if (zip.getEntry(snowName.startsWith("/") ? snowName.substring(1, snowName.length())
+					: snowName) != null) {
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(snowName
+						.startsWith("/") ? snowName.substring(1, snowName.length()) : snowName)));
+				this.customSnow = image;
 			}
 
 			if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1, fontName.length())

@@ -115,7 +115,6 @@ public class NetworkPlayer extends HumanoidMob {
 			GL11.glBindTexture(3553, var1.load("/mob/" + this.modelName + ".png"));
 			return;
 		}
-
 		if (this.a < 0) {
 			GL11.glBindTexture(3553, var1.load("/char.png"));
 		} else {
