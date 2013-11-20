@@ -558,7 +558,7 @@ public class TextureManager {
 			String spiderNAme = "spider.png";
 			String zombieName = "zombie.png";
 			String cloudName = "clouds.png";
-			String snowName = "clouds.png";
+			String snowName = "snow.png";
 
 			if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1,
 					terrainPNG.length()) : terrainPNG) != null) {
