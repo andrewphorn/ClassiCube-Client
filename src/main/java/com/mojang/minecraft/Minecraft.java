@@ -2560,6 +2560,7 @@ public final class Minecraft implements Runnable {
 					this.player.inventory.swapPaint(var25);
 					break;
 				}
+				this.currentScreen.mouseEvent();
 			}
 		}
 
