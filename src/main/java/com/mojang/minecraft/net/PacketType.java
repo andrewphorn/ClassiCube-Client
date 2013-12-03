@@ -36,6 +36,7 @@ public class PacketType {
 	public static final PacketType SET_BLOCK_PERMISSIONS; // 28
 	public static final PacketType CHANGE_MODEL; // 29
 	public static final PacketType ENV_SET_MAP_APPEARANCE; // 30
+        public static final PacketType ENV_SET_WEATHER_TYPE; // 31
 	public int length;
 
 	private static int nextOpcode;
@@ -88,6 +89,7 @@ public class PacketType {
 		CHANGE_MODEL = new PacketType(new Class[] { Byte.TYPE, String.class });
 		ENV_SET_MAP_APPEARANCE = new PacketType(new Class[] { String.class, Byte.TYPE, Byte.TYPE,
 				Short.TYPE });
+                ENV_SET_WEATHER_TYPE = new PacketType(new Class[] { Short.TYPE });
 
 		// set names
 		EXT_INFO.extName = "ExtInfo";
@@ -102,6 +104,7 @@ public class PacketType {
 		SET_BLOCK_PERMISSIONS.extName = "BlockPermissions";
 		CHANGE_MODEL.extName = "ChangeModel";
 		ENV_SET_MAP_APPEARANCE.extName = "EnvMapAppearance";
+                ENV_SET_WEATHER_TYPE.extName = "EnvSetWeatherType";
 
 		nextOpcode = 0;
 	}

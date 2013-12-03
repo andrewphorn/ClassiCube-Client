@@ -2279,6 +2279,26 @@ public final class Minecraft implements Runnable {
 											}
 										}
 									}
+                                                                        
+                                                                        else if (packetType == PacketType.ENV_SET_WEATHER_TYPE)
+                                                                        {
+                                                                            short Weather = (Short) packetParams[0];
+                                                                            if (Weather == 0)
+                                                                            {
+                                                                                this.raining = false;
+                                                                                this.snowing = false;
+                                                                            }
+                                                                            else if (Weather == 1)
+                                                                            {
+                                                                                this.raining = !this.raining;
+                                                                                this.snowing = false;
+                                                                            }
+                                                                            else if (Weather == 2)
+                                                                            {
+                                                                                this.snowing = !this.snowing;
+                                                                                this.raining = false;
+                                                                            }
+                                                                        }
 
 									else if (packetType == PacketType.IDENTIFICATION) {
 										networkManager.minecraft.progressBar
