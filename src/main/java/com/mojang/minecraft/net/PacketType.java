@@ -104,7 +104,7 @@ public class PacketType {
 		SET_BLOCK_PERMISSIONS.extName = "BlockPermissions";
 		CHANGE_MODEL.extName = "ChangeModel";
 		ENV_SET_MAP_APPEARANCE.extName = "EnvMapAppearance";
-                ENV_SET_WEATHER_TYPE.extName = "EnvSetWeatherType";
+                ENV_SET_WEATHER_TYPE.extName = "EnvWeatherType";
 
 		nextOpcode = 0;
 	}
