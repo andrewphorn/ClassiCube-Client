@@ -2100,7 +2100,7 @@ public final class Minecraft implements Runnable {
 										Short r = ((Short) packetParams[1]).shortValue();
 										Short g = ((Short) packetParams[2]).shortValue();
 										Short b = ((Short) packetParams[3]).shortValue();
-										int dec = 255 * 255 * r + 255 * g + b;
+										int dec = ((r&0x0ff)<<16)|((g&0x0ff)<<8)|(b&0x0ff);
 										switch (Variable) {
 										case 0: // sky
 											this.level.skyColor = dec;
