@@ -37,7 +37,7 @@ public class LiquidBlock extends Block {
 			for (int var7 = var2 - 2; var7 <= var2 + 2; ++var7) {
 				for (int var5 = var3 - 2; var5 <= var3 + 2; ++var5) {
 					for (int var6 = var4 - 2; var6 <= var4 + 2; ++var6) {
-						if (var1.getTile(var7, var5, var6) == Block.sponge.id) {
+						if (var1.getTile(var7, var5, var6) == Block.SPONGE.id) {
 							return false;
 						}
 					}
@@ -130,7 +130,7 @@ public class LiquidBlock extends Block {
 			LiquidType var6 = Block.blocks[var5].getLiquidType();
 			if (this.type == LiquidType.water && var6 == LiquidType.lava
 					|| var6 == LiquidType.water && this.type == LiquidType.lava) {
-				var1.setTile(var2, var3, var4, Block.obsidian.id);
+				var1.setTile(var2, var3, var4, Block.OBSIDIAN.id);
 				return;
 			}
 		}

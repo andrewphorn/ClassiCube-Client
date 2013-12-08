@@ -8,7 +8,7 @@ public final class WoodBlock extends Block {
 	}
 
 	public final int getDrop() {
-		return plank.id;
+		return WOOD.id;
 	}
 
 	public final int getDropCount() {

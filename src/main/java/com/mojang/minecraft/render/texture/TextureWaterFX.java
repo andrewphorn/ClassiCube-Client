@@ -10,7 +10,7 @@ public final class TextureWaterFX extends TextureFX {
 	private float[] alpha = new float[256];
 
 	public TextureWaterFX() {
-		super(Block.water.textureId);
+		super(Block.WATER.textureId);
 	}
 
 	public final void animate() {

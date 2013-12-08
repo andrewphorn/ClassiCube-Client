@@ -56,7 +56,7 @@ public class Sheep extends QuadrupedMob {
 
 		for (int var3 = 0; var3 < var2; ++var3) {
 			this.level.addEntity(new Item(this.level, this.x, this.y, this.z,
-					Block.brownMushroom.id));
+					Block.BROWN_MUSHROOM.id));
 		}
 
 		super.die(var1);
@@ -69,7 +69,7 @@ public class Sheep extends QuadrupedMob {
 
 			for (var2 = 0; var2 < var3; ++var2) {
 				this.level.addEntity(new Item(this.level, this.x, this.y, this.z,
-						Block.woolWhite.id));
+						Block.WHITE_WOOL.id));
 			}
 
 		} else {

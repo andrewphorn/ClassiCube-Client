@@ -14,7 +14,7 @@ public final class MushroomBlock extends FlowerBlock {
 
 	public final void update(Level level, int x, int y, int z, Random rand) {
 		int var6 = level.getTile(x, y - 1, z);
-		if (level.isLit(x, y, z) || var6 != stone.id && var6 != gravel.id && var6 != cobblestone.id) {
+		if (level.isLit(x, y, z) || var6 != STONE.id && var6 != GRAVEL.id && var6 != COBLESTONE.id) {
 			level.setTile(x, y, z, 0);
 		}
 

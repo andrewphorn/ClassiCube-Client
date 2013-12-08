@@ -27,7 +27,7 @@ public final class SessionData {
 			ab.add(Block.blocks[i]);
 		}
 		if(Minecraft.isSinglePlayer)
-			ab.remove(Block.bedrock); //players cant delete this
+			ab.remove(Block.BEDROCK); //players cant delete this
 		allowedBlocks = ab;
 	}
 
@@ -39,7 +39,7 @@ public final class SessionData {
 				ab.add(Block.blocks[i]);
 			}
 			if(Minecraft.isSinglePlayer)
-				ab.remove(Block.bedrock);
+				ab.remove(Block.BEDROCK);
 			allowedBlocks = ab;
 		}
 
@@ -49,7 +49,7 @@ public final class SessionData {
 				ab.add(Block.blocks[i]);
 			}
 			if(Minecraft.isSinglePlayer)
-				ab.remove(Block.bedrock);
+				ab.remove(Block.BEDROCK);
 			allowedBlocks = ab;
 		} else if (SupportLevel <= 0) { //minecraft
 			AddStandardMinecraftBlocks();

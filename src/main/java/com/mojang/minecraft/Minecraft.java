@@ -464,7 +464,7 @@ public final class Minecraft implements Runnable {
 					}
 					// if mouse click left
 					if (var1 == 0) {
-						if (block != Block.bedrock || this.player.userType >= 100) {
+						if (block != Block.BEDROCK || this.player.userType >= 100) {
 							if (!this.DisallowedBreakingBlocks.contains(block)) {
 								this.gamemode.hitBlock(x, y, z);
 								return;
@@ -478,8 +478,8 @@ public final class Minecraft implements Runnable {
 							return; // if air or not allowed, return
 						}
 						AABB aabb = Block.blocks[blockID].getCollisionBox(x, y, z);
-						if ((block == null || block == Block.water
-								|| block == Block.stationaryWater || block == Block.lava || block == Block.stationaryLava)
+						if ((block == null || block == Block.WATER
+								|| block == Block.STATIONARY_WATER || block == Block.LAVA || block == Block.STATIONARY_LAVA)
 								&& (aabb == null || (this.player.bb.intersects(aabb) ? false
 										: this.level.isFree(aabb)))) {
 							if (!this.gamemode.canPlace(blockID)) {
@@ -489,9 +489,9 @@ public final class Minecraft implements Runnable {
 								Block toCheck = Block.blocks[this.level.getTile(x, y - 1, z)];
 								if (toCheck != null) {
 									if (toCheck.id > 0) {
-										if (toCheck == Block.snow) {
+										if (toCheck == Block.SNOW) {
 											if (this.selected.face == 1) {
-												if (block == Block.snow)
+												if (block == Block.SNOW)
 													return;
 												else
 													y -= 1;

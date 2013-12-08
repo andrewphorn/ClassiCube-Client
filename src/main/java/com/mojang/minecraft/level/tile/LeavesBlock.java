@@ -7,7 +7,7 @@ public final class LeavesBlock extends LeavesBaseBlock {
 	}
 
 	public final int getDrop() {
-		return Block.sapling.id;
+		return Block.SAPLING.id;
 	}
 
 	public final int getDropCount() {

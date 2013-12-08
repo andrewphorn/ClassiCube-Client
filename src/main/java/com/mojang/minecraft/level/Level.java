@@ -692,7 +692,7 @@ public class Level implements Serializable {
 							var2.add(var11);
 						}
 					} else if ((var3 < 0 || var9 < 0 || var10 < 0 || var3 >= this.width || var10 >= this.height)
-							&& (var11 = Block.bedrock.getCollisionBox(var3, var9, var10)) != null
+							&& (var11 = Block.BEDROCK.getCollisionBox(var3, var9, var10)) != null
 							&& var1.intersectsInner(var11)) {
 						var2.add(var11);
 					}
@@ -857,9 +857,9 @@ public class Level implements Serializable {
 
 		if (!var5) {
 			return false;
-		} else if ((this.blocks[((var2 - 1) * this.height + var3) * this.width + var1] & 255) == Block.grass.id
+		} else if ((this.blocks[((var2 - 1) * this.height + var3) * this.width + var1] & 255) == Block.GRASS.id
 				&& var2 < this.depth - var4 - 1) {
-			this.setTile(var1, var2 - 1, var3, Block.dirt.id);
+			this.setTile(var1, var2 - 1, var3, Block.DIRT.id);
 
 			int var13;
 			for (var13 = var2 - 3 + var4; var13 <= var2 + var4; ++var13) {
@@ -873,14 +873,14 @@ public class Level implements Serializable {
 						int var11 = var6 - var3;
 						if (Math.abs(var12) != var9 || Math.abs(var11) != var9
 								|| this.random.nextInt(2) != 0 && var8 != 0) {
-							this.setTile(var10, var13, var6, Block.leaves.id);
+							this.setTile(var10, var13, var6, Block.LEAVES.id);
 						}
 					}
 				}
 			}
 
 			for (var13 = 0; var13 < var4; ++var13) {
-				this.setTile(var1, var2 + var13, var3, Block.log.id);
+				this.setTile(var1, var2 + var13, var3, Block.LOG.id);
 			}
 
 			return true;
@@ -908,7 +908,7 @@ public class Level implements Serializable {
 						&& (var1 == 0 || var3 == 0 || var1 == this.width - 1 || var3 == this.height - 1)
 						&& (float) var2 >= this.getGroundLevel()
 						&& (float) var2 < this.getWaterLevel() && !this.networkMode) {
-					var4 = Block.water.id;
+					var4 = Block.WATER.id;
 				}
 
 				byte var5 = this.blocks[(var2 * this.height + var3) * this.width + var1];

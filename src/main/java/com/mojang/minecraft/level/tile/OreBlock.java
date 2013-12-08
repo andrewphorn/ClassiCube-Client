@@ -7,8 +7,8 @@ public final class OreBlock extends Block {
 	}
 
 	public final int getDrop() {
-		return this == coalOre ? stoneSlab.id : (this == goldOre ? goldBlock.id
-				: (this == ironOre ? ironBlock.id : this.id));
+		return this == COAL_ORE ? SLAB.id : (this == GOLD_ORE ? GOLD_BLOCK.id
+				: (this == IRON_ORE ? IRON_BLOCK.id : this.id));
 	}
 
 	public final int getDropCount() {

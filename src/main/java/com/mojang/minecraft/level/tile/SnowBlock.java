@@ -14,7 +14,7 @@ public final class SnowBlock extends Block {
 	}
 
 	public final boolean canRenderSide(Level level, int x, int y, int z, int side) {
-		if (this != snow) {
+		if (this != SNOW) {
 			super.canRenderSide(level, x, y, z, side);
 		}
 
@@ -28,7 +28,7 @@ public final class SnowBlock extends Block {
 	}
 
 	public final int getDrop() {
-		return snow.id;
+		return SNOW.id;
 	}
 
 	protected final int getTextureId(int texture) {

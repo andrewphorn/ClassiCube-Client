@@ -40,7 +40,7 @@ public final class StillLiquidBlock extends LiquidBlock {
 			LiquidType var7 = Block.blocks[var5].getLiquidType();
 			if (this.type == LiquidType.water && var7 == LiquidType.lava
 					|| var7 == LiquidType.water && this.type == LiquidType.lava) {
-				var1.setTile(var2, var3, var4, Block.stone.id);
+				var1.setTile(var2, var3, var4, Block.STONE.id);
 				return;
 			}
 		}

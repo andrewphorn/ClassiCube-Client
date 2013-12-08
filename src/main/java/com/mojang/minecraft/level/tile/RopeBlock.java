@@ -13,9 +13,9 @@ public final class RopeBlock extends FlowerBlock {
 	}
 
 	public final void update(Level level, int x, int y, int z, Random rand) {
-		if (this.id != rope.id) {
+		if (this.id != ROPE.id) {
 			int var6 = level.getTile(x, y - 1, z);
-			if (level.isLit(x, y, z) && (var6 == dirt.id || var6 == grass.id)) {
+			if (level.isLit(x, y, z) && (var6 == DIRT.id || var6 == GRASS.id)) {
 				if (rand.nextInt(5) == 0) {
 					level.setTileNoUpdate(x, y, z, 0);
 					if (!level.maybeGrowTree(x, y, z)) {

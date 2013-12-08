@@ -38,7 +38,7 @@ final class Creeper$1 extends BasicAttackAI {
 			float var8 = var4 / var6 / var6;
 			var6 = var5 / var6 / var6;
 			this.level.particleEngine.spawnParticle(new TerrainParticle(this.level, this.mob.x
-					+ var3, this.mob.y + var4, this.mob.z + var5, var7, var8, var6, Block.leaves));
+					+ var3, this.mob.y + var4, this.mob.z + var5, var7, var8, var6, Block.LEAVES));
 		}
 
 	}

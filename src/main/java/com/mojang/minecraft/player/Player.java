@@ -292,7 +292,7 @@ public class Player extends Mob {
 				super.move(this.xd * f1, this.yd * f1, this.zd * f1);
 			}
 			int var1 = this.level.getTile((int) this.x, (int) ((this.y) - 2.12F), (int) this.z);
-			if (Block.blocks[var1] != Block.ice) {
+			if (Block.blocks[var1] != Block.ICE) {
 				if (this.jumpCount == 0) {
 					this.isOnIce = false;
 				}

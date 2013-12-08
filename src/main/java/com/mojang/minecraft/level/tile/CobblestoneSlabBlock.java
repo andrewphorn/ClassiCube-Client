@@ -16,7 +16,7 @@ public final class CobblestoneSlabBlock extends Block {
 	}
 
 	public final boolean canRenderSide(Level level, int x, int y, int z, int side) {
-		if (this != slabCobblestone) {
+		if (this != COBBLESTONE_SLAB) {
 			super.canRenderSide(level, x, y, z, side);
 		}
 
@@ -25,7 +25,7 @@ public final class CobblestoneSlabBlock extends Block {
 	}
 
 	public final int getDrop() {
-		return slabCobblestone.id;
+		return COBBLESTONE_SLAB.id;
 	}
 
 	protected final int getTextureId(int texture) {
@@ -41,19 +41,19 @@ public final class CobblestoneSlabBlock extends Block {
 	}
 
 	public final void onAdded(Level level, int x, int y, int z) {
-		if (this != slabCobblestone) {
+		if (this != COBBLESTONE_SLAB) {
 			super.onAdded(level, x, y, z);
 		}
 
-		if (level.getTile(x, y - 1, z) == slabCobblestone.id) {
+		if (level.getTile(x, y - 1, z) == COBBLESTONE_SLAB.id) {
 			level.setTile(x, y, z, 0);
-			level.setTile(x, y - 1, z, slabCobblestone.id);
+			level.setTile(x, y - 1, z, COBBLESTONE_SLAB.id);
 		}
 
 	}
 
 	public final void onNeighborChange(Level var1, int var2, int var3, int var4, int var5) {
-		if (this == slabCobblestone) {
+		if (this == COBBLESTONE_SLAB) {
 			;
 		}
 	}

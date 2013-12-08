@@ -7,6 +7,6 @@ public final class StoneBlock extends Block {
 	}
 
 	public final int getDrop() {
-		return cobblestone.id;
+		return COBLESTONE.id;
 	}
 }

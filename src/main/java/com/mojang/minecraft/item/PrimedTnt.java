@@ -58,7 +58,7 @@ public class PrimedTnt extends Entity {
 			if (entity instanceof Player) {
 				remove();
 
-				Item item = new Item(level, x, y, z, Block.tnt.id);
+				Item item = new Item(level, x, y, z, Block.TNT.id);
 
 				level.addEntity(item);
 			}
@@ -76,7 +76,7 @@ public class PrimedTnt extends Entity {
 		if (defused) {
 			Player player = (Player) entity;
 
-			if (player.addResource(Block.tnt.id)) {
+			if (player.addResource(Block.TNT.id)) {
 				TakeEntityAnim takeEntityAnim = new TakeEntityAnim(this.level, this, player);
 
 				level.addEntity(takeEntityAnim);
@@ -103,7 +103,7 @@ public class PrimedTnt extends Entity {
 
 		ShapeRenderer shapeRenderer = ShapeRenderer.instance;
 
-		Block.tnt.renderPreview(shapeRenderer);
+		Block.TNT.renderPreview(shapeRenderer);
 
 		GL11.glDisable(3553);
 		GL11.glDisable(2896);
@@ -120,7 +120,7 @@ public class PrimedTnt extends Entity {
 		GL11.glEnable(3042);
 		GL11.glBlendFunc(770, 1);
 
-		Block.tnt.renderPreview(shapeRenderer);
+		Block.TNT.renderPreview(shapeRenderer);
 
 		GL11.glDisable(3042);
 		GL11.glEnable(3553);
@@ -174,7 +174,7 @@ public class PrimedTnt extends Entity {
 					unknown3 = unknown2 / unknown3 / unknown3;
 
 					TerrainParticle terrainParticle = new TerrainParticle(level, x + unknown0, y
-							+ unknown1, z + unknown2, unknown4, unknown5, unknown3, Block.tnt);
+							+ unknown1, z + unknown2, unknown4, unknown5, unknown3, Block.TNT);
 
 					level.particleEngine.spawnParticle(terrainParticle);
 				}

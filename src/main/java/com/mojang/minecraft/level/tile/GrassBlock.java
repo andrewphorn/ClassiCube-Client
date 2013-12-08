@@ -13,7 +13,7 @@ public final class GrassBlock extends Block {
 	}
 
 	public final int getDrop() {
-		return dirt.getDrop();
+		return DIRT.getDrop();
 	}
 
 	protected final int getTextureId(int texture) {
@@ -23,14 +23,14 @@ public final class GrassBlock extends Block {
 	public final void update(Level level, int x, int y, int z, Random rand) {
 		if (rand.nextInt(4) == 0) {
 			if (!level.isLit(x, y, z)) {
-				level.setTile(x, y, z, dirt.id);
+				level.setTile(x, y, z, DIRT.id);
 			} else {
 				for (int var9 = 0; var9 < 4; ++var9) {
 					int var6 = x + rand.nextInt(3) - 1;
 					int var7 = y + rand.nextInt(5) - 3;
 					int var8 = z + rand.nextInt(3) - 1;
-					if (level.getTile(var6, var7, var8) == dirt.id && level.isLit(var6, var7, var8)) {
-						level.setTile(var6, var7, var8, dirt.id);
+					if (level.getTile(var6, var7, var8) == DIRT.id && level.isLit(var6, var7, var8)) {
+						level.setTile(var6, var7, var8, DIRT.id);
 					}
 				}
 
