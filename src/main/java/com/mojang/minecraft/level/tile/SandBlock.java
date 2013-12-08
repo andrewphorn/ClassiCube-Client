@@ -6,8 +6,8 @@ import com.mojang.minecraft.level.liquid.LiquidType;
 
 public final class SandBlock extends Block {
 
-	public SandBlock(int var1, int var2) {
-		super(var1, var2);
+	public SandBlock(int var1) {
+		super(var1);
 	}
 
 	private void fall(Level var1, int var2, int var3, int var4) {
@@ -22,11 +22,11 @@ public final class SandBlock extends Block {
 			int var10;
 			LiquidType var12;
 			if (!((var10 = var1.getTile(var11, var8, var6)) == 0 ? true : ((var12 = blocks[var10]
-					.getLiquidType()) == LiquidType.WATER ? true : var12 == LiquidType.LAVA))
+					.getLiquidType()) == LiquidType.water ? true : var12 == LiquidType.lava))
 					|| var5 <= 0) {
 				if (var5 != var3) {
 					if ((var10 = var1.getTile(var11, var5, var6)) > 0
-							&& blocks[var10].getLiquidType() != LiquidType.NOT_LIQUID) {
+							&& blocks[var10].getLiquidType() != LiquidType.notLiquid) {
 						var1.setTileNoUpdate(var11, var5, var6, 0);
 					}
 

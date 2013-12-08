@@ -33,7 +33,7 @@ public final class MobSpawner {
 					.min(this.level.random.nextFloat(), this.level.random.nextFloat()) * (float) this.level.depth);
 			int var9 = this.level.random.nextInt(this.level.height);
 			if (!this.level.isSolidTile(var7, var8, var9)
-					&& this.level.getLiquid(var7, var8, var9) == LiquidType.NOT_LIQUID
+					&& this.level.getLiquid(var7, var8, var9) == LiquidType.notLiquid
 					&& (!this.level.isLit(var7, var8, var9) || this.level.random.nextInt(5) == 0)) {
 				for (int var10 = 0; var10 < 3; ++var10) {
 					int var11 = var7;

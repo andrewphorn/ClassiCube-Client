@@ -7,7 +7,7 @@ public class TextureFireFX extends TextureFX {
 	protected float b[];
 
 	public TextureFireFX() {
-		super(Block.FIRE.textureId);
+		super(Block.fire.textureId);
 		a = new float[320];
 		b = new float[320];
 	}

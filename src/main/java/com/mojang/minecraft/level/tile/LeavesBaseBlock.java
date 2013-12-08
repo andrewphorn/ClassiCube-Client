@@ -6,8 +6,8 @@ public class LeavesBaseBlock extends Block {
 
 	private boolean showNeighborSides = true;
 
-	protected LeavesBaseBlock(int var1, int var2) {
-		super(var1, var2);
+	protected LeavesBaseBlock(int var1) {
+		super(var1);
 	}
 
 	public final boolean canRenderSide(Level level, int x, int y, int z, int side) {

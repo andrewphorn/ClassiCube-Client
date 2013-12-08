@@ -6,7 +6,6 @@ public final class SpongeBlock extends Block {
 
 	protected SpongeBlock(int var1) {
 		super(var1);
-		this.textureId = 48;
 	}
 
 	public final void onAdded(Level level, int x, int y, int z) {

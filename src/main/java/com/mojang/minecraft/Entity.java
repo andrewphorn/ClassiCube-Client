@@ -4,12 +4,12 @@ import com.mojang.minecraft.level.BlockMap;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.level.tile.Tile$SoundType;
 import com.mojang.minecraft.model.Vec3D;
 import com.mojang.minecraft.net.PositionUpdate;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.sound.StepSound;
 import com.mojang.util.MathHelper;
 
 import java.io.Serializable;
@@ -148,15 +148,15 @@ public abstract class Entity implements Serializable {
 	}
 
 	public boolean isInLava() {
-		return this.level.containsLiquid(this.bb.grow(0.0F, -0.4F, 0.0F), LiquidType.LAVA);
+		return this.level.containsLiquid(this.bb.grow(0.0F, -0.4F, 0.0F), LiquidType.lava);
 	}
 
 	public boolean isInOrOnRope() {
-		return this.level.containsBlock(this.bb.grow(-0.5F, 0.0F, -0.5F), Block.ROPE);
+		return this.level.containsBlock(this.bb.grow(-0.5F, 0.0F, -0.5F), Block.rope);
 	}
 
 	public boolean isInWater() {
-		return this.level.containsLiquid(this.bb.grow(0.0F, -0.4F, 0.0F), LiquidType.WATER);
+		return this.level.containsLiquid(this.bb.grow(0.0F, -0.4F, 0.0F), LiquidType.water);
 	}
 
 	public boolean isLit() {
@@ -181,7 +181,7 @@ public abstract class Entity implements Serializable {
 	public boolean isUnderWater() {
 		int var1;
 		return (var1 = this.level.getTile((int) this.x, (int) (this.y + 0.12F), (int) this.z)) != 0 ? Block.blocks[var1]
-				.getLiquidType().equals(LiquidType.WATER) : false;
+				.getLiquidType().equals(LiquidType.water) : false;
 	}
 
 	public void move(float var1, float var2, float var3) {
@@ -344,14 +344,10 @@ public abstract class Entity implements Serializable {
 				if (this.distanceWalkedOnStepModified > (float) this.nextStepDistance && var32 > 0) {
 					this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
 
-					Tile$SoundType TileSoundType = Block.blocks[var32].stepsound;
-					if (TileSoundType == null)
-						return;
-
-					if (TileSoundType != Tile$SoundType.none && this.onGround) {
-						playSound("step." + TileSoundType.name, TileSoundType.getVolume() * 0.75F,
-								TileSoundType.getPitch());
-					}
+                                        if ( this.onGround) {
+                                                this.playStepSound(var32);
+                                        
+			}
 				}
 			}
 		}
@@ -380,6 +376,16 @@ public abstract class Entity implements Serializable {
 			this.zd += y * var4 + x * z;
 		}
 	}
+        
+    protected void playStepSound(int var1)
+    {
+        StepSound var2 = Block.blocks[var1].stepSound;
+
+        if (!Block.blocks[var1].isLiquid())
+        {
+            this.playSound(var2.getStepSound(), var2.getVolume() * 0.15F, var2.getPitch());
+        }
+    }
 
 	public void moveTo(float var1, float var2, float var3, float var4, float var5) {
 		this.xo = this.x = var1;

@@ -455,15 +455,15 @@ public class TextureManager {
 			int id = load(currentTerrainPng);
 			textures.put("customTerrain", id);
 			if (this.customSideBlock == null) {
-				customSideBlock = this.textureAtlas.get(Block.BEDROCK.textureId);
+				customSideBlock = this.textureAtlas.get(Block.bedrock.textureId);
 				textures.put("customSide", load(customSideBlock));
 			}
 			if (this.customEdgeBlock == null) {
-				customEdgeBlock = this.textureAtlas.get(Block.WATER.textureId);
+				customEdgeBlock = this.textureAtlas.get(Block.water.textureId);
 				textures.put("customEdge", load(customEdgeBlock));
 			}
 			if (this.customDirtPng == null) {
-				customDirtPng = this.textureAtlas.get(Block.DIRT.textureId);
+				customDirtPng = this.textureAtlas.get(Block.dirt.textureId);
 				textures.put("customDirt", load(customDirtPng));
 			}
 			return id;

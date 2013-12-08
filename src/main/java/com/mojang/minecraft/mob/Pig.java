@@ -25,7 +25,7 @@ public class Pig extends QuadrupedMob {
 
 		for (int var3 = 0; var3 < var2; ++var3) {
 			this.level.addEntity(new Item(this.level, this.x, this.y, this.z,
-					Block.BROWN_MUSHROOM.id));
+					Block.brownMushroom.id));
 		}
 
 		super.die(var1);

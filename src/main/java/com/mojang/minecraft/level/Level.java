@@ -232,7 +232,7 @@ public class Level implements Serializable {
 
 					int var22 = this.getTile(var6, var7, var8);
 					Block var21 = Block.blocks[var22];
-					if (var22 > 0 && (var21.getLiquidType() == LiquidType.NOT_LIQUID)) {
+					if (var22 > 0 && (var21.getLiquidType() == LiquidType.notLiquid)) {
 						MovingObjectPosition var23;
 						if (var21.isCube()) {
 							if ((var23 = var21.clip(var6, var7, var8, var1, var2)) != null) {
@@ -301,7 +301,7 @@ public class Level implements Serializable {
 				for (int var8 = var6; var8 < var7; ++var8) {
 					Block var9;
 					if ((var9 = Block.blocks[this.getTile(var10, var2, var8)]) != null
-							&& var9.getLiquidType() != LiquidType.NOT_LIQUID) {
+							&& var9.getLiquidType() != LiquidType.notLiquid) {
 						return true;
 					}
 				}
@@ -692,7 +692,7 @@ public class Level implements Serializable {
 							var2.add(var11);
 						}
 					} else if ((var3 < 0 || var9 < 0 || var10 < 0 || var3 >= this.width || var10 >= this.height)
-							&& (var11 = Block.BEDROCK.getCollisionBox(var3, var9, var10)) != null
+							&& (var11 = Block.bedrock.getCollisionBox(var3, var9, var10)) != null
 							&& var1.intersectsInner(var11)) {
 						var2.add(var11);
 					}
@@ -710,7 +710,7 @@ public class Level implements Serializable {
 	public int getHighestTile(int var1, int var2) {
 		int var3;
 		for (var3 = this.depth; (this.getTile(var1, var3 - 1, var2) == 0 || Block.blocks[this
-				.getTile(var1, var3 - 1, var2)].getLiquidType() != LiquidType.NOT_LIQUID)
+				.getTile(var1, var3 - 1, var2)].getLiquidType() != LiquidType.notLiquid)
 				&& var3 > 0; --var3) {
 			;
 		}
@@ -720,7 +720,7 @@ public class Level implements Serializable {
 
 	public LiquidType getLiquid(int var1, int var2, int var3) {
 		int var4;
-		return (var4 = this.getTile(var1, var2, var3)) == 0 ? LiquidType.NOT_LIQUID
+		return (var4 = this.getTile(var1, var2, var3)) == 0 ? LiquidType.notLiquid
 				: Block.blocks[var4].getLiquidType();
 	}
 
@@ -821,7 +821,7 @@ public class Level implements Serializable {
 	public boolean isWater(int var1, int var2, int var3) {
 		int var4;
 		return (var4 = this.getTile(var1, var2, var3)) > 0
-				&& Block.blocks[var4].getLiquidType() == LiquidType.WATER;
+				&& Block.blocks[var4].getLiquidType() == LiquidType.water;
 	}
 
 	public boolean maybeGrowTree(int var1, int var2, int var3) {
@@ -857,9 +857,9 @@ public class Level implements Serializable {
 
 		if (!var5) {
 			return false;
-		} else if ((this.blocks[((var2 - 1) * this.height + var3) * this.width + var1] & 255) == Block.GRASS.id
+		} else if ((this.blocks[((var2 - 1) * this.height + var3) * this.width + var1] & 255) == Block.grass.id
 				&& var2 < this.depth - var4 - 1) {
-			this.setTile(var1, var2 - 1, var3, Block.DIRT.id);
+			this.setTile(var1, var2 - 1, var3, Block.dirt.id);
 
 			int var13;
 			for (var13 = var2 - 3 + var4; var13 <= var2 + var4; ++var13) {
@@ -873,14 +873,14 @@ public class Level implements Serializable {
 						int var11 = var6 - var3;
 						if (Math.abs(var12) != var9 || Math.abs(var11) != var9
 								|| this.random.nextInt(2) != 0 && var8 != 0) {
-							this.setTile(var10, var13, var6, Block.LEAVES.id);
+							this.setTile(var10, var13, var6, Block.leaves.id);
 						}
 					}
 				}
 			}
 
 			for (var13 = 0; var13 < var4; ++var13) {
-				this.setTile(var1, var2 + var13, var3, Block.LOG.id);
+				this.setTile(var1, var2 + var13, var3, Block.log.id);
 			}
 
 			return true;
@@ -908,7 +908,7 @@ public class Level implements Serializable {
 						&& (var1 == 0 || var3 == 0 || var1 == this.width - 1 || var3 == this.height - 1)
 						&& (float) var2 >= this.getGroundLevel()
 						&& (float) var2 < this.getWaterLevel() && !this.networkMode) {
-					var4 = Block.WATER.id;
+					var4 = Block.water.id;
 				}
 
 				byte var5 = this.blocks[(var2 * this.height + var3) * this.width + var1];

@@ -58,6 +58,10 @@ public class NetworkPlayer extends HumanoidMob {
 				|| this.name.equalsIgnoreCase("Jonty800@")) {
 			this.modelName = "sheep";
 		}
+                if (this.name.equalsIgnoreCase("MrBluePotato") || this.name.equalsIgnoreCase("MrBluePotato+")
+				|| this.name.equalsIgnoreCase("MrBluePotato@")) {
+			this.modelName = "chicken";
+		}
 		if (this.modelName == "humanoid") {
 			downloadSkin();
 		} else if (isInteger(this.modelName)) {

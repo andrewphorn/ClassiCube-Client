@@ -112,9 +112,9 @@ public final class LevelGenerator {
 
 				if (var13 > 0) {
 					byte var25 = this.blocks[var2 - var1];
-					if ((var20 == Block.LAVA.id || var20 == Block.STATIONARY_LAVA.id)
-							&& (var25 == Block.WATER.id || var25 == Block.STATIONARY_WATER.id)) {
-						this.blocks[var2 - var1] = (byte) Block.STONE.id;
+					if ((var20 == Block.lava.id || var20 == Block.stationaryLava.id)
+							&& (var25 == Block.water.id || var25 == Block.stationaryWater.id)) {
+						this.blocks[var2 - var1] = (byte) Block.stone.id;
 					}
 
 					if ((var19 = var25 == 0) && !var18) {
@@ -232,15 +232,15 @@ public final class LevelGenerator {
 					var27 = (var26 * var5.depth + var11) * var5.width + var24;
 					var28 = 0;
 					if (var26 <= var23) {
-						var28 = Block.DIRT.id;
+						var28 = Block.dirt.id;
 					}
 
 					if (var26 <= var25) {
-						var28 = Block.STONE.id;
+						var28 = Block.stone.id;
 					}
 
 					if (var26 == 0) {
-						var28 = Block.LAVA.id;
+						var28 = Block.lava.id;
 					}
 
 					var5.blocks[var27] = (byte) var28;
@@ -298,7 +298,7 @@ public final class LevelGenerator {
 										&& var36 < var5.height - 1
 										&& var37 < var5.depth - 1) {
 									int var66 = (var36 * var5.depth + var37) * var5.width + var35;
-									if (var5.blocks[var66] == Block.STONE.id) {
+									if (var5.blocks[var66] == Block.stone.id) {
 										var5.blocks[var66] = 0;
 									}
 								}
@@ -309,12 +309,12 @@ public final class LevelGenerator {
 			}
 		}
 
-		this.populateOre(Block.COAL_ORE.id, 90, 1, 4);
-		this.populateOre(Block.IRON_ORE.id, 70, 2, 4);
-		this.populateOre(Block.GOLD_ORE.id, 50, 3, 4);
+		this.populateOre(Block.coalOre.id, 90, 1, 4);
+		this.populateOre(Block.ironOre.id, 70, 2, 4);
+		this.populateOre(Block.goldOre.id, 50, 3, 4);
 		this.progressBar.setText("Watering..");
 		var5 = this;
-		var51 = Block.STATIONARY_WATER.id;
+		var51 = Block.stationaryWater.id;
 		this.setProgress(0);
 
 		for (var54 = 0; var54 < var5.width; ++var54) {
@@ -356,7 +356,7 @@ public final class LevelGenerator {
 			var54 = (int) (var5.random.nextFloat() * var5.random.nextFloat() * (float) (var5.waterLevel - 3));
 			var24 = var5.random.nextInt(var5.depth);
 			if (var5.blocks[(var54 * var5.depth + var24) * var5.width + var51] == 0) {
-				var5.flood(var51, var54, var24, Block.STATIONARY_LAVA.id);
+				var5.flood(var51, var54, var24, Block.stationaryLava.id);
 			}
 		}
 
@@ -379,15 +379,15 @@ public final class LevelGenerator {
 				boolean var57 = var58.compute((double) var11, (double) var12) > 12.0D;
 				var27 = ((var26 = var42[var11 + var12 * var46]) * var5.depth + var12) * var5.width
 						+ var11;
-				if (((var28 = var5.blocks[((var26 + 1) * var5.depth + var12) * var5.width + var11] & 255) == Block.WATER.id || var28 == Block.STATIONARY_WATER.id)
+				if (((var28 = var5.blocks[((var26 + 1) * var5.depth + var12) * var5.width + var11] & 255) == Block.water.id || var28 == Block.stationaryWater.id)
 						&& var26 <= var51 / 2 - 1 && var57) {
-					var5.blocks[var27] = (byte) Block.GRAVEL.id;
+					var5.blocks[var27] = (byte) Block.gravel.id;
 				}
 
 				if (var28 == 0) {
-					var63 = Block.GRASS.id;
+					var63 = Block.grass.id;
 					if (var26 <= var51 / 2 - 1 && var60) {
-						var63 = Block.SAND.id;
+						var63 = Block.sand.id;
 					}
 
 					var5.blocks[var27] = (byte) var63;
@@ -420,11 +420,11 @@ public final class LevelGenerator {
 						if ((var5.blocks[(var27 * var5.depth + var25) * var5.width + var23] & 255) == 0) {
 							var63 = (var27 * var5.depth + var25) * var5.width + var23;
 							if ((var5.blocks[((var27 - 1) * var5.depth + var25) * var5.width
-									+ var23] & 255) == Block.GRASS.id) {
+									+ var23] & 255) == Block.grass.id) {
 								if (var54 == 0) {
-									var5.blocks[var63] = (byte) Block.DANDELION.id;
+									var5.blocks[var63] = (byte) Block.dandelion.id;
 								} else if (var54 == 1) {
-									var5.blocks[var63] = (byte) Block.ROSE.id;
+									var5.blocks[var63] = (byte) Block.rose.id;
 								}
 							}
 						}
@@ -463,11 +463,11 @@ public final class LevelGenerator {
 							&& var27 < var42[var26 + var28 * var46] - 1
 							&& (var5.blocks[(var27 * var5.depth + var28) * var5.width + var26] & 255) == 0) {
 						int var62 = (var27 * var5.depth + var28) * var5.width + var26;
-						if ((var5.blocks[((var27 - 1) * var5.depth + var28) * var5.width + var26] & 255) == Block.STONE.id) {
+						if ((var5.blocks[((var27 - 1) * var5.depth + var28) * var5.width + var26] & 255) == Block.stone.id) {
 							if (var24 == 0) {
-								var5.blocks[var62] = (byte) Block.BROWN_MUSHROOM.id;
+								var5.blocks[var62] = (byte) Block.brownMushroom.id;
 							} else if (var24 == 1) {
-								var5.blocks[var62] = (byte) Block.RED_MUSHROOM.id;
+								var5.blocks[var62] = (byte) Block.redMushroom.id;
 							}
 						}
 					}
@@ -557,7 +557,7 @@ public final class LevelGenerator {
 									&& var20 < this.height - 1
 									&& var21 < this.depth - 1) {
 								int var26 = (var20 * this.depth + var21) * this.width + var19;
-								if (this.blocks[var26] == Block.STONE.id) {
+								if (this.blocks[var26] == Block.stone.id) {
 									this.blocks[var26] = var25;
 								}
 							}

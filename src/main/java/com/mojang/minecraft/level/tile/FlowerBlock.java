@@ -10,9 +10,8 @@ import java.util.Random;
 
 public class FlowerBlock extends Block {
 
-	protected FlowerBlock(int var1, int var2) {
+	protected FlowerBlock(int var1) {
 		super(var1);
-		this.textureId = var2;
 		this.setPhysics(true);
 		float var3 = 0.2F;
 		this.setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F, var3 * 3.0F, var3 + 0.5F);
@@ -88,7 +87,7 @@ public class FlowerBlock extends Block {
 	public void update(Level level, int x, int y, int z, Random rand) {
 		if (!level.growTrees) {
 			int var6 = level.getTile(x, y - 1, z);
-			if (this.id != 53 && !level.isLit(x, y, z) || var6 != DIRT.id && var6 != GRASS.id) {
+			if (this.id != 53 && !level.isLit(x, y, z) || var6 != dirt.id && var6 != grass.id) {
 				level.setTile(x, y, z, 0);
 			}
 		}

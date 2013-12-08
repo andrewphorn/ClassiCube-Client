@@ -18,7 +18,7 @@ public class LiquidBlock extends Block {
 		super(var1);
 		this.type = var2;
 		this.textureId = 14;
-		if (var2 == LiquidType.LAVA) {
+		if (var2 == LiquidType.lava) {
 			this.textureId = 30;
 		}
 
@@ -33,11 +33,11 @@ public class LiquidBlock extends Block {
 	}
 
 	private boolean canFlow(Level var1, int var2, int var3, int var4) {
-		if (this.type == LiquidType.WATER) {
+		if (this.type == LiquidType.water) {
 			for (int var7 = var2 - 2; var7 <= var2 + 2; ++var7) {
 				for (int var5 = var3 - 2; var5 <= var3 + 2; ++var5) {
 					for (int var6 = var4 - 2; var6 <= var4 + 2; ++var6) {
-						if (var1.getTile(var7, var5, var6) == Block.SPONGE.id) {
+						if (var1.getTile(var7, var5, var6) == Block.sponge.id) {
 							return false;
 						}
 					}
@@ -77,7 +77,7 @@ public class LiquidBlock extends Block {
 	}
 
 	protected final ColorCache getBrightness(Level level, int x, int y, int z) {
-		if (this.type == LiquidType.LAVA) {
+		if (this.type == LiquidType.lava) {
 			final ColorCache c = new ColorCache(0, 0, 0);
 			c.R = 100F;
 			c.G = 100F;
@@ -103,11 +103,11 @@ public class LiquidBlock extends Block {
 	}
 
 	public final int getRenderPass() {
-		return this.type == LiquidType.WATER ? 1 : 0;
+		return this.type == LiquidType.water ? 1 : 0;
 	}
 
 	public final int getTickDelay() {
-		return this.type == LiquidType.LAVA ? 5 : 0;
+		return this.type == LiquidType.lava ? 5 : 0;
 	}
 
 	public final boolean isCube() {
@@ -128,9 +128,9 @@ public class LiquidBlock extends Block {
 	public void onNeighborChange(Level var1, int var2, int var3, int var4, int var5) {
 		if (var5 != 0) {
 			LiquidType var6 = Block.blocks[var5].getLiquidType();
-			if (this.type == LiquidType.WATER && var6 == LiquidType.LAVA
-					|| var6 == LiquidType.WATER && this.type == LiquidType.LAVA) {
-				var1.setTile(var2, var3, var4, Block.STONE.id);
+			if (this.type == LiquidType.water && var6 == LiquidType.lava
+					|| var6 == LiquidType.water && this.type == LiquidType.lava) {
+				var1.setTile(var2, var3, var4, Block.obsidian.id);
 				return;
 			}
 		}
@@ -160,10 +160,10 @@ public class LiquidBlock extends Block {
 			if (var6 = level.setTile(x, y, z, this.movingId)) {
 				var8 = true;
 			}
-		} while (var6 && this.type != LiquidType.LAVA);
+		} while (var6 && this.type != LiquidType.lava);
 
 		++y;
-		if (this.type == LiquidType.WATER || !var8) {
+		if (this.type == LiquidType.water || !var8) {
 			var8 = var8 | this.flow(level, x - 1, y, z) | this.flow(level, x + 1, y, z)
 					| this.flow(level, x, y, z - 1) | this.flow(level, x, y, z + 1);
 		}

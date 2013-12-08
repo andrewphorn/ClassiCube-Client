@@ -23,11 +23,11 @@ final class Sheep$1 extends BasicAI {
 		int var3 = (int) (this.mob.y - 2.0F);
 		int var5 = (int) (this.mob.z + var2);
 		if (this.sheep.grazing) {
-			if (this.level.getTile(var4, var3, var5) != Block.GRASS.id) {
+			if (this.level.getTile(var4, var3, var5) != Block.grass.id) {
 				this.sheep.grazing = false;
 			} else {
 				if (++this.sheep.grazingTime == 60) {
-					this.level.setTile(var4, var3, var5, Block.DIRT.id);
+					this.level.setTile(var4, var3, var5, Block.dirt.id);
 					if (this.random.nextInt(5) == 0) {
 						this.sheep.hasFur = true;
 					}
@@ -38,7 +38,7 @@ final class Sheep$1 extends BasicAI {
 				this.mob.xRot = (float) (40 + this.sheep.grazingTime / 2 % 2 * 10);
 			}
 		} else {
-			if (this.level.getTile(var4, var3, var5) == Block.GRASS.id) {
+			if (this.level.getTile(var4, var3, var5) == Block.grass.id) {
 				this.sheep.grazing = true;
 				this.sheep.grazingTime = 0;
 			}

@@ -10,8 +10,8 @@ public final class IceBlock extends Block {
 	int ID;
 	boolean showNeighborSides = false;
 
-	protected IceBlock(int var1, int var2) {
-		super(var1, var2);
+	protected IceBlock(int var1) {
+		super(var1);
 		ID = var1;
 		Block.liquid[var1] = true;
 	}

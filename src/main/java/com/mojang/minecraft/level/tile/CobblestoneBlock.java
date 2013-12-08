@@ -1,8 +1,8 @@
 package com.mojang.minecraft.level.tile;
 
-public final class StoneBlock extends Block {
+public final class CobblestoneBlock extends Block {
 
-	public StoneBlock(int var1) {
+	public CobblestoneBlock(int var1) {
 		super(var1);
 	}
 

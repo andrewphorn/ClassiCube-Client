@@ -8,8 +8,8 @@ import com.mojang.minecraft.ColorCache;
 
 public final class FireBlock extends Block {
 
-	protected FireBlock(int var1, int var2) {
-		super(var1, var2);
+	protected FireBlock(int var1) {
+		super(var1);
 		float var3 = 0.4F;
 		this.setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F, var3 * 2.0F, var3 + 0.5F);
 	}

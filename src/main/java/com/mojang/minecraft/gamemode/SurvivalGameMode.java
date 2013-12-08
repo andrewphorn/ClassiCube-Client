@@ -112,7 +112,7 @@ public final class SurvivalGameMode extends GameMode {
 
 	@Override
 	public void preparePlayer(Player player) {
-		player.inventory.slots[8] = Block.TNT.id;
+		player.inventory.slots[8] = Block.tnt.id;
 		player.inventory.count[8] = 10;
 	}
 
@@ -136,11 +136,11 @@ public final class SurvivalGameMode extends GameMode {
 	@Override
 	public boolean useItem(Player player, int type) {
 		Block block = Block.blocks[type];
-		if (block == Block.RED_MUSHROOM && minecraft.player.inventory.removeResource(type)) {
+		if (block == Block.redMushroom && minecraft.player.inventory.removeResource(type)) {
 			player.hurt(null, 3);
 
 			return true;
-		} else if (block == Block.BROWN_MUSHROOM && minecraft.player.inventory.removeResource(type)) {
+		} else if (block == Block.brownMushroom && minecraft.player.inventory.removeResource(type)) {
 			player.heal(5);
 
 			return true;

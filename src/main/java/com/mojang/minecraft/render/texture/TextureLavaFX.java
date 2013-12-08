@@ -11,7 +11,7 @@ public final class TextureLavaFX extends TextureFX {
 	private float[] alpha = new float[256];
 
 	public TextureLavaFX() {
-		super(Block.LAVA.textureId);
+		super(Block.lava.textureId);
 	}
 
 	public final void animate() {

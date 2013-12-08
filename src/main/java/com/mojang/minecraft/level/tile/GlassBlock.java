@@ -6,8 +6,8 @@ public class GlassBlock extends Block {
 
 	private boolean showNeighborSides = false;
 
-	protected GlassBlock(int var1, int var2) {
-		super(var1, var2);
+	protected GlassBlock(int var1) {
+		super(var1);
 	}
 
 	public final boolean canRenderSide(Level level, int x, int y, int z, int side) {
