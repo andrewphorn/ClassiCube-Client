@@ -28,7 +28,7 @@ public class CreativeGameMode extends GameMode {
 	@Override
 	public void apply(Player player) {
 		// default starting blocks
-		Block[] blocks = new Block[] { Block.STONE, Block.COBBLESTONE, Block.BRICK, Block.DIRT,
+		Block[] blocks = new Block[] { Block.STONE, Block.COBLESTONE, Block.BRICK, Block.DIRT,
 				Block.WOOD, Block.LOG, Block.LEAVES, Block.GRASS, Block.SLAB };
 
 		boolean CanProceed = true;

@@ -2,9 +2,8 @@ package com.mojang.minecraft.level.tile;
 
 public final class SandStoneBlock extends Block {
 
-	public SandStoneBlock(int var1, int var2) {
+	public SandStoneBlock(int var1) {
 		super(var1);
-		this.textureId = var2;
 	}
 
 	protected final int getTextureId(int texture) {

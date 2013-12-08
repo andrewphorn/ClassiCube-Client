@@ -951,13 +951,13 @@ public final class Minecraft implements Runnable {
 										Block var73;
 										if ((var73 = Block.blocks[var26.getTile((int) player.x,
 												(int) (player.y + 0.12F), (int) player.z)]) != null
-												&& var73.getLiquidType() != LiquidType.NOT_LIQUID) {
+												&& var73.getLiquidType() != LiquidType.notLiquid) {
 											LiquidType var79;
-											if ((var79 = var73.getLiquidType()) == LiquidType.WATER) {
+											if ((var79 = var73.getLiquidType()) == LiquidType.water) {
 												renderer.fogRed = 0.02F;
 												renderer.fogBlue = 0.02F;
 												renderer.fogGreen = 0.2F;
-											} else if (var79 == LiquidType.LAVA) {
+											} else if (var79 == LiquidType.lava) {
 												renderer.fogRed = 0.6F;
 												renderer.fogBlue = 0.1F;
 												renderer.fogGreen = 0.0F;

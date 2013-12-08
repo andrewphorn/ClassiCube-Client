@@ -15,7 +15,7 @@ public final class Sound implements Audio {
 		this.pitch = var2.getRotationDiff();
 		this.volume = var2.getDistanceSq() * var1.volume;
 	}
-
+        
 	public final boolean play(int[] var1, int[] var2, int var3) {
 		if (data.length < var3) {
 			data = new short[var3];

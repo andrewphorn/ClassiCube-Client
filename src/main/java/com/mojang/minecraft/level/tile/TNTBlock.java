@@ -6,8 +6,8 @@ import com.mojang.minecraft.particle.ParticleManager;
 
 public final class TNTBlock extends Block {
 
-	public TNTBlock(int var1, int var2) {
-		super(var1, var2);
+	public TNTBlock(int var1) {
+		super(var1);
 	}
 
 	public final void explode(Level var1, int var2, int var3, int var4) {

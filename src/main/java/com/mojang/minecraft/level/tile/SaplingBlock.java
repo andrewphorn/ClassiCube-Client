@@ -1,13 +1,14 @@
 package com.mojang.minecraft.level.tile;
 
 import com.mojang.minecraft.level.Level;
+import com.mojang.minecraft.level.tile.Block;
 
 import java.util.Random;
 
 public final class SaplingBlock extends FlowerBlock {
 
-	protected SaplingBlock(int var1, int var2) {
-		super(var1, var2);
+	protected SaplingBlock(int var1) {
+		super(var1);
 		float var3 = 0.4F;
 		this.setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F, var3 * 2.0F, var3 + 0.5F);
 	}

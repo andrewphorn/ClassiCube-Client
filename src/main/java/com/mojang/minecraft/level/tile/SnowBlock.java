@@ -5,13 +5,11 @@ import com.mojang.minecraft.phys.AABB;
 
 public final class SnowBlock extends Block {
 
-	int Texture;
 	int id;
 
-	public SnowBlock(int var1, int var2) {
-		super(var1, var2);
+	public SnowBlock(int var1) {
+		super(var1);
 		id = var1;
-		Texture = var2;
 		this.setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.20F, 1.0F);
 	}
 
@@ -34,7 +32,7 @@ public final class SnowBlock extends Block {
 	}
 
 	protected final int getTextureId(int texture) {
-		return Texture;
+		return this.textureId;
 	}
 
 	public final boolean isCube() {

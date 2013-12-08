@@ -2,8 +2,8 @@ package com.mojang.minecraft.level.tile;
 
 public final class LeavesBlock extends LeavesBaseBlock {
 
-	protected LeavesBlock(int var1, int var2) {
-		super(var1, var2);
+	protected LeavesBlock(int var1) {
+		super(var1);
 	}
 
 	public final int getDrop() {

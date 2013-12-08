@@ -6,8 +6,8 @@ import java.util.Random;
 
 public final class RopeBlock extends FlowerBlock {
 
-	protected RopeBlock(int var1, int var2) {
-		super(var1, var2);
+	protected RopeBlock(int var1) {
+		super(var1);
 		float var3 = 0.3F;
 		this.setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F, var3 * 3.0F, var3 + 0.5F);
 	}

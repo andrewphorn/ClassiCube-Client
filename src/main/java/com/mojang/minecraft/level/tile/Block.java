@@ -10,6 +10,9 @@ import com.mojang.minecraft.particle.TerrainParticle;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.ColorCache;
+import com.mojang.minecraft.sound.StepSound;
+import com.mojang.minecraft.sound.StepSoundStone;
+import com.mojang.minecraft.sound.StepSoundSand;
 
 import java.util.Random;
 
@@ -20,75 +23,25 @@ public class Block {
 
 	public static final boolean[] physics = new boolean[256];
 	public static final boolean[] liquid = new boolean[256];
-	public static final Block STONE;
-	public static final Block GRASS;
-	public static final Block DIRT;
-	public static final Block COBBLESTONE;
-	public static final Block WOOD;
-	public static final Block SAPLING;
-	public static final Block BEDROCK;
-	public static final Block WATER;
-	public static final Block STATIONARY_WATER;
-	public static final Block LAVA;
-	public static final Block STATIONARY_LAVA;
-	public static final Block SAND;
-	public static final Block GRAVEL;
-	public static final Block GOLD_ORE;
-	public static final Block IRON_ORE;
-	public static final Block COAL_ORE;
-	public static final Block LOG;
-	public static final Block LEAVES;
-	public static final Block SPONGE;
-	public static final Block GLASS;
-	public static final Block RED_WOOL;
-	public static final Block ORANGE_WOOL;
-	public static final Block YELLOW_WOOL;
-	public static final Block LIME_WOOL;
-	public static final Block GREEN_WOOL;
-	public static final Block AQUA_GREEN_WOOL;
-	public static final Block CYAN_WOOL;
-	public static final Block BLUE_WOOL;
-	public static final Block PURPLE_WOOL;
-	public static final Block INDIGO_WOOL;
-	public static final Block VIOLET_WOOL;
-	public static final Block MAGENTA_WOOL;
-	public static final Block PINK_WOOL;
-	public static final Block BLACK_WOOL;
-	public static final Block GRAY_WOOL;
-	public static final Block WHITE_WOOL;
-	public static final Block DANDELION;
-	public static final Block ROSE;
-	public static final Block BROWN_MUSHROOM;
-	public static final Block RED_MUSHROOM;
-	public static final Block GOLD_BLOCK;
-	public static final Block IRON_BLOCK;
-	public static final Block DOUBLE_SLAB;
-	public static final Block SLAB;
-	public static final Block BRICK;
-	public static final Block TNT;
-	public static final Block BOOKSHELF;
-	public static final Block MOSSY_COBBLESTONE;
-	public static final Block OBSIDIAN;
-	public static final Block COBBLESTONESLAB;
-	public static final Block ROPE;
-	public static final Block SANDSTONE;
-	public static final Block SNOW;
-	public static final Block FIRE;
-	public static final Block LIGHT_PINK_WOOL;
-	public static final Block FOREST_GREEN_WOOL;
-	public static final Block BROWN_WOOL;
-	public static final Block DEEP_BLUE_WOOL;
-	public static final Block TURQUOISE_WOOL;
-	public static final Block ICE;
-	public static final Block STONEBRICK;
-	public static final Block QUARTZ;
-	public static final Block CRATE;
-	public static final Block CERAMIC_TILE;
-	public static final Block MAGMA;
+        
+        public StepSound stepSound;
+      
+        public static final StepSound soundNone = new StepSound("-", 0.0F, 0.0F);
+        public static final StepSound soundPowderFootstep = new StepSound("stone", 1.0F, 1.0F);
+        public static final StepSound soundWoodFootstep = new StepSound("wood", 1.0F, 1.0F);
+        public static final StepSound soundGravelFootstep = new StepSound("gravel", 1.0F, 1.0F);
+        public static final StepSound soundGrassFootstep = new StepSound("grass", 1.0F, 1.0F);
+        public static final StepSound soundStoneFootstep = new StepSound("stone", 1.0F, 1.0F);
+        public static final StepSound soundMetalFootstep = new StepSound("stone", 1.0F, 1.5F);
+        public static final StepSound soundGlassFootstep = new StepSoundStone("stone", 1.0F, 1.0F);
+        public static final StepSound soundClothFootstep = new StepSound("cloth", 1.0F, 1.0F);
+        public static final StepSound soundSandFootstep = new StepSound("sand", 1.0F, 1.0F);
+        public static final StepSound soundSnowFootstep = new StepSound("snow", 1.0F, 1.0F);
+        public static final StepSound soundLadderFootstep = new StepSoundSand("ladder", 1.0F, 1.0F);
+
 	public int textureId;
 	public final int id;
 
-	public Tile$SoundType stepsound;
 	private int hardness;
 	private boolean explodes;
 	public float x1;
@@ -98,127 +51,76 @@ public class Block {
 	public float y2;
 	public float z2;
 	public float particleGravity;
-	static {
-		Block block = (new StoneBlock(1, 1)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 1.0F);
-		Block blockCache = block;
-		block.explodes = false;
-		STONE = blockCache;
-		GRASS = (new GrassBlock(2)).setData(Tile$SoundType.grass, 0.9F, 1.0F, 0.6F);
-		DIRT = (new DirtBlock(3, 2)).setData(Tile$SoundType.grass, 0.8F, 1.0F, 0.5F);
-		block = (new Block(4, 16)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 1.5F);
-		blockCache = block;
-		block.explodes = false;
-		COBBLESTONE = blockCache;
-		WOOD = (new Block(5, 4)).setData(Tile$SoundType.wood, 1.0F, 1.0F, 1.5F);
-		SAPLING = (new SaplingBlock(6, 15)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		block = (new Block(7, 17)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 999.0F);
-		blockCache = block;
-		block.explodes = false;
-		BEDROCK = blockCache;
-		WATER = (new LiquidBlock(8, LiquidType.WATER)).setData(Tile$SoundType.none, 1.0F, 1.0F,
-				100.0F);
-		STATIONARY_WATER = (new StillLiquidBlock(9, LiquidType.WATER)).setData(Tile$SoundType.none,
-				1.0F, 1.0F, 100.0F);
-		LAVA = (new LiquidBlock(10, LiquidType.LAVA)).setData(Tile$SoundType.none, 1.0F, 1.0F,
-				100.0F);
-		STATIONARY_LAVA = (new StillLiquidBlock(11, LiquidType.LAVA)).setData(Tile$SoundType.none,
-				1.0F, 1.0F, 100.0F);
-		SAND = (new SandBlock(12, 18)).setData(Tile$SoundType.gravel, 0.8F, 1.0F, 0.5F);
-		GRAVEL = (new SandBlock(13, 19)).setData(Tile$SoundType.gravel, 0.8F, 1.0F, 0.6F);
-		block = (new OreBlock(14, 32)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 3.0F);
-		blockCache = block;
-		block.explodes = false;
-		GOLD_ORE = blockCache;
-		block = (new OreBlock(15, 33)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 3.0F);
-		blockCache = block;
-		block.explodes = false;
-		IRON_ORE = blockCache;
-		block = (new OreBlock(16, 34)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 3.0F);
-		blockCache = block;
-		block.explodes = false;
-		COAL_ORE = blockCache;
-		LOG = (new WoodBlock(17)).setData(Tile$SoundType.wood, 1.0F, 1.0F, 2.5F);
-		LEAVES = (new LeavesBlock(18, 22)).setData(Tile$SoundType.grass, 1.0F, 0.4F, 0.2F);
-		SPONGE = (new SpongeBlock(19)).setData(Tile$SoundType.cloth, 1.0F, 0.9F, 0.6F);
-		GLASS = (new GlassBlock(20, 49)).setData(Tile$SoundType.metal, 1.0F, 1.0F, 0.3F);
-		RED_WOOL = (new Block(21, 64)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		ORANGE_WOOL = (new Block(22, 65)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		YELLOW_WOOL = (new Block(23, 66)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		LIME_WOOL = (new Block(24, 67)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		GREEN_WOOL = (new Block(25, 68)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		AQUA_GREEN_WOOL = (new Block(26, 69)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		CYAN_WOOL = (new Block(27, 70)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		BLUE_WOOL = (new Block(28, 71)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		PURPLE_WOOL = (new Block(29, 72)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		INDIGO_WOOL = (new Block(30, 73)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		VIOLET_WOOL = (new Block(31, 74)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		MAGENTA_WOOL = (new Block(32, 75)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		PINK_WOOL = (new Block(33, 76)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		BLACK_WOOL = (new Block(34, 77)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		GRAY_WOOL = (new Block(35, 78)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		WHITE_WOOL = (new Block(36, 79)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		DANDELION = (new FlowerBlock(37, 13)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		ROSE = (new FlowerBlock(38, 12)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		BROWN_MUSHROOM = (new MushroomBlock(39, 29)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		RED_MUSHROOM = (new MushroomBlock(40, 28)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		block = (new Block(41, 24)).setData(Tile$SoundType.metal, 0.7F, 1.0F, 3.0F);
-		blockCache = block;
-		block.explodes = false;
-		GOLD_BLOCK = blockCache;
-		block = (new Block(42, 23)).setData(Tile$SoundType.metal, 0.7F, 1.0F, 5.0F);
-		blockCache = block;
-		block.explodes = false;
-		IRON_BLOCK = blockCache;
-		block = (new SlabBlock(43, true)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 2.0F);
-		blockCache = block;
-		block.explodes = false;
-		DOUBLE_SLAB = blockCache;
-		block = (new SlabBlock(44, false)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 2.0F);
-		blockCache = block;
-		block.explodes = false;
-		SLAB = blockCache;
-		block = (new Block(45, 7)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 2.0F);
-		blockCache = block;
-		block.explodes = false;
-		BRICK = blockCache;
-		TNT = (new TNTBlock(46, 8)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.0F);
-		BOOKSHELF = (new BookshelfBlock(47, 35)).setData(Tile$SoundType.wood, 1.0F, 1.0F, 1.5F);
-		block = (new Block(48, 36)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 1.0F);
-		blockCache = block;
-		block.explodes = false;
-		MOSSY_COBBLESTONE = blockCache;
-		block = (new StoneBlock(49, 37)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 10.0F);
-		blockCache = block;
-		block.explodes = false;
-		OBSIDIAN = blockCache;
-		block = (new CobblestoneSlabBlock(50, false)).setData(Tile$SoundType.stone, 1.0F, 1.0F,
-				2.0F);
-		blockCache = block;
-		block.explodes = false;
-		COBBLESTONESLAB = blockCache;
-		ROPE = (new RopeBlock(51, 11)).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		block = (new SandStoneBlock(52, 41)).setData(Tile$SoundType.stone, 0.7F, 1.0F, 3.0F);
-		blockCache = block;
-		block.explodes = false;
-		SANDSTONE = blockCache;
-		block = new SnowBlock(53, 50).setData(Tile$SoundType.none, 0.7F, 1.0F, 3.0F);
-		blockCache = block;
-		block.explodes = false;
-		SNOW = blockCache;
-		FIRE = new FireBlock(54, 38).setData(Tile$SoundType.none, 0.7F, 1.0F, 0.0F);
-		LIGHT_PINK_WOOL = (new Block(55, 80)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		FOREST_GREEN_WOOL = (new Block(56, 81)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		BROWN_WOOL = (new Block(57, 82)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		DEEP_BLUE_WOOL = (new Block(58, 83)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		TURQUOISE_WOOL = (new Block(59, 84)).setData(Tile$SoundType.cloth, 1.0F, 1.0F, 0.8F);
-		ICE = (new IceBlock(60, 51)).setData(Tile$SoundType.metal, 1.0F, 1.0F, 0.8F);
+        public boolean isLiquid;
+        
+        public static final Block STONE = (new StoneBlock(1)).setTextureId(1).setStepSound(soundStoneFootstep).setParticleGravity(1.0F).setHardness(1.0F);
+        public static final Block GRASS = (new GrassBlock(2)).setStepSound(soundGrassFootstep).setTextureId(2).setParticleGravity(1.0F).setHardness(0.6F);
+        public static final Block DIRT = (new DirtBlock(3)).setStepSound(soundGravelFootstep).setTextureId(2).setParticleGravity(1.0F).setHardness(0.5F);
+        public static final Block COBLESTONE = (new CobblestoneBlock(4)).setStepSound(soundStoneFootstep).setTextureId(16).setParticleGravity(1.0F).setHardness(1.5F);
+        public static final Block WOOD = (new Block(5)).setStepSound(soundWoodFootstep).setTextureId(4).setParticleGravity(1.0F).setHardness(1.5F); //Used to be known as 'WOOD'
+        public static final Block SAPLING = (new FlowerBlock(6)).setStepSound(soundGrassFootstep).setTextureId(15).setParticleGravity(1.0F).setHardness(0.0F);
+        public static final Block BEDROCK = (new Block(7)).setStepSound(soundStoneFootstep).setTextureId(17).setParticleGravity(1.0F).setHardness(999.0F);
+        public static final Block WATER = (new LiquidBlock(8, LiquidType.water)).setParticleGravity(1.0F).setHardness(100.0F).setLiquid(true);
+        public static final Block STATIONARY_WATER = (new StillLiquidBlock(9, LiquidType.water)).setParticleGravity(1.0F).setHardness(100.0F).setLiquid(true);
+        public static final Block LAVA = (new LiquidBlock(10, LiquidType.lava)).setParticleGravity(1.0F).setHardness(100.0F).setLiquid(true);
+        public static final Block STATIONARY_LAVA = (new StillLiquidBlock(11, LiquidType.lava)).setParticleGravity(1.0F).setHardness(100.0F).setLiquid(true);
+        public static final Block SAND = (new SandBlock(12)).setStepSound(soundSandFootstep).setTextureId(18).setParticleGravity(1.0F).setHardness(0.5F);
+        public static final Block GRAVEL = (new SandBlock(13)).setStepSound(soundGravelFootstep).setTextureId(19).setParticleGravity(1.0F).setHardness(0.6F);
+        public static final Block GOLD_ORE = (new OreBlock(14)).setStepSound(soundStoneFootstep).setTextureId(32).setParticleGravity(1.0F).setHardness(0.5F);
+        public static final Block IRON_ORE = (new OreBlock(15)).setStepSound(soundStoneFootstep).setTextureId(33).setParticleGravity(1.0F).setHardness(0.5F);
+        public static final Block COAL_ORE = (new OreBlock(16)).setStepSound(soundStoneFootstep).setTextureId(34).setParticleGravity(1.0F).setHardness(0.5F);
+        public static final Block LOG = (new WoodBlock(17)).setStepSound(soundWoodFootstep).setParticleGravity(1.0F).setHardness(2.5F);
+        public static final Block LEAVES = (new LeavesBlock(18)).setStepSound(soundGrassFootstep).setTextureId(22).setParticleGravity(0.4F).setHardness(0.2F);
+        public static final Block SPONGE = (new SpongeBlock(19)).setStepSound(soundGrassFootstep).setTextureId(48).setParticleGravity(0.9F).setHardness(0.6F);
+        
+        public static final Block GLASS = (new GlassBlock(20)).setStepSound(soundGlassFootstep).setTextureId(49).setParticleGravity(1.0F).setHardness(0.3F);
+        public static final Block RED_WOOL = (new Block(21)).setStepSound(soundClothFootstep).setTextureId(64).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block ORANGE_WOOL = (new Block(22)).setStepSound(soundClothFootstep).setTextureId(65).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block YELLOW_WOOL = (new Block(23)).setStepSound(soundClothFootstep).setTextureId(66).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block LIME_WOOL = (new Block(24)).setStepSound(soundClothFootstep).setTextureId(67).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block GREEN_WOOL = (new Block(25)).setStepSound(soundClothFootstep).setTextureId(68).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block AQUA_GREEN_WOOL = (new Block(26)).setStepSound(soundClothFootstep).setTextureId(69).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block CYAN_WOOL = (new Block(27)).setStepSound(soundClothFootstep).setTextureId(70).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block BLUE_WOOL = (new Block(28)).setStepSound(soundClothFootstep).setTextureId(71).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block PURPLE_WOOL = (new Block(29)).setStepSound(soundClothFootstep).setTextureId(72).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block INDIGO_WOOL = (new Block(30)).setStepSound(soundClothFootstep).setTextureId(73).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block VIOLET_WOOL = (new Block(31)).setStepSound(soundClothFootstep).setTextureId(74).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block MAGENTA_WOOL = (new Block(32)).setStepSound(soundClothFootstep).setTextureId(75).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block PINK_WOOL = (new Block(33)).setStepSound(soundClothFootstep).setTextureId(76).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block BLACK_WOOL = (new Block(34)).setStepSound(soundClothFootstep).setTextureId(77).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block GRAY_WOOL = (new Block(35)).setStepSound(soundClothFootstep).setTextureId(78).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block WHITE_WOOL = (new Block(36)).setStepSound(soundClothFootstep).setTextureId(79).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block DANDELION = (new FlowerBlock(37)).setStepSound(soundGrassFootstep).setTextureId(13).setParticleGravity(1.0F).setHardness(0.0F);
+        public static final Block ROSE = (new FlowerBlock(38)).setStepSound(soundGrassFootstep).setTextureId(12).setParticleGravity(1.0F).setHardness(0.0F);
+        public static final Block BROWN_MUSHROOM = (new MushroomBlock(39)).setStepSound(soundGrassFootstep).setTextureId(29).setParticleGravity(1.0F).setHardness(0.0F);
+        public static final Block RED_MUSHROOM = (new MushroomBlock(40)).setStepSound(soundGrassFootstep).setTextureId(28).setParticleGravity(1.0F).setHardness(0.0F);
+        public static final Block GOLD_BLOCK = (new Block(41)).setStepSound(soundMetalFootstep).setTextureId(24).setParticleGravity(1.0F).setHardness(3.0F);
+        public static final Block IRON_BLOCK = (new Block(42)).setStepSound(soundMetalFootstep).setTextureId(23).setParticleGravity(1.0F).setHardness(5.0F);
+        public static final Block DOUBLE_SLAB = (new SlabBlock(43, true)).setStepSound(soundStoneFootstep).setParticleGravity(1.0F).setHardness(2.0F);
+        public static final Block SLAB = (new SlabBlock(44, false)).setStepSound(soundStoneFootstep).setParticleGravity(1.0F).setHardness(2.0F);
+        public static final Block BRICK = (new Block(45)).setStepSound(soundStoneFootstep).setTextureId(7).setParticleGravity(1.0F).setHardness(2.0F);
+        public static final Block TNT = (new TNTBlock(46)).setStepSound(soundGrassFootstep).setTextureId(8).setParticleGravity(1.0F).setHardness(0.0F);
+        public static final Block BOOKSHELF = (new BookshelfBlock(47)).setStepSound(soundWoodFootstep).setTextureId(35).setParticleGravity(1.0F).setHardness(1.5F);
+        public static final Block MOSSY_COBBLESTONE = (new Block(48)).setStepSound(soundStoneFootstep).setTextureId(36).setParticleGravity(1.0F).setHardness(1.0F);
+        public static final Block OBSIDIAN = (new StoneBlock(49)).setStepSound(soundStoneFootstep).setTextureId(37).setParticleGravity(1.0F).setHardness(10.0F);
+        public static final Block COBBLESTONE_SLAB = (new CobblestoneSlabBlock(50, false)).setStepSound(soundStoneFootstep).setTextureId(6).setParticleGravity(1.0F).setHardness(1.0F);
 
-		CERAMIC_TILE = (new Block(61, 54)).setData(Tile$SoundType.metal, 1.0F, 1.0F, 0.8F);
-		MAGMA = (new MagmaBlock(62, 86)).setData(Tile$SoundType.metal, 1.0F, 1.0F, 0.8F);
-		QUARTZ = (new MetalBlock(63, 42)).setData(Tile$SoundType.metal, 1.0F, 1.0F, 0.8F);
-		CRATE = (new Block(64, 53)).setData(Tile$SoundType.wood, 1.0F, 1.0F, 0.8F);
-		STONEBRICK = (new Block(65, 52)).setData(Tile$SoundType.stone, 1.0F, 1.0F, 0.8F);
-	}
+        public static final Block ROPE = (new RopeBlock(51)).setStepSound(soundClothFootstep).setTextureId(11).setParticleGravity(1.0F).setHardness(0.0F);
+        public static final Block SANDSTONE = (new SandStoneBlock(52)).setStepSound(soundStoneFootstep).setTextureId(41).setParticleGravity(1.0F).setHardness(3.0F);
+        public static final Block SNOW = new SnowBlock(53).setStepSound(soundSnowFootstep).setTextureId(50).setParticleGravity(1.0F).setHardness(3.0F);
+        public static final Block FIRE = new FireBlock(54).setStepSound(soundWoodFootstep).setTextureId(38).setParticleGravity(1.0F).setHardness(0.0F);
+        public static final Block LIGHT_PINK_WOOL = (new Block(55)).setStepSound(soundClothFootstep).setTextureId(80).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block FOREST_GREEN_WOOL = (new Block(56)).setStepSound(soundClothFootstep).setTextureId(81).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block BROWN_WOOL = (new Block(57)).setStepSound(soundClothFootstep).setTextureId(82).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block DEEP_BLUE_WOOL = (new Block(58)).setStepSound(soundClothFootstep).setTextureId(83).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block TURQOISE_WOOL = (new Block(59)).setStepSound(soundClothFootstep).setTextureId(84).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block ICE = (new IceBlock(60)).setStepSound(soundGlassFootstep).setTextureId(51).setParticleGravity(1.0F).setHardness(0.8F);
+
+        public static final Block CERAMIC_TOLE = (new Block(61)).setStepSound(soundStoneFootstep).setTextureId(54).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block MAGMA = (new MagmaBlock(62)).setStepSound(soundStoneFootstep).setTextureId(86).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block QUARTZ = (new MetalBlock(63)).setStepSound(soundStoneFootstep).setTextureId(42).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block CRATE = (new Block(64)).setStepSound(soundWoodFootstep).setTextureId(53).setParticleGravity(1.0F).setHardness(0.8F);
+        public static final Block STONEBRICK = (new Block(65)).setStepSound(soundStoneFootstep).setTextureId(52).setParticleGravity(1.0F).setHardness(0.8F);
 
 	public Block(int id) {
 		explodes = true;
@@ -228,6 +130,7 @@ public class Block {
 		setBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 
 		liquid[id] = false;
+                isLiquid = false;
 	}
 
 	protected Block(int id, int textureID) {
@@ -235,6 +138,40 @@ public class Block {
 
 		textureId = textureID;
 	}
+        
+        protected Block setTextureId(int var1)
+        {
+        this.textureId = var1;
+        return this;
+        }
+        
+        protected Block setHardness(float var1)
+        {
+        this.hardness = (int) (var1 * 20.0F);
+        return this;
+        }
+        
+        protected Block setLiquid(boolean var1)
+        {
+        this.isLiquid = var1;
+        return this;
+        }
+        
+        public final boolean isLiquid() {
+		return this.isLiquid;
+	}
+        
+        protected Block setParticleGravity(float var1)
+        {
+        this.particleGravity = var1;
+        return this;
+        }
+        
+        protected Block setStepSound(StepSound par1StepSound)
+        {
+        this.stepSound = par1StepSound;
+        return this;
+        }
 
 	public final boolean canExplode() {
 		return this.explodes;
@@ -381,7 +318,7 @@ public class Block {
 	}
 
 	public LiquidType getLiquidType() {
-		return LiquidType.NOT_LIQUID;
+		return LiquidType.notLiquid;
 	}
 
 	public int getRenderPass() {
@@ -673,19 +610,6 @@ public class Block {
 		this.z2 = z2;
 	}
 
-	protected Block setData(Tile$SoundType soundType, float var2, float particleGravity,
-			float hardness) {
-		this.particleGravity = particleGravity;
-		this.stepsound = soundType;
-		this.hardness = (int) (hardness * 20.0F);
-
-		if (this instanceof FlowerBlock) {
-			stepsound = Tile$SoundType.grass;
-		}
-
-		return this;
-	}
-
 	protected void setPhysics(boolean physics) {
 		Block.physics[id] = physics;
 	}
@@ -764,4 +688,5 @@ public class Block {
 		return var1 == null ? false : var1.x >= this.x1 && var1.x <= this.x2 && var1.y >= this.y1
 				&& var1.y <= this.y2;
 	}
+
 }

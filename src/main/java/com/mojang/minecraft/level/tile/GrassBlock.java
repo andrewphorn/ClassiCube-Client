@@ -30,7 +30,7 @@ public final class GrassBlock extends Block {
 					int var7 = y + rand.nextInt(5) - 3;
 					int var8 = z + rand.nextInt(3) - 1;
 					if (level.getTile(var6, var7, var8) == DIRT.id && level.isLit(var6, var7, var8)) {
-						level.setTile(var6, var7, var8, GRASS.id);
+						level.setTile(var6, var7, var8, DIRT.id);
 					}
 				}
 

@@ -122,14 +122,14 @@ public final class Renderer {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		Block var5;
 		if ((var5 = Block.blocks[var1.getTile((int) var2.x, (int) (var2.y + 0.12F), (int) var2.z)]) != null
-				&& var5.getLiquidType() != LiquidType.NOT_LIQUID) {
+				&& var5.getLiquidType() != LiquidType.notLiquid) {
 			LiquidType var6 = var5.getLiquidType();
 			GL11.glFogi(2917, 2048);
 			float var3;
 			float var4;
 			float var7;
 			float var8;
-			if (var6 == LiquidType.WATER) {
+			if (var6 == LiquidType.water) {
 				GL11.glFogf(2914, 0.1F);
 				var7 = 0.4F;
 				var8 = 0.4F;
@@ -142,7 +142,7 @@ public final class Renderer {
 				}
 
 				GL11.glLightModel(2899, this.createBuffer(var7, var8, var3, 1.0F));
-			} else if (var6 == LiquidType.LAVA) {
+			} else if (var6 == LiquidType.lava) {
 				GL11.glFogf(2914, 2.0F);
 				var7 = 0.4F;
 				var8 = 0.3F;

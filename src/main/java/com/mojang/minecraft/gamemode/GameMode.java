@@ -3,7 +3,6 @@ package com.mojang.minecraft.gamemode;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.level.tile.Tile$SoundType;
 import com.mojang.minecraft.player.Player;
 
 public class GameMode {
@@ -42,10 +41,8 @@ public class GameMode {
 						minecraft.player.inventory.getSelected());
 			}
 
-			if (block.stepsound != Tile$SoundType.none) {
-				level.playSound("step." + block.stepsound.name, (float) x, (float) y, (float) z,
-						(block.stepsound.getVolume() + 1.0F) / 2.0F,
-						block.stepsound.getPitch() * 0.8F);
+			if (block.stepSound != Block.soundNone) {
+				level.playSound(block.stepSound.getBreakSound(), (float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F, (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);       
 			}
 
 			block.spawnBreakParticles(level, x, y, z, minecraft.particleManager);
