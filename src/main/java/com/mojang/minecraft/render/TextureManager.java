@@ -61,6 +61,7 @@ public class TextureManager {
 	public BufferedImage customDirtPng = null;
 	public BufferedImage customRainPng = null;
 	public BufferedImage customGUI = null;
+	public BufferedImage customIcons = null;
 	public BufferedImage customFont = null;
 	public BufferedImage customClouds = null;
 	public BufferedImage customSnow = null;
@@ -426,6 +427,15 @@ public class TextureManager {
 			textures.put("customGUI", id);
 			return id;
 		}
+		
+		if (file.startsWith("/gui/icons") && textures.containsKey("customIcons")) {
+			return textures.get("customIcons");
+		}
+		if (file.startsWith("/gui/icons") && !textures.containsKey("customIcons") && customIcons != null) {
+			int id = load(customIcons);
+			textures.put("customIcons", id);
+			return id;
+		}
 
 		if (file.startsWith("/default") && textures.containsKey("customFont")) {
 			return textures.get("customGUI");
@@ -546,6 +556,7 @@ public class TextureManager {
 			String terrainPNG = "terrain.png";
 			String rainName = "rain.png";
 			String guiName = "gui.png";
+			String iconsName = "icons.png";
 			String fontName = "default.png";
 			String chickenName = "chicken.png";
 			String creeperName = "creeper.png";
@@ -579,6 +590,13 @@ public class TextureManager {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(guiName
 						.startsWith("/") ? guiName.substring(1, guiName.length()) : guiName)));
 				this.customGUI = image;
+			}
+			
+			if (zip.getEntry(iconsName.startsWith("/") ? iconsName.substring(1, iconsName.length())
+					: iconsName) != null) {
+				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(iconsName
+						.startsWith("/") ? iconsName.substring(1, iconsName.length()) : iconsName)));
+				this.customIcons = image;
 			}
 			
 			if (zip.getEntry(snowName.startsWith("/") ? snowName.substring(1, snowName.length())
@@ -704,6 +722,7 @@ public class TextureManager {
 		this.customDirtPng = null;
 		this.customRainPng = null;
 		this.customGUI = null;
+		this.customIcons = null;
 		this.customFont = null;
 		this.customClouds = null;
 
