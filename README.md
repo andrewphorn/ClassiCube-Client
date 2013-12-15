@@ -1,4 +1,4 @@
-[![ClassiCube](http://i.imgur.com/IS1opcV.png)](http://www.classicube.net/)
+[![ClassiCube](http://i.imgur.com/AnTFEMN.png)](http://www.classicube.net/)
 -----
 **Welcome to ClassiCube**
 -----
