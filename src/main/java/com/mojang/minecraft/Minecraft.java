@@ -2670,15 +2670,17 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (this.gamemode instanceof CreativeGameMode) {
-							if (Keyboard.getEventKey() == this.settings.loadLocationKey.key) {
-								if (!(this.currentScreen instanceof ChatInputScreen))
-									this.player.resetPos();
-							}
+							if (HackState.Noclip || HackState.Fly || HackState.Speed) {
+								if (Keyboard.getEventKey() == this.settings.loadLocationKey.key) {
+									if (!(this.currentScreen instanceof ChatInputScreen))
+										this.player.resetPos();
+								}
 
-							if (Keyboard.getEventKey() == this.settings.saveLocationKey.key) {
-								this.level.setSpawnPos((int) this.player.x, (int) this.player.y,
-										(int) this.player.z, this.player.yRot);
-								this.player.resetPos();
+								if (Keyboard.getEventKey() == this.settings.saveLocationKey.key) {
+									this.level.setSpawnPos((int) this.player.x, (int) this.player.y,
+											(int) this.player.z, this.player.yRot);
+									this.player.resetPos();
+								}
 							}
 						}
 
