@@ -335,7 +335,7 @@ public final class HUDScreen extends Screen {
 							y += 9;
 						}
 						String playerName = FontRenderer.stripColor(pi.playerName);
-						String listName = FontRenderer.stripColor(pi.listName);
+						String listName = (pi.listName);
 						if (var2 && var3 >= x && var4 >= y && var3 < x + 120 && var4 < y + 8) { 
 							// if your mouse is hovered over this name
 							this.hoveredPlayer = playerName;

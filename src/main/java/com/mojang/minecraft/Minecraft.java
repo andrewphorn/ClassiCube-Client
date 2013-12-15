@@ -2126,47 +2126,49 @@ public final class Minecraft implements Runnable {
 										byte sideBlock = ((Byte) packetParams[1]).byteValue();
 										byte edgeBlock = ((Byte) packetParams[2]).byteValue();
 										short sideLevel = ((Short) packetParams[3]).byteValue();
-										if (!this.settings.canServerChangeTextures)
-											return;
-										if (sideBlock == -1) {
-											this.textureManager.customSideBlock = null;
-										} else if (sideBlock < Block.blocks.length) {
-											int ID = Block.blocks[sideBlock].textureId;
-											this.textureManager.customSideBlock = textureManager.textureAtlas
-													.get(ID);
-										}
-										if (edgeBlock == -1) {
-											this.textureManager.customEdgeBlock = null;
-										} else if (edgeBlock < Block.blocks.length) {
-											int ID = Block.blocks[edgeBlock].textureId;
-											this.textureManager.customEdgeBlock = textureManager.textureAtlas
-													.get(ID);
-										}
-										if (textureUrl.length() > 0) {
-											File path = new File(getMinecraftDirectory(),
-													"/skins/terrain");
-											if (!path.exists()) {
-												path.mkdirs();
-											}
-											String hash = this.getHash(textureUrl);
-											if (hash != null) {
-												File file = new File(path, hash + ".png");
-												BufferedImage image;
-												if (!file.exists()) {
-													downloadImage(textureUrl,
-															file.getAbsolutePath());
-												}
-												image = ImageIO.read(file);
-												// if (image.getWidth() != 256
-												// || image.getHeight() != 256)
-												// return;
-												this.textureManager.animations.clear();
-												this.textureManager.currentTerrainPng = image;
-											}
-										}
-										this.textureManager.textures.clear();
-										this.level.waterLevel = sideLevel;
-										this.levelRenderer.refresh();
+										if (this.settings.canServerChangeTextures)
+                                                                                {
+                                                                                    if (sideBlock == -1) {
+                                                                                            this.textureManager.customSideBlock = null;
+                                                                                    } else if (sideBlock < Block.blocks.length) {
+                                                                                            int ID = Block.blocks[sideBlock].textureId;
+                                                                                            this.textureManager.customSideBlock = textureManager.textureAtlas
+                                                                                                            .get(ID);
+                                                                                    }
+                                                                                    if (edgeBlock == -1) {
+                                                                                            this.textureManager.customEdgeBlock = null;
+                                                                                    } else if (edgeBlock < Block.blocks.length) {
+                                                                                            int ID = Block.blocks[edgeBlock].textureId;
+                                                                                            this.textureManager.customEdgeBlock = textureManager.textureAtlas
+                                                                                                            .get(ID);
+                                                                                    }
+                                                                                    if (textureUrl.length() > 0) {
+                                                                                            File path = new File(getMinecraftDirectory(),
+                                                                                                            "/skins/terrain");
+                                                                                            if (!path.exists()) {
+                                                                                                    path.mkdirs();
+                                                                                            }
+                                                                                            String hash = this.getHash(textureUrl);
+                                                                                            if (hash != null) {
+                                                                                                    File file = new File(path, hash + ".png");
+                                                                                                    BufferedImage image;
+                                                                                                    if (!file.exists()) {
+                                                                                                            downloadImage(textureUrl,
+                                                                                                                            file.getAbsolutePath());
+                                                                                                    }
+                                                                                                    image = ImageIO.read(file);
+                                                                                                    if (image.getWidth() % 16  == 0
+                                                                                                    && image.getHeight() % 16 == 0)
+                                                                                                    {
+                                                                                                        this.textureManager.animations.clear();
+                                                                                                        this.textureManager.currentTerrainPng = image;
+                                                                                                    }                                                                                                    
+                                                                                            }
+                                                                                    }
+                                                                                    this.textureManager.textures.clear();
+                                                                                    this.level.waterLevel = sideLevel;
+                                                                                    this.levelRenderer.refresh();
+                                                                                }
 									} else if (packetType == PacketType.CLICK_DISTANCE) {
 										short Distance = (Short) packetParams[0];
 										this.gamemode.reachDistance = Distance / 32;
@@ -2549,7 +2551,7 @@ public final class Minecraft implements Runnable {
 					var20.netHandler.send(
 							PacketType.POSITION_ROTATION,
 							new Object[] {
-									this.canSendHeldBlock ? player.inventory.selected : Integer
+									this.canSendHeldBlock ? player.inventory.getSelected() : Integer
 											.valueOf(-1), Integer.valueOf(var24),
 									Integer.valueOf(var4), Integer.valueOf(var40),
 									Integer.valueOf(var46), Integer.valueOf(var45) });
@@ -2670,15 +2672,17 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (this.gamemode instanceof CreativeGameMode) {
-							if (Keyboard.getEventKey() == this.settings.loadLocationKey.key) {
-								if (!(this.currentScreen instanceof ChatInputScreen))
-									this.player.resetPos();
-							}
+							if (HackState.Noclip || HackState.Fly || HackState.Speed) {
+								if (Keyboard.getEventKey() == this.settings.loadLocationKey.key) {
+									if (!(this.currentScreen instanceof ChatInputScreen))
+										this.player.resetPos();
+								}
 
-							if (Keyboard.getEventKey() == this.settings.saveLocationKey.key) {
-								this.level.setSpawnPos((int) this.player.x, (int) this.player.y,
-										(int) this.player.z, this.player.yRot);
-								this.player.resetPos();
+								if (Keyboard.getEventKey() == this.settings.saveLocationKey.key) {
+									this.level.setSpawnPos((int) this.player.x, (int) this.player.y,
+											(int) this.player.z, this.player.yRot);
+									this.player.resetPos();
+								}
 							}
 						}
 
