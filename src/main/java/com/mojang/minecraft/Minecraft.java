@@ -2549,7 +2549,7 @@ public final class Minecraft implements Runnable {
 					var20.netHandler.send(
 							PacketType.POSITION_ROTATION,
 							new Object[] {
-									this.canSendHeldBlock ? player.inventory.selected : Integer
+									this.canSendHeldBlock ? player.inventory.getSelected() : Integer
 											.valueOf(-1), Integer.valueOf(var24),
 									Integer.valueOf(var4), Integer.valueOf(var40),
 									Integer.valueOf(var46), Integer.valueOf(var45) });
