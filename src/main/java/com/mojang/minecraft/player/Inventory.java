@@ -94,7 +94,7 @@ public class Inventory implements Serializable {
 
 	public void replaceSlot(int var1) {
 		if (GameSettings.CanReplaceSlot && var1 >= 0) {
-			this.replaceSlot((Block) SessionData.allowedBlocks.get(var1));
+			this.replaceSlot(SessionData.allowedBlocks.get(var1));
 		}
 
 	}

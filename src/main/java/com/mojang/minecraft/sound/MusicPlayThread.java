@@ -15,6 +15,7 @@ final class MusicPlayThread extends Thread {
 		this.setDaemon(true);
 	}
 
+	@Override
 	public final void run() {
 		try {
 			do {

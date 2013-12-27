@@ -77,7 +77,7 @@ public class Item extends Entity {
 		GL11.glBindTexture(3553, this.textureId);
 
 		float brightness = level.getBrightness((int) x, (int) y, (int) z);
-		float unknown1 = rot + ((float) tickCount + unknown0) * 3.0F;
+		float unknown1 = rot + (tickCount + unknown0) * 3.0F;
 
 		GL11.glPushMatrix();
 		GL11.glColor4f(brightness, brightness, brightness, 1.0F);

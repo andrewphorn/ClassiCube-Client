@@ -50,6 +50,7 @@ public final class SpiderModel extends Model {
 		this.leg8.setPosition(4.0F, 0.0F, -1.0F);
 	}
 
+	@Override
 	public final void render(float var1, float var2, float var3, float var4, float var5, float var6) {
 		this.head.yaw = var4 / 57.295776F;
 		this.head.pitch = var5 / 57.295776F;

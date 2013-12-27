@@ -16,6 +16,7 @@ public final class Sound implements Audio {
 		this.volume = var2.getDistanceSq() * var1.volume;
 	}
         
+	@Override
 	public final boolean play(int[] var1, int[] var2, int var3) {
 		if (data.length < var3) {
 			data = new short[var3];

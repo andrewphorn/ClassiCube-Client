@@ -11,22 +11,22 @@ public class Frustrum {
 
 	public boolean isBoxInFrustum(float F, float F1, float F2, float F3, float F4, float F5) {
 		int i = 0;
-			if ((float) frustum[i][0] * F + (float) frustum[i][1] * F1 + (float) frustum[i][2]
-					* F2 + (float) frustum[i][3] <= 0.0F
-					&& (float) frustum[i][0] * F3 + (float) frustum[i][1] * F1
-							+ (float) frustum[i][2] * F2 + (float) frustum[i][3] <= 0.0F
-					&& (float) frustum[i][0] * F + (float) frustum[i][1] * F4
-							+ (float) frustum[i][2] * F2 + (float) frustum[i][3] <= 0.0F
-					&& (float) frustum[i][0] * F3 + (float) frustum[i][1] * F4
-							+ (float) frustum[i][2] * F2 + (float) frustum[i][3] <= 0.0F
-					&& (float) frustum[i][0] * F + (float) frustum[i][1] * F1
-							+ (float) frustum[i][2] * F5 + (float) frustum[i][3] <= 0.0F
-					&& (float) frustum[i][0] * F3 + (float) frustum[i][1] * F1
-							+ (float) frustum[i][2] * F5 + (float) frustum[i][3] <= 0.0F
-					&& (float) frustum[i][0] * F + (float) frustum[i][1] * F4
-							+ (float) frustum[i][2] * F5 + (float) frustum[i][3] <= 0.0F
-					&& (float) frustum[i][0] * F3 + (float) frustum[i][1] * F4
-							+ (float) frustum[i][2] * F5 + (float) frustum[i][3] <= 0.0F) {
+			if (frustum[i][0] * F + frustum[i][1] * F1 + frustum[i][2]
+					* F2 + frustum[i][3] <= 0.0F
+					&& frustum[i][0] * F3 + frustum[i][1] * F1
+							+ frustum[i][2] * F2 + frustum[i][3] <= 0.0F
+					&& frustum[i][0] * F + frustum[i][1] * F4
+							+ frustum[i][2] * F2 + frustum[i][3] <= 0.0F
+					&& frustum[i][0] * F3 + frustum[i][1] * F4
+							+ frustum[i][2] * F2 + frustum[i][3] <= 0.0F
+					&& frustum[i][0] * F + frustum[i][1] * F1
+							+ frustum[i][2] * F5 + frustum[i][3] <= 0.0F
+					&& frustum[i][0] * F3 + frustum[i][1] * F1
+							+ frustum[i][2] * F5 + frustum[i][3] <= 0.0F
+					&& frustum[i][0] * F + frustum[i][1] * F4
+							+ frustum[i][2] * F5 + frustum[i][3] <= 0.0F
+					&& frustum[i][0] * F3 + frustum[i][1] * F4
+							+ frustum[i][2] * F5 + frustum[i][3] <= 0.0F) {
 				return false;
 		}
 

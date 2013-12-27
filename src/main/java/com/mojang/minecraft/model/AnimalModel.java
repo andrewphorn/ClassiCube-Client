@@ -13,24 +13,25 @@ public class AnimalModel extends Model {
 
 	public AnimalModel(int var1) {
 		this.head.setBounds(-4.0F, -4.0F, -8.0F, 8, 8, 8, 0.0F);
-		this.head.setPosition(0.0F, (float) (18 - var1), -6.0F);
+		this.head.setPosition(0.0F, 18 - var1, -6.0F);
 		this.body = new ModelPart(28, 8);
 		this.body.setBounds(-5.0F, -10.0F, -7.0F, 10, 16, 8, 0.0F);
-		this.body.setPosition(0.0F, (float) (17 - var1), 2.0F);
+		this.body.setPosition(0.0F, 17 - var1, 2.0F);
 		this.leg1 = new ModelPart(0, 16);
 		this.leg1.setBounds(-2.0F, 0.0F, -2.0F, 4, var1, 4, 0.0F);
-		this.leg1.setPosition(-3.0F, (float) (24 - var1), 7.0F);
+		this.leg1.setPosition(-3.0F, 24 - var1, 7.0F);
 		this.leg2 = new ModelPart(0, 16);
 		this.leg2.setBounds(-2.0F, 0.0F, -2.0F, 4, var1, 4, 0.0F);
-		this.leg2.setPosition(3.0F, (float) (24 - var1), 7.0F);
+		this.leg2.setPosition(3.0F, 24 - var1, 7.0F);
 		this.leg3 = new ModelPart(0, 16);
 		this.leg3.setBounds(-2.0F, 0.0F, -2.0F, 4, var1, 4, 0.0F);
-		this.leg3.setPosition(-3.0F, (float) (24 - var1), -5.0F);
+		this.leg3.setPosition(-3.0F, 24 - var1, -5.0F);
 		this.leg4 = new ModelPart(0, 16);
 		this.leg4.setBounds(-2.0F, 0.0F, -2.0F, 4, var1, 4, 0.0F);
-		this.leg4.setPosition(3.0F, (float) (24 - var1), -5.0F);
+		this.leg4.setPosition(3.0F, 24 - var1, -5.0F);
 	}
 
+	@Override
 	public final void render(float var1, float var2, float var3, float var4, float var5, float var6) {
 		this.head.yaw = var4 / 57.295776F;
 		this.head.pitch = var5 / 57.295776F;

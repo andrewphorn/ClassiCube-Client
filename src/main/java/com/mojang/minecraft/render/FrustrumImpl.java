@@ -2,7 +2,6 @@ package com.mojang.minecraft.render;
 
 import com.mojang.util.MathHelper;
 import java.nio.FloatBuffer;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 public final class FrustrumImpl extends Frustrum {

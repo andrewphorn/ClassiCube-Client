@@ -45,7 +45,7 @@ public class TakeEntityAnim extends Entity {
 		}
 
 		// TODO: Is this right?
-		float distance = (distance = (float) time / 3.0F) * distance;
+		float distance = (distance = time / 3.0F) * distance;
 
 		xo = item.xo = item.x;
 		yo = item.yo = item.y;

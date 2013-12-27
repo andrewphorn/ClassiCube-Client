@@ -32,9 +32,11 @@ public class BasicAI extends AI {
 
 	public boolean flyingDown = false;
 
+	@Override
 	public void beforeRemove() {
 	}
 
+	@Override
 	public void hurt(Entity var1, int var2) {
 		super.hurt(var1, var2);
 		this.noActionTime = 0;
@@ -47,6 +49,7 @@ public class BasicAI extends AI {
 			this.mob.yd = 0.84F;
 	}
 
+	@Override
 	public void tick(Level var1, Mob var2) {
 		++this.noActionTime;
 		Entity var3;
@@ -201,7 +204,7 @@ public class BasicAI extends AI {
 				&& var11.size() > 0) {
 			for (int var8 = 0; var8 < var11.size(); ++var8) {
 				Entity var10;
-				if ((var10 = (Entity) var11.get(var8)).isPushable()) {
+				if ((var10 = var11.get(var8)).isPushable()) {
 					var10.push(var2);
 				}
 			}
@@ -220,7 +223,7 @@ public class BasicAI extends AI {
 		}
 
 		this.mob.yRot += this.yRotA;
-		this.mob.xRot = (float) this.defaultLookAngle;
+		this.mob.xRot = this.defaultLookAngle;
 		if (this.attackTarget != null) {
 			this.yya = this.runSpeed;
 			this.jumping = this.random.nextFloat() < 0.04F;

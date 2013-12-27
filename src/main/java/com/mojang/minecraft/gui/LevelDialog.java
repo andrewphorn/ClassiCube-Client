@@ -1,9 +1,13 @@
 package com.mojang.minecraft.gui;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.mojang.minecraft.level.LevelSerializer;
 
 final class LevelDialog extends Thread {
 
@@ -15,6 +19,7 @@ final class LevelDialog extends Thread {
 		this.screen = var1;
 	}
 
+	@Override
 	public final void run() {
 		JFileChooser var1;
 		try {
@@ -34,9 +39,16 @@ final class LevelDialog extends Thread {
 
 			if (var7 == 0) {
 				(this.screen).selectedFile = this.screen.chooser.getSelectedFile();
-				(this.screen).selectedFile = new File((this.screen).selectedFile + ".dat");
-				this.screen.minecraft.levelIo.save(this.screen.minecraft.level,
-						(this.screen).selectedFile);
+				(this.screen).selectedFile = new File((this.screen).selectedFile + "");
+				try {
+					new LevelSerializer(this.screen.minecraft.level).saveMap((this.screen).selectedFile);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		} finally {
 			this.screen.frozen = false;

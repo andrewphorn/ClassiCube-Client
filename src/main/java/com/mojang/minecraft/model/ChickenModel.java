@@ -16,33 +16,34 @@ public class ChickenModel extends Model {
 		byte var1 = 16;
 		this.head = new ModelPart(0, 0);
 		this.head.setBounds(-2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F);
-		this.head.setPosition(0.0F, (float) (-1 + var1), -4.0F);
+		this.head.setPosition(0.0F, -1 + var1, -4.0F);
 		this.bill = new ModelPart(14, 0);
 		this.bill.setBounds(-2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F);
-		this.bill.setPosition(0.0F, (float) (-1 + var1), -4.0F);
+		this.bill.setPosition(0.0F, -1 + var1, -4.0F);
 		this.chin = new ModelPart(14, 4);
 		this.chin.setBounds(-1.0F, -2.0F, -3.0F, 2, 2, 2, 0.0F);
-		this.chin.setPosition(0.0F, (float) (-1 + var1), -4.0F);
+		this.chin.setPosition(0.0F, -1 + var1, -4.0F);
 		this.body = new ModelPart(0, 9);
 		this.body.setBounds(-3.0F, -4.0F, -3.0F, 6, 8, 6, 0.0F);
-		this.body.setPosition(0.0F, (float) var1, 0.0F);
+		this.body.setPosition(0.0F, var1, 0.0F);
 		this.rightLeg = new ModelPart(26, 0);
 		this.rightLeg.setBounds(-1.0F, 0.0F, -3.0F, 3, 5, 3, 0.0F);
-		this.rightLeg.setPosition(-2.0F, (float) (3 + var1), 1.0F);
+		this.rightLeg.setPosition(-2.0F, 3 + var1, 1.0F);
 		this.leftLeg = new ModelPart(26, 0);
 		this.leftLeg.setBounds(-1.0F, 0.0F, -3.0F, 3, 5, 3, 0.0F);
-		this.leftLeg.setPosition(1.0F, (float) (3 + var1), 1.0F);
+		this.leftLeg.setPosition(1.0F, 3 + var1, 1.0F);
 		this.rightWing = new ModelPart(24, 13);
 		this.rightWing.setBounds(0.0F, 0.0F, -3.0F, 1, 4, 6, 0.0F);
-		this.rightWing.setPosition(-4.0F, (float) (-3 + var1), 0.0F);
+		this.rightWing.setPosition(-4.0F, -3 + var1, 0.0F);
 		this.leftWing = new ModelPart(24, 13);
 		this.leftWing.setBounds(-1.0F, 0.0F, -3.0F, 1, 4, 6, 0.0F);
-		this.leftWing.setPosition(4.0F, (float) (-3 + var1), 0.0F);
+		this.leftWing.setPosition(4.0F, -3 + var1, 0.0F);
 	}
 
 	/**
 	 * Sets the models various rotation angles then renders the model.
 	 */
+	@Override
 	public void render(float par2, float par3, float par4, float par5, float par6, float par7) {
 		this.setRotationAngles(par2, par3, par4, par5, par6, par7);
 		this.head.render(par7);

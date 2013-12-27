@@ -25,7 +25,7 @@ public final class Music implements Audio {
 	public Music(SoundPlayer var1, URL var2) {
 		this.player = var1;
 		try {
-			LogicalOggStreamImpl var3 = (LogicalOggStreamImpl) (new OnDemandUrlStream(var2))
+			LogicalOggStreamImpl var3 = (new OnDemandUrlStream(var2))
 					.getLogicalStreams().iterator().next();
 			this.stream = new VorbisStream(var3);
 		} catch (VorbisFormatException e) {
@@ -38,6 +38,7 @@ public final class Music implements Audio {
 		(new MusicPlayThread(this)).start();
 	}
 
+	@Override
 	public final boolean play(int[] var1, int[] var2, int var3) {
 		if (!this.player.settings.music) {
 			this.stopped = true;

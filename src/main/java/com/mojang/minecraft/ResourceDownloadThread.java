@@ -133,6 +133,16 @@ public class ResourceDownloadThread extends Thread {
 		folder.mkdir();
 		folder = new File(dir, "sound3");
 		folder.mkdir();
+		folder = new File(folder, "step");
+        folder.mkdir();
+        
+        File musicFolder = new File(dir, "music");
+		File stepsFolder = new File(dir, "sound3/step");
+		File digFolder = new File(dir, "sound3/dig");
+		digFolder.mkdir();
+		File randomFolder = new File(dir, "sound3/random");
+		randomFolder.mkdir();
+        
 
 		try {
 			GameSettings.PercentString = "5%";
@@ -177,8 +187,6 @@ public class ResourceDownloadThread extends Thread {
 			e.printStackTrace();
 		}
 
-		File musicFolder = new File(dir, "music");
-
 		for (int i = 1; i <= 3; i++) {
 			minecraft.sound.registerMusic("calm" + i + ".ogg", new File(musicFolder, "calm" + i
 					+ ".ogg"));
@@ -191,11 +199,9 @@ public class ResourceDownloadThread extends Thread {
 					+ ".ogg"));
 		}
 
-		File stepsFolder = new File(dir, "sound3/step");
+		
                 
-                File randomFolder = new File(dir, "sound3/random");
                 
-                File digFolder = new File(dir, "sound3/dig");
 
 		for (int i = 1; i <= 4; i++) {
 			minecraft.sound.registerSound(new File(stepsFolder, "grass" + i + ".ogg"), "step/grass"
@@ -214,8 +220,7 @@ public class ResourceDownloadThread extends Thread {
 					+ i + ".ogg");
                         minecraft.sound.registerSound(new File(stepsFolder, "ladder" + i + ".ogg"), "step/ladder"
 					+ i + ".ogg");
-                        minecraft.sound.registerSound(new File(randomFolder, "glass" + i + ".ogg"), "random/glass"
-					+ i + ".ogg");
+                       
                         minecraft.sound.registerSound(new File(digFolder, "grass" + i + ".ogg"), "dig/grass"
 					+ i + ".ogg");
 			minecraft.sound.registerSound(new File(digFolder, "gravel" + i + ".ogg"), "dig/gravel"
@@ -230,6 +235,10 @@ public class ResourceDownloadThread extends Thread {
 					+ i + ".ogg");
                         minecraft.sound.registerSound(new File(digFolder, "snow" + i + ".ogg"), "dig/snow"
 					+ i + ".ogg");
+		}
+		for (int i = 1; i <= 3; i++) {
+			 minecraft.sound.registerSound(new File(randomFolder, "glass" + i + ".ogg"), "random/glass"
+						+ i + ".ogg");
 		}
 		finished = true;
 	}

@@ -117,7 +117,7 @@ public final class LevelRenderer {
 		}
 
 		for (var2 = 0; var2 < this.chunks.size(); ++var2) {
-			((Chunk) this.chunks.get(var2)).loaded = false;
+			this.chunks.get(var2).loaded = false;
 		}
 
 		this.chunks.clear();
@@ -151,11 +151,11 @@ public final class LevelRenderer {
 				if (var7 >= 0 && var8 >= 0 && var7 < var9.level.width && var8 < var9.level.height) {
 					waterLevel = 0.0F;
 				}
-				var11.vertexUV((float) var7, waterLevel, (float) (var8 + var5), 0.0F, (float) var5);
-				var11.vertexUV((float) (var7 + var5), waterLevel, (float) (var8 + var5),
-						(float) var5, (float) var5);
-				var11.vertexUV((float) (var7 + var5), waterLevel, (float) var8, (float) var5, 0.0F);
-				var11.vertexUV((float) var7, waterLevel, (float) var8, 0.0F, 0.0F);
+				var11.vertexUV(var7, waterLevel, var8 + var5, 0.0F, var5);
+				var11.vertexUV(var7 + var5, waterLevel, var8 + var5,
+						var5, var5);
+				var11.vertexUV(var7 + var5, waterLevel, var8, var5, 0.0F);
+				var11.vertexUV(var7, waterLevel, var8, 0.0F, 0.0F);
 			}
 		}
 
@@ -167,16 +167,16 @@ public final class LevelRenderer {
 		var11.begin();
 
 		for (var7 = 0; var7 < var9.level.width; var7 += var5) {
-			var11.vertexUV((float) var7, 0.0F, 0.0F, 0.0F, 0.0F);
-			var11.vertexUV((float) (var7 + var5), 0.0F, 0.0F, (float) var5, 0.0F);
-			var11.vertexUV((float) (var7 + var5), groundLevel, 0.0F, (float) var5, groundLevel);
-			var11.vertexUV((float) var7, groundLevel, 0.0F, 0.0F, groundLevel);
-			var11.vertexUV((float) var7, groundLevel, (float) var9.level.height, 0.0F, groundLevel);
-			var11.vertexUV((float) (var7 + var5), groundLevel, (float) var9.level.height,
-					(float) var5, groundLevel);
-			var11.vertexUV((float) (var7 + var5), 0.0F, (float) var9.level.height, (float) var5,
+			var11.vertexUV(var7, 0.0F, 0.0F, 0.0F, 0.0F);
+			var11.vertexUV(var7 + var5, 0.0F, 0.0F, var5, 0.0F);
+			var11.vertexUV(var7 + var5, groundLevel, 0.0F, var5, groundLevel);
+			var11.vertexUV(var7, groundLevel, 0.0F, 0.0F, groundLevel);
+			var11.vertexUV(var7, groundLevel, var9.level.height, 0.0F, groundLevel);
+			var11.vertexUV(var7 + var5, groundLevel, var9.level.height,
+					var5, groundLevel);
+			var11.vertexUV(var7 + var5, 0.0F, var9.level.height, var5,
 					0.0F);
-			var11.vertexUV((float) var7, 0.0F, (float) var9.level.height, 0.0F, 0.0F);
+			var11.vertexUV(var7, 0.0F, var9.level.height, 0.0F, 0.0F);
 		}
 
 		if (this.level.customLightColour != null) {
@@ -185,16 +185,16 @@ public final class LevelRenderer {
 		}
 
 		for (var7 = 0; var7 < var9.level.height; var7 += var5) {
-			var11.vertexUV(0.0F, groundLevel, (float) var7, 0.0F, 0.0F);
-			var11.vertexUV(0.0F, groundLevel, (float) (var7 + var5), (float) var5, 0.0F);
-			var11.vertexUV(0.0F, 0.0F, (float) (var7 + var5), (float) var5, groundLevel);
-			var11.vertexUV(0.0F, 0.0F, (float) var7, 0.0F, groundLevel);
-			var11.vertexUV((float) var9.level.width, 0.0F, (float) var7, 0.0F, groundLevel);
-			var11.vertexUV((float) var9.level.width, 0.0F, (float) (var7 + var5), (float) var5,
+			var11.vertexUV(0.0F, groundLevel, var7, 0.0F, 0.0F);
+			var11.vertexUV(0.0F, groundLevel, var7 + var5, var5, 0.0F);
+			var11.vertexUV(0.0F, 0.0F, var7 + var5, var5, groundLevel);
+			var11.vertexUV(0.0F, 0.0F, var7, 0.0F, groundLevel);
+			var11.vertexUV(var9.level.width, 0.0F, var7, 0.0F, groundLevel);
+			var11.vertexUV(var9.level.width, 0.0F, var7 + var5, var5,
 					groundLevel);
-			var11.vertexUV((float) var9.level.width, groundLevel, (float) (var7 + var5),
-					(float) var5, 0.0F);
-			var11.vertexUV((float) var9.level.width, groundLevel, (float) var7, 0.0F, 0.0F);
+			var11.vertexUV(var9.level.width, groundLevel, var7 + var5,
+					var5, 0.0F);
+			var11.vertexUV(var9.level.width, groundLevel, var7, 0.0F, 0.0F);
 		}
 
 		var11.end();
@@ -226,16 +226,16 @@ public final class LevelRenderer {
 			for (var7 = -var4 * var5; var7 < var9.level.height + var4 * var5; var7 += var4) {
 				float var13 = waterLevel - 0.1F;
 				if (var6 < 0 || var7 < 0 || var6 >= var9.level.width || var7 >= var9.level.height) {
-					var11.vertexUV((float) var6, var13, (float) (var7 + var4), 0.0F, (float) var4);
-					var11.vertexUV((float) (var6 + var4), var13, (float) (var7 + var4),
-							(float) var4, (float) var4);
-					var11.vertexUV((float) (var6 + var4), var13, (float) var7, (float) var4, 0.0F);
-					var11.vertexUV((float) var6, var13, (float) var7, 0.0F, 0.0F);
-					var11.vertexUV((float) var6, var13, (float) var7, 0.0F, 0.0F);
-					var11.vertexUV((float) (var6 + var4), var13, (float) var7, (float) var4, 0.0F);
-					var11.vertexUV((float) (var6 + var4), var13, (float) (var7 + var4),
-							(float) var4, (float) var4);
-					var11.vertexUV((float) var6, var13, (float) (var7 + var4), 0.0F, (float) var4);
+					var11.vertexUV(var6, var13, var7 + var4, 0.0F, var4);
+					var11.vertexUV(var6 + var4, var13, var7 + var4,
+							var4, var4);
+					var11.vertexUV(var6 + var4, var13, var7, var4, 0.0F);
+					var11.vertexUV(var6, var13, var7, 0.0F, 0.0F);
+					var11.vertexUV(var6, var13, var7, 0.0F, 0.0F);
+					var11.vertexUV(var6 + var4, var13, var7, var4, 0.0F);
+					var11.vertexUV(var6 + var4, var13, var7 + var4,
+							var4, var4);
+					var11.vertexUV(var6, var13, var7 + var4, 0.0F, var4);
 				}
 			}
 		}

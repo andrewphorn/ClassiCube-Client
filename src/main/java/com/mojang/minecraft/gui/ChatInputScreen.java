@@ -10,10 +10,12 @@ public final class ChatInputScreen extends GuiScreen {
 	public String message = "";
 	private int counter = 0;
 
+	@Override
 	public final void onClose() {
 		Keyboard.enableRepeatEvents(false);
 	}
 
+	@Override
 	protected final void onKeyPress(char var1, int var2) {
 		if (var2 == Keyboard.KEY_UP) {
 			GameSettings.typinglogpos--;
@@ -66,6 +68,7 @@ public final class ChatInputScreen extends GuiScreen {
 		}
 	}
 
+	@Override
 	protected final void onMouseClick(int var1, int var2, int var3) {
 		if (var3 == 0 && this.minecraft.hud.hoveredPlayer != null) {
 			if (this.message.length() > 0 && !this.message.endsWith(" ")) {
@@ -81,16 +84,19 @@ public final class ChatInputScreen extends GuiScreen {
 
 	}
 
+	@Override
 	public final void onOpen() {
 		Keyboard.enableRepeatEvents(true);
 	}
 
+	@Override
 	public final void render(int var1, int var2) {
 		drawBox(2, this.height - 14, this.width - 2, this.height - 2, Integer.MIN_VALUE);
 		drawString(this.fontRenderer, "> " + this.message + (this.counter / 6 % 2 == 0 ? "_" : ""),
 				4, this.height - 12, 14737632);
 	}
 
+	@Override
 	public final void tick() {
 		++this.counter;
 	}

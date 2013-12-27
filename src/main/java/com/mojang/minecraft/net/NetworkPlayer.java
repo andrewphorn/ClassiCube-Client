@@ -38,7 +38,7 @@ public class NetworkPlayer extends HumanoidMob {
 
 	public NetworkPlayer(Minecraft var1, String var3, int var4, int var5, int var6, float var7,
 			float var8) {
-		super(var1.level, (float) var4, (float) var5, (float) var6);
+		super(var1.level, var4, var5, var6);
 		this.minecraft = var1;
 		this.displayName = var3;
 		var3 = FontRenderer.stripColor(var3);
@@ -48,7 +48,7 @@ public class NetworkPlayer extends HumanoidMob {
 		this.zp = var6;
 		this.heightOffset = 0.0F;
 		this.pushthrough = 0.8F;
-		this.setPos((float) var4 / 32.0F, (float) var5 / 32.0F, (float) var6 / 32.0F);
+		this.setPos(var4 / 32.0F, var5 / 32.0F, var6 / 32.0F);
 		this.xRot = var8;
 		this.yRot = var7;
 		this.armor = this.helmet = false;
@@ -65,13 +65,14 @@ public class NetworkPlayer extends HumanoidMob {
 		}
 	}
 
+	@Override
 	public void aiStep() {
 		int var1 = 5;
 		if (this.moveQueue != null) {
 			do {
 
 				if (this.moveQueue.size() > 0) {
-					this.setPos((PositionUpdate) this.moveQueue.remove(0));
+					this.setPos(this.moveQueue.remove(0));
 				}
 			} while (var1-- > 0 && this.moveQueue.size() > 10);
 		}
@@ -79,6 +80,7 @@ public class NetworkPlayer extends HumanoidMob {
 		this.onGround = true;
 	}
 
+	@Override
 	public void bindTexture(TextureManager var1) {
 		this.textures = var1;
 		if (this.newTexture != null) {
@@ -141,14 +143,14 @@ public class NetworkPlayer extends HumanoidMob {
 	}
 
 	public void queue(byte var1, byte var2, byte var3) {
-		this.moveQueue.add(new PositionUpdate(((float) this.xp + (float) var1 / 2.0F) / 32.0F,
-				((float) this.yp + (float) var2 / 2.0F) / 32.0F,
-				((float) this.zp + (float) var3 / 2.0F) / 32.0F));
+		this.moveQueue.add(new PositionUpdate((this.xp + var1 / 2.0F) / 32.0F,
+				(this.yp + var2 / 2.0F) / 32.0F,
+				(this.zp + var3 / 2.0F) / 32.0F));
 		this.xp += var1;
 		this.yp += var2;
 		this.zp += var3;
-		this.moveQueue.add(new PositionUpdate((float) this.xp / 32.0F, (float) this.yp / 32.0F,
-				(float) this.zp / 32.0F));
+		this.moveQueue.add(new PositionUpdate(this.xp / 32.0F, this.yp / 32.0F,
+				this.zp / 32.0F));
 	}
 
 	public void queue(byte var1, byte var2, byte var3, float var4, float var5) {
@@ -173,14 +175,14 @@ public class NetworkPlayer extends HumanoidMob {
 
 		var6 = this.yRot + var6 * 0.5F;
 		var7 = this.xRot + var7 * 0.5F;
-		this.moveQueue.add(new PositionUpdate(((float) this.xp + (float) var1 / 2.0F) / 32.0F,
-				((float) this.yp + (float) var2 / 2.0F) / 32.0F,
-				((float) this.zp + (float) var3 / 2.0F) / 32.0F, var6, var7));
+		this.moveQueue.add(new PositionUpdate((this.xp + var1 / 2.0F) / 32.0F,
+				(this.yp + var2 / 2.0F) / 32.0F,
+				(this.zp + var3 / 2.0F) / 32.0F, var6, var7));
 		this.xp += var1;
 		this.yp += var2;
 		this.zp += var3;
-		this.moveQueue.add(new PositionUpdate((float) this.xp / 32.0F, (float) this.yp / 32.0F,
-				(float) this.zp / 32.0F, var4, var5));
+		this.moveQueue.add(new PositionUpdate(this.xp / 32.0F, this.yp / 32.0F,
+				this.zp / 32.0F, var4, var5));
 	}
 
 	public void queue(float var1, float var2) {
@@ -209,6 +211,7 @@ public class NetworkPlayer extends HumanoidMob {
 		this.moveQueue.add(new PositionUpdate(var1, var2));
 	}
 
+	@Override
 	public void renderHover(TextureManager var1, float var2) {
 		FontRenderer var3 = this.minecraft.fontRenderer;
 		GL11.glPushMatrix();
@@ -217,7 +220,7 @@ public class NetworkPlayer extends HumanoidMob {
 		GL11.glRotatef(-this.minecraft.player.yRot, 0.0F, 1.0F, 0.0F);
 		var2 = 0.05F;
 		GL11.glScalef(0.05F, -var2, var2);
-		GL11.glTranslatef((float) (-var3.getWidth(this.displayName)) / 2.0F, 0.0F, 0.0F);
+		GL11.glTranslatef((-var3.getWidth(this.displayName)) / 2.0F, 0.0F, 0.0F);
 		GL11.glNormal3f(1.0F, -1.0F, 1.0F);
 		GL11.glDisable(2896);
 		GL11.glDisable(16384);
@@ -266,12 +269,12 @@ public class NetworkPlayer extends HumanoidMob {
 
 		var6 = this.yRot + var6 * 0.5F;
 		var7 = this.xRot + var7 * 0.5F;
-		this.moveQueue.add(new PositionUpdate((float) (this.xp + var1) / 64.0F,
-				(float) (this.yp + var2) / 64.0F, (float) (this.zp + var3) / 64.0F, var6, var7));
+		this.moveQueue.add(new PositionUpdate((this.xp + var1) / 64.0F,
+				(this.yp + var2) / 64.0F, (this.zp + var3) / 64.0F, var6, var7));
 		this.xp = var1;
 		this.yp = var2;
 		this.zp = var3;
-		this.moveQueue.add(new PositionUpdate((float) this.xp / 32.0F, (float) this.yp / 32.0F,
-				(float) this.zp / 32.0F, var4, var5));
+		this.moveQueue.add(new PositionUpdate(this.xp / 32.0F, this.yp / 32.0F,
+				this.zp / 32.0F, var4, var5));
 	}
 }

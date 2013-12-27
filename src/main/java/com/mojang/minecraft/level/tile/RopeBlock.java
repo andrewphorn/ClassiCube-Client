@@ -12,6 +12,7 @@ public final class RopeBlock extends FlowerBlock {
 		this.setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F, var3 * 3.0F, var3 + 0.5F);
 	}
 
+	@Override
 	public final void update(Level level, int x, int y, int z, Random rand) {
 		if (this.id != ROPE.id) {
 			int var6 = level.getTile(x, y - 1, z);

@@ -1,8 +1,6 @@
 package com.mojang.minecraft.level.tile;
 
 import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.level.tile.Block;
-
 import java.util.Random;
 
 public final class SaplingBlock extends FlowerBlock {
@@ -13,6 +11,7 @@ public final class SaplingBlock extends FlowerBlock {
 		this.setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F, var3 * 2.0F, var3 + 0.5F);
 	}
 
+	@Override
 	public final void update(Level level, int x, int y, int z, Random rand) {
 		if (this.id != ROPE.id) {
 			int var6 = level.getTile(x, y - 1, z);

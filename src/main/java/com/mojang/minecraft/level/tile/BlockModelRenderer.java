@@ -3,7 +3,6 @@ package com.mojang.minecraft.level.tile;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.MovingObjectPosition;
-import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.model.Vec3D;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
@@ -30,8 +29,8 @@ public class BlockModelRenderer {
 	}
 
 	public final MovingObjectPosition clip(int var1, int var2, int var3, Vec3D var4, Vec3D var5) {
-		var4 = var4.add((float) (-var1), (float) (-var2), (float) (-var3));
-		var5 = var5.add((float) (-var1), (float) (-var2), (float) (-var3));
+		var4 = var4.add((-var1), (-var2), (-var3));
+		var5 = var5.add((-var1), (-var2), (-var3));
 		Vec3D var6 = var4.getXIntersection(var5, this.x1);
 		Vec3D var7 = var4.getXIntersection(var5, this.x2);
 		Vec3D var8 = var4.getYIntersection(var5, this.y1);
@@ -115,8 +114,8 @@ public class BlockModelRenderer {
 				var12 = 3;
 			}
 
-			return new MovingObjectPosition(var1, var2, var3, var12, var11.add((float) var1,
-					(float) var2, (float) var3));
+			return new MovingObjectPosition(var1, var2, var3, var12, var11.add(var1,
+					var2, var3));
 		}
 	}
 
@@ -125,16 +124,16 @@ public class BlockModelRenderer {
 	}
 
 	public AABB getCollisionBox(int x, int y, int z) {
-		AABB aabb = new AABB((float) x + x1, (float) y + y1, (float) z + z1, (float) x + x2,
-				(float) y + y2, (float) z + z2);
+		AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2,
+				y + y2, z + z2);
 		;
 
 		return aabb;
 	}
 
 	public AABB getSelectionBox(int x, int y, int z) {
-		AABB aabb = new AABB((float) x + x1, (float) y + y1, (float) z + z1, (float) x + x2,
-				(float) y + y2, (float) z + z2);
+		AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2,
+				y + y2, z + z2);
 		;
 
 		return aabb;
@@ -215,15 +214,15 @@ public class BlockModelRenderer {
 
 		int var6;
 		float var7;
-		float var8 = (var7 = (float) ((var6 = this.getTextureId(var5)) % 16) / 16.0F) + 0.0624375F;
+		float var8 = (var7 = (var6 = this.getTextureId(var5)) % 16 / 16.0F) + 0.0624375F;
 		float var16;
-		float var9 = (var16 = (float) (var6 / 16) / 16.0F) + 0.0624375F;
-		float var10 = (float) var2 + this.x1;
-		float var14 = (float) var2 + this.x2;
-		float var11 = (float) var3 + this.y1;
-		float var15 = (float) var3 + this.y2;
-		float var12 = (float) var4 + this.z1;
-		float var13 = (float) var4 + this.z2;
+		float var9 = (var16 = var6 / 16 / 16.0F) + 0.0624375F;
+		float var10 = var2 + this.x1;
+		float var14 = var2 + this.x2;
+		float var11 = var3 + this.y1;
+		float var15 = var3 + this.y2;
+		float var12 = var4 + this.z1;
+		float var13 = var4 + this.z2;
 		if (var5 == 0) {
 			var1.vertexUV(var14, var11, var13, var8, var9);
 			var1.vertexUV(var14, var11, var12, var8, var16);
@@ -272,26 +271,26 @@ public class BlockModelRenderer {
 	public void renderSide(ShapeRenderer shapeRenderer, int x, int y, int z, int side, int textureID) {
 		int var7 = textureID % 16 << 4;
 		int var8 = textureID / 16 << 4;
-		float var9 = (float) var7 / 256.0F;
-		float var17 = ((float) var7 + 15.99F) / 256.0F;
-		float var10 = (float) var8 / 256.0F;
-		float var11 = ((float) var8 + 15.99F) / 256.0F;
+		float var9 = var7 / 256.0F;
+		float var17 = (var7 + 15.99F) / 256.0F;
+		float var10 = var8 / 256.0F;
+		float var11 = (var8 + 15.99F) / 256.0F;
 		if (side >= 2 && textureID < 240) {
 			if (this.y1 >= 0.0F && this.y2 <= 1.0F) {
-				var10 = ((float) var8 + this.y1 * 15.99F) / 256.0F;
-				var11 = ((float) var8 + this.y2 * 15.99F) / 256.0F;
+				var10 = (var8 + this.y1 * 15.99F) / 256.0F;
+				var11 = (var8 + this.y2 * 15.99F) / 256.0F;
 			} else {
-				var10 = (float) var8 / 256.0F;
-				var11 = ((float) var8 + 15.99F) / 256.0F;
+				var10 = var8 / 256.0F;
+				var11 = (var8 + 15.99F) / 256.0F;
 			}
 		}
 
-		float var16 = (float) x + this.x1;
-		float var14 = (float) x + this.x2;
-		float var18 = (float) y + this.y1;
-		float var15 = (float) y + this.y2;
-		float var12 = (float) z + this.z1;
-		float var13 = (float) z + this.z2;
+		float var16 = x + this.x1;
+		float var14 = x + this.x2;
+		float var18 = y + this.y1;
+		float var15 = y + this.y2;
+		float var12 = z + this.z1;
+		float var13 = z + this.z2;
 		if (side == 0) {
 			shapeRenderer.vertexUV(var16, var18, var13, var9, var11);
 			shapeRenderer.vertexUV(var16, var18, var12, var9, var10);

@@ -32,7 +32,7 @@ public class ScaledResolution {
 
 	public static int ceiling_double_int(double par0) {
 		int var2 = (int) par0;
-		return par0 > (double) var2 ? var2 + 1 : var2;
+		return par0 > var2 ? var2 + 1 : var2;
 	}
 
 	public int getScaledWidth() {

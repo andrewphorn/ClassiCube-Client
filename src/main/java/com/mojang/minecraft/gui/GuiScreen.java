@@ -65,7 +65,7 @@ public class GuiScreen extends Screen {
 			for (var3 = 0; var3 < this.buttons.size(); ++var3) {
 				Button var4;
 				Button var7;
-				if ((var7 = var4 = (Button) this.buttons.get(var3)).active && var1 >= var7.x
+				if ((var7 = var4 = this.buttons.get(var3)).active && var1 >= var7.x
 						&& var2 >= var7.y && var1 < var7.x + var7.width
 						&& var2 < var7.y + var7.height) {
 					this.onButtonClick(var4);
@@ -88,7 +88,7 @@ public class GuiScreen extends Screen {
 
 	public void render(int var1, int var2) {
 		for (int var3 = 0; var3 < this.buttons.size(); ++var3) {
-			Button var10000 = (Button) this.buttons.get(var3);
+			Button var10000 = this.buttons.get(var3);
 			Minecraft var7 = this.minecraft;
 			Button var4 = var10000;
 			if (var10000.visible) {

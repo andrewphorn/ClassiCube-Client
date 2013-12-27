@@ -16,6 +16,7 @@ final class Creeper$1 extends BasicAttackAI {
 		this.creeper = var1;
 	}
 
+	@Override
 	public final boolean attack(Entity var1) {
 		if (!super.attack(var1)) {
 			return false;
@@ -25,6 +26,7 @@ final class Creeper$1 extends BasicAttackAI {
 		}
 	}
 
+	@Override
 	public final void beforeRemove() {
 		float var1 = 4.0F;
 		this.level.explode(this.mob, this.mob.x, this.mob.y, this.mob.z, var1);

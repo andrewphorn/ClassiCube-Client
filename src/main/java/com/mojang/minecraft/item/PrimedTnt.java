@@ -107,10 +107,10 @@ public class PrimedTnt extends Entity {
 
 		GL11.glDisable(3553);
 		GL11.glDisable(2896);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, (float) ((life / 4 + 1) % 2) * 0.4F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, (life / 4 + 1) % 2 * 0.4F);
 
 		if (life <= 16) {
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, (float) ((life + 1) % 2) * 0.6F);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, (life + 1) % 2 * 0.6F);
 		}
 
 		if (life <= 2) {

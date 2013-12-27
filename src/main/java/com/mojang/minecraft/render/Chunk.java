@@ -26,8 +26,8 @@ public final class Chunk {
 		this.y = y;
 		this.z = z;
 		this.chunkSize = 16;
-		MathHelper.sqrt((float) (this.chunkSize * this.chunkSize + this.chunkSize * this.chunkSize + this.chunkSize
-				* this.chunkSize));
+		MathHelper.sqrt(this.chunkSize * this.chunkSize + this.chunkSize * this.chunkSize + this.chunkSize
+				* this.chunkSize);
 		this.baseListId = listID;
 		this.setAllDirty();
 	}
@@ -45,9 +45,9 @@ public final class Chunk {
 	}
 
 	public final void clip(Frustrum frustrum) {
-		this.visible = frustrum.isBoxInFrustum((float) this.x, (float) this.y, (float) this.z,
-				(float) (this.x + this.chunkSize), (float) (this.y + this.chunkSize),
-				(float) (this.z + this.chunkSize));
+		this.visible = frustrum.isBoxInFrustum(this.x, this.y, this.z,
+				this.x + this.chunkSize, this.y + this.chunkSize,
+				this.z + this.chunkSize);
 	}
 
 	public final void dispose() {
@@ -56,9 +56,9 @@ public final class Chunk {
 	}
 
 	public final float distanceSquared(Player player) {
-		float dx = player.x - (float) this.x;
-		float dy = player.y - (float) this.y;
-		float dz = player.z - (float) this.z;
+		float dx = player.x - this.x;
+		float dy = player.y - this.y;
+		float dz = player.z - this.z;
 		return dx * dx + dy * dy + dz * dz;
 	}
 

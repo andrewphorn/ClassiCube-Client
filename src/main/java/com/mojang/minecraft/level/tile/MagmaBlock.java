@@ -9,6 +9,7 @@ public final class MagmaBlock extends Block {
 		super(var1);
 	}
 
+	@Override
 	protected final ColorCache getBrightness(Level level, int x, int y, int z) {
 		return new ColorCache(255.0F / 255.0F, 255.0F / 255.0F, 255.0F / 255.0F);
 	}

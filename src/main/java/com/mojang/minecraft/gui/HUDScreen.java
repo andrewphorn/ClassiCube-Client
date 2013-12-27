@@ -68,7 +68,7 @@ public final class HUDScreen extends Screen {
 			namesToPrint.add(playerListNames.get(k));
 		}
 		for (int var11 = 0; var11 < namesToPrint.size(); ++var11) {
-			PlayerListNameData pi = (PlayerListNameData) namesToPrint.get(var11);
+			PlayerListNameData pi = namesToPrint.get(var11);
 			if (!lastGroupName.equals(pi.groupName)) {
 				lastGroupName = pi.groupName;
 				groupChanges++;
@@ -99,7 +99,7 @@ public final class HUDScreen extends Screen {
 
 		int var10 = this.mc.player.health;
 		int var11 = this.mc.player.lastHealth;
-		this.random.setSeed((long) (this.ticks * 312871));
+		this.random.setSeed(this.ticks * 312871);
 		int var12;
 		int i;
 		int var15;
@@ -138,8 +138,8 @@ public final class HUDScreen extends Screen {
 			}
 
 			if (this.mc.player.isUnderWater()) {
-				var12 = (int) Math.ceil((double) (this.mc.player.airSupply - 2) * 10.0D / 300.0D);
-				var26 = (int) Math.ceil((double) this.mc.player.airSupply * 10.0D / 300.0D) - var12;
+				var12 = (int) Math.ceil((this.mc.player.airSupply - 2) * 10.0D / 300.0D);
+				var26 = (int) Math.ceil(this.mc.player.airSupply * 10.0D / 300.0D) - var12;
 
 				for (i = 0; i < var12 + var26; ++i) {
 					if (i < var12) {
@@ -161,11 +161,11 @@ public final class HUDScreen extends Screen {
 			i = this.height - 16;
 			if ((var15 = var8.slots[var12]) > 0) {
 				GL11.glPushMatrix();
-				GL11.glTranslatef((float) var26, (float) i, -50.0F);
+				GL11.glTranslatef(var26, i, -50.0F);
 				if (var8.popTime[var12] > 0) {
 					float var18;
 					float var21 = -MathHelper
-							.sin((var18 = ((float) var8.popTime[var12] - var1) / 5.0F) * var18
+							.sin((var18 = (var8.popTime[var12] - var1) / 5.0F) * var18
 									* 3.1415927F) * 8.0F;
 					float var19 = MathHelper.sin(var18 * var18 * 3.1415927F) + 1.0F;
 					float var16 = MathHelper.sin(var18 * 3.1415927F) + 1.0F;
@@ -238,8 +238,8 @@ public final class HUDScreen extends Screen {
 
 		this.chatsOnScreen.clear();
 		for (i = 0; i < this.chat.size() && i < var25; ++i) {
-			if (((ChatLine) this.chat.get(i)).time < 200 || var27) {
-				var5.render(((ChatLine) this.chat.get(i)).message, 2, this.height - 8 - i * 9 - 20,
+			if (this.chat.get(i).time < 200 || var27) {
+				var5.render(this.chat.get(i).message, 2, this.height - 8 - i * 9 - 20,
 						16777215);
 				this.chatsOnScreen.add(new ChatScreenData(1, 8, 2, this.height - 8 - i * 9 - 20,
 						this.chat.get(i).message, var5));
@@ -262,11 +262,11 @@ public final class HUDScreen extends Screen {
 				GL11.glBlendFunc(770, 771);
 				GL11.glBegin(7);
 				GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.7F);
-				GL11.glVertex2f((float) (i + 132), (float) (var15 - 72 - 12));
-				GL11.glVertex2f((float) (i - 132), (float) (var15 - 72 - 12));
+				GL11.glVertex2f(i + 132, var15 - 72 - 12);
+				GL11.glVertex2f(i - 132, var15 - 72 - 12);
 				GL11.glColor4f(0.2F, 0.2F, 0.2F, 0.8F);
-				GL11.glVertex2f((float) (i - 132), (float) (var15 + 72));
-				GL11.glVertex2f((float) (i + 132), (float) (var15 + 72));
+				GL11.glVertex2f(i - 132, var15 + 72);
+				GL11.glVertex2f(i + 132, var15 + 72);
 				GL11.glEnd();
 				GL11.glDisable(3042);
 				GL11.glEnable(3553);
@@ -286,11 +286,11 @@ public final class HUDScreen extends Screen {
 						int var17 = var15 - 64 + (var11 / 2 << 3);
 						if (var2 && var3 >= var28 && var4 >= var17 && var3 < var28 + 120
 								&& var4 < var17 + 8) {
-							this.hoveredPlayer = (String) playersOnWorld.get(var11);
-							var5.renderNoShadow((String) playersOnWorld.get(var11), var28 + 2,
+							this.hoveredPlayer = playersOnWorld.get(var11);
+							var5.renderNoShadow(playersOnWorld.get(var11), var28 + 2,
 									var17, 16777215);
 						} else {
-							var5.renderNoShadow((String) playersOnWorld.get(var11), var28, var17,
+							var5.renderNoShadow(playersOnWorld.get(var11), var28, var17,
 									15658734);
 						}
 					}

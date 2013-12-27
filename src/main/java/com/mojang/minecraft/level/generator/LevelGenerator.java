@@ -51,7 +51,7 @@ public final class LevelGenerator {
 			--var22;
 			var2 = this.h[var22];
 			if (var22 == 0 && var21.size() > 0) {
-				this.h = (int[]) var21.remove(var21.size() - 1);
+				this.h = var21.remove(var21.size() - 1);
 				var22 = this.h.length;
 			}
 
@@ -77,7 +77,7 @@ public final class LevelGenerator {
 			boolean var23 = false;
 			boolean var24 = false;
 			boolean var18 = false;
-			var11 += (long) (var15 - var14);
+			var11 += var15 - var14;
 
 			for (; var14 < var15; ++var14) {
 				this.blocks[var2] = var20;
@@ -160,11 +160,11 @@ public final class LevelGenerator {
 			var5.setProgress(var11 * 100 / (var5.width - 1));
 
 			for (var12 = 0; var12 < var5.depth; ++var12) {
-				double var13 = var6.compute((double) ((float) var11 * var10),
-						(double) ((float) var12 * var10)) / 6.0D + (double) -4;
-				double var15 = var7.compute((double) ((float) var11 * var10),
-						(double) ((float) var12 * var10)) / 5.0D + 10.0D + (double) -4;
-				if (var8.compute((double) var11, (double) var12) / 8.0D > 0.0D) {
+				double var13 = var6.compute(var11 * var10,
+						var12 * var10) / 6.0D + -4;
+				double var15 = var7.compute(var11 * var10,
+						var12 * var10) / 5.0D + 10.0D + -4;
+				if (var8.compute(var11, var12) / 8.0D > 0.0D) {
 					var15 = var13;
 				}
 
@@ -191,8 +191,8 @@ public final class LevelGenerator {
 			var5.setProgress(var51 * 100 / (var5.width - 1));
 
 			for (var54 = 0; var54 < var5.depth; ++var54) {
-				double var21 = var7.compute((double) (var51 << 1), (double) (var54 << 1)) / 8.0D;
-				var12 = var49.compute((double) (var51 << 1), (double) (var54 << 1)) > 0.0D ? 1 : 0;
+				double var21 = var7.compute(var51 << 1, var54 << 1) / 8.0D;
+				var12 = var49.compute(var51 << 1, var54 << 1) > 0.0D ? 1 : 0;
 				if (var21 > 2.0D) {
 					var23 = ((var42[var51 + var54 * var5.width] - var12) / 2 << 1) + var12;
 					var42[var51 + var54 * var5.width] = var23;
@@ -217,7 +217,7 @@ public final class LevelGenerator {
 			var5.setProgress(var24 * 100 / (var5.width - 1));
 
 			for (var11 = 0; var11 < var48; ++var11) {
-				var12 = (int) (var53.compute((double) var24, (double) var11) / 24.0D) - 4;
+				var12 = (int) (var53.compute(var24, var11) / 24.0D) - 4;
 				var25 = (var23 = var42[var24 + var11 * var46] + var5.waterLevel) + var12;
 				var42[var24 + var11 * var46] = Math.max(var23, var25);
 				if (var42[var24 + var11 * var46] > var51 - 2) {
@@ -257,9 +257,9 @@ public final class LevelGenerator {
 
 		for (var11 = 0; var11 < var24; ++var11) {
 			var5.setProgress(var11 * 100 / (var24 - 1) / 4);
-			float var55 = var5.random.nextFloat() * (float) var48;
-			float var59 = var5.random.nextFloat() * (float) var54;
-			float var56 = var5.random.nextFloat() * (float) var51;
+			float var55 = var5.random.nextFloat() * var48;
+			float var59 = var5.random.nextFloat() * var54;
+			float var56 = var5.random.nextFloat() * var51;
 			var26 = (int) ((var5.random.nextFloat() + var5.random.nextFloat()) * 200.0F);
 			float var61 = var5.random.nextFloat() * 3.1415927F * 2.0F;
 			float var64 = 0.0F;
@@ -279,16 +279,16 @@ public final class LevelGenerator {
 					float var43 = var55 + (var5.random.nextFloat() * 4.0F - 2.0F) * 0.2F;
 					float var50 = var59 + (var5.random.nextFloat() * 4.0F - 2.0F) * 0.2F;
 					float var33 = var56 + (var5.random.nextFloat() * 4.0F - 2.0F) * 0.2F;
-					float var34 = ((float) var5.height - var50) / (float) var5.height;
+					float var34 = (var5.height - var50) / var5.height;
 					var34 = 1.2F + (var34 * 3.5F + 1.0F) * var31;
-					var34 = MathHelper.sin((float) var32 * 3.1415927F / (float) var26) * var34;
+					var34 = MathHelper.sin(var32 * 3.1415927F / var26) * var34;
 
 					for (int var35 = (int) (var43 - var34); var35 <= (int) (var43 + var34); ++var35) {
 						for (int var36 = (int) (var50 - var34); var36 <= (int) (var50 + var34); ++var36) {
 							for (int var37 = (int) (var33 - var34); var37 <= (int) (var33 + var34); ++var37) {
-								float var38 = (float) var35 - var43;
-								float var39 = (float) var36 - var50;
-								float var40 = (float) var37 - var33;
+								float var38 = var35 - var43;
+								float var39 = var36 - var50;
+								float var40 = var37 - var33;
 								if (var38 * var38 + var39 * var39 * 2.0F + var40 * var40 < var34
 										* var34
 										&& var35 >= 1
@@ -353,7 +353,7 @@ public final class LevelGenerator {
 			}
 
 			var51 = var5.random.nextInt(var5.width);
-			var54 = (int) (var5.random.nextFloat() * var5.random.nextFloat() * (float) (var5.waterLevel - 3));
+			var54 = (int) (var5.random.nextFloat() * var5.random.nextFloat() * (var5.waterLevel - 3));
 			var24 = var5.random.nextInt(var5.depth);
 			if (var5.blocks[(var54 * var5.depth + var24) * var5.width + var51] == 0) {
 				var5.flood(var51, var54, var24, Block.STATIONARY_LAVA.id);
@@ -375,8 +375,8 @@ public final class LevelGenerator {
 			var5.setProgress(var11 * 100 / (var5.width - 1));
 
 			for (var12 = 0; var12 < var48; ++var12) {
-				boolean var60 = var53.compute((double) var11, (double) var12) > 8.0D;
-				boolean var57 = var58.compute((double) var11, (double) var12) > 12.0D;
+				boolean var60 = var53.compute(var11, var12) > 8.0D;
+				boolean var57 = var58.compute(var11, var12) > 12.0D;
 				var27 = ((var26 = var42[var11 + var12 * var46]) * var5.depth + var12) * var5.width
 						+ var11;
 				if (((var28 = var5.blocks[((var26 + 1) * var5.depth + var12) * var5.width + var11] & 255) == Block.WATER.id || var28 == Block.STATIONARY_WATER.id)
@@ -521,11 +521,11 @@ public final class LevelGenerator {
 
 		for (int var8 = 0; var8 < var7; ++var8) {
 			this.setProgress(var8 * 100 / (var7 - 1) / 4 + var3 * 100 / 4);
-			float var9 = this.random.nextFloat() * (float) var4;
-			float var10 = this.random.nextFloat() * (float) var6;
-			float var11 = this.random.nextFloat() * (float) var5;
+			float var9 = this.random.nextFloat() * var4;
+			float var10 = this.random.nextFloat() * var6;
+			float var11 = this.random.nextFloat() * var5;
 			int var12 = (int) ((this.random.nextFloat() + this.random.nextFloat()) * 75.0F
-					* (float) var2 / 100.0F);
+					* var2 / 100.0F);
 			float var13 = this.random.nextFloat() * 3.1415927F * 2.0F;
 			float var14 = 0.0F;
 			float var15 = this.random.nextFloat() * 3.1415927F * 2.0F;
@@ -539,15 +539,15 @@ public final class LevelGenerator {
 				var14 = (var14 *= 0.9F) + (this.random.nextFloat() - this.random.nextFloat());
 				var15 = (var15 + var16 * 0.5F) * 0.5F;
 				var16 = (var16 *= 0.9F) + (this.random.nextFloat() - this.random.nextFloat());
-				float var18 = MathHelper.sin((float) var17 * 3.1415927F / (float) var12)
-						* (float) var2 / 100.0F + 1.0F;
+				float var18 = MathHelper.sin(var17 * 3.1415927F / var12)
+						* var2 / 100.0F + 1.0F;
 
 				for (int var19 = (int) (var9 - var18); var19 <= (int) (var9 + var18); ++var19) {
 					for (int var20 = (int) (var10 - var18); var20 <= (int) (var10 + var18); ++var20) {
 						for (int var21 = (int) (var11 - var18); var21 <= (int) (var11 + var18); ++var21) {
-							float var22 = (float) var19 - var9;
-							float var23 = (float) var20 - var10;
-							float var24 = (float) var21 - var11;
+							float var22 = var19 - var9;
+							float var23 = var20 - var10;
+							float var24 = var21 - var11;
 							if (var22 * var22 + var23 * var23 * 2.0F + var24 * var24 < var18
 									* var18
 									&& var19 >= 1

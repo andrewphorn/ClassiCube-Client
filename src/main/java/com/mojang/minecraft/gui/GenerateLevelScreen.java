@@ -8,6 +8,7 @@ public final class GenerateLevelScreen extends GuiScreen {
 		this.parent = var1;
 	}
 
+	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.id == 3) {
 			this.minecraft.setCurrentScreen(this.parent);
@@ -18,6 +19,7 @@ public final class GenerateLevelScreen extends GuiScreen {
 		}
 	}
 
+	@Override
 	public final void onOpen() {
 		this.buttons.clear();
 		this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4, "Small"));
@@ -26,6 +28,7 @@ public final class GenerateLevelScreen extends GuiScreen {
 		this.buttons.add(new Button(3, this.width / 2 - 100, this.height / 4 + 120, "Cancel"));
 	}
 
+	@Override
 	public final void render(int var1, int var2) {
 		drawFadingBox(0, 0, this.width, this.height, 1610941696, -1607454624);
 		drawCenteredString(this.fontRenderer, "Generate new level", this.width / 2, 40, 16777215);

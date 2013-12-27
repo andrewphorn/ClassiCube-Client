@@ -30,7 +30,7 @@ public final class MobSpawner {
 			int var6 = this.level.random.nextInt(6);
 			int var7 = this.level.random.nextInt(this.level.width);
 			int var8 = (int) (Math
-					.min(this.level.random.nextFloat(), this.level.random.nextFloat()) * (float) this.level.depth);
+					.min(this.level.random.nextFloat(), this.level.random.nextFloat()) * this.level.depth);
 			int var9 = this.level.random.nextInt(this.level.height);
 			if (!this.level.isSolidTile(var7, var8, var9)
 					&& this.level.getLiquid(var7, var8, var9) == LiquidType.notLiquid
@@ -49,9 +49,9 @@ public final class MobSpawner {
 								&& this.level.isSolidTile(var11, var12 - 1, var13)
 								&& !this.level.isSolidTile(var11, var12, var13)
 								&& !this.level.isSolidTile(var11, var12 + 1, var13)) {
-							float var15 = (float) var11 + 0.5F;
-							float var16 = (float) var12 + 1.0F;
-							float var17 = (float) var13 + 0.5F;
+							float var15 = var11 + 0.5F;
+							float var16 = var12 + 1.0F;
+							float var17 = var13 + 0.5F;
 							float var19;
 							float var18;
 							float var20;
@@ -63,9 +63,9 @@ public final class MobSpawner {
 									continue;
 								}
 							} else {
-								var18 = var15 - (float) this.level.xSpawn;
-								var19 = var16 - (float) this.level.ySpawn;
-								var20 = var17 - (float) this.level.zSpawn;
+								var18 = var15 - this.level.xSpawn;
+								var19 = var16 - this.level.ySpawn;
+								var20 = var17 - this.level.zSpawn;
 								if (var18 * var18 + var19 * var19 + var20 * var20 < 256.0F) {
 									continue;
 								}

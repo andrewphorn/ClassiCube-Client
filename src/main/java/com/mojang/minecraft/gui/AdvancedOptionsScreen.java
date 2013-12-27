@@ -45,6 +45,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 		lastVBOValue = this.settings.VBOs;
 	}
 
+	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.active) {
 			if (var1.id < 100) {
@@ -137,6 +138,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 		}
 	}
 
+	@Override
 	public final void onOpen() {
 		int heightSeperator = 0;
 		for (int var1 = 10; var1 < this.settings.settingCount; ++var1) {
@@ -169,6 +171,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 		buttons.get(4).active = this.minecraft.player.userType >= 100;
 	}
 
+	@Override
 	public final void render(int var1, int var2) {
 		drawFadingBox(0, 0, this.width, this.height, 1610941696, -1607454624);
 		drawCenteredString(this.fontRenderer, this.title, this.width / 2, 20, 16777215);

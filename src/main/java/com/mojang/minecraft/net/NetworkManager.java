@@ -49,7 +49,7 @@ public class NetworkManager {
 		Iterator<NetworkPlayer> playerIterator = this.players.values().iterator();
 
 		while (playerIterator.hasNext()) {
-			NetworkPlayer networkPlayer = (NetworkPlayer) playerIterator.next();
+			NetworkPlayer networkPlayer = playerIterator.next();
 
 			list.add(networkPlayer.name);
 		}

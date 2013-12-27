@@ -15,6 +15,7 @@ public class CloudColorInputScreen extends InputValueScreen {
 
 	String defaultHex = "ffffff";
 
+	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.active) {
 			if (var1.id == 0 && this.name.length() > 0) {

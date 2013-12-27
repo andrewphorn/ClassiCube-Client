@@ -368,6 +368,7 @@ public class ClassiCubeStandalone {
 			setVisible(true);
 
 			new Thread(new Runnable() {
+				@Override
 				public void run() {
 					while (true) {
 						if (!minecraft.running) {
@@ -401,8 +402,9 @@ public class ClassiCubeStandalone {
 			// DO SHIT...?
 		}
 	}
-
+	public static String[] storedArgs;
 	public static void main(String[] args) {
+		storedArgs = args;
 		String player = null;
 		String server = null;
 		int port = 0;

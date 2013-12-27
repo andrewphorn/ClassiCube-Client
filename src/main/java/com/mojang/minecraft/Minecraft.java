@@ -7,7 +7,8 @@ import com.mojang.minecraft.gui.*;
 import com.mojang.minecraft.item.Arrow;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.level.LevelIO;
+import com.mojang.minecraft.level.LevelLoader;
+import com.mojang.minecraft.level.LevelSerializer;
 import com.mojang.minecraft.level.generator.LevelGenerator;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
@@ -24,7 +25,6 @@ import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.WaterDropParticle;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.player.InputHandlerImpl;
-import com.mojang.minecraft.player.Inventory;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.*;
 import com.mojang.minecraft.render.texture.TextureFX;
@@ -42,7 +42,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.input.Cursor;
 
@@ -71,7 +70,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.zip.ZipFile;
 
 public final class Minecraft implements Runnable {
 
@@ -96,7 +94,6 @@ public final class Minecraft implements Runnable {
 	public ProgressBarDisplay progressBar = new ProgressBarDisplay(this);
 	public com.mojang.minecraft.render.Renderer renderer = new com.mojang.minecraft.render.Renderer(
 			this);
-	public LevelIO levelIo;
 	public SoundManager sound;
 	private ResourceDownloadThread resourceThread;
 	private int ticks;
@@ -233,22 +230,7 @@ public final class Minecraft implements Runnable {
 
 	public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4, boolean var5,
 			boolean IsApplet) {
-		// this.selectionBoxes.add(new SelectionBoxData((byte) 1, "",
-		// new ColorCache(0F, 1.0F, 0F, 0.6F), new CustomAABB(12, 45, 30,
-		// 20, 30, 40)));
-
-		/*
-		 * for(int i = 0; i< 140; i++){ String group = "Guest"; if(i > 8)group =
-		 * "Owner"; if(i > 11) group = "Test"; if( i > 18) group = "Test2"; if(i
-		 * > 32) group = "Last group"; if(i > 35) group = "jk"; if(i > 40) group
-		 * = "rollin"; if(i > 45) group = "aaaaa";
-		 * this.playerListNameData.add(new PlayerListNameData((short) i, "" +i,
-		 * "" +i, group, (byte)1));
-		 * 
-		 * } Collections.sort(playerListNameData, new PlayerListComparator());
-		 */
 		this.isApplet = IsApplet;
-		this.levelIo = new LevelIO(this.progressBar);
 		this.sound = new SoundManager();
 		this.ticks = 0;
 		this.blockHitTime = 0;
@@ -389,16 +371,6 @@ public final class Minecraft implements Runnable {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
-		}
-	}
-
-	public final boolean loadOnlineLevel(String var1, int var2) {
-		Level var3;
-		if ((var3 = this.levelIo.loadOnline(this.host, var1, var2)) == null) {
-			return false;
-		} else {
-			this.setLevel(var3);
-			return true;
 		}
 	}
 
@@ -543,16 +515,15 @@ public final class Minecraft implements Runnable {
 		}
 	}
 
+	@Override
 	public final void run() {
 		this.running = true;
 
 		mcDir = getMinecraftDirectory();
 
 		try {
-			Minecraft var1 = this;
-
-			var1.resourceThread = new ResourceDownloadThread(mcDir, var1);
-			var1.resourceThread.run();
+			resourceThread = new ResourceDownloadThread(mcDir, this);
+			resourceThread.run();
 
 			if (!isApplet) {
 				System.setProperty("org.lwjgl.librarypath", mcDir + "/natives");
@@ -654,19 +625,17 @@ public final class Minecraft implements Runnable {
 				this.setLevel(var85);
 			} else {
 				try {
-					if (var1.levelName != null) {
-						var1.loadOnlineLevel(var1.levelName, var1.levelId);
-					} else if (!var1.levelLoaded) {
+					if (!levelLoaded) {
 						Level var11 = null;
 						if (gamemode instanceof CreativeGameMode) {
-							if ((var11 = var1.levelIo.load((new FileInputStream(new File(mcDir,
-									"levelc.dat"))))) != null) {
-								var1.setLevel(var11);
+							if ((var11 = new LevelLoader().load(new File(mcDir, "levelc.cw"))) != null) {
+								this.progressBar.setText("Loading saved map..");
+								setLevel(var11);
+								isSinglePlayer = true;
 							}
 						} else if (gamemode instanceof SurvivalGameMode) {
-							if ((var11 = var1.levelIo.load((new FileInputStream(new File(mcDir,
-									"levels.dat"))))) != null) {
-								var1.setLevel(var11);
+							if ((var11 = new LevelLoader().load(new File(mcDir, "levels.cw"))) != null) {
+								setLevel(var11);
 							}
 						}
 					}
@@ -682,14 +651,14 @@ public final class Minecraft implements Runnable {
 			this.particleManager = new ParticleManager(this.level, this.textureManager);
 			if (this.levelLoaded) {
 				try {
-					var1.cursor = new Cursor(16, 16, 0, 0, 1, var9, (IntBuffer) null);
+					cursor = new Cursor(16, 16, 0, 0, 1, var9, (IntBuffer) null);
 				} catch (LWJGLException var53) {
 					var53.printStackTrace();
 				}
 			}
 			try {
-				var1.soundPlayer = new SoundPlayer(var1.settings);
-				SoundPlayer var4 = var1.soundPlayer;
+				soundPlayer = new SoundPlayer(settings);
+				SoundPlayer var4 = soundPlayer;
 
 				try {
 					AudioFormat var67 = new AudioFormat(44100.0F, 16, 2, true, true);
@@ -893,7 +862,7 @@ public final class Minecraft implements Runnable {
 
 									for (var81 = 0; var81 < var37.size(); ++var81) {
 										Entity var88;
-										if ((var88 = (Entity) var37.get(var81)).isPickable()) {
+										if ((var88 = var37.get(var81)).isPickable()) {
 											var74 = 0.1F;
 											MovingObjectPosition var78;
 											if ((var78 = var88.bb.grow(var74, var74, var74).clip(
@@ -1153,9 +1122,9 @@ public final class Minecraft implements Runnable {
 										GL11.glBindTexture(3553,
 												var89.textureManager.load("/clouds.png"));
 										GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-										var107 = (float) (var89.level.cloudColor >> 16 & 255) / 255.0F;
-										var29 = (float) (var89.level.cloudColor >> 8 & 255) / 255.0F;
-										var30 = (float) (var89.level.cloudColor & 255) / 255.0F;
+										var107 = (var89.level.cloudColor >> 16 & 255) / 255.0F;
+										var29 = (var89.level.cloudColor >> 8 & 255) / 255.0F;
+										var30 = (var89.level.cloudColor & 255) / 255.0F;
 										if (var89.minecraft.settings.anaglyph) {
 											var117 = (var107 * 30.0F + var29 * 59.0F + var30 * 11.0F) / 100.0F;
 											var32 = (var107 * 30.0F + var29 * 70.0F) / 100.0F;
@@ -1167,44 +1136,38 @@ public final class Minecraft implements Runnable {
 
 										var74 = 0.0F;
 										var33 = 4.8828125E-4F;
-										var74 = (float) (var89.level.depth + 2);
-										var34 = ((float) var89.ticks + var80) * var33 * 0.03F;
+										var74 = var89.level.depth + 2;
+										var34 = (var89.ticks + var80) * var33 * 0.03F;
 										var35 = 0.0F;
 										shapeRenderer.begin();
 										shapeRenderer.color(var107, var29, var30);
 
 										for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
 											for (var125 = -2048; var125 < var101.level.height + 2048; var125 += 512) {
-												shapeRenderer.vertexUV((float) var86, var74,
-														(float) (var125 + 512), (float) var86
-																* var33 + var34,
-														(float) (var125 + 512) * var33);
-												shapeRenderer.vertexUV((float) (var86 + 512),
-														var74, (float) (var125 + 512),
-														(float) (var86 + 512) * var33 + var34,
-														(float) (var125 + 512) * var33);
-												shapeRenderer.vertexUV((float) (var86 + 512),
-														var74, (float) var125,
-														(float) (var86 + 512) * var33 + var34,
-														(float) var125 * var33);
-												shapeRenderer.vertexUV((float) var86, var74,
-														(float) var125, (float) var86 * var33
-																+ var34, (float) var125 * var33);
-												shapeRenderer.vertexUV((float) var86, var74,
-														(float) var125, (float) var86 * var33
-																+ var34, (float) var125 * var33);
-												shapeRenderer.vertexUV((float) (var86 + 512),
-														var74, (float) var125,
-														(float) (var86 + 512) * var33 + var34,
-														(float) var125 * var33);
-												shapeRenderer.vertexUV((float) (var86 + 512),
-														var74, (float) (var125 + 512),
-														(float) (var86 + 512) * var33 + var34,
-														(float) (var125 + 512) * var33);
-												shapeRenderer.vertexUV((float) var86, var74,
-														(float) (var125 + 512), (float) var86
-																* var33 + var34,
-														(float) (var125 + 512) * var33);
+												shapeRenderer.vertexUV(var86, var74, var125 + 512,
+														var86 * var33 + var34, (var125 + 512)
+																* var33);
+												shapeRenderer.vertexUV(var86 + 512, var74,
+														var125 + 512,
+														(var86 + 512) * var33 + var34,
+														(var125 + 512) * var33);
+												shapeRenderer.vertexUV(var86 + 512, var74, var125,
+														(var86 + 512) * var33 + var34, var125
+																* var33);
+												shapeRenderer.vertexUV(var86, var74, var125, var86
+														* var33 + var34, var125 * var33);
+												shapeRenderer.vertexUV(var86, var74, var125, var86
+														* var33 + var34, var125 * var33);
+												shapeRenderer.vertexUV(var86 + 512, var74, var125,
+														(var86 + 512) * var33 + var34, var125
+																* var33);
+												shapeRenderer.vertexUV(var86 + 512, var74,
+														var125 + 512,
+														(var86 + 512) * var33 + var34,
+														(var125 + 512) * var33);
+												shapeRenderer.vertexUV(var86, var74, var125 + 512,
+														var86 * var33 + var34, (var125 + 512)
+																* var33);
 											}
 										}
 
@@ -1791,13 +1754,13 @@ public final class Minecraft implements Runnable {
 			Iterator<DisplayMode> var3 = displayModes.iterator();
 
 			while (var3.hasNext()) {
-				DisplayMode var4 = (DisplayMode) var3.next();
+				DisplayMode var4 = var3.next();
 				boolean var5 = true;
 				Iterator<DisplayMode> var6 = var1.iterator();
 				DisplayMode var7;
 
 				while (var6.hasNext()) {
-					var7 = (DisplayMode) var6.next();
+					var7 = var6.next();
 
 					if (var7.getBitsPerPixel() == 32 && var7.getWidth() == var4.getWidth()
 							&& var7.getHeight() == var4.getHeight()) {
@@ -1810,7 +1773,7 @@ public final class Minecraft implements Runnable {
 					var6 = var1.iterator();
 
 					while (var6.hasNext()) {
-						var7 = (DisplayMode) var6.next();
+						var7 = var6.next();
 
 						if (var7.getBitsPerPixel() == 32 && var7.getWidth() == var4.getWidth() / 2
 								&& var7.getHeight() == var4.getHeight() / 2) {
@@ -1905,7 +1868,12 @@ public final class Minecraft implements Runnable {
 		System.gc();
 	}
 
+	boolean isShuttingDown = false;
+
 	public final void shutdown() {
+		if (isShuttingDown)
+			return;
+		isShuttingDown = true;
 		try {
 			if (this.soundPlayer != null) {
 				this.soundPlayer.running = false;
@@ -1922,9 +1890,13 @@ public final class Minecraft implements Runnable {
 			try {
 				if (level != null) {
 					if (level.creativeMode && isSinglePlayer) {
-						LevelIO.save(level, (new FileOutputStream(new File(mcDir, "levelc.dat"))));
+						new LevelSerializer(this.level).saveMap("levelc");
+						// LevelIO.save(level, (new FileOutputStream(new
+						// File(mcDir, "levelc.dat"))));
 					} else {
-						LevelIO.save(level, (new FileOutputStream(new File(mcDir, "levels.dat"))));
+						new LevelSerializer(this.level).saveMap("levels");
+						// LevelIO.save(level, (new FileOutputStream(new
+						// File(mcDir, "levels.dat"))));
 					}
 				}
 			} catch (Exception e) {
@@ -1959,7 +1931,7 @@ public final class Minecraft implements Runnable {
 			++this.hud.ticks;
 
 			for (var16 = 0; var16 < var17.chat.size(); ++var16) {
-				++((ChatLine) var17.chat.get(var16)).time;
+				++var17.chat.get(var16).time;
 			}
 		}
 
@@ -2100,7 +2072,8 @@ public final class Minecraft implements Runnable {
 										Short r = ((Short) packetParams[1]).shortValue();
 										Short g = ((Short) packetParams[2]).shortValue();
 										Short b = ((Short) packetParams[3]).shortValue();
-										int dec = ((r&0x0ff)<<16)|((g&0x0ff)<<8)|(b&0x0ff);
+										int dec = ((r & 0x0ff) << 16) | ((g & 0x0ff) << 8)
+												| (b & 0x0ff);
 										switch (Variable) {
 										case 0: // sky
 											this.level.skyColor = dec;
@@ -2126,49 +2099,47 @@ public final class Minecraft implements Runnable {
 										byte sideBlock = ((Byte) packetParams[1]).byteValue();
 										byte edgeBlock = ((Byte) packetParams[2]).byteValue();
 										short sideLevel = ((Short) packetParams[3]).byteValue();
-										if (this.settings.canServerChangeTextures)
-                                                                                {
-                                                                                    if (sideBlock == -1) {
-                                                                                            this.textureManager.customSideBlock = null;
-                                                                                    } else if (sideBlock < Block.blocks.length) {
-                                                                                            int ID = Block.blocks[sideBlock].textureId;
-                                                                                            this.textureManager.customSideBlock = textureManager.textureAtlas
-                                                                                                            .get(ID);
-                                                                                    }
-                                                                                    if (edgeBlock == -1) {
-                                                                                            this.textureManager.customEdgeBlock = null;
-                                                                                    } else if (edgeBlock < Block.blocks.length) {
-                                                                                            int ID = Block.blocks[edgeBlock].textureId;
-                                                                                            this.textureManager.customEdgeBlock = textureManager.textureAtlas
-                                                                                                            .get(ID);
-                                                                                    }
-                                                                                    if (textureUrl.length() > 0) {
-                                                                                            File path = new File(getMinecraftDirectory(),
-                                                                                                            "/skins/terrain");
-                                                                                            if (!path.exists()) {
-                                                                                                    path.mkdirs();
-                                                                                            }
-                                                                                            String hash = this.getHash(textureUrl);
-                                                                                            if (hash != null) {
-                                                                                                    File file = new File(path, hash + ".png");
-                                                                                                    BufferedImage image;
-                                                                                                    if (!file.exists()) {
-                                                                                                            downloadImage(textureUrl,
-                                                                                                                            file.getAbsolutePath());
-                                                                                                    }
-                                                                                                    image = ImageIO.read(file);
-                                                                                                    if (image.getWidth() % 16  == 0
-                                                                                                    && image.getHeight() % 16 == 0)
-                                                                                                    {
-                                                                                                        this.textureManager.animations.clear();
-                                                                                                        this.textureManager.currentTerrainPng = image;
-                                                                                                    }                                                                                                    
-                                                                                            }
-                                                                                    }
-                                                                                    this.textureManager.textures.clear();
-                                                                                    this.level.waterLevel = sideLevel;
-                                                                                    this.levelRenderer.refresh();
-                                                                                }
+										if (this.settings.canServerChangeTextures) {
+											if (sideBlock == -1) {
+												this.textureManager.customSideBlock = null;
+											} else if (sideBlock < Block.blocks.length) {
+												int ID = Block.blocks[sideBlock].textureId;
+												this.textureManager.customSideBlock = textureManager.textureAtlas
+														.get(ID);
+											}
+											if (edgeBlock == -1) {
+												this.textureManager.customEdgeBlock = null;
+											} else if (edgeBlock < Block.blocks.length) {
+												int ID = Block.blocks[edgeBlock].textureId;
+												this.textureManager.customEdgeBlock = textureManager.textureAtlas
+														.get(ID);
+											}
+											if (textureUrl.length() > 0) {
+												File path = new File(getMinecraftDirectory(),
+														"/skins/terrain");
+												if (!path.exists()) {
+													path.mkdirs();
+												}
+												String hash = this.getHash(textureUrl);
+												if (hash != null) {
+													File file = new File(path, hash + ".png");
+													BufferedImage image;
+													if (!file.exists()) {
+														downloadImage(textureUrl,
+																file.getAbsolutePath());
+													}
+													image = ImageIO.read(file);
+													if (image.getWidth() % 16 == 0
+															&& image.getHeight() % 16 == 0) {
+														this.textureManager.animations.clear();
+														this.textureManager.currentTerrainPng = image;
+													}
+												}
+											}
+											this.textureManager.textures.clear();
+											this.level.waterLevel = sideLevel;
+											this.levelRenderer.refresh();
+										}
 									} else if (packetType == PacketType.CLICK_DISTANCE) {
 										short Distance = (Short) packetParams[0];
 										this.gamemode.reachDistance = Distance / 32;
@@ -2281,26 +2252,20 @@ public final class Minecraft implements Runnable {
 											}
 										}
 									}
-                                                                        
-                                                                        else if (packetType == PacketType.ENV_SET_WEATHER_TYPE)
-                                                                        {
-                                                                            short Weather = (Short) packetParams[0];
-                                                                            if (Weather == 0)
-                                                                            {
-                                                                                this.raining = false;
-                                                                                this.snowing = false;
-                                                                            }
-                                                                            else if (Weather == 1)
-                                                                            {
-                                                                                this.raining = !this.raining;
-                                                                                this.snowing = false;
-                                                                            }
-                                                                            else if (Weather == 2)
-                                                                            {
-                                                                                this.snowing = !this.snowing;
-                                                                                this.raining = false;
-                                                                            }
-                                                                        }
+
+									else if (packetType == PacketType.ENV_SET_WEATHER_TYPE) {
+										short Weather = (Short) packetParams[0];
+										if (Weather == 0) {
+											this.raining = false;
+											this.snowing = false;
+										} else if (Weather == 1) {
+											this.raining = !this.raining;
+											this.snowing = false;
+										} else if (Weather == 2) {
+											this.snowing = !this.snowing;
+											this.raining = false;
+										}
+									}
 
 									else if (packetType == PacketType.IDENTIFICATION) {
 										networkManager.minecraft.progressBar
@@ -2327,7 +2292,7 @@ public final class Minecraft implements Runnable {
 											e.printStackTrace();
 										}
 
-										byte[] decompressedStream = LevelIO
+										byte[] decompressedStream = LevelLoader
 												.decompress(new ByteArrayInputStream(
 														networkManager.levelData.toByteArray()));
 										networkManager.levelData = null;
@@ -2551,8 +2516,8 @@ public final class Minecraft implements Runnable {
 					var20.netHandler.send(
 							PacketType.POSITION_ROTATION,
 							new Object[] {
-									this.canSendHeldBlock ? player.inventory.getSelected() : Integer
-											.valueOf(-1), Integer.valueOf(var24),
+									this.canSendHeldBlock ? player.inventory.getSelected()
+											: Integer.valueOf(-1), Integer.valueOf(var24),
 									Integer.valueOf(var4), Integer.valueOf(var40),
 									Integer.valueOf(var46), Integer.valueOf(var45) });
 				}
@@ -2679,8 +2644,9 @@ public final class Minecraft implements Runnable {
 								}
 
 								if (Keyboard.getEventKey() == this.settings.saveLocationKey.key) {
-									this.level.setSpawnPos((int) this.player.x, (int) this.player.y,
-											(int) this.player.z, this.player.yRot);
+									this.level.setSpawnPos((int) this.player.x,
+											(int) this.player.y, (int) this.player.z,
+											this.player.yRot);
 									this.player.resetPos();
 								}
 							}

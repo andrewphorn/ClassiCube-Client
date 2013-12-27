@@ -18,7 +18,7 @@ public class BasicAttackAI extends BasicAI {
 			this.mob.attackTime = 5;
 			this.attackDelay = this.random.nextInt(20) + 10;
 			int var2 = (int) ((this.random.nextFloat() + this.random.nextFloat()) / 2.0F
-					* (float) this.damage + 1.0F);
+					* this.damage + 1.0F);
 			var1.hurt(this.mob, var2);
 			this.noActionTime = 0;
 			return true;
@@ -56,8 +56,8 @@ public class BasicAttackAI extends BasicAI {
 
 			if (this.attackTarget != null) {
 				var6 = MathHelper.sqrt(var6);
-				this.mob.yRot = (float) (Math.atan2((double) var5, (double) var3) * 180.0D / 3.1415927410125732D) - 90.0F;
-				this.mob.xRot = -((float) (Math.atan2((double) var4, (double) var6) * 180.0D / 3.1415927410125732D));
+				this.mob.yRot = (float) (Math.atan2(var5, var3) * 180.0D / 3.1415927410125732D) - 90.0F;
+				this.mob.xRot = -((float) (Math.atan2(var4, var6) * 180.0D / 3.1415927410125732D));
 				if (MathHelper.sqrt(var3 * var3 + var4 * var4 + var5 * var5) < 2.0F
 						&& this.attackDelay == 0) {
 					this.attack(this.attackTarget);
@@ -67,6 +67,7 @@ public class BasicAttackAI extends BasicAI {
 		}
 	}
 
+	@Override
 	public void hurt(Entity var1, int var2) {
 		super.hurt(var1, var2);
 		if (var1 instanceof Arrow) {
@@ -79,6 +80,7 @@ public class BasicAttackAI extends BasicAI {
 
 	}
 
+	@Override
 	protected void update() {
 		super.update();
 		if (this.mob.health > 0) {

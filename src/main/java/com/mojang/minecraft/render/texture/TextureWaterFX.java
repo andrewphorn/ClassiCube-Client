@@ -13,6 +13,7 @@ public final class TextureWaterFX extends TextureFX {
 		super(Block.WATER.textureId);
 	}
 
+	@Override
 	public final void animate() {
 		int var1;
 		int var2;

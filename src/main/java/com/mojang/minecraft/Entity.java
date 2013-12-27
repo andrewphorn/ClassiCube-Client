@@ -117,8 +117,8 @@ public abstract class Entity implements Serializable {
 	}
 
 	public void interpolateTurn(float var1, float var2) {
-		this.yRot = (float) ((double) this.yRot + (double) var1 * 0.15D);
-		this.xRot = (float) ((double) this.xRot - (double) var2 * 0.15D);
+		this.yRot = (float) (this.yRot + var1 * 0.15D);
+		this.xRot = (float) (this.xRot - var2 * 0.15D);
 		if (this.xRot < -90.0F) {
 			this.xRot = -90.0F;
 		}
@@ -203,7 +203,7 @@ public abstract class Entity implements Serializable {
 			ArrayList<AABB> var10 = this.level.getCubes(this.bb.expand(var1, var2, var3));
 
 			for (int var11 = 0; var11 < var10.size(); ++var11) {
-				var2 = ((AABB) var10.get(var11)).clipYCollide(this.bb, var2);
+				var2 = var10.get(var11).clipYCollide(this.bb, var2);
 			}
 
 			this.bb.move(0.0F, var2, 0.0F);
@@ -217,7 +217,7 @@ public abstract class Entity implements Serializable {
 
 			int var12;
 			for (var12 = 0; var12 < var10.size(); ++var12) {
-				var1 = ((AABB) var10.get(var12)).clipXCollide(this.bb, var1);
+				var1 = var10.get(var12).clipXCollide(this.bb, var1);
 			}
 
 			this.bb.move(var1, 0.0F, 0.0F);
@@ -228,7 +228,7 @@ public abstract class Entity implements Serializable {
 			}
 
 			for (var12 = 0; var12 < var10.size(); ++var12) {
-				var3 = ((AABB) var10.get(var12)).clipZCollide(this.bb, var3);
+				var3 = var10.get(var12).clipZCollide(this.bb, var3);
 			}
 
 			this.bb.move(0.0F, 0.0F, var3);
@@ -254,7 +254,7 @@ public abstract class Entity implements Serializable {
 
 				int var15;
 				for (var15 = 0; var15 < var10.size(); ++var15) {
-					var2 = ((AABB) var10.get(var15)).clipYCollide(this.bb, var2);
+					var2 = var10.get(var15).clipYCollide(this.bb, var2);
 				}
 
 				this.bb.move(0.0F, var2, 0.0F);
@@ -265,7 +265,7 @@ public abstract class Entity implements Serializable {
 				}
 
 				for (var15 = 0; var15 < var10.size(); ++var15) {
-					var1 = ((AABB) var10.get(var15)).clipXCollide(this.bb, var1);
+					var1 = var10.get(var15).clipXCollide(this.bb, var1);
 				}
 
 				this.bb.move(var1, 0.0F, 0.0F);
@@ -276,7 +276,7 @@ public abstract class Entity implements Serializable {
 				}
 
 				for (var15 = 0; var15 < var10.size(); ++var15) {
-					var3 = ((AABB) var10.get(var15)).clipZCollide(this.bb, var3);
+					var3 = var10.get(var15).clipZCollide(this.bb, var3);
 				}
 
 				this.bb.move(0.0F, 0.0F, var3);
@@ -292,7 +292,7 @@ public abstract class Entity implements Serializable {
 					var3 = var13;
 					this.bb = var14.copy();
 				} else {
-					this.ySlideOffset = (float) ((double) this.ySlideOffset + 0.5D);
+					this.ySlideOffset = (float) (this.ySlideOffset + 0.5D);
 				}
 			}
 
@@ -326,22 +326,22 @@ public abstract class Entity implements Serializable {
 			this.z = (this.bb.z0 + this.bb.z1) / 2.0F;
 			var18 = this.x - var4;
 			var17 = this.z - var5;
-			this.walkDist = (float) ((double) this.walkDist + (double) MathHelper.sqrt(var18
+			this.walkDist = (float) (this.walkDist + MathHelper.sqrt(var18
 					* var18 + var17 * var17) * 0.6D);
 		}
 		int var39 = (int) Math.floor(this.x);
-		int var30 = (int) Math.floor(this.y - 0.20000000298023224D - (double) this.heightOffset);
+		int var30 = (int) Math.floor(this.y - 0.20000000298023224D - this.heightOffset);
 		int var31 = (int) Math.floor(this.z);
 		int var32 = this.level.getTile(var39, var30, var31);
 		if (this.makeStepSound && this.onGround && !this.noPhysics) {
 			if (this instanceof Player
 					&& !(((Player) this).input.noclip)) {
-				this.distanceWalkedModified = (float) ((double) this.distanceWalkedModified + (double) Math
+				this.distanceWalkedModified = (float) (this.distanceWalkedModified + Math
 						.sqrt(var1 * var1 + var3 * var3) * 0.6D);
-				this.distanceWalkedOnStepModified = (float) ((double) this.distanceWalkedOnStepModified + (double) Math
+				this.distanceWalkedOnStepModified = (float) (this.distanceWalkedOnStepModified + Math
 						.sqrt(var1 * var1 + var2 * var2 + var3 * var3) * 0.6D);
 
-				if (this.distanceWalkedOnStepModified > (float) this.nextStepDistance && var32 > 0) {
+				if (this.distanceWalkedOnStepModified > this.nextStepDistance && var32 > 0) {
 					this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
 
                                         if ( this.onGround) {
@@ -352,7 +352,7 @@ public abstract class Entity implements Serializable {
 			}
 		}
 
-		if (this.walkDist > (float) nextStep && var32 > 0) {
+		if (this.walkDist > nextStep && var32 > 0) {
 			++this.nextStep;
 		}
 		this.ySlideOffset *= 0.4F;
@@ -441,17 +441,17 @@ public abstract class Entity implements Serializable {
 
     public void resetPos() {
         if (this.level != null) {
-            float var1 = (float) this.level.xSpawn + 0.5F;
-            float var2 = (float) this.level.ySpawn;
+            float var1 = this.level.xSpawn + 0.5F;
+            float var2 = this.level.ySpawn;
 
-            for (double var3 = (float) this.level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
+            for (double var3 = this.level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
                 this.setPos(var1, var2, (float) var3);
                 if (this.level.isInBounds((int) var1, (int) var2, (int) var3)) {
                     if (this.level.getCubes(this.bb).size() == 0) {
                         break;
                     }
                 } else {
-                    var2 = (float) this.level.ySpawn;
+                    var2 = this.level.ySpawn;
                     break;
                 }
             }
@@ -521,8 +521,8 @@ public abstract class Entity implements Serializable {
 	public void turn(float var1, float var2) {
 		float var3 = this.xRot;
 		float var4 = this.yRot;
-		this.yRot = (float) ((double) this.yRot + (double) var1 * 0.15D);
-		this.xRot = (float) ((double) this.xRot - (double) var2 * 0.15D);
+		this.yRot = (float) (this.yRot + var1 * 0.15D);
+		this.xRot = (float) (this.xRot - var2 * 0.15D);
 		if (this.xRot < -90.0F) {
 			this.xRot = -90.0F;
 		}

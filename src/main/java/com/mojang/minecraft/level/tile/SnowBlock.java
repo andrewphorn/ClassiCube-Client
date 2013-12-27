@@ -13,6 +13,7 @@ public final class SnowBlock extends Block {
 		this.setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.20F, 1.0F);
 	}
 
+	@Override
 	public final boolean canRenderSide(Level level, int x, int y, int z, int side) {
 		if (this != SNOW) {
 			super.canRenderSide(level, x, y, z, side);
@@ -27,22 +28,27 @@ public final class SnowBlock extends Block {
 		return null;
 	}
 
+	@Override
 	public final int getDrop() {
 		return SNOW.id;
 	}
 
+	@Override
 	protected final int getTextureId(int texture) {
 		return this.textureId;
 	}
 
+	@Override
 	public final boolean isCube() {
 		return false;
 	}
 
+	@Override
 	public final boolean isOpaque() {
 		return true;
 	}
 
+	@Override
 	public final boolean isSolid() {
 		return false;
 	}

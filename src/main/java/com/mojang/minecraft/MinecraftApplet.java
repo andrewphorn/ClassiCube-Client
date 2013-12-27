@@ -22,6 +22,7 @@ public class MinecraftApplet extends Applet {
 		stopGameThread();
 	}
 
+	@Override
 	public URL getCodeBase() {
 		try {
 			return new URL("http://minecraft.net:80/");
@@ -31,6 +32,7 @@ public class MinecraftApplet extends Applet {
 		return null;
 	}
 
+	@Override
 	public URL getDocumentBase() {
 		try {
 			return new URL("http://minecraft.net:80/play.jsp");
@@ -41,6 +43,7 @@ public class MinecraftApplet extends Applet {
 		return null;
 	}
 
+	@Override
 	public void init() {
 		Container topParent = null;
 		Container parent = this;

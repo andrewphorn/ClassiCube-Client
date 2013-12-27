@@ -17,11 +17,13 @@ public class SmokeParticle extends Particle {
 		this.noPhysics = true;
 	}
 
+	@Override
 	public void render(ShapeRenderer var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
 		super.render(var1, var2, var3, var4, var5, var6, var7);
 	}
 
+	@Override
 	public void tick() {
 		this.xo = this.x;
 		this.yo = this.y;
@@ -31,7 +33,7 @@ public class SmokeParticle extends Particle {
 		}
 
 		this.tex = 7 - (this.age << 3) / this.lifetime;
-		this.yd = (float) ((double) this.yd + 0.004D);
+		this.yd = (float) (this.yd + 0.004D);
 		this.move(this.xd, this.yd, this.zd);
 		this.xd *= 0.96F;
 		this.yd *= 0.96F;

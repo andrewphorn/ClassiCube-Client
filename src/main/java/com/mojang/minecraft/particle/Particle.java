@@ -50,9 +50,9 @@ public class Particle extends Entity {
 	public void render(ShapeRenderer var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
 		float var8;
-		float var9 = (var8 = (float) (this.tex % 16) / 16.0F) + 0.0624375F;
+		float var9 = (var8 = this.tex % 16 / 16.0F) + 0.0624375F;
 		float var10;
-		float var11 = (var10 = (float) (this.tex / 16) / 16.0F) + 0.0624375F;
+		float var11 = (var10 = this.tex / 16 / 16.0F) + 0.0624375F;
 		float var12 = 0.1F * this.size;
 		float var13 = this.xo + (this.x - this.xo) * var2;
 		float var14 = this.yo + (this.y - this.yo) * var2;
@@ -82,6 +82,7 @@ public class Particle extends Entity {
 		return this;
 	}
 
+	@Override
 	public void tick() {
 		this.xo = this.x;
 		this.yo = this.y;
@@ -90,7 +91,7 @@ public class Particle extends Entity {
 			this.remove();
 		}
 
-		this.yd = (float) ((double) this.yd - 0.04D * (double) this.gravity);
+		this.yd = (float) (this.yd - 0.04D * this.gravity);
 		this.move(this.xd, this.yd, this.zd);
 		this.xd *= 0.98F;
 		this.yd *= 0.98F;

@@ -128,7 +128,7 @@ public final class NetworkHandler {
 							byte[] var9;
 							if (packetClass != String.class) {
 								if (packetClass == byte[].class) {
-									if ((var9 = (byte[]) ((byte[]) packetObject)).length < 1024) {
+									if ((var9 = ((byte[]) packetObject)).length < 1024) {
 										var9 = Arrays.copyOf(var9, 1024);
 									}
 

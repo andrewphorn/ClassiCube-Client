@@ -33,7 +33,7 @@ public final class SurvivalGameMode extends GameMode {
 		if (hits <= 0) {
 			minecraft.levelRenderer.cracks = 0.0F;
 		} else {
-			minecraft.levelRenderer.cracks = ((float) hits + time - 1.0F) / (float) hardness;
+			minecraft.levelRenderer.cracks = (hits + time - 1.0F) / hardness;
 		}
 	}
 

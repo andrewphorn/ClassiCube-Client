@@ -29,7 +29,7 @@ public class GLAllocation {
 	}
 
 	public static synchronized void deleteDisplayLists(int par0) {
-		GL11.glDeleteLists(par0, ((Integer) displayLists.remove(Integer.valueOf(par0))).intValue());
+		GL11.glDeleteLists(par0, displayLists.remove(Integer.valueOf(par0)).intValue());
 	}
 
 	public static synchronized void deleteTextures() {

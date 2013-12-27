@@ -3,18 +3,12 @@ package com.mojang.minecraft.gui;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
-import javax.management.MBeanServerConnection;
-
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.ProgressBarDisplay;
-import com.sun.management.OperatingSystemMXBean;
 
 public final class PauseScreen extends GuiScreen {
 
+	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.id == 0) {
 			this.minecraft.setCurrentScreen(new OptionsScreen(this, this.minecraft.settings));
@@ -58,6 +52,7 @@ public final class PauseScreen extends GuiScreen {
 
 	}
 
+	@Override
 	public final void onOpen() {
 		this.buttons.clear();
 		this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4, "Options..."));
@@ -69,8 +64,8 @@ public final class PauseScreen extends GuiScreen {
 		this.buttons
 				.add(new Button(4, this.width / 2 - 100, this.height / 4 + 120, "Back to game"));
 		if (this.minecraft.session == null) {
-			((Button) this.buttons.get(2)).active = true;
-			((Button) this.buttons.get(3)).active = true;
+			this.buttons.get(2).active = true;
+			this.buttons.get(3).active = true;
 		}
 		int w = this.fontRenderer.getWidth("Screenshots...");
 		this.buttons
@@ -80,9 +75,9 @@ public final class PauseScreen extends GuiScreen {
 		this.buttons.add(new Button(6, this.width - w - 15, this.height - 58, w, "Chat Logs"));
 
 		if (this.minecraft.networkManager != null) {
-			((Button) this.buttons.get(1)).active = false;
-			((Button) this.buttons.get(2)).active = true;
-			((Button) this.buttons.get(3)).active = true;
+			this.buttons.get(1).active = false;
+			this.buttons.get(2).active = true;
+			this.buttons.get(3).active = true;
 		}
 
 	}
@@ -91,8 +86,9 @@ public final class PauseScreen extends GuiScreen {
 	int orangeColor = 16750160;
 	int redColor = 16737380;
 	
-	String VersionString = "0.11";
+	String VersionString = "0.12";
 
+	@Override
 	public final void render(int var1, int var2) {
 		
 		String titlePrint = ProgressBarDisplay.title;
@@ -113,7 +109,7 @@ public final class PauseScreen extends GuiScreen {
 		int colorToUse = greenColor;
 		if(cpuUsage >= 21)
 			colorToUse = orangeColor;
-		else if(cpuUsage >= 30)
+		else if(cpuUsage >= 32)
 			colorToUse = redColor;
 		else if(cpuUsage <= 20)
 			colorToUse = greenColor;

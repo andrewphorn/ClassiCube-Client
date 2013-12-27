@@ -264,7 +264,7 @@ public final class GameSettings implements Serializable {
 
 			while (iterator.hasNext()) {
 				i = (Integer) iterator.next();
-				image = (BufferedImage) textureManager.textureImages.get(Integer.valueOf(i));
+				image = textureManager.textureImages.get(Integer.valueOf(i));
 
 				textureManager.load(image, i);
 			}
@@ -282,7 +282,7 @@ public final class GameSettings implements Serializable {
 						image = ImageIO.read(TextureManager.class.getResourceAsStream(s));
 					}
 
-					i = (Integer) textureManager.textures.get(s);
+					i = textureManager.textures.get(s);
 
 					textureManager.load(image, i);
 				} catch (IOException var6) {

@@ -16,20 +16,24 @@ public final class IceBlock extends Block {
 		Block.liquid[var1] = true;
 	}
 
+	@Override
 	public final boolean canRenderSide(Level level, int x, int y, int z, int side) {
 		int var6 = level.getTile(x, y, z);
 		return !this.showNeighborSides && var6 == this.id ? false : super.canRenderSide(level, x,
 				y, z, side);
 	}
 
+	@Override
 	public final int getRenderPass() {
 		return 1;
 	}
 
+	@Override
 	public final boolean isOpaque() {
 		return true;
 	}
 
+	@Override
 	public final boolean isSolid() {
 		return false;
 	}

@@ -33,10 +33,10 @@ public class ItemModel {
 		model.vertices[6] = vertex7;
 		model.vertices[7] = vertex8;
 
-		float u1 = ((float) (tex % 16) + (1.0F - 0.25F)) / 16.0F;
-		float v1 = ((float) (tex / 16) + (1.0F - 0.25F)) / 16.0F;
-		float u2 = ((float) (tex % 16) + 0.25F) / 16.0F;
-		float v2 = ((float) (tex / 16) + 0.25F) / 16.0F;
+		float u1 = (tex % 16 + (1.0F - 0.25F)) / 16.0F;
+		float v1 = (tex / 16 + (1.0F - 0.25F)) / 16.0F;
+		float u2 = (tex % 16 + 0.25F) / 16.0F;
+		float v2 = (tex / 16 + 0.25F) / 16.0F;
 
 		Vertex[] vertexes1 = new Vertex[] { vertex6, vertex2, vertex3, vertex7 };
 		Vertex[] vertexes2 = new Vertex[] { vertex1, vertex5, vertex8, vertex4 };

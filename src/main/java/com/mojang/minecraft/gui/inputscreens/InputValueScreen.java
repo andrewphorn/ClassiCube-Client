@@ -1,8 +1,12 @@
 package com.mojang.minecraft.gui.inputscreens;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.Button;
 import com.mojang.minecraft.gui.GuiScreen;
+import com.mojang.minecraft.level.LevelSerializer;
 
 import org.lwjgl.input.Keyboard;
 
@@ -28,6 +32,7 @@ public class InputValueScreen extends GuiScreen {
 
 	}
 
+	@Override
 	protected void onButtonClick(Button var1) {
 		if (var1.active) {
 			if (var1.id == 0 && this.name.trim().length() > 1) {
@@ -36,8 +41,13 @@ public class InputValueScreen extends GuiScreen {
 				String var2 = this.name.trim();
 				int var3 = var10001;
 				Minecraft var4 = var10000;
-				var10000.levelIo.saveOnline(var4.level, var4.host, var4.session.username,
-						var4.session.sessionId, var2, var3);
+				try {
+					new LevelSerializer(var4.level).saveMap("test");
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				this.minecraft.setCurrentScreen((GuiScreen) null);
 				this.minecraft.grabMouse();
 			}
@@ -49,10 +59,12 @@ public class InputValueScreen extends GuiScreen {
 		}
 	}
 
+	@Override
 	public final void onClose() {
 		Keyboard.enableRepeatEvents(false);
 	}
 
+	@Override
 	public final void onKeyPress(char var1, int var2) {
 		if (var2 == 14 && this.name.length() > 0) {
 			this.name = this.name.substring(0, this.name.length() - 1);
@@ -67,19 +79,21 @@ public class InputValueScreen extends GuiScreen {
 			this.name = this.name + var1;
 		}
 
-		((Button) this.buttons.get(0)).active = this.name.trim().length() > 0;
+		this.buttons.get(0).active = this.name.trim().length() > 0;
 	}
 
+	@Override
 	public final void onOpen() {
 		this.buttons.clear();
 		Keyboard.enableRepeatEvents(true);
 		this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4 + 120, "Save"));
 		this.buttons.add(new Button(1, this.width / 2 - 100, this.height / 4 + 144, "Cancel"));
-		((Button) this.buttons.get(0)).active = this.name.trim().length() > 1;
+		this.buttons.get(0).active = this.name.trim().length() > 1;
 		int w = this.minecraft.fontRenderer.getWidth("Screenshots...");
 		this.buttons.add(new Button(800, this.width - w - 15, this.height - 36, w, "Default"));
 	}
 
+	@Override
 	public final void render(int var1, int var2) {
 		drawFadingBox(0, 0, this.width, this.height, 1610941696, -1607454624);
 		drawCenteredString(this.fontRenderer, this.title, this.width / 2, 40, 16777215);
@@ -92,6 +106,7 @@ public class InputValueScreen extends GuiScreen {
 		super.render(var1, var2);
 	}
 
+	@Override
 	public final void tick() {
 		++this.counter;
 	}

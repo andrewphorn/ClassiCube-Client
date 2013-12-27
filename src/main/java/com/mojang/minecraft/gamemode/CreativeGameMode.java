@@ -42,7 +42,7 @@ public class CreativeGameMode extends GameMode {
 		if (!CanProceed) {
 			blocks = new Block[] {};
 			for (int i = 0; i < blocks.length; i++) {
-				blocks[i] = (Block) SessionData.allowedBlocks.get(i);
+				blocks[i] = SessionData.allowedBlocks.get(i);
 			}
 		}
 

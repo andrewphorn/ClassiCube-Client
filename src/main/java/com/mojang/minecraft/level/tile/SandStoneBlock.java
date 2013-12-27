@@ -6,6 +6,7 @@ public final class SandStoneBlock extends Block {
 		super(var1);
 	}
 
+	@Override
 	protected final int getTextureId(int texture) {
 		return texture == 1 ? this.textureId - 16 : (texture == 0 ? this.textureId + 16
 				: this.textureId);

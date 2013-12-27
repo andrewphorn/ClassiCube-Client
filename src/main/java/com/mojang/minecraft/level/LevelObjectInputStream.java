@@ -18,6 +18,7 @@ public final class LevelObjectInputStream extends ObjectInputStream {
 		this.classes.add("Skeleton$1");
 	}
 
+	@Override
 	protected final ObjectStreamClass readClassDescriptor() {
 		try {
 			ObjectStreamClass var1 = super.readClassDescriptor();

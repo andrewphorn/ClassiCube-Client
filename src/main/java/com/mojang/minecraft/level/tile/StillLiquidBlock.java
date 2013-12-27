@@ -14,6 +14,7 @@ public final class StillLiquidBlock extends LiquidBlock {
 		this.setPhysics(false);
 	}
 
+	@Override
 	public final void onNeighborChange(Level var1, int var2, int var3, int var4, int var5) {
 		boolean var6 = false;
 		if (var1.getTile(var2 - 1, var3, var4) == 0) {
@@ -52,6 +53,7 @@ public final class StillLiquidBlock extends LiquidBlock {
 
 	}
 
+	@Override
 	public final void update(Level level, int x, int y, int z, Random rand) {
 	}
 }

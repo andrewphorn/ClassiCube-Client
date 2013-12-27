@@ -16,15 +16,15 @@ public class SelectionBoxData {
 	}
 	
 	public final float distanceSquared0(Player var1) {
-		float var2 = var1.x - (float) this.Bounds.x0;
-		float var3 = var1.y - (float) this.Bounds.y0;
-		float var4 = var1.z - (float) this.Bounds.z0;
+		float var2 = var1.x - this.Bounds.x0;
+		float var3 = var1.y - this.Bounds.y0;
+		float var4 = var1.z - this.Bounds.z0;
 		return var2 * var2 + var3 * var3 + var4 * var4;
 	}
 	public final float distanceSquared1(Player var1) {
-		float var2 = var1.x - (float) this.Bounds.x1;
-		float var3 = var1.y - (float) this.Bounds.y1;
-		float var4 = var1.z - (float) this.Bounds.z1;
+		float var2 = var1.x - this.Bounds.x1;
+		float var3 = var1.y - this.Bounds.y1;
+		float var4 = var1.z - this.Bounds.z1;
 		return var2 * var2 + var3 * var3 + var4 * var4;
 	}
 }

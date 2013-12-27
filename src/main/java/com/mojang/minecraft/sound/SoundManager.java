@@ -60,7 +60,7 @@ public final class SoundManager {
 			}
 
 			Object var4;
-			if ((var4 = (List<?>) this.music.get(var1)) == null) {
+			if ((var4 = this.music.get(var1)) == null) {
 				var4 = new ArrayList<Object>();
 				this.music.put(var1, var4);
 			}
@@ -81,7 +81,7 @@ public final class SoundManager {
 			SoundData var7 = SoundReader.read(var1.toURI().toURL());
 			synchronized (this.sounds) {
 				Object var4;
-				if ((var4 = (List<?>) this.sounds.get(var2)) == null) {
+				if ((var4 = this.sounds.get(var2)) == null) {
 					var4 = new ArrayList<Object>();
 					this.sounds.put(var2, var4);
 				}

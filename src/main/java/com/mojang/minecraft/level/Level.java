@@ -103,7 +103,7 @@ public class Level implements Serializable {
 					var7 = var7 > var8 ? var7 : var8;
 
 					for (var8 = 0; var8 < this.listeners.size(); ++var8) {
-						((LevelRenderer) this.listeners.get(var8)).queueChunks(var5 - 1, var9 - 1,
+						this.listeners.get(var8).queueChunks(var5 - 1, var9 - 1,
 								var6 - 1, var5 + 1, var7 + 1, var6 + 1);
 					}
 				}
@@ -115,12 +115,12 @@ public class Level implements Serializable {
 	public MovingObjectPosition clip(Vec3D var1, Vec3D var2) {
 		if (!Float.isNaN(var1.x) && !Float.isNaN(var1.y) && !Float.isNaN(var1.z)) {
 			if (!Float.isNaN(var2.x) && !Float.isNaN(var2.y) && !Float.isNaN(var2.z)) {
-				int var3 = (int) Math.floor((double) var2.x);
-				int var4 = (int) Math.floor((double) var2.y);
-				int var5 = (int) Math.floor((double) var2.z);
-				int var6 = (int) Math.floor((double) var1.x);
-				int var7 = (int) Math.floor((double) var1.y);
-				int var8 = (int) Math.floor((double) var1.z);
+				int var3 = (int) Math.floor(var2.x);
+				int var4 = (int) Math.floor(var2.y);
+				int var5 = (int) Math.floor(var2.z);
+				int var6 = (int) Math.floor(var1.x);
+				int var7 = (int) Math.floor(var1.y);
+				int var8 = (int) Math.floor(var1.z);
 				int var9 = 20;
 
 				while (var9-- >= 0) {
@@ -136,27 +136,27 @@ public class Level implements Serializable {
 					float var11 = 999.0F;
 					float var12 = 999.0F;
 					if (var3 > var6) {
-						var10 = (float) var6 + 1.0F;
+						var10 = var6 + 1.0F;
 					}
 
 					if (var3 < var6) {
-						var10 = (float) var6;
+						var10 = var6;
 					}
 
 					if (var4 > var7) {
-						var11 = (float) var7 + 1.0F;
+						var11 = var7 + 1.0F;
 					}
 
 					if (var4 < var7) {
-						var11 = (float) var7;
+						var11 = var7;
 					}
 
 					if (var5 > var8) {
-						var12 = (float) var8 + 1.0F;
+						var12 = var8 + 1.0F;
 					}
 
 					if (var5 < var8) {
-						var12 = (float) var8;
+						var12 = var8;
 					}
 
 					float var13 = 999.0F;
@@ -212,19 +212,19 @@ public class Level implements Serializable {
 
 					Vec3D var20;
 					var6 = (int) ((var20 = new Vec3D(var1.x, var1.y, var1.z)).x = (float) Math
-							.floor((double) var1.x));
+							.floor(var1.x));
 					if (var24 == 5) {
 						--var6;
 						++var20.x;
 					}
 
-					var7 = (int) (var20.y = (float) Math.floor((double) var1.y));
+					var7 = (int) (var20.y = (float) Math.floor(var1.y));
 					if (var24 == 1) {
 						--var7;
 						++var20.y;
 					}
 
-					var8 = (int) (var20.z = (float) Math.floor((double) var1.z));
+					var8 = (int) (var20.z = (float) Math.floor(var1.z));
 					if (var24 == 3) {
 						--var8;
 						++var20.z;
@@ -435,7 +435,7 @@ public class Level implements Serializable {
 		int var2 = 0;
 
 		for (int var3 = 0; var3 < this.blockMap.all.size(); ++var3) {
-			Entity var4 = (Entity) this.blockMap.all.get(var3);
+			Entity var4 = this.blockMap.all.get(var3);
 			if (var1.isAssignableFrom(var4.getClass())) {
 				++var2;
 			}
@@ -458,9 +458,9 @@ public class Level implements Serializable {
 		for (int var12 = var6; var12 < var7; ++var12) {
 			for (var13 = var9 - 1; var13 >= var8; --var13) {
 				for (int var14 = var10; var14 < var11; ++var14) {
-					var15 = (float) var12 + 0.5F - var2;
-					var16 = (float) var13 + 0.5F - var3;
-					float var17 = (float) var14 + 0.5F - var4;
+					var15 = var12 + 0.5F - var2;
+					var16 = var13 + 0.5F - var3;
+					float var17 = var14 + 0.5F - var4;
 					int var19;
 					if (var12 >= 0 && var13 >= 0 && var14 >= 0 && var12 < this.width
 							&& var13 < this.depth && var14 < this.height
@@ -475,8 +475,8 @@ public class Level implements Serializable {
 			}
 		}
 
-		List<?> var18 = this.blockMap.getEntities(var1, (float) var6, (float) var8, (float) var10,
-				(float) var7, (float) var9, (float) var11);
+		List<?> var18 = this.blockMap.getEntities(var1, var6, var8, var10,
+				var7, var9, var11);
 
 		for (var13 = 0; var13 < var18.size(); ++var13) {
 			Entity var20;
@@ -488,6 +488,7 @@ public class Level implements Serializable {
 
 	}
 
+	@Override
 	public void finalize() {
 	}
 
@@ -513,7 +514,7 @@ public class Level implements Serializable {
 				this.zSpawn = var4;
 				return;
 			}
-		} while ((float) var5 <= this.getWaterLevel());
+		} while (var5 <= this.getWaterLevel());
 
 		this.xSpawn = var3;
 		this.ySpawn = var5;
@@ -522,7 +523,7 @@ public class Level implements Serializable {
 
 	public Entity findSubclassOf(Class<?> var1) {
 		for (int var2 = 0; var2 < this.blockMap.all.size(); ++var2) {
-			Entity var3 = (Entity) this.blockMap.all.get(var2);
+			Entity var3 = this.blockMap.all.get(var2);
 			if (var1.isAssignableFrom(var3.getClass())) {
 				return var3;
 			}
@@ -577,9 +578,9 @@ public class Level implements Serializable {
 
 				// here
 				if (var15 < 10) {
-					float var18 = var6 + var17 * (float) var15 * 0.8F;
-					float var19 = var7 + var16 * (float) var15 * 0.8F;
-					float var20 = var21 + var14 * (float) var15 * 0.8F;
+					float var18 = var6 + var17 * var15 * 0.8F;
+					float var19 = var7 + var16 * var15 * 0.8F;
+					float var20 = var21 + var14 * var15 * 0.8F;
 					if (!this.isSolid(var18, var19, var20)) {
 						++var9;
 						if (this.isLit((int) var18, (int) var19, (int) var20)) {
@@ -617,13 +618,13 @@ public class Level implements Serializable {
 		for (int var9 = var5 - 6; var9 <= var5 + 6; ++var9) {
 			for (int var10 = var6 - 6; var10 <= var6 + 6; ++var10) {
 				if (this.isInBounds(var9, var14, var10) && !this.isSolidTile(var9, var14, var10)) {
-					float var11 = (float) var9 + 0.5F - var1;
+					float var11 = var9 + 0.5F - var1;
 
 					float var12;
 					float var13;
 					for (var13 = (float) (Math.atan2(
-							(double) (var12 = (float) var10 + 0.5F - var3), (double) var11)
-							- (double) (var4 * 3.1415927F / 180.0F) + 1.5707963705062866D); var13 < -3.1415927F; var13 += 6.2831855F) {
+							var12 = var10 + 0.5F - var3, var11)
+							- var4 * 3.1415927F / 180.0F + 1.5707963705062866D); var13 < -3.1415927F; var13 += 6.2831855F) {
 						;
 					}
 
@@ -735,7 +736,7 @@ public class Level implements Serializable {
 	}
 
 	public float getWaterLevel() {
-		return (float) this.waterLevel;
+		return this.waterLevel;
 	}
 
 	public void initTransient() {
@@ -906,8 +907,8 @@ public class Level implements Serializable {
 			} else {
 				if (var4 == 0
 						&& (var1 == 0 || var3 == 0 || var1 == this.width - 1 || var3 == this.height - 1)
-						&& (float) var2 >= this.getGroundLevel()
-						&& (float) var2 < this.getWaterLevel() && !this.networkMode) {
+						&& var2 >= this.getGroundLevel()
+						&& var2 < this.getWaterLevel() && !this.networkMode) {
 					var4 = Block.WATER.id;
 				}
 
@@ -924,7 +925,7 @@ public class Level implements Serializable {
 				this.calcLightDepths(var1, var3, 1, 1);
 
 				for (var4 = 0; var4 < this.listeners.size(); ++var4) {
-					((LevelRenderer) this.listeners.get(var4)).queueChunks(var1 - 1, var2 - 1,
+					this.listeners.get(var4).queueChunks(var1 - 1, var2 - 1,
 							var3 - 1, var1 + 1, var2 + 1, var3 + 1);
 				}
 
@@ -988,7 +989,7 @@ public class Level implements Serializable {
 		this.calcLightDepths(0, 0, var1, var3);
 
 		for (var1 = 0; var1 < this.listeners.size(); ++var1) {
-			((LevelRenderer) this.listeners.get(var1)).refresh();
+			this.listeners.get(var1).refresh();
 		}
 
 		this.tickList.clear();
@@ -1071,7 +1072,7 @@ public class Level implements Serializable {
 
 			for (var7 = 0; var7 < var6; ++var7) {
 				NextTickListEntry var8;
-				if ((var8 = (NextTickListEntry) this.tickList.remove(0)).ticks > 0) {
+				if ((var8 = this.tickList.remove(0)).ticks > 0) {
 					--var8.ticks;
 					this.tickList.add(var8);
 				} else {

@@ -8,6 +8,7 @@ public final class SpongeBlock extends Block {
 		super(var1);
 	}
 
+	@Override
 	public final void onAdded(Level level, int x, int y, int z) {
 		for (int var7 = x - 2; var7 <= x + 2; ++var7) {
 			for (int var5 = y - 2; var5 <= y + 2; ++var5) {
@@ -21,6 +22,7 @@ public final class SpongeBlock extends Block {
 
 	}
 
+	@Override
 	public final void onRemoved(Level var1, int var2, int var3, int var4) {
 		for (int var7 = var2 - 2; var7 <= var2 + 2; ++var7) {
 			for (int var5 = var3 - 2; var5 <= var3 + 2; ++var5) {

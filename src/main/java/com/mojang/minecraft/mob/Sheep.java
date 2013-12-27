@@ -28,6 +28,7 @@ public class Sheep extends QuadrupedMob {
 		this.ai = new Sheep$1(this);
 	}
 
+	@Override
 	public void aiStep() {
 		super.aiStep();
 		this.grazeO = this.graze;
@@ -47,6 +48,7 @@ public class Sheep extends QuadrupedMob {
 
 	}
 
+	@Override
 	public void die(Entity var1) {
 		if (var1 != null) {
 			var1.awardKillScore(this, 10);
@@ -62,6 +64,7 @@ public class Sheep extends QuadrupedMob {
 		super.die(var1);
 	}
 
+	@Override
 	public void hurt(Entity var1, int var2) {
 		if (this.hasFur && var1 instanceof Player) {
 			this.hasFur = false;
@@ -77,6 +80,7 @@ public class Sheep extends QuadrupedMob {
 		}
 	}
 
+	@Override
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
 		AnimalModel var8;

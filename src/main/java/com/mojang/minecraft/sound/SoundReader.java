@@ -16,7 +16,7 @@ public final class SoundReader {
 	public static SoundData read(URL var0) {
 		VorbisStream vorbisStream = null;
 		try {
-			LogicalOggStreamImpl OggStream = (LogicalOggStreamImpl) (new OnDemandUrlStream(var0))
+			LogicalOggStreamImpl OggStream = (new OnDemandUrlStream(var0))
 					.getLogicalStreams().iterator().next();
 			vorbisStream = new VorbisStream(OggStream);
 		} catch (VorbisFormatException e) {
@@ -83,6 +83,6 @@ public final class SoundReader {
 		@SuppressWarnings("unused")
 		IdentificationHeader var13;
 		return new SoundData(var5,
-				(float) (var13 = vorbisStream.getIdentificationHeader()).getSampleRate());
+				(var13 = vorbisStream.getIdentificationHeader()).getSampleRate());
 	}
 }

@@ -12,14 +12,17 @@ public final class GrassBlock extends Block {
 		this.setPhysics(true);
 	}
 
+	@Override
 	public final int getDrop() {
 		return DIRT.getDrop();
 	}
 
+	@Override
 	protected final int getTextureId(int texture) {
 		return texture == 1 ? 0 : (texture == 0 ? 2 : 3);
 	}
 
+	@Override
 	public final void update(Level level, int x, int y, int z, Random rand) {
 		if (rand.nextInt(4) == 0) {
 			if (!level.isLit(x, y, z)) {

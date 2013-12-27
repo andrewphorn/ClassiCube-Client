@@ -25,6 +25,7 @@ public class LightColorInputScreen extends InputValueScreen {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.active) {
 			if (var1.id == 0 && this.name.length() > 0) {

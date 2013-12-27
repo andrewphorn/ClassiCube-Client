@@ -26,6 +26,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 		this.parent = var1;
 	}
 
+	@Override
 	protected final void onButtonClick(Button var1) {
 		if (!this.frozen && var1.active) {
 			if (this.loaded && var1.id < 5) {
@@ -61,6 +62,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 		}
 	}
 
+	@Override
 	public final void onClose() {
 		super.onClose();
 		if (this.chooser != null) {
@@ -69,14 +71,15 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
 	}
 
+	@Override
 	public void onOpen() {
 		(new Thread(this)).start();
 
 		for (int var1 = 0; var1 < 5; ++var1) {
 			this.buttons.add(new Button(var1, this.width / 2 - 100, this.height / 6 + var1 * 24,
 					"---"));
-			((Button) this.buttons.get(var1)).visible = false;
-			((Button) this.buttons.get(var1)).active = false;
+			this.buttons.get(var1).visible = false;
+			this.buttons.get(var1).active = false;
 		}
 
 		this.buttons.add(new Button(6, this.width / 2 - 100, this.height / 6 + 120 + 12,
@@ -105,6 +108,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 		this.minecraft.setCurrentScreen(this.parent);
 	}
 
+	@Override
 	public void render(int var1, int var2) {
 		drawFadingBox(0, 0, this.width, this.height, 1610941696, -1607454624);
 		drawCenteredString(this.fontRenderer, this.title, this.width / 2, 20, 16777215);
@@ -127,6 +131,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 		}
 	}
 
+	@Override
 	public void run() {
 		try {
 			if (this.frozen) {
@@ -171,6 +176,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 		}
 	}
 
+	@Override
 	public final void tick() {
 		super.tick();
 		if (this.selectedFile != null) {

@@ -7,7 +7,6 @@ import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.ai.AI;
 import com.mojang.minecraft.mob.ai.BasicAI;
 import com.mojang.minecraft.model.ModelManager;
-import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 import org.lwjgl.opengl.GL11;
@@ -74,10 +73,11 @@ public class Mob extends Entity {
 		GL11.glBindTexture(3553, this.textureId);
 	}
 
+	@Override
 	protected void causeFallDamage(float var1) {
 		if (!this.level.creativeMode) {
 			int var2;
-			if ((var2 = (int) Math.ceil((double) (var1 - 3.0F))) > 0) {
+			if ((var2 = (int) Math.ceil(var1 - 3.0F)) > 0) {
 				this.hurt((Entity) null, var2);
 			}
 
@@ -105,13 +105,14 @@ public class Mob extends Entity {
 		}
 	}
 
+	@Override
 	public void hurt(Entity var1, int var2) {
 		if (!this.level.creativeMode) {
 			if (this.health > 0) {
 				if (this.ai != null) {
 					this.ai.hurt(var1, var2);
 				}
-				if ((float) this.invulnerableTime > (float) this.invulnerableDuration / 2.0F) {
+				if (this.invulnerableTime > this.invulnerableDuration / 2.0F) {
 					if (this.lastHealth - var2 >= this.health) {
 						return;
 					}
@@ -128,11 +129,11 @@ public class Mob extends Entity {
 				if (var1 != null) {
 					float var3 = var1.x - this.x;
 					float var4 = var1.z - this.z;
-					this.hurtDir = (float) (Math.atan2((double) var4, (double) var3) * 180.0D / 3.1415927410125732D)
+					this.hurtDir = (float) (Math.atan2(var4, var3) * 180.0D / 3.1415927410125732D)
 							- this.yRot;
 					this.knockback(var1, var2, var3, var4);
 				} else {
-					this.hurtDir = (float) ((int) (Math.random() * 2.0D) * 180);
+					this.hurtDir = (int) (Math.random() * 2.0D) * 180;
 				}
 
 				if (this.health <= 0) {
@@ -143,14 +144,17 @@ public class Mob extends Entity {
 		}
 	}
 
+	@Override
 	public boolean isPickable() {
 		return !this.removed;
 	}
 
+	@Override
 	public boolean isPushable() {
 		return !this.removed;
 	}
 
+	@Override
 	public boolean isShootable() {
 		return true;
 	}
@@ -170,10 +174,11 @@ public class Mob extends Entity {
 
 	}
 
+	@Override
 	public void render(TextureManager var1, float var2) {
 		if (this.modelName != null) {
 			float var3;
-			if ((var3 = (float) this.attackTime - var2) < 0.0F) {
+			if ((var3 = this.attackTime - var2) < 0.0F) {
 				var3 = 0.0F;
 			}
 
@@ -216,17 +221,17 @@ public class Mob extends Entity {
 			GL11.glTranslatef(this.xo + (this.x - this.xo) * var2, this.yo + (this.y - this.yo)
 					* var2 - 1.62F + this.renderOffset, this.zo + (this.z - this.zo) * var2);
 			float var11;
-			if ((var11 = (float) this.hurtTime - var2) > 0.0F || this.health <= 0) {
+			if ((var11 = this.hurtTime - var2) > 0.0F || this.health <= 0) {
 				if (var11 < 0.0F) {
 					var11 = 0.0F;
 				} else {
-					var11 = MathHelper.sin((var11 /= (float) this.hurtDuration) * var11 * var11
+					var11 = MathHelper.sin((var11 /= this.hurtDuration) * var11 * var11
 							* var11 * 3.1415927F) * 14.0F;
 				}
 
 				float var12 = 0.0F;
 				if (this.health <= 0) {
-					var12 = ((float) this.deathTime + var2) / 20.0F;
+					var12 = (this.deathTime + var2) / 20.0F;
 					if ((var11 += var12 * var12 * 800.0F) > 90.0F) {
 						var11 = 90.0F;
 					}
@@ -276,10 +281,11 @@ public class Mob extends Entity {
 
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
-		modelCache.getModel(this.modelName).render(var2, var4, (float) this.tickCount + var3, var5,
+		modelCache.getModel(this.modelName).render(var2, var4, this.tickCount + var3, var5,
 				var6, var7);
 	}
 
+	@Override
 	public final void tick() {
 		super.tick();
 		this.oTilt = this.tilt;
@@ -340,7 +346,7 @@ public class Mob extends Entity {
 		if (var3 > 0.05F) {
 			var6 = 1.0F;
 			var5 = var3 * 3.0F;
-			var4 = (float) Math.atan2((double) var2, (double) var1) * 180.0F / 3.1415927F - 90.0F;
+			var4 = (float) Math.atan2(var2, var1) * 180.0F / 3.1415927F - 90.0F;
 		}
 
 		if (!this.onGround) {
@@ -437,7 +443,7 @@ public class Mob extends Entity {
 			yd *= 0.8F;
 			zd *= 0.8F;
 
-			yd = (float) ((double) yd - 0.02D);
+			yd = (float) (yd - 0.02D);
 
 			if (horizontalCollision && isFree(xd, yd + 0.6F - y + y1, zd)) {
 				yd = 0.3F;
@@ -453,7 +459,7 @@ public class Mob extends Entity {
 			yd *= 0.5F;
 			zd *= 0.5F;
 
-			yd = (float) ((double) yd - 0.02D);
+			yd = (float) (yd - 0.02D);
 
 			if (horizontalCollision && isFree(xd, yd + 0.6F - y + y1, zd)) {
 				yd = 0.3F;
@@ -472,7 +478,7 @@ public class Mob extends Entity {
 			yd *= 0.5F;
 			zd *= 0.5F;
 
-			yd = (float) ((double) yd - 0.02D) * multiply;
+			yd = (float) (yd - 0.02D) * multiply;
 
 			if (horizontalCollision && isFree(xd, yd + 0.6F - y + y1, zd)) {
 				yd = 0.3F;
@@ -492,7 +498,7 @@ public class Mob extends Entity {
 			xd *= 0.91F;
 			yd *= 0.98F;
 			zd *= 0.91F;
-			yd = (float) ((double) yd - 0.08D);
+			yd = (float) (yd - 0.08D);
 			if (Block.blocks[var1] != Block.ICE) {
 
 				if (this.flyingMode) {

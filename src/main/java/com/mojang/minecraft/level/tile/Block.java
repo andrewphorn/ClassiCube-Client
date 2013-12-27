@@ -182,8 +182,8 @@ public class Block {
 	}
 
 	public final MovingObjectPosition clip(int var1, int var2, int var3, Vec3D var4, Vec3D var5) {
-		var4 = var4.add((float) (-var1), (float) (-var2), (float) (-var3));
-		var5 = var5.add((float) (-var1), (float) (-var2), (float) (-var3));
+		var4 = var4.add((-var1), (-var2), (-var3));
+		var5 = var5.add((-var1), (-var2), (-var3));
 		Vec3D var6 = var4.getXIntersection(var5, this.x1);
 		Vec3D var7 = var4.getXIntersection(var5, this.x2);
 		Vec3D var8 = var4.getYIntersection(var5, this.y1);
@@ -267,8 +267,8 @@ public class Block {
 				var12 = 3;
 			}
 
-			return new MovingObjectPosition(var1, var2, var3, var12, var11.add((float) var1,
-					(float) var2, (float) var3));
+			return new MovingObjectPosition(var1, var2, var3, var12, var11.add(var1,
+					var2, var3));
 		}
 	}
 
@@ -282,8 +282,8 @@ public class Block {
 					float var9 = random.nextFloat() * var8 + (1.0F - var8) * 0.5F;
 					float var10 = random.nextFloat() * var8 + (1.0F - var8) * 0.5F;
 					var8 = random.nextFloat() * var8 + (1.0F - var8) * 0.5F;
-					var1.addEntity(new Item(var1, (float) var2 + var9, (float) var3 + var10,
-							(float) var4 + var8, this.getDrop()));
+					var1.addEntity(new Item(var1, var2 + var9, var3 + var10,
+							var4 + var8, this.getDrop()));
 				}
 			}
 
@@ -298,8 +298,8 @@ public class Block {
 	}
 
 	public AABB getCollisionBox(int x, int y, int z) {
-		AABB aabb = new AABB((float) x + x1, (float) y + y1, (float) z + z1, (float) x + x2,
-				(float) y + y2, (float) z + z2);
+		AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2,
+				y + y2, z + z2);
 		;
 
 		return aabb;
@@ -326,8 +326,8 @@ public class Block {
 	}
 
 	public AABB getSelectionBox(int x, int y, int z) {
-		AABB aabb = new AABB((float) x + x1, (float) y + y1, (float) z + z1, (float) x + x2,
-				(float) y + y2, (float) z + z2);
+		AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2,
+				y + y2, z + z2);
 		;
 
 		return aabb;
@@ -491,15 +491,15 @@ public class Block {
 	public void renderSide(ShapeRenderer var1, int var2, int var3, int var4, int var5) {
 		int var6;
 		float var7;
-		float var8 = (var7 = (float) ((var6 = this.getTextureId(var5)) % 16) / 16.0F) + 0.0624375F;
+		float var8 = (var7 = (var6 = this.getTextureId(var5)) % 16 / 16.0F) + 0.0624375F;
 		float var16;
-		float var9 = (var16 = (float) (var6 / 16) / 16.0F) + 0.0624375F;
-		float var10 = (float) var2 + this.x1;
-		float var14 = (float) var2 + this.x2;
-		float var11 = (float) var3 + this.y1;
-		float var15 = (float) var3 + this.y2;
-		float var12 = (float) var4 + this.z1;
-		float var13 = (float) var4 + this.z2;
+		float var9 = (var16 = var6 / 16 / 16.0F) + 0.0624375F;
+		float var10 = var2 + this.x1;
+		float var14 = var2 + this.x2;
+		float var11 = var3 + this.y1;
+		float var15 = var3 + this.y2;
+		float var12 = var4 + this.z1;
+		float var13 = var4 + this.z2;
 		if (var5 == 0) {
 			var1.vertexUV(var14, var11, var13, var8, var9);
 			var1.vertexUV(var14, var11, var12, var8, var16);
@@ -548,26 +548,26 @@ public class Block {
 	public void renderSide(ShapeRenderer shapeRenderer, int x, int y, int z, int side, int textureID) {
 		int var7 = textureID % 16 << 4;
 		int var8 = textureID / 16 << 4;
-		float var9 = (float) var7 / 256.0F;
-		float var17 = ((float) var7 + 15.99F) / 256.0F;
-		float var10 = (float) var8 / 256.0F;
-		float var11 = ((float) var8 + 15.99F) / 256.0F;
+		float var9 = var7 / 256.0F;
+		float var17 = (var7 + 15.99F) / 256.0F;
+		float var10 = var8 / 256.0F;
+		float var11 = (var8 + 15.99F) / 256.0F;
 		if (side >= 2 && textureID < 240) {
 			if (this.y1 >= 0.0F && this.y2 <= 1.0F) {
-				var10 = ((float) var8 + this.y1 * 15.99F) / 256.0F;
-				var11 = ((float) var8 + this.y2 * 15.99F) / 256.0F;
+				var10 = (var8 + this.y1 * 15.99F) / 256.0F;
+				var11 = (var8 + this.y2 * 15.99F) / 256.0F;
 			} else {
-				var10 = (float) var8 / 256.0F;
-				var11 = ((float) var8 + 15.99F) / 256.0F;
+				var10 = var8 / 256.0F;
+				var11 = (var8 + 15.99F) / 256.0F;
 			}
 		}
 
-		float var16 = (float) x + this.x1;
-		float var14 = (float) x + this.x2;
-		float var18 = (float) y + this.y1;
-		float var15 = (float) y + this.y2;
-		float var12 = (float) z + this.z1;
-		float var13 = (float) z + this.z2;
+		float var16 = x + this.x1;
+		float var14 = x + this.x2;
+		float var18 = y + this.y1;
+		float var15 = y + this.y2;
+		float var12 = z + this.z1;
+		float var13 = z + this.z2;
 		if (side == 0) {
 			shapeRenderer.vertexUV(var16, var18, var13, var9, var11);
 			shapeRenderer.vertexUV(var16, var18, var12, var9, var10);
@@ -618,34 +618,34 @@ public class Block {
 	public final void spawnBlockParticles(Level var1, int var2, int var3, int var4, int var5,
 			ParticleManager var6) {
 		float var7 = 0.1F;
-		float var8 = (float) var2 + random.nextFloat() * (this.x2 - this.x1 - var7 * 2.0F) + var7
+		float var8 = var2 + random.nextFloat() * (this.x2 - this.x1 - var7 * 2.0F) + var7
 				+ this.x1;
-		float var9 = (float) var3 + random.nextFloat() * (this.y2 - this.y1 - var7 * 2.0F) + var7
+		float var9 = var3 + random.nextFloat() * (this.y2 - this.y1 - var7 * 2.0F) + var7
 				+ this.y1;
-		float var10 = (float) var4 + random.nextFloat() * (this.z2 - this.z1 - var7 * 2.0F) + var7
+		float var10 = var4 + random.nextFloat() * (this.z2 - this.z1 - var7 * 2.0F) + var7
 				+ this.z1;
 		if (var5 == 0) {
-			var9 = (float) var3 + this.y1 - var7;
+			var9 = var3 + this.y1 - var7;
 		}
 
 		if (var5 == 1) {
-			var9 = (float) var3 + this.y2 + var7;
+			var9 = var3 + this.y2 + var7;
 		}
 
 		if (var5 == 2) {
-			var10 = (float) var4 + this.z1 - var7;
+			var10 = var4 + this.z1 - var7;
 		}
 
 		if (var5 == 3) {
-			var10 = (float) var4 + this.z2 + var7;
+			var10 = var4 + this.z2 + var7;
 		}
 
 		if (var5 == 4) {
-			var8 = (float) var2 + this.x1 - var7;
+			var8 = var2 + this.x1 - var7;
 		}
 
 		if (var5 == 5) {
-			var8 = (float) var2 + this.x2 + var7;
+			var8 = var2 + this.x2 + var7;
 		}
 
 		var6.spawnParticle((new TerrainParticle(var1, var8, var9, var10, 0.0F, 0.0F, 0.0F, this))
@@ -658,12 +658,12 @@ public class Block {
 		for (int var6 = 0; var6 < 4; ++var6) {
 			for (int var7 = 0; var7 < 4; ++var7) {
 				for (int var8 = 0; var8 < 4; ++var8) {
-					float var9 = (float) x + ((float) var6 + 0.5F) / (float) 4;
-					float var10 = (float) y + ((float) var7 + 0.5F) / (float) 4;
-					float var11 = (float) z + ((float) var8 + 0.5F) / (float) 4;
+					float var9 = x + (var6 + 0.5F) / 4;
+					float var10 = y + (var7 + 0.5F) / 4;
+					float var11 = z + (var8 + 0.5F) / 4;
 
 					particleManager.spawnParticle(new TerrainParticle(level, var9, var10, var11,
-							var9 - (float) x - 0.5F, var10 - (float) y - 0.5F, var11 - (float) z
+							var9 - x - 0.5F, var10 - y - 0.5F, var11 - z
 									- 0.5F, this));
 				}
 			}

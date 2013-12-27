@@ -8,6 +8,7 @@ public class JumpAttackAI extends BasicAttackAI {
 		// this.runSpeed *= 0.8F;
 	}
 
+	@Override
 	protected void jumpFromGround() {
 		if (this.attackTarget == null) {
 			super.jumpFromGround();

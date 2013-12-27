@@ -47,8 +47,8 @@ public final class FontRenderer {
 		font.getRGB(0, 0, width, height, fontData, 0, width);
 
 		for (int character = 0; character < 256; ++character) {
-			int var6 = (int) (character % 16);
-			int var7 = (int) (character / 16);
+			int var6 = character % 16;
+			int var7 = character / 16;
 			int chWidth = 0;
 
 			for (boolean var9 = false; chWidth < 8 && !var9; chWidth++) {
@@ -64,7 +64,7 @@ public final class FontRenderer {
 			}
 
 			if (character == 32) {
-				chWidth = (int) (4);
+				chWidth = (4);
 			}
 			this.font[character] = chWidth;
 		}

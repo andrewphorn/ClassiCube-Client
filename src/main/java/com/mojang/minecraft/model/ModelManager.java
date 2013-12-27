@@ -23,7 +23,7 @@ public final class ModelManager {
 				return new BlockModel();
 			}
 		}
-		return (Model) (var1.equals("humanoid") ? this.human
+		return var1.equals("humanoid") ? this.human
 				: (var1.equals("humanoid.armor") ? this.armoredHuman
 						: (var1.equals("creeper") ? this.creeper
 								: (var1.equals("chicken") ? this.chicken
@@ -35,6 +35,6 @@ public final class ModelManager {
 												: (var1.equals("sheep") ? this.sheep : (var1
 														.equals("spider") ? this.spider
 														: (var1.equals("sheep.fur") ? this.sheepFur
-																: null))))))))))));
+																: null)))))))))));
 	}
 }

@@ -17,6 +17,7 @@ public class InputHandlerImpl extends InputHandler {
 		settings = gameSettings;
 	}
 
+	@Override
 	public final void calc() {
 		if (this.settings.minecraft.currentScreen != null)
 			return;

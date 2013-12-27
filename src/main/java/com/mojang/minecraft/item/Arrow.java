@@ -80,8 +80,8 @@ public class Arrow extends Entity {
 
 		unknown3 = MathHelper.sqrt(xd * xd + zd * zd);
 
-		yRotO = yRot = (float) (Math.atan2((double) xd, (double) zd) * 180.0D / 3.1415927410125732D);
-		xRotO = xRot = (float) (Math.atan2((double) yd, (double) unknown3) * 180.0D / 3.1415927410125732D);
+		yRotO = yRot = (float) (Math.atan2(xd, zd) * 180.0D / 3.1415927410125732D);
+		xRotO = xRot = (float) (Math.atan2(yd, unknown3) * 180.0D / 3.1415927410125732D);
 
 		makeStepSound = false;
 	}
@@ -130,12 +130,12 @@ public class Arrow extends Entity {
 
 		unknown0 = 0.5F;
 
-		float unknown1 = (float) (0 + type * 10) / 32.0F;
-		float unknown2 = (float) (5 + type * 10) / 32.0F;
+		float unknown1 = (0 + type * 10) / 32.0F;
+		float unknown2 = (5 + type * 10) / 32.0F;
 		float unknown3 = 0.15625F;
 
-		float unknown4 = (float) (5 + type * 10) / 32.0F;
-		float unknown5 = (float) (10 + type * 10) / 32.0F;
+		float unknown4 = (5 + type * 10) / 32.0F;
+		float unknown5 = (10 + type * 10) / 32.0F;
 		float unknown6 = 0.05625F;
 
 		GL11.glScalef(0.05625F, unknown6, unknown6);
@@ -205,9 +205,9 @@ public class Arrow extends Entity {
 
 			int unknown0 = (int) (MathHelper.sqrt(xd * xd + yd * yd + zd * zd) / 0.2F + 1.0F);
 
-			float x0 = xd / (float) unknown0;
-			float y0 = yd / (float) unknown0;
-			float z0 = zd / (float) unknown0;
+			float x0 = xd / unknown0;
+			float y0 = yd / unknown0;
+			float z0 = zd / unknown0;
 
 			for (int unknown4 = 0; unknown4 < unknown0 && !collision; unknown4++) {
 				AABB unknown5 = bb.expand(x0, y0, z0);
@@ -219,7 +219,7 @@ public class Arrow extends Entity {
 				List<Entity> blockMapEntitiesList = level.blockMap.getEntities(this, unknown5);
 
 				for (int currentEntity = 0; currentEntity < blockMapEntitiesList.size(); currentEntity++) {
-					Entity entity = (Entity) blockMapEntitiesList.get(currentEntity);
+					Entity entity = blockMapEntitiesList.get(currentEntity);
 
 					if ((entity).isShootable() && (entity != owner || time > 5)) {
 						entity.hurt(this, damage);
@@ -252,9 +252,9 @@ public class Arrow extends Entity {
 			if (!hasHit) {
 				float unknown6 = MathHelper.sqrt(xd * xd + zd * zd);
 
-				yRot = (float) (Math.atan2((double) xd, (double) zd) * 180.0D / 3.1415927410125732D);
+				yRot = (float) (Math.atan2(xd, zd) * 180.0D / 3.1415927410125732D);
 
-				for (xRot = (float) (Math.atan2((double) yd, (double) unknown6) * 180.0D / 3.1415927410125732D); xRot
+				for (xRot = (float) (Math.atan2(yd, unknown6) * 180.0D / 3.1415927410125732D); xRot
 						- xRotO < -180.0F; xRotO -= 360.0F) {
 					System.out.println("test");
 					// TODO: ?.

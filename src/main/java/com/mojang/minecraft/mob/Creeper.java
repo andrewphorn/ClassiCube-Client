@@ -1,7 +1,6 @@
 package com.mojang.minecraft.mob;
 
 import com.mojang.minecraft.level.Level;
-import com.mojang.util.MathHelper;
 
 public class Creeper extends Mob {
 
@@ -18,8 +17,9 @@ public class Creeper extends Mob {
 		this.setPos(var2, var3, var4);
 	}
 
+	@Override
 	public float getBrightness(float var1) {
-		float var2 = (float) (20 - this.health) / 20.0F;
+		float var2 = (20 - this.health) / 20.0F;
 		return 80;
 	}
 }

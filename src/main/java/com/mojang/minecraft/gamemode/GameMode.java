@@ -42,7 +42,7 @@ public class GameMode {
 			}
 
 			if (block.stepSound != Block.soundNone) {
-				level.playSound(block.stepSound.getBreakSound(), (float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F, (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);       
+				level.playSound(block.stepSound.getBreakSound(), x + 0.5F, y + 0.5F, z + 0.5F, (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);       
 			}
 
 			block.spawnBreakParticles(level, x, y, z, minecraft.particleManager);

@@ -17,7 +17,7 @@ public class TextureFireFX extends TextureFX {
 		for (int i = 0; i < 16; i++) {
 			for (int j = 0; j < 20; j++) {
 				int k = 18;
-				float f = a[i + ((j + 1) % 20) * 16] * (float) k;
+				float f = a[i + ((j + 1) % 20) * 16] * k;
 				for (int i1 = i - 1; i1 <= i + 1; i1++) {
 					for (int j1 = j; j1 <= j + 1; j1++) {
 						int l1 = i1;
@@ -30,7 +30,7 @@ public class TextureFireFX extends TextureFX {
 
 				}
 
-				b[i + j * 16] = f / ((float) k * 1.06F);
+				b[i + j * 16] = f / (k * 1.06F);
 				if (j >= 19) {
 					b[i + j * 16] = (float) (Math.random() * Math.random() * Math.random() * 4D
 							+ Math.random() * 0.10000000149011612D + 0.20000000298023224D);

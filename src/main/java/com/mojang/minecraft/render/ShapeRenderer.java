@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+
+import org.lwjgl.opengl.ARBBufferObject;
 import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
@@ -51,14 +53,14 @@ public class ShapeRenderer {
 		if (this.useVBO) {
 			System.out.println("GPU allows VBOs: Enabling");
 			this.vertexBuffers = GLAllocation.createDirectIntBuffer(this.vboCount);
-			ARBVertexBufferObject.glGenBuffersARB(this.vertexBuffers);
+			ARBBufferObject.glGenBuffersARB(this.vertexBuffers);
 		}
 	}
 
 	public void addTranslation(float xo, float yo, float zo) {
-		this.xOffset += (double) xo;
-		this.yOffset += (double) yo;
-		this.zOffset += (double) zo;
+		this.xOffset += xo;
+		this.yOffset += yo;
+		this.zOffset += zo;
 	}
 
 	public void begin() {
@@ -140,12 +142,12 @@ public class ShapeRenderer {
 
 				if (this.useVBO) {
 					this.vboIndex = (this.vboIndex + 1) % this.vboCount;
-					ARBVertexBufferObject.glBindBufferARB(
+					ARBBufferObject.glBindBufferARB(
 							ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB,
 							this.vertexBuffers.get(this.vboIndex));
-					ARBVertexBufferObject.glBufferDataARB(
+					ARBBufferObject.glBufferDataARB(
 							ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, this.byteBuffer,
-							ARBVertexBufferObject.GL_STREAM_DRAW_ARB);
+							ARBBufferObject.GL_STREAM_DRAW_ARB);
 				}
 
 				if (this.hasTexture) {

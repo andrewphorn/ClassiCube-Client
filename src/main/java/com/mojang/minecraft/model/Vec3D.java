@@ -68,6 +68,7 @@ public final class Vec3D {
 		return new Vec3D(this.x - var1.x, this.y - var1.y, this.z - var1.z);
 	}
 
+	@Override
 	public final String toString() {
 		return "(" + this.x + ", " + this.y + ", " + this.z + ")";
 	}

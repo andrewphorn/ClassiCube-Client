@@ -6,11 +6,13 @@ public final class OreBlock extends Block {
 		super(var1);
 	}
 
+	@Override
 	public final int getDrop() {
 		return this == COAL_ORE ? SLAB.id : (this == GOLD_ORE ? GOLD_BLOCK.id
 				: (this == IRON_ORE ? IRON_BLOCK.id : this.id));
 	}
 
+	@Override
 	public final int getDropCount() {
 		return random.nextInt(3) + 1;
 	}

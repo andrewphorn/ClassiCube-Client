@@ -20,16 +20,18 @@ public class WaterDropParticle extends Particle {
 		this.lifetime = (int) (8.0D / (Math.random() * 0.8D + 0.2D));
 	}
 
+	@Override
 	public void render(ShapeRenderer var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
 		super.render(var1, var2, var3, var4, var5, var6, var7);
 	}
 
+	@Override
 	public void tick() {
 		this.xo = this.x;
 		this.yo = this.y;
 		this.zo = this.z;
-		this.yd = (float) ((double) this.yd - 0.06D);
+		this.yd = (float) (this.yd - 0.06D);
 		this.move(this.xd, this.yd, this.zd);
 		this.xd *= 0.98F;
 		this.yd *= 0.98F;

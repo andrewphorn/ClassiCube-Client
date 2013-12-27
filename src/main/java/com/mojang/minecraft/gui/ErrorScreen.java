@@ -1,12 +1,12 @@
 package com.mojang.minecraft.gui;
 
-import java.awt.Canvas;
-
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
 import com.mojang.minecraft.Minecraft;
-import com.oyasunadev.mcraft.client.core.ClassiCubeStandalone.MinecraftFrame.MinecraftCanvas;
+import com.mojang.minecraft.net.NetworkManager;
+import com.oyasunadev.mcraft.client.core.ClassiCubeStandalone;
+import com.oyasunadev.mcraft.client.core.MinecraftStandalone;
 
 public final class ErrorScreen extends GuiScreen {
 
@@ -18,44 +18,28 @@ public final class ErrorScreen extends GuiScreen {
 		this.text = var2;
 	}
 
+	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.id == 0) {
-			Minecraft cache = this.minecraft;
-			this.minecraft.shutdown();
-			try {
-				Display.releaseContext();
-			} catch (LWJGLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			Display.destroy();
-			if (!Minecraft.isSinglePlayer) {
-				this.minecraft.networkManager.netHandler.close();
-			}
-			this.minecraft = new Minecraft(cache.canvas, cache.applet, cache.width, cache.height,
-					false, cache.isApplet);
-
-			if (!Minecraft.isSinglePlayer) {
-				this.minecraft.host = cache.host;
-				this.minecraft.port = cache.port;
-				this.minecraft.host = cache.host + ":" + cache.port;
-				this.minecraft.session = cache.session;
-				this.minecraft.server = cache.server;
-			}
-			this.minecraft.running = false;
-			this.minecraft.run();
+			minecraft.running = false;
+			minecraft.shutdown();
+			//System.exit(0);
+			MinecraftStandalone.main(MinecraftStandalone.storedArgs);
 		}
 	}
 
+	@Override
 	protected final void onKeyPress(char var1, int var2) {
 	}
 
+	@Override
 	public final void onOpen() {
 		this.buttons.clear();
 		this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4 + 96, this.minecraft
 				.isOnline() ? "Try to reconnect..." : "Restart ClassiCube"));
 	}
 
+	@Override
 	public final void render(int var1, int var2) {
 		drawFadingBox(0, 0, this.width, this.height, -12574688, -11530224);
 		drawCenteredString(this.fontRenderer, this.title, this.width / 2, 90, 16777215);

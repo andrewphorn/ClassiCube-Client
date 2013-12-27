@@ -6,10 +6,12 @@ public final class LeavesBlock extends LeavesBaseBlock {
 		super(var1);
 	}
 
+	@Override
 	public final int getDrop() {
 		return Block.SAPLING.id;
 	}
 
+	@Override
 	public final int getDropCount() {
 		return random.nextInt(10) == 0 ? 1 : 0;
 	}

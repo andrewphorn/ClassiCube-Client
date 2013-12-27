@@ -63,7 +63,7 @@ public final class Renderer {
 		GL11.glClear(256);
 		GL11.glMatrixMode(5889);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0.0D, (double) var1, (double) var2, 0.0D, 100.0D, 300.0D);
+		GL11.glOrtho(0.0D, var1, var2, 0.0D, 100.0D, 300.0D);
 		GL11.glMatrixMode(5888);
 		GL11.glLoadIdentity();
 		GL11.glTranslatef(0.0F, 0.0F, -200.0F);
@@ -79,14 +79,14 @@ public final class Renderer {
 
 	public void hurtEffect(float var1) {
 		Player var3;
-		float var2 = (float) (var3 = this.minecraft.player).hurtTime - var1;
+		float var2 = (var3 = this.minecraft.player).hurtTime - var1;
 		if (var3.health <= 0) {
-			var1 += (float) var3.deathTime;
+			var1 += var3.deathTime;
 			GL11.glRotatef(40.0F - 8000.0F / (var1 + 200.0F), 0.0F, 0.0F, 1.0F);
 		}
 
 		if (var2 >= 0.0F) {
-			var2 = MathHelper.sin((var2 /= (float) var3.hurtDuration) * var2 * var2 * var2
+			var2 = MathHelper.sin((var2 /= var3.hurtDuration) * var2 * var2 * var2
 					* 3.1415927F);
 			var1 = var3.hurtDir;
 			GL11.glRotatef(-var3.hurtDir, 0.0F, 1.0F, 0.0F);

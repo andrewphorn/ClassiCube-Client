@@ -259,10 +259,10 @@ public final class ProgressBarDisplay {
 				float var10 = 32.0F;
 				var6.begin();
 				var6.color(4210752);
-				var6.vertexUV(0.0F, (float) var5, 0.0F, 0.0F, (float) var5 / var10);
-				var6.vertexUV((float) var4, (float) var5, 0.0F, (float) var4 / var10, (float) var5
+				var6.vertexUV(0.0F, var5, 0.0F, 0.0F, var5 / var10);
+				var6.vertexUV(var4, var5, 0.0F, var4 / var10, var5
 						/ var10);
-				var6.vertexUV((float) var4, 0.0F, 0.0F, (float) var4 / var10, 0.0F);
+				var6.vertexUV(var4, 0.0F, 0.0F, var4 / var10, 0.0F);
 				var6.vertexUV(0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 				var6.end();
 				if (var1 >= 0) {
@@ -271,15 +271,15 @@ public final class ProgressBarDisplay {
 					GL11.glDisable(3553);
 					var6.begin();
 					var6.color(8421504);
-					var6.vertex((float) var7, (float) var8, 0.0F);
-					var6.vertex((float) var7, (float) (var8 + 2), 0.0F);
-					var6.vertex((float) (var7 + 100), (float) (var8 + 2), 0.0F);
-					var6.vertex((float) (var7 + 100), (float) var8, 0.0F);
+					var6.vertex(var7, var8, 0.0F);
+					var6.vertex(var7, var8 + 2, 0.0F);
+					var6.vertex(var7 + 100, var8 + 2, 0.0F);
+					var6.vertex(var7 + 100, var8, 0.0F);
 					var6.color(8454016);
-					var6.vertex((float) var7, (float) var8, 0.0F);
-					var6.vertex((float) var7, (float) (var8 + 2), 0.0F);
-					var6.vertex((float) (var7 + var1), (float) (var8 + 2), 0.0F);
-					var6.vertex((float) (var7 + var1), (float) var8, 0.0F);
+					var6.vertex(var7, var8, 0.0F);
+					var6.vertex(var7, var8 + 2, 0.0F);
+					var6.vertex(var7 + var1, var8 + 2, 0.0F);
+					var6.vertex(var7 + var1, var8, 0.0F);
 					var6.end();
 					GL11.glEnable(3553);
 				}
@@ -352,7 +352,7 @@ public final class ProgressBarDisplay {
 			GL11.glClear(256);
 			GL11.glMatrixMode(5889);
 			GL11.glLoadIdentity();
-			GL11.glOrtho(0.0D, (double) var3, (double) var2, 0.0D, 100.0D, 300.0D);
+			GL11.glOrtho(0.0D, var3, var2, 0.0D, 100.0D, 300.0D);
 			GL11.glMatrixMode(5888);
 			GL11.glLoadIdentity();
 			GL11.glTranslatef(0.0F, 0.0F, -200.0F);

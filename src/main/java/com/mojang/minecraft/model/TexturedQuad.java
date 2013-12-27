@@ -20,9 +20,9 @@ public final class TexturedQuad {
 		this(var1);
 		float var7 = 0.0015625F;
 		float var6 = 0.003125F;
-		var1[0] = var1[0].create((float) var4 / 64.0F - var7, (float) var3 / 32.0F + var6);
-		var1[1] = var1[1].create((float) var2 / 64.0F + var7, (float) var3 / 32.0F + var6);
-		var1[2] = var1[2].create((float) var2 / 64.0F + var7, (float) var5 / 32.0F - var6);
-		var1[3] = var1[3].create((float) var4 / 64.0F - var7, (float) var5 / 32.0F - var6);
+		var1[0] = var1[0].create(var4 / 64.0F - var7, var3 / 32.0F + var6);
+		var1[1] = var1[1].create(var2 / 64.0F + var7, var3 / 32.0F + var6);
+		var1[2] = var1[2].create(var2 / 64.0F + var7, var5 / 32.0F - var6);
+		var1[3] = var1[3].create(var4 / 64.0F - var7, var5 / 32.0F - var6);
 	}
 }

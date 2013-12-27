@@ -6,6 +6,7 @@ public final class StoneBlock extends Block {
 		super(var1);
 	}
 
+	@Override
 	public final int getDrop() {
 		return COBLESTONE.id;
 	}

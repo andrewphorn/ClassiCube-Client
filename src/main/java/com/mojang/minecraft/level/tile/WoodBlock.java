@@ -7,14 +7,17 @@ public final class WoodBlock extends Block {
 		this.textureId = 20;
 	}
 
+	@Override
 	public final int getDrop() {
 		return WOOD.id;
 	}
 
+	@Override
 	public final int getDropCount() {
 		return random.nextInt(3) + 3;
 	}
 
+	@Override
 	protected final int getTextureId(int texture) {
 		return texture == 1 ? 21 : (texture == 0 ? 21 : 20);
 	}

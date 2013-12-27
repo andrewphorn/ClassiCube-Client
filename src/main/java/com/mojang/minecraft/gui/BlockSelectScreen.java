@@ -37,7 +37,7 @@ public final class BlockSelectScreen extends GuiScreen {
 		if (id < 0 || id > 255)
 			return "";
 		try {
-			Block b = (Block) SessionData.allowedBlocks.get(id);
+			Block b = SessionData.allowedBlocks.get(id);
 			if (b == null)
 				return "";
 			int ID = b.id;
@@ -65,6 +65,7 @@ public final class BlockSelectScreen extends GuiScreen {
 		return -1;
 	}
 
+	@Override
 	protected final void onMouseClick(int var1, int var2, int var3) {
 		if (var3 == 0) {
 			this.minecraft.player.inventory.replaceSlot(this.getBlockOnScreen(var1, var2));
@@ -73,6 +74,7 @@ public final class BlockSelectScreen extends GuiScreen {
 
 	}
 
+	@Override
 	public final void render(int var1, int var2) {
 		var1 = this.getBlockOnScreen(var1, var2);
 		if (lessThan49) {
@@ -100,12 +102,12 @@ public final class BlockSelectScreen extends GuiScreen {
 		GL11.glBindTexture(3553, var2);
 
 		for (var2 = 0; var2 < SessionData.allowedBlocks.size(); ++var2) {
-			Block var4 = (Block) SessionData.allowedBlocks.get(var2);
+			Block var4 = SessionData.allowedBlocks.get(var2);
 			if (var4 != null) {
 				GL11.glPushMatrix();
 				int var5 = this.width / 2 + var2 % BlocksPerRow * Spacing + -128;
 				int var6 = this.height / 2 + var2 / BlocksPerRow * Spacing + -60;
-				GL11.glTranslatef((float) var5, (float) var6, 0.0F);
+				GL11.glTranslatef(var5, var6, 0.0F);
 				GL11.glScalef(9.0F, 9.0F, 9.0F);
 				GL11.glTranslatef(1.0F, 0.5F, 8.0F);
 				GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
@@ -132,6 +134,7 @@ public final class BlockSelectScreen extends GuiScreen {
 
 	public void start() {
 		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
 			public void run() {
 				Rotate();
 				// timer.cancel();

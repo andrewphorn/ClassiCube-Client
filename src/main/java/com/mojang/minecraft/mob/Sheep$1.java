@@ -14,6 +14,7 @@ final class Sheep$1 extends BasicAI {
 		this.sheep = var1;
 	}
 
+	@Override
 	protected final void update() {
 		float var1 = MathHelper.sin(this.sheep.yRot * 3.1415927F / 180.0F);
 		float var2 = MathHelper.cos(this.sheep.yRot * 3.1415927F / 180.0F);
@@ -35,7 +36,7 @@ final class Sheep$1 extends BasicAI {
 
 				this.xxa = 0.0F;
 				this.yya = 0.0F;
-				this.mob.xRot = (float) (40 + this.sheep.grazingTime / 2 % 2 * 10);
+				this.mob.xRot = 40 + this.sheep.grazingTime / 2 % 2 * 10;
 			}
 		} else {
 			if (this.level.getTile(var4, var3, var5) == Block.GRASS.id) {

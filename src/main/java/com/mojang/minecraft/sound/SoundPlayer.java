@@ -34,6 +34,7 @@ public final class SoundPlayer implements Runnable {
 		this.audioQueue.clear();
 	}
 
+	@Override
 	public final void run() {
 		int[] var1 = new int[4410];
 		int[] var2 = new int[4410];

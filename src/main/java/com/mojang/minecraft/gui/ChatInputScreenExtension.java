@@ -4,9 +4,6 @@ import com.mojang.minecraft.ChatClickData;
 import com.mojang.minecraft.ChatClickData.LinkData;
 import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.PacketType;
-import com.mojang.minecraft.phys.AABB;
-
-import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -15,8 +12,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -56,6 +51,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 			this.caretPos = this.inputLine.length();
 	}
 
+	@Override
 	public final void onClose() {
 		Keyboard.enableRepeatEvents(false);
 	}
@@ -153,7 +149,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 			j = history.size();
 			if (this.historyPos < j) {
 				this.historyPos += 1;
-				this.inputLine = ((String) history.get(j - this.historyPos));
+				this.inputLine = (history.get(j - this.historyPos));
 				this.caretPos = this.inputLine.length();
 			}
 		}
@@ -164,7 +160,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 				this.historyPos -= 1;
 
 				if (this.historyPos > 0) {
-					this.inputLine = ((String) history.get(j - this.historyPos));
+					this.inputLine = (history.get(j - this.historyPos));
 				} else {
 					this.inputLine = "";
 				}
@@ -193,6 +189,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 		return buildable;
 	}
 
+	@Override
 	protected final void onMouseClick(int x, int y, int clickType) {
 		if ((clickType == 0) && (this.minecraft.hud.hoveredPlayer != null))
 			insertTextAtCaret(this.minecraft.hud.hoveredPlayer + " ");
@@ -234,10 +231,12 @@ public class ChatInputScreenExtension extends GuiScreen {
 		}
 	}
 
+	@Override
 	public final void onOpen() {
 		Keyboard.enableRepeatEvents(true);
 	}
 
+	@Override
 	public void render(int paramInt1, int paramInt2) {
 		super.drawBox(2, this.height - 14, this.width - 2, this.height - 2, -2147483648);
 		char[] temp = new char[128];
@@ -285,6 +284,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(localStringSelection, null);
 	}
 
+	@Override
 	public final void tick() {
 		++this.tickCount;
 	}

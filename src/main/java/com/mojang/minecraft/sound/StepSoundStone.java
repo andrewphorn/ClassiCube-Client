@@ -7,12 +7,14 @@ public final class StepSoundStone extends StepSound
         super(soundName, soundVolume, soundPitch);
     }
 
-    public String getBreakSound()
+    @Override
+	public String getBreakSound()
     {
         return "random.glass";
     }
 
-    public String getPlaceSound()
+    @Override
+	public String getPlaceSound()
     {
         return "step.stone";
     }

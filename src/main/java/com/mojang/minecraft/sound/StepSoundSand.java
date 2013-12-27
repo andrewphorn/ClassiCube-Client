@@ -7,7 +7,8 @@ public final class StepSoundSand extends StepSound
         super(soundName, soundVolume, soundPitch);
     }
 
-    public String getBreakSound()
+    @Override
+	public String getBreakSound()
     {
         return "dig.wood";
     }

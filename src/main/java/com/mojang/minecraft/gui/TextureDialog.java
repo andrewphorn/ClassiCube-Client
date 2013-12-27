@@ -30,6 +30,7 @@ final class TextureDialog extends Thread {
 		this.mc.grabMouse();
 	}
 
+	@Override
 	public final void run() {
 		JFileChooser var1;
 		try {

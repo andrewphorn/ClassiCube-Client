@@ -90,9 +90,9 @@ public final class ModelPart {
 			float var7) {
 		this.vertices = new Vertex[8];
 		this.quads = new TexturedQuad[6];
-		float var8 = var1 + (float) var4;
-		float var9 = var2 + (float) var5;
-		float var10 = var3 + (float) var6;
+		float var8 = var1 + var4;
+		float var9 = var2 + var5;
+		float var10 = var3 + var6;
 		var1 -= var7;
 		var2 -= var7;
 		var3 -= var7;

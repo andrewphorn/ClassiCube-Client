@@ -4,7 +4,6 @@ import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.HackState;
-import com.mojang.minecraft.ProgressBarDisplay;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.Mob;
@@ -86,7 +85,7 @@ public class Player extends Mob {
 			super.aiStep();
 
 			float var1 = MathHelper.sqrt(this.xd * this.xd + this.zd * this.zd);
-			float var2 = (float) Math.atan((double) (-this.yd * 0.2F)) * 15.0F;
+			float var2 = (float) Math.atan(-this.yd * 0.2F) * 15.0F;
 			if (var1 > 0.1F) {
 				var1 = 0.1F;
 			}
@@ -130,7 +129,7 @@ public class Player extends Mob {
 				fz = -0.1f;
 
 			float aaa = MathHelper.sqrt(fx * fx + fz * fz);
-			float bbb = (float) Math.atan((double) (-fy * 0.2F)) * 15.0F;
+			float bbb = (float) Math.atan(-fy * 0.2F) * 15.0F;
 			this.bob += (aaa - this.bob) * 0.4F;
 			this.tilt += (bbb - this.tilt) * 0.8F;
 
@@ -393,7 +392,7 @@ public class Player extends Mob {
 			return;
 		if (this.modelName != null) {
 			float var3;
-			if ((var3 = (float) this.attackTime - var2) < 0.0F) {
+			if ((var3 = this.attackTime - var2) < 0.0F) {
 				var3 = 0.0F;
 			}
 
@@ -437,17 +436,17 @@ public class Player extends Mob {
 			GL11.glTranslatef(this.xo + (this.x - this.xo) * var2, this.yo + (this.y - this.yo)
 					* var2 - 1.62F + this.renderOffset, this.zo + (this.z - this.zo) * var2);
 			float var11;
-			if ((var11 = (float) this.hurtTime - var2) > 0.0F || this.health <= 0) {
+			if ((var11 = this.hurtTime - var2) > 0.0F || this.health <= 0) {
 				if (var11 < 0.0F) {
 					var11 = 0.0F;
 				} else {
-					var11 = MathHelper.sin((var11 /= (float) this.hurtDuration) * var11 * var11
+					var11 = MathHelper.sin((var11 /= this.hurtDuration) * var11 * var11
 							* var11 * 3.1415927F) * 14.0F;
 				}
 
 				float var12 = 0.0F;
 				if (this.health <= 0) {
-					var12 = ((float) this.deathTime + var2) / 20.0F;
+					var12 = (this.deathTime + var2) / 20.0F;
 					if ((var11 += var12 * var12 * 800.0F) > 90.0F) {
 						var11 = 90.0F;
 					}
@@ -495,9 +494,10 @@ public class Player extends Mob {
 		}
 	}
 
+	@Override
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
-		modelCache.getModel(this.modelName).render(var2, var4, (float) this.tickCount + var3, var5,
+		modelCache.getModel(this.modelName).render(var2, var4, this.tickCount + var3, var5,
 				var6, var7);
 	}
 

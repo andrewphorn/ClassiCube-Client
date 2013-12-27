@@ -16,6 +16,7 @@ public class Pig extends QuadrupedMob {
 		this.textureName = "/mob/pig.png";
 	}
 
+	@Override
 	public void die(Entity var1) {
 		if (var1 != null) {
 			var1.awardKillScore(this, 10);
