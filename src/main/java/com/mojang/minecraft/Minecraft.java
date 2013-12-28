@@ -2359,7 +2359,7 @@ public final class Minecraft implements Runnable {
 									}
 
 									else if (packetType == PacketType.ENV_SET_WEATHER_TYPE) {
-										short Weather = (Short) packetParams[0];
+										byte Weather = ((Byte) packetParams[0]).byteValue();
 										if (Weather == 0) {
 											raining = false;
 											snowing = false;

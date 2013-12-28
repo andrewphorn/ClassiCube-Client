@@ -89,7 +89,7 @@ public class PacketType {
 		CHANGE_MODEL = new PacketType(new Class[] { Byte.TYPE, String.class });
 		ENV_SET_MAP_APPEARANCE = new PacketType(new Class[] { String.class, Byte.TYPE, Byte.TYPE,
 				Short.TYPE });
-		ENV_SET_WEATHER_TYPE = new PacketType(new Class[] { Short.TYPE });
+		ENV_SET_WEATHER_TYPE = new PacketType(new Class[] { Byte.TYPE });
 
 		// set names
 		EXT_INFO.extName = "ExtInfo";
