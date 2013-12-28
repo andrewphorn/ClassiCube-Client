@@ -1,9 +1,11 @@
 package com.mojang.minecraft.net;
 
-import com.oyasunadev.mcraft.client.util.Constants;
+import java.net.ConnectException;
+
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.net.NetworkHandler;
+import com.oyasunadev.mcraft.client.util.Constants;
 
 public class ServerConnectThread extends Thread {
 	private String server;
@@ -34,23 +36,26 @@ public class ServerConnectThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			netManager.netHandler = new NetworkHandler(server, port);
-			netManager.netHandler.netManager = netManager;
-
-			netManager.netHandler.send(PacketType.IDENTIFICATION,
-					new Object[] { Byte.valueOf(Constants.PROTOCOL_VERSION), this.username,
-							this.key, Integer.valueOf(Constants.CLIENT_TYPE) });
-
-			netManager.successful = true;
-		} catch (Exception var3) {
+			tryConnect();
+		} catch (ConnectException var3) {
+			minecraft.setCurrentScreen(new ErrorScreen("Failed to connect",
+					"You failed to connect to the server. It\'s probably down!"));
 			minecraft.online = false;
 
 			minecraft.networkManager = null;
-
-			minecraft.setCurrentScreen(new ErrorScreen("Failed to connect",
-					"You failed to connect to the server. It\'s probably down!"));
-
 			netManager.successful = false;
 		}
+	}
+
+	public void tryConnect() throws ConnectException {
+		netManager.netHandler = new NetworkHandler(server, port, minecraft);
+		netManager.netHandler.netManager = netManager;
+
+		netManager.netHandler.send(
+				PacketType.IDENTIFICATION,
+				new Object[] { Byte.valueOf(Constants.PROTOCOL_VERSION), username, key,
+						Integer.valueOf(Constants.CLIENT_TYPE) });
+
+		netManager.successful = true;
 	}
 }

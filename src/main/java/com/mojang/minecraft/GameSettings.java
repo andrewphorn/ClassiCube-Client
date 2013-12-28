@@ -1,15 +1,24 @@
 package com.mojang.minecraft;
 
-import com.mojang.minecraft.render.TextureManager;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
+
+import com.mojang.minecraft.render.TextureManager;
 
 public final class GameSettings implements Serializable {
 
@@ -52,7 +61,6 @@ public final class GameSettings implements Serializable {
 	public boolean CanSpeed = true;
 	public int HackType = 0;
 	public int ShowNames = 0;
-	public boolean VBOs = false;
 
 	public String lastUsedTexturePack;
 
@@ -62,6 +70,9 @@ public final class GameSettings implements Serializable {
 
 	public String[] smoothingOptions = new String[] { "OFF", "Automatic", "Universal" };
 	public int anisotropic = 0;
+
+	public float scale = 1.0f;
+
 	public String[] anisotropicOptions = new String[] { "OFF", "ON" };
 	public KeyBinding flyKey = new KeyBinding("Fly", Keyboard.KEY_Z);
 
@@ -86,21 +97,21 @@ public final class GameSettings implements Serializable {
 	}
 
 	public String getSetting(int id) {
-		return id == 0 ? "Music: " + (music ? "ON" : "OFF") : (id == 1 ? "Sound: "
-				+ (sound ? "ON" : "OFF") : (id == 2 ? "Invert mouse: "
-				+ (invertMouse ? "ON" : "OFF") : (id == 3 ? "Show Debug: "
-				+ (showDebug ? "ON" : "OFF") : (id == 4 ? "Render distance: "
-				+ renderDistances[viewDistance] : (id == 5 ? "View bobbing: "
-				+ (viewBobbing ? "ON" : "OFF") : (id == 6 ? "3d anaglyph: "
-				+ (anaglyph ? "ON" : "OFF") : (id == 7 ? "Limit framerate: "
-				+ (limitFramerate ? "ON" : "OFF") : (id == 8 ? "Smoothing: "
-				+ smoothingOptions[smoothing] : (id == 9 ? "Anisotropic: "
-				+ anisotropicOptions[anisotropic] : (id == 10 ? "Allow server textures: "
-				+ (canServerChangeTextures ? "Yes" : "No") : (id == 11 ? "SpeedHack Type: "
-				+ (HackType == 0 ? "Normal" : "Adv") : (id == 12 ? "Use VBOs: "
-				+ (VBOs ? "Yes" : "No") : (id == 13 ? "Enable Hacks: "
-				+ (HacksEnabled ? "Yes" : "No") : (id == 14 ? "Show Names: "
-				+ (ShowNames == 0 ? "Hover" : "Always") : ""))))))))))))));
+		return id == 0 ? "Music: " + (music ? "ON" : "OFF") : id == 1 ? "Sound: "
+				+ (sound ? "ON" : "OFF") : id == 2 ? "Invert mouse: "
+				+ (invertMouse ? "ON" : "OFF") : id == 3 ? "Show Debug: "
+				+ (showDebug ? "ON" : "OFF") : id == 4 ? "Render distance: "
+				+ renderDistances[viewDistance] : id == 5 ? "View bobbing: "
+				+ (viewBobbing ? "ON" : "OFF") : id == 6 ? "3d anaglyph: "
+				+ (anaglyph ? "ON" : "OFF") : id == 7 ? "Limit framerate: "
+				+ (limitFramerate ? "ON" : "OFF") : id == 8 ? "Smoothing: "
+				+ smoothingOptions[smoothing] : id == 9 ? "Anisotropic: "
+				+ anisotropicOptions[anisotropic] : id == 10 ? "Allow server textures: "
+				+ (canServerChangeTextures ? "Yes" : "No") : id == 11 ? "SpeedHack Type: "
+				+ (HackType == 0 ? "Normal" : "Adv") : id == 12 ? "Font Scale: "
+				+ new DecimalFormat("#.#").format(scale) : id == 13 ? "Enable Hacks: "
+				+ (HacksEnabled ? "Yes" : "No") : id == 14 ? "Show Names: "
+				+ (ShowNames == 0 ? "Hover" : "Always") : "";
 	}
 
 	private void load() {
@@ -160,8 +171,8 @@ public final class GameSettings implements Serializable {
 					if (setting[0].equals("HackType")) {
 						HackType = Integer.parseInt(setting[1]);
 					}
-					if (setting[0].equals("VBOs")) {
-						VBOs = setting[1].equals("true");
+					if (setting[0].equals("Scale")) {
+						scale = Float.parseFloat(setting[1]);
 					}
 					if (setting[0].equals("HacksEnabled")) {
 						HacksEnabled = setting[1].equals("true");
@@ -170,10 +181,10 @@ public final class GameSettings implements Serializable {
 						ShowNames = Integer.parseInt(setting[1]);
 					}
 					if (setting[0].equals("texturepack")) {
-						this.lastUsedTexturePack = setting[1];
+						lastUsedTexturePack = setting[1];
 					}
 
-					for (int index = 0; index < this.bindings.length; index++) {
+					for (int index = 0; index < bindings.length; index++) {
 						if (setting[0].equals("key_" + bindings[index].name)) {
 							bindings[index].key = Integer.parseInt(setting[1]);
 						}
@@ -191,7 +202,7 @@ public final class GameSettings implements Serializable {
 
 	public void save() {
 		try {
-			FileWriter fileWriter = new FileWriter(this.settingsFile);
+			FileWriter fileWriter = new FileWriter(settingsFile);
 			PrintWriter writer = new PrintWriter(fileWriter);
 
 			writer.println("music:" + music);
@@ -206,7 +217,7 @@ public final class GameSettings implements Serializable {
 			writer.println("anisotropic:" + anisotropic);
 			writer.println("canServerChangeTextures:" + canServerChangeTextures);
 			writer.println("HackType:" + HackType);
-			writer.println("VBOs:" + VBOs);
+			writer.println("Scale:" + scale);
 			writer.println("HacksEnabled:" + HacksEnabled);
 			writer.println("ShowNames:" + ShowNames);
 			writer.println("texturepack:" + lastUsedTexturePack);
@@ -257,7 +268,7 @@ public final class GameSettings implements Serializable {
 			anaglyph = !anaglyph;
 
 			TextureManager textureManager = minecraft.textureManager;
-			Iterator<?> iterator = this.minecraft.textureManager.textureImages.keySet().iterator();
+			Iterator<?> iterator = minecraft.textureManager.textureImages.keySet().iterator();
 
 			int i;
 			BufferedImage image;
@@ -326,25 +337,26 @@ public final class GameSettings implements Serializable {
 		}
 		if (setting == 11) {
 			if (HackType == 1) {
-				this.minecraft.player.input.fly = false;
 				HackType = 0;
 			} else {
-				this.minecraft.player.flyingMode = false;
-				this.minecraft.player.input.noclip = false;
 				HackType++;
 			}
 		}
 		if (setting == 12) {
-			VBOs = !VBOs;
+			scale += 0.1;
+			if (scale > 1.2f) {
+				scale = 0.6f;
+			}
 		}
 		if (setting == 13) {
 			HacksEnabled = !HacksEnabled;
 		}
 		if (setting == 14) {
-			if (ShowNames == 0)
+			if (ShowNames == 0) {
 				ShowNames = 1;
-			else
+			} else {
 				ShowNames = 0;
+			}
 		}
 
 		save();

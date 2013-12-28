@@ -10,14 +10,11 @@ import java.util.zip.GZIPInputStream;
 
 import com.mojang.minecraft.nbt.CompressedStreamTools;
 import com.mojang.minecraft.nbt.NBTTagCompound;
+import com.mojang.minecraft.player.Player;
 
 public class LevelLoader {
 
-	Level level;
-
-	public LevelLoader() {
-	}
-
+	// Used for recieved map streams from servers
 	public static byte[] decompress(InputStream var0) {
 		try {
 			DataInputStream var3;
@@ -31,7 +28,12 @@ public class LevelLoader {
 		}
 	}
 
-	public Level load(File fullFilePath) throws FileNotFoundException, IOException {
+	Level level;
+
+	public LevelLoader() {
+	}
+
+	public Level load(File fullFilePath, Player player) throws FileNotFoundException, IOException {
 		System.out.println("Loading " + fullFilePath.getAbsolutePath());
 		NBTTagCompound tc = CompressedStreamTools.readCompressed(new FileInputStream(fullFilePath));
 
@@ -57,6 +59,16 @@ public class LevelLoader {
 		level.height = Y;
 		level.depth = Z;
 		level.blocks = blocks;
+
+		NBTTagCompound spawn = tc.getCompoundTag("Spawn");
+
+		short x = spawn.getShort("X");
+		short y = spawn.getShort("Y");
+		short z = spawn.getShort("Z");
+		short r = spawn.getByte("H");
+		short l = spawn.getByte("P");
+		level.desiredSpawn = new short[] { x, y, z, r, l };
+
 		boolean debug = false;
 		if (debug) {
 			System.out.println("FormatVersion=" + FormatVersion);
@@ -67,7 +79,6 @@ public class LevelLoader {
 			System.out.println("Z=" + Z);
 			System.out.println("blocks=byte[" + blocks.length + "]");
 		}
-
 		return level;
 	}
 }

@@ -1,9 +1,10 @@
 package com.mojang.minecraft.gui;
 
+import org.lwjgl.input.Keyboard;
+
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.PacketType;
-import org.lwjgl.input.Keyboard;
 
 public final class ChatInputScreen extends GuiScreen {
 
@@ -24,7 +25,7 @@ public final class ChatInputScreen extends GuiScreen {
 			}
 			if (GameSettings.typinglogpos >= 0
 					&& GameSettings.typinglogpos < GameSettings.typinglog.size()) {
-				this.message = GameSettings.typinglog.get(GameSettings.typinglogpos);
+				message = GameSettings.typinglog.get(GameSettings.typinglogpos);
 			}
 		}
 		if (var2 == Keyboard.KEY_DOWN) {
@@ -34,17 +35,17 @@ public final class ChatInputScreen extends GuiScreen {
 			}
 			if (GameSettings.typinglogpos >= 0
 					&& GameSettings.typinglogpos < GameSettings.typinglog.size()) {
-				this.message = GameSettings.typinglog.get(GameSettings.typinglogpos);
+				message = GameSettings.typinglog.get(GameSettings.typinglogpos);
 			}
 			if (GameSettings.typinglogpos == GameSettings.typinglog.size()) {
-				this.message = "";
+				message = "";
 			}
 		}
 		if (var2 == 1) {
-			this.minecraft.setCurrentScreen((GuiScreen) null);
+			minecraft.setCurrentScreen((GuiScreen) null);
 		} else if (var2 == 28) {
-			NetworkManager var10000 = this.minecraft.networkManager;
-			String var4 = this.message.trim();
+			NetworkManager var10000 = minecraft.networkManager;
+			String var4 = message.trim();
 			NetworkManager var3 = var10000;
 			if ((var4 = var4.trim()).length() > 0) {
 				var3.netHandler.send(PacketType.CHAT_MESSAGE, new Object[] { Integer.valueOf(-1),
@@ -53,16 +54,16 @@ public final class ChatInputScreen extends GuiScreen {
 				GameSettings.typinglogpos = GameSettings.typinglog.size();
 			}
 
-			this.minecraft.setCurrentScreen((GuiScreen) null);
+			minecraft.setCurrentScreen((GuiScreen) null);
 		} else {
-			if (var2 == 14 && this.message.length() > 0) {
-				this.message = this.message.substring(0, this.message.length() - 1);
+			if (var2 == 14 && message.length() > 0) {
+				message = message.substring(0, message.length() - 1);
 			}
 
 			if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_\'*!\\\"#%/()=+?[]{}<>@|$;^`~"
 					.indexOf(var1) >= 0
-					&& this.message.length() < 64 - (this.minecraft.session.username.length() + 2)) {
-				this.message = this.message + var1;
+					&& message.length() < 64 - (minecraft.session.username.length() + 2)) {
+				message = message + var1;
 			}
 
 		}
@@ -70,15 +71,15 @@ public final class ChatInputScreen extends GuiScreen {
 
 	@Override
 	protected final void onMouseClick(int var1, int var2, int var3) {
-		if (var3 == 0 && this.minecraft.hud.hoveredPlayer != null) {
-			if (this.message.length() > 0 && !this.message.endsWith(" ")) {
-				this.message = this.message + " ";
+		if (var3 == 0 && minecraft.hud.hoveredPlayer != null) {
+			if (message.length() > 0 && !message.endsWith(" ")) {
+				message = message + " ";
 			}
 
-			this.message = this.message + this.minecraft.hud.hoveredPlayer;
-			var1 = 64 - (this.minecraft.session.username.length() + 2);
-			if (this.message.length() > var1) {
-				this.message = this.message.substring(0, var1);
+			message = message + minecraft.hud.hoveredPlayer;
+			var1 = 64 - (minecraft.session.username.length() + 2);
+			if (message.length() > var1) {
+				message = message.substring(0, var1);
 			}
 		}
 
@@ -91,13 +92,13 @@ public final class ChatInputScreen extends GuiScreen {
 
 	@Override
 	public final void render(int var1, int var2) {
-		drawBox(2, this.height - 14, this.width - 2, this.height - 2, Integer.MIN_VALUE);
-		drawString(this.fontRenderer, "> " + this.message + (this.counter / 6 % 2 == 0 ? "_" : ""),
-				4, this.height - 12, 14737632);
+		drawBox(2, height - 14, width - 2, height - 2, Integer.MIN_VALUE);
+		drawString(fontRenderer, "> " + message + (counter / 6 % 2 == 0 ? "_" : ""), 4,
+				height - 12, 14737632);
 	}
 
 	@Override
 	public final void tick() {
-		++this.counter;
+		++counter;
 	}
 }

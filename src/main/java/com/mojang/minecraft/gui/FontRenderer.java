@@ -1,14 +1,15 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.render.ShapeRenderer;
-import com.mojang.minecraft.render.TextureManager;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 
 import org.lwjgl.opengl.GL11;
+
+import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.render.ShapeRenderer;
+import com.mojang.minecraft.render.TextureManager;
 
 public final class FontRenderer {
 	public static String stripColor(String var0) {
@@ -26,9 +27,12 @@ public final class FontRenderer {
 		return var1;
 	}
 
-	private int fontId = 0;
-	private GameSettings settings;
+	public int charHeight;
+	public int charWidth;
 
+	private int fontId = 0;
+
+	private GameSettings settings;
 	public int[] font = new int[256];
 
 	public FontRenderer(GameSettings settings, String fontImage, TextureManager textures)
@@ -49,10 +53,10 @@ public final class FontRenderer {
 		for (int character = 0; character < 256; ++character) {
 			int var6 = character % 16;
 			int var7 = character / 16;
-			int chWidth = 0;
+			float chWidth = 0;
 
 			for (boolean var9 = false; chWidth < 8 && !var9; chWidth++) {
-				int var10 = (var6 << 3) + chWidth;
+				int var10 = (var6 << 3) + (int) chWidth;
 				var9 = true;
 
 				for (int var11 = 0; var11 < 8 && var9; ++var11) {
@@ -64,11 +68,15 @@ public final class FontRenderer {
 			}
 
 			if (character == 32) {
-				chWidth = (4);
+				chWidth = 4 * this.settings.scale;
 			}
-			this.font[character] = chWidth;
+			this.font[character] = (int) chWidth;
 		}
-		this.fontId = textures.load(fontImage);
+		fontId = textures.load(fontImage);
+	}
+
+	public float getScale() {
+		return 7.0F / charHeight * settings.scale;
 	}
 
 	public int getWidth(String paramString) {
@@ -82,25 +90,30 @@ public final class FontRenderer {
 			if (k == 38) {
 				j++;
 			} else {
-				i += this.font[k];
+				i += font[k];
 			}
 		}
-		return (int) Math.floor(i);
+		return (int) Math.floor(i * settings.scale);
 	}
 
-	public final void render(String text, int x, int y, int color) {
-		this.render(text, x + 1, y + 1, color, true);
-		this.renderNoShadow(text, x, y, color);
-	}
-
-	private void render(String text, int x, int y, int color, boolean shadow) {
+	private void render(String text, float x, float y, int color, boolean shadow) {
 		if (text != null) {
 			char[] chars = text.toCharArray();
 			if (shadow) {
 				color = (color & 16579836) >> 2;
 			}
-
-			GL11.glBindTexture(3553, this.fontId);
+			float f1 = settings.scale;
+			float f2 = 1.0F / f1;
+			x = x * f2;
+			y = y * f2;
+			// if(shadow){
+			// float f3 = 1.0F * this.userScale;
+			// float f3 = x - (2 - x);
+			// GL11.glTranslatef(f3, f3, 0.0F);
+			// x = x+f3;
+			// y= y+f3;
+			// }
+			GL11.glBindTexture(3553, fontId);
 
 			ShapeRenderer.instance.begin();
 			ShapeRenderer.instance.color(color);
@@ -116,7 +129,7 @@ public final class FontRenderer {
 					int var10 = (code & 1) * 191 + var9;
 					int var11 = ((code & 2) >> 1) * 191 + var9;
 					int blue = ((code & 4) >> 2) * 191 + var9;
-					if (this.settings.anaglyph) {
+					if (settings.anaglyph) {
 						var9 = (code * 30 + var11 * 59 + var10 * 11) / 100;
 						var11 = (code * 30 + var11 * 70) / 100;
 						var10 = (code * 30 + var10 * 70) / 100;
@@ -138,21 +151,34 @@ public final class FontRenderer {
 				int var9 = chars[count] / 16 << 3;
 				float var13 = 7.99F;
 
-				ShapeRenderer.instance.vertexUV((x + var7), y + var13, 0.0F, color / 128.0F,
+				ShapeRenderer.instance.vertexUV(x + var7, y + var13, 0.0F, color / 128.0F,
 						(var9 + var13) / 128.0F);
-				ShapeRenderer.instance.vertexUV((x + var7) + var13, y + var13, 0.0F,
+				ShapeRenderer.instance.vertexUV(x + var7 + var13, y + var13, 0.0F,
 						(color + var13) / 128.0F, (var9 + var13) / 128.0F);
-				ShapeRenderer.instance.vertexUV((x + var7) + var13, y, 0.0F,
+				ShapeRenderer.instance.vertexUV(x + var7 + var13, y, 0.0F,
 						(color + var13) / 128.0F, var9 / 128.0F);
-				ShapeRenderer.instance.vertexUV((x + var7), y, 0.0F, color / 128.0F, var9 / 128.0F);
+				ShapeRenderer.instance.vertexUV(x + var7, y, 0.0F, color / 128.0F, var9 / 128.0F);
 
-				if (chars[count] < this.font.length) {
-					var7 += this.font[chars[count]];
+				if (chars[count] < font.length) {
+					var7 += font[chars[count]];
 				}
 			}
-
+			GL11.glPushMatrix();
+			// if (shadow)
+			// {
+			// float f3 = 1.0F * this.userScale;
+			// GL11.glTranslatef(f3, f3, 0.0F);
+			// }
+			GL11.glScalef(f1, f1, 1.0F);
 			ShapeRenderer.instance.end();
+			GL11.glPopMatrix();
+
 		}
+	}
+
+	public final void render(String text, int x, int y, int color) {
+		this.render(text, x + 1 * settings.scale, y + 1 * settings.scale, color, true);
+		renderNoShadow(text, x, y, color);
 	}
 
 	public final void renderNoShadow(String text, int x, int y, int color) {

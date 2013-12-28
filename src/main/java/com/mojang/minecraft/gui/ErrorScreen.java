@@ -1,11 +1,5 @@
 package com.mojang.minecraft.gui;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.net.NetworkManager;
-import com.oyasunadev.mcraft.client.core.ClassiCubeStandalone;
 import com.oyasunadev.mcraft.client.core.MinecraftStandalone;
 
 public final class ErrorScreen extends GuiScreen {
@@ -14,8 +8,8 @@ public final class ErrorScreen extends GuiScreen {
 	private String text;
 
 	public ErrorScreen(String var1, String var2) {
-		this.title = var1;
-		this.text = var2;
+		title = var1;
+		text = var2;
 	}
 
 	@Override
@@ -23,7 +17,7 @@ public final class ErrorScreen extends GuiScreen {
 		if (var1.id == 0) {
 			minecraft.running = false;
 			minecraft.shutdown();
-			//System.exit(0);
+			// System.exit(0);
 			MinecraftStandalone.main(MinecraftStandalone.storedArgs);
 		}
 	}
@@ -34,16 +28,17 @@ public final class ErrorScreen extends GuiScreen {
 
 	@Override
 	public final void onOpen() {
-		this.buttons.clear();
-		this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4 + 96, this.minecraft
-				.isOnline() ? "Try to reconnect..." : "Restart ClassiCube"));
+		buttons.clear();
+		// this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4
+		// + 96, this.minecraft
+		// .isOnline() ? "Try to reconnect..." : "Restart ClassiCube"));
 	}
 
 	@Override
 	public final void render(int var1, int var2) {
-		drawFadingBox(0, 0, this.width, this.height, -12574688, -11530224);
-		drawCenteredString(this.fontRenderer, this.title, this.width / 2, 90, 16777215);
-		drawCenteredString(this.fontRenderer, this.text, this.width / 2, 110, 16777215);
+		drawFadingBox(0, 0, width, height, -12574688, -11530224);
+		drawCenteredString(fontRenderer, title, width / 2, 90, 16777215);
+		drawCenteredString(fontRenderer, text, width / 2, 110, 16777215);
 		super.render(var1, var2);
 	}
 }

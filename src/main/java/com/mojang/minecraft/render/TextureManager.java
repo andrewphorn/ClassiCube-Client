@@ -1,20 +1,10 @@
 package com.mojang.minecraft.render;
 
-import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.net.NetworkPlayer;
-import com.mojang.minecraft.render.texture.TextureFX;
-import com.mojang.minecraft.render.texture.TextureFireFX;
-import com.mojang.minecraft.render.texture.TextureLavaFX;
-import com.mojang.minecraft.render.texture.TextureWaterFX;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.*;
-
-import javax.imageio.ImageIO;
-
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -26,10 +16,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipFile;
 
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
+import javax.imageio.ImageIO;
+import javax.swing.SwingWorker;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.ContextCapabilities;
+import org.lwjgl.opengl.EXTFramebufferObject;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GLContext;
+
+import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.net.NetworkPlayer;
+import com.mojang.minecraft.render.texture.TextureFX;
+import com.mojang.minecraft.render.texture.TextureFireFX;
+import com.mojang.minecraft.render.texture.TextureLavaFX;
+import com.mojang.minecraft.render.texture.TextureWaterFX;
 
 public class TextureManager {
+	public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y)
+			throws IOException {
+
+		// System.out.println("---" + src.getWidth() + " - " + src.getHeight() +
+		// " - " + x + " - " + y);
+
+		BufferedImage clipping = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);// src.getType());
+		Graphics2D area = (Graphics2D) clipping.getGraphics().create();
+		area.drawImage(src, 0, 0, clipping.getWidth(), clipping.getHeight(), x, y,
+				x + clipping.getWidth(), y + clipping.getHeight(), null);
+		area.dispose();
+
+		return clipping;
+	}
+
 	public static BufferedImage load1(BufferedImage image) {
 		int charWidth = image.getWidth() / 16;
 		BufferedImage image1 = new BufferedImage(16, image.getHeight() * charWidth,
@@ -46,15 +69,14 @@ public class TextureManager {
 	}
 
 	public boolean Applet;
-
 	public HashMap<String, Integer> textures = new HashMap<String, Integer>();
 	public HashMap<Integer, BufferedImage> textureImages = new HashMap<Integer, BufferedImage>();
 	public IntBuffer idBuffer = BufferUtils.createIntBuffer(1);
 	public ByteBuffer textureBuffer = BufferUtils.createByteBuffer(262144);
 	public List<TextureFX> animations = new ArrayList<TextureFX>();
 	public GameSettings settings;
-	public List<BufferedImage> textureAtlas = new ArrayList<BufferedImage>();
 
+	public List<BufferedImage> textureAtlas = new ArrayList<BufferedImage>();
 	public BufferedImage currentTerrainPng = null;
 	public BufferedImage customSideBlock = null;
 	public BufferedImage customEdgeBlock = null;
@@ -64,8 +86,8 @@ public class TextureManager {
 	public BufferedImage customIcons = null;
 	public BufferedImage customFont = null;
 	public BufferedImage customClouds = null;
-	public BufferedImage customSnow = null;
 
+	public BufferedImage customSnow = null;
 	public BufferedImage customChicken = null;
 	public BufferedImage customCreeper = null;
 	public BufferedImage customCrocodile = null;
@@ -75,12 +97,15 @@ public class TextureManager {
 	public BufferedImage customSheep = null;
 	public BufferedImage customSkeleton = null;
 	public BufferedImage customSpider = null;
-	public BufferedImage customZombie = null;
 
+	public BufferedImage customZombie = null;
 	public File minecraftFolder;
+
 	public File texturesFolder;
 
 	public int previousMipmapMode;
+
+	TextureManager instance;
 
 	public TextureManager(GameSettings settings, boolean Applet) {
 		this.Applet = Applet;
@@ -93,13 +118,14 @@ public class TextureManager {
 			texturesFolder.mkdir();
 		}
 		ImageIO.setUseCache(false);
+		instance = this;
 	}
 
 	public List<BufferedImage> Atlas2dInto1d(BufferedImage atlas2d, int tiles, int atlassizezlimit) {
 
 		int tilesize = atlas2d.getWidth() / tiles;
 
-		int atlasescount = Math.max(1, (tiles * tiles * tilesize) / atlassizezlimit);
+		int atlasescount = Math.max(1, tiles * tiles * tilesize / atlassizezlimit);
 		List<BufferedImage> atlases = new ArrayList<BufferedImage>();
 
 		// 256 x 1
@@ -108,7 +134,7 @@ public class TextureManager {
 		for (int i = 0; i < tiles * tiles; i++) {
 			int x = i % tiles;
 			int y = i / tiles;
-			int tilesinatlas = (tiles * tiles / atlasescount);
+			int tilesinatlas = tiles * tiles / atlasescount;
 			if (i % tilesinatlas == 0) {
 				if (atlas1d != null) {
 					atlases.add(atlas1d);
@@ -116,7 +142,7 @@ public class TextureManager {
 				atlas1d = new BufferedImage(tilesize, atlassizezlimit, BufferedImage.TYPE_INT_ARGB);
 			}
 			try {
-				atlas1d = crop(atlas2d,tilesize, tilesize, x * tilesize, y * tilesize);
+				atlas1d = crop(atlas2d, tilesize, tilesize, x * tilesize, y * tilesize);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -124,21 +150,6 @@ public class TextureManager {
 		}
 		atlases.add(atlas1d);
 		return atlases;
-	}
-
-	public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y)
-			throws IOException {
-
-		// System.out.println("---" + src.getWidth() + " - " + src.getHeight() +
-		// " - " + x + " - " + y);
-
-		BufferedImage clipping = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);// src.getType());
-		Graphics2D area = (Graphics2D) clipping.getGraphics().create();
-		area.drawImage(src, 0, 0, clipping.getWidth(), clipping.getHeight(), x, y,
-				x + clipping.getWidth(), y + clipping.getHeight(), null);
-		area.dispose();
-
-		return clipping;
 	}
 
 	private int b(int c1, int c2) {
@@ -208,6 +219,22 @@ public class TextureManager {
 		}
 	}
 
+	public void initAtlas() {
+		String textureFile = "/terrain.png";
+		BufferedImage image = null;
+		if (currentTerrainPng != null) {
+			image = currentTerrainPng;
+		} else {
+			try {
+				image = loadImageFast(TextureManager.class.getResourceAsStream(textureFile));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		textureAtlas.clear();
+		textureAtlas = Atlas2dInto1d(image, 16, image.getWidth() / 16);
+	}
+
 	public int load(BufferedImage image) {
 		idBuffer.clear();
 
@@ -223,8 +250,9 @@ public class TextureManager {
 	}
 
 	public void load(BufferedImage image, int textureID) {
-		if (image == null)
+		if (image == null) {
 			return;
+		}
 		int width = image.getWidth();
 		int height = image.getHeight();
 
@@ -245,7 +273,7 @@ public class TextureManager {
 		// GL11.GL_MODULATE);
 
 		int[] pixels = new int[width * height];
-		byte[] color = new byte[(width * height) << 2];
+		byte[] color = new byte[width * height << 2];
 
 		image.getRGB(0, 0, width, height, pixels, 0, width);
 
@@ -270,10 +298,10 @@ public class TextureManager {
 			color[i + 3] = (byte) alpha;
 		}
 
-		if (this.textureBuffer.capacity() != color.length) {
-			this.textureBuffer = BufferUtils.createByteBuffer(color.length);
+		if (textureBuffer.capacity() != color.length) {
+			textureBuffer = BufferUtils.createByteBuffer(color.length);
 		} else {
-			this.textureBuffer.clear();
+			textureBuffer.clear();
 		}
 		textureBuffer.put(color);
 		textureBuffer.position(0).limit(color.length);
@@ -290,8 +318,7 @@ public class TextureManager {
 					}
 
 					GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-				}
-				else if (capabilities.GL_EXT_framebuffer_object) {
+				} else if (capabilities.GL_EXT_framebuffer_object) {
 					if (previousMipmapMode != settings.smoothing) {
 						System.out
 								.println("Using GL_EXT_framebuffer_object extension for mipmap generation.");
@@ -321,25 +348,9 @@ public class TextureManager {
 		previousMipmapMode = settings.smoothing;
 	}
 
-	public void initAtlas() {
-		String textureFile = "/terrain.png";
-		BufferedImage image = null;
-		if (this.currentTerrainPng != null) {
-			image = currentTerrainPng;
-		} else {
-			try {
-				image = loadImageFast(TextureManager.class.getResourceAsStream(textureFile));
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		}
-		textureAtlas.clear();
-		textureAtlas = Atlas2dInto1d(image, 16, image.getWidth() / 16);
-	}
-
 	public int load(String file) {
-		if (this.animations.size() == 0 && this.currentTerrainPng == null) {
-			this.registerAnimations();
+		if(this.currentTerrainPng == null && animations.size() == 0){
+			registerAnimations();
 		}
 		if (file.startsWith("/dirt") && textures.containsKey("customDirt")) {
 			return textures.get("customDirt");
@@ -347,42 +358,42 @@ public class TextureManager {
 
 		if (file.startsWith("/mob")) {
 			String mobName = file.replace("/mob/", "").replace(".png", "").trim();
-			if (textures.containsKey("custom" + mobName))
+			if (textures.containsKey("custom" + mobName)) {
 				return textures.get("custom" + mobName);
-			else if (!textures.containsKey("custom" + mobName)) {
-				if (mobName.equalsIgnoreCase("creeper") && this.customCreeper != null) {
+			} else if (!textures.containsKey("custom" + mobName)) {
+				if (mobName.equalsIgnoreCase("creeper") && customCreeper != null) {
 					int id = load(customCreeper);
 					textures.put("custom" + mobName, id);
 					return id;
-				} else if (mobName.equalsIgnoreCase("zombie") && this.customZombie != null) {
+				} else if (mobName.equalsIgnoreCase("zombie") && customZombie != null) {
 					int id = load(customZombie);
 					textures.put("custom" + mobName, id);
 					return id;
-				} else if (mobName.equalsIgnoreCase("sheep") && this.customSheep != null) {
+				} else if (mobName.equalsIgnoreCase("sheep") && customSheep != null) {
 					int id = load(customSheep);
 					textures.put("custom" + mobName, id);
 					return id;
-				} else if (mobName.equalsIgnoreCase("skeleton") && this.customSkeleton != null) {
+				} else if (mobName.equalsIgnoreCase("skeleton") && customSkeleton != null) {
 					int id = load(customSkeleton);
 					textures.put("custom" + mobName, id);
 					return id;
-				} else if (mobName.equalsIgnoreCase("spider") && this.customSpider != null) {
+				} else if (mobName.equalsIgnoreCase("spider") && customSpider != null) {
 					int id = load(customSpider);
 					textures.put("custom" + mobName, id);
 					return id;
-				} else if (mobName.equalsIgnoreCase("printer") && this.customPrinter != null) {
+				} else if (mobName.equalsIgnoreCase("printer") && customPrinter != null) {
 					int id = load(customPrinter);
 					textures.put("custom" + mobName, id);
 					return id;
-				} else if (mobName.equalsIgnoreCase("pig") && this.customPig != null) {
+				} else if (mobName.equalsIgnoreCase("pig") && customPig != null) {
 					int id = load(customPig);
 					textures.put("custom" + mobName, id);
 					return id;
-				} else if (mobName.equalsIgnoreCase("chicken") && this.customChicken != null) {
+				} else if (mobName.equalsIgnoreCase("chicken") && customChicken != null) {
 					int id = load(customChicken);
 					textures.put("custom" + mobName, id);
 					return id;
-				} else if (mobName.equalsIgnoreCase("croc") && this.customCrocodile != null) {
+				} else if (mobName.equalsIgnoreCase("croc") && customCrocodile != null) {
 					int id = load(customCrocodile);
 					textures.put("custom" + mobName, id);
 					return id;
@@ -398,12 +409,11 @@ public class TextureManager {
 			textures.put("customClouds", id);
 			return id;
 		}
-		
+
 		if (file.startsWith("/snow") && textures.containsKey("customSnow")) {
 			return textures.get("customSnow");
 		}
-		if (file.startsWith("/snow") && !textures.containsKey("customSnow")
-				&& customSnow != null) {
+		if (file.startsWith("/snow") && !textures.containsKey("customSnow") && customSnow != null) {
 			int id = load(customSnow);
 			textures.put("customSnow", id);
 			return id;
@@ -427,11 +437,12 @@ public class TextureManager {
 			textures.put("customGUI", id);
 			return id;
 		}
-		
+
 		if (file.startsWith("/gui/icons") && textures.containsKey("customIcons")) {
 			return textures.get("customIcons");
 		}
-		if (file.startsWith("/gui/icons") && !textures.containsKey("customIcons") && customIcons != null) {
+		if (file.startsWith("/gui/icons") && !textures.containsKey("customIcons")
+				&& customIcons != null) {
 			int id = load(customIcons);
 			textures.put("customIcons", id);
 			return id;
@@ -464,16 +475,16 @@ public class TextureManager {
 				&& currentTerrainPng != null) {
 			int id = load(currentTerrainPng);
 			textures.put("customTerrain", id);
-			if (this.customSideBlock == null) {
-				customSideBlock = this.textureAtlas.get(Block.BEDROCK.textureId);
+			if (customSideBlock == null) {
+				customSideBlock = textureAtlas.get(Block.BEDROCK.textureId);
 				textures.put("customSide", load(customSideBlock));
 			}
-			if (this.customEdgeBlock == null) {
-				customEdgeBlock = this.textureAtlas.get(Block.WATER.textureId);
+			if (customEdgeBlock == null) {
+				customEdgeBlock = textureAtlas.get(Block.WATER.textureId);
 				textures.put("customEdge", load(customEdgeBlock));
 			}
-			if (this.customDirtPng == null) {
-				customDirtPng = this.textureAtlas.get(Block.DIRT.textureId);
+			if (customDirtPng == null) {
+				customDirtPng = textureAtlas.get(Block.DIRT.textureId);
 				textures.put("customDirt", load(customDirtPng));
 			}
 			return id;
@@ -547,10 +558,12 @@ public class TextureManager {
 		}
 	}
 
-	public int loadTexturePack(String file) throws IOException {
-		int textureID = 0;
+	public BufferedImage loadImageFast(InputStream inputStream) throws IOException {
+		return ImageIO.read(inputStream);
+	}
+
+	public void loadTexturePack(final String file) throws IOException {
 		if (file.endsWith(".zip")) {
-			animations.clear();
 			resetAllMods();
 			ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/" + file));
 			String terrainPNG = "terrain.png";
@@ -582,35 +595,35 @@ public class TextureManager {
 					: rainName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(rainName
 						.startsWith("/") ? rainName.substring(1, rainName.length()) : rainName)));
-				this.customRainPng = image;
+				customRainPng = image;
 			}
 
 			if (zip.getEntry(guiName.startsWith("/") ? guiName.substring(1, guiName.length())
 					: guiName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(guiName
 						.startsWith("/") ? guiName.substring(1, guiName.length()) : guiName)));
-				this.customGUI = image;
+				customGUI = image;
 			}
-			
+
 			if (zip.getEntry(iconsName.startsWith("/") ? iconsName.substring(1, iconsName.length())
 					: iconsName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(iconsName
 						.startsWith("/") ? iconsName.substring(1, iconsName.length()) : iconsName)));
-				this.customIcons = image;
+				customIcons = image;
 			}
-			
+
 			if (zip.getEntry(snowName.startsWith("/") ? snowName.substring(1, snowName.length())
 					: snowName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(snowName
 						.startsWith("/") ? snowName.substring(1, snowName.length()) : snowName)));
-				this.customSnow = image;
+				customSnow = image;
 			}
 
 			if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1, fontName.length())
 					: fontName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(fontName
 						.startsWith("/") ? fontName.substring(1, fontName.length()) : fontName)));
-				this.customFont = image;
+				customFont = image;
 			}
 
 			if (zip.getEntry(chickenName.startsWith("/") ? chickenName.substring(1,
@@ -618,7 +631,7 @@ public class TextureManager {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(chickenName
 						.startsWith("/") ? chickenName.substring(1, chickenName.length())
 						: chickenName)));
-				this.customChicken = image;
+				customChicken = image;
 			}
 
 			if (zip.getEntry(creeperName.startsWith("/") ? creeperName.substring(1,
@@ -626,14 +639,14 @@ public class TextureManager {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(creeperName
 						.startsWith("/") ? creeperName.substring(1, creeperName.length())
 						: creeperName)));
-				this.customCreeper = image;
+				customCreeper = image;
 			}
 
 			if (zip.getEntry(crocName.startsWith("/") ? crocName.substring(1, crocName.length())
 					: crocName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(crocName
 						.startsWith("/") ? crocName.substring(1, crocName.length()) : crocName)));
-				this.customCrocodile = image;
+				customCrocodile = image;
 			}
 
 			if (zip.getEntry(humanoidName.startsWith("/") ? humanoidName.substring(1,
@@ -641,14 +654,14 @@ public class TextureManager {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(humanoidName
 						.startsWith("/") ? humanoidName.substring(1, humanoidName.length())
 						: humanoidName)));
-				this.customHumanoid = image;
+				customHumanoid = image;
 			}
 
 			if (zip.getEntry(pigName.startsWith("/") ? pigName.substring(1, pigName.length())
 					: pigName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(pigName
 						.startsWith("/") ? pigName.substring(1, pigName.length()) : pigName)));
-				this.customPig = image;
+				customPig = image;
 			}
 
 			if (zip.getEntry(printerName.startsWith("/") ? printerName.substring(1,
@@ -656,7 +669,7 @@ public class TextureManager {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(printerName
 						.startsWith("/") ? printerName.substring(1, printerName.length())
 						: printerName)));
-				this.customPrinter = image;
+				customPrinter = image;
 			}
 
 			if (zip.getEntry(sheepName.startsWith("/") ? sheepName.substring(1, sheepName.length())
@@ -664,7 +677,7 @@ public class TextureManager {
 				BufferedImage image = ImageIO
 						.read(zip.getInputStream(zip.getEntry(sheepName.startsWith("/") ? sheepName
 								.substring(1, sheepName.length()) : sheepName)));
-				this.customSheep = image;
+				customSheep = image;
 			}
 
 			if (zip.getEntry(skeletonName.startsWith("/") ? skeletonName.substring(1,
@@ -672,7 +685,7 @@ public class TextureManager {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(skeletonName
 						.startsWith("/") ? skeletonName.substring(1, skeletonName.length())
 						: skeletonName)));
-				this.customSkeleton = image;
+				customSkeleton = image;
 			}
 
 			if (zip.getEntry(spiderNAme.startsWith("/") ? spiderNAme.substring(1,
@@ -680,7 +693,7 @@ public class TextureManager {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(spiderNAme
 						.startsWith("/") ? spiderNAme.substring(1, spiderNAme.length())
 						: spiderNAme)));
-				this.customSpider = image;
+				customSpider = image;
 			}
 
 			if (zip.getEntry(zombieName.startsWith("/") ? zombieName.substring(1,
@@ -688,60 +701,55 @@ public class TextureManager {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(zombieName
 						.startsWith("/") ? zombieName.substring(1, zombieName.length())
 						: zombieName)));
-				this.customZombie = image;
+				customZombie = image;
 			}
 
 			if (zip.getEntry(cloudName.startsWith("/") ? cloudName.substring(1, cloudName.length())
 					: cloudName) != null) {
 				BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(cloudName
 						.startsWith("/") ? cloudName.substring(1, cloudName.length()) : cloudName)));
-				this.customClouds = image;
+				customClouds = image;
 			}
 			zip.close();
 		}
 		initAtlas();
-		if (this.settings.minecraft.networkManager != null) {
-			for (NetworkPlayer p : this.settings.minecraft.networkManager.players.values()) {
-				p.bindTexture(this);
+		if (settings.minecraft.networkManager != null) {
+			for (NetworkPlayer p : settings.minecraft.networkManager.players.values()) {
+				p.bindTexture(instance);
 			}
-			this.settings.minecraft.player.bindTexture(this);
+			settings.minecraft.player.bindTexture(instance);
 		}
-		System.gc();
-		return textureID;
-	}
-
-	public BufferedImage loadImageFast(InputStream inputStream) throws IOException {
-		return ImageIO.read(inputStream);
-	}
-
-	public void resetAllMods() {
-		this.textures.clear();
-		this.currentTerrainPng = null;
-		this.customEdgeBlock = null;
-		this.customSideBlock = null;
-		this.customDirtPng = null;
-		this.customRainPng = null;
-		this.customGUI = null;
-		this.customIcons = null;
-		this.customFont = null;
-		this.customClouds = null;
-
-		this.customChicken = null;
-		this.customCreeper = null;
-		this.customCrocodile = null;
-		this.customHumanoid = null;
-		this.customPig = null;
-		this.customPrinter = null;
-		this.customSheep = null;
-		this.customSkeleton = null;
-		this.customSpider = null;
-		this.customZombie = null;
+		animations.clear();
 	}
 
 	public void registerAnimations() {
-		this.animations.clear();
-		this.animations.add(new TextureWaterFX());
-		this.animations.add(new TextureLavaFX());
-		this.animations.add(new TextureFireFX());
+		animations.clear();
+		animations.add(new TextureWaterFX());
+		animations.add(new TextureLavaFX());
+		animations.add(new TextureFireFX());
+	}
+
+	public void resetAllMods() {
+		textures.clear();
+		currentTerrainPng = null;
+		customEdgeBlock = null;
+		customSideBlock = null;
+		customDirtPng = null;
+		customRainPng = null;
+		customGUI = null;
+		customIcons = null;
+		customFont = null;
+		customClouds = null;
+
+		customChicken = null;
+		customCreeper = null;
+		customCrocodile = null;
+		customHumanoid = null;
+		customPig = null;
+		customPrinter = null;
+		customSheep = null;
+		customSkeleton = null;
+		customSpider = null;
+		customZombie = null;
 	}
 }

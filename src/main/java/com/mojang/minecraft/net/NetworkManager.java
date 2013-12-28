@@ -1,13 +1,14 @@
 package com.mojang.minecraft.net;
 
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.gui.ErrorScreen;
-import com.mojang.net.NetworkHandler;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.gui.ErrorScreen;
+import com.mojang.net.NetworkHandler;
 
 public class NetworkManager {
 	public ByteArrayOutputStream levelData;
@@ -46,7 +47,7 @@ public class NetworkManager {
 
 		list.add(minecraft.session.username);
 
-		Iterator<NetworkPlayer> playerIterator = this.players.values().iterator();
+		Iterator<NetworkPlayer> playerIterator = players.values().iterator();
 
 		while (playerIterator.hasNext()) {
 			NetworkPlayer networkPlayer = playerIterator.next();

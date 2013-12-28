@@ -9,8 +9,8 @@ public class PerlinNoise extends Noise {
 
 	private static double grad(int unknown0, double unknown1, double unknown2, double unknown3) {
 		double unknown4 = (unknown0 &= 15) < 8 ? unknown1 : unknown2;
-		double unknown5 = unknown0 < 4 ? unknown2 : (unknown0 != 12 && unknown0 != 14 ? unknown3
-				: unknown1);
+		double unknown5 = unknown0 < 4 ? unknown2 : unknown0 != 12 && unknown0 != 14 ? unknown3
+				: unknown1;
 
 		return ((unknown0 & 1) == 0 ? unknown4 : -unknown4)
 				+ ((unknown0 & 2) == 0 ? unknown5 : -unknown5);

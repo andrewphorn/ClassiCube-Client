@@ -14,12 +14,12 @@ public class Player$1 extends BasicAI {
 
 	@Override
 	protected void update() {
-		this.jumping = player.input.jumping;
-		this.running = player.input.running;
-		this.flying = player.input.flying;
-		this.flyingUp = player.input.flyingUp;
-		this.flyingDown = player.input.flyingDown;
-		this.xxa = player.input.xxa;
-		this.yya = player.input.yya;
+		jumping = player.input.jumping;
+		running = player.input.running;
+		flying = player.input.flying;
+		flyingUp = player.input.flyingUp;
+		flyingDown = player.input.flyingDown;
+		xxa = player.input.xxa;
+		yya = player.input.yya;
 	}
 }

@@ -1,14 +1,14 @@
 package com.oyasunadev.mcraft.client.core;
 
-import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.MinecraftApplet;
-import com.mojang.minecraft.ResourceDownloadThread;
-import com.mojang.minecraft.SessionData;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -16,6 +16,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+
+import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.MinecraftApplet;
+import com.mojang.minecraft.ResourceDownloadThread;
+import com.mojang.minecraft.SessionData;
 
 /**
  * Created with IntelliJ IDEA.
@@ -159,7 +168,7 @@ public class MinecraftStandalone {
 				Font font = new Font("Serif", Font.BOLD, 18);
 				g2.setFont(font);
 				if (!ResourceDownloadThread.Done) {
-					g.drawImage(getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
+					g.drawImage(getImage(), 0, 0, getWidth(), getHeight(), null);
 					font = new Font("Purisa", Font.BOLD, 48);
 					g2.setFont(font);
 					g.setColor(Color.black);
@@ -183,7 +192,7 @@ public class MinecraftStandalone {
 							e.printStackTrace();
 						}
 					}
-					g.drawImage(getImage2(), 0, 0, this.getWidth(), this.getHeight(), null);
+					g.drawImage(getImage2(), 0, 0, getWidth(), getHeight(), null);
 				}
 			}
 
@@ -289,10 +298,11 @@ public class MinecraftStandalone {
 			minecraft.server = Server;
 			minecraft.port = Port;
 
-			if (Player == null && Server == null && Mppass == null)
+			if (Player == null && Server == null && Mppass == null) {
 				minecraft.session = null;
+			}
 
-			boolean RunFakeNetwork = true;
+			boolean RunFakeNetwork = false;
 
 			if (RunFakeNetwork) {
 				minecraft.host = "127.0.0.1";

@@ -1,7 +1,7 @@
 package com.mojang.minecraft.level.tile;
 
-import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.ColorCache;
+import com.mojang.minecraft.level.Level;
 
 public final class MagmaBlock extends Block {
 

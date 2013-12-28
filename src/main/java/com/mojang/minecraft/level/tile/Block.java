@@ -1,5 +1,8 @@
 package com.mojang.minecraft.level.tile;
 
+import java.util.Random;
+
+import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;
@@ -9,12 +12,9 @@ import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.TerrainParticle;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
-import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.sound.StepSound;
-import com.mojang.minecraft.sound.StepSoundStone;
 import com.mojang.minecraft.sound.StepSoundSand;
-
-import java.util.Random;
+import com.mojang.minecraft.sound.StepSoundStone;
 
 public class Block {
 	protected static Random random = new Random();
@@ -23,21 +23,21 @@ public class Block {
 
 	public static final boolean[] physics = new boolean[256];
 	public static final boolean[] liquid = new boolean[256];
-        
-        public StepSound stepSound;
-      
-        public static final StepSound soundNone = new StepSound("-", 0.0F, 0.0F);
-        public static final StepSound soundPowderFootstep = new StepSound("stone", 1.0F, 1.0F);
-        public static final StepSound soundWoodFootstep = new StepSound("wood", 1.0F, 1.0F);
-        public static final StepSound soundGravelFootstep = new StepSound("gravel", 1.0F, 1.0F);
-        public static final StepSound soundGrassFootstep = new StepSound("grass", 1.0F, 1.0F);
-        public static final StepSound soundStoneFootstep = new StepSound("stone", 1.0F, 1.0F);
-        public static final StepSound soundMetalFootstep = new StepSound("stone", 1.0F, 1.5F);
-        public static final StepSound soundGlassFootstep = new StepSoundStone("stone", 1.0F, 1.0F);
-        public static final StepSound soundClothFootstep = new StepSound("cloth", 1.0F, 1.0F);
-        public static final StepSound soundSandFootstep = new StepSound("sand", 1.0F, 1.0F);
-        public static final StepSound soundSnowFootstep = new StepSound("snow", 1.0F, 1.0F);
-        public static final StepSound soundLadderFootstep = new StepSoundSand("ladder", 1.0F, 1.0F);
+
+	public StepSound stepSound;
+
+	public static final StepSound soundNone = new StepSound("-", 0.0F, 0.0F);
+	public static final StepSound soundPowderFootstep = new StepSound("stone", 1.0F, 1.0F);
+	public static final StepSound soundWoodFootstep = new StepSound("wood", 1.0F, 1.0F);
+	public static final StepSound soundGravelFootstep = new StepSound("gravel", 1.0F, 1.0F);
+	public static final StepSound soundGrassFootstep = new StepSound("grass", 1.0F, 1.0F);
+	public static final StepSound soundStoneFootstep = new StepSound("stone", 1.0F, 1.0F);
+	public static final StepSound soundMetalFootstep = new StepSound("stone", 1.0F, 1.5F);
+	public static final StepSound soundGlassFootstep = new StepSoundStone("stone", 1.0F, 1.0F);
+	public static final StepSound soundClothFootstep = new StepSound("cloth", 1.0F, 1.0F);
+	public static final StepSound soundSandFootstep = new StepSound("sand", 1.0F, 1.0F);
+	public static final StepSound soundSnowFootstep = new StepSound("snow", 1.0F, 1.0F);
+	public static final StepSound soundLadderFootstep = new StepSoundSand("ladder", 1.0F, 1.0F);
 
 	public int textureId;
 	public final int id;
@@ -51,76 +51,144 @@ public class Block {
 	public float y2;
 	public float z2;
 	public float particleGravity;
-        public boolean isLiquid;
-        
-        public static final Block STONE = (new StoneBlock(1)).setTextureId(1).setStepSound(soundStoneFootstep).setParticleGravity(1.0F).setHardness(1.0F);
-        public static final Block GRASS = (new GrassBlock(2)).setStepSound(soundGrassFootstep).setTextureId(2).setParticleGravity(1.0F).setHardness(0.6F);
-        public static final Block DIRT = (new DirtBlock(3)).setStepSound(soundGravelFootstep).setTextureId(2).setParticleGravity(1.0F).setHardness(0.5F);
-        public static final Block COBLESTONE = (new CobblestoneBlock(4)).setStepSound(soundStoneFootstep).setTextureId(16).setParticleGravity(1.0F).setHardness(1.5F);
-        public static final Block WOOD = (new Block(5)).setStepSound(soundWoodFootstep).setTextureId(4).setParticleGravity(1.0F).setHardness(1.5F); //Used to be known as 'WOOD'
-        public static final Block SAPLING = (new FlowerBlock(6)).setStepSound(soundGrassFootstep).setTextureId(15).setParticleGravity(1.0F).setHardness(0.0F);
-        public static final Block BEDROCK = (new Block(7)).setStepSound(soundStoneFootstep).setTextureId(17).setParticleGravity(1.0F).setHardness(999.0F);
-        public static final Block WATER = (new LiquidBlock(8, LiquidType.water)).setParticleGravity(1.0F).setHardness(100.0F).setLiquid(true);
-        public static final Block STATIONARY_WATER = (new StillLiquidBlock(9, LiquidType.water)).setParticleGravity(1.0F).setHardness(100.0F).setLiquid(true);
-        public static final Block LAVA = (new LiquidBlock(10, LiquidType.lava)).setParticleGravity(1.0F).setHardness(100.0F).setLiquid(true);
-        public static final Block STATIONARY_LAVA = (new StillLiquidBlock(11, LiquidType.lava)).setParticleGravity(1.0F).setHardness(100.0F).setLiquid(true);
-        public static final Block SAND = (new SandBlock(12)).setStepSound(soundSandFootstep).setTextureId(18).setParticleGravity(1.0F).setHardness(0.5F);
-        public static final Block GRAVEL = (new SandBlock(13)).setStepSound(soundGravelFootstep).setTextureId(19).setParticleGravity(1.0F).setHardness(0.6F);
-        public static final Block GOLD_ORE = (new OreBlock(14)).setStepSound(soundStoneFootstep).setTextureId(32).setParticleGravity(1.0F).setHardness(0.5F);
-        public static final Block IRON_ORE = (new OreBlock(15)).setStepSound(soundStoneFootstep).setTextureId(33).setParticleGravity(1.0F).setHardness(0.5F);
-        public static final Block COAL_ORE = (new OreBlock(16)).setStepSound(soundStoneFootstep).setTextureId(34).setParticleGravity(1.0F).setHardness(0.5F);
-        public static final Block LOG = (new WoodBlock(17)).setStepSound(soundWoodFootstep).setParticleGravity(1.0F).setHardness(2.5F);
-        public static final Block LEAVES = (new LeavesBlock(18)).setStepSound(soundGrassFootstep).setTextureId(22).setParticleGravity(0.4F).setHardness(0.2F);
-        public static final Block SPONGE = (new SpongeBlock(19)).setStepSound(soundGrassFootstep).setTextureId(48).setParticleGravity(0.9F).setHardness(0.6F);
-        
-        public static final Block GLASS = (new GlassBlock(20)).setStepSound(soundGlassFootstep).setTextureId(49).setParticleGravity(1.0F).setHardness(0.3F);
-        public static final Block RED_WOOL = (new Block(21)).setStepSound(soundClothFootstep).setTextureId(64).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block ORANGE_WOOL = (new Block(22)).setStepSound(soundClothFootstep).setTextureId(65).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block YELLOW_WOOL = (new Block(23)).setStepSound(soundClothFootstep).setTextureId(66).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block LIME_WOOL = (new Block(24)).setStepSound(soundClothFootstep).setTextureId(67).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block GREEN_WOOL = (new Block(25)).setStepSound(soundClothFootstep).setTextureId(68).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block AQUA_GREEN_WOOL = (new Block(26)).setStepSound(soundClothFootstep).setTextureId(69).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block CYAN_WOOL = (new Block(27)).setStepSound(soundClothFootstep).setTextureId(70).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block BLUE_WOOL = (new Block(28)).setStepSound(soundClothFootstep).setTextureId(71).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block PURPLE_WOOL = (new Block(29)).setStepSound(soundClothFootstep).setTextureId(72).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block INDIGO_WOOL = (new Block(30)).setStepSound(soundClothFootstep).setTextureId(73).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block VIOLET_WOOL = (new Block(31)).setStepSound(soundClothFootstep).setTextureId(74).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block MAGENTA_WOOL = (new Block(32)).setStepSound(soundClothFootstep).setTextureId(75).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block PINK_WOOL = (new Block(33)).setStepSound(soundClothFootstep).setTextureId(76).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block BLACK_WOOL = (new Block(34)).setStepSound(soundClothFootstep).setTextureId(77).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block GRAY_WOOL = (new Block(35)).setStepSound(soundClothFootstep).setTextureId(78).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block WHITE_WOOL = (new Block(36)).setStepSound(soundClothFootstep).setTextureId(79).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block DANDELION = (new FlowerBlock(37)).setStepSound(soundGrassFootstep).setTextureId(13).setParticleGravity(1.0F).setHardness(0.0F);
-        public static final Block ROSE = (new FlowerBlock(38)).setStepSound(soundGrassFootstep).setTextureId(12).setParticleGravity(1.0F).setHardness(0.0F);
-        public static final Block BROWN_MUSHROOM = (new MushroomBlock(39)).setStepSound(soundGrassFootstep).setTextureId(29).setParticleGravity(1.0F).setHardness(0.0F);
-        public static final Block RED_MUSHROOM = (new MushroomBlock(40)).setStepSound(soundGrassFootstep).setTextureId(28).setParticleGravity(1.0F).setHardness(0.0F);
-        public static final Block GOLD_BLOCK = (new Block(41)).setStepSound(soundMetalFootstep).setTextureId(24).setParticleGravity(1.0F).setHardness(3.0F);
-        public static final Block IRON_BLOCK = (new Block(42)).setStepSound(soundMetalFootstep).setTextureId(23).setParticleGravity(1.0F).setHardness(5.0F);
-        public static final Block DOUBLE_SLAB = (new SlabBlock(43, true)).setStepSound(soundStoneFootstep).setParticleGravity(1.0F).setHardness(2.0F);
-        public static final Block SLAB = (new SlabBlock(44, false)).setStepSound(soundStoneFootstep).setParticleGravity(1.0F).setHardness(2.0F);
-        public static final Block BRICK = (new Block(45)).setStepSound(soundStoneFootstep).setTextureId(7).setParticleGravity(1.0F).setHardness(2.0F);
-        public static final Block TNT = (new TNTBlock(46)).setStepSound(soundGrassFootstep).setTextureId(8).setParticleGravity(1.0F).setHardness(0.0F);
-        public static final Block BOOKSHELF = (new BookshelfBlock(47)).setStepSound(soundWoodFootstep).setTextureId(35).setParticleGravity(1.0F).setHardness(1.5F);
-        public static final Block MOSSY_COBBLESTONE = (new Block(48)).setStepSound(soundStoneFootstep).setTextureId(36).setParticleGravity(1.0F).setHardness(1.0F);
-        public static final Block OBSIDIAN = (new StoneBlock(49)).setStepSound(soundStoneFootstep).setTextureId(37).setParticleGravity(1.0F).setHardness(10.0F);
-        public static final Block COBBLESTONE_SLAB = (new CobblestoneSlabBlock(50, false)).setStepSound(soundStoneFootstep).setTextureId(6).setParticleGravity(1.0F).setHardness(1.0F);
+	public boolean isLiquid;
 
-        public static final Block ROPE = (new RopeBlock(51)).setStepSound(soundClothFootstep).setTextureId(11).setParticleGravity(1.0F).setHardness(0.0F);
-        public static final Block SANDSTONE = (new SandStoneBlock(52)).setStepSound(soundStoneFootstep).setTextureId(41).setParticleGravity(1.0F).setHardness(3.0F);
-        public static final Block SNOW = new SnowBlock(53).setStepSound(soundSnowFootstep).setTextureId(50).setParticleGravity(1.0F).setHardness(3.0F);
-        public static final Block FIRE = new FireBlock(54).setStepSound(soundWoodFootstep).setTextureId(38).setParticleGravity(1.0F).setHardness(0.0F);
-        public static final Block LIGHT_PINK_WOOL = (new Block(55)).setStepSound(soundClothFootstep).setTextureId(80).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block FOREST_GREEN_WOOL = (new Block(56)).setStepSound(soundClothFootstep).setTextureId(81).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block BROWN_WOOL = (new Block(57)).setStepSound(soundClothFootstep).setTextureId(82).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block DEEP_BLUE_WOOL = (new Block(58)).setStepSound(soundClothFootstep).setTextureId(83).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block TURQOISE_WOOL = (new Block(59)).setStepSound(soundClothFootstep).setTextureId(84).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block ICE = (new IceBlock(60)).setStepSound(soundGlassFootstep).setTextureId(51).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block STONE = new StoneBlock(1).setTextureId(1)
+			.setStepSound(soundStoneFootstep).setParticleGravity(1.0F).setHardness(1.0F);
+	public static final Block GRASS = new GrassBlock(2).setStepSound(soundGrassFootstep)
+			.setTextureId(2).setParticleGravity(1.0F).setHardness(0.6F);
+	public static final Block DIRT = new DirtBlock(3).setStepSound(soundGravelFootstep)
+			.setTextureId(2).setParticleGravity(1.0F).setHardness(0.5F);
+	public static final Block COBLESTONE = new CobblestoneBlock(4).setStepSound(soundStoneFootstep)
+			.setTextureId(16).setParticleGravity(1.0F).setHardness(1.5F);
+	public static final Block WOOD = new Block(5).setStepSound(soundWoodFootstep).setTextureId(4)
+			.setParticleGravity(1.0F).setHardness(1.5F); // Used to be known as
+														 // 'WOOD'
+	public static final Block SAPLING = new FlowerBlock(6).setStepSound(soundGrassFootstep)
+			.setTextureId(15).setParticleGravity(1.0F).setHardness(0.0F);
+	public static final Block BEDROCK = new Block(7).setStepSound(soundStoneFootstep)
+			.setTextureId(17).setParticleGravity(1.0F).setHardness(999.0F);
+	public static final Block WATER = new LiquidBlock(8, LiquidType.water).setParticleGravity(1.0F)
+			.setHardness(100.0F).setLiquid(true);
+	public static final Block STATIONARY_WATER = new StillLiquidBlock(9, LiquidType.water)
+			.setParticleGravity(1.0F).setHardness(100.0F).setLiquid(true);
+	public static final Block LAVA = new LiquidBlock(10, LiquidType.lava).setParticleGravity(1.0F)
+			.setHardness(100.0F).setLiquid(true);
+	public static final Block STATIONARY_LAVA = new StillLiquidBlock(11, LiquidType.lava)
+			.setParticleGravity(1.0F).setHardness(100.0F).setLiquid(true);
+	public static final Block SAND = new SandBlock(12).setStepSound(soundSandFootstep)
+			.setTextureId(18).setParticleGravity(1.0F).setHardness(0.5F);
+	public static final Block GRAVEL = new SandBlock(13).setStepSound(soundGravelFootstep)
+			.setTextureId(19).setParticleGravity(1.0F).setHardness(0.6F);
+	public static final Block GOLD_ORE = new OreBlock(14).setStepSound(soundStoneFootstep)
+			.setTextureId(32).setParticleGravity(1.0F).setHardness(0.5F);
+	public static final Block IRON_ORE = new OreBlock(15).setStepSound(soundStoneFootstep)
+			.setTextureId(33).setParticleGravity(1.0F).setHardness(0.5F);
+	public static final Block COAL_ORE = new OreBlock(16).setStepSound(soundStoneFootstep)
+			.setTextureId(34).setParticleGravity(1.0F).setHardness(0.5F);
+	public static final Block LOG = new WoodBlock(17).setStepSound(soundWoodFootstep)
+			.setParticleGravity(1.0F).setHardness(2.5F);
+	public static final Block LEAVES = new LeavesBlock(18).setStepSound(soundGrassFootstep)
+			.setTextureId(22).setParticleGravity(0.4F).setHardness(0.2F);
+	public static final Block SPONGE = new SpongeBlock(19).setStepSound(soundGrassFootstep)
+			.setTextureId(48).setParticleGravity(0.9F).setHardness(0.6F);
 
-        public static final Block CERAMIC_TOLE = (new Block(61)).setStepSound(soundStoneFootstep).setTextureId(54).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block MAGMA = (new MagmaBlock(62)).setStepSound(soundStoneFootstep).setTextureId(86).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block QUARTZ = (new MetalBlock(63)).setStepSound(soundStoneFootstep).setTextureId(42).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block CRATE = (new Block(64)).setStepSound(soundWoodFootstep).setTextureId(53).setParticleGravity(1.0F).setHardness(0.8F);
-        public static final Block STONEBRICK = (new Block(65)).setStepSound(soundStoneFootstep).setTextureId(52).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block GLASS = new GlassBlock(20).setStepSound(soundGlassFootstep)
+			.setTextureId(49).setParticleGravity(1.0F).setHardness(0.3F);
+	public static final Block RED_WOOL = new Block(21).setStepSound(soundClothFootstep)
+			.setTextureId(64).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block ORANGE_WOOL = new Block(22).setStepSound(soundClothFootstep)
+			.setTextureId(65).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block YELLOW_WOOL = new Block(23).setStepSound(soundClothFootstep)
+			.setTextureId(66).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block LIME_WOOL = new Block(24).setStepSound(soundClothFootstep)
+			.setTextureId(67).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block GREEN_WOOL = new Block(25).setStepSound(soundClothFootstep)
+			.setTextureId(68).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block AQUA_GREEN_WOOL = new Block(26).setStepSound(soundClothFootstep)
+			.setTextureId(69).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block CYAN_WOOL = new Block(27).setStepSound(soundClothFootstep)
+			.setTextureId(70).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block BLUE_WOOL = new Block(28).setStepSound(soundClothFootstep)
+			.setTextureId(71).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block PURPLE_WOOL = new Block(29).setStepSound(soundClothFootstep)
+			.setTextureId(72).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block INDIGO_WOOL = new Block(30).setStepSound(soundClothFootstep)
+			.setTextureId(73).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block VIOLET_WOOL = new Block(31).setStepSound(soundClothFootstep)
+			.setTextureId(74).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block MAGENTA_WOOL = new Block(32).setStepSound(soundClothFootstep)
+			.setTextureId(75).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block PINK_WOOL = new Block(33).setStepSound(soundClothFootstep)
+			.setTextureId(76).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block BLACK_WOOL = new Block(34).setStepSound(soundClothFootstep)
+			.setTextureId(77).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block GRAY_WOOL = new Block(35).setStepSound(soundClothFootstep)
+			.setTextureId(78).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block WHITE_WOOL = new Block(36).setStepSound(soundClothFootstep)
+			.setTextureId(79).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block DANDELION = new FlowerBlock(37).setStepSound(soundGrassFootstep)
+			.setTextureId(13).setParticleGravity(1.0F).setHardness(0.0F);
+	public static final Block ROSE = new FlowerBlock(38).setStepSound(soundGrassFootstep)
+			.setTextureId(12).setParticleGravity(1.0F).setHardness(0.0F);
+	public static final Block BROWN_MUSHROOM = new MushroomBlock(39)
+			.setStepSound(soundGrassFootstep).setTextureId(29).setParticleGravity(1.0F)
+			.setHardness(0.0F);
+	public static final Block RED_MUSHROOM = new MushroomBlock(40).setStepSound(soundGrassFootstep)
+			.setTextureId(28).setParticleGravity(1.0F).setHardness(0.0F);
+	public static final Block GOLD_BLOCK = new Block(41).setStepSound(soundMetalFootstep)
+			.setTextureId(24).setParticleGravity(1.0F).setHardness(3.0F);
+	public static final Block IRON_BLOCK = new Block(42).setStepSound(soundMetalFootstep)
+			.setTextureId(23).setParticleGravity(1.0F).setHardness(5.0F);
+	public static final Block DOUBLE_SLAB = new SlabBlock(43, true)
+			.setStepSound(soundStoneFootstep).setParticleGravity(1.0F).setHardness(2.0F);
+	public static final Block SLAB = new SlabBlock(44, false).setStepSound(soundStoneFootstep)
+			.setParticleGravity(1.0F).setHardness(2.0F);
+	public static final Block BRICK = new Block(45).setStepSound(soundStoneFootstep)
+			.setTextureId(7).setParticleGravity(1.0F).setHardness(2.0F);
+	public static final Block TNT = new TNTBlock(46).setStepSound(soundGrassFootstep)
+			.setTextureId(8).setParticleGravity(1.0F).setHardness(0.0F);
+	public static final Block BOOKSHELF = new BookshelfBlock(47).setStepSound(soundWoodFootstep)
+			.setTextureId(35).setParticleGravity(1.0F).setHardness(1.5F);
+	public static final Block MOSSY_COBBLESTONE = new Block(48).setStepSound(soundStoneFootstep)
+			.setTextureId(36).setParticleGravity(1.0F).setHardness(1.0F);
+	public static final Block OBSIDIAN = new StoneBlock(49).setStepSound(soundStoneFootstep)
+			.setTextureId(37).setParticleGravity(1.0F).setHardness(10.0F);
+	public static final Block COBBLESTONE_SLAB = new CobblestoneSlabBlock(50, false)
+			.setStepSound(soundStoneFootstep).setTextureId(6).setParticleGravity(1.0F)
+			.setHardness(1.0F);
+
+	public static final Block ROPE = new RopeBlock(51).setStepSound(soundClothFootstep)
+			.setTextureId(11).setParticleGravity(1.0F).setHardness(0.0F);
+	public static final Block SANDSTONE = new SandStoneBlock(52).setStepSound(soundStoneFootstep)
+			.setTextureId(41).setParticleGravity(1.0F).setHardness(3.0F);
+	public static final Block SNOW = new SnowBlock(53).setStepSound(soundSnowFootstep)
+			.setTextureId(50).setParticleGravity(1.0F).setHardness(3.0F);
+	public static final Block FIRE = new FireBlock(54).setStepSound(soundWoodFootstep)
+			.setTextureId(38).setParticleGravity(1.0F).setHardness(0.0F);
+	public static final Block LIGHT_PINK_WOOL = new Block(55).setStepSound(soundClothFootstep)
+			.setTextureId(80).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block FOREST_GREEN_WOOL = new Block(56).setStepSound(soundClothFootstep)
+			.setTextureId(81).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block BROWN_WOOL = new Block(57).setStepSound(soundClothFootstep)
+			.setTextureId(82).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block DEEP_BLUE_WOOL = new Block(58).setStepSound(soundClothFootstep)
+			.setTextureId(83).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block TURQOISE_WOOL = new Block(59).setStepSound(soundClothFootstep)
+			.setTextureId(84).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block ICE = new IceBlock(60).setStepSound(soundGlassFootstep)
+			.setTextureId(51).setParticleGravity(1.0F).setHardness(0.8F);
+
+	public static final Block CERAMIC_TOLE = new Block(61).setStepSound(soundStoneFootstep)
+			.setTextureId(54).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block MAGMA = new MagmaBlock(62).setStepSound(soundStoneFootstep)
+			.setTextureId(86).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block QUARTZ = new MetalBlock(63).setStepSound(soundStoneFootstep)
+			.setTextureId(42).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block CRATE = new Block(64).setStepSound(soundWoodFootstep)
+			.setTextureId(53).setParticleGravity(1.0F).setHardness(0.8F);
+	public static final Block STONEBRICK = new Block(65).setStepSound(soundStoneFootstep)
+			.setTextureId(52).setParticleGravity(1.0F).setHardness(0.8F);
 
 	public Block(int id) {
 		explodes = true;
@@ -130,7 +198,7 @@ public class Block {
 		setBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 
 		liquid[id] = false;
-                isLiquid = false;
+		isLiquid = false;
 	}
 
 	protected Block(int id, int textureID) {
@@ -138,43 +206,9 @@ public class Block {
 
 		textureId = textureID;
 	}
-        
-        protected Block setTextureId(int var1)
-        {
-        this.textureId = var1;
-        return this;
-        }
-        
-        protected Block setHardness(float var1)
-        {
-        this.hardness = (int) (var1 * 20.0F);
-        return this;
-        }
-        
-        protected Block setLiquid(boolean var1)
-        {
-        this.isLiquid = var1;
-        return this;
-        }
-        
-        public final boolean isLiquid() {
-		return this.isLiquid;
-	}
-        
-        protected Block setParticleGravity(float var1)
-        {
-        this.particleGravity = var1;
-        return this;
-        }
-        
-        protected Block setStepSound(StepSound par1StepSound)
-        {
-        this.stepSound = par1StepSound;
-        return this;
-        }
 
 	public final boolean canExplode() {
-		return this.explodes;
+		return explodes;
 	}
 
 	public boolean canRenderSide(Level level, int x, int y, int z, int side) {
@@ -182,35 +216,35 @@ public class Block {
 	}
 
 	public final MovingObjectPosition clip(int var1, int var2, int var3, Vec3D var4, Vec3D var5) {
-		var4 = var4.add((-var1), (-var2), (-var3));
-		var5 = var5.add((-var1), (-var2), (-var3));
-		Vec3D var6 = var4.getXIntersection(var5, this.x1);
-		Vec3D var7 = var4.getXIntersection(var5, this.x2);
-		Vec3D var8 = var4.getYIntersection(var5, this.y1);
-		Vec3D var9 = var4.getYIntersection(var5, this.y2);
-		Vec3D var10 = var4.getZIntersection(var5, this.z1);
-		var5 = var4.getZIntersection(var5, this.z2);
-		if (!this.xIntersects(var6)) {
+		var4 = var4.add(-var1, -var2, -var3);
+		var5 = var5.add(-var1, -var2, -var3);
+		Vec3D var6 = var4.getXIntersection(var5, x1);
+		Vec3D var7 = var4.getXIntersection(var5, x2);
+		Vec3D var8 = var4.getYIntersection(var5, y1);
+		Vec3D var9 = var4.getYIntersection(var5, y2);
+		Vec3D var10 = var4.getZIntersection(var5, z1);
+		var5 = var4.getZIntersection(var5, z2);
+		if (!xIntersects(var6)) {
 			var6 = null;
 		}
 
-		if (!this.xIntersects(var7)) {
+		if (!xIntersects(var7)) {
 			var7 = null;
 		}
 
-		if (!this.yIntersects(var8)) {
+		if (!yIntersects(var8)) {
 			var8 = null;
 		}
 
-		if (!this.yIntersects(var9)) {
+		if (!yIntersects(var9)) {
 			var9 = null;
 		}
 
-		if (!this.zIntersects(var10)) {
+		if (!zIntersects(var10)) {
 			var10 = null;
 		}
 
-		if (!this.zIntersects(var5)) {
+		if (!zIntersects(var5)) {
 			var5 = null;
 		}
 
@@ -267,14 +301,13 @@ public class Block {
 				var12 = 3;
 			}
 
-			return new MovingObjectPosition(var1, var2, var3, var12, var11.add(var1,
-					var2, var3));
+			return new MovingObjectPosition(var1, var2, var3, var12, var11.add(var1, var2, var3));
 		}
 	}
 
 	public void dropItems(Level var1, int var2, int var3, int var4, float var5) {
 		if (!var1.creativeMode) {
-			int var6 = this.getDropCount();
+			int var6 = getDropCount();
 
 			for (int var7 = 0; var7 < var6; ++var7) {
 				if (random.nextFloat() <= var5) {
@@ -282,8 +315,7 @@ public class Block {
 					float var9 = random.nextFloat() * var8 + (1.0F - var8) * 0.5F;
 					float var10 = random.nextFloat() * var8 + (1.0F - var8) * 0.5F;
 					var8 = random.nextFloat() * var8 + (1.0F - var8) * 0.5F;
-					var1.addEntity(new Item(var1, var2 + var9, var3 + var10,
-							var4 + var8, this.getDrop()));
+					var1.addEntity(new Item(var1, var2 + var9, var3 + var10, var4 + var8, getDrop()));
 				}
 			}
 
@@ -298,15 +330,14 @@ public class Block {
 	}
 
 	public AABB getCollisionBox(int x, int y, int z) {
-		AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2,
-				y + y2, z + z2);
+		AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
 		;
 
 		return aabb;
 	}
 
 	public int getDrop() {
-		return this.id;
+		return id;
 	}
 
 	public int getDropCount() {
@@ -314,7 +345,7 @@ public class Block {
 	}
 
 	public final int getHardness() {
-		return this.hardness;
+		return hardness;
 	}
 
 	public LiquidType getLiquidType() {
@@ -326,8 +357,7 @@ public class Block {
 	}
 
 	public AABB getSelectionBox(int x, int y, int z) {
-		AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2,
-				y + y2, z + z2);
+		AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
 		;
 
 		return aabb;
@@ -345,6 +375,10 @@ public class Block {
 		return true;
 	}
 
+	public final boolean isLiquid() {
+		return isLiquid;
+	}
+
 	public boolean isOpaque() {
 		return true;
 	}
@@ -357,7 +391,7 @@ public class Block {
 	}
 
 	public void onBreak(Level var1, int var2, int var3, int var4) {
-		this.dropItems(var1, var2, var3, var4, 1.0F);
+		dropItems(var1, var2, var3, var4, 1.0F);
 	}
 
 	// TODO.
@@ -366,8 +400,6 @@ public class Block {
 
 	public void onPlace(Level level, int x, int y, int z) {
 	}
-
-	// TODO past here.
 
 	public void onRemoved(Level var1, int var2, int var3, int var4) {
 	}
@@ -378,45 +410,45 @@ public class Block {
 		float var8 = 0.8F;
 		float var9 = 0.6F;
 		ColorCache var10;
-		if (this.canRenderSide(var1, var2, var3 - 1, var4, 0)) {
-			var10 = this.getBrightness(var1, var2, var3 - 1, var4);
+		if (canRenderSide(var1, var2, var3 - 1, var4, 0)) {
+			var10 = getBrightness(var1, var2, var3 - 1, var4);
 			var5.color(var7 * var10.R, var7 * var10.G, var7 * var10.B);
-			this.renderInside(var5, var2, var3, var4, 0);
+			renderInside(var5, var2, var3, var4, 0);
 			var6 = true;
 		}
 
-		if (this.canRenderSide(var1, var2, var3 + 1, var4, 1)) {
-			var10 = this.getBrightness(var1, var2, var3 + 1, var4);
+		if (canRenderSide(var1, var2, var3 + 1, var4, 1)) {
+			var10 = getBrightness(var1, var2, var3 + 1, var4);
 			var5.color(var10.R * 1.0F, var10.G * 1.0F, var10.B * 1.0F);
-			this.renderInside(var5, var2, var3, var4, 1);
+			renderInside(var5, var2, var3, var4, 1);
 			var6 = true;
 		}
 
-		if (this.canRenderSide(var1, var2, var3, var4 - 1, 2)) {
-			var10 = this.getBrightness(var1, var2, var3, var4 - 1);
+		if (canRenderSide(var1, var2, var3, var4 - 1, 2)) {
+			var10 = getBrightness(var1, var2, var3, var4 - 1);
 			var5.color(var8 * var10.R, var8 * var10.G, var8 * var10.B);
-			this.renderInside(var5, var2, var3, var4, 2);
+			renderInside(var5, var2, var3, var4, 2);
 			var6 = true;
 		}
 
-		if (this.canRenderSide(var1, var2, var3, var4 + 1, 3)) {
-			var10 = this.getBrightness(var1, var2, var3, var4 + 1);
+		if (canRenderSide(var1, var2, var3, var4 + 1, 3)) {
+			var10 = getBrightness(var1, var2, var3, var4 + 1);
 			var5.color(var8 * var10.R, var8 * var10.G, var8 * var10.B);
-			this.renderInside(var5, var2, var3, var4, 3);
+			renderInside(var5, var2, var3, var4, 3);
 			var6 = true;
 		}
 
-		if (this.canRenderSide(var1, var2 - 1, var3, var4, 4)) {
-			var10 = this.getBrightness(var1, var2 - 1, var3, var4);
+		if (canRenderSide(var1, var2 - 1, var3, var4, 4)) {
+			var10 = getBrightness(var1, var2 - 1, var3, var4);
 			var5.color(var9 * var10.R, var9 * var10.G, var9 * var10.B);
-			this.renderInside(var5, var2, var3, var4, 4);
+			renderInside(var5, var2, var3, var4, 4);
 			var6 = true;
 		}
 
-		if (this.canRenderSide(var1, var2 + 1, var3, var4, 5)) {
-			var10 = this.getBrightness(var1, var2 + 1, var3, var4);
+		if (canRenderSide(var1, var2 + 1, var3, var4, 5)) {
+			var10 = getBrightness(var1, var2 + 1, var3, var4);
 			var5.color(var9 * var10.R, var9 * var10.G, var9 * var10.B);
-			this.renderInside(var5, var2, var3, var4, 5);
+			renderInside(var5, var2, var3, var4, 5);
 			var6 = true;
 		}
 
@@ -481,25 +513,27 @@ public class Block {
 				var1.normal(-1.0F, 0.0F, 0.0F);
 			}
 
-			this.renderInside(var1, 0, 0, 0, var2);
+			renderInside(var1, 0, 0, 0, var2);
 		}
 
 		var1.end();
 	}
 
+	// TODO past here.
+
 	// TODO.
 	public void renderSide(ShapeRenderer var1, int var2, int var3, int var4, int var5) {
 		int var6;
 		float var7;
-		float var8 = (var7 = (var6 = this.getTextureId(var5)) % 16 / 16.0F) + 0.0624375F;
+		float var8 = (var7 = (var6 = getTextureId(var5)) % 16 / 16.0F) + 0.0624375F;
 		float var16;
 		float var9 = (var16 = var6 / 16 / 16.0F) + 0.0624375F;
-		float var10 = var2 + this.x1;
-		float var14 = var2 + this.x2;
-		float var11 = var3 + this.y1;
-		float var15 = var3 + this.y2;
-		float var12 = var4 + this.z1;
-		float var13 = var4 + this.z2;
+		float var10 = var2 + x1;
+		float var14 = var2 + x2;
+		float var11 = var3 + y1;
+		float var15 = var3 + y2;
+		float var12 = var4 + z1;
+		float var13 = var4 + z2;
 		if (var5 == 0) {
 			var1.vertexUV(var14, var11, var13, var8, var9);
 			var1.vertexUV(var14, var11, var12, var8, var16);
@@ -553,21 +587,21 @@ public class Block {
 		float var10 = var8 / 256.0F;
 		float var11 = (var8 + 15.99F) / 256.0F;
 		if (side >= 2 && textureID < 240) {
-			if (this.y1 >= 0.0F && this.y2 <= 1.0F) {
-				var10 = (var8 + this.y1 * 15.99F) / 256.0F;
-				var11 = (var8 + this.y2 * 15.99F) / 256.0F;
+			if (y1 >= 0.0F && y2 <= 1.0F) {
+				var10 = (var8 + y1 * 15.99F) / 256.0F;
+				var11 = (var8 + y2 * 15.99F) / 256.0F;
 			} else {
 				var10 = var8 / 256.0F;
 				var11 = (var8 + 15.99F) / 256.0F;
 			}
 		}
 
-		float var16 = x + this.x1;
-		float var14 = x + this.x2;
-		float var18 = y + this.y1;
-		float var15 = y + this.y2;
-		float var12 = z + this.z1;
-		float var13 = z + this.z2;
+		float var16 = x + x1;
+		float var14 = x + x2;
+		float var18 = y + y1;
+		float var15 = y + y2;
+		float var12 = z + z1;
+		float var13 = z + z2;
 		if (side == 0) {
 			shapeRenderer.vertexUV(var16, var18, var13, var9, var11);
 			shapeRenderer.vertexUV(var16, var18, var12, var9, var10);
@@ -610,45 +644,67 @@ public class Block {
 		this.z2 = z2;
 	}
 
+	protected Block setHardness(float var1) {
+		hardness = (int) (var1 * 20.0F);
+		return this;
+	}
+
+	protected Block setLiquid(boolean var1) {
+		isLiquid = var1;
+		return this;
+	}
+
+	protected Block setParticleGravity(float var1) {
+		particleGravity = var1;
+		return this;
+	}
+
 	protected void setPhysics(boolean physics) {
 		Block.physics[id] = physics;
+	}
+
+	protected Block setStepSound(StepSound par1StepSound) {
+		stepSound = par1StepSound;
+		return this;
+	}
+
+	protected Block setTextureId(int var1) {
+		textureId = var1;
+		return this;
 	}
 
 	// TODO.
 	public final void spawnBlockParticles(Level var1, int var2, int var3, int var4, int var5,
 			ParticleManager var6) {
 		float var7 = 0.1F;
-		float var8 = var2 + random.nextFloat() * (this.x2 - this.x1 - var7 * 2.0F) + var7
-				+ this.x1;
-		float var9 = var3 + random.nextFloat() * (this.y2 - this.y1 - var7 * 2.0F) + var7
-				+ this.y1;
-		float var10 = var4 + random.nextFloat() * (this.z2 - this.z1 - var7 * 2.0F) + var7
-				+ this.z1;
+		float var8 = var2 + random.nextFloat() * (x2 - x1 - var7 * 2.0F) + var7 + x1;
+		float var9 = var3 + random.nextFloat() * (y2 - y1 - var7 * 2.0F) + var7 + y1;
+		float var10 = var4 + random.nextFloat() * (z2 - z1 - var7 * 2.0F) + var7 + z1;
 		if (var5 == 0) {
-			var9 = var3 + this.y1 - var7;
+			var9 = var3 + y1 - var7;
 		}
 
 		if (var5 == 1) {
-			var9 = var3 + this.y2 + var7;
+			var9 = var3 + y2 + var7;
 		}
 
 		if (var5 == 2) {
-			var10 = var4 + this.z1 - var7;
+			var10 = var4 + z1 - var7;
 		}
 
 		if (var5 == 3) {
-			var10 = var4 + this.z2 + var7;
+			var10 = var4 + z2 + var7;
 		}
 
 		if (var5 == 4) {
-			var8 = var2 + this.x1 - var7;
+			var8 = var2 + x1 - var7;
 		}
 
 		if (var5 == 5) {
-			var8 = var2 + this.x2 + var7;
+			var8 = var2 + x2 + var7;
 		}
 
-		var6.spawnParticle((new TerrainParticle(var1, var8, var9, var10, 0.0F, 0.0F, 0.0F, this))
+		var6.spawnParticle(new TerrainParticle(var1, var8, var9, var10, 0.0F, 0.0F, 0.0F, this)
 				.setPower(0.2F).scale(0.6F));
 	}
 
@@ -663,8 +719,7 @@ public class Block {
 					float var11 = z + (var8 + 0.5F) / 4;
 
 					particleManager.spawnParticle(new TerrainParticle(level, var9, var10, var11,
-							var9 - x - 0.5F, var10 - y - 0.5F, var11 - z
-									- 0.5F, this));
+							var9 - x - 0.5F, var10 - y - 0.5F, var11 - z - 0.5F, this));
 				}
 			}
 		}
@@ -675,18 +730,15 @@ public class Block {
 	}
 
 	private boolean xIntersects(Vec3D var1) {
-		return var1 == null ? false : var1.y >= this.y1 && var1.y <= this.y2 && var1.z >= this.z1
-				&& var1.z <= this.z2;
+		return var1 == null ? false : var1.y >= y1 && var1.y <= y2 && var1.z >= z1 && var1.z <= z2;
 	}
 
 	private boolean yIntersects(Vec3D var1) {
-		return var1 == null ? false : var1.x >= this.x1 && var1.x <= this.x2 && var1.z >= this.z1
-				&& var1.z <= this.z2;
+		return var1 == null ? false : var1.x >= x1 && var1.x <= x2 && var1.z >= z1 && var1.z <= z2;
 	}
 
 	private boolean zIntersects(Vec3D var1) {
-		return var1 == null ? false : var1.x >= this.x1 && var1.x <= this.x2 && var1.y >= this.y1
-				&& var1.y <= this.y2;
+		return var1 == null ? false : var1.x >= x1 && var1.x <= x2 && var1.y >= y1 && var1.y <= y2;
 	}
 
 }

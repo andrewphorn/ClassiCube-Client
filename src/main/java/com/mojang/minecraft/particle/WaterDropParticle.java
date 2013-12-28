@@ -9,15 +9,15 @@ public class WaterDropParticle extends Particle {
 
 	public WaterDropParticle(Level var1, float var2, float var3, float var4) {
 		super(var1, var2, var3, var4, 0.0F, 0.0F, 0.0F);
-		this.xd *= 0.3F;
-		this.yd = (float) Math.random() * 0.2F + 0.1F;
-		this.zd *= 0.3F;
-		this.rCol = 1.0F;
-		this.gCol = 1.0F;
-		this.bCol = 1.0F;
-		this.tex = 16;
-		this.setSize(0.01F, 0.01F);
-		this.lifetime = (int) (8.0D / (Math.random() * 0.8D + 0.2D));
+		xd *= 0.3F;
+		yd = (float) Math.random() * 0.2F + 0.1F;
+		zd *= 0.3F;
+		rCol = 1.0F;
+		gCol = 1.0F;
+		bCol = 1.0F;
+		tex = 16;
+		setSize(0.01F, 0.01F);
+		lifetime = (int) (8.0D / (Math.random() * 0.8D + 0.2D));
 	}
 
 	@Override
@@ -28,25 +28,25 @@ public class WaterDropParticle extends Particle {
 
 	@Override
 	public void tick() {
-		this.xo = this.x;
-		this.yo = this.y;
-		this.zo = this.z;
-		this.yd = (float) (this.yd - 0.06D);
-		this.move(this.xd, this.yd, this.zd);
-		this.xd *= 0.98F;
-		this.yd *= 0.98F;
-		this.zd *= 0.98F;
-		if (this.lifetime-- <= 0) {
-			this.remove();
+		xo = x;
+		yo = y;
+		zo = z;
+		yd = (float) (yd - 0.06D);
+		move(xd, yd, zd);
+		xd *= 0.98F;
+		yd *= 0.98F;
+		zd *= 0.98F;
+		if (lifetime-- <= 0) {
+			remove();
 		}
 
-		if (this.onGround) {
+		if (onGround) {
 			if (Math.random() < 0.5D) {
-				this.remove();
+				remove();
 			}
 
-			this.xd *= 0.7F;
-			this.zd *= 0.7F;
+			xd *= 0.7F;
+			zd *= 0.7F;
 		}
 
 	}

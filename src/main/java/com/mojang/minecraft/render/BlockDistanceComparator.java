@@ -1,7 +1,8 @@
 package com.mojang.minecraft.render;
 
-import com.mojang.minecraft.player.Player;
 import java.util.Comparator;
+
+import com.mojang.minecraft.player.Player;
 
 public class BlockDistanceComparator implements Comparator<BlockData> {
 	private Player player;

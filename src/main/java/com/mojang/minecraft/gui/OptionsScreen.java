@@ -4,34 +4,32 @@ import com.mojang.minecraft.GameSettings;
 
 public final class OptionsScreen extends GuiScreen {
 
-	private GuiScreen parent;
 	private String title = "Options";
 	private GameSettings settings;
 
 	public OptionsScreen(GuiScreen var1, GameSettings var2) {
-		this.parent = var1;
-		this.settings = var2;
+		settings = var2;
 	}
 
 	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.active) {
 			if (var1.id < 100) {
-				this.settings.toggleSetting(var1.id, 1);
-				var1.text = this.settings.getSetting(var1.id);
+				settings.toggleSetting(var1.id, 1);
+				var1.text = settings.getSetting(var1.id);
 			}
-			this.buttons.get(9).active = this.minecraft.settings.smoothing > 0;
+			buttons.get(9).active = minecraft.settings.smoothing > 0;
 
 			if (var1.id == 100) {
-				this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(this, this.settings));
+				minecraft.setCurrentScreen(new AdvancedOptionsScreen(this, settings));
 			}
 
 			if (var1.id == 200) {
-				this.minecraft.setCurrentScreen(new ControlsScreen(this, this.settings));
+				minecraft.setCurrentScreen(new ControlsScreen(this, settings));
 			}
 
 			if (var1.id == 300) {
-				this.minecraft.setCurrentScreen(new PauseScreen());
+				minecraft.setCurrentScreen(new PauseScreen());
 			}
 
 		}
@@ -40,24 +38,22 @@ public final class OptionsScreen extends GuiScreen {
 	@Override
 	public final void onOpen() {
 		for (int var1 = 0; var1 < 10; ++var1) {
-			this.buttons.add(new OptionButton(var1, this.width / 2 - 155 + var1 % 2 * 160,
-					this.height / 6 + 24 * (var1 >> 1), this.settings.getSetting(var1)));
+			buttons.add(new OptionButton(var1, width / 2 - 155 + var1 % 2 * 160, height / 6 + 24
+					* (var1 >> 1), settings.getSetting(var1)));
 		}
 
-		this.buttons.add(new Button(100, this.width / 2 - 100, this.height / 6 + 90 + 32,
-				"Advanced Options..."));
+		buttons.add(new Button(100, width / 2 - 100, height / 6 + 90 + 32, "Advanced Options..."));
 
-		this.buttons.add(new Button(200, this.width / 2 - 100, this.height / 6 + 120 + 26,
-				"Controls..."));
-		this.buttons.add(new Button(300, this.width / 2 - 100, this.height / 6 + 168, "Done"));
+		buttons.add(new Button(200, width / 2 - 100, height / 6 + 120 + 26, "Controls..."));
+		buttons.add(new Button(300, width / 2 - 100, height / 6 + 168, "Done"));
 
-		this.buttons.get(9).active = this.minecraft.settings.smoothing > 0;
+		buttons.get(9).active = minecraft.settings.smoothing > 0;
 	}
 
 	@Override
 	public final void render(int var1, int var2) {
-		drawFadingBox(0, 0, this.width, this.height, 1610941696, -1607454624);
-		drawCenteredString(this.fontRenderer, this.title, this.width / 2, 20, 16777215);
+		drawFadingBox(0, 0, width, height, 1610941696, -1607454624);
+		drawCenteredString(fontRenderer, title, width / 2, 20, 16777215);
 		super.render(var1, var2);
 	}
 }

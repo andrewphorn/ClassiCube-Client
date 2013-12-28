@@ -11,9 +11,9 @@ public class Pig extends QuadrupedMob {
 
 	public Pig(Level var1, float var2, float var3, float var4) {
 		super(var1, var2, var3, var4);
-		this.heightOffset = 1.72F;
-		this.modelName = "pig";
-		this.textureName = "/mob/pig.png";
+		heightOffset = 1.72F;
+		modelName = "pig";
+		textureName = "/mob/pig.png";
 	}
 
 	@Override
@@ -25,8 +25,7 @@ public class Pig extends QuadrupedMob {
 		int var2 = (int) (Math.random() + Math.random() + 1.0D);
 
 		for (int var3 = 0; var3 < var2; ++var3) {
-			this.level.addEntity(new Item(this.level, this.x, this.y, this.z,
-					Block.BROWN_MUSHROOM.id));
+			level.addEntity(new Item(level, x, y, z, Block.BROWN_MUSHROOM.id));
 		}
 
 		super.die(var1);

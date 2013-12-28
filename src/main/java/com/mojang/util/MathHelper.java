@@ -6,8 +6,7 @@ public final class MathHelper {
 
 	static {
 		for (int var0 = 0; var0 < 65536; ++var0) {
-			SIN_TABLE[var0] = (float) Math
-					.sin(var0 * 3.141592653589793D * 2.0D / 65536.0D);
+			SIN_TABLE[var0] = (float) Math.sin(var0 * 3.141592653589793D * 2.0D / 65536.0D);
 		}
 
 	}

@@ -8,9 +8,9 @@ public final class SlabBlock extends Block {
 
 	public SlabBlock(int var1, boolean var2) {
 		super(var1, 6);
-		this.doubleSlab = var2;
+		doubleSlab = var2;
 		if (!var2) {
-			this.setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
+			setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
 		}
 
 	}
@@ -21,8 +21,8 @@ public final class SlabBlock extends Block {
 			super.canRenderSide(level, x, y, z, side);
 		}
 
-		return side == 1 ? true : (!super.canRenderSide(level, x, y, z, side) ? false
-				: (side == 0 ? true : level.getTile(x, y, z) != this.id));
+		return side == 1 ? true : !super.canRenderSide(level, x, y, z, side) ? false
+				: side == 0 ? true : level.getTile(x, y, z) != id;
 	}
 
 	@Override
@@ -37,12 +37,12 @@ public final class SlabBlock extends Block {
 
 	@Override
 	public final boolean isCube() {
-		return this.doubleSlab;
+		return doubleSlab;
 	}
 
 	@Override
 	public final boolean isSolid() {
-		return this.doubleSlab;
+		return doubleSlab;
 	}
 
 	@Override

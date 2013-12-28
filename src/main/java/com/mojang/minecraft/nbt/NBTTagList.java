@@ -30,8 +30,7 @@ public class NBTTagList extends NBTBase
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
-    @Override
-	void write(DataOutput par1DataOutput) throws IOException
+    void write(DataOutput par1DataOutput) throws IOException
     {
         if (!this.tagList.isEmpty())
         {
@@ -54,8 +53,7 @@ public class NBTTagList extends NBTBase
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
-    @Override
-	void load(DataInput par1DataInput) throws IOException
+    void load(DataInput par1DataInput) throws IOException
     {
         this.tagType = par1DataInput.readByte();
         int i = par1DataInput.readInt();
@@ -72,14 +70,12 @@ public class NBTTagList extends NBTBase
     /**
      * Gets the type byte for the tag.
      */
-    @Override
-	public byte getId()
+    public byte getId()
     {
         return (byte)9;
     }
 
-    @Override
-	public String toString()
+    public String toString()
     {
         return "" + this.tagList.size() + " entries of type " + NBTBase.getTagName(this.tagType);
     }
@@ -92,8 +88,7 @@ public class NBTTagList extends NBTBase
     {
         this.tagType = par1NBTBase.getId();
         this.tagList.add(par1NBTBase);
-    }
-
+   }
     /**
      * Removes a tag at the given index.
      */
@@ -121,8 +116,7 @@ public class NBTTagList extends NBTBase
     /**
      * Creates a clone of the tag.
      */
-    @Override
-	public NBTBase copy()
+    public NBTBase copy()
     {
         NBTTagList nbttaglist = new NBTTagList(this.getName());
         nbttaglist.tagType = this.tagType;
@@ -138,8 +132,7 @@ public class NBTTagList extends NBTBase
         return nbttaglist;
     }
 
-    @Override
-	public boolean equals(Object par1Obj)
+    public boolean equals(Object par1Obj)
     {
         if (super.equals(par1Obj))
         {
@@ -154,8 +147,7 @@ public class NBTTagList extends NBTBase
         return false;
     }
 
-    @Override
-	public int hashCode()
+    public int hashCode()
     {
         return super.hashCode() ^ this.tagList.hashCode();
     }

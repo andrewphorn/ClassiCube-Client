@@ -14,17 +14,18 @@ public class SelectionBoxData {
 		this.Bounds = Bounds;
 		this.Color = Color;
 	}
-	
+
 	public final float distanceSquared0(Player var1) {
-		float var2 = var1.x - this.Bounds.x0;
-		float var3 = var1.y - this.Bounds.y0;
-		float var4 = var1.z - this.Bounds.z0;
+		float var2 = var1.x - Bounds.x0;
+		float var3 = var1.y - Bounds.y0;
+		float var4 = var1.z - Bounds.z0;
 		return var2 * var2 + var3 * var3 + var4 * var4;
 	}
+
 	public final float distanceSquared1(Player var1) {
-		float var2 = var1.x - this.Bounds.x1;
-		float var3 = var1.y - this.Bounds.y1;
-		float var4 = var1.z - this.Bounds.z1;
+		float var2 = var1.x - Bounds.x1;
+		float var3 = var1.y - Bounds.y1;
+		float var4 = var1.z - Bounds.z1;
 		return var2 * var2 + var3 * var3 + var4 * var4;
 	}
 }

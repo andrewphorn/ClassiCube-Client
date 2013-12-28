@@ -3,55 +3,56 @@ package com.mojang.minecraft.gui;
 import com.mojang.minecraft.GameSettings;
 
 public class ScaledResolution {
+	public static int ceiling_double_int(double par0) {
+		int var2 = (int) par0;
+		return par0 > var2 ? var2 + 1 : var2;
+	}
+
 	private int scaledWidth;
 	private int scaledHeight;
 	private double scaledWidthD;
 	private double scaledHeightD;
+
 	private int scaleFactor;
 
 	public ScaledResolution(GameSettings par1GameSettings, int par2, int par3) {
-		this.scaledWidth = par2;
-		this.scaledHeight = par3;
-		this.scaleFactor = 1;
+		scaledWidth = par2;
+		scaledHeight = par3;
+		scaleFactor = 1;
 		int var4 = 1000; // scale
 
 		if (var4 == 0) {
 			var4 = 1000;
 		}
 
-		while (this.scaleFactor < var4 && this.scaledWidth / (this.scaleFactor + 1) >= 320
-				&& this.scaledHeight / (this.scaleFactor + 1) >= 240) {
-			++this.scaleFactor;
+		while (scaleFactor < var4 && scaledWidth / (scaleFactor + 1) >= 320
+				&& scaledHeight / (scaleFactor + 1) >= 240) {
+			++scaleFactor;
 		}
 
-		this.scaledWidthD = (double) this.scaledWidth / (double) this.scaleFactor;
-		this.scaledHeightD = (double) this.scaledHeight / (double) this.scaleFactor;
-		this.scaledWidth = ceiling_double_int(this.scaledWidthD);
-		this.scaledHeight = ceiling_double_int(this.scaledHeightD);
-	}
-
-	public static int ceiling_double_int(double par0) {
-		int var2 = (int) par0;
-		return par0 > var2 ? var2 + 1 : var2;
-	}
-
-	public int getScaledWidth() {
-		return this.scaledWidth;
+		scaledWidthD = (double) scaledWidth / (double) scaleFactor;
+		scaledHeightD = (double) scaledHeight / (double) scaleFactor;
+		scaledWidth = ceiling_double_int(scaledWidthD);
+		scaledHeight = ceiling_double_int(scaledHeightD);
 	}
 
 	public int getScaledHeight() {
-		return this.scaledHeight;
-	}
-
-	public double getScaledWidth_double() {
-		return this.scaledWidthD;
+		return scaledHeight;
 	}
 
 	public double getScaledHeight_double() {
-		return this.scaledHeightD;
+		return scaledHeightD;
+	}
+
+	public int getScaledWidth() {
+		return scaledWidth;
+	}
+
+	public double getScaledWidth_double() {
+		return scaledWidthD;
 	}
 
 	public int getScaleFactor() {
-		return this.scaleFactor;
+		return scaleFactor;
 	}
 }

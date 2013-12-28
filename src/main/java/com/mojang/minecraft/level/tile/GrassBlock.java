@@ -1,15 +1,15 @@
 package com.mojang.minecraft.level.tile;
 
-import com.mojang.minecraft.level.Level;
-
 import java.util.Random;
+
+import com.mojang.minecraft.level.Level;
 
 public final class GrassBlock extends Block {
 
 	protected GrassBlock(int var1) {
 		super(var1);
-		this.textureId = 3;
-		this.setPhysics(true);
+		textureId = 3;
+		setPhysics(true);
 	}
 
 	@Override
@@ -19,7 +19,7 @@ public final class GrassBlock extends Block {
 
 	@Override
 	protected final int getTextureId(int texture) {
-		return texture == 1 ? 0 : (texture == 0 ? 2 : 3);
+		return texture == 1 ? 0 : texture == 0 ? 2 : 3;
 	}
 
 	@Override

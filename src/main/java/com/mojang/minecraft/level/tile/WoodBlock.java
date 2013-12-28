@@ -4,7 +4,7 @@ public final class WoodBlock extends Block {
 
 	protected WoodBlock(int var1) {
 		super(var1);
-		this.textureId = 20;
+		textureId = 20;
 	}
 
 	@Override
@@ -19,6 +19,6 @@ public final class WoodBlock extends Block {
 
 	@Override
 	protected final int getTextureId(int texture) {
-		return texture == 1 ? 21 : (texture == 0 ? 21 : 20);
+		return texture == 1 ? 21 : texture == 0 ? 21 : 20;
 	}
 }

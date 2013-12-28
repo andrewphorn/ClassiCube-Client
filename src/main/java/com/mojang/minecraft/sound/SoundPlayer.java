@@ -1,10 +1,12 @@
 package com.mojang.minecraft.sound;
 
-import com.mojang.minecraft.GameSettings;
-import javax.sound.sampled.SourceDataLine;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.sound.sampled.SourceDataLine;
+
+import com.mojang.minecraft.GameSettings;
 
 // TODO.
 public final class SoundPlayer implements Runnable {
@@ -15,13 +17,17 @@ public final class SoundPlayer implements Runnable {
 	public GameSettings settings;
 
 	public SoundPlayer(GameSettings var1) {
-		this.settings = var1;
+		settings = var1;
+	}
+
+	public void clear() {
+		audioQueue.clear();
 	}
 
 	public final void play(Audio var1) {
-		if (this.running) {
-			synchronized (this.audioQueue) {
-				this.audioQueue.add(var1);
+		if (running) {
+			synchronized (audioQueue) {
+				audioQueue.add(var1);
 			}
 		}
 	}
@@ -30,16 +36,12 @@ public final class SoundPlayer implements Runnable {
 		this.play(new Sound(var1, var2));
 	}
 
-	public void clear() {
-		this.audioQueue.clear();
-	}
-
 	@Override
 	public final void run() {
 		int[] var1 = new int[4410];
 		int[] var2 = new int[4410];
 
-		for (byte[] var3 = new byte[17640]; this.running; this.dataLine.write(var3, 0, 17640)) {
+		for (byte[] var3 = new byte[17640]; running; dataLine.write(var3, 0, 17640)) {
 			try {
 				Thread.sleep(1L);
 
@@ -66,7 +68,7 @@ public final class SoundPlayer implements Runnable {
 			}
 
 			int i;
-			if (!this.settings.music && !this.settings.sound) {
+			if (!settings.music && !settings.sound) {
 				for (i = 0; i < 4410; ++i) {
 					var3[i << 2] = 0;
 					var3[(i << 2) + 1] = 0;

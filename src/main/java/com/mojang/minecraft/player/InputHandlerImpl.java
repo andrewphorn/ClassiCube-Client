@@ -12,63 +12,23 @@ public class InputHandlerImpl extends InputHandler {
 	private boolean[] keyStates = new boolean[100];
 
 	private transient GameSettings settings;
+	private Player player;
 
-	public InputHandlerImpl(GameSettings gameSettings) {
+	public InputHandlerImpl(GameSettings gameSettings, Player player) {
 		settings = gameSettings;
-	}
-
-	@Override
-	public final void calc() {
-		if (this.settings.minecraft.currentScreen != null)
-			return;
-		this.move = 0.0F;
-		this.strafe = 0.0F;
-		this.elevate = 0.0F;
-		if (this.keylist[0] != false)
-			this.move -= 1.0F;
-		if (this.keylist[1] != false)
-			this.strafe -= 1.0F;
-		if (this.keylist[2] != false)
-			this.move += 1.0F;
-		if (this.keylist[3] != false)
-			this.strafe += 1.0F;
-		if (this.fly) {
-			if (this.keylist[5] != false)
-				this.elevate += 0.3F;
-			if (this.keylist[6] != false)
-				this.elevate -= 0.3F;
-		}
-		this.mult = 1.0F;
-		if (this.keylist[7] != false)
-			this.mult = 5.0F;
-		else if (this.keylist[8] != false)
-			this.mult = 2.0F;
-
-		this.noclip = this.cliplock;
-		if (this.keylist[9] != false) {
-			this.noclip = (!this.noclip);
-		}
-
-		this.jump = this.keylist[4];
+		this.player = player;
 	}
 
 	@Override
 	public void resetKeys() {
-		for (int i = 0; i < keyStates.length; ++i) {
-			keyStates[i] = false;
-		}
-		for (int i = 0; i < 10; i++)
-			this.keylist[i] = false;
+		keyStates = new boolean[100];
+		keylist = new boolean[10];
 	}
 
 	@Override
 	public void setKeyState(int key, boolean state) {
-		if(this.settings.minecraft.currentScreen!=null)
-			canMove = false;
-		else 
-			canMove = true;
 		byte index = -1;
-		if (this.HacksMode == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)) {
+		if (HacksMode == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)) {
 
 			if (key == settings.forwardKey.key) {
 				index = 0;
@@ -102,42 +62,54 @@ public class InputHandlerImpl extends InputHandler {
 				keyStates[index] = state;
 			}
 		} else {
-			if (key == settings.forwardKey.key)
-				this.keylist[0] = state;
-			if (key == settings.leftKey.key)
-				this.keylist[1] = state;
-			if (key == settings.backKey.key)
-				this.keylist[2] = state;
-			if (key == settings.rightKey.key)
-				this.keylist[3] = state;
-			if (key == 57)
-				this.keylist[4] = state;
-			if (key == 16)
-				this.keylist[5] = state;
-			if (key == 18)
-				this.keylist[6] = state;
-			if (key == 42)
-				this.keylist[7] = state;
-			if (key == 29)
-				this.keylist[8] = state;
-			if (key == 45)
-				this.keylist[9] = state;
-			if ((key == 60) && (state))
-				this.cliplock = (!this.cliplock);
-			if ((key == settings.flyKey.key) && (state))
-				this.fly = (!this.fly);
+			if (key == settings.forwardKey.key) {
+				keylist[0] = state;
+			}
+			if (key == settings.leftKey.key) {
+				keylist[1] = state;
+			}
+			if (key == settings.backKey.key) {
+				keylist[2] = state;
+			}
+			if (key == settings.rightKey.key) {
+				keylist[3] = state;
+			}
+			if (key == 57) {
+				keylist[4] = state;
+			}
+			if (key == 16) {
+				keylist[5] = state;
+			}
+			if (key == 18) {
+				keylist[6] = state;
+			}
+			if (key == 42) {
+				keylist[7] = state;
+			}
+			if (key == 29) {
+				keylist[8] = state;
+			}
+			if (key == 45) {
+				keylist[9] = state;
+			}
+			if (key == 60 && state) {
+				cliplock = !cliplock;
+			}
+			if (key == settings.flyKey.key && state) {
+				player.flyingMode = !player.flyingMode;
+			}
 		}
 	}
 
 	@Override
 	public void updateMovement(int hackMode) {
 		HacksMode = hackMode;
-		
-		if(this.settings.minecraft.currentScreen!=null)
-			canMove = false;
-		else 
+		if (settings.minecraft.currentScreen == null) {
 			canMove = true;
-		
+		} else {
+			resetKeys();
+			canMove = false;
+		}
 		if (HacksMode == 0) {
 			xxa = 0.0F;
 			yya = 0.0F;
@@ -159,7 +131,7 @@ public class InputHandlerImpl extends InputHandler {
 			}
 
 			jumping = keyStates[4];
-			if (this.settings.HacksEnabled) {
+			if (settings.HacksEnabled) {
 				if (settings.CanSpeed) {
 					running = keyStates[5];
 					Minecraft.PlayerIsRunning = keyStates[5];
@@ -167,6 +139,43 @@ public class InputHandlerImpl extends InputHandler {
 				flyingUp = keyStates[6];
 				flyingDown = keyStates[7];
 			}
+		} else {
+			move = 0.0F;
+			strafe = 0.0F;
+			elevate = 0.0F;
+			if (keylist[0] != false) {
+				move -= 1.0F;
+			}
+			if (keylist[1] != false) {
+				strafe -= 1.0F;
+			}
+			if (keylist[2] != false) {
+				move += 1.0F;
+			}
+			if (keylist[3] != false) {
+				strafe += 1.0F;
+			}
+			if (player.flyingMode) {
+				if (keylist[5] != false) {
+					elevate += 0.3F;
+				}
+				if (keylist[6] != false) {
+					elevate -= 0.3F;
+				}
+			}
+			mult = 1.0F;
+			if (keylist[7] != false) {
+				mult = 5.0F;
+			} else if (keylist[8] != false) {
+				mult = 2.0F;
+			}
+
+			player.noPhysics = cliplock;
+			if (keylist[9] != false) {
+				player.noPhysics = !player.noPhysics;
+			}
+
+			jump = keylist[4];
 		}
 	}
 }

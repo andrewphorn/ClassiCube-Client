@@ -12,16 +12,16 @@ public class Button extends Screen {
 	public boolean visible;
 
 	public Button(int var1, int var2, int var3, int var4, String var6) {
-		this.width = 200;
-		this.height = 20;
-		this.active = true;
-		this.visible = true;
-		this.id = var1;
-		this.x = var2;
-		this.y = var3;
-		this.width = var4;
-		this.height = 20;
-		this.text = var6;
+		width = 200;
+		height = 20;
+		active = true;
+		visible = true;
+		id = var1;
+		x = var2;
+		y = var3;
+		width = var4;
+		height = 20;
+		text = var6;
 	}
 
 	public Button(int var1, int var2, int var3, String var4) {

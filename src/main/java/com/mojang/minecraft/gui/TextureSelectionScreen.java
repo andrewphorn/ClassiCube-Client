@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
+import com.mojang.minecraft.ChatLine;
 import com.mojang.minecraft.Minecraft;
 
 public class TextureSelectionScreen extends GuiScreen implements Runnable {
@@ -23,41 +24,43 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	protected File selectedFile;
 
 	public TextureSelectionScreen(GuiScreen var1) {
-		this.parent = var1;
+		parent = var1;
 	}
 
 	@Override
 	protected final void onButtonClick(Button var1) {
-		if (!this.frozen && var1.active) {
-			if (this.loaded && var1.id < 5) {
+		if (!frozen && var1.active) {
+			if (loaded && var1.id < 5) {
 				this.openTexture(textures.get(var1.id));
 			}
 
-			if (this.loaded && var1.id == 6) {
-				this.frozen = true;
+			if (loaded && var1.id == 6) {
+				frozen = true;
 				TextureDialog var2;
 				(var2 = new TextureDialog(this, minecraft)).setDaemon(true);
 				SwingUtilities.invokeLater(var2);
 			}
 
-			if (this.finished || this.loaded && var1.id == 7) {
-				this.minecraft.setCurrentScreen(this.parent);
+			if (finished || loaded && var1.id == 7) {
+				minecraft.setCurrentScreen(parent);
 			}
 			if (var1.id == 8) {
-				this.minecraft.textureManager.resetAllMods();
-				this.minecraft.textureManager.load("/terrain.png");
-				this.minecraft.textureManager.initAtlas();
-				this.minecraft.setCurrentScreen((GuiScreen) null);
-				this.minecraft.grabMouse();
-				this.minecraft.textureManager.textures.clear();
-				//this.minecraft.levelRenderer.refresh();
+				minecraft.textureManager.resetAllMods();
+				minecraft.textureManager.load("/terrain.png");
+				minecraft.textureManager.initAtlas();
+				minecraft.setCurrentScreen((GuiScreen) null);
+				minecraft.grabMouse();
+				minecraft.textureManager.textures.clear();
+				// this.minecraft.levelRenderer.refresh();
 				try {
-					this.minecraft.fontRenderer = new FontRenderer(this.minecraft.settings, "/default.png", this.minecraft.textureManager);
+					minecraft.fontRenderer = new FontRenderer(minecraft.settings, "/default.png",
+							minecraft.textureManager);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				this.minecraft.settings.lastUsedTexturePack = null;
-				this.minecraft.settings.save();
+				minecraft.settings.lastUsedTexturePack = null;
+				minecraft.settings.save();
+				minecraft.textureManager.registerAnimations();
 			}
 		}
 	}
@@ -65,56 +68,54 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	@Override
 	public final void onClose() {
 		super.onClose();
-		if (this.chooser != null) {
-			this.chooser.cancelSelection();
+		if (chooser != null) {
+			chooser.cancelSelection();
 		}
 
 	}
 
 	@Override
 	public void onOpen() {
-		(new Thread(this)).start();
+		new Thread(this).start();
 
 		for (int var1 = 0; var1 < 5; ++var1) {
-			this.buttons.add(new Button(var1, this.width / 2 - 100, this.height / 6 + var1 * 24,
-					"---"));
-			this.buttons.get(var1).visible = false;
-			this.buttons.get(var1).active = false;
+			buttons.add(new Button(var1, width / 2 - 100, height / 6 + var1 * 24, "---"));
+			buttons.get(var1).visible = false;
+			buttons.get(var1).active = false;
 		}
 
-		this.buttons.add(new Button(6, this.width / 2 - 100, this.height / 6 + 120 + 12,
-				"Load file..."));
-		this.buttons.add(new Button(7, this.width / 2 - 100, this.height / 6 + 154 + 22, "Cancel"));
-		this.buttons.add(new Button(8, this.width / 2 - 100, this.height / 6 + 154,
-				"Default Texture"));
+		buttons.add(new Button(6, width / 2 - 100, height / 6 + 120 + 12, "Load file..."));
+		buttons.add(new Button(7, width / 2 - 100, height / 6 + 154 + 22, "Cancel"));
+		buttons.add(new Button(8, width / 2 - 100, height / 6 + 154, "Default Texture"));
 	}
 
 	protected void openTexture(String file) {
 		try {
-			this.minecraft.textureManager.loadTexturePack(file);
-			this.minecraft.fontRenderer = new FontRenderer(this.minecraft.settings, "/default.png", this.minecraft.textureManager);
-			this.minecraft.settings.lastUsedTexturePack = file;
-			this.minecraft.settings.save();
+			minecraft.textureManager.loadTexturePack(file);
+			minecraft.fontRenderer = new FontRenderer(minecraft.settings, "/default.png",
+					minecraft.textureManager);
+			minecraft.settings.lastUsedTexturePack = file;
+			minecraft.settings.save();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.minecraft.setCurrentScreen((GuiScreen) null);
-		this.minecraft.grabMouse();
+		minecraft.setCurrentScreen((GuiScreen) null);
+		minecraft.grabMouse();
 	}
 
 	protected void openTexture(TexturePackData var1) {
-		this.selectedFile = new File(var1.location);
+		selectedFile = new File(var1.location);
 		openTexture(var1.location);
-		this.minecraft.setCurrentScreen(this.parent);
+		minecraft.setCurrentScreen(parent);
 	}
 
 	@Override
 	public void render(int var1, int var2) {
-		drawFadingBox(0, 0, this.width, this.height, 1610941696, -1607454624);
-		drawCenteredString(this.fontRenderer, this.title, this.width / 2, 20, 16777215);
-		if (this.frozen) {
-			drawCenteredString(this.fontRenderer, "Selecting file..", this.width / 2,
-					this.height / 2 - 4, 16777215);
+		drawFadingBox(0, 0, width, height, 1610941696, -1607454624);
+		drawCenteredString(fontRenderer, title, width / 2, 20, 16777215);
+		if (frozen) {
+			drawCenteredString(fontRenderer, "Selecting file..", width / 2, height / 2 - 4,
+					16777215);
 
 			try {
 				Thread.sleep(20L);
@@ -122,9 +123,8 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 				var3.printStackTrace();
 			}
 		} else {
-			if (!this.loaded) {
-				drawCenteredString(this.fontRenderer, this.status, this.width / 2,
-						this.height / 2 - 4, 16777215);
+			if (!loaded) {
+				drawCenteredString(fontRenderer, status, width / 2, height / 2 - 4, 16777215);
 			}
 
 			super.render(var1, var2);
@@ -134,7 +134,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	@Override
 	public void run() {
 		try {
-			if (this.frozen) {
+			if (frozen) {
 				try {
 					Thread.sleep(100L);
 				} catch (InterruptedException var2) {
@@ -142,27 +142,27 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 				}
 			}
 
-			this.status = "Getting texture list..";
+			status = "Getting texture list..";
 			TexturePackData data;
-			for (String file : (new File(Minecraft.getMinecraftDirectory() + "/texturepacks")
-					.list())) {
-				if (!file.endsWith(".zip"))
+			for (String file : new File(Minecraft.getMinecraftDirectory() + "/texturepacks").list()) {
+				if (!file.endsWith(".zip")) {
 					continue;
+				}
 				data = new TexturePackData(file, file.substring(0, file.indexOf(".")));
 				textures.add(data);
 			}
-			if (this.textures.size() >= 1) {
-				this.setTextures(this.textures);
-				this.loaded = true;
+			if (textures.size() >= 1) {
+				setTextures(textures);
+				loaded = true;
 				return;
 			}
 
-			this.status = "Finished loading textures";
-			this.finished = true;
+			status = "Finished loading textures";
+			finished = true;
 		} catch (Exception var3) {
 			var3.printStackTrace();
-			this.status = "Failed to load textures";
-			this.finished = true;
+			status = "Failed to load textures";
+			finished = true;
 		}
 
 	}
@@ -170,17 +170,17 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 	protected void setTextures(ArrayList<TexturePackData> var1) {
 		for (int var2 = 0; var2 < Math.min(var1.size(), 5); ++var2) {
 
-			this.buttons.get(var2).active = !var1.get(var2).equals("-");
-			this.buttons.get(var2).text = var1.get(var2).name;
-			this.buttons.get(var2).visible = true;
+			buttons.get(var2).active = !var1.get(var2).equals("-");
+			buttons.get(var2).text = var1.get(var2).name;
+			buttons.get(var2).visible = true;
 		}
 	}
 
 	@Override
 	public final void tick() {
 		super.tick();
-		if (this.selectedFile != null) {
-			this.selectedFile = null;
+		if (selectedFile != null) {
+			selectedFile = null;
 		}
 	}
 }

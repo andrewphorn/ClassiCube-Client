@@ -1,8 +1,8 @@
 package com.mojang.minecraft.level;
 
-import com.mojang.minecraft.Entity;
-
 import java.io.Serializable;
+
+import com.mojang.minecraft.Entity;
 
 class BlockMap$Slot implements Serializable {
 
@@ -33,52 +33,52 @@ class BlockMap$Slot implements Serializable {
 	final BlockMap blockMap;
 
 	public BlockMap$Slot(BlockMap var1) {
-		this.blockMap = var1;
+		blockMap = var1;
 	}
 
 	public void add(Entity var1) {
-		if (this.xSlot >= 0 && this.ySlot >= 0 && this.zSlot >= 0) {
-			this.blockMap.entityGrid[(this.zSlot * BlockMap.getDepth(this.blockMap) + this.ySlot)
-					* BlockMap.getWidth(this.blockMap) + this.xSlot].add(var1);
+		if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
+			blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
+					* BlockMap.getWidth(blockMap) + xSlot].add(var1);
 		}
 
 	}
 
 	public BlockMap$Slot init(float var1, float var2, float var3) {
-		this.xSlot = (int) (var1 / 16.0F);
-		this.ySlot = (int) (var2 / 16.0F);
-		this.zSlot = (int) (var3 / 16.0F);
-		if (this.xSlot < 0) {
-			this.xSlot = 0;
+		xSlot = (int) (var1 / 16.0F);
+		ySlot = (int) (var2 / 16.0F);
+		zSlot = (int) (var3 / 16.0F);
+		if (xSlot < 0) {
+			xSlot = 0;
 		}
 
-		if (this.ySlot < 0) {
-			this.ySlot = 0;
+		if (ySlot < 0) {
+			ySlot = 0;
 		}
 
-		if (this.zSlot < 0) {
-			this.zSlot = 0;
+		if (zSlot < 0) {
+			zSlot = 0;
 		}
 
-		if (this.xSlot >= BlockMap.getWidth(this.blockMap)) {
-			this.xSlot = BlockMap.getWidth(this.blockMap) - 1;
+		if (xSlot >= BlockMap.getWidth(blockMap)) {
+			xSlot = BlockMap.getWidth(blockMap) - 1;
 		}
 
-		if (this.ySlot >= BlockMap.getDepth(this.blockMap)) {
-			this.ySlot = BlockMap.getDepth(this.blockMap) - 1;
+		if (ySlot >= BlockMap.getDepth(blockMap)) {
+			ySlot = BlockMap.getDepth(blockMap) - 1;
 		}
 
-		if (this.zSlot >= BlockMap.getHeight(this.blockMap)) {
-			this.zSlot = BlockMap.getHeight(this.blockMap) - 1;
+		if (zSlot >= BlockMap.getHeight(blockMap)) {
+			zSlot = BlockMap.getHeight(blockMap) - 1;
 		}
 
 		return this;
 	}
 
 	public void remove(Entity var1) {
-		if (this.xSlot >= 0 && this.ySlot >= 0 && this.zSlot >= 0) {
-			this.blockMap.entityGrid[(this.zSlot * BlockMap.getDepth(this.blockMap) + this.ySlot)
-					* BlockMap.getWidth(this.blockMap) + this.xSlot].remove(var1);
+		if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
+			blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
+					* BlockMap.getWidth(blockMap) + xSlot].remove(var1);
 		}
 
 	}

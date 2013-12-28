@@ -10,10 +10,10 @@ public class InputHandler {
 
 	public boolean flyingUp = false;
 
+	boolean canMove = true;
+
 	public boolean flyingDown = false;
 	public boolean flying = false;
-
-	public boolean canMove = true;
 
 	public float move = 0.0F;
 	public float strafe = 0.0F;
@@ -21,18 +21,14 @@ public class InputHandler {
 	public float mult = 1.0F;
 	public boolean fall = false;
 	public boolean jump = false;
-	public boolean fly = false;
-	public boolean noclip = false;
 	public boolean cliplock = false;
 
 	public int HacksMode = 0; // java doesn't have package aliasing
-        // eg import x as y
-        // so this has to be unique from the module name
-        // so that I can import that module to check status of 
-        // noclip, fly, and speed.
 
-	public void calc() {
-	}
+	// eg import x as y
+	// so this has to be unique from the module name
+	// so that I can import that module to check status of
+	// noclip, fly, and speed.
 
 	public void resetKeys() {
 	}

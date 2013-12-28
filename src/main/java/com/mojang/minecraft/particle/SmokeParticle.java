@@ -9,12 +9,12 @@ public class SmokeParticle extends Particle {
 
 	public SmokeParticle(Level var1, float var2, float var3, float var4) {
 		super(var1, var2, var3, var4, 0.0F, 0.0F, 0.0F);
-		this.xd *= 0.1F;
-		this.yd *= 0.1F;
-		this.zd *= 0.1F;
-		this.rCol = this.gCol = this.bCol = (float) (Math.random() * 0.30000001192092896D);
-		this.lifetime = (int) (8.0D / (Math.random() * 0.8D + 0.2D));
-		this.noPhysics = true;
+		xd *= 0.1F;
+		yd *= 0.1F;
+		zd *= 0.1F;
+		rCol = gCol = bCol = (float) (Math.random() * 0.30000001192092896D);
+		lifetime = (int) (8.0D / (Math.random() * 0.8D + 0.2D));
+		noPhysics = true;
 	}
 
 	@Override
@@ -25,22 +25,22 @@ public class SmokeParticle extends Particle {
 
 	@Override
 	public void tick() {
-		this.xo = this.x;
-		this.yo = this.y;
-		this.zo = this.z;
-		if (this.age++ >= this.lifetime) {
-			this.remove();
+		xo = x;
+		yo = y;
+		zo = z;
+		if (age++ >= lifetime) {
+			remove();
 		}
 
-		this.tex = 7 - (this.age << 3) / this.lifetime;
-		this.yd = (float) (this.yd + 0.004D);
-		this.move(this.xd, this.yd, this.zd);
-		this.xd *= 0.96F;
-		this.yd *= 0.96F;
-		this.zd *= 0.96F;
-		if (this.onGround) {
-			this.xd *= 0.7F;
-			this.zd *= 0.7F;
+		tex = 7 - (age << 3) / lifetime;
+		yd = (float) (yd + 0.004D);
+		move(xd, yd, zd);
+		xd *= 0.96F;
+		yd *= 0.96F;
+		zd *= 0.96F;
+		if (onGround) {
+			xd *= 0.7F;
+			zd *= 0.7F;
 		}
 
 	}

@@ -1,14 +1,14 @@
 package com.mojang.minecraft.level.generator;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import com.mojang.minecraft.ProgressBarDisplay;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.generator.noise.CombinedNoise;
 import com.mojang.minecraft.level.generator.noise.OctaveNoise;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.util.MathHelper;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 public final class LevelGenerator {
 
@@ -22,7 +22,7 @@ public final class LevelGenerator {
 	private int[] h = new int[1048576];
 
 	public LevelGenerator(ProgressBarDisplay var1) {
-		this.progressBar = var1;
+		progressBar = var1;
 	}
 
 	private long flood(int var1, int var2, int var3, int var5) {
@@ -32,27 +32,27 @@ public final class LevelGenerator {
 		int var7 = 1;
 
 		int var8;
-		for (var8 = 1; 1 << var7 < this.width; ++var7) {
+		for (var8 = 1; 1 << var7 < width; ++var7) {
 			;
 		}
 
-		while (1 << var8 < this.depth) {
+		while (1 << var8 < depth) {
 			++var8;
 		}
 
-		int var9 = this.depth - 1;
-		int var10 = this.width - 1;
+		int var9 = depth - 1;
+		int var10 = width - 1;
 		int var22 = var6 + 1;
-		this.h[0] = ((var2 << var8) + var3 << var7) + var1;
+		h[0] = ((var2 << var8) + var3 << var7) + var1;
 		long var11 = 0L;
-		var1 = this.width * this.depth;
+		var1 = width * depth;
 
 		while (var22 > 0) {
 			--var22;
-			var2 = this.h[var22];
+			var2 = h[var22];
 			if (var22 == 0 && var21.size() > 0) {
-				this.h = var21.remove(var21.size() - 1);
-				var22 = this.h.length;
+				h = var21.remove(var21.size() - 1);
+				var22 = h.length;
 			}
 
 			var3 = var2 >> var7 & var9;
@@ -60,11 +60,11 @@ public final class LevelGenerator {
 
 			int var14;
 			int var15;
-			for (var15 = var14 = var2 & var10; var14 > 0 && this.blocks[var2 - 1] == 0; --var2) {
+			for (var15 = var14 = var2 & var10; var14 > 0 && blocks[var2 - 1] == 0; --var2) {
 				--var14;
 			}
 
-			while (var15 < this.width && this.blocks[var2 + var15 - var14] == 0) {
+			while (var15 < width && blocks[var2 + var15 - var14] == 0) {
 				++var15;
 			}
 
@@ -80,51 +80,51 @@ public final class LevelGenerator {
 			var11 += var15 - var14;
 
 			for (; var14 < var15; ++var14) {
-				this.blocks[var2] = var20;
+				blocks[var2] = var20;
 				boolean var19;
 				if (var3 > 0) {
-					if ((var19 = this.blocks[var2 - this.width] == 0) && !var23) {
-						if (var22 == this.h.length) {
-							var21.add(this.h);
-							this.h = new int[1048576];
+					if ((var19 = blocks[var2 - width] == 0) && !var23) {
+						if (var22 == h.length) {
+							var21.add(h);
+							h = new int[1048576];
 							var22 = 0;
 						}
 
-						this.h[var22++] = var2 - this.width;
+						h[var22++] = var2 - width;
 					}
 
 					var23 = var19;
 				}
 
-				if (var3 < this.depth - 1) {
-					if ((var19 = this.blocks[var2 + this.width] == 0) && !var24) {
-						if (var22 == this.h.length) {
-							var21.add(this.h);
-							this.h = new int[1048576];
+				if (var3 < depth - 1) {
+					if ((var19 = blocks[var2 + width] == 0) && !var24) {
+						if (var22 == h.length) {
+							var21.add(h);
+							h = new int[1048576];
 							var22 = 0;
 						}
 
-						this.h[var22++] = var2 + this.width;
+						h[var22++] = var2 + width;
 					}
 
 					var24 = var19;
 				}
 
 				if (var13 > 0) {
-					byte var25 = this.blocks[var2 - var1];
+					byte var25 = blocks[var2 - var1];
 					if ((var20 == Block.LAVA.id || var20 == Block.STATIONARY_LAVA.id)
 							&& (var25 == Block.WATER.id || var25 == Block.STATIONARY_WATER.id)) {
-						this.blocks[var2 - var1] = (byte) Block.STONE.id;
+						blocks[var2 - var1] = (byte) Block.STONE.id;
 					}
 
 					if ((var19 = var25 == 0) && !var18) {
-						if (var22 == this.h.length) {
-							var21.add(this.h);
-							this.h = new int[1048576];
+						if (var22 == h.length) {
+							var21.add(h);
+							h = new int[1048576];
 							var22 = 0;
 						}
 
-						this.h[var22++] = var2 - var1;
+						h[var22++] = var2 - var1;
 					}
 
 					var18 = var19;
@@ -138,20 +138,20 @@ public final class LevelGenerator {
 	}
 
 	public final Level generate(String var1, int var2, int var3, int var4) {
-		this.progressBar.setTitle("Generating level");
-		this.width = var2;
-		this.depth = var3;
-		this.height = 64;
-		this.waterLevel = 32;
-		this.blocks = new byte[var2 * var3 << 6];
-		this.progressBar.setText("Raising..");
+		progressBar.setTitle("Generating level");
+		width = var2;
+		depth = var3;
+		height = 64;
+		waterLevel = 32;
+		blocks = new byte[var2 * var3 << 6];
+		progressBar.setText("Raising..");
 		LevelGenerator var5 = this;
-		CombinedNoise var6 = new CombinedNoise(new OctaveNoise(this.random, 8), new OctaveNoise(
-				this.random, 8));
-		CombinedNoise var7 = new CombinedNoise(new OctaveNoise(this.random, 8), new OctaveNoise(
-				this.random, 8));
-		OctaveNoise var8 = new OctaveNoise(this.random, 6);
-		int[] var9 = new int[this.width * this.depth];
+		CombinedNoise var6 = new CombinedNoise(new OctaveNoise(random, 8), new OctaveNoise(random,
+				8));
+		CombinedNoise var7 = new CombinedNoise(new OctaveNoise(random, 8), new OctaveNoise(random,
+				8));
+		OctaveNoise var8 = new OctaveNoise(random, 6);
+		int[] var9 = new int[width * depth];
 		float var10 = 1.3F;
 
 		int var11;
@@ -160,10 +160,8 @@ public final class LevelGenerator {
 			var5.setProgress(var11 * 100 / (var5.width - 1));
 
 			for (var12 = 0; var12 < var5.depth; ++var12) {
-				double var13 = var6.compute(var11 * var10,
-						var12 * var10) / 6.0D + -4;
-				double var15 = var7.compute(var11 * var10,
-						var12 * var10) / 5.0D + 10.0D + -4;
+				double var13 = var6.compute(var11 * var10, var12 * var10) / 6.0D + -4;
+				double var15 = var7.compute(var11 * var10, var12 * var10) / 5.0D + 10.0D + -4;
 				if (var8.compute(var11, var12) / 8.0D > 0.0D) {
 					var15 = var13;
 				}
@@ -177,12 +175,12 @@ public final class LevelGenerator {
 			}
 		}
 
-		this.progressBar.setText("Eroding..");
+		progressBar.setText("Eroding..");
 		int[] var42 = var9;
 		var5 = this;
-		var7 = new CombinedNoise(new OctaveNoise(this.random, 8), new OctaveNoise(this.random, 8));
-		CombinedNoise var49 = new CombinedNoise(new OctaveNoise(this.random, 8), new OctaveNoise(
-				this.random, 8));
+		var7 = new CombinedNoise(new OctaveNoise(random, 8), new OctaveNoise(random, 8));
+		CombinedNoise var49 = new CombinedNoise(new OctaveNoise(random, 8), new OctaveNoise(random,
+				8));
 
 		int var23;
 		int var51;
@@ -200,13 +198,13 @@ public final class LevelGenerator {
 			}
 		}
 
-		this.progressBar.setText("Soiling..");
+		progressBar.setText("Soiling..");
 		var42 = var9;
 		var5 = this;
-		int var46 = this.width;
-		int var48 = this.depth;
-		var51 = this.height;
-		OctaveNoise var53 = new OctaveNoise(this.random, 8);
+		int var46 = width;
+		int var48 = depth;
+		var51 = height;
+		OctaveNoise var53 = new OctaveNoise(random, 8);
 
 		int var25;
 		int var24;
@@ -248,11 +246,11 @@ public final class LevelGenerator {
 			}
 		}
 
-		this.progressBar.setText("Carving..");
+		progressBar.setText("Carving..");
 		var5 = this;
-		var48 = this.width;
-		var51 = this.depth;
-		var54 = this.height;
+		var48 = width;
+		var51 = depth;
+		var54 = height;
 		var24 = var48 * var51 * var54 / 256 / 64 << 1;
 
 		for (var11 = 0; var11 < var24; ++var11) {
@@ -309,13 +307,13 @@ public final class LevelGenerator {
 			}
 		}
 
-		this.populateOre(Block.COAL_ORE.id, 90, 1, 4);
-		this.populateOre(Block.IRON_ORE.id, 70, 2, 4);
-		this.populateOre(Block.GOLD_ORE.id, 50, 3, 4);
-		this.progressBar.setText("Watering..");
+		populateOre(Block.COAL_ORE.id, 90, 1, 4);
+		populateOre(Block.IRON_ORE.id, 70, 2, 4);
+		populateOre(Block.GOLD_ORE.id, 50, 3, 4);
+		progressBar.setText("Watering..");
 		var5 = this;
 		var51 = Block.STATIONARY_WATER.id;
-		this.setProgress(0);
+		setProgress(0);
 
 		for (var54 = 0; var54 < var5.width; ++var54) {
 			var5.flood(var54, var5.height / 2 - 1, 0, var51);
@@ -343,9 +341,9 @@ public final class LevelGenerator {
 		}
 
 		var5.setProgress(100);
-		this.progressBar.setText("Melting..");
+		progressBar.setText("Melting..");
 		var5 = this;
-		var46 = this.width * this.depth * this.height / 20000;
+		var46 = width * depth * height / 20000;
 
 		for (var48 = 0; var48 < var46; ++var48) {
 			if (var48 % 100 == 0) {
@@ -361,14 +359,14 @@ public final class LevelGenerator {
 		}
 
 		var5.setProgress(100);
-		this.progressBar.setText("Growing..");
+		progressBar.setText("Growing..");
 		var42 = var9;
 		var5 = this;
-		var46 = this.width;
-		var48 = this.depth;
-		var51 = this.height;
-		var53 = new OctaveNoise(this.random, 8);
-		OctaveNoise var58 = new OctaveNoise(this.random, 8);
+		var46 = width;
+		var48 = depth;
+		var51 = height;
+		var53 = new OctaveNoise(random, 8);
+		OctaveNoise var58 = new OctaveNoise(random, 8);
 
 		int var63;
 		for (var11 = 0; var11 < var46; ++var11) {
@@ -395,11 +393,11 @@ public final class LevelGenerator {
 			}
 		}
 
-		this.progressBar.setText("Planting..");
+		progressBar.setText("Planting..");
 		var42 = var9;
 		var5 = this;
-		var46 = this.width;
-		var48 = this.width * this.depth / 3000;
+		var46 = width;
+		var48 = width * depth / 3000;
 
 		for (var51 = 0; var51 < var48; ++var51) {
 			var54 = var5.random.nextInt(2);
@@ -435,8 +433,8 @@ public final class LevelGenerator {
 
 		var42 = var9;
 		var5 = this;
-		var46 = this.width;
-		var51 = this.width * this.depth * this.height / 2000;
+		var46 = width;
+		var51 = width * depth * height / 2000;
 
 		for (var54 = 0; var54 < var51; ++var54) {
 			var24 = var5.random.nextInt(2);
@@ -476,16 +474,16 @@ public final class LevelGenerator {
 		}
 
 		Level var65;
-		(var65 = new Level()).waterLevel = this.waterLevel;
-		var65.setData(var2, 64, var3, this.blocks);
+		(var65 = new Level()).waterLevel = waterLevel;
+		var65.setData(var2, 64, var3, blocks);
 		var65.createTime = System.currentTimeMillis();
 		var65.creator = var1;
 		var65.name = "A Nice World";
 		int[] var52 = var9;
 		Level var47 = var65;
 		var5 = this;
-		var48 = this.width;
-		var51 = this.width * this.depth / 4000;
+		var48 = width;
+		var51 = width * depth / 4000;
 
 		for (var54 = 0; var54 < var51; ++var54) {
 			var5.setProgress(var54 * 50 / (var51 - 1) + 50);
@@ -514,21 +512,20 @@ public final class LevelGenerator {
 
 	private void populateOre(int var1, int var2, int var3, int var4) {
 		byte var25 = (byte) var1;
-		var4 = this.width;
-		int var5 = this.depth;
-		int var6 = this.height;
+		var4 = width;
+		int var5 = depth;
+		int var6 = height;
 		int var7 = var4 * var5 * var6 / 256 / 64 * var2 / 100;
 
 		for (int var8 = 0; var8 < var7; ++var8) {
-			this.setProgress(var8 * 100 / (var7 - 1) / 4 + var3 * 100 / 4);
-			float var9 = this.random.nextFloat() * var4;
-			float var10 = this.random.nextFloat() * var6;
-			float var11 = this.random.nextFloat() * var5;
-			int var12 = (int) ((this.random.nextFloat() + this.random.nextFloat()) * 75.0F
-					* var2 / 100.0F);
-			float var13 = this.random.nextFloat() * 3.1415927F * 2.0F;
+			setProgress(var8 * 100 / (var7 - 1) / 4 + var3 * 100 / 4);
+			float var9 = random.nextFloat() * var4;
+			float var10 = random.nextFloat() * var6;
+			float var11 = random.nextFloat() * var5;
+			int var12 = (int) ((random.nextFloat() + random.nextFloat()) * 75.0F * var2 / 100.0F);
+			float var13 = random.nextFloat() * 3.1415927F * 2.0F;
 			float var14 = 0.0F;
-			float var15 = this.random.nextFloat() * 3.1415927F * 2.0F;
+			float var15 = random.nextFloat() * 3.1415927F * 2.0F;
 			float var16 = 0.0F;
 
 			for (int var17 = 0; var17 < var12; ++var17) {
@@ -536,11 +533,10 @@ public final class LevelGenerator {
 				var11 += MathHelper.cos(var13) * MathHelper.cos(var15);
 				var10 += MathHelper.sin(var15);
 				var13 += var14 * 0.2F;
-				var14 = (var14 *= 0.9F) + (this.random.nextFloat() - this.random.nextFloat());
+				var14 = (var14 *= 0.9F) + (random.nextFloat() - random.nextFloat());
 				var15 = (var15 + var16 * 0.5F) * 0.5F;
-				var16 = (var16 *= 0.9F) + (this.random.nextFloat() - this.random.nextFloat());
-				float var18 = MathHelper.sin(var17 * 3.1415927F / var12)
-						* var2 / 100.0F + 1.0F;
+				var16 = (var16 *= 0.9F) + (random.nextFloat() - random.nextFloat());
+				float var18 = MathHelper.sin(var17 * 3.1415927F / var12) * var2 / 100.0F + 1.0F;
 
 				for (int var19 = (int) (var9 - var18); var19 <= (int) (var9 + var18); ++var19) {
 					for (int var20 = (int) (var10 - var18); var20 <= (int) (var10 + var18); ++var20) {
@@ -553,12 +549,11 @@ public final class LevelGenerator {
 									&& var19 >= 1
 									&& var20 >= 1
 									&& var21 >= 1
-									&& var19 < this.width - 1
-									&& var20 < this.height - 1
-									&& var21 < this.depth - 1) {
-								int var26 = (var20 * this.depth + var21) * this.width + var19;
-								if (this.blocks[var26] == Block.STONE.id) {
-									this.blocks[var26] = var25;
+									&& var19 < width - 1
+									&& var20 < height - 1 && var21 < depth - 1) {
+								int var26 = (var20 * depth + var21) * width + var19;
+								if (blocks[var26] == Block.STONE.id) {
+									blocks[var26] = var25;
 								}
 							}
 						}
@@ -570,6 +565,6 @@ public final class LevelGenerator {
 	}
 
 	private void setProgress(int var1) {
-		this.progressBar.setProgress(var1);
+		progressBar.setProgress(var1);
 	}
 }

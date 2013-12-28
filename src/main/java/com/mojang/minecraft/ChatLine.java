@@ -16,24 +16,28 @@ public class ChatLine {
 
 	public ChatLine(String message) {
 		this.message = message;
-		this.time = 0;
+		time = 0;
 		Calendar cal = Calendar.getInstance();
 		String month = new SimpleDateFormat("MMM").format(cal.getTime());
 		String serverName = ProgressBarDisplay.title.toLowerCase().contains("connecting..") ? ""
 				: ProgressBarDisplay.title;
-		if (serverName == "" || Minecraft.isSinglePlayer)
+		if (serverName == "" || Minecraft.isSinglePlayer) {
 			return;
+		}
 		serverName = FontRenderer.stripColor(serverName);
 		serverName = serverName.replaceAll("[^A-Za-z0-9\\._-]+", "_");
 		File logDir = new File(Minecraft.getMinecraftDirectory(), "/logs/");
 		File serverDir = new File(logDir, serverName);
 		File monthDir = new File(serverDir, "/" + month + "/");
-		if (!logDir.exists())
+		if (!logDir.exists()) {
 			logDir.mkdir();
-		if (!serverDir.exists())
+		}
+		if (!serverDir.exists()) {
 			serverDir.mkdir();
-		if (!monthDir.exists())
+		}
+		if (!monthDir.exists()) {
 			monthDir.mkdir();
+		}
 		String dateStamp = new SimpleDateFormat("MM-dd-yyyy").format(Calendar.getInstance()
 				.getTime());
 		String timeStamp = new SimpleDateFormat("HH:mm:ss")

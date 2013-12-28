@@ -61,7 +61,8 @@ public class CreativeGameMode extends GameMode {
 	public void openInventory() {
 		BlockSelectScreen blockSelectScreen = new BlockSelectScreen();
 
-		if (GameSettings.CanReplaceSlot)
+		if (GameSettings.CanReplaceSlot) {
 			minecraft.setCurrentScreen(blockSelectScreen);
+		}
 	}
 }

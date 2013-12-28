@@ -14,30 +14,30 @@ public class ChickenModel extends Model {
 
 	public ChickenModel() {
 		byte var1 = 16;
-		this.head = new ModelPart(0, 0);
-		this.head.setBounds(-2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F);
-		this.head.setPosition(0.0F, -1 + var1, -4.0F);
-		this.bill = new ModelPart(14, 0);
-		this.bill.setBounds(-2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F);
-		this.bill.setPosition(0.0F, -1 + var1, -4.0F);
-		this.chin = new ModelPart(14, 4);
-		this.chin.setBounds(-1.0F, -2.0F, -3.0F, 2, 2, 2, 0.0F);
-		this.chin.setPosition(0.0F, -1 + var1, -4.0F);
-		this.body = new ModelPart(0, 9);
-		this.body.setBounds(-3.0F, -4.0F, -3.0F, 6, 8, 6, 0.0F);
-		this.body.setPosition(0.0F, var1, 0.0F);
-		this.rightLeg = new ModelPart(26, 0);
-		this.rightLeg.setBounds(-1.0F, 0.0F, -3.0F, 3, 5, 3, 0.0F);
-		this.rightLeg.setPosition(-2.0F, 3 + var1, 1.0F);
-		this.leftLeg = new ModelPart(26, 0);
-		this.leftLeg.setBounds(-1.0F, 0.0F, -3.0F, 3, 5, 3, 0.0F);
-		this.leftLeg.setPosition(1.0F, 3 + var1, 1.0F);
-		this.rightWing = new ModelPart(24, 13);
-		this.rightWing.setBounds(0.0F, 0.0F, -3.0F, 1, 4, 6, 0.0F);
-		this.rightWing.setPosition(-4.0F, -3 + var1, 0.0F);
-		this.leftWing = new ModelPart(24, 13);
-		this.leftWing.setBounds(-1.0F, 0.0F, -3.0F, 1, 4, 6, 0.0F);
-		this.leftWing.setPosition(4.0F, -3 + var1, 0.0F);
+		head = new ModelPart(0, 0);
+		head.setBounds(-2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F);
+		head.setPosition(0.0F, -1 + var1, -4.0F);
+		bill = new ModelPart(14, 0);
+		bill.setBounds(-2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F);
+		bill.setPosition(0.0F, -1 + var1, -4.0F);
+		chin = new ModelPart(14, 4);
+		chin.setBounds(-1.0F, -2.0F, -3.0F, 2, 2, 2, 0.0F);
+		chin.setPosition(0.0F, -1 + var1, -4.0F);
+		body = new ModelPart(0, 9);
+		body.setBounds(-3.0F, -4.0F, -3.0F, 6, 8, 6, 0.0F);
+		body.setPosition(0.0F, var1, 0.0F);
+		rightLeg = new ModelPart(26, 0);
+		rightLeg.setBounds(-1.0F, 0.0F, -3.0F, 3, 5, 3, 0.0F);
+		rightLeg.setPosition(-2.0F, 3 + var1, 1.0F);
+		leftLeg = new ModelPart(26, 0);
+		leftLeg.setBounds(-1.0F, 0.0F, -3.0F, 3, 5, 3, 0.0F);
+		leftLeg.setPosition(1.0F, 3 + var1, 1.0F);
+		rightWing = new ModelPart(24, 13);
+		rightWing.setBounds(0.0F, 0.0F, -3.0F, 1, 4, 6, 0.0F);
+		rightWing.setPosition(-4.0F, -3 + var1, 0.0F);
+		leftWing = new ModelPart(24, 13);
+		leftWing.setBounds(-1.0F, 0.0F, -3.0F, 1, 4, 6, 0.0F);
+		leftWing.setPosition(4.0F, -3 + var1, 0.0F);
 	}
 
 	/**
@@ -45,15 +45,15 @@ public class ChickenModel extends Model {
 	 */
 	@Override
 	public void render(float par2, float par3, float par4, float par5, float par6, float par7) {
-		this.setRotationAngles(par2, par3, par4, par5, par6, par7);
-		this.head.render(par7);
-		this.bill.render(par7);
-		this.chin.render(par7);
-		this.body.render(par7);
-		this.rightLeg.render(par7);
-		this.leftLeg.render(par7);
-		this.rightWing.render(par7);
-		this.leftWing.render(par7);
+		setRotationAngles(par2, par3, par4, par5, par6, par7);
+		head.render(par7);
+		bill.render(par7);
+		chin.render(par7);
+		body.render(par7);
+		rightLeg.render(par7);
+		leftLeg.render(par7);
+		rightWing.render(par7);
+		leftWing.render(par7);
 	}
 
 	/**
@@ -64,16 +64,16 @@ public class ChickenModel extends Model {
 	 */
 	public void setRotationAngles(float par1, float par2, float par3, float par4, float par5,
 			float par6) {
-		this.head.pitch = par5 / (180F / (float) Math.PI);
-		this.head.yaw = par4 / (180F / (float) Math.PI);
-		this.bill.pitch = this.head.pitch;
-		this.bill.yaw = this.head.yaw;
-		this.chin.pitch = this.head.pitch;
-		this.chin.yaw = this.head.yaw;
-		this.body.pitch = ((float) Math.PI / 2F);
-		this.rightLeg.pitch = MathHelper.cos(par1 * 0.6662F) * 1.4F * par2;
-		this.leftLeg.pitch = MathHelper.cos(par1 * 0.6662F + (float) Math.PI) * 1.4F * par2;
-		this.rightWing.roll = par3;
-		this.leftWing.roll = -par3;
+		head.pitch = par5 / (180F / (float) Math.PI);
+		head.yaw = par4 / (180F / (float) Math.PI);
+		bill.pitch = head.pitch;
+		bill.yaw = head.yaw;
+		chin.pitch = head.pitch;
+		chin.yaw = head.yaw;
+		body.pitch = (float) Math.PI / 2F;
+		rightLeg.pitch = MathHelper.cos(par1 * 0.6662F) * 1.4F * par2;
+		leftLeg.pitch = MathHelper.cos(par1 * 0.6662F + (float) Math.PI) * 1.4F * par2;
+		rightWing.roll = par3;
+		leftWing.roll = -par3;
 	}
 }

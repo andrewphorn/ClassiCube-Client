@@ -23,24 +23,24 @@ public class Particle extends Entity {
 	public Particle(Level var1, float var2, float var3, float var4, float var5, float var6,
 			float var7) {
 		super(var1);
-		this.setSize(0.2F, 0.2F);
-		this.heightOffset = this.bbHeight / 2.0F;
+		setSize(0.2F, 0.2F);
+		heightOffset = bbHeight / 2.0F;
 		this.setPos(var2, var3, var4);
-		this.rCol = this.gCol = this.bCol = 1.0F;
-		this.xd = var5 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
-		this.yd = var6 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
-		this.zd = var7 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
+		rCol = gCol = bCol = 1.0F;
+		xd = var5 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
+		yd = var6 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
+		zd = var7 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
 		float var8 = (float) (Math.random() + Math.random() + 1.0D) * 0.15F;
-		var2 = MathHelper.sqrt(this.xd * this.xd + this.yd * this.yd + this.zd * this.zd);
-		this.xd = this.xd / var2 * var8 * 0.4F;
-		this.yd = this.yd / var2 * var8 * 0.4F + 0.1F;
-		this.zd = this.zd / var2 * var8 * 0.4F;
-		this.uo = (float) Math.random() * 3.0F;
-		this.vo = (float) Math.random() * 3.0F;
-		this.size = (float) (Math.random() * 0.5D + 0.5D);
-		this.lifetime = (int) (4.0D / (Math.random() * 0.9D + 0.1D));
-		this.age = 0;
-		this.makeStepSound = false;
+		var2 = MathHelper.sqrt(xd * xd + yd * yd + zd * zd);
+		xd = xd / var2 * var8 * 0.4F;
+		yd = yd / var2 * var8 * 0.4F + 0.1F;
+		zd = zd / var2 * var8 * 0.4F;
+		uo = (float) Math.random() * 3.0F;
+		vo = (float) Math.random() * 3.0F;
+		size = (float) (Math.random() * 0.5D + 0.5D);
+		lifetime = (int) (4.0D / (Math.random() * 0.9D + 0.1D));
+		age = 0;
+		makeStepSound = false;
 	}
 
 	public int getParticleTexture() {
@@ -50,15 +50,15 @@ public class Particle extends Entity {
 	public void render(ShapeRenderer var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
 		float var8;
-		float var9 = (var8 = this.tex % 16 / 16.0F) + 0.0624375F;
+		float var9 = (var8 = tex % 16 / 16.0F) + 0.0624375F;
 		float var10;
-		float var11 = (var10 = this.tex / 16 / 16.0F) + 0.0624375F;
-		float var12 = 0.1F * this.size;
-		float var13 = this.xo + (this.x - this.xo) * var2;
-		float var14 = this.yo + (this.y - this.yo) * var2;
-		float var15 = this.zo + (this.z - this.zo) * var2;
-		ColorCache var21 = this.getBrightnessColor(var2);
-		var1.color(this.rCol * var21.R, this.gCol * var21.G, this.bCol * var21.B);
+		float var11 = (var10 = tex / 16 / 16.0F) + 0.0624375F;
+		float var12 = 0.1F * size;
+		float var13 = xo + (x - xo) * var2;
+		float var14 = yo + (y - yo) * var2;
+		float var15 = zo + (z - zo) * var2;
+		ColorCache var21 = getBrightnessColor(var2);
+		var1.color(rCol * var21.R, gCol * var21.G, bCol * var21.B);
 		var1.vertexUV(var13 - var3 * var12 - var6 * var12, var14 - var4 * var12, var15 - var5
 				* var12 - var7 * var12, var8, var11);
 		var1.vertexUV(var13 - var3 * var12 + var6 * var12, var14 + var4 * var12, var15 - var5
@@ -70,35 +70,35 @@ public class Particle extends Entity {
 	}
 
 	public Particle scale(float var1) {
-		this.setSize(0.2F * var1, 0.2F * var1);
-		this.size *= var1;
+		setSize(0.2F * var1, 0.2F * var1);
+		size *= var1;
 		return this;
 	}
 
 	public Particle setPower(float var1) {
-		this.xd *= var1;
-		this.yd = (this.yd - 0.1F) * var1 + 0.1F;
-		this.zd *= var1;
+		xd *= var1;
+		yd = (yd - 0.1F) * var1 + 0.1F;
+		zd *= var1;
 		return this;
 	}
 
 	@Override
 	public void tick() {
-		this.xo = this.x;
-		this.yo = this.y;
-		this.zo = this.z;
-		if (this.age++ >= this.lifetime) {
-			this.remove();
+		xo = x;
+		yo = y;
+		zo = z;
+		if (age++ >= lifetime) {
+			remove();
 		}
 
-		this.yd = (float) (this.yd - 0.04D * this.gravity);
-		this.move(this.xd, this.yd, this.zd);
-		this.xd *= 0.98F;
-		this.yd *= 0.98F;
-		this.zd *= 0.98F;
-		if (this.onGround) {
-			this.xd *= 0.7F;
-			this.zd *= 0.7F;
+		yd = (float) (yd - 0.04D * gravity);
+		move(xd, yd, zd);
+		xd *= 0.98F;
+		yd *= 0.98F;
+		zd *= 0.98F;
+		if (onGround) {
+			xd *= 0.7F;
+			zd *= 0.7F;
 		}
 
 	}

@@ -16,32 +16,32 @@ final class LevelDialog extends Thread {
 
 	LevelDialog(LoadLevelScreen var1) {
 		super();
-		this.screen = var1;
+		screen = var1;
 	}
 
 	@Override
 	public final void run() {
 		JFileChooser var1;
 		try {
-			LoadLevelScreen var10000 = this.screen;
+			LoadLevelScreen var10000 = screen;
 			var1 = new JFileChooser();
 			var10000.chooser = var1;
 			FileNameExtensionFilter var3 = new FileNameExtensionFilter("Minecraft levels",
 					new String[] { "dat" });
-			this.screen.chooser.setFileFilter(var3);
-			this.screen.chooser.setMultiSelectionEnabled(false);
+			screen.chooser.setFileFilter(var3);
+			screen.chooser.setMultiSelectionEnabled(false);
 			int var7;
-			if (this.screen.saving) {
-				var7 = this.screen.chooser.showSaveDialog(this.screen.minecraft.canvas);
+			if (screen.saving) {
+				var7 = screen.chooser.showSaveDialog(screen.minecraft.canvas);
 			} else {
-				var7 = this.screen.chooser.showOpenDialog(this.screen.minecraft.canvas);
+				var7 = screen.chooser.showOpenDialog(screen.minecraft.canvas);
 			}
 
 			if (var7 == 0) {
-				(this.screen).selectedFile = this.screen.chooser.getSelectedFile();
-				(this.screen).selectedFile = new File((this.screen).selectedFile + "");
+				screen.selectedFile = screen.chooser.getSelectedFile();
+				screen.selectedFile = new File(screen.selectedFile + "");
 				try {
-					new LevelSerializer(this.screen.minecraft.level).saveMap((this.screen).selectedFile);
+					new LevelSerializer(screen.minecraft.level).saveMap(screen.selectedFile);
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -51,9 +51,9 @@ final class LevelDialog extends Thread {
 				}
 			}
 		} finally {
-			this.screen.frozen = false;
+			screen.frozen = false;
 			var1 = null;
-			this.screen.chooser = var1;
+			screen.chooser = var1;
 		}
 
 	}

@@ -1,13 +1,14 @@
 package com.mojang.minecraft.level;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.model.Vec3D;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.Frustrum;
 import com.mojang.minecraft.render.TextureManager;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockMap implements Serializable {
 
@@ -42,27 +43,27 @@ public class BlockMap implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public BlockMap(int var1, int var2, int var3) {
-		this.width = var1 / 16;
-		this.depth = var2 / 16;
-		this.height = var3 / 16;
-		if (this.width == 0) {
-			this.width = 1;
+		width = var1 / 16;
+		depth = var2 / 16;
+		height = var3 / 16;
+		if (width == 0) {
+			width = 1;
 		}
 
-		if (this.depth == 0) {
-			this.depth = 1;
+		if (depth == 0) {
+			depth = 1;
 		}
 
-		if (this.height == 0) {
-			this.height = 1;
+		if (height == 0) {
+			height = 1;
 		}
 
-		this.entityGrid = new ArrayList[this.width * this.depth * this.height];
+		entityGrid = new ArrayList[width * depth * height];
 
-		for (var1 = 0; var1 < this.width; ++var1) {
-			for (var2 = 0; var2 < this.depth; ++var2) {
-				for (var3 = 0; var3 < this.height; ++var3) {
-					this.entityGrid[(var3 * this.depth + var2) * this.width + var1] = new ArrayList<Entity>();
+		for (var1 = 0; var1 < width; ++var1) {
+			for (var2 = 0; var2 < depth; ++var2) {
+				for (var3 = 0; var3 < height; ++var3) {
+					entityGrid[(var3 * depth + var2) * width + var1] = new ArrayList<Entity>();
 				}
 			}
 		}
@@ -70,10 +71,10 @@ public class BlockMap implements Serializable {
 	}
 
 	public void clear() {
-		for (int var1 = 0; var1 < this.width; ++var1) {
-			for (int var2 = 0; var2 < this.depth; ++var2) {
-				for (int var3 = 0; var3 < this.height; ++var3) {
-					this.entityGrid[(var3 * this.depth + var2) * this.width + var1].clear();
+		for (int var1 = 0; var1 < width; ++var1) {
+			for (int var2 = 0; var2 < depth; ++var2) {
+				for (int var3 = 0; var3 < height; ++var3) {
+					entityGrid[(var3 * depth + var2) * width + var1].clear();
 				}
 			}
 		}
@@ -81,9 +82,8 @@ public class BlockMap implements Serializable {
 	}
 
 	public List<Entity> getEntities(Entity var1, AABB var2) {
-		this.tmp.clear();
-		return this.getEntities(var1, var2.x0, var2.y0, var2.z0, var2.x1, var2.y1, var2.z1,
-				this.tmp);
+		tmp.clear();
+		return this.getEntities(var1, var2.x0, var2.y0, var2.z0, var2.x1, var2.y1, var2.z1, tmp);
 	}
 
 	public List<Entity> getEntities(Entity var1, AABB var2, List<Entity> var3) {
@@ -92,24 +92,23 @@ public class BlockMap implements Serializable {
 
 	public List<Entity> getEntities(Entity var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
-		this.tmp.clear();
-		return this.getEntities(var1, var2, var3, var4, var5, var6, var7, this.tmp);
+		tmp.clear();
+		return this.getEntities(var1, var2, var3, var4, var5, var6, var7, tmp);
 	}
 
 	public List<Entity> getEntities(Entity var1, float var2, float var3, float var4, float var5,
 			float var6, float var7, List<Entity> var8) {
-		BlockMap$Slot var9 = this.slot.init(var2, var3, var4);
-		BlockMap$Slot var10 = this.slot2.init(var5, var6, var7);
+		BlockMap$Slot var9 = slot.init(var2, var3, var4);
+		BlockMap$Slot var10 = slot2.init(var5, var6, var7);
 
 		for (int var11 = BlockMap$Slot.getXSlot(var9) - 1; var11 <= BlockMap$Slot.getXSlot(var10) + 1; ++var11) {
 			for (int var12 = BlockMap$Slot.getYSlot(var9) - 1; var12 <= BlockMap$Slot
 					.getYSlot(var10) + 1; ++var12) {
 				for (int var13 = BlockMap$Slot.getZSlot(var9) - 1; var13 <= BlockMap$Slot
 						.getZSlot(var10) + 1; ++var13) {
-					if (var11 >= 0 && var12 >= 0 && var13 >= 0 && var11 < this.width
-							&& var12 < this.depth && var13 < this.height) {
-						List<?> var14 = this.entityGrid[(var13 * this.depth + var12) * this.width
-								+ var11];
+					if (var11 >= 0 && var12 >= 0 && var13 >= 0 && var11 < width && var12 < depth
+							&& var13 < height) {
+						List<?> var14 = entityGrid[(var13 * depth + var12) * width + var11];
 
 						for (int var15 = 0; var15 < var14.size(); ++var15) {
 							Entity var16;
@@ -127,8 +126,8 @@ public class BlockMap implements Serializable {
 	}
 
 	public void insert(Entity var1) {
-		this.all.add(var1);
-		this.slot.init(var1.x, var1.y, var1.z).add(var1);
+		all.add(var1);
+		slot.init(var1.x, var1.y, var1.z).add(var1);
 		var1.xOld = var1.x;
 		var1.yOld = var1.y;
 		var1.zOld = var1.z;
@@ -136,8 +135,8 @@ public class BlockMap implements Serializable {
 	}
 
 	public void moved(Entity var1) {
-		BlockMap$Slot var2 = this.slot.init(var1.xOld, var1.yOld, var1.zOld);
-		BlockMap$Slot var3 = this.slot2.init(var1.x, var1.y, var1.z);
+		BlockMap$Slot var2 = slot.init(var1.xOld, var1.yOld, var1.zOld);
+		BlockMap$Slot var3 = slot2.init(var1.x, var1.y, var1.z);
 		if (!var2.equals(var3)) {
 			var2.remove(var1);
 			var3.add(var1);
@@ -148,15 +147,15 @@ public class BlockMap implements Serializable {
 	}
 
 	public void remove(Entity var1) {
-		this.slot.init(var1.xOld, var1.yOld, var1.zOld).remove(var1);
-		this.all.remove(var1);
+		slot.init(var1.xOld, var1.yOld, var1.zOld).remove(var1);
+		all.remove(var1);
 	}
 
 	public void removeAllNonCreativeModeEntities() {
-		for (int var1 = 0; var1 < this.width; ++var1) {
-			for (int var2 = 0; var2 < this.depth; ++var2) {
-				for (int var3 = 0; var3 < this.height; ++var3) {
-					List<?> var4 = this.entityGrid[(var3 * this.depth + var2) * this.width + var1];
+		for (int var1 = 0; var1 < width; ++var1) {
+			for (int var2 = 0; var2 < depth; ++var2) {
+				for (int var3 = 0; var3 < height; ++var3) {
+					List<?> var4 = entityGrid[(var3 * depth + var2) * width + var1];
 
 					for (int var5 = 0; var5 < var4.size(); ++var5) {
 						if (!((Entity) var4.get(var5)).isCreativeModeAllowed()) {
@@ -170,18 +169,17 @@ public class BlockMap implements Serializable {
 	}
 
 	public void render(Vec3D var1, Frustrum var2, TextureManager var3, float var4) {
-		for (int var5 = 0; var5 < this.width; ++var5) {
+		for (int var5 = 0; var5 < width; ++var5) {
 			float var6 = (var5 << 4) - 2;
 			float var7 = (var5 + 1 << 4) + 2;
 
-			for (int var8 = 0; var8 < this.depth; ++var8) {
+			for (int var8 = 0; var8 < depth; ++var8) {
 				float var9 = (var8 << 4) - 2;
 				float var10 = (var8 + 1 << 4) + 2;
 
-				for (int var11 = 0; var11 < this.height; ++var11) {
+				for (int var11 = 0; var11 < height; ++var11) {
 					List<?> var12;
-					if ((var12 = this.entityGrid[(var11 * this.depth + var8) * this.width + var5])
-							.size() != 0) {
+					if ((var12 = entityGrid[(var11 * depth + var8) * width + var5]).size() != 0) {
 						float var13 = (var11 << 4) - 2;
 						float var14 = (var11 + 1 << 4) + 2;
 						if (var2.isBoxInFrustum(var6, var9, var13, var7, var10, var14)) {
@@ -285,12 +283,12 @@ public class BlockMap implements Serializable {
 	}
 
 	public void tickAll() {
-		for (int var1 = 0; var1 < this.all.size(); ++var1) {
+		for (int var1 = 0; var1 < all.size(); ++var1) {
 			Entity var2;
-			(var2 = this.all.get(var1)).tick();
+			(var2 = all.get(var1)).tick();
 			if (var2.removed) {
-				this.all.remove(var1--);
-				this.slot.init(var2.xOld, var2.yOld, var2.zOld).remove(var2);
+				all.remove(var1--);
+				slot.init(var2.xOld, var2.yOld, var2.zOld).remove(var2);
 			} else {
 				int var3 = (int) (var2.xOld / 16.0F);
 				int var4 = (int) (var2.yOld / 16.0F);
@@ -299,7 +297,7 @@ public class BlockMap implements Serializable {
 				int var7 = (int) (var2.y / 16.0F);
 				int var8 = (int) (var2.z / 16.0F);
 				if (var3 != var6 || var4 != var7 || var5 != var8) {
-					this.moved(var2);
+					moved(var2);
 				}
 			}
 		}

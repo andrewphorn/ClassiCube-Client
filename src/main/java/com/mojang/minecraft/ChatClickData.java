@@ -9,18 +9,37 @@ import java.util.regex.Pattern;
 import com.mojang.minecraft.gui.FontRenderer;
 
 public class ChatClickData {
+	public class LinkData {
+		public String link;
+		public int x0;
+		public int x1;
+
+		public LinkData(String s, int a, int b) {
+			link = s;
+			x0 = a;
+			x1 = b;
+		}
+	}
+
 	private final String urlPattern = "((https?|ftp|sftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
 	private final Pattern compiledPattern = Pattern.compile(urlPattern, Pattern.CASE_INSENSITIVE);
 	public final String message;
+
 	private final ArrayList<LinkData> clickedUrls;
 
+	private static final Pattern patternControlCode = Pattern.compile("(?i)\\u00A7[0-9A-FK-OR]");
+
+	public static String stripControlCodes(String string) {
+		return patternControlCode.matcher(string).replaceAll("");
+	}
+
 	public ChatClickData(FontRenderer fontRenderer, ChatLine chatLine, int x, int y) {
-		this.message = chatLine.message;
-		this.clickedUrls = this.pullLinks(message, fontRenderer);
+		message = chatLine.message;
+		clickedUrls = pullLinks(message, fontRenderer);
 	}
 
 	public ArrayList<LinkData> getClickedUrls() {
-		return this.clickedUrls;
+		return clickedUrls;
 	}
 
 	public URI getURI(String message) {
@@ -54,23 +73,5 @@ public class ChatClickData {
 					.getWidth(text.substring(0, m.end()))));
 		}
 		return links;
-	}
-
-	private static final Pattern patternControlCode = Pattern.compile("(?i)\\u00A7[0-9A-FK-OR]");
-
-	public static String stripControlCodes(String string) {
-		return patternControlCode.matcher(string).replaceAll("");
-	}
-
-	public class LinkData {
-		public String link;
-		public int x0;
-		public int x1;
-
-		public LinkData(String s, int a, int b) {
-			link = s;
-			x0 = a;
-			x1 = b;
-		}
 	}
 }

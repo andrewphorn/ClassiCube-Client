@@ -17,52 +17,52 @@ public class HumanoidModel extends Model {
 	}
 
 	public HumanoidModel(float var1) {
-		this.head = new ModelPart(0, 0);
-		this.head.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, var1);
-		this.headwear = new ModelPart(32, 0);
-		this.headwear.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, var1 + 0.5F);
-		this.body = new ModelPart(16, 16);
-		this.body.setBounds(-4.0F, 0.0F, -2.0F, 8, 12, 4, var1);
-		this.rightArm = new ModelPart(40, 16);
-		this.rightArm.setBounds(-3.0F, -2.0F, -2.0F, 4, 12, 4, var1);
-		this.rightArm.setPosition(-5.0F, 2.0F, 0.0F);
-		this.leftArm = new ModelPart(40, 16);
-		this.leftArm.mirror = true;
-		this.leftArm.setBounds(-1.0F, -2.0F, -2.0F, 4, 12, 4, var1);
-		this.leftArm.setPosition(5.0F, 2.0F, 0.0F);
-		this.rightLeg = new ModelPart(0, 16);
-		this.rightLeg.setBounds(-2.0F, 0.0F, -2.0F, 4, 12, 4, var1);
-		this.rightLeg.setPosition(-2.0F, 12.0F, 0.0F);
-		this.leftLeg = new ModelPart(0, 16);
-		this.leftLeg.mirror = true;
-		this.leftLeg.setBounds(-2.0F, 0.0F, -2.0F, 4, 12, 4, var1);
-		this.leftLeg.setPosition(2.0F, 12.0F, 0.0F);
+		head = new ModelPart(0, 0);
+		head.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, var1);
+		headwear = new ModelPart(32, 0);
+		headwear.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, var1 + 0.5F);
+		body = new ModelPart(16, 16);
+		body.setBounds(-4.0F, 0.0F, -2.0F, 8, 12, 4, var1);
+		rightArm = new ModelPart(40, 16);
+		rightArm.setBounds(-3.0F, -2.0F, -2.0F, 4, 12, 4, var1);
+		rightArm.setPosition(-5.0F, 2.0F, 0.0F);
+		leftArm = new ModelPart(40, 16);
+		leftArm.mirror = true;
+		leftArm.setBounds(-1.0F, -2.0F, -2.0F, 4, 12, 4, var1);
+		leftArm.setPosition(5.0F, 2.0F, 0.0F);
+		rightLeg = new ModelPart(0, 16);
+		rightLeg.setBounds(-2.0F, 0.0F, -2.0F, 4, 12, 4, var1);
+		rightLeg.setPosition(-2.0F, 12.0F, 0.0F);
+		leftLeg = new ModelPart(0, 16);
+		leftLeg.mirror = true;
+		leftLeg.setBounds(-2.0F, 0.0F, -2.0F, 4, 12, 4, var1);
+		leftLeg.setPosition(2.0F, 12.0F, 0.0F);
 	}
 
 	@Override
 	public final void render(float var1, float var2, float var3, float var4, float var5, float var6) {
-		this.setRotationAngles(var1, var2, var3, var4, var5, var6);
-		this.head.render(var6);
-		this.body.render(var6);
-		this.rightArm.render(var6);
-		this.leftArm.render(var6);
-		this.rightLeg.render(var6);
-		this.leftLeg.render(var6);
+		setRotationAngles(var1, var2, var3, var4, var5, var6);
+		head.render(var6);
+		body.render(var6);
+		rightArm.render(var6);
+		leftArm.render(var6);
+		rightLeg.render(var6);
+		leftLeg.render(var6);
 	}
 
 	public void setRotationAngles(float var1, float var2, float var3, float var4, float var5,
 			float var6) {
-		this.head.yaw = var4 / 57.295776F;
-		this.head.pitch = var5 / 57.295776F;
-		this.rightArm.pitch = MathHelper.cos(var1 * 0.6662F + 3.1415927F) * 2.0F * var2;
-		this.rightArm.roll = (MathHelper.cos(var1 * 0.2312F) + 1.0F) * var2;
-		this.leftArm.pitch = MathHelper.cos(var1 * 0.6662F) * 2.0F * var2;
-		this.leftArm.roll = (MathHelper.cos(var1 * 0.2812F) - 1.0F) * var2;
-		this.rightLeg.pitch = MathHelper.cos(var1 * 0.6662F) * 1.4F * var2;
-		this.leftLeg.pitch = MathHelper.cos(var1 * 0.6662F + 3.1415927F) * 1.4F * var2;
-		this.rightArm.roll += MathHelper.cos(var3 * 0.09F) * 0.05F + 0.05F;
-		this.leftArm.roll -= MathHelper.cos(var3 * 0.09F) * 0.05F + 0.05F;
-		this.rightArm.pitch += MathHelper.sin(var3 * 0.067F) * 0.05F;
-		this.leftArm.pitch -= MathHelper.sin(var3 * 0.067F) * 0.05F;
+		head.yaw = var4 / 57.295776F;
+		head.pitch = var5 / 57.295776F;
+		rightArm.pitch = MathHelper.cos(var1 * 0.6662F + 3.1415927F) * 2.0F * var2;
+		rightArm.roll = (MathHelper.cos(var1 * 0.2312F) + 1.0F) * var2;
+		leftArm.pitch = MathHelper.cos(var1 * 0.6662F) * 2.0F * var2;
+		leftArm.roll = (MathHelper.cos(var1 * 0.2812F) - 1.0F) * var2;
+		rightLeg.pitch = MathHelper.cos(var1 * 0.6662F) * 1.4F * var2;
+		leftLeg.pitch = MathHelper.cos(var1 * 0.6662F + 3.1415927F) * 1.4F * var2;
+		rightArm.roll += MathHelper.cos(var3 * 0.09F) * 0.05F + 0.05F;
+		leftArm.roll -= MathHelper.cos(var3 * 0.09F) * 0.05F + 0.05F;
+		rightArm.pitch += MathHelper.sin(var3 * 0.067F) * 0.05F;
+		leftArm.pitch -= MathHelper.sin(var3 * 0.067F) * 0.05F;
 	}
 }

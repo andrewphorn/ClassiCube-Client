@@ -1,13 +1,15 @@
 package com.mojang.minecraft.net;
 
+import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.mob.HumanoidMob;
 import com.mojang.minecraft.render.TextureManager;
-import java.awt.image.BufferedImage;
-import java.util.LinkedList;
-import java.util.List;
-import org.lwjgl.opengl.GL11;
 
 public class NetworkPlayer extends HumanoidMob {
 
@@ -39,28 +41,28 @@ public class NetworkPlayer extends HumanoidMob {
 	public NetworkPlayer(Minecraft var1, String var3, int var4, int var5, int var6, float var7,
 			float var8) {
 		super(var1.level, var4, var5, var6);
-		this.minecraft = var1;
-		this.displayName = var3;
+		minecraft = var1;
+		displayName = var3;
 		var3 = FontRenderer.stripColor(var3);
-		this.name = var3;
-		this.xp = var4;
-		this.yp = var5;
-		this.zp = var6;
-		this.heightOffset = 0.0F;
-		this.pushthrough = 0.8F;
+		name = var3;
+		xp = var4;
+		yp = var5;
+		zp = var6;
+		heightOffset = 0.0F;
+		pushthrough = 0.8F;
 		this.setPos(var4 / 32.0F, var5 / 32.0F, var6 / 32.0F);
-		this.xRot = var8;
-		this.yRot = var7;
-		this.armor = this.helmet = false;
-		this.renderOffset = 0.6875F;
-		this.allowAlpha = false;
-		if (this.name.equalsIgnoreCase("Jonty800") || this.name.equalsIgnoreCase("Jonty800+")
-				|| this.name.equalsIgnoreCase("Jonty800@")) {
-			this.modelName = "sheep";
+		xRot = var8;
+		yRot = var7;
+		armor = helmet = false;
+		renderOffset = 0.6875F;
+		allowAlpha = false;
+		if (name.equalsIgnoreCase("Jonty800") || name.equalsIgnoreCase("Jonty800+")
+				|| name.equalsIgnoreCase("Jonty800@")) {
+			modelName = "sheep";
 		}
-		if (this.modelName.equals("humanoid")) {
+		if (modelName.equals("humanoid")) {
 			downloadSkin();
-		} else if (isInteger(this.modelName)) {
+		} else if (isInteger(modelName)) {
 			GL11.glBindTexture(3553, var1.textureManager.load("/terrain.png"));
 		}
 	}
@@ -68,23 +70,23 @@ public class NetworkPlayer extends HumanoidMob {
 	@Override
 	public void aiStep() {
 		int var1 = 5;
-		if (this.moveQueue != null) {
+		if (moveQueue != null) {
 			do {
 
-				if (this.moveQueue.size() > 0) {
-					this.setPos(this.moveQueue.remove(0));
+				if (moveQueue.size() > 0) {
+					this.setPos(moveQueue.remove(0));
 				}
-			} while (var1-- > 0 && this.moveQueue.size() > 10);
+			} while (var1-- > 0 && moveQueue.size() > 10);
 		}
 
-		this.onGround = true;
+		onGround = true;
 	}
 
 	@Override
 	public void bindTexture(TextureManager var1) {
-		this.textures = var1;
-		if (this.newTexture != null) {
-			BufferedImage var2 = this.newTexture;
+		textures = var1;
+		if (newTexture != null) {
+			BufferedImage var2 = newTexture;
 			int[] var3 = new int[512];
 			var2.getRGB(32, 0, 32, 16, var3, 0, 32);
 			int var5 = 0;
@@ -104,31 +106,31 @@ public class NetworkPlayer extends HumanoidMob {
 				++var5;
 			}
 
-			this.hasHair = var10001;
-			if (this.modelName.equals("humanoid")) {
-				this.a = var1.load(this.newTexture);
+			hasHair = var10001;
+			if (modelName.equals("humanoid")) {
+				a = var1.load(newTexture);
 			}
-			this.newTexture = null;
+			newTexture = null;
 		}
-		if (isInteger(this.modelName)) {
+		if (isInteger(modelName)) {
 			GL11.glBindTexture(3553, var1.load("/terrain.png"));
 			return;
-		} else if (!this.modelName.equals("humanoid")) {
-			GL11.glBindTexture(3553, var1.load("/mob/" + this.modelName + ".png"));
+		} else if (!modelName.equals("humanoid")) {
+			GL11.glBindTexture(3553, var1.load("/mob/" + modelName + ".png"));
 			return;
 		}
-		if (this.a < 0) {
+		if (a < 0) {
 			GL11.glBindTexture(3553, var1.load("/char.png"));
 		} else {
-			GL11.glBindTexture(3553, this.a);
+			GL11.glBindTexture(3553, a);
 		}
 	}
 
 	public void clear() {
-		if (this.a >= 0 && this.textures != null) {
-			TextureManager var10000 = this.textures;
-			int var1 = this.a;
-			TextureManager var2 = this.textures;
+		if (a >= 0 && textures != null) {
+			TextureManager var10000 = textures;
+			int var1 = a;
+			TextureManager var2 = textures;
 			var10000.textureImages.remove(Integer.valueOf(var1));
 			var2.idBuffer.clear();
 			var2.idBuffer.put(var1);
@@ -139,25 +141,23 @@ public class NetworkPlayer extends HumanoidMob {
 	}
 
 	public void downloadSkin() {
-		(new SkinDownloadThread(this, this.minecraft.skinServer)).start();
+		new SkinDownloadThread(this, minecraft.skinServer).start();
 	}
 
 	public void queue(byte var1, byte var2, byte var3) {
-		this.moveQueue.add(new PositionUpdate((this.xp + var1 / 2.0F) / 32.0F,
-				(this.yp + var2 / 2.0F) / 32.0F,
-				(this.zp + var3 / 2.0F) / 32.0F));
-		this.xp += var1;
-		this.yp += var2;
-		this.zp += var3;
-		this.moveQueue.add(new PositionUpdate(this.xp / 32.0F, this.yp / 32.0F,
-				this.zp / 32.0F));
+		moveQueue.add(new PositionUpdate((xp + var1 / 2.0F) / 32.0F, (yp + var2 / 2.0F) / 32.0F,
+				(zp + var3 / 2.0F) / 32.0F));
+		xp += var1;
+		yp += var2;
+		zp += var3;
+		moveQueue.add(new PositionUpdate(xp / 32.0F, yp / 32.0F, zp / 32.0F));
 	}
 
 	public void queue(byte var1, byte var2, byte var3, float var4, float var5) {
-		float var6 = var4 - this.yRot;
+		float var6 = var4 - yRot;
 
 		float var7;
-		for (var7 = var5 - this.xRot; var6 >= 180.0F; var6 -= 360.0F) {
+		for (var7 = var5 - xRot; var6 >= 180.0F; var6 -= 360.0F) {
 			;
 		}
 
@@ -173,23 +173,21 @@ public class NetworkPlayer extends HumanoidMob {
 			var7 += 360.0F;
 		}
 
-		var6 = this.yRot + var6 * 0.5F;
-		var7 = this.xRot + var7 * 0.5F;
-		this.moveQueue.add(new PositionUpdate((this.xp + var1 / 2.0F) / 32.0F,
-				(this.yp + var2 / 2.0F) / 32.0F,
-				(this.zp + var3 / 2.0F) / 32.0F, var6, var7));
-		this.xp += var1;
-		this.yp += var2;
-		this.zp += var3;
-		this.moveQueue.add(new PositionUpdate(this.xp / 32.0F, this.yp / 32.0F,
-				this.zp / 32.0F, var4, var5));
+		var6 = yRot + var6 * 0.5F;
+		var7 = xRot + var7 * 0.5F;
+		moveQueue.add(new PositionUpdate((xp + var1 / 2.0F) / 32.0F, (yp + var2 / 2.0F) / 32.0F,
+				(zp + var3 / 2.0F) / 32.0F, var6, var7));
+		xp += var1;
+		yp += var2;
+		zp += var3;
+		moveQueue.add(new PositionUpdate(xp / 32.0F, yp / 32.0F, zp / 32.0F, var4, var5));
 	}
 
 	public void queue(float var1, float var2) {
-		float var3 = var1 - this.yRot;
+		float var3 = var1 - yRot;
 
 		float var4;
-		for (var4 = var2 - this.xRot; var3 >= 180.0F; var3 -= 360.0F) {
+		for (var4 = var2 - xRot; var3 >= 180.0F; var3 -= 360.0F) {
 			;
 		}
 
@@ -205,30 +203,30 @@ public class NetworkPlayer extends HumanoidMob {
 			var4 += 360.0F;
 		}
 
-		var3 = this.yRot + var3 * 0.5F;
-		var4 = this.xRot + var4 * 0.5F;
-		this.moveQueue.add(new PositionUpdate(var3, var4));
-		this.moveQueue.add(new PositionUpdate(var1, var2));
+		var3 = yRot + var3 * 0.5F;
+		var4 = xRot + var4 * 0.5F;
+		moveQueue.add(new PositionUpdate(var3, var4));
+		moveQueue.add(new PositionUpdate(var1, var2));
 	}
 
 	@Override
 	public void renderHover(TextureManager var1, float var2) {
-		FontRenderer var3 = this.minecraft.fontRenderer;
+		FontRenderer var3 = minecraft.fontRenderer;
 		GL11.glPushMatrix();
-		GL11.glTranslatef(this.xo + (this.x - this.xo) * var2, this.yo + (this.y - this.yo) * var2
-				+ 0.8F + this.renderOffset, this.zo + (this.z - this.zo) * var2);
-		GL11.glRotatef(-this.minecraft.player.yRot, 0.0F, 1.0F, 0.0F);
+		GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 + 0.8F + renderOffset, zo
+				+ (z - zo) * var2);
+		GL11.glRotatef(-minecraft.player.yRot, 0.0F, 1.0F, 0.0F);
 		var2 = 0.05F;
 		GL11.glScalef(0.05F, -var2, var2);
-		GL11.glTranslatef((-var3.getWidth(this.displayName)) / 2.0F, 0.0F, 0.0F);
+		GL11.glTranslatef(-var3.getWidth(displayName) / 2.0F, 0.0F, 0.0F);
 		GL11.glNormal3f(1.0F, -1.0F, 1.0F);
 		GL11.glDisable(2896);
 		GL11.glDisable(16384);
 
-		if (this.name.equalsIgnoreCase("Notch")) {
-			var3.renderNoShadow(this.displayName, 0, 0, 16776960);
+		if (name.equalsIgnoreCase("Notch")) {
+			var3.renderNoShadow(displayName, 0, 0, 16776960);
 		} else {
-			var3.renderNoShadow(this.displayName, 0, 0, 16777215);
+			var3.renderNoShadow(displayName, 0, 0, 16777215);
 		}
 
 		GL11.glDepthFunc(516);
@@ -236,22 +234,22 @@ public class NetworkPlayer extends HumanoidMob {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 		GL11.glEnable(3042);
 		GL11.glBlendFunc(770, 771);
-		var3.renderNoShadow(this.displayName, 0, 0, 16777215);
+		var3.renderNoShadow(displayName, 0, 0, 16777215);
 		GL11.glDisable(3042);
 		GL11.glDepthMask(true);
 		GL11.glDepthFunc(515);
 		GL11.glTranslatef(1.0F, 1.0F, -0.05F);
-		var3.renderNoShadow(this.name, 0, 0, 5263440);
+		var3.renderNoShadow(name, 0, 0, 5263440);
 		GL11.glEnable(16384);
 		GL11.glEnable(2896);
 		GL11.glPopMatrix();
 	}
 
 	public void teleport(short var1, short var2, short var3, float var4, float var5) {
-		float var6 = var4 - this.yRot;
+		float var6 = var4 - yRot;
 
 		float var7;
-		for (var7 = var5 - this.xRot; var6 >= 180.0F; var6 -= 360.0F) {
+		for (var7 = var5 - xRot; var6 >= 180.0F; var6 -= 360.0F) {
 			;
 		}
 
@@ -267,14 +265,13 @@ public class NetworkPlayer extends HumanoidMob {
 			var7 += 360.0F;
 		}
 
-		var6 = this.yRot + var6 * 0.5F;
-		var7 = this.xRot + var7 * 0.5F;
-		this.moveQueue.add(new PositionUpdate((this.xp + var1) / 64.0F,
-				(this.yp + var2) / 64.0F, (this.zp + var3) / 64.0F, var6, var7));
-		this.xp = var1;
-		this.yp = var2;
-		this.zp = var3;
-		this.moveQueue.add(new PositionUpdate(this.xp / 32.0F, this.yp / 32.0F,
-				this.zp / 32.0F, var4, var5));
+		var6 = yRot + var6 * 0.5F;
+		var7 = xRot + var7 * 0.5F;
+		moveQueue.add(new PositionUpdate((xp + var1) / 64.0F, (yp + var2) / 64.0F,
+				(zp + var3) / 64.0F, var6, var7));
+		xp = var1;
+		yp = var2;
+		zp = var3;
+		moveQueue.add(new PositionUpdate(xp / 32.0F, yp / 32.0F, zp / 32.0F, var4, var5));
 	}
 }

@@ -1,14 +1,14 @@
 package com.oyasunadev.mcraft.client.core;
 
-import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.MinecraftApplet;
-import com.mojang.minecraft.ResourceDownloadThread;
-import com.mojang.minecraft.SessionData;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedOutputStream;
@@ -22,6 +22,15 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+
+import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.MinecraftApplet;
+import com.mojang.minecraft.ResourceDownloadThread;
+import com.mojang.minecraft.SessionData;
 
 /**
  * Created with IntelliJ IDEA.
@@ -140,68 +149,6 @@ public class ClassiCubeStandalone {
 				startThread();
 			}
 
-			public Image getImage() {
-				return image;
-			}
-
-			public Image getImage2() {
-				return image2;
-			}
-
-			@Override
-			public void paint(Graphics g) {
-				if (image == null) {
-					try {
-						SetImage();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				Graphics2D g2 = (Graphics2D) g;
-				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-						RenderingHints.VALUE_ANTIALIAS_ON);
-				Font font = new Font("Serif", Font.BOLD, 18);
-				g2.setFont(font);
-				if (!ResourceDownloadThread.Done) {
-					g.drawImage(getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
-					font = new Font("Purisa", Font.BOLD, 48);
-					g2.setFont(font);
-					g.setColor(Color.black);
-					g2.drawString("ClassiCube", 12, 50); // shadow
-					g.setColor(Color.white);
-					g2.drawString("ClassiCube", 10, 48); // normal
-					font = new Font("Serif", Font.BOLD, 18);
-					g2.setFont(font);
-					g.setColor(Color.black);
-					g2.drawString(GameSettings.PercentString, 12, 100); // shadow
-					g2.drawString(GameSettings.StatusString, 12, 80);
-					g.setColor(Color.white);
-					g2.drawString(GameSettings.PercentString, 10, 98); // normal
-					g2.drawString(GameSettings.StatusString, 10, 78);
-				} else {
-					if (image2 == null) {
-						try {
-							SetImage2();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					g.drawImage(getImage2(), 0, 0, this.getWidth(), this.getHeight(), null);
-				}
-			}
-
-			/**
-			 * Stop the thread.
-			 */
-			@Override
-			public synchronized void removeNotify() {
-				stopThread();
-
-				super.removeNotify();
-			}
-
 			public void download(String address, String localFileName) {
 				OutputStream out = null;
 				URLConnection connection = null;
@@ -244,6 +191,68 @@ public class ClassiCubeStandalone {
 					} catch (IOException ioe) {
 					}
 				}
+			}
+
+			public Image getImage() {
+				return image;
+			}
+
+			public Image getImage2() {
+				return image2;
+			}
+
+			@Override
+			public void paint(Graphics g) {
+				if (image == null) {
+					try {
+						SetImage();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				Graphics2D g2 = (Graphics2D) g;
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_ON);
+				Font font = new Font("Serif", Font.BOLD, 18);
+				g2.setFont(font);
+				if (!ResourceDownloadThread.Done) {
+					g.drawImage(getImage(), 0, 0, getWidth(), getHeight(), null);
+					font = new Font("Purisa", Font.BOLD, 48);
+					g2.setFont(font);
+					g.setColor(Color.black);
+					g2.drawString("ClassiCube", 12, 50); // shadow
+					g.setColor(Color.white);
+					g2.drawString("ClassiCube", 10, 48); // normal
+					font = new Font("Serif", Font.BOLD, 18);
+					g2.setFont(font);
+					g.setColor(Color.black);
+					g2.drawString(GameSettings.PercentString, 12, 100); // shadow
+					g2.drawString(GameSettings.StatusString, 12, 80);
+					g.setColor(Color.white);
+					g2.drawString(GameSettings.PercentString, 10, 98); // normal
+					g2.drawString(GameSettings.StatusString, 10, 78);
+				} else {
+					if (image2 == null) {
+						try {
+							SetImage2();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					g.drawImage(getImage2(), 0, 0, getWidth(), getHeight(), null);
+				}
+			}
+
+			/**
+			 * Stop the thread.
+			 */
+			@Override
+			public synchronized void removeNotify() {
+				stopThread();
+
+				super.removeNotify();
 			}
 
 			void SetImage() throws IOException {
@@ -352,8 +361,9 @@ public class ClassiCubeStandalone {
 				minecraft.skinServer = skinServer;
 			}
 
-			if (Player == null && Server == null && Mppass == null)
+			if (Player == null && Server == null && Mppass == null) {
 				minecraft.session = null;
+			}
 
 			canvas.setMinecraft(minecraft);
 			canvas.setSize(getSize());
@@ -402,7 +412,9 @@ public class ClassiCubeStandalone {
 			// DO SHIT...?
 		}
 	}
+
 	public static String[] storedArgs;
+
 	public static void main(String[] args) {
 		storedArgs = args;
 		String player = null;

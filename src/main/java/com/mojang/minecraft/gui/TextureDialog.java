@@ -15,48 +15,48 @@ final class TextureDialog extends Thread {
 
 	TextureDialog(TextureSelectionScreen var1, Minecraft minecraft) {
 		super();
-		this.screen = var1;
-		this.mc = minecraft;
+		screen = var1;
+		mc = minecraft;
 	}
 
 	protected void openTexture(String file) {
 		try {
-			this.mc.textureManager.loadTexturePack(file);
+			mc.textureManager.loadTexturePack(file);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.mc.setCurrentScreen((GuiScreen) null);
-		this.mc.grabMouse();
+		mc.setCurrentScreen((GuiScreen) null);
+		mc.grabMouse();
 	}
 
 	@Override
 	public final void run() {
 		JFileChooser var1;
 		try {
-			TextureSelectionScreen var10000 = this.screen;
+			TextureSelectionScreen var10000 = screen;
 			var1 = new JFileChooser();
 			var10000.chooser = var1;
 			FileNameExtensionFilter var3 = new FileNameExtensionFilter(".Zip Texture Packs",
 					new String[] { "zip" });
-			this.screen.chooser.setFileFilter(var3);
-			this.screen.chooser.setMultiSelectionEnabled(false);
+			screen.chooser.setFileFilter(var3);
+			screen.chooser.setMultiSelectionEnabled(false);
 			int var7;
-			if (this.screen.saving) {
-				var7 = this.screen.chooser.showSaveDialog(this.screen.minecraft.canvas);
+			if (screen.saving) {
+				var7 = screen.chooser.showSaveDialog(screen.minecraft.canvas);
 			} else {
-				var7 = this.screen.chooser.showOpenDialog(this.screen.minecraft.canvas);
+				var7 = screen.chooser.showOpenDialog(screen.minecraft.canvas);
 			}
 
 			if (var7 == 0) {
-				(this.screen).selectedFile = this.screen.chooser.getSelectedFile();
-				openTexture(this.screen.chooser.getSelectedFile().getName());
+				screen.selectedFile = screen.chooser.getSelectedFile();
+				openTexture(screen.chooser.getSelectedFile().getName());
 
 			}
 		} finally {
-			this.screen.frozen = false;
+			screen.frozen = false;
 			var1 = null;
-			this.screen.chooser = var1;
+			screen.chooser = var1;
 		}
 
 	}

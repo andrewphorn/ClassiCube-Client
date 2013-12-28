@@ -28,8 +28,7 @@ public class NBTTagString extends NBTBase
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
-    @Override
-	void write(DataOutput par1DataOutput) throws IOException
+    void write(DataOutput par1DataOutput) throws IOException
     {
         par1DataOutput.writeUTF(this.data);
     }
@@ -37,8 +36,7 @@ public class NBTTagString extends NBTBase
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
-    @Override
-	void load(DataInput par1DataInput) throws IOException
+    void load(DataInput par1DataInput) throws IOException
     {
         this.data = par1DataInput.readUTF();
     }
@@ -46,14 +44,12 @@ public class NBTTagString extends NBTBase
     /**
      * Gets the type byte for the tag.
      */
-    @Override
-	public byte getId()
+    public byte getId()
     {
         return (byte)8;
     }
 
-    @Override
-	public String toString()
+    public String toString()
     {
         return "" + this.data;
     }
@@ -61,14 +57,12 @@ public class NBTTagString extends NBTBase
     /**
      * Creates a clone of the tag.
      */
-    @Override
-	public NBTBase copy()
+    public NBTBase copy()
     {
         return new NBTTagString(this.getName(), this.data);
     }
 
-    @Override
-	public boolean equals(Object par1Obj)
+    public boolean equals(Object par1Obj)
     {
         if (!super.equals(par1Obj))
         {
@@ -81,8 +75,7 @@ public class NBTTagString extends NBTBase
         }
     }
 
-    @Override
-	public int hashCode()
+    public int hashCode()
     {
         return super.hashCode() ^ this.data.hashCode();
     }

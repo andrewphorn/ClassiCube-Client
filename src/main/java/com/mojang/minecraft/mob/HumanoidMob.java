@@ -1,5 +1,7 @@
 package com.mojang.minecraft.mob;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.level.tile.BlockModelRenderer;
@@ -8,7 +10,6 @@ import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
-import org.lwjgl.opengl.GL11;
 
 public class HumanoidMob extends Mob {
 
@@ -31,38 +32,37 @@ public class HumanoidMob extends Mob {
 
 	public HumanoidMob(Level var1, float var2, float var3, float var4) {
 		super(var1);
-		this.modelName = "humanoid";
+		modelName = "humanoid";
 		this.setPos(var2, var3, var4);
 	}
 
 	@Override
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
-		if (this.modelName == "sheep") {
+		if (modelName == "sheep") {
 			renderSheep(var1, var2, var3, var4, var5, var6, var7);
 			return;
-		} else if (isInteger(this.modelName)) {
+		} else if (isInteger(modelName)) {
 			try {
-				block = new BlockModelRenderer(
-						Block.blocks[Integer.parseInt(this.modelName)].textureId);
+				block = new BlockModelRenderer(Block.blocks[Integer.parseInt(modelName)].textureId);
 				GL11.glPushMatrix();
 				GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
 				GL11.glBindTexture(3553, var1.load("/terrain.png"));
 				block.renderPreview(ShapeRenderer.instance);
 				GL11.glPopMatrix();
 			} catch (Exception e) {
-				this.modelName = "humanoid";
+				modelName = "humanoid";
 			}
 			return;
 		}
 		super.renderModel(var1, var2, var3, var4, var5, var6, var7);
-		Model model = modelCache.getModel(this.modelName);
+		Model model = modelCache.getModel(modelName);
 		GL11.glEnable(3008);
-		if (this.allowAlpha) {
+		if (allowAlpha) {
 			GL11.glEnable(2884);
 		}
 
-		if (this.hasHair && model instanceof HumanoidModel) {
+		if (hasHair && model instanceof HumanoidModel) {
 			GL11.glDisable(2884);
 			HumanoidModel modelHeadwear = null;
 			(modelHeadwear = (HumanoidModel) model).headwear.yaw = modelHeadwear.head.yaw;
@@ -71,14 +71,14 @@ public class HumanoidMob extends Mob {
 			GL11.glEnable(2884);
 		}
 
-		if (this.armor || this.helmet) {
+		if (armor || helmet) {
 			GL11.glBindTexture(3553, var1.load("/armor/plate.png"));
 			GL11.glDisable(2884);
 			HumanoidModel modelArmour;
-			(modelArmour = (HumanoidModel) modelCache.getModel("humanoid.armor")).head.render = this.helmet;
-			modelArmour.body.render = this.armor;
-			modelArmour.rightArm.render = this.armor;
-			modelArmour.leftArm.render = this.armor;
+			(modelArmour = (HumanoidModel) modelCache.getModel("humanoid.armor")).head.render = helmet;
+			modelArmour.body.render = armor;
+			modelArmour.rightArm.render = armor;
+			modelArmour.leftArm.render = armor;
 			modelArmour.rightLeg.render = false;
 			modelArmour.leftLeg.render = false;
 			HumanoidModel var11 = (HumanoidModel) model;

@@ -23,18 +23,12 @@ public final class ModelManager {
 				return new BlockModel();
 			}
 		}
-		return var1.equals("humanoid") ? this.human
-				: (var1.equals("humanoid.armor") ? this.armoredHuman
-						: (var1.equals("creeper") ? this.creeper
-								: (var1.equals("chicken") ? this.chicken
-										: (var1.equals("skeleton") ? this.skeleton : (var1
-												.equals("printer") ? this.printer : (var1
-												.equals("croc") ? this.croc : (var1
-												.equals("zombie") ? this.zombie : (var1
-												.equals("pig") ? this.pig
-												: (var1.equals("sheep") ? this.sheep : (var1
-														.equals("spider") ? this.spider
-														: (var1.equals("sheep.fur") ? this.sheepFur
-																: null)))))))))));
+		return var1.equals("humanoid") ? human : var1.equals("humanoid.armor") ? armoredHuman
+				: var1.equals("creeper") ? creeper : var1.equals("chicken") ? chicken : var1
+						.equals("skeleton") ? skeleton : var1.equals("printer") ? printer : var1
+						.equals("croc") ? croc : var1.equals("zombie") ? zombie : var1
+						.equals("pig") ? pig : var1.equals("sheep") ? sheep
+						: var1.equals("spider") ? spider : var1.equals("sheep.fur") ? sheepFur
+								: null;
 	}
 }

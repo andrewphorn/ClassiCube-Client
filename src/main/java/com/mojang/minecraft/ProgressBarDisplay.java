@@ -1,11 +1,5 @@
 package com.mojang.minecraft;
 
-import com.mojang.minecraft.gui.HUDScreen;
-import com.mojang.minecraft.net.PacketType;
-import com.mojang.minecraft.render.ShapeRenderer;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +14,13 @@ import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
+
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.minecraft.gui.HUDScreen;
+import com.mojang.minecraft.net.PacketType;
+import com.mojang.minecraft.render.ShapeRenderer;
 
 public final class ProgressBarDisplay {
 
@@ -38,7 +39,7 @@ public final class ProgressBarDisplay {
 		FileChannel fileChannel1 = null;
 		FileChannel fileChannel2 = null;
 
-		//System.out.println("Copy " + paramFile1 + " to " + paramFile2);
+		// System.out.println("Copy " + paramFile1 + " to " + paramFile2);
 		try {
 			if (!paramFile2.exists()) {
 				paramFile2.createNewFile();
@@ -52,13 +53,15 @@ public final class ProgressBarDisplay {
 			System.out.println("IO Error copying file: " + ex);
 		} finally {
 			try {
-				if (fileChannel1 != null)
+				if (fileChannel1 != null) {
 					fileChannel1.close();
+				}
 			} catch (IOException ex) {
 			}
 			try {
-				if (fileChannel2 != null)
+				if (fileChannel2 != null) {
 					fileChannel2.close();
+				}
 			} catch (IOException ex) {
 			}
 		}
@@ -74,14 +77,16 @@ public final class ProgressBarDisplay {
 					localInputStream));
 			String str;
 			while ((str = bufferedReader.readLine()) != null) {
-				//System.out
-						//.println(new StringBuilder().append("Read line: ").append(str).toString());
+				// System.out
+				// .println(new
+				// StringBuilder().append("Read line: ").append(str).toString());
 				String[] arrayOfString = str.split("=", 2);
 				if (arrayOfString.length > 1) {
 					localHashMap.put(arrayOfString[0].trim(), arrayOfString[1].trim());
-					//System.out.println(new StringBuilder().append("Adding config ")
-						//	.append(arrayOfString[0].trim()).append(" = ")
-						//	.append(arrayOfString[1].trim()).toString());
+					// System.out.println(new
+					// StringBuilder().append("Adding config ")
+					// .append(arrayOfString[0].trim()).append(" = ")
+					// .append(arrayOfString[1].trim()).toString());
 				}
 			}
 			bufferedReader.close();
@@ -145,8 +150,9 @@ public final class ProgressBarDisplay {
 
 	private static URLConnection makeConnection(String url, String s1, String s2,
 			boolean AddWomProperty) throws IOException {
-		//System.out.println(new StringBuilder().append("Making connection to ").append(url)
-				//.toString());
+		// System.out.println(new
+		// StringBuilder().append("Making connection to ").append(url)
+		// .toString());
 
 		URLConnection localURLConnection = new URL(url).openConnection();
 		localURLConnection.addRequestProperty("Referer", s2);
@@ -191,21 +197,21 @@ public final class ProgressBarDisplay {
 	}
 
 	public ProgressBarDisplay(Minecraft var1) {
-		this.minecraft = var1;
+		minecraft = var1;
 	}
 
 	@SuppressWarnings("deprecation")
 	public boolean passServerCommand(String lineText) {
-		if (lineText == null)
+		if (lineText == null) {
 			return false;
+		}
 		if (lineText.contains("cfg=")) {
 			int i = lineText.indexOf("cfg=");
 			if (i > -1) {
 				String splitlineText = lineText.substring(i + 4).split(" ")[0];
-				String Url = "http://"
-						+ splitlineText.replace("$U", this.minecraft.session.username);
+				String Url = "http://" + splitlineText.replace("$U", minecraft.session.username);
 
-				//System.out.println("Fetching config from: " + Url);
+				// System.out.println("Fetching config from: " + Url);
 				serverConfig = fetchConfig(Url);
 				if (serverConfig.containsKey("server.detail")) {
 					try {
@@ -216,22 +222,8 @@ public final class ProgressBarDisplay {
 					}
 				}
 			}
-		} else
+		} else {
 			return false; // return false if no "cfg=" was found
-
-		if (serverConfig.containsKey("server.sendwomid")) {
-			byte[] b = new byte[66];
-			int i = 0;
-			byte[] tempB = b;
-			tempB[i] = ((byte) (tempB[i] | 0xD));
-			int tempI = 1;
-			byte[] tempArr = b;
-			tempArr[tempI] = ((byte) (tempArr[tempI] | 0xFF));
-			String Command = "/womid " + this.minecraft.session.username;
-			Command.getBytes(0, Command.length(), b, 2);
-			this.minecraft.networkManager.netHandler.send(PacketType.CHAT_MESSAGE, new Object[] {
-					Integer.valueOf(-1), Command });
-
 		}
 		if (serverConfig.containsKey("server.name")) {
 			HUDScreen.ServerName = serverConfig.get("server.name");
@@ -244,24 +236,23 @@ public final class ProgressBarDisplay {
 	}
 
 	public final void setProgress(int var1) {
-		if (!this.minecraft.running) {
+		if (!minecraft.running) {
 			throw new StopGameException();
 		} else {
 			long var2;
-			if ((var2 = System.currentTimeMillis()) - this.start < 0L || var2 - this.start >= 20L) {
-				this.start = var2;
-				int var4 = this.minecraft.width * 240 / this.minecraft.height;
-				int var5 = this.minecraft.height * 240 / this.minecraft.height;
+			if ((var2 = System.currentTimeMillis()) - start < 0L || var2 - start >= 20L) {
+				start = var2;
+				int var4 = minecraft.width * 240 / minecraft.height;
+				int var5 = minecraft.height * 240 / minecraft.height;
 				GL11.glClear(16640);
 				ShapeRenderer var6 = ShapeRenderer.instance;
-				int var7 = this.minecraft.textureManager.load("/dirt.png");
+				int var7 = minecraft.textureManager.load("/dirt.png");
 				GL11.glBindTexture(3553, var7);
 				float var10 = 32.0F;
 				var6.begin();
 				var6.color(4210752);
 				var6.vertexUV(0.0F, var5, 0.0F, 0.0F, var5 / var10);
-				var6.vertexUV(var4, var5, 0.0F, var4 / var10, var5
-						/ var10);
+				var6.vertexUV(var4, var5, 0.0F, var4 / var10, var5 / var10);
 				var6.vertexUV(var4, 0.0F, 0.0F, var4 / var10, 0.0F);
 				var6.vertexUV(0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 				var6.end();
@@ -284,11 +275,11 @@ public final class ProgressBarDisplay {
 					GL11.glEnable(3553);
 				}
 
-				this.minecraft.fontRenderer.render(title,
-						(var4 - this.minecraft.fontRenderer.getWidth(title)) / 2,
-						var5 / 2 - 4 - 16, 16777215);
-				this.minecraft.fontRenderer.render(text,
-						(var4 - this.minecraft.fontRenderer.getWidth(text)) / 2, var5 / 2 - 4 + 8,
+				minecraft.fontRenderer.render(title,
+						(var4 - minecraft.fontRenderer.getWidth(title)) / 2, var5 / 2 - 4 - 16,
+						16777215);
+				minecraft.fontRenderer.render(text,
+						(var4 - minecraft.fontRenderer.getWidth(text)) / 2, var5 / 2 - 4 + 8,
 						16777215);
 				Display.update();
 
@@ -302,13 +293,13 @@ public final class ProgressBarDisplay {
 	}
 
 	public final void setText(String message) {
-		if (!this.minecraft.running) {
+		if (!minecraft.running) {
 			throw new StopGameException();
 		} else {
 			text = message;
 			passServerCommand(message);
 
-			if (this.minecraft.session == null) {
+			if (minecraft.session == null) {
 				HackState.setAllEnabled();
 				return;
 			}
@@ -322,33 +313,36 @@ public final class ProgressBarDisplay {
 				HackState.setAllEnabled();
 			}
 			// then we can manually disable others here
-			if (joinedString.indexOf("+fly") > -1)
+			if (joinedString.indexOf("+fly") > -1) {
 				HackState.Fly = true;
-			else if (joinedString.indexOf("-fly") > -1)
+			} else if (joinedString.indexOf("-fly") > -1) {
 				HackState.Fly = false;
-			if (joinedString.indexOf("+noclip") > -1)
+			}
+			if (joinedString.indexOf("+noclip") > -1) {
 				HackState.Noclip = true;
-			else if (joinedString.indexOf("-noclip") > -1)
+			} else if (joinedString.indexOf("-noclip") > -1) {
 				HackState.Noclip = false;
-			if (joinedString.indexOf("+speed") > -1)
+			}
+			if (joinedString.indexOf("+speed") > -1) {
 				HackState.Speed = true;
-			else if (joinedString.indexOf("-speed") > -1)
+			} else if (joinedString.indexOf("-speed") > -1) {
 				HackState.Speed = false;
+			}
 
-			if ((joinedString.indexOf("+ophax") > -1) && this.minecraft.player.userType >= 100) {
+			if (joinedString.indexOf("+ophax") > -1 && minecraft.player.userType >= 100) {
 				HackState.setAllEnabled();
 			}
 		}
-		this.setProgress(-1);
+		setProgress(-1);
 	}
 
 	public final void setTitle(String var1) {
-		if (!this.minecraft.running) {
+		if (!minecraft.running) {
 			throw new StopGameException();
 		} else {
 			title = var1;
-			int var3 = this.minecraft.width * 240 / this.minecraft.height;
-			int var2 = this.minecraft.height * 240 / this.minecraft.height;
+			int var3 = minecraft.width * 240 / minecraft.height;
+			int var2 = minecraft.height * 240 / minecraft.height;
 			GL11.glClear(256);
 			GL11.glMatrixMode(5889);
 			GL11.glLoadIdentity();

@@ -86,7 +86,8 @@ public abstract class NBTBase
             }
             catch (IOException ioexception)
             {
-               throw ioexception;
+                
+                throw ioexception;
             }
         }
     }
@@ -183,8 +184,7 @@ public abstract class NBTBase
      */
     public abstract NBTBase copy();
 
-    @Override
-	public boolean equals(Object par1Obj)
+    public boolean equals(Object par1Obj)
     {
         if (!(par1Obj instanceof NBTBase))
         {
@@ -197,8 +197,7 @@ public abstract class NBTBase
         }
     }
 
-    @Override
-	public int hashCode()
+    public int hashCode()
     {
         return this.name.hashCode() ^ this.getId();
     }

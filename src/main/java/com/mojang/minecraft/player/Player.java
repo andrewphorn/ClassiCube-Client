@@ -1,5 +1,10 @@
 package com.mojang.minecraft.player;
 
+import java.awt.image.BufferedImage;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.GameSettings;
@@ -10,11 +15,6 @@ import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
-
-import org.lwjgl.opengl.GL11;
-
-import java.awt.image.BufferedImage;
-import java.util.List;
 
 public class Player extends Mob {
 	private int flyTrig = 0;
@@ -61,108 +61,119 @@ public class Player extends Mob {
 			var1.addEntity(this);
 		}
 
-		this.heightOffset = 1.62F;
-		this.health = 20;
-		this.modelName = "humanoid";
-		this.rotOffs = 180.0F;
-		this.ai = new Player$1(this);
-		this.settings = gs;
+		heightOffset = 1.62F;
+		health = 20;
+		modelName = "humanoid";
+		rotOffs = 180.0F;
+		ai = new Player$1(this);
+		settings = gs;
 	}
 
 	public boolean addResource(int var1) {
-		return this.inventory.addResource(var1);
+		return inventory.addResource(var1);
 	}
 
 	@Override
 	public void aiStep() {
-		if (settings.HackType == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)) {
-			this.inventory.tick();
-			this.oBob = this.bob;
-			this.input.updateMovement(0); // for the event that hacktype
+		if (settings.HackType == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)
+				&& input.canMove) {
+			inventory.tick();
+			oBob = bob;
+			input.updateMovement(0); // for the event that hacktype
 			// is 1 but server has -hax.
 			// Otherwise you won't be able to move without manually setting
 			// your hacktype back to 'normal' in the options menu.
 			super.aiStep();
 
-			float var1 = MathHelper.sqrt(this.xd * this.xd + this.zd * this.zd);
-			float var2 = (float) Math.atan(-this.yd * 0.2F) * 15.0F;
+			float var1 = MathHelper.sqrt(xd * xd + zd * zd);
+			float var2 = (float) Math.atan(-yd * 0.2F) * 15.0F;
 			if (var1 > 0.1F) {
 				var1 = 0.1F;
 			}
 
-			if (!this.onGround || this.health <= 0) {
+			if (!onGround || health <= 0) {
 				var1 = 0.0F;
 			}
 
-			if (this.onGround || this.health <= 0) {
+			if (onGround || health <= 0) {
 				var2 = 0.0F;
 			}
-			this.bob += (var1 - this.bob) * 0.4F;
-			this.tilt += (var2 - this.tilt) * 0.8F;
+			bob += (var1 - bob) * 0.4F;
+			tilt += (var2 - tilt) * 0.8F;
 			List<?> var3;
-			if (this.health > 0
-					&& (var3 = this.level.findEntities(this, this.bb.grow(1.0F, 0.0F, 1.0F))) != null) {
+			if (health > 0 && (var3 = level.findEntities(this, bb.grow(1.0F, 0.0F, 1.0F))) != null) {
 				for (int var4 = 0; var4 < var3.size(); ++var4) {
 					((Entity) var3.get(var4)).playerTouch(this);
 				}
 			}
 		} else {
-			this.oBob = this.bob;
-			this.HacksEnabled = settings.HacksEnabled;
-			this.input.updateMovement(settings.HackType);
+			oBob = bob;
+			HacksEnabled = settings.HacksEnabled;
+			input.updateMovement(1);
 			super.aiStep();
 			float fx = xd;
 			float fy = yd;
 			float fz = zd;
-			if (fx > 0.1f)
+			if (fx > 0.1f) {
 				fx = 0.1f;
-			if (fy > 0.1f)
+			}
+			if (fy > 0.1f) {
 				fy = 0.1f;
-			if (fz > 0.1f)
+			}
+			if (fz > 0.1f) {
 				fz = 0.1f;
+			}
 
-			if (fx < -0.1f)
+			if (fx < -0.1f) {
 				fx = -0.1f;
-			if (fy < -0.1f)
+			}
+			if (fy < -0.1f) {
 				fy = -0.1f;
-			if (fz < -0.1f)
+			}
+			if (fz < -0.1f) {
 				fz = -0.1f;
+			}
 
 			float aaa = MathHelper.sqrt(fx * fx + fz * fz);
 			float bbb = (float) Math.atan(-fy * 0.2F) * 15.0F;
-			this.bob += (aaa - this.bob) * 0.4F;
-			this.tilt += (bbb - this.tilt) * 0.8F;
+			bob += (aaa - bob) * 0.4F;
+			tilt += (bbb - tilt) * 0.8F;
 
-			this.speedTrig = -1; // speed
-			this.flyTrig = -1; // fly
-			this.noclipTrig = -1; // noclip
+			speedTrig = -1; // speed
+			flyTrig = -1; // fly
+			noclipTrig = -1; // noclip
 			// -1 = yes, 1 = no
 
-			if (HackState.Fly)
+			if (HackState.Fly) {
 				flyTrig = -1;
-			else
+			} else {
 				flyTrig = 1;
+			}
 
-			if (HackState.Speed)
+			if (HackState.Speed) {
 				speedTrig = -1;
-			else
+			} else {
 				speedTrig = 1;
+			}
 
-			if (HackState.Noclip)
+			if (HackState.Noclip) {
 				noclipTrig = -1;
-			else
+			} else {
 				noclipTrig = 1;
+			}
 			int i = 0;
 			int j = 0;
 			int k = 1;
 			float f1 = 1.0F;
-			this.oBob = this.bob;
-			if ((this.input.fly) && (this.flyTrig < 1))
+			oBob = bob;
+			if (flyingMode && flyTrig < 1) {
 				i = 1;
-			if ((this.input.noclip) && (this.noclipTrig < 0))
+			}
+			if (noPhysics && noclipTrig < 0) {
 				j = 1;
-			if ((this.input.mult > 1.0F) && (this.speedTrig < 1)) {
-				f1 = this.input.mult;
+			}
+			if (input.mult > 1.0F && speedTrig < 1) {
+				f1 = input.mult;
 			}
 
 			if (!HacksEnabled) {
@@ -172,15 +183,15 @@ public class Player extends Mob {
 				f1 = 1.0F;
 			}
 
-			if ((this.flyTrig > 0) || (this.speedTrig > 0)) {
+			if (flyTrig > 0 || speedTrig > 0) {
 				k = 0;
 			}
 
-			this.xo = this.x;
-			this.yo = this.y;
-			this.zo = this.z;
-			this.xRotO = this.xRot;
-			this.yRotO = this.yRot;
+			xo = x;
+			yo = y;
+			zo = z;
+			xRotO = xRot;
+			yRotO = yRot;
 
 			boolean bool1 = isInWater();
 			boolean bool2 = isInLava();
@@ -188,79 +199,78 @@ public class Player extends Mob {
 
 			float f2 = 0.0F;
 
-			if (!this.input.canMove) {
-				this.input.resetKeys();
-				//return; <- messes up flying, you mug
+			// this.input.updateMovement(1);
+
+			if (i != 0 || j != 0) {
+				yd = input.elevate;
 			}
 
-			this.input.calc();
+			if (onGround || i != 0) {
+				jumpCount = 0;
+			}
 
-			if ((i != 0) || (j != 0))
-				this.yd = this.input.elevate;
-
-			if ((this.onGround) || (i != 0))
-				this.jumpCount = 0;
-
-			if (this.input.jump) {
+			if (input.jump) {
 				if (bool1) {
-					this.yd += 0.08F;
+					yd += 0.08F;
 				} else if (bool3) {
-					this.yd += 0.06F;
+					yd += 0.06F;
 				} else if (bool2) {
-					this.yd += 0.07F;
+					yd += 0.07F;
 				} else if (i != 0) {
-					this.yd += 0.05F;
-				} else if (this.onGround) {
-					if (!this.input.fall) {
-						if ((!HacksEnabled) && (k != 0))
-							this.yd = 0.48F;
-						else
-							this.yd = 0.35F;
-						this.input.fall = true;
-						this.jumpCount += 1;
+					yd += 0.05F;
+				} else if (onGround) {
+					if (!input.fall) {
+						if (!HacksEnabled && k != 0) {
+							yd = 0.48F;
+						} else {
+							yd = 0.35F;
+						}
+						input.fall = true;
+						jumpCount += 1;
 					}
-				} else if (HacksEnabled && (!this.input.fall) && (k != 0) && (this.jumpCount < 3)) {
-					this.yd = 0.5F;
-					this.input.fall = true;
-					this.jumpCount += 1;
+				} else if (HacksEnabled && !input.fall && k != 0 && jumpCount < 3) {
+					yd = 0.5F;
+					input.fall = true;
+					jumpCount += 1;
 				}
 			} else {
-				this.input.fall = false;
+				input.fall = false;
 			}
 
-			if (HacksEnabled && (k != 0) && (this.jumpCount > 1)) {
+			if (HacksEnabled && k != 0 && jumpCount > 1) {
 				f1 *= 2.5F;
-				if (!this.isOnIce) {
-					f1 *= this.jumpCount;
-				} else
-					this.jumpCount = 0;
+				if (!isOnIce) {
+					f1 *= jumpCount;
+				} else {
+					jumpCount = 0;
+				}
 			}
 
-			if ((bool1) && (i == 0) && (j == 0)) {
-				f2 = this.y;
-				super.moveRelative(this.input.strafe, this.input.move, 0.02F * f1);
-				super.move(this.xd * f1, this.yd * f1, this.zd * f1);
-				this.xd *= 0.8F;
-				this.yd *= 0.8F;
-				this.zd *= 0.8F;
-				this.yd = ((float) (this.yd - 0.02D));
-				if ((this.horizontalCollision)
-						&& (isFree(this.xd, this.yd + 0.6F - this.y + f2, this.zd)))
-					this.yd = 0.3F;
+			if (bool1 && i == 0 && j == 0) {
+				f2 = y;
+				super.moveRelative(input.strafe, input.move, 0.02F * f1);
+				super.move(xd * f1, yd * f1, zd * f1);
+				xd *= 0.8F;
+				yd *= 0.8F;
+				zd *= 0.8F;
+				yd = (float) (yd - 0.02D);
+				if (horizontalCollision && isFree(xd, yd + 0.6F - y + f2, zd)) {
+					yd = 0.3F;
+				}
 				return;
 			}
 
-			if ((bool2) && (i == 0) && (j == 0)) {
-				f2 = this.y;
-				super.moveRelative(this.input.strafe, this.input.move, 0.02F * f1);
-				super.move(this.xd * f1, this.yd * f1, this.zd * f1);
-				this.xd *= 0.5F;
-				this.yd *= 0.5F;
-				this.zd *= 0.5F;
-				this.yd = ((float) (this.yd - 0.02D));
-				if ((this.horizontalCollision)
-						&& (isFree(this.xd, this.yd + 0.6F - this.y + f2, this.zd)))
-					this.yd = 0.3F;
+			if (bool2 && i == 0 && j == 0) {
+				f2 = y;
+				super.moveRelative(input.strafe, input.move, 0.02F * f1);
+				super.move(xd * f1, yd * f1, zd * f1);
+				xd *= 0.5F;
+				yd *= 0.5F;
+				zd *= 0.5F;
+				yd = (float) (yd - 0.02D);
+				if (horizontalCollision && isFree(xd, yd + 0.6F - y + f2, zd)) {
+					yd = 0.3F;
+				}
 				return;
 			}
 
@@ -272,43 +282,43 @@ public class Player extends Mob {
 			float f3 = 0.0f;
 			if (j != 0) {
 				f4 = i != 0 ? 0.72F : 0.71F;
-				if (i != 0)
-					this.yd = this.input.elevate;
+				if (i != 0) {
+					yd = input.elevate;
+				}
 				f3 = 0.2F;
-			} else if ((this.onGround) || (this.jumpCount > 0) || (i != 0)) {
+			} else if (onGround || jumpCount > 0 || i != 0) {
 				f3 = 0.1F;
 			} else {
 				f3 = 0.02F;
 			}
 
-			super.moveRelative(this.input.strafe, this.input.move, f3 * f1);
+			super.moveRelative(input.strafe, input.move, f3 * f1);
 
-			if ((j != 0) && ((this.xd != 0.0F) || (this.zd != 0.0F))) {
-				super.moveTo(this.x + this.xd, this.y + this.yd - f4, this.z + this.zd, this.yRot,
-						this.xRot);
-				this.yo = (this.y += f4);
+			if (j != 0 && (xd != 0.0F || zd != 0.0F)) {
+				super.moveTo(x + xd, y + yd - f4, z + zd, yRot, xRot);
+				yo = y += f4;
 			} else {
-				super.move(this.xd * f1, this.yd * f1, this.zd * f1);
+				super.move(xd * f1, yd * f1, zd * f1);
 			}
-			int var1 = this.level.getTile((int) this.x, (int) ((this.y) - 2.12F), (int) this.z);
+			int var1 = level.getTile((int) x, (int) (y - 2.12F), (int) z);
 			if (Block.blocks[var1] != Block.ICE) {
-				if (this.jumpCount == 0) {
-					this.isOnIce = false;
+				if (jumpCount == 0) {
+					isOnIce = false;
 				}
 				f2 = 0.6F;
-				this.xd *= 0.91F;
-				this.yd *= 0.98F;
-				this.zd *= 0.91F;
+				xd *= 0.91F;
+				yd *= 0.98F;
+				zd *= 0.91F;
 
 				if (i != 0) {
-					this.yd *= f2 / 4.0F;
-					this.walkDist = 0.0F;
+					yd *= f2 / 4.0F;
+					walkDist = 0.0F;
 				} else {
-					this.yd = ((float) (this.yd - 0.01D));
+					yd = (float) (yd - 0.01D);
 				}
-				this.xd *= f2;
-				this.zd *= f2;
-				this.tilt = 0f;
+				xd *= f2;
+				zd *= f2;
+				tilt = 0f;
 			} else {
 				isOnIce = true;
 			}
@@ -317,7 +327,7 @@ public class Player extends Mob {
 
 	@Override
 	public void awardKillScore(Entity var1, int var2) {
-		this.score += var2;
+		score += var2;
 	}
 
 	@Override
@@ -339,30 +349,30 @@ public class Player extends Mob {
 
 	@Override
 	public void die(Entity var1) {
-		this.setSize(0.2F, 0.2F);
-		this.setPos(this.x, this.y, this.z);
-		this.yd = 0.1F;
+		setSize(0.2F, 0.2F);
+		this.setPos(x, y, z);
+		yd = 0.1F;
 		if (var1 != null) {
-			this.xd = -MathHelper.cos((this.hurtDir + this.yRot) * 3.1415927F / 180.0F) * 0.1F;
-			this.zd = -MathHelper.sin((this.hurtDir + this.yRot) * 3.1415927F / 180.0F) * 0.1F;
+			xd = -MathHelper.cos((hurtDir + yRot) * 3.1415927F / 180.0F) * 0.1F;
+			zd = -MathHelper.sin((hurtDir + yRot) * 3.1415927F / 180.0F) * 0.1F;
 		} else {
-			this.xd = this.zd = 0.0F;
+			xd = zd = 0.0F;
 		}
 
-		this.heightOffset = 0.1F;
+		heightOffset = 0.1F;
 	}
 
 	public HumanoidModel getModel() {
-		return (HumanoidModel) modelCache.getModel(this.modelName);
+		return (HumanoidModel) modelCache.getModel(modelName);
 	}
 
 	public int getScore() {
-		return this.score;
+		return score;
 	}
 
 	@Override
 	public void hurt(Entity var1, int var2) {
-		if (!this.level.creativeMode) {
+		if (!level.creativeMode) {
 			super.hurt(var1, var2);
 		}
 
@@ -379,7 +389,8 @@ public class Player extends Mob {
 	}
 
 	public void releaseAllKeys() {
-		this.input.resetKeys();
+		input.resetKeys();
+		input.canMove = false;
 	}
 
 	@Override
@@ -388,104 +399,105 @@ public class Player extends Mob {
 
 	@Override
 	public void render(TextureManager var1, float var2) {
-		if (!this.settings.thirdPersonMode)
+		if (!settings.thirdPersonMode) {
 			return;
-		if (this.modelName != null) {
+		}
+		if (modelName != null) {
 			float var3;
-			if ((var3 = this.attackTime - var2) < 0.0F) {
+			if ((var3 = attackTime - var2) < 0.0F) {
 				var3 = 0.0F;
 			}
 
-			while (this.yBodyRotO - this.yBodyRot < -180.0F) {
-				this.yBodyRotO += 360.0F;
+			while (yBodyRotO - yBodyRot < -180.0F) {
+				yBodyRotO += 360.0F;
 			}
 
-			while (this.yBodyRotO - this.yBodyRot >= 180.0F) {
-				this.yBodyRotO -= 360.0F;
+			while (yBodyRotO - yBodyRot >= 180.0F) {
+				yBodyRotO -= 360.0F;
 			}
 
-			while (this.xRotO - this.xRot < -180.0F) {
-				this.xRotO += 360.0F;
+			while (xRotO - xRot < -180.0F) {
+				xRotO += 360.0F;
 			}
 
-			while (this.xRotO - this.xRot >= 180.0F) {
-				this.xRotO -= 360.0F;
+			while (xRotO - xRot >= 180.0F) {
+				xRotO -= 360.0F;
 			}
 
-			while (this.yRotO - this.yRot < -180.0F) {
-				this.yRotO += 360.0F;
+			while (yRotO - yRot < -180.0F) {
+				yRotO += 360.0F;
 			}
 
-			while (this.yRotO - this.yRot >= 180.0F) {
-				this.yRotO -= 360.0F;
+			while (yRotO - yRot >= 180.0F) {
+				yRotO -= 360.0F;
 			}
 
-			float var4 = this.yBodyRotO + ((this.yBodyRot - this.yBodyRotO) * var2);
-			float var5 = this.oRun + (this.run - this.oRun) * var2;
-			float var6 = this.yRotO + (this.yRot - this.yRotO) * var2;
-			float var7 = this.xRotO + (this.xRot - this.xRotO) * var2;
+			float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * var2;
+			float var5 = oRun + (run - oRun) * var2;
+			float var6 = yRotO + (yRot - yRotO) * var2;
+			float var7 = xRotO + (xRot - xRotO) * var2;
 			var6 -= var4;
 			GL11.glPushMatrix();
-			float var8 = this.animStepO + (this.animStep - this.animStepO) * var2;
-			ColorCache c = this.getBrightnessColor(var2);
+			float var8 = animStepO + (animStep - animStepO) * var2;
+			ColorCache c = getBrightnessColor(var2);
 
 			GL11.glColor3f(c.R, c.G, c.B);
 			float var9 = 0.0625F;
-			float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F * var5
-					* this.bobStrength - 23.0F;
-			GL11.glTranslatef(this.xo + (this.x - this.xo) * var2, this.yo + (this.y - this.yo)
-					* var2 - 1.62F + this.renderOffset, this.zo + (this.z - this.zo) * var2);
+			float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F * var5 * bobStrength
+					- 23.0F;
+			GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 - 1.62F + renderOffset, zo
+					+ (z - zo) * var2);
 			float var11;
-			if ((var11 = this.hurtTime - var2) > 0.0F || this.health <= 0) {
+			if ((var11 = hurtTime - var2) > 0.0F || health <= 0) {
 				if (var11 < 0.0F) {
 					var11 = 0.0F;
 				} else {
-					var11 = MathHelper.sin((var11 /= this.hurtDuration) * var11 * var11
-							* var11 * 3.1415927F) * 14.0F;
+					var11 = MathHelper.sin((var11 /= hurtDuration) * var11 * var11 * var11
+							* 3.1415927F) * 14.0F;
 				}
 
 				float var12 = 0.0F;
-				if (this.health <= 0) {
-					var12 = (this.deathTime + var2) / 20.0F;
+				if (health <= 0) {
+					var12 = (deathTime + var2) / 20.0F;
 					if ((var11 += var12 * var12 * 800.0F) > 90.0F) {
 						var11 = 90.0F;
 					}
 				}
 
-				var12 = this.hurtDir;
-				GL11.glRotatef(180.0F - var4 + this.rotOffs + 45, 0.0F, 1.0F, 0.0F);
+				var12 = hurtDir;
+				GL11.glRotatef(180.0F - var4 + rotOffs + 45, 0.0F, 1.0F, 0.0F);
 				GL11.glScalef(1.0F, 1.0F, 1.0F);
 				GL11.glRotatef(-var12, 0.0F, 1.0F, 0.0F);
 				GL11.glRotatef(-var11, 0.0F, 0.0F, 1.0F);
 				GL11.glRotatef(var12, 0.0F, 1.0F, 0.0F);
-				GL11.glRotatef(-(180.0F - var4 + this.rotOffs), 0.0F, 1.0F, 0.0F);
+				GL11.glRotatef(-(180.0F - var4 + rotOffs), 0.0F, 1.0F, 0.0F);
 			}
 
 			GL11.glTranslatef(0.0F, -var10 * var9, 0.0F);
 			GL11.glScalef(1.0F, -1.0F, 1.0F);
-			GL11.glRotatef(180.0F - var4 + this.rotOffs, 0.0F, 1.0F, 0.0F);
-			if (!this.allowAlpha) {
+			GL11.glRotatef(180.0F - var4 + rotOffs, 0.0F, 1.0F, 0.0F);
+			if (!allowAlpha) {
 				GL11.glDisable(3008);
 			} else {
 				GL11.glDisable(2884);
 			}
 
 			GL11.glScalef(-1.0F, 1.0F, 1.0F);
-			modelCache.getModel(this.modelName).attackOffset = var3 / 5.0F;
-			this.bindTexture(var1);
-			this.renderModel(var1, var8, var2, var5, var6, var7, var9);
-			if (this.invulnerableTime > this.invulnerableDuration - 10) {
+			modelCache.getModel(modelName).attackOffset = var3 / 5.0F;
+			bindTexture(var1);
+			renderModel(var1, var8, var2, var5, var6, var7, var9);
+			if (invulnerableTime > invulnerableDuration - 10) {
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
 				GL11.glEnable(3042);
 				GL11.glBlendFunc(770, 1);
-				this.bindTexture(var1);
-				this.renderModel(var1, var8, var2, var5, var6, var7, var9);
+				bindTexture(var1);
+				renderModel(var1, var8, var2, var5, var6, var7, var9);
 				GL11.glDisable(3042);
 				GL11.glBlendFunc(770, 771);
 			}
 
 			GL11.glEnable(3008);
-			if (this.allowAlpha) {
+			if (allowAlpha) {
 				GL11.glEnable(2884);
 			}
 
@@ -497,24 +509,23 @@ public class Player extends Mob {
 	@Override
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
-		modelCache.getModel(this.modelName).render(var2, var4, this.tickCount + var3, var5,
-				var6, var7);
+		modelCache.getModel(modelName).render(var2, var4, tickCount + var3, var5, var6, var7);
 	}
 
 	@Override
 	public void resetPos() {
-		this.heightOffset = 1.62F;
-		this.setSize(0.6F, 1.8F);
+		heightOffset = 1.62F;
+		setSize(0.6F, 1.8F);
 		super.resetPos();
-		if (this.level != null) {
-			this.level.player = this;
+		if (level != null) {
+			level.player = this;
 		}
 
-		this.health = 20;
-		this.deathTime = 0;
+		health = 20;
+		deathTime = 0;
 	}
 
 	public void setKey(int var1, boolean var2) {
-		this.input.setKeyState(var1, var2);
+		input.setKeyState(var1, var2);
 	}
 }

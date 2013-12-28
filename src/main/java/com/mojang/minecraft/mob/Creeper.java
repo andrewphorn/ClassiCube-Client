@@ -8,18 +8,17 @@ public class Creeper extends Mob {
 
 	public Creeper(Level var1, float var2, float var3, float var4) {
 		super(var1);
-		this.heightOffset = 1.62F;
-		this.modelName = "creeper";
-		this.textureName = "/mob/creeper.png";
-		this.ai = new Creeper$1(this);
-		this.ai.defaultLookAngle = 45;
-		this.deathScore = 200;
+		heightOffset = 1.62F;
+		modelName = "creeper";
+		textureName = "/mob/creeper.png";
+		ai = new Creeper$1(this);
+		ai.defaultLookAngle = 45;
+		deathScore = 200;
 		this.setPos(var2, var3, var4);
 	}
 
 	@Override
 	public float getBrightness(float var1) {
-		float var2 = (20 - this.health) / 20.0F;
 		return 80;
 	}
 }

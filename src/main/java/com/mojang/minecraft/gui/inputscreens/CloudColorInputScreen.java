@@ -1,42 +1,39 @@
 package com.mojang.minecraft.gui.inputscreens;
 
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.gui.AdvancedOptionsScreen;
 import com.mojang.minecraft.gui.Button;
 import com.mojang.minecraft.gui.GuiScreen;
-import com.mojang.minecraft.gui.AdvancedOptionsScreen;
 
 ;
 
 public class CloudColorInputScreen extends InputValueScreen {
 
+	String defaultHex = "ffffff";
+
 	public CloudColorInputScreen(GuiScreen var1, String var2, int var3, String Title) {
 		super(var1, var2, var3, Title);
 	}
 
-	String defaultHex = "ffffff";
-
 	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.active) {
-			if (var1.id == 0 && this.name.length() > 0) {
-				Minecraft var10000 = this.minecraft;
-				String var2 = this.name;
+			if (var1.id == 0 && name.length() > 0) {
+				Minecraft var10000 = minecraft;
+				String var2 = name;
 				Minecraft var4 = var10000;
 				var4.level.cloudColor = Integer.parseInt(var2, 16);
 				var4.levelRenderer.refresh();
-				this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent,
-						this.minecraft.settings));
+				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}
 
 			if (var1.id == 1) {
-				this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent,
-						this.minecraft.settings));
+				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}
 			if (var1.id == 800) {
-				this.minecraft.level.cloudColor = Integer.parseInt(this.defaultHex, 16);
-				this.minecraft.levelRenderer.refresh();
-				this.minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent,
-						this.minecraft.settings));
+				minecraft.level.cloudColor = Integer.parseInt(defaultHex, 16);
+				minecraft.levelRenderer.refresh();
+				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}
 		}
 	}

@@ -17,7 +17,7 @@ public class TextureFireFX extends TextureFX {
 		for (int i = 0; i < 16; i++) {
 			for (int j = 0; j < 20; j++) {
 				int k = 18;
-				float f = a[i + ((j + 1) % 20) * 16] * k;
+				float f = a[i + (j + 1) % 20 * 16] * k;
 				for (int i1 = i - 1; i1 <= i + 1; i1++) {
 					for (int j1 = j; j1 <= j + 1; j1++) {
 						int l1 = i1;
@@ -59,7 +59,7 @@ public class TextureFireFX extends TextureFX {
 				c = '\0';
 			}
 			f2 = (f2 - 0.5F) * 2.0F;
-			if (this.anaglyph) {
+			if (anaglyph) {
 				int l2 = (k1 * 30 + i2 * 59 + k2 * 11) / 100;
 				int i3 = (k1 * 30 + i2 * 70) / 100;
 				int j3 = (k1 * 30 + k2 * 70) / 100;

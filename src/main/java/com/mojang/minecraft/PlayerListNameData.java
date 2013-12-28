@@ -9,11 +9,11 @@ public class PlayerListNameData {
 
 	public PlayerListNameData(short NameID, String PlayerName, String ListName, String GroupName,
 			Byte GroupRank) {
-		this.nameID = NameID;
-		this.playerName = PlayerName;
-		this.listName = ListName;
-		this.groupName = GroupName;
-		this.groupRank = GroupRank;
+		nameID = NameID;
+		playerName = PlayerName;
+		listName = ListName;
+		groupName = GroupName;
+		groupRank = GroupRank;
 	}
 
 }

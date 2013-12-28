@@ -1,5 +1,7 @@
 package com.mojang.minecraft.mob;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;
@@ -7,7 +9,6 @@ import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.model.AnimalModel;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
-import org.lwjgl.opengl.GL11;
 
 public class Sheep extends QuadrupedMob {
 
@@ -20,30 +21,30 @@ public class Sheep extends QuadrupedMob {
 
 	public Sheep(Level var1, float var2, float var3, float var4) {
 		super(var1, var2, var3, var4);
-		this.setSize(1.4F, 1.72F);
+		setSize(1.4F, 1.72F);
 		this.setPos(var2, var3, var4);
-		this.heightOffset = 1.72F;
-		this.modelName = "sheep";
-		this.textureName = "/mob/sheep.png";
-		this.ai = new Sheep$1(this);
+		heightOffset = 1.72F;
+		modelName = "sheep";
+		textureName = "/mob/sheep.png";
+		ai = new Sheep$1(this);
 	}
 
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		this.grazeO = this.graze;
-		if (this.grazing) {
-			this.graze += 0.2F;
+		grazeO = graze;
+		if (grazing) {
+			graze += 0.2F;
 		} else {
-			this.graze -= 0.2F;
+			graze -= 0.2F;
 		}
 
-		if (this.graze < 0.0F) {
-			this.graze = 0.0F;
+		if (graze < 0.0F) {
+			graze = 0.0F;
 		}
 
-		if (this.graze > 1.0F) {
-			this.graze = 1.0F;
+		if (graze > 1.0F) {
+			graze = 1.0F;
 		}
 
 	}
@@ -57,8 +58,7 @@ public class Sheep extends QuadrupedMob {
 		int var2 = (int) (Math.random() + Math.random() + 1.0D);
 
 		for (int var3 = 0; var3 < var2; ++var3) {
-			this.level.addEntity(new Item(this.level, this.x, this.y, this.z,
-					Block.BROWN_MUSHROOM.id));
+			level.addEntity(new Item(level, x, y, z, Block.BROWN_MUSHROOM.id));
 		}
 
 		super.die(var1);
@@ -66,13 +66,12 @@ public class Sheep extends QuadrupedMob {
 
 	@Override
 	public void hurt(Entity var1, int var2) {
-		if (this.hasFur && var1 instanceof Player) {
-			this.hasFur = false;
+		if (hasFur && var1 instanceof Player) {
+			hasFur = false;
 			int var3 = (int) (Math.random() * 3.0D + 1.0D);
 
 			for (var2 = 0; var2 < var3; ++var2) {
-				this.level.addEntity(new Item(this.level, this.x, this.y, this.z,
-						Block.WHITE_WOOL.id));
+				level.addEntity(new Item(level, x, y, z, Block.WHITE_WOOL.id));
 			}
 
 		} else {
@@ -84,12 +83,12 @@ public class Sheep extends QuadrupedMob {
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
 		AnimalModel var8;
-		float var9 = (var8 = (AnimalModel) modelCache.getModel(this.modelName)).head.y;
+		float var9 = (var8 = (AnimalModel) modelCache.getModel(modelName)).head.y;
 		float var10 = var8.head.z;
-		var8.head.y += (this.grazeO + (this.graze - this.grazeO) * var3) * 8.0F;
-		var8.head.z -= this.grazeO + (this.graze - this.grazeO) * var3;
+		var8.head.y += (grazeO + (graze - grazeO) * var3) * 8.0F;
+		var8.head.z -= grazeO + (graze - grazeO) * var3;
 		super.renderModel(var1, var2, var3, var4, var5, var6, var7);
-		if (this.hasFur) {
+		if (hasFur) {
 			GL11.glBindTexture(3553, var1.load("/mob/sheep_fur.png"));
 			GL11.glDisable(2884);
 			AnimalModel var11;

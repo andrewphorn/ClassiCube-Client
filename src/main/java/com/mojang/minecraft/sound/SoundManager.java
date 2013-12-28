@@ -3,7 +3,11 @@ package com.mojang.minecraft.sound;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 // TODO.
 public final class SoundManager {
@@ -15,28 +19,28 @@ public final class SoundManager {
 
 	public final AudioInfo getAudioInfo(String var1, float var2, float var3) {
 		List<?> var4 = null;
-		synchronized (this.sounds) {
-			var4 = (List<?>) this.sounds.get(var1);
+		synchronized (sounds) {
+			var4 = (List<?>) sounds.get(var1);
 		}
 
 		if (var4 == null) {
 			return null;
 		} else {
-			SoundData var7 = (SoundData) var4.get(this.random.nextInt(var4.size()));
+			SoundData var7 = (SoundData) var4.get(random.nextInt(var4.size()));
 			return new SoundInfo(var7, var3, var2);
 		}
 	}
 
 	public boolean playMusic(SoundPlayer var1, String var2) {
 		List<?> var3 = null;
-		synchronized (this.music) {
-			var3 = (List<?>) this.music.get(var2);
+		synchronized (music) {
+			var3 = (List<?>) music.get(var2);
 		}
 
 		if (var3 == null) {
 			return false;
 		} else {
-			File var8 = (File) var3.get(this.random.nextInt(var3.size()));
+			File var8 = (File) var3.get(random.nextInt(var3.size()));
 
 			try {
 				var1.play(new Music(var1, var8.toURI().toURL()));
@@ -52,7 +56,7 @@ public final class SoundManager {
 
 	@SuppressWarnings("unchecked")
 	public final void registerMusic(String var1, File var2) {
-		synchronized (this.music) {
+		synchronized (music) {
 			for (var1 = var1.substring(0, var1.length() - 4).replaceAll("/", "."); Character
 					.isDigit(var1.charAt(var1.length() - 1)); var1 = var1.substring(0,
 					var1.length() - 1)) {
@@ -60,9 +64,9 @@ public final class SoundManager {
 			}
 
 			Object var4;
-			if ((var4 = this.music.get(var1)) == null) {
+			if ((var4 = music.get(var1)) == null) {
 				var4 = new ArrayList<Object>();
-				this.music.put(var1, var4);
+				music.put(var1, var4);
 			}
 
 			((List<File>) var4).add(var2);
@@ -79,11 +83,11 @@ public final class SoundManager {
 			}
 
 			SoundData var7 = SoundReader.read(var1.toURI().toURL());
-			synchronized (this.sounds) {
+			synchronized (sounds) {
 				Object var4;
-				if ((var4 = this.sounds.get(var2)) == null) {
+				if ((var4 = sounds.get(var2)) == null) {
 					var4 = new ArrayList<Object>();
-					this.sounds.put(var2, var4);
+					sounds.put(var2, var4);
 				}
 
 				((List<SoundData>) var4).add(var7);

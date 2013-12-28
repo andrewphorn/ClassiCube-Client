@@ -8,8 +8,8 @@ public class QuadrupedMob extends Mob {
 
 	public QuadrupedMob(Level var1, float var2, float var3, float var4) {
 		super(var1);
-		this.setSize(1.4F, 1.2F);
+		setSize(1.4F, 1.2F);
 		this.setPos(var2, var3, var4);
-		this.modelName = "pig";
+		modelName = "pig";
 	}
 }

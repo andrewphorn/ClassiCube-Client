@@ -10,7 +10,7 @@ public final class SnowBlock extends Block {
 	public SnowBlock(int var1) {
 		super(var1);
 		id = var1;
-		this.setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.20F, 1.0F);
+		setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.20F, 1.0F);
 	}
 
 	@Override
@@ -19,8 +19,8 @@ public final class SnowBlock extends Block {
 			super.canRenderSide(level, x, y, z, side);
 		}
 
-		return side == 1 ? true : (!super.canRenderSide(level, x, y, z, side) ? false
-				: (side == 0 ? true : level.getTile(x, y, z) != this.id));
+		return side == 1 ? true : !super.canRenderSide(level, x, y, z, side) ? false
+				: side == 0 ? true : level.getTile(x, y, z) != id;
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public final class SnowBlock extends Block {
 
 	@Override
 	protected final int getTextureId(int texture) {
-		return this.textureId;
+		return textureId;
 	}
 
 	@Override

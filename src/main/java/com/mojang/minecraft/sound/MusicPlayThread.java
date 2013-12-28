@@ -10,63 +10,63 @@ final class MusicPlayThread extends Thread {
 
 	public MusicPlayThread(Music var1) {
 		super();
-		this.music = var1;
-		this.setPriority(10);
-		this.setDaemon(true);
+		music = var1;
+		setPriority(10);
+		setDaemon(true);
 	}
 
 	@Override
 	public final void run() {
 		try {
 			do {
-				if (this.music.stopped) {
+				if (music.stopped) {
 					return;
 				}
 
 				ByteBuffer var2;
-				if (this.music.playing == null && this.music.current != null) {
-					var2 = this.music.current;
-					this.music.playing = var2;
+				if (music.playing == null && music.current != null) {
+					var2 = music.current;
+					music.playing = var2;
 					var2 = null;
-					this.music.current = null;
-					this.music.playing.clear();
+					music.current = null;
+					music.playing.clear();
 				}
 
-				if (this.music.playing != null && this.music.playing.remaining() != 0) {
+				if (music.playing != null && music.playing.remaining() != 0) {
 					while (true) {
-						if (this.music.playing.remaining() == 0) {
+						if (music.playing.remaining() == 0) {
 							break;
 						}
 
-						var2 = this.music.playing;
-						int var10 = this.music.stream.readPcm(var2.array(), var2.position(),
+						var2 = music.playing;
+						int var10 = music.stream.readPcm(var2.array(), var2.position(),
 								var2.remaining());
 						var2.position(var2.position() + var10);
 						if (var10 <= 0) {
-							this.music.finished = true;
-							this.music.stopped = true;
+							music.finished = true;
+							music.stopped = true;
 							break;
 						}
 					}
 				}
 
-				if (this.music.playing != null && this.music.previous == null) {
-					this.music.playing.flip();
-					var2 = this.music.playing;
-					this.music.previous = var2;
+				if (music.playing != null && music.previous == null) {
+					music.playing.flip();
+					var2 = music.playing;
+					music.previous = var2;
 					var2 = null;
-					this.music.playing = var2;
+					music.playing = var2;
 				}
 
 				Thread.sleep(10L);
-			} while (this.music.player.running);
+			} while (music.player.running);
 
 			return;
 		} catch (Exception var7) {
 			var7.printStackTrace();
 			return;
 		} finally {
-			this.music.finished = true;
+			music.finished = true;
 		}
 
 	}

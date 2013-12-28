@@ -3,12 +3,13 @@ package com.mojang.minecraft.gui;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.SessionData;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.level.tile.BlockID;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
-import org.lwjgl.opengl.GL11;
 
 public final class BlockSelectScreen extends GuiScreen {
 
@@ -24,7 +25,7 @@ public final class BlockSelectScreen extends GuiScreen {
 	float lastRotation = 0;
 
 	public BlockSelectScreen() {
-		this.grabsMouse = true;
+		grabsMouse = true;
 		start();
 		if (lessThan49) {
 			BlocksPerRow = 11;
@@ -34,18 +35,21 @@ public final class BlockSelectScreen extends GuiScreen {
 
 	String GetBlockName(int id) {
 		String s;
-		if (id < 0 || id > 255)
+		if (id < 0 || id > 255) {
 			return "";
+		}
 		try {
 			Block b = SessionData.allowedBlocks.get(id);
-			if (b == null)
+			if (b == null) {
 				return "";
+			}
 			int ID = b.id;
 			BlockID bid = BlockID.values()[ID + 1];
-			if (bid == null)
+			if (bid == null) {
 				s = "";
-			else
+			} else {
 				s = bid.name();
+			}
 		} catch (Exception e) {
 			return "";
 		}
@@ -54,8 +58,8 @@ public final class BlockSelectScreen extends GuiScreen {
 
 	private int getBlockOnScreen(int var1, int var2) {
 		for (int var3 = 0; var3 < SessionData.allowedBlocks.size(); ++var3) {
-			int var4 = this.width / 2 + var3 % BlocksPerRow * Spacing + -128 - 3;
-			int var5 = this.height / 2 + var3 / BlocksPerRow * Spacing + -60 + 3;
+			int var4 = width / 2 + var3 % BlocksPerRow * Spacing + -128 - 3;
+			int var5 = height / 2 + var3 / BlocksPerRow * Spacing + -60 + 3;
 			if (var1 >= var4 && var1 <= var4 + 22 && var2 >= var5 - BlocksPerRow
 					&& var2 <= var5 + BlocksPerRow) {
 				return var3;
@@ -68,35 +72,31 @@ public final class BlockSelectScreen extends GuiScreen {
 	@Override
 	protected final void onMouseClick(int var1, int var2, int var3) {
 		if (var3 == 0) {
-			this.minecraft.player.inventory.replaceSlot(this.getBlockOnScreen(var1, var2));
-			this.minecraft.setCurrentScreen((GuiScreen) null);
+			minecraft.player.inventory.replaceSlot(getBlockOnScreen(var1, var2));
+			minecraft.setCurrentScreen((GuiScreen) null);
 		}
 
 	}
 
 	@Override
 	public final void render(int var1, int var2) {
-		var1 = this.getBlockOnScreen(var1, var2);
+		var1 = getBlockOnScreen(var1, var2);
 		if (lessThan49) {
-			drawFadingBox(this.width / 2 - 140, 30, this.width / 2 + 140, 195, -1878719232,
-					-1070583712);
+			drawFadingBox(width / 2 - 140, 30, width / 2 + 140, 195, -1878719232, -1070583712);
 		} else {
-			drawFadingBox(this.width / 2 - 140, 30, this.width / 2 + 140, 180, -1878719232,
-					-1070583712);
+			drawFadingBox(width / 2 - 140, 30, width / 2 + 140, 180, -1878719232, -1070583712);
 		}
 		if (var1 >= 0) {
-			var2 = this.width / 2 + var1 % BlocksPerRow * Spacing + -128;
+			var2 = width / 2 + var1 % BlocksPerRow * Spacing + -128;
 			if (lessThan49) {
-				drawCenteredString(this.fontRenderer, GetBlockName(var1), this.width / 2, 180,
-						16777215);
+				drawCenteredString(fontRenderer, GetBlockName(var1), width / 2, 180, 16777215);
 			} else {
-				drawCenteredString(this.fontRenderer, GetBlockName(var1), this.width / 2, 165,
-						16777215);
+				drawCenteredString(fontRenderer, GetBlockName(var1), width / 2, 165, 16777215);
 			}
 		}
 
-		drawCenteredString(this.fontRenderer, "Select block", this.width / 2, 40, 16777215);
-		TextureManager var7 = this.minecraft.textureManager;
+		drawCenteredString(fontRenderer, "Select block", width / 2, 40, 16777215);
+		TextureManager var7 = minecraft.textureManager;
 		ShapeRenderer var8 = ShapeRenderer.instance;
 		var2 = var7.load("/terrain.png");
 		GL11.glBindTexture(3553, var2);
@@ -105,8 +105,8 @@ public final class BlockSelectScreen extends GuiScreen {
 			Block var4 = SessionData.allowedBlocks.get(var2);
 			if (var4 != null) {
 				GL11.glPushMatrix();
-				int var5 = this.width / 2 + var2 % BlocksPerRow * Spacing + -128;
-				int var6 = this.height / 2 + var2 / BlocksPerRow * Spacing + -60;
+				int var5 = width / 2 + var2 % BlocksPerRow * Spacing + -128;
+				int var6 = height / 2 + var2 / BlocksPerRow * Spacing + -60;
 				GL11.glTranslatef(var5, var6, 0.0F);
 				GL11.glScalef(9.0F, 9.0F, 9.0F);
 				GL11.glTranslatef(1.0F, 0.5F, 8.0F);
@@ -129,7 +129,7 @@ public final class BlockSelectScreen extends GuiScreen {
 	}
 
 	void Rotate() {
-		this.lastRotation += 2.7F;
+		lastRotation += 2.7F;
 	}
 
 	public void start() {

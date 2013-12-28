@@ -19,8 +19,7 @@ class CallableTagCompound2 implements Callable
         return NBTBase.NBTTypes[this.field_82588_a];
     }
 
-    @Override
-	public Object call()
+    public Object call()
     {
         return this.func_82586_a();
     }

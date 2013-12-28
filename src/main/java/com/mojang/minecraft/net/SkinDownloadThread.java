@@ -2,6 +2,7 @@ package com.mojang.minecraft.net;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import javax.imageio.ImageIO;
 
 public class SkinDownloadThread extends Thread {
@@ -12,7 +13,7 @@ public class SkinDownloadThread extends Thread {
 	public SkinDownloadThread(NetworkPlayer networkPlayer, String skinServer) {
 		super();
 
-		this.player = networkPlayer;
+		player = networkPlayer;
 		this.skinServer = skinServer;
 	}
 

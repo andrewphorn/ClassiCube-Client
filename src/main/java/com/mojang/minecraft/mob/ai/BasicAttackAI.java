@@ -11,56 +11,54 @@ public class BasicAttackAI extends BasicAI {
 	public int damage = 6;
 
 	public boolean attack(Entity var1) {
-		if (this.level.clip(new Vec3D(this.mob.x, this.mob.y, this.mob.z), new Vec3D(var1.x,
-				var1.y, var1.z)) != null) {
+		if (level.clip(new Vec3D(mob.x, mob.y, mob.z), new Vec3D(var1.x, var1.y, var1.z)) != null) {
 			return false;
 		} else {
-			this.mob.attackTime = 5;
-			this.attackDelay = this.random.nextInt(20) + 10;
-			int var2 = (int) ((this.random.nextFloat() + this.random.nextFloat()) / 2.0F
-					* this.damage + 1.0F);
-			var1.hurt(this.mob, var2);
-			this.noActionTime = 0;
+			mob.attackTime = 5;
+			attackDelay = random.nextInt(20) + 10;
+			int var2 = (int) ((random.nextFloat() + random.nextFloat()) / 2.0F * damage + 1.0F);
+			var1.hurt(mob, var2);
+			noActionTime = 0;
 			return true;
 		}
 	}
 
 	protected void doAttack() {
-		Entity var1 = this.level.getPlayer();
+		Entity var1 = level.getPlayer();
 		float var2 = 16.0F;
-		if (this.attackTarget != null && this.attackTarget.removed) {
-			this.attackTarget = null;
+		if (attackTarget != null && attackTarget.removed) {
+			attackTarget = null;
 		}
 
 		float var3;
 		float var4;
 		float var5;
-		if (var1 != null && this.attackTarget == null) {
-			var3 = var1.x - this.mob.x;
-			var4 = var1.y - this.mob.y;
-			var5 = var1.z - this.mob.z;
+		if (var1 != null && attackTarget == null) {
+			var3 = var1.x - mob.x;
+			var4 = var1.y - mob.y;
+			var5 = var1.z - mob.z;
 			if (var3 * var3 + var4 * var4 + var5 * var5 < var2 * var2) {
-				this.attackTarget = var1;
+				attackTarget = var1;
 			}
 		}
 
-		if (this.attackTarget != null) {
-			var3 = this.attackTarget.x - this.mob.x;
-			var4 = this.attackTarget.y - this.mob.y;
-			var5 = this.attackTarget.z - this.mob.z;
+		if (attackTarget != null) {
+			var3 = attackTarget.x - mob.x;
+			var4 = attackTarget.y - mob.y;
+			var5 = attackTarget.z - mob.z;
 			float var6;
 			if ((var6 = var3 * var3 + var4 * var4 + var5 * var5) > var2 * var2 * 2.0F * 2.0F
-					&& this.random.nextInt(100) == 0) {
-				this.attackTarget = null;
+					&& random.nextInt(100) == 0) {
+				attackTarget = null;
 			}
 
-			if (this.attackTarget != null) {
+			if (attackTarget != null) {
 				var6 = MathHelper.sqrt(var6);
-				this.mob.yRot = (float) (Math.atan2(var5, var3) * 180.0D / 3.1415927410125732D) - 90.0F;
-				this.mob.xRot = -((float) (Math.atan2(var4, var6) * 180.0D / 3.1415927410125732D));
+				mob.yRot = (float) (Math.atan2(var5, var3) * 180.0D / 3.1415927410125732D) - 90.0F;
+				mob.xRot = -((float) (Math.atan2(var4, var6) * 180.0D / 3.1415927410125732D));
 				if (MathHelper.sqrt(var3 * var3 + var4 * var4 + var5 * var5) < 2.0F
-						&& this.attackDelay == 0) {
-					this.attack(this.attackTarget);
+						&& attackDelay == 0) {
+					attack(attackTarget);
 				}
 			}
 
@@ -74,8 +72,8 @@ public class BasicAttackAI extends BasicAI {
 			var1 = ((Arrow) var1).getOwner();
 		}
 
-		if (var1 != null && !var1.getClass().equals(this.mob.getClass())) {
-			this.attackTarget = var1;
+		if (var1 != null && !var1.getClass().equals(mob.getClass())) {
+			attackTarget = var1;
 		}
 
 	}
@@ -83,8 +81,8 @@ public class BasicAttackAI extends BasicAI {
 	@Override
 	protected void update() {
 		super.update();
-		if (this.mob.health > 0) {
-			this.doAttack();
+		if (mob.health > 0) {
+			doAttack();
 		}
 
 	}

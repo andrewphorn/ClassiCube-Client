@@ -1,17 +1,17 @@
 package com.mojang.minecraft.level.tile;
 
+import java.util.Random;
+
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
-
-import java.util.Random;
 
 public final class StillLiquidBlock extends LiquidBlock {
 
 	protected StillLiquidBlock(int var1, LiquidType var2) {
 		super(var1, var2);
-		this.movingId = var1 - 1;
-		this.stillId = var1;
-		this.setPhysics(false);
+		movingId = var1 - 1;
+		stillId = var1;
+		setPhysics(false);
 	}
 
 	@Override
@@ -39,16 +39,16 @@ public final class StillLiquidBlock extends LiquidBlock {
 
 		if (var5 != 0) {
 			LiquidType var7 = Block.blocks[var5].getLiquidType();
-			if (this.type == LiquidType.water && var7 == LiquidType.lava
-					|| var7 == LiquidType.water && this.type == LiquidType.lava) {
+			if (type == LiquidType.water && var7 == LiquidType.lava || var7 == LiquidType.water
+					&& type == LiquidType.lava) {
 				var1.setTile(var2, var3, var4, Block.STONE.id);
 				return;
 			}
 		}
 
 		if (var6) {
-			var1.setTileNoUpdate(var2, var3, var4, this.movingId);
-			var1.addToTickNextTick(var2, var3, var4, this.movingId);
+			var1.setTileNoUpdate(var2, var3, var4, movingId);
+			var1.addToTickNextTick(var2, var3, var4, movingId);
 		}
 
 	}

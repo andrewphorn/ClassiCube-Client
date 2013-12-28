@@ -16,11 +16,11 @@ public final class BlockData {
 		this.z = z;
 		this.block = block;
 	}
-	
+
 	public final float distanceSquared(Player var1) {
-		float var2 = var1.x - this.x;
-		float var3 = var1.y - this.y;
-		float var4 = var1.z - this.z;
+		float var2 = var1.x - x;
+		float var3 = var1.y - y;
+		float var4 = var1.z - z;
 		return var2 * var2 + var3 * var3 + var4 * var4;
 	}
 }

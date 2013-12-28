@@ -1,25 +1,25 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.gui.inputscreens.InputValueScreen;
-import com.mojang.minecraft.level.LevelSerializer;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.gui.inputscreens.InputValueScreen;
+import com.mojang.minecraft.level.LevelSerializer;
 
 public final class SaveLevelScreen extends LoadLevelScreen {
 
 	public SaveLevelScreen(GuiScreen var1) {
 		super(var1);
-		this.title = "Save level";
-		this.saving = true;
+		title = "Save level";
+		saving = true;
 	}
 
 	@Override
 	public final void onOpen() {
 		super.onOpen();
-		this.buttons.get(5).text = "Save file...";
+		buttons.get(5).text = "Save file...";
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public final class SaveLevelScreen extends LoadLevelScreen {
 		}
 
 		File var2 = var1;
-		Minecraft var3 = this.minecraft;
+		Minecraft var3 = minecraft;
 		try {
 			new LevelSerializer(var3.level).saveMap(var2);
 		} catch (FileNotFoundException e) {
@@ -39,14 +39,14 @@ public final class SaveLevelScreen extends LoadLevelScreen {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//this.minecraft.levelIo.save(var3.level, var2);
-		this.minecraft.setCurrentScreen(this.parent);
+		// this.minecraft.levelIo.save(var3.level, var2);
+		minecraft.setCurrentScreen(parent);
 	}
 
 	@Override
 	protected final void openLevel(int var1) {
-		this.minecraft.setCurrentScreen(new InputValueScreen(this,
-				this.buttons.get(var1).text, var1, "Enter level name..."));
+		minecraft.setCurrentScreen(new InputValueScreen(this, buttons.get(var1).text, var1,
+				"Enter level name..."));
 	}
 
 	@Override
@@ -57,9 +57,9 @@ public final class SaveLevelScreen extends LoadLevelScreen {
 	@Override
 	protected final void setLevels(String[] var1) {
 		for (int var2 = 0; var2 < 5; ++var2) {
-			this.buttons.get(var2).text = var1[var2];
-			this.buttons.get(var2).visible = true;
-			this.buttons.get(var2).active = true;
+			buttons.get(var2).text = var1[var2];
+			buttons.get(var2).visible = true;
+			buttons.get(var2).active = true;
 		}
 
 	}

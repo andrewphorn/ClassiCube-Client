@@ -16,6 +16,14 @@ public class AnimatedTextureFX extends TextureFX {
 
 	protected BufferedImage file;
 
+	public AnimatedTextureFX(int targetTextureID, BufferedImage image, int scale) {
+		super(targetTextureID);
+		file = image;
+		int frames = file.getHeight() / file.getWidth();
+		int frameSize = file.getWidth();
+		unStitch(frames, frameSize);
+	}
+
 	public AnimatedTextureFX(int targetTextureID, String fileToLoad, int scale) {
 		super(targetTextureID);
 		try {
@@ -29,26 +37,19 @@ public class AnimatedTextureFX extends TextureFX {
 		unStitch(frames, frameSize);
 	}
 
-	public AnimatedTextureFX(int targetTextureID, BufferedImage image, int scale) {
-		super(targetTextureID);
-		file = image;
-		int frames = file.getHeight() / file.getWidth();
-		int frameSize = file.getWidth();
-		unStitch(frames, frameSize);
-	}
-
 	@Override
 	public void animate() {
-		
-		if (this.atlas.size() == 0)
+
+		if (atlas.size() == 0) {
 			return;
-		BufferedImage image = this.atlas.get(index);
+		}
+		BufferedImage image = atlas.get(index);
 		int width = image.getWidth();
 		int height = image.getHeight();
 		int[] pixels = new int[width * height];
 
 		image.getRGB(0, 0, width, height, pixels, 0, width);
-		textureData = new byte[(width * height) * 4];
+		textureData = new byte[width * height * 4];
 		scaling = file.getWidth() / 16;
 		for (int pixel = 0; pixel < pixels.length; pixel++) {
 			int alpha = pixels[pixel] >>> 24;
@@ -63,16 +64,17 @@ public class AnimatedTextureFX extends TextureFX {
 			textureData[i + 3] = (byte) alpha;
 		}
 		index++;
-		if (index >= this.atlas.size())
+		if (index >= atlas.size()) {
 			index = 0;
+		}
 	}
-	
+
 	public void unStitch(int frames, int frameSize) {
 		for (int i = 0; i < frames; i++) {
 			BufferedImage image = new BufferedImage(frameSize, frameSize, 6);
 			for (int j = 0; j < frameSize; j++) {
 				for (int k = 0; k < frameSize; k++) {
-					image.setRGB(j, k, file.getRGB(j, k + (i * frameSize)));
+					image.setRGB(j, k, file.getRGB(j, k + i * frameSize));
 				}
 			}
 			atlas.add(image);

@@ -13,17 +13,17 @@ public final class LevelObjectInputStream extends ObjectInputStream {
 
 	public LevelObjectInputStream(InputStream var1) throws IOException {
 		super(var1);
-		this.classes.add("Player$1");
-		this.classes.add("Creeper$1");
-		this.classes.add("Skeleton$1");
+		classes.add("Player$1");
+		classes.add("Creeper$1");
+		classes.add("Skeleton$1");
 	}
 
 	@Override
 	protected final ObjectStreamClass readClassDescriptor() {
 		try {
 			ObjectStreamClass var1 = super.readClassDescriptor();
-			return this.classes.contains(var1.getName()) ? ObjectStreamClass.lookup(Class
-					.forName(var1.getName())) : var1;
+			return classes.contains(var1.getName()) ? ObjectStreamClass.lookup(Class.forName(var1
+					.getName())) : var1;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

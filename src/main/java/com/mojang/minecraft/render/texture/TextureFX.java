@@ -6,9 +6,9 @@ public class TextureFX {
 	public int textureId;
 	public boolean anaglyph = false;
 	public int scaling = 1;
-	
+
 	public TextureFX(int textureID) {
-		this.textureId = textureID;
+		textureId = textureID;
 	}
 
 	public void animate() {

@@ -19,8 +19,7 @@ class CallableTagCompound1 implements Callable
         return NBTBase.NBTTypes[((NBTBase)NBTTagCompound.getTagMap(this.theNBTTagCompound).get(this.field_82585_a)).getId()];
     }
 
-    @Override
-	public Object call()
+    public Object call()
     {
         return this.func_82583_a();
     }

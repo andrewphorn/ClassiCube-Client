@@ -13,7 +13,7 @@ final class Creeper$1 extends BasicAttackAI {
 	final Creeper creeper;
 
 	Creeper$1(Creeper var1) {
-		this.creeper = var1;
+		creeper = var1;
 	}
 
 	@Override
@@ -21,7 +21,7 @@ final class Creeper$1 extends BasicAttackAI {
 		if (!super.attack(var1)) {
 			return false;
 		} else {
-			this.mob.hurt(var1, 6);
+			mob.hurt(var1, 6);
 			return true;
 		}
 	}
@@ -29,18 +29,18 @@ final class Creeper$1 extends BasicAttackAI {
 	@Override
 	public final void beforeRemove() {
 		float var1 = 4.0F;
-		this.level.explode(this.mob, this.mob.x, this.mob.y, this.mob.z, var1);
+		level.explode(mob, mob.x, mob.y, mob.z, var1);
 
 		for (int var2 = 0; var2 < 500; ++var2) {
-			float var3 = (float) this.random.nextGaussian() * var1 / 4.0F;
-			float var4 = (float) this.random.nextGaussian() * var1 / 4.0F;
-			float var5 = (float) this.random.nextGaussian() * var1 / 4.0F;
+			float var3 = (float) random.nextGaussian() * var1 / 4.0F;
+			float var4 = (float) random.nextGaussian() * var1 / 4.0F;
+			float var5 = (float) random.nextGaussian() * var1 / 4.0F;
 			float var6 = MathHelper.sqrt(var3 * var3 + var4 * var4 + var5 * var5);
 			float var7 = var3 / var6 / var6;
 			float var8 = var4 / var6 / var6;
 			var6 = var5 / var6 / var6;
-			this.level.particleEngine.spawnParticle(new TerrainParticle(this.level, this.mob.x
-					+ var3, this.mob.y + var4, this.mob.z + var5, var7, var8, var6, Block.LEAVES));
+			level.particleEngine.spawnParticle(new TerrainParticle(level, mob.x + var3, mob.y
+					+ var4, mob.z + var5, var7, var8, var6, Block.LEAVES));
 		}
 
 	}

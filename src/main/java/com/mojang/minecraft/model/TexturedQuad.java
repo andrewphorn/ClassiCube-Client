@@ -5,7 +5,7 @@ public final class TexturedQuad {
 	public Vertex[] vertices;
 
 	private TexturedQuad(Vertex[] var1) {
-		this.vertices = var1;
+		vertices = var1;
 	}
 
 	public TexturedQuad(Vertex[] var1, float var2, float var3, float var4, float var5) {

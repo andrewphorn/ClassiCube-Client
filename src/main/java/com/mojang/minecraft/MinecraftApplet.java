@@ -53,8 +53,9 @@ public class MinecraftApplet extends Applet {
 		for (int k = 0; k < 10; k++) {
 			topParent = parent;
 			parent = parent.getParent();
-			if (parent == null)
+			if (parent == null) {
 				break;
+			}
 		}
 
 		// If topParent isn't a KeyEventDispatcher then we must be in some

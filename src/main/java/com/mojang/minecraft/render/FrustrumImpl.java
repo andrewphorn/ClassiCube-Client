@@ -1,28 +1,30 @@
 package com.mojang.minecraft.render;
 
-import com.mojang.util.MathHelper;
 import java.nio.FloatBuffer;
+
 import org.lwjgl.opengl.GL11;
+
+import com.mojang.util.MathHelper;
 
 public final class FrustrumImpl extends Frustrum {
 
-	public FrustrumImpl() {
-		projectionMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
-		modelviewMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
-		unused = GLAllocation.createDirectFloatBuffer(16);
-	}
+	private static FrustrumImpl instance = new FrustrumImpl();
 
 	public static FrustrumImpl getInstance() {
 		instance.init();
 		return instance;
 	}
 
-	private void normalize(float af[][], int i) {
-		float f = MathHelper.sqrt(af[i][0] * af[i][0] + af[i][1] * af[i][1] + af[i][2] * af[i][2]);
-		af[i][0] /= f;
-		af[i][1] /= f;
-		af[i][2] /= f;
-		af[i][3] /= f;
+	private FloatBuffer projectionMatrixBuffer;
+
+	private FloatBuffer modelviewMatrixBuffer;
+
+	private FloatBuffer unused;
+
+	public FrustrumImpl() {
+		projectionMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
+		modelviewMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
+		unused = GLAllocation.createDirectFloatBuffer(16);
 	}
 
 	private void init() {
@@ -115,9 +117,12 @@ public final class FrustrumImpl extends Frustrum {
 		normalize(frustum, 5);
 	}
 
-	private static FrustrumImpl instance = new FrustrumImpl();
-	private FloatBuffer projectionMatrixBuffer;
-	private FloatBuffer modelviewMatrixBuffer;
-	private FloatBuffer unused;
+	private void normalize(float af[][], int i) {
+		float f = MathHelper.sqrt(af[i][0] * af[i][0] + af[i][1] * af[i][1] + af[i][2] * af[i][2]);
+		af[i][0] /= f;
+		af[i][1] /= f;
+		af[i][2] /= f;
+		af[i][3] /= f;
+	}
 
 }

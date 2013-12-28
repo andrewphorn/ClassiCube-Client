@@ -7,40 +7,39 @@ public final class GameOverScreen extends GuiScreen {
 	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.id == 0) {
-			this.minecraft.setCurrentScreen(new OptionsScreen(this, this.minecraft.settings));
+			minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
 		}
 
 		if (var1.id == 1) {
-			this.minecraft.setCurrentScreen(new GenerateLevelScreen(this));
+			minecraft.setCurrentScreen(new GenerateLevelScreen(this));
 		}
 
-		if (this.minecraft.session != null && var1.id == 2) {
-			this.minecraft.setCurrentScreen(new LoadLevelScreen(this));
+		if (minecraft.session != null && var1.id == 2) {
+			minecraft.setCurrentScreen(new LoadLevelScreen(this));
 		}
 
 	}
 
 	@Override
 	public final void onOpen() {
-		this.buttons.clear();
-		this.buttons.add(new Button(1, this.width / 2 - 100, this.height / 4 + 72,
-				"Generate new level..."));
-		this.buttons.add(new Button(2, this.width / 2 - 100, this.height / 4 + 96, "Load level.."));
-		if (this.minecraft.session == null) {
-			this.buttons.get(1).active = false;
+		buttons.clear();
+		buttons.add(new Button(1, width / 2 - 100, height / 4 + 72, "Generate new level..."));
+		buttons.add(new Button(2, width / 2 - 100, height / 4 + 96, "Load level.."));
+		if (minecraft.session == null) {
+			buttons.get(1).active = false;
 		}
 
 	}
 
 	@Override
 	public final void render(int var1, int var2) {
-		drawFadingBox(0, 0, this.width, this.height, 1615855616, -1602211792);
+		drawFadingBox(0, 0, width, height, 1615855616, -1602211792);
 		GL11.glPushMatrix();
 		GL11.glScalef(2.0F, 2.0F, 2.0F);
-		drawCenteredString(this.fontRenderer, "Game over!", this.width / 2 / 2, 30, 16777215);
+		drawCenteredString(fontRenderer, "Game over!", width / 2 / 2, 30, 16777215);
 		GL11.glPopMatrix();
-		drawCenteredString(this.fontRenderer, "Score: &e" + this.minecraft.player.getScore(),
-				this.width / 2, 100, 16777215);
+		drawCenteredString(fontRenderer, "Score: &e" + minecraft.player.getScore(), width / 2, 100,
+				16777215);
 		super.render(var1, var2);
 	}
 }

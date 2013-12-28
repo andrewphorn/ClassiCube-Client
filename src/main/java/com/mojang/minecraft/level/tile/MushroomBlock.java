@@ -1,15 +1,15 @@
 package com.mojang.minecraft.level.tile;
 
-import com.mojang.minecraft.level.Level;
-
 import java.util.Random;
+
+import com.mojang.minecraft.level.Level;
 
 public final class MushroomBlock extends FlowerBlock {
 
 	protected MushroomBlock(int var1) {
 		super(var1);
 		float var3 = 0.2F;
-		this.setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F, var3 * 2.0F, var3 + 0.5F);
+		setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F, var3 * 2.0F, var3 + 0.5F);
 	}
 
 	@Override

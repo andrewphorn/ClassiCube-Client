@@ -1,5 +1,9 @@
 package com.mojang.minecraft.item;
 
+import java.util.Random;
+
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
@@ -9,9 +13,6 @@ import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
 
 public class PrimedTnt extends Entity {
 	public static final long serialVersionUID = 0L;
@@ -68,7 +69,7 @@ public class PrimedTnt extends Entity {
 
 	@Override
 	public boolean isPickable() {
-		return !this.removed;
+		return !removed;
 	}
 
 	@Override
@@ -77,7 +78,7 @@ public class PrimedTnt extends Entity {
 			Player player = (Player) entity;
 
 			if (player.addResource(Block.TNT.id)) {
-				TakeEntityAnim takeEntityAnim = new TakeEntityAnim(this.level, this, player);
+				TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this, player);
 
 				level.addEntity(takeEntityAnim);
 

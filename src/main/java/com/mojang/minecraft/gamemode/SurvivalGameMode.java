@@ -57,7 +57,7 @@ public final class SurvivalGameMode extends GameMode {
 
 	@Override
 	public void hitBlock(int x, int y, int z) {
-		int block = this.minecraft.level.getTile(x, y, z);
+		int block = minecraft.level.getTile(x, y, z);
 
 		if (block > 0 && Block.blocks[block].getHardness() == 0) {
 			breakBlock(x, y, z);
@@ -118,8 +118,8 @@ public final class SurvivalGameMode extends GameMode {
 
 	@Override
 	public void resetHits() {
-		this.hits = 0;
-		this.hitDelay = 0;
+		hits = 0;
+		hitDelay = 0;
 	}
 
 	@Override

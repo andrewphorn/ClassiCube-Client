@@ -28,8 +28,7 @@ public class NBTTagCompound extends NBTBase
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
-    @Override
-	void write(DataOutput par1DataOutput) throws IOException
+    void write(DataOutput par1DataOutput) throws IOException
     {
         Iterator iterator = this.tagMap.values().iterator();
 
@@ -45,8 +44,7 @@ public class NBTTagCompound extends NBTBase
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
-    @Override
-	void load(DataInput par1DataInput) throws IOException
+    void load(DataInput par1DataInput) throws IOException
     {
         this.tagMap.clear();
         NBTBase nbtbase;
@@ -68,8 +66,7 @@ public class NBTTagCompound extends NBTBase
     /**
      * Gets the type byte for the tag.
      */
-    @Override
-	public byte getId()
+    public byte getId()
     {
         return (byte)10;
     }
@@ -197,7 +194,7 @@ public class NBTTagCompound extends NBTBase
         }
         catch (ClassCastException classcastexception)
         {
-            throw classcastexception;
+            throw  classcastexception;
         }
     }
 
@@ -302,7 +299,7 @@ public class NBTTagCompound extends NBTBase
         }
         catch (ClassCastException classcastexception)
         {
-        	 throw classcastexception;
+            throw classcastexception;
         }
     }
 
@@ -317,7 +314,7 @@ public class NBTTagCompound extends NBTBase
         }
         catch (ClassCastException classcastexception)
         {
-        	 throw classcastexception;
+            throw classcastexception;
         }
     }
 
@@ -333,7 +330,7 @@ public class NBTTagCompound extends NBTBase
         }
         catch (ClassCastException classcastexception)
         {
-        	 throw classcastexception;
+            throw  classcastexception;
         }
     }
 
@@ -348,7 +345,7 @@ public class NBTTagCompound extends NBTBase
         }
         catch (ClassCastException classcastexception)
         {
-        	 throw classcastexception;
+            throw  classcastexception;
         }
     }
 
@@ -369,8 +366,7 @@ public class NBTTagCompound extends NBTBase
         this.tagMap.remove(par1Str);
     }
 
-    @Override
-	public String toString()
+    public String toString()
     {
         String s = this.getName() + ":[";
         String s1;
@@ -390,13 +386,11 @@ public class NBTTagCompound extends NBTBase
     {
         return this.tagMap.isEmpty();
     }
-    
 
     /**
      * Creates a clone of the tag.
      */
-    @Override
-	public NBTBase copy()
+    public NBTBase copy()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound(this.getName());
         Iterator iterator = this.tagMap.keySet().iterator();
@@ -410,8 +404,7 @@ public class NBTTagCompound extends NBTBase
         return nbttagcompound;
     }
 
-    @Override
-	public boolean equals(Object par1Obj)
+    public boolean equals(Object par1Obj)
     {
         if (super.equals(par1Obj))
         {
@@ -424,8 +417,7 @@ public class NBTTagCompound extends NBTBase
         }
     }
 
-    @Override
-	public int hashCode()
+    public int hashCode()
     {
         return super.hashCode() ^ this.tagMap.hashCode();
     }

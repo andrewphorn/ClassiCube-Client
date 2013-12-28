@@ -1,5 +1,8 @@
 package com.mojang.minecraft.sound;
 
+import java.io.IOException;
+import java.net.URL;
+
 import de.jarnbjo.ogg.LogicalOggStreamImpl;
 import de.jarnbjo.ogg.OggFormatException;
 import de.jarnbjo.ogg.OnDemandUrlStream;
@@ -7,17 +10,14 @@ import de.jarnbjo.vorbis.IdentificationHeader;
 import de.jarnbjo.vorbis.VorbisFormatException;
 import de.jarnbjo.vorbis.VorbisStream;
 
-import java.io.IOException;
-import java.net.URL;
-
 // TODO.
 public final class SoundReader {
 
 	public static SoundData read(URL var0) {
 		VorbisStream vorbisStream = null;
 		try {
-			LogicalOggStreamImpl OggStream = (new OnDemandUrlStream(var0))
-					.getLogicalStreams().iterator().next();
+			LogicalOggStreamImpl OggStream = new OnDemandUrlStream(var0).getLogicalStreams()
+					.iterator().next();
 			vorbisStream = new VorbisStream(OggStream);
 		} catch (VorbisFormatException e) {
 			e.printStackTrace();
@@ -82,7 +82,6 @@ public final class SoundReader {
 
 		@SuppressWarnings("unused")
 		IdentificationHeader var13;
-		return new SoundData(var5,
-				(var13 = vorbisStream.getIdentificationHeader()).getSampleRate());
+		return new SoundData(var5, (var13 = vorbisStream.getIdentificationHeader()).getSampleRate());
 	}
 }

@@ -1,9 +1,67 @@
 package com.mojang.minecraft;
 
+import java.awt.AWTException;
+import java.awt.Canvas;
+import java.awt.Component;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.Robot;
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
+import org.lwjgl.input.Cursor;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
+
 import com.mojang.minecraft.gamemode.CreativeGameMode;
 import com.mojang.minecraft.gamemode.GameMode;
 import com.mojang.minecraft.gamemode.SurvivalGameMode;
-import com.mojang.minecraft.gui.*;
+import com.mojang.minecraft.gui.BlockSelectScreen;
+import com.mojang.minecraft.gui.ChatInputScreen;
+import com.mojang.minecraft.gui.ChatInputScreenExtension;
+import com.mojang.minecraft.gui.ErrorScreen;
+import com.mojang.minecraft.gui.FontRenderer;
+import com.mojang.minecraft.gui.GameOverScreen;
+import com.mojang.minecraft.gui.GuiScreen;
+import com.mojang.minecraft.gui.HUDScreen;
+import com.mojang.minecraft.gui.PauseScreen;
 import com.mojang.minecraft.item.Arrow;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;
@@ -26,50 +84,20 @@ import com.mojang.minecraft.particle.WaterDropParticle;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.player.InputHandlerImpl;
 import com.mojang.minecraft.player.Player;
-import com.mojang.minecraft.render.*;
+import com.mojang.minecraft.render.Chunk;
+import com.mojang.minecraft.render.ChunkDirtyDistanceComparator;
+import com.mojang.minecraft.render.Frustrum;
+import com.mojang.minecraft.render.FrustrumImpl;
+import com.mojang.minecraft.render.HeldBlock;
+import com.mojang.minecraft.render.LevelRenderer;
+import com.mojang.minecraft.render.ShapeRenderer;
+import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
 import com.mojang.net.NetworkHandler;
 import com.mojang.util.MathHelper;
 import com.oyasunadev.mcraft.client.util.ExtData;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.Sys;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
-import org.lwjgl.input.Cursor;
-
-import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.io.*;
-import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.security.MessageDigest;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 
 public final class Minecraft implements Runnable {
 
@@ -153,8 +181,8 @@ public final class Minecraft implements Runnable {
 			HttpURLConnection.setFollowRedirects(false);
 			HttpURLConnection con = (HttpURLConnection) new URL(URLName).openConnection();
 			con.setRequestMethod("HEAD");
-			return (con.getResponseCode() == HttpURLConnection.HTTP_OK && con.getContentType()
-					.contains("image"));
+			return con.getResponseCode() == HttpURLConnection.HTTP_OK
+					&& con.getContentType().contains("image");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -162,8 +190,9 @@ public final class Minecraft implements Runnable {
 	}
 
 	public static File getMinecraftDirectory() {
-		if (mcDir != null)
+		if (mcDir != null) {
 			return mcDir;
+		}
 		String folder = ".net.classicube.client";
 		String home = System.getProperty("user.home");
 		File minecraftFolder;
@@ -228,25 +257,33 @@ public final class Minecraft implements Runnable {
 
 	int recievedExtensionLength;
 
+	boolean isShuttingDown = false;
+
+	boolean canSendHeldBlock = false;
+
+	int[] inventoryCache;
+
+	boolean isLoadingMap = false;
+
 	public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4, boolean var5,
 			boolean IsApplet) {
-		this.isApplet = IsApplet;
-		this.sound = new SoundManager();
-		this.ticks = 0;
-		this.blockHitTime = 0;
-		this.levelName = null;
-		this.levelId = 0;
-		this.online = false;
+		isApplet = IsApplet;
+		sound = new SoundManager();
+		ticks = 0;
+		blockHitTime = 0;
+		levelName = null;
+		levelId = 0;
+		online = false;
 		new HumanoidModel(0.0F);
-		this.selected = null;
-		this.server = null;
-		this.port = 0;
-		this.running = false;
-		this.debug = "";
-		this.hasMouse = false;
-		this.lastClick = 0;
-		this.raining = false;
-		this.snowing = false;
+		selected = null;
+		server = null;
+		port = 0;
+		running = false;
+		debug = "";
+		hasMouse = false;
+		lastClick = 0;
+		raining = false;
+		snowing = false;
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -254,15 +291,15 @@ public final class Minecraft implements Runnable {
 			var7.printStackTrace();
 		}
 
-		this.applet = var2;
+		applet = var2;
 		new SleepForeverThread();
-		this.canvas = var1;
-		this.width = var3;
-		this.height = var4;
-		this.fullscreen = var5;
+		canvas = var1;
+		width = var3;
+		height = var4;
+		fullscreen = var5;
 		if (var1 != null) {
 			try {
-				this.robot = new Robot();
+				robot = new Robot();
 				return;
 			} catch (AWTException var8) {
 				var8.printStackTrace();
@@ -274,8 +311,9 @@ public final class Minecraft implements Runnable {
 	void downloadImage(String source, String dest) {
 		URL url;
 		try {
-			if (!doesUrlExistAndIsImage(source))
+			if (!doesUrlExistAndIsImage(source)) {
 				return;
+			}
 			url = new URL(source);
 
 			InputStream in = new BufferedInputStream(url.openStream());
@@ -297,12 +335,26 @@ public final class Minecraft implements Runnable {
 		}
 	}
 
+	public byte[] flipPixels(byte[] paramArrayOfByte, int paramInt1, int paramInt2) {
+		paramInt1 *= 3;
+		byte[] arrayOfByte = null;
+		if (paramArrayOfByte != null) {
+			arrayOfByte = new byte[paramInt1 * paramInt2];
+			for (int i = 0; i < paramInt2; i++) {
+				for (int j = 0; j < paramInt1; j++) {
+					arrayOfByte[(paramInt2 - i - 1) * paramInt1 + j] = paramArrayOfByte[i
+							* paramInt1 + j];
+				}
+			}
+		}
+		return arrayOfByte;
+	}
+
 	public final void generateLevel(int var1) {
-		String var2 = this.session != null ? this.session.username : "anonymous";
-		Level var4 = (new LevelGenerator(this.progressBar)).generate(var2, 128 << var1,
-				128 << var1, 64);
-		this.gamemode.prepareLevel(var4);
-		this.setLevel(var4);
+		String var2 = session != null ? session.username : "anonymous";
+		Level var4 = new LevelGenerator(progressBar).generate(var2, 128 << var1, 128 << var1, 64);
+		gamemode.prepareLevel(var4);
+		setLevel(var4);
 	}
 
 	public String getHash(String urlString) throws Exception {
@@ -336,25 +388,25 @@ public final class Minecraft implements Runnable {
 	}
 
 	public final void grabMouse() {
-		if (!this.hasMouse) {
-			this.hasMouse = true;
-			if (this.levelLoaded) {
+		if (!hasMouse) {
+			hasMouse = true;
+			if (levelLoaded) {
 				try {
-					Mouse.setNativeCursor(this.cursor);
-					Mouse.setCursorPosition(this.width / 2, this.height / 2);
+					Mouse.setNativeCursor(cursor);
+					Mouse.setCursorPosition(width / 2, height / 2);
 				} catch (LWJGLException var2) {
 					var2.printStackTrace();
 				}
 			} else {
 				Mouse.setGrabbed(true);
 			}
-			this.setCurrentScreen((GuiScreen) null);
-			this.lastClick = this.ticks + 10000;
+			setCurrentScreen((GuiScreen) null);
+			lastClick = ticks + 10000;
 		}
 	}
 
 	public final boolean isOnline() {
-		return this.networkManager != null;
+		return networkManager != null;
 	}
 
 	private boolean isSystemShuttingDown() {
@@ -375,112 +427,113 @@ public final class Minecraft implements Runnable {
 	}
 
 	private void onMouseClick(int var1) {
-		if (var1 != 0 || this.blockHitTime <= 0) {
+		if (var1 != 0 || blockHitTime <= 0) {
 			HeldBlock var2;
 			if (var1 == 0) {
-				var2 = this.renderer.heldBlock;
-				this.renderer.heldBlock.offset = -1;
+				var2 = renderer.heldBlock;
+				renderer.heldBlock.offset = -1;
 				var2.moving = true;
 			}
 
 			int x;
-			if (var1 == 1 && (x = this.player.inventory.getSelected()) > 0
-					&& this.gamemode.useItem(this.player, x)) {
-				var2 = this.renderer.heldBlock;
-				this.renderer.heldBlock.pos = 0.0F;
-			} else if (this.selected == null) {
-				if (var1 == 0 && !(this.gamemode instanceof CreativeGameMode)) {
-					this.blockHitTime = 10;
+			if (var1 == 1 && (x = player.inventory.getSelected()) > 0
+					&& gamemode.useItem(player, x)) {
+				var2 = renderer.heldBlock;
+				renderer.heldBlock.pos = 0.0F;
+			} else if (selected == null) {
+				if (var1 == 0 && !(gamemode instanceof CreativeGameMode)) {
+					blockHitTime = 10;
 				}
 
 			} else {
-				if (this.selected.entityPos == 1) {
+				if (selected.entityPos == 1) {
 					if (var1 == 0) {
-						this.selected.entity.hurt(this.player, 4);
+						selected.entity.hurt(player, 4);
 						return;
 					}
-				} else if (this.selected.entityPos == 0) {
-					x = this.selected.x;
-					int y = this.selected.y;
-					int z = this.selected.z;
+				} else if (selected.entityPos == 0) {
+					x = selected.x;
+					int y = selected.y;
+					int z = selected.z;
 					if (var1 != 0) {
-						if (this.selected.face == 0) {
+						if (selected.face == 0) {
 							--y;
 						}
 
-						if (this.selected.face == 1) {
+						if (selected.face == 1) {
 							++y;
 						}
 
-						if (this.selected.face == 2) {
+						if (selected.face == 2) {
 							--z;
 						}
 
-						if (this.selected.face == 3) {
+						if (selected.face == 3) {
 							++z;
 						}
 
-						if (this.selected.face == 4) {
+						if (selected.face == 4) {
 							--x;
 						}
 
-						if (this.selected.face == 5) {
+						if (selected.face == 5) {
 							++x;
 						}
 					}
 					Block block = Block.blocks[0];
-					if (this.level != null) {
-						block = Block.blocks[this.level.getTile(x, y, z)];
+					if (level != null) {
+						block = Block.blocks[level.getTile(x, y, z)];
 					} else {
 						return;
 					}
 					// if mouse click left
 					if (var1 == 0) {
-						if (block != Block.BEDROCK || this.player.userType >= 100) {
-							if (!this.DisallowedBreakingBlocks.contains(block)) {
-								this.gamemode.hitBlock(x, y, z);
+						if (block != Block.BEDROCK || player.userType >= 100) {
+							if (!DisallowedBreakingBlocks.contains(block)) {
+								gamemode.hitBlock(x, y, z);
 								return;
 							}
 						}
 						// else if its right click
 					} else {
-						int blockID = this.player.inventory.getSelected();
+						int blockID = player.inventory.getSelected();
 						if (blockID <= 0
-								|| this.disallowedPlacementBlocks.contains(Block.blocks[blockID])) {
+								|| disallowedPlacementBlocks.contains(Block.blocks[blockID])) {
 							return; // if air or not allowed, return
 						}
 						AABB aabb = Block.blocks[blockID].getCollisionBox(x, y, z);
 						if ((block == null || block == Block.WATER
 								|| block == Block.STATIONARY_WATER || block == Block.LAVA || block == Block.STATIONARY_LAVA)
-								&& (aabb == null || (this.player.bb.intersects(aabb) ? false
-										: this.level.isFree(aabb)))) {
-							if (!this.gamemode.canPlace(blockID)) {
+								&& (aabb == null || (player.bb.intersects(aabb) ? false : level
+										.isFree(aabb)))) {
+							if (!gamemode.canPlace(blockID)) {
 								return;
 							}
-							if (this.session == null) {
-								Block toCheck = Block.blocks[this.level.getTile(x, y - 1, z)];
+							if (session == null) {
+								Block toCheck = Block.blocks[level.getTile(x, y - 1, z)];
 								if (toCheck != null) {
 									if (toCheck.id > 0) {
 										if (toCheck == Block.SNOW) {
-											if (this.selected.face == 1) {
-												if (block == Block.SNOW)
+											if (selected.face == 1) {
+												if (block == Block.SNOW) {
 													return;
-												else
+												} else {
 													y -= 1;
+												}
 											}
 										}
 									}
 								}
 							}
 
-							if (this.isOnline()) {
-								this.networkManager.sendBlockChange(x, y, z, var1, blockID);
+							if (isOnline()) {
+								networkManager.sendBlockChange(x, y, z, var1, blockID);
 							}
 
-							this.level.netSetTile(x, y, z, blockID);
-							var2 = this.renderer.heldBlock;
-							this.renderer.heldBlock.pos = 0.0F;
-							Block.blocks[blockID].onPlace(this.level, x, y, z);
+							level.netSetTile(x, y, z, blockID);
+							var2 = renderer.heldBlock;
+							renderer.heldBlock.pos = 0.0F;
+							Block.blocks[blockID].onPlace(level, x, y, z);
 						}
 					}
 				}
@@ -489,8 +542,8 @@ public final class Minecraft implements Runnable {
 	}
 
 	public final void pause() {
-		if (this.currentScreen == null) {
-			this.setCurrentScreen(new PauseScreen());
+		if (currentScreen == null) {
+			setCurrentScreen(new PauseScreen());
 		}
 	}
 
@@ -498,10 +551,12 @@ public final class Minecraft implements Runnable {
 		width = Display.getDisplayMode().getWidth();
 		height = Display.getDisplayMode().getHeight();
 
-		if (width <= 0)
+		if (width <= 0) {
 			width = 1;
-		if (height <= 0)
+		}
+		if (height <= 0) {
 			height = 1;
+		}
 		if (hud != null) {
 			hud.width = width * 240 / height;
 			hud.height = height * 240 / height;
@@ -517,7 +572,7 @@ public final class Minecraft implements Runnable {
 
 	@Override
 	public final void run() {
-		this.running = true;
+		running = true;
 
 		mcDir = getMinecraftDirectory();
 
@@ -529,28 +584,28 @@ public final class Minecraft implements Runnable {
 				System.setProperty("org.lwjgl.librarypath", mcDir + "/natives");
 				System.setProperty("net.java.games.input.librarypath", mcDir + "/natives");
 			}
-			if (this.session == null) {
+			if (session == null) {
 				isSinglePlayer = true;
 				SessionData.SetAllowedBlocks((byte) 1);
 			} else { // try parse applet coz sessiondata is set
-				if (this.isApplet) {
-					if (this.session.mppass == null || this.port < 0) {
+				if (isApplet) {
+					if (session.mppass == null || port < 0) {
 						SessionData.SetAllowedBlocks((byte) 1);
 						isSinglePlayer = true;
 					}
 				}
 			}
-			if (this.canvas != null) {
-				Display.setParent(this.canvas);
-			} else if (this.fullscreen) {
+			if (canvas != null) {
+				Display.setParent(canvas);
+			} else if (fullscreen) {
 				setDisplayMode();
 				Display.setFullscreen(true);
-				this.width = Display.getDisplayMode().getWidth();
-				this.height = Display.getDisplayMode().getHeight();
+				width = Display.getDisplayMode().getWidth();
+				height = Display.getDisplayMode().getHeight();
 				tempDisplayWidth = width;
 				tempDisplayHeight = height;
 			} else {
-				Display.setDisplayMode(new DisplayMode(this.width, this.height));
+				Display.setDisplayMode(new DisplayMode(width, height));
 			}
 
 			System.out.println("Using LWJGL Version: " + Sys.getVersion());
@@ -588,53 +643,50 @@ public final class Minecraft implements Runnable {
 			GL11.glMatrixMode(5888);
 
 			checkGLError("Startup");
-			//
 
-			this.settings = new GameSettings(this, mcDir);
-			ShapeRenderer.instance = new ShapeRenderer(2097152, this.settings);
-			this.textureManager = new TextureManager(this.settings, isApplet);
-			this.textureManager.registerAnimations();
+			settings = new GameSettings(this, mcDir);
+			ShapeRenderer.instance = new ShapeRenderer(2097152, settings);
+			textureManager = new TextureManager(settings, isApplet);
+			textureManager.registerAnimations();
 
 			if (settings.lastUsedTexturePack != null) {
 				File file = new File(getMinecraftDirectory().getAbsolutePath() + "/texturepacks/"
 						+ settings.lastUsedTexturePack);
 
 				if (file.exists()) {
-					this.textureManager.loadTexturePack(settings.lastUsedTexturePack);
+					textureManager.loadTexturePack(settings.lastUsedTexturePack);
 				} else {
 					settings.lastUsedTexturePack = null;
 					settings.save();
 				}
 			}
 
-			this.fontRenderer = new FontRenderer(this.settings, "/default.png", this.textureManager);
-
+			fontRenderer = new FontRenderer(settings, "/default.png", textureManager);
 			monitoringThread = new MonitoringThread(1000); // 1s refresh
-
-			this.textureManager.initAtlas();
+			textureManager.initAtlas();
 
 			IntBuffer var9;
 			(var9 = BufferUtils.createIntBuffer(256)).clear().limit(256);
-			this.levelRenderer = new LevelRenderer(this, this.textureManager);
+			levelRenderer = new LevelRenderer(this, textureManager);
 			Item.initModels();
 			Mob.modelCache = new ModelManager();
-			GL11.glViewport(0, 0, this.width, this.height);
-			if (this.server != null && this.session != null) {
+			GL11.glViewport(0, 0, width, height);
+			if (server != null && session != null) {
 				Level var85;
 				(var85 = new Level()).setData(8, 8, 8, new byte[512]);
-				this.setLevel(var85);
+				setLevel(var85);
 			} else {
 				try {
 					if (!levelLoaded) {
 						Level var11 = null;
 						if (gamemode instanceof CreativeGameMode) {
-							if ((var11 = new LevelLoader().load(new File(mcDir, "levelc.cw"))) != null) {
-								this.progressBar.setText("Loading saved map..");
+							if ((var11 = new LevelLoader().load(new File(mcDir, "levelc.cw"), player)) != null) {
+								progressBar.setText("Loading saved map..");
 								setLevel(var11);
 								isSinglePlayer = true;
 							}
 						} else if (gamemode instanceof SurvivalGameMode) {
-							if ((var11 = new LevelLoader().load(new File(mcDir, "levels.cw"))) != null) {
+							if ((var11 = new LevelLoader().load(new File(mcDir, "levels.cw"), player)) != null) {
 								setLevel(var11);
 							}
 						}
@@ -643,13 +695,13 @@ public final class Minecraft implements Runnable {
 					var54.printStackTrace();
 				}
 
-				if (this.level == null) {
-					this.generateLevel(1);
+				if (level == null) {
+					generateLevel(1);
 				}
 			}
 
-			this.particleManager = new ParticleManager(this.level, this.textureManager);
-			if (this.levelLoaded) {
+			particleManager = new ParticleManager(level, textureManager);
+			if (levelLoaded) {
 				try {
 					cursor = new Cursor(16, 16, 0, 0, 1, var9, (IntBuffer) null);
 				} catch (LWJGLException var53) {
@@ -680,11 +732,11 @@ public final class Minecraft implements Runnable {
 			}
 
 			checkGLError("Post startup");
-			this.hud = new HUDScreen(this, this.width, this.height);
-			(new SkinDownloadThread(this, skinServer)).start();
-			if (this.server != null && this.session != null) {
-				this.networkManager = new NetworkManager(this, this.server, this.port,
-						this.session.username, this.session.mppass);
+			hud = new HUDScreen(this, width, height);
+			new SkinDownloadThread(this, skinServer).start();
+			if (server != null && session != null) {
+				networkManager = new NetworkManager(this, server, port, session.username,
+						session.mppass);
 			}
 		} catch (Exception var62) {
 			var62.printStackTrace();
@@ -696,12 +748,12 @@ public final class Minecraft implements Runnable {
 		long var13 = System.currentTimeMillis();
 		int var15 = 0;
 		try {
-			while (this.running) {
-				if (this.waiting) {
+			while (running) {
+				if (waiting) {
 					Thread.sleep(100L);
 				} else {
-					if (this.canvas == null && Display.isCloseRequested()) {
-						this.running = false;
+					if (canvas == null && Display.isCloseRequested()) {
+						running = false;
 					}
 
 					if (!Display.isFullscreen()
@@ -719,7 +771,7 @@ public final class Minecraft implements Runnable {
 					}
 
 					try {
-						Timer var63 = this.timer;
+						Timer var63 = timer;
 						long var16;
 						long var18 = (var16 = System.currentTimeMillis()) - var63.lastSysClock;
 						long var20 = System.nanoTime() / 1000000L;
@@ -758,18 +810,18 @@ public final class Minecraft implements Runnable {
 						var63.elapsedDelta -= var63.elapsedTicks;
 						var63.delta = var63.elapsedDelta;
 
-						for (int var64 = 0; var64 < this.timer.elapsedTicks; ++var64) {
-							++this.ticks;
-							this.tick();
+						for (int var64 = 0; var64 < timer.elapsedTicks; ++var64) {
+							++ticks;
+							tick();
 						}
 
 						checkGLError("Pre render");
 						GL11.glEnable(3553);
 
-						if (!this.online) {
-							this.gamemode.applyCracks(this.timer.delta);
-							float var65 = this.timer.delta;
-							if (this.renderer.displayActive && !Display.isActive()) {
+						if (!online) {
+							gamemode.applyCracks(timer.delta);
+							float var65 = timer.delta;
+							if (renderer.displayActive && !Display.isActive()) {
 								renderer.minecraft.pause();
 							}
 
@@ -953,7 +1005,7 @@ public final class Minecraft implements Runnable {
 										GL11.glLoadIdentity();
 										var29 = 0.07F;
 										if (renderer.minecraft.settings.anaglyph) {
-											GL11.glTranslatef((-((var77 << 1) - 1)) * var29, 0.0F,
+											GL11.glTranslatef(-((var77 << 1) - 1) * var29, 0.0F,
 													0.0F);
 										}
 
@@ -1335,10 +1387,10 @@ public final class Minecraft implements Runnable {
 										// -------------------
 
 										Collections.sort(selectionBoxes,
-												new SelectionBoxDistanceComparator(this.player));
-										for (int i = 0; i < this.selectionBoxes.size(); i++) {
-											CustomAABB bounds = this.selectionBoxes.get(i).Bounds;
-											ColorCache color = this.selectionBoxes.get(i).Color;
+												new SelectionBoxDistanceComparator(player));
+										for (int i = 0; i < selectionBoxes.size(); i++) {
+											CustomAABB bounds = selectionBoxes.get(i).Bounds;
+											ColorCache color = selectionBoxes.get(i).Color;
 											GL11.glLineWidth(2);
 
 											GL11.glDisable(3042);
@@ -1536,19 +1588,19 @@ public final class Minecraft implements Runnable {
 											GL11.glEnable(2884);
 											GL11.glDisable(3042);
 										}
-										if (!isSinglePlayer && this.networkManager != null
-												&& this.networkManager.players != null
-												&& this.networkManager.players.size() > 0) {
-											if (this.settings.ShowNames == 1
-													&& this.player.userType >= 100) {
-												for (int n = 0; n < this.networkManager.players
-														.values().size(); n++) {
-													NetworkPlayer np = (NetworkPlayer) this.networkManager.players
+										if (!isSinglePlayer && networkManager != null
+												&& networkManager.players != null
+												&& networkManager.players.size() > 0) {
+											if (settings.ShowNames == 1 && player.userType >= 100) {
+												for (int n = 0; n < networkManager.players.values()
+														.size(); n++) {
+													NetworkPlayer np = (NetworkPlayer) networkManager.players
 															.values().toArray()[n];
-													if (np != null)
+													if (np != null) {
 														np.renderHover(
 																renderer.minecraft.textureManager,
 																var80);
+													}
 												}
 											} else {
 												if (renderer.entity != null) {
@@ -1616,7 +1668,7 @@ public final class Minecraft implements Runnable {
 											var34 = 0.4F;
 											GL11.glScalef(0.4F, var34, var34);
 											GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-											if (!this.settings.thirdPersonMode && canRenderGUI) {
+											if (!settings.thirdPersonMode && canRenderGUI) {
 												GL11.glBindTexture(3553,
 														heldBlock.minecraft.textureManager
 																.load("/terrain.png"));
@@ -1646,7 +1698,7 @@ public final class Minecraft implements Runnable {
 
 										++var77;
 									}
-									if (this.currentScreen != null || canRenderGUI) {
+									if (currentScreen != null || canRenderGUI) {
 										renderer.minecraft.hud.render(var65,
 												renderer.minecraft.currentScreen != null, var94,
 												var70);
@@ -1672,20 +1724,20 @@ public final class Minecraft implements Runnable {
 							}
 						}
 
-						if (this.settings.limitFramerate) {
+						if (settings.limitFramerate) {
 							Thread.sleep(5L);
 						}
 
 						checkGLError("Post render");
 						++var15;
 					} catch (Exception var58) {
-						this.setCurrentScreen(new ErrorScreen("Client error", "The game broke! ["
+						setCurrentScreen(new ErrorScreen("Client error", "The game broke! ["
 								+ var58 + "]"));
 						var58.printStackTrace();
 					}
 
 					while (System.currentTimeMillis() >= var13 + 1000L) {
-						this.debug = var15 + " fps, " + Chunk.chunkUpdates + " chunk updates";
+						debug = var15 + " fps, " + Chunk.chunkUpdates + " chunk updates";
 						Chunk.chunkUpdates = 0;
 						var13 += 1000L;
 						var15 = 0;
@@ -1700,27 +1752,27 @@ public final class Minecraft implements Runnable {
 			var60.printStackTrace();
 			return;
 		} finally {
-			this.shutdown();
+			shutdown();
 		}
 
 	}
 
 	public final void setCurrentScreen(GuiScreen var1) {
-		if (!(this.currentScreen instanceof ErrorScreen)) {
-			if (this.currentScreen != null) {
-				this.currentScreen.onClose();
+		if (!(currentScreen instanceof ErrorScreen)) {
+			if (currentScreen != null) {
+				currentScreen.onClose();
 			}
 
-			if (var1 == null && this.player.health <= 0) {
+			if (var1 == null && player.health <= 0) {
 				var1 = new GameOverScreen();
 			}
 
-			this.currentScreen = var1;
+			currentScreen = var1;
 			if (var1 != null) {
-				if (this.hasMouse) {
-					this.player.releaseAllKeys();
-					this.hasMouse = false;
-					if (this.levelLoaded) {
+				if (hasMouse) {
+					player.releaseAllKeys();
+					hasMouse = false;
+					if (levelLoaded) {
 						try {
 							Mouse.setNativeCursor((Cursor) null);
 						} catch (LWJGLException var4) {
@@ -1731,13 +1783,13 @@ public final class Minecraft implements Runnable {
 					}
 				}
 
-				int var2 = this.width * 240 / this.height;
-				int var3 = this.height * 240 / this.height;
+				int var2 = width * 240 / height;
+				int var3 = height * 240 / height;
 				var1.open(this, var2, var3);
-				this.online = false;
+				online = false;
 				return;
 			}
-			this.grabMouse();
+			grabMouse();
 		}
 	}
 
@@ -1786,61 +1838,61 @@ public final class Minecraft implements Runnable {
 		}
 
 		Display.setDisplayMode(var2);
-		this.width = var2.getWidth();
-		this.height = var2.getHeight();
+		width = var2.getWidth();
+		height = var2.getHeight();
 	}
 
 	public final void setLevel(Level theLevel) {
-		if (this.applet == null
-				|| !this.applet.getDocumentBase().getHost().equalsIgnoreCase("minecraft.net")
-				&& !this.applet.getDocumentBase().getHost().equalsIgnoreCase("www.minecraft.net")
-				|| !this.applet.getCodeBase().getHost().equalsIgnoreCase("minecraft.net")
-				&& !this.applet.getCodeBase().getHost().equalsIgnoreCase("www.minecraft.net")) {
+		if (applet == null || !applet.getDocumentBase().getHost().equalsIgnoreCase("minecraft.net")
+				&& !applet.getDocumentBase().getHost().equalsIgnoreCase("www.minecraft.net")
+				|| !applet.getCodeBase().getHost().equalsIgnoreCase("minecraft.net")
+				&& !applet.getCodeBase().getHost().equalsIgnoreCase("www.minecraft.net")) {
 			theLevel = null;
 		}
 
-		this.level = theLevel;
-		if (this.player != null && this.player.inventory != null)
-			this.inventoryCache = this.player.inventory.slots.clone();
+		level = theLevel;
+		if (player != null && player.inventory != null) {
+			inventoryCache = player.inventory.slots.clone();
+		}
 		if (theLevel != null) {
 			theLevel.initTransient();
-			this.gamemode.apply(theLevel);
-			theLevel.font = this.fontRenderer;
+			gamemode.apply(theLevel);
+			theLevel.font = fontRenderer;
 			theLevel.rendererContext$5cd64a7f = this;
-			if (!this.isOnline()) { // if not online (singleplayer)
-				this.player = (Player) theLevel.findSubclassOf(Player.class);
-				if (this.player == null) {
-					this.player = new Player(theLevel, this.settings);
+			if (!isOnline()) { // if not online (singleplayer)
+				player = (Player) theLevel.findSubclassOf(Player.class);
+				if (player == null) {
+					player = new Player(theLevel, settings);
 				}
-				this.player.settings = this.settings;
-				this.player.resetPos();
-			} else if (this.player != null) { // if online
-				this.player.resetPos();
-				this.gamemode.preparePlayer(this.player);
+				player.settings = settings;
+				player.resetPos();
+			} else if (player != null) { // if online
+				player.resetPos();
+				gamemode.preparePlayer(player);
 				if (theLevel != null) {
-					theLevel.player = this.player;
-					theLevel.addEntity(this.player);
+					theLevel.player = player;
+					theLevel.addEntity(player);
 				}
 			}
 		}
 
-		if (this.player == null) {
-			this.player = new Player(theLevel, this.settings);
-			this.player.resetPos();
-			this.gamemode.preparePlayer(this.player);
+		if (player == null) {
+			player = new Player(theLevel, settings);
+			player.resetPos();
+			gamemode.preparePlayer(player);
 			if (theLevel != null) {
-				theLevel.player = this.player;
+				theLevel.player = player;
 			}
 		}
 
-		if (this.player != null) {
-			this.player.input = new InputHandlerImpl(this.settings);
-			this.gamemode.apply(this.player);
+		if (player != null) {
+			player.input = new InputHandlerImpl(settings, player);
+			gamemode.apply(player);
 		}
 
-		if (this.levelRenderer != null) {
-			LevelRenderer var3 = this.levelRenderer;
-			if (this.levelRenderer.level != null) {
+		if (levelRenderer != null) {
+			LevelRenderer var3 = levelRenderer;
+			if (levelRenderer.level != null) {
 				var3.level.removeListener(var3);
 			}
 
@@ -1851,8 +1903,8 @@ public final class Minecraft implements Runnable {
 			}
 		}
 
-		if (this.particleManager != null) {
-			ParticleManager var5 = this.particleManager;
+		if (particleManager != null) {
+			ParticleManager var5 = particleManager;
 			if (theLevel != null) {
 				theLevel.particleEngine = var5;
 			}
@@ -1862,39 +1914,39 @@ public final class Minecraft implements Runnable {
 			}
 		}
 
-		if (this.inventoryCache != null)
-			this.player.inventory.slots = this.inventoryCache;
+		if (inventoryCache != null) {
+			player.inventory.slots = inventoryCache;
+		}
 
 		System.gc();
 	}
 
-	boolean isShuttingDown = false;
-
 	public final void shutdown() {
-		if (isShuttingDown)
+		if (isShuttingDown) {
 			return;
+		}
 		isShuttingDown = true;
 		try {
-			if (this.soundPlayer != null) {
-				this.soundPlayer.running = false;
+			if (soundPlayer != null) {
+				soundPlayer.running = false;
 			}
 
-			if (this.resourceThread != null) {
-				this.resourceThread.running = true;
+			if (resourceThread != null) {
+				resourceThread.running = true;
 			}
 		} catch (Exception var3) {
 			;
 		}
 
-		if (!this.levelLoaded) {
+		if (!levelLoaded) {
 			try {
 				if (level != null) {
 					if (level.creativeMode && isSinglePlayer) {
-						new LevelSerializer(this.level).saveMap("levelc");
+						new LevelSerializer(level).saveMap("levelc");
 						// LevelIO.save(level, (new FileOutputStream(new
 						// File(mcDir, "levelc.dat"))));
 					} else {
-						new LevelSerializer(this.level).saveMap("levels");
+						new LevelSerializer(level).saveMap("levels");
 						// LevelIO.save(level, (new FileOutputStream(new
 						// File(mcDir, "levels.dat"))));
 					}
@@ -1911,32 +1963,88 @@ public final class Minecraft implements Runnable {
 		}
 	}
 
-	boolean canSendHeldBlock = false;
-	int[] inventoryCache;
-	boolean isLoadingMap = false;
+	public void takeAndSaveScreenshot(int width, int height) {
+		try {
+			int i = 6400;
+			int j = height;
+			int size = i * j * 3;
+
+			GL11.glReadBuffer(1028);
+			ByteBuffer buffer = ByteBuffer.allocateDirect(size);
+			GL11.glReadPixels(0, 0, i, j, 6407, 5121, buffer);
+
+			byte[] pixels = new byte[size];
+			buffer.get(pixels);
+			pixels = flipPixels(pixels, i, height);
+
+			ColorSpace colorSpace = ColorSpace.getInstance(1000);
+			int[] a = { 8, 8, 8 };
+			int[] b = { 0, 1, 2 };
+
+			ComponentColorModel colorComp = new ComponentColorModel(colorSpace, a, false, false, 3,
+					0);
+
+			WritableRaster raster = Raster.createInterleavedRaster(new DataBufferByte(pixels,
+					pixels.length), width, height, i * 3, 3, b, null);
+
+			BufferedImage image = new BufferedImage(colorComp, raster, false, null);
+
+			String str = String.format("screenshot_%1$tY%1$tm%1$td%1$tH%1$tM%1$tS.png",
+					new Object[] { Calendar.getInstance() });
+			Calendar cal = Calendar.getInstance();
+			String month = new SimpleDateFormat("MMM").format(cal.getTime());
+			String serverName = ProgressBarDisplay.title.toLowerCase().contains("connecting..") ? ""
+					: ProgressBarDisplay.title;
+			if (serverName == "") {
+				return;
+			}
+			if (serverName == "Loading level" || serverName == "Connecting..") {
+				serverName = "Singleplayer";
+			}
+			serverName = FontRenderer.stripColor(serverName);
+			serverName = serverName.replaceAll("[^A-Za-z0-9\\._-]+", "_");
+			File logDir = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
+			File serverDir = new File(logDir, serverName);
+			File monthDir = new File(serverDir, "/" + month + "/");
+			if (!logDir.exists()) {
+				logDir.mkdir();
+			}
+			if (!serverDir.exists()) {
+				serverDir.mkdir();
+			}
+			if (!monthDir.exists()) {
+				monthDir.mkdir();
+			}
+			if (ImageIO.write(image, "png", new File(monthDir, str))) {
+				hud.addChat("&2Screenshot saved into the Screenshots folder");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void tick() {
-		if (this.soundPlayer != null) {
-			SoundPlayer var1 = this.soundPlayer;
-			SoundManager var2 = this.sound;
+		if (soundPlayer != null) {
+			SoundPlayer var1 = soundPlayer;
+			SoundManager var2 = sound;
 			if (System.currentTimeMillis() > var2.lastMusic && var2.playMusic(var1, "calm")) {
 				var2.lastMusic = System.currentTimeMillis() + var2.random.nextInt(900000) + 300000L;
 			}
 		}
 
-		this.gamemode.spawnMob();
-		HUDScreen var17 = this.hud;
+		gamemode.spawnMob();
+		HUDScreen var17 = hud;
 		int var16;
 		if (canRenderGUI) {
-			++this.hud.ticks;
+			++hud.ticks;
 
 			for (var16 = 0; var16 < var17.chat.size(); ++var16) {
 				++var17.chat.get(var16).time;
 			}
 		}
 
-		GL11.glBindTexture(3553, this.textureManager.load("/terrain.png"));
-		TextureManager texManager = this.textureManager;
+		GL11.glBindTexture(3553, textureManager.load("/terrain.png"));
+		TextureManager texManager = textureManager;
 
 		for (var16 = 0; var16 < texManager.animations.size(); ++var16) {
 			TextureFX texFX;
@@ -1958,14 +2066,14 @@ public final class Minecraft implements Runnable {
 		int var40;
 		int var46;
 		int var45;
-		if (this.networkManager != null && !(this.currentScreen instanceof ErrorScreen)) {
-			if (!this.networkManager.isConnected()) {
-				this.progressBar.setTitle("Connecting..");
-				this.progressBar.setProgress(0);
-				this.isLoadingMap = true;
+		if (networkManager != null && !(currentScreen instanceof ErrorScreen)) {
+			if (!networkManager.isConnected()) {
+				progressBar.setTitle("Connecting..");
+				progressBar.setProgress(0);
+				isLoadingMap = true;
 			} else {
-				NetworkManager var20 = this.networkManager;
-				if (this.networkManager.successful) {
+				NetworkManager var20 = networkManager;
+				if (networkManager.successful) {
 					if (var20.netHandler.connected) {
 						try {
 							NetworkHandler networkHandler = var20.netHandler;
@@ -1999,13 +2107,13 @@ public final class Minecraft implements Runnable {
 												+ " with extension count: " + ExtensionCount);
 										recievedExtensionLength = ExtensionCount;
 									} else if (packetType == PacketType.EXT_ENTRY) {
-										String ExtName = ((String) packetParams[0]);
+										String ExtName = (String) packetParams[0];
 										Integer Version = ((Integer) packetParams[1]).intValue();
 										com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
 												.add(new ExtData(ExtName, Version));
 
 										if (ExtName.toLowerCase().contains("heldblock")) {
-											this.canSendHeldBlock = true;
+											canSendHeldBlock = true;
 										}
 
 										if (recievedExtensionLength == com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
@@ -2037,13 +2145,13 @@ public final class Minecraft implements Runnable {
 										}
 									} else if (packetType == PacketType.SELECTION_CUBOID) {
 										byte ID = ((Byte) packetParams[0]).byteValue();
-										String Name = ((String) packetParams[1]);
-										Short X1 = ((Short) packetParams[2]);
-										Short Y1 = ((Short) packetParams[3]);
-										Short Z1 = ((Short) packetParams[4]);
-										Short X2 = ((Short) packetParams[5]);
-										Short Y2 = ((Short) packetParams[6]);
-										Short Z2 = ((Short) packetParams[7]);
+										String Name = (String) packetParams[1];
+										Short X1 = (Short) packetParams[2];
+										Short Y1 = (Short) packetParams[3];
+										Short Z1 = (Short) packetParams[4];
+										Short X2 = (Short) packetParams[5];
+										Short Y2 = (Short) packetParams[6];
+										Short Z2 = (Short) packetParams[7];
 										Short r = ((Short) packetParams[8]).shortValue();
 										Short g = ((Short) packetParams[9]).shortValue();
 										Short b = ((Short) packetParams[10]).shortValue();
@@ -2057,61 +2165,60 @@ public final class Minecraft implements Runnable {
 												new ColorCache(r / 255.0F, g / 255.0F, b / 255.0F,
 														a / 255.0F), new CustomAABB(X1, Y1, Z1, X2,
 														Y2, Z2));
-										this.selectionBoxes.add(data);
+										selectionBoxes.add(data);
 									} else if (packetType == PacketType.REMOVE_SELECTION_CUBOID) {
 										byte ID = ((Byte) packetParams[0]).byteValue();
-										List<SelectionBoxData> cache = this.selectionBoxes;
-										for (int q = 0; q < this.selectionBoxes.size(); q++) {
-											if (this.selectionBoxes.get(q).ID == ID) {
+										List<SelectionBoxData> cache = selectionBoxes;
+										for (int q = 0; q < selectionBoxes.size(); q++) {
+											if (selectionBoxes.get(q).ID == ID) {
 												cache.remove(q);
 											}
 										}
-										this.selectionBoxes = cache;
+										selectionBoxes = cache;
 									} else if (packetType == PacketType.ENV_SET_COLOR) {
 										byte Variable = ((Byte) packetParams[0]).byteValue();
 										Short r = ((Short) packetParams[1]).shortValue();
 										Short g = ((Short) packetParams[2]).shortValue();
 										Short b = ((Short) packetParams[3]).shortValue();
-										int dec = ((r & 0x0ff) << 16) | ((g & 0x0ff) << 8)
-												| (b & 0x0ff);
+										int dec = (r & 0x0ff) << 16 | (g & 0x0ff) << 8 | b & 0x0ff;
 										switch (Variable) {
 										case 0: // sky
-											this.level.skyColor = dec;
+											level.skyColor = dec;
 											break;
 										case 1: // cloud
-											this.level.cloudColor = dec;
+											level.cloudColor = dec;
 											break;
 										case 2: // fog
-											this.level.fogColor = dec;
+											level.fogColor = dec;
 											break;
 										case 3: // ambient light
-											this.level.customShadowColour = new ColorCache(
-													r / 255.0F, g / 255.0F, b / 255.0F);
+											level.customShadowColour = new ColorCache(r / 255.0F,
+													g / 255.0F, b / 255.0F);
 											break;
 										case 4: // diffuse color
-											this.level.customLightColour = new ColorCache(
-													r / 255.0F, g / 255.0F, b / 255.0F);
+											level.customLightColour = new ColorCache(r / 255.0F,
+													g / 255.0F, b / 255.0F);
 											break;
 										}
-										this.levelRenderer.refresh();
+										levelRenderer.refresh();
 									} else if (packetType == PacketType.ENV_SET_MAP_APPEARANCE) {
-										String textureUrl = ((String) packetParams[0]);
+										String textureUrl = (String) packetParams[0];
 										byte sideBlock = ((Byte) packetParams[1]).byteValue();
 										byte edgeBlock = ((Byte) packetParams[2]).byteValue();
 										short sideLevel = ((Short) packetParams[3]).byteValue();
-										if (this.settings.canServerChangeTextures) {
+										if (settings.canServerChangeTextures) {
 											if (sideBlock == -1) {
-												this.textureManager.customSideBlock = null;
+												textureManager.customSideBlock = null;
 											} else if (sideBlock < Block.blocks.length) {
 												int ID = Block.blocks[sideBlock].textureId;
-												this.textureManager.customSideBlock = textureManager.textureAtlas
+												textureManager.customSideBlock = textureManager.textureAtlas
 														.get(ID);
 											}
 											if (edgeBlock == -1) {
-												this.textureManager.customEdgeBlock = null;
+												textureManager.customEdgeBlock = null;
 											} else if (edgeBlock < Block.blocks.length) {
 												int ID = Block.blocks[edgeBlock].textureId;
-												this.textureManager.customEdgeBlock = textureManager.textureAtlas
+												textureManager.customEdgeBlock = textureManager.textureAtlas
 														.get(ID);
 											}
 											if (textureUrl.length() > 0) {
@@ -2120,7 +2227,7 @@ public final class Minecraft implements Runnable {
 												if (!path.exists()) {
 													path.mkdirs();
 												}
-												String hash = this.getHash(textureUrl);
+												String hash = getHash(textureUrl);
 												if (hash != null) {
 													File file = new File(path, hash + ".png");
 													BufferedImage image;
@@ -2131,32 +2238,33 @@ public final class Minecraft implements Runnable {
 													image = ImageIO.read(file);
 													if (image.getWidth() % 16 == 0
 															&& image.getHeight() % 16 == 0) {
-														this.textureManager.animations.clear();
-														this.textureManager.currentTerrainPng = image;
+														textureManager.animations.clear();
+														textureManager.currentTerrainPng = image;
 													}
 												}
 											}
-											this.textureManager.textures.clear();
-											this.level.waterLevel = sideLevel;
-											this.levelRenderer.refresh();
+											textureManager.textures.clear();
+											level.waterLevel = sideLevel;
+											levelRenderer.refresh();
 										}
 									} else if (packetType == PacketType.CLICK_DISTANCE) {
 										short Distance = (Short) packetParams[0];
-										this.gamemode.reachDistance = Distance / 32;
+										gamemode.reachDistance = Distance / 32;
 									} else if (packetType == PacketType.HOLDTHIS) {
 										byte BlockToHold = ((Byte) packetParams[0]).byteValue();
 										byte PreventChange = ((Byte) packetParams[1]).byteValue();
 										boolean CanPreventChange = PreventChange > 0;
 
-										if (CanPreventChange == true)
+										if (CanPreventChange == true) {
 											GameSettings.CanReplaceSlot = false;
+										}
 
-										this.player.inventory.selected = 0;
-										this.player.inventory
-												.replaceSlot(Block.blocks[BlockToHold]);
+										player.inventory.selected = 0;
+										player.inventory.replaceSlot(Block.blocks[BlockToHold]);
 
-										if (CanPreventChange == false)
+										if (CanPreventChange == false) {
 											GameSettings.CanReplaceSlot = true;
+										}
 									} else if (packetType == PacketType.SET_TEXT_HOTKEY) {
 										String Label = (String) packetParams[0];
 										String Action = (String) packetParams[1];
@@ -2164,7 +2272,7 @@ public final class Minecraft implements Runnable {
 										byte KeyMods = ((Byte) packetParams[3]).byteValue();
 										HotKeyData data = new HotKeyData(Label, Action, keyCode,
 												KeyMods);
-										this.hotKeys.add(data);
+										hotKeys.add(data);
 
 									} else if (packetType == PacketType.EXT_ADD_PLAYER_NAME) {
 										Short NameId = (Short) packetParams[0];
@@ -2172,13 +2280,12 @@ public final class Minecraft implements Runnable {
 										String listName = (String) packetParams[2];
 										String groupName = (String) packetParams[3];
 										byte unusedRank = ((Byte) packetParams[4]).byteValue();
-										this.playerListNameData.add(new PlayerListNameData(NameId,
+										playerListNameData.add(new PlayerListNameData(NameId,
 												playerName, listName, groupName, unusedRank));
 										Collections.sort(playerListNameData,
 												new PlayerListComparator());
 									} else if (packetType == PacketType.EXT_ADD_ENTITY) {
 										byte playerID = ((Byte) packetParams[0]).byteValue();
-										String playerName = (String) packetParams[1];
 										String skinName = (String) packetParams[2];
 
 										NetworkPlayer player = networkManager.players.get(playerID);
@@ -2188,13 +2295,13 @@ public final class Minecraft implements Runnable {
 										}
 									} else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
 										Short NameId = (Short) packetParams[0];
-										List<PlayerListNameData> cache = this.playerListNameData;
-										for (int q = 0; q < this.playerListNameData.size(); q++) {
-											if (this.playerListNameData.get(q).nameID == NameId) {
+										List<PlayerListNameData> cache = playerListNameData;
+										for (int q = 0; q < playerListNameData.size(); q++) {
+											if (playerListNameData.get(q).nameID == NameId) {
 												cache.remove(q);
 											}
 										}
-										this.playerListNameData = cache;
+										playerListNameData = cache;
 									} else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
 										System.out.println("Custom blocks packet recieved");
 										byte SupportLevel = ((Byte) packetParams[0]).byteValue();
@@ -2207,30 +2314,31 @@ public final class Minecraft implements Runnable {
 										byte AllowPlacement = ((Byte) packetParams[1]).byteValue();
 										byte AllowDeletion = ((Byte) packetParams[2]).byteValue();
 										Block block = Block.blocks[BlockType];
-										if (block == null)
+										if (block == null) {
 											return;
+										}
 										if (AllowPlacement == 0) {
-											if (!this.disallowedPlacementBlocks.contains(block)) {
-												this.disallowedPlacementBlocks.add(block);
+											if (!disallowedPlacementBlocks.contains(block)) {
+												disallowedPlacementBlocks.add(block);
 												System.out.println("DisallowingPlacement block: "
 														+ block);
 											}
 										} else {
-											if (this.disallowedPlacementBlocks.contains(block)) {
-												this.disallowedPlacementBlocks.remove(block);
+											if (disallowedPlacementBlocks.contains(block)) {
+												disallowedPlacementBlocks.remove(block);
 												System.out.println("AllowingPlacement block: "
 														+ block);
 											}
 										}
 										if (AllowDeletion == 0) {
-											if (!this.DisallowedBreakingBlocks.contains(block)) {
-												this.DisallowedBreakingBlocks.add(block);
+											if (!DisallowedBreakingBlocks.contains(block)) {
+												DisallowedBreakingBlocks.add(block);
 												System.out.println("DisallowingDeletion block: "
 														+ block);
 											}
 										} else {
-											if (this.DisallowedBreakingBlocks.contains(block)) {
-												this.DisallowedBreakingBlocks.remove(block);
+											if (DisallowedBreakingBlocks.contains(block)) {
+												DisallowedBreakingBlocks.remove(block);
 												System.out.println("AllowingDeletion block: "
 														+ block);
 											}
@@ -2248,7 +2356,7 @@ public final class Minecraft implements Runnable {
 												} else {
 													netPlayer.modelName = ModelName.toLowerCase();
 												}
-												netPlayer.bindTexture(this.textureManager);
+												netPlayer.bindTexture(textureManager);
 											}
 										}
 									}
@@ -2256,14 +2364,14 @@ public final class Minecraft implements Runnable {
 									else if (packetType == PacketType.ENV_SET_WEATHER_TYPE) {
 										short Weather = (Short) packetParams[0];
 										if (Weather == 0) {
-											this.raining = false;
-											this.snowing = false;
+											raining = false;
+											snowing = false;
 										} else if (Weather == 1) {
-											this.raining = !this.raining;
-											this.snowing = false;
+											raining = !raining;
+											snowing = false;
 										} else if (Weather == 2) {
-											this.snowing = !this.snowing;
-											this.raining = false;
+											snowing = !snowing;
+											raining = false;
 										}
 									}
 
@@ -2279,11 +2387,11 @@ public final class Minecraft implements Runnable {
 										networkManager.levelData = new ByteArrayOutputStream();
 									} else if (packetType == PacketType.LEVEL_DATA) {
 										short chunkLength = ((Short) packetParams[0]).shortValue();
-										byte[] chunkData = ((byte[]) packetParams[1]);
+										byte[] chunkData = (byte[]) packetParams[1];
 										byte percentComplete = ((Byte) packetParams[2]).byteValue();
 										networkManager.minecraft.progressBar
 												.setProgress(percentComplete);
-										this.isLoadingMap = false;
+										isLoadingMap = false;
 										networkManager.levelData.write(chunkData, 0, chunkLength);
 									} else if (packetType == PacketType.LEVEL_FINALIZE) {
 										try {
@@ -2506,8 +2614,8 @@ public final class Minecraft implements Runnable {
 				}
 
 				Player player = this.player;
-				var20 = this.networkManager;
-				if (this.networkManager.levelLoaded) {
+				var20 = networkManager;
+				if (networkManager.levelLoaded) {
 					int var24 = (int) (player.x * 32.0F);
 					var4 = (int) (player.y * 32.0F);
 					var40 = (int) (player.z * 32.0F);
@@ -2516,156 +2624,121 @@ public final class Minecraft implements Runnable {
 					var20.netHandler.send(
 							PacketType.POSITION_ROTATION,
 							new Object[] {
-									this.canSendHeldBlock ? player.inventory.getSelected()
-											: Integer.valueOf(-1), Integer.valueOf(var24),
+									canSendHeldBlock ? player.inventory.getSelected() : Integer
+											.valueOf(-1), Integer.valueOf(var24),
 									Integer.valueOf(var4), Integer.valueOf(var40),
 									Integer.valueOf(var46), Integer.valueOf(var45) });
 				}
 			}
 		}
 
-		if (this.isLoadingMap) {
+		if (isLoadingMap) {
 			while (Keyboard.next()) {
 				if (Keyboard.getEventKeyState()) {
 
 					if (Keyboard.getEventKey() == 1) {
-						this.pause();
+						pause();
 					}
 				}
 			}
 			return;
 		}
 
-		if (this.currentScreen == null && this.player != null && this.player.health <= 0) {
-			this.setCurrentScreen((GuiScreen) null);
+		if (currentScreen == null && player != null && player.health <= 0) {
+			setCurrentScreen((GuiScreen) null);
 		}
 
 		int var25;
-		if (this.currentScreen instanceof BlockSelectScreen) {
+		if (currentScreen instanceof BlockSelectScreen) {
 			while (Mouse.next()) {
 				if ((var25 = Mouse.getEventDWheel()) != 0) {
-					this.player.inventory.swapPaint(var25);
+					player.inventory.swapPaint(var25);
 					break;
 				}
-				this.currentScreen.mouseEvent();
+				currentScreen.mouseEvent();
 			}
 		}
 
-		else if (this.currentScreen == null) {
+		else if (currentScreen == null) {
 			while (Mouse.next()) {
 				if ((var25 = Mouse.getEventDWheel()) != 0) {
-					this.player.inventory.swapPaint(var25);
+					player.inventory.swapPaint(var25);
 				}
 
-				if (this.currentScreen == null) {
-					if (!this.hasMouse && Mouse.getEventButtonState()) {
-						this.grabMouse();
+				if (currentScreen == null) {
+					if (!hasMouse && Mouse.getEventButtonState()) {
+						grabMouse();
 					} else {
 						if (Mouse.getEventButton() == 0 && Mouse.getEventButtonState()) {
-							this.onMouseClick(0);
-							this.lastClick = this.ticks;
+							onMouseClick(0);
+							lastClick = ticks;
 						}
 
 						if (Mouse.getEventButton() == 1 && Mouse.getEventButtonState()) {
-							this.onMouseClick(1);
-							this.lastClick = this.ticks;
+							onMouseClick(1);
+							lastClick = ticks;
 						}
 
 						if (Mouse.getEventButton() == 2 && Mouse.getEventButtonState()
-								&& this.selected != null) {
-							var16 = this.level.getTile(this.selected.x, this.selected.y,
-									this.selected.z);
-							this.player.inventory.grabTexture(var16,
-									this.gamemode instanceof CreativeGameMode);
+								&& selected != null) {
+							var16 = level.getTile(selected.x, selected.y, selected.z);
+							player.inventory.grabTexture(var16,
+									gamemode instanceof CreativeGameMode);
 						}
 					}
 				}
 
-				if (this.currentScreen != null) {
-					this.currentScreen.mouseEvent();
+				if (currentScreen != null) {
+					currentScreen.mouseEvent();
 				}
 			}
 
-			if (this.blockHitTime > 0) {
-				--this.blockHitTime;
+			if (blockHitTime > 0) {
+				--blockHitTime;
 			}
 
 			while (Keyboard.next()) {
-				this.player.setKey(Keyboard.getEventKey(), Keyboard.getEventKeyState());
+				player.setKey(Keyboard.getEventKey(), Keyboard.getEventKeyState());
 				if (Keyboard.getEventKeyState()) {
-					if (this.currentScreen != null) {
-						this.currentScreen.keyboardEvent();
+					if (currentScreen != null) {
+						currentScreen.keyboardEvent();
 					}
 
-					if (this.currentScreen == null) {
-						/*
-						 * for (int j = 0; j < this.hotKeys.size(); j++) { //
-						 * check // through // all // stored // hotkeys
-						 * HotKeyData hkData = this.hotKeys.get(j); String label
-						 * = hkData.label; String action = hkData.action; int
-						 * keyCode = hkData.keyCode; byte keyMods =
-						 * hkData.keyMods;
-						 * 
-						 * List<Integer> heldKeys = new ArrayList<Integer>(); if
-						 * ((keyMods & 1) != 0) heldKeys.add(29); // ctrl (left)
-						 * if ((keyMods & 2) != 0) heldKeys.add(42); // shift
-						 * (left) if ((keyMods & 4) != 0) heldKeys.add(56); //
-						 * alt (left)
-						 * 
-						 * // Check if the key(s) are pressed if
-						 * (Keyboard.getEventKey() == keyCode) { boolean
-						 * canSendHotkey = true; for (int k = 0; k <
-						 * heldKeys.size(); k++) { if
-						 * (!Keyboard.isKeyDown(heldKeys.get(k))) canSendHotkey
-						 * = false; } if (action.endsWith("\n")) { // check
-						 * whether to // send message or // open window
-						 * this.hud.addChat("Sending HotKey: " + label); action
-						 * = action.replace("\n", "");
-						 * this.networkManager.netHandler.send(
-						 * PacketType.CHAT_MESSAGE, new Object[] {
-						 * Integer.valueOf(-1), action }); } else { // open
-						 * window this.hud.addChat("Opening HotKey: " + label);
-						 * ChatInputScreenExtension cisExt = new
-						 * ChatInputScreenExtension(); cisExt.inputLine =
-						 * action; this.setCurrentScreen(cisExt); } } }
-						 */
-					}
-
-					if (this.currentScreen == null) {
+					if (currentScreen == null) {
 						if (Keyboard.getEventKey() == 1) {
-							this.pause();
+							pause();
 						}
 
-						if (this.gamemode instanceof CreativeGameMode) {
+						if (gamemode instanceof CreativeGameMode) {
 							if (HackState.Noclip || HackState.Fly || HackState.Speed) {
-								if (Keyboard.getEventKey() == this.settings.loadLocationKey.key) {
-									if (!(this.currentScreen instanceof ChatInputScreen))
-										this.player.resetPos();
+								if (Keyboard.getEventKey() == settings.loadLocationKey.key) {
+									if (!(currentScreen instanceof ChatInputScreen)) {
+										player.resetPos();
+									}
 								}
 
-								if (Keyboard.getEventKey() == this.settings.saveLocationKey.key) {
-									this.level.setSpawnPos((int) this.player.x,
-											(int) this.player.y, (int) this.player.z,
-											this.player.yRot);
-									this.player.resetPos();
+								if (Keyboard.getEventKey() == settings.saveLocationKey.key) {
+									level.setSpawnPos((int) player.x, (int) player.y,
+											(int) player.z, player.yRot);
+									player.resetPos();
 								}
 							}
 						}
 
 						Keyboard.getEventKey();
 						if (Keyboard.getEventKey() == 63) {
-							this.raining = !this.raining;
-							this.snowing = false;
+							raining = !raining;
+							snowing = false;
 						}
 						if (Keyboard.getEventKey() == 62) {
-							this.snowing = !this.snowing;
-							this.raining = false;
+							snowing = !snowing;
+							raining = false;
 						}
-						if (Keyboard.getEventKey() == 53 && this.networkManager != null
-								&& this.networkManager.isConnected()) {
-							this.player.releaseAllKeys();
+						if (Keyboard.getEventKey() == 53 && networkManager != null
+								&& networkManager.isConnected()) {
+							player.releaseAllKeys();
 							ChatInputScreenExtension s = new ChatInputScreenExtension();
-							this.setCurrentScreen(s);
+							setCurrentScreen(s);
 							s.inputLine = "/";
 							s.caretPos++;
 						}
@@ -2674,129 +2747,126 @@ public final class Minecraft implements Runnable {
 							toggleFullscreen();
 						}
 						if (Keyboard.getEventKey() == Keyboard.KEY_F1) {
-							this.canRenderGUI = !this.canRenderGUI;
+							canRenderGUI = !canRenderGUI;
 						}
 
 						if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
 							if (HackState.Noclip || HackState.Fly || HackState.Speed) {
-								if (this.cameraDistance == -0.1F) {
-									this.cameraDistance = -5.1f;
-									this.settings.thirdPersonMode = true;
+								if (cameraDistance == -0.1F) {
+									cameraDistance = -5.1f;
+									settings.thirdPersonMode = true;
 								} else {
-									this.cameraDistance = -0.1F;
-									this.settings.thirdPersonMode = false;
+									cameraDistance = -0.1F;
+									settings.thirdPersonMode = false;
 								}
 							} else {
-								this.cameraDistance = -0.1F;
-								this.settings.thirdPersonMode = false;
+								cameraDistance = -0.1F;
+								settings.thirdPersonMode = false;
 							}
 						}
 
 						if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
-							takeAndSaveScreenshot(this.width, this.height);
+							takeAndSaveScreenshot(width, height);
 						}
 
-						if (this.settings.HacksEnabled) {
-							if (this.settings.HackType == 0) {
+						if (settings.HacksEnabled) {
+							if (settings.HackType == 0) {
 								if (Keyboard.getEventKey() == Keyboard.KEY_X) {
-									if (HackState.Noclip
-											|| (HackState.Noclip && this.player.userType >= 100)) {
-										this.player.noPhysics = !this.player.noPhysics;
-										this.player.hovered = !this.player.hovered;
+									if (HackState.Noclip || HackState.Noclip
+											&& player.userType >= 100) {
+										player.noPhysics = !player.noPhysics;
+										player.hovered = !player.hovered;
 									}
 								}
 
 								if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
 									if (HackState.Fly) {
-										this.player.flyingMode = !this.player.flyingMode;
+										player.flyingMode = !player.flyingMode;
 									}
 								}
 							}
 						} else {
-							this.player.flyingMode = false;
-							this.player.noPhysics = false;
-							this.player.hovered = false;
+							player.flyingMode = false;
+							player.noPhysics = false;
+							player.hovered = false;
 						}
 
-						if (Keyboard.getEventKey() == 15
-								&& this.gamemode instanceof SurvivalGameMode
-								&& this.player.arrows > 0) {
-							this.level.addEntity(new Arrow(this.level, this.player, this.player.x,
-									this.player.y, this.player.z, this.player.yRot,
-									this.player.xRot, 1.2F));
-							--this.player.arrows;
+						if (Keyboard.getEventKey() == 15 && gamemode instanceof SurvivalGameMode
+								&& player.arrows > 0) {
+							level.addEntity(new Arrow(level, player, player.x, player.y, player.z,
+									player.yRot, player.xRot, 1.2F));
+							--player.arrows;
 						}
 
-						if (Keyboard.getEventKey() == this.settings.inventoryKey.key) {
-							this.gamemode.openInventory();
+						if (Keyboard.getEventKey() == settings.inventoryKey.key) {
+							gamemode.openInventory();
 						}
 
-						if (Keyboard.getEventKey() == this.settings.chatKey.key
-								&& this.networkManager != null && this.networkManager.isConnected()) {
-							this.player.releaseAllKeys();
-							this.setCurrentScreen(new ChatInputScreenExtension());
+						if (Keyboard.getEventKey() == settings.chatKey.key
+								&& networkManager != null && networkManager.isConnected()) {
+							player.releaseAllKeys();
+							setCurrentScreen(new ChatInputScreenExtension());
 						}
 					}
 
 					for (var25 = 0; var25 < 9; ++var25) {
 						if (Keyboard.getEventKey() == var25 + 2) {
-							if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) // for
-																	  // tabbing
-																	  // player
-																	  // list
+							if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
+								// tabbing
+								// player
+								// list
 								return;
-							else if (GameSettings.CanReplaceSlot)
-								this.player.inventory.selected = var25;
+							} else if (GameSettings.CanReplaceSlot) {
+								player.inventory.selected = var25;
+							}
 						}
 					}
 
-					if (Keyboard.getEventKey() == this.settings.toggleFogKey.key) {
-						this.settings.toggleSetting(4,
+					if (Keyboard.getEventKey() == settings.toggleFogKey.key) {
+						settings.toggleSetting(4,
 								!Keyboard.isKeyDown(42) && !Keyboard.isKeyDown(54) ? 1 : -1);
 					}
 				}
 			}
 
-			if (this.currentScreen == null) {
-				if (Mouse.isButtonDown(0) && this.ticks - this.lastClick >= this.timer.tps / 4.0F
-						&& this.hasMouse) {
-					this.onMouseClick(0);
-					this.lastClick = this.ticks;
+			if (currentScreen == null) {
+				if (Mouse.isButtonDown(0) && ticks - lastClick >= timer.tps / 4.0F && hasMouse) {
+					onMouseClick(0);
+					lastClick = ticks;
 				}
 
-				if (Mouse.isButtonDown(1) && this.ticks - this.lastClick >= this.timer.tps / 4.0F
-						&& this.hasMouse) {
-					this.onMouseClick(1);
-					this.lastClick = this.ticks;
+				if (Mouse.isButtonDown(1) && ticks - lastClick >= timer.tps / 4.0F && hasMouse) {
+					onMouseClick(1);
+					lastClick = ticks;
 				}
 			}
 
-			boolean var26 = this.currentScreen == null && Mouse.isButtonDown(0) && this.hasMouse;
-			if (!this.gamemode.instantBreak && this.blockHitTime <= 0) {
-				if (var26 && this.selected != null && this.selected.entityPos == 0) {
-					var4 = this.selected.x;
-					var40 = this.selected.y;
-					var46 = this.selected.z;
-					this.gamemode.hitBlock(var4, var40, var46, this.selected.face);
+			boolean var26 = currentScreen == null && Mouse.isButtonDown(0) && hasMouse;
+			if (!gamemode.instantBreak && blockHitTime <= 0) {
+				if (var26 && selected != null && selected.entityPos == 0) {
+					var4 = selected.x;
+					var40 = selected.y;
+					var46 = selected.z;
+					gamemode.hitBlock(var4, var40, var46, selected.face);
 				} else {
-					this.gamemode.resetHits();
+					gamemode.resetHits();
 				}
 			}
 		}
 
-		if (this.currentScreen != null) {
-			this.lastClick = this.ticks + 10000;
+		if (currentScreen != null) {
+			lastClick = ticks + 10000;
 		}
 
-		if (this.currentScreen != null) {
-			this.currentScreen.doInput();
-			if (this.currentScreen != null) {
-				this.currentScreen.tick();
+		if (currentScreen != null) {
+			currentScreen.doInput();
+			if (currentScreen != null) {
+				currentScreen.tick();
 			}
 		}
 
-		if (this.level != null && player != null) {
-			++this.renderer.levelTicks;
+		if (level != null && player != null) {
+			++renderer.levelTicks;
 			HeldBlock var41 = renderer.heldBlock;
 			renderer.heldBlock.lastPos = var41.pos;
 			if (var41.moving) {
@@ -2850,126 +2920,54 @@ public final class Minecraft implements Runnable {
 				}
 			}
 
-			++this.levelRenderer.ticks;
-			this.level.tickEntities();
-			if (!this.isOnline()) {
-				this.level.tick();
+			++levelRenderer.ticks;
+			level.tickEntities();
+			if (!isOnline()) {
+				level.tick();
 			}
 
-			this.particleManager.tick();
+			particleManager.tick();
 		}
 
 	}
 
 	public void toggleFullscreen() {
 		try {
-			this.fullscreen = !this.fullscreen;
+			fullscreen = !fullscreen;
 
-			if (this.fullscreen) {
+			if (fullscreen) {
 				setDisplayMode();
 
-				this.width = Display.getDisplayMode().getWidth();
-				this.height = Display.getDisplayMode().getHeight();
-				if (this.width <= 0) {
-					this.width = 1;
+				width = Display.getDisplayMode().getWidth();
+				height = Display.getDisplayMode().getHeight();
+				if (width <= 0) {
+					width = 1;
 				}
 
-				if (this.height <= 0) {
-					this.height = 1;
+				if (height <= 0) {
+					height = 1;
 				}
 			} else {
-				Display.setDisplayMode(new DisplayMode(this.tempDisplayWidth,
-						this.tempDisplayHeight));
-				this.width = this.tempDisplayWidth;
-				this.height = this.tempDisplayHeight;
+				Display.setDisplayMode(new DisplayMode(tempDisplayWidth, tempDisplayHeight));
+				width = tempDisplayWidth;
+				height = tempDisplayHeight;
 
-				if (this.width <= 0) {
-					this.width = 1;
+				if (width <= 0) {
+					width = 1;
 				}
 
-				if (this.height <= 0) {
-					this.height = 1;
+				if (height <= 0) {
+					height = 1;
 				}
 			}
 
-			this.resize();
+			resize();
 
-			Display.setFullscreen(this.fullscreen);
-			Display.setVSyncEnabled(this.settings.limitFramerate);
+			Display.setFullscreen(fullscreen);
+			Display.setVSyncEnabled(settings.limitFramerate);
 			Display.update();
 		} catch (Exception var2) {
 			var2.printStackTrace();
 		}
-	}
-
-	public void takeAndSaveScreenshot(int width, int height) {
-		try {
-			int i = 6400;
-			int j = height;
-			int size = i * j * 3;
-
-			GL11.glReadBuffer(1028);
-			ByteBuffer buffer = ByteBuffer.allocateDirect(size);
-			GL11.glReadPixels(0, 0, i, j, 6407, 5121, buffer);
-
-			byte[] pixels = new byte[size];
-			buffer.get(pixels);
-			pixels = flipPixels(pixels, i, height);
-
-			ColorSpace colorSpace = ColorSpace.getInstance(1000);
-			int[] a = { 8, 8, 8 };
-			int[] b = { 0, 1, 2 };
-
-			ComponentColorModel colorComp = new ComponentColorModel(colorSpace, a, false, false, 3,
-					0);
-
-			WritableRaster raster = Raster.createInterleavedRaster(new DataBufferByte(pixels,
-					pixels.length), width, height, i * 3, 3, b, null);
-
-			BufferedImage image = new BufferedImage(colorComp, raster, false, null);
-
-			String str = String.format("screenshot_%1$tY%1$tm%1$td%1$tH%1$tM%1$tS.png",
-					new Object[] { Calendar.getInstance() });
-			Calendar cal = Calendar.getInstance();
-			String month = new SimpleDateFormat("MMM").format(cal.getTime());
-			String serverName = ProgressBarDisplay.title.toLowerCase().contains("connecting..") ? ""
-					: ProgressBarDisplay.title;
-			if (serverName == "")
-				return;
-			if (serverName == "Loading level" || serverName == "Connecting..") {
-				serverName = "Singleplayer";
-			}
-			serverName = FontRenderer.stripColor(serverName);
-			serverName = serverName.replaceAll("[^A-Za-z0-9\\._-]+", "_");
-			File logDir = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
-			File serverDir = new File(logDir, serverName);
-			File monthDir = new File(serverDir, "/" + month + "/");
-			if (!logDir.exists())
-				logDir.mkdir();
-			if (!serverDir.exists())
-				serverDir.mkdir();
-			if (!monthDir.exists())
-				monthDir.mkdir();
-			if (ImageIO.write(image, "png", new File(monthDir, str))) {
-				this.hud.addChat("&2Screenshot saved into the Screenshots folder");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public byte[] flipPixels(byte[] paramArrayOfByte, int paramInt1, int paramInt2) {
-		paramInt1 *= 3;
-		byte[] arrayOfByte = null;
-		if (paramArrayOfByte != null) {
-			arrayOfByte = new byte[paramInt1 * paramInt2];
-			for (int i = 0; i < paramInt2; i++) {
-				for (int j = 0; j < paramInt1; j++) {
-					arrayOfByte[((paramInt2 - i - 1) * paramInt1 + j)] = paramArrayOfByte[(i
-							* paramInt1 + j)];
-				}
-			}
-		}
-		return arrayOfByte;
 	}
 }

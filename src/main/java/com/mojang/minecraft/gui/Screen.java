@@ -1,9 +1,31 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.render.ShapeRenderer;
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.minecraft.render.ShapeRenderer;
+
 public class Screen {
+
+	protected static void drawBox(float var0, float var1, float var2, float var3, int var4) {
+
+		float var5 = (var4 >>> 24) / 255.0F;
+		float var6 = (var4 >> 16 & 255) / 255.0F;
+		float var7 = (var4 >> 8 & 255) / 255.0F;
+		float var9 = (var4 & 255) / 255.0F;
+		ShapeRenderer var8 = ShapeRenderer.instance;
+		GL11.glEnable(3042);
+		GL11.glDisable(3553);
+		GL11.glBlendFunc(770, 771);
+		GL11.glColor4f(var6, var7, var9, var5);
+		var8.begin();
+		var8.vertex(var0, var3, 0.0F);
+		var8.vertex(var2, var3, 0.0F);
+		var8.vertex(var2, var1, 0.0F);
+		var8.vertex(var0, var1, 0.0F);
+		var8.end();
+		GL11.glEnable(3553);
+		GL11.glDisable(3042);
+	}
 
 	protected static void drawBox(int var0, int var1, int var2, int var3, int var4) {
 
@@ -68,14 +90,10 @@ public class Screen {
 		float var8 = 0.00390625F;
 		ShapeRenderer var9 = ShapeRenderer.instance;
 		ShapeRenderer.instance.begin();
-		var9.vertexUV(var1, var2 + var6, this.imgZ, var3 * var7,
-				(var4 + var6) * var8);
-		var9.vertexUV(var1 + var5, var2 + var6, this.imgZ,
-				(var3 + var5) * var7, (var4 + var6) * var8);
-		var9.vertexUV(var1 + var5, var2, this.imgZ, (var3 + var5) * var7,
-				var4 * var8);
-		var9.vertexUV(var1, var2, this.imgZ, var3 * var7, var4
-				* var8);
+		var9.vertexUV(var1, var2 + var6, imgZ, var3 * var7, (var4 + var6) * var8);
+		var9.vertexUV(var1 + var5, var2 + var6, imgZ, (var3 + var5) * var7, (var4 + var6) * var8);
+		var9.vertexUV(var1 + var5, var2, imgZ, (var3 + var5) * var7, var4 * var8);
+		var9.vertexUV(var1, var2, imgZ, var3 * var7, var4 * var8);
 		var9.end();
 	}
 }

@@ -27,7 +27,7 @@ public class MovingObjectPosition {
 		this.y = y;
 		this.z = z;
 
-		this.face = side;
+		face = side;
 
 		vec = new Vec3D(blockPos.x, blockPos.y, blockPos.z);
 	}

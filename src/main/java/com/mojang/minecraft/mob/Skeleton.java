@@ -21,18 +21,18 @@ public class Skeleton extends Zombie {
 
 	public Skeleton(Level var1, float var2, float var3, float var4) {
 		super(var1, var2, var3, var4);
-		this.modelName = "skeleton";
-		this.textureName = "/mob/skeleton.png";
+		modelName = "skeleton";
+		textureName = "/mob/skeleton.png";
 		Skeleton$1 var5 = new Skeleton$1(this);
-		this.deathScore = 120;
+		deathScore = 120;
 		var5.runSpeed = 0.3F;
 		var5.damage = 8;
-		this.ai = var5;
+		ai = var5;
 	}
 
 	public void shootArrow(Level var1) {
-		var1.addEntity(new Arrow(var1, this, this.x, this.y, this.z, this.yRot + 180.0F
-				+ (float) (Math.random() * 45.0D - 22.5D), this.xRot
+		var1.addEntity(new Arrow(var1, this, x, y, z, yRot + 180.0F
+				+ (float) (Math.random() * 45.0D - 22.5D), xRot
 				- (float) (Math.random() * 45.0D - 10.0D), 1.0F));
 	}
 }

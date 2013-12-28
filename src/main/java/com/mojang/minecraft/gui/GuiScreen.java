@@ -1,12 +1,13 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.Minecraft;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.mojang.minecraft.Minecraft;
 
 public class GuiScreen extends Screen {
 
@@ -19,27 +20,27 @@ public class GuiScreen extends Screen {
 
 	public final void doInput() {
 		while (Mouse.next()) {
-			this.mouseEvent();
+			mouseEvent();
 		}
 
 		while (Keyboard.next()) {
-			this.keyboardEvent();
+			keyboardEvent();
 		}
 
 	}
 
 	public final void keyboardEvent() {
 		if (Keyboard.getEventKeyState()) {
-			this.onKeyPress(Keyboard.getEventCharacter(), Keyboard.getEventKey());
+			onKeyPress(Keyboard.getEventCharacter(), Keyboard.getEventKey());
 		}
 
 	}
 
 	public final void mouseEvent() {
 		if (Mouse.getEventButtonState()) {
-			int var1 = Mouse.getEventX() * this.width / this.minecraft.width;
-			int var2 = this.height - Mouse.getEventY() * this.height / this.minecraft.height - 1;
-			this.onMouseClick(var1, var2, Mouse.getEventButton());
+			int var1 = Mouse.getEventX() * width / minecraft.width;
+			int var2 = height - Mouse.getEventY() * height / minecraft.height - 1;
+			onMouseClick(var1, var2, Mouse.getEventButton());
 		}
 
 	}
@@ -52,23 +53,22 @@ public class GuiScreen extends Screen {
 
 	protected void onKeyPress(char var1, int var2) {
 		if (var2 == 1) {
-			this.minecraft.setCurrentScreen((GuiScreen) null);
-			this.minecraft.grabMouse();
+			minecraft.setCurrentScreen((GuiScreen) null);
+			minecraft.grabMouse();
 		}
 		if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
-			this.minecraft.takeAndSaveScreenshot(this.minecraft.width, this.minecraft.height);
+			minecraft.takeAndSaveScreenshot(minecraft.width, minecraft.height);
 		}
 	}
 
 	protected void onMouseClick(int var1, int var2, int var3) {
 		if (var3 == 0) {
-			for (var3 = 0; var3 < this.buttons.size(); ++var3) {
+			for (var3 = 0; var3 < buttons.size(); ++var3) {
 				Button var4;
 				Button var7;
-				if ((var7 = var4 = this.buttons.get(var3)).active && var1 >= var7.x
-						&& var2 >= var7.y && var1 < var7.x + var7.width
-						&& var2 < var7.y + var7.height) {
-					this.onButtonClick(var4);
+				if ((var7 = var4 = buttons.get(var3)).active && var1 >= var7.x && var2 >= var7.y
+						&& var1 < var7.x + var7.width && var2 < var7.y + var7.height) {
+					onButtonClick(var4);
 				}
 			}
 		}
@@ -79,17 +79,17 @@ public class GuiScreen extends Screen {
 	}
 
 	public final void open(Minecraft var1, int var2, int var3) {
-		this.minecraft = var1;
-		this.fontRenderer = var1.fontRenderer;
-		this.width = var2;
-		this.height = var3;
-		this.onOpen();
+		minecraft = var1;
+		fontRenderer = var1.fontRenderer;
+		width = var2;
+		height = var3;
+		onOpen();
 	}
 
 	public void render(int var1, int var2) {
-		for (int var3 = 0; var3 < this.buttons.size(); ++var3) {
-			Button var10000 = this.buttons.get(var3);
-			Minecraft var7 = this.minecraft;
+		for (int var3 = 0; var3 < buttons.size(); ++var3) {
+			Button var10000 = buttons.get(var3);
+			Minecraft var7 = minecraft;
 			Button var4 = var10000;
 			if (var10000.visible) {
 				FontRenderer var8 = var7.fontRenderer;

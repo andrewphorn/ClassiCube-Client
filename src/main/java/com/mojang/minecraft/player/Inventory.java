@@ -1,10 +1,10 @@
 package com.mojang.minecraft.player;
 
+import java.io.Serializable;
+
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.SessionData;
 import com.mojang.minecraft.level.tile.Block;
-
-import java.io.Serializable;
 
 public class Inventory implements Serializable {
 
@@ -17,37 +17,37 @@ public class Inventory implements Serializable {
 
 	public Inventory() {
 		for (int var1 = 0; var1 < 9; ++var1) {
-			this.slots[var1] = -1;
-			this.count[var1] = 0;
+			slots[var1] = -1;
+			count[var1] = 0;
 		}
 
 	}
 
 	public boolean addResource(int var1) {
 		int var2;
-		if ((var2 = this.getSlot(var1)) < 0) {
-			var2 = this.getSlot(-1);
+		if ((var2 = getSlot(var1)) < 0) {
+			var2 = getSlot(-1);
 		}
 
 		if (var2 < 0) {
 			return false;
-		} else if (this.count[var2] >= 99) {
+		} else if (count[var2] >= 99) {
 			return false;
 		} else {
-			this.slots[var2] = var1;
-			++this.count[var2];
-			this.popTime[var2] = 5;
+			slots[var2] = var1;
+			++count[var2];
+			popTime[var2] = 5;
 			return true;
 		}
 	}
 
 	public int getSelected() {
-		return this.slots[this.selected];
+		return slots[selected];
 	}
 
 	private int getSlot(int var1) {
-		for (int var2 = 0; var2 < this.slots.length; ++var2) {
-			if (var1 == this.slots[var2]) {
+		for (int var2 = 0; var2 < slots.length; ++var2) {
+			if (var1 == slots[var2]) {
 				return var2;
 			}
 		}
@@ -58,8 +58,8 @@ public class Inventory implements Serializable {
 	public void grabTexture(int var1, boolean var2) {
 		if (GameSettings.CanReplaceSlot) {
 			int var3;
-			if ((var3 = this.getSlot(var1)) >= 0) {
-				this.selected = var3;
+			if ((var3 = getSlot(var1)) >= 0) {
+				selected = var3;
 			} else {
 				if (var2 && var1 > 0 && SessionData.allowedBlocks.contains(Block.blocks[var1])) {
 					this.replaceSlot(Block.blocks[var1]);
@@ -70,11 +70,11 @@ public class Inventory implements Serializable {
 	}
 
 	public boolean removeResource(int var1) {
-		if ((var1 = this.getSlot(var1)) < 0) {
+		if ((var1 = getSlot(var1)) < 0) {
 			return false;
 		} else {
-			if (--this.count[var1] <= 0) {
-				this.slots[var1] = -1;
+			if (--count[var1] <= 0) {
+				slots[var1] = -1;
 			}
 
 			return true;
@@ -84,11 +84,11 @@ public class Inventory implements Serializable {
 	public void replaceSlot(Block var1) {
 		if (GameSettings.CanReplaceSlot && var1 != null) {
 			int var2;
-			if ((var2 = this.getSlot(var1.id)) >= 0) {
-				this.slots[var2] = this.slots[this.selected];
+			if ((var2 = getSlot(var1.id)) >= 0) {
+				slots[var2] = slots[selected];
 			}
 
-			this.slots[this.selected] = var1.id;
+			slots[selected] = var1.id;
 		}
 	}
 
@@ -109,21 +109,21 @@ public class Inventory implements Serializable {
 				var1 = -1;
 			}
 
-			for (this.selected -= var1; this.selected < 0; this.selected += this.slots.length) {
+			for (selected -= var1; selected < 0; selected += slots.length) {
 				;
 			}
 
-			while (this.selected >= this.slots.length) {
-				this.selected -= this.slots.length;
+			while (selected >= slots.length) {
+				selected -= slots.length;
 			}
 		}
 
 	}
 
 	public void tick() {
-		for (int var1 = 0; var1 < this.popTime.length; ++var1) {
-			if (this.popTime[var1] > 0) {
-				--this.popTime[var1];
+		for (int var1 = 0; var1 < popTime.length; ++var1) {
+			if (popTime[var1] > 0) {
+				--popTime[var1];
 			}
 		}
 

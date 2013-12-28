@@ -11,15 +11,15 @@ public final class Vertex {
 	}
 
 	private Vertex(Vec3D var1, float var2, float var3) {
-		this.vector = var1;
-		this.u = var2;
-		this.v = var3;
+		vector = var1;
+		u = var2;
+		v = var3;
 	}
 
 	private Vertex(Vertex var1, float var2, float var3) {
-		this.vector = var1.vector;
-		this.u = var2;
-		this.v = var3;
+		vector = var1.vector;
+		u = var2;
+		v = var3;
 	}
 
 	public final Vertex create(float var1, float var2) {

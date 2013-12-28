@@ -1,15 +1,16 @@
 package com.mojang.minecraft.render;
 
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.player.Player;
-
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.level.Level;
+import com.mojang.minecraft.player.Player;
 
 public final class LevelRenderer {
 
@@ -31,14 +32,14 @@ public final class LevelRenderer {
 	private float lastLoadY = -9999.0F;
 	private float lastLoadZ = -9999.0F;
 	public float cracks;
-	
+
 	public List<BlockData> iceBlocks = new ArrayList<BlockData>();
 
 	public LevelRenderer(Minecraft var1, TextureManager var2) {
-		this.minecraft = var1;
-		this.textureManager = var2;
-		this.listId = GL11.glGenLists(2);
-		this.baseListId = GL11.glGenLists(4096 << 6 << 1);
+		minecraft = var1;
+		textureManager = var2;
+		listId = GL11.glGenLists(2);
+		baseListId = GL11.glGenLists(4096 << 6 << 1);
 	}
 
 	public final void queueChunks(int var1, int var2, int var3, int var4, int var5, int var6) {
@@ -60,26 +61,25 @@ public final class LevelRenderer {
 			var3 = 0;
 		}
 
-		if (var4 > this.xChunks - 1) {
-			var4 = this.xChunks - 1;
+		if (var4 > xChunks - 1) {
+			var4 = xChunks - 1;
 		}
 
-		if (var5 > this.yChunks - 1) {
-			var5 = this.yChunks - 1;
+		if (var5 > yChunks - 1) {
+			var5 = yChunks - 1;
 		}
 
-		if (var6 > this.zChunks - 1) {
-			var6 = this.zChunks - 1;
+		if (var6 > zChunks - 1) {
+			var6 = zChunks - 1;
 		}
 
 		for (; var1 <= var4; ++var1) {
 			for (int var7 = var2; var7 <= var5; ++var7) {
 				for (int var8 = var3; var8 <= var6; ++var8) {
 					Chunk var9;
-					if (!(var9 = this.chunkCache[(var8 * this.yChunks + var7) * this.xChunks + var1]).loaded) {
+					if (!(var9 = chunkCache[(var8 * yChunks + var7) * xChunks + var1]).loaded) {
 						var9.loaded = true;
-						this.chunks.add(this.chunkCache[(var8 * this.yChunks + var7) * this.xChunks
-								+ var1]);
+						chunks.add(chunkCache[(var8 * yChunks + var7) * xChunks + var1]);
 					}
 				}
 			}
@@ -88,57 +88,57 @@ public final class LevelRenderer {
 
 	public final void refresh() {
 		int var1;
-		if (this.chunkCache != null) {
-			for (var1 = 0; var1 < this.chunkCache.length; ++var1) {
-				this.chunkCache[var1].dispose();
+		if (chunkCache != null) {
+			for (var1 = 0; var1 < chunkCache.length; ++var1) {
+				chunkCache[var1].dispose();
 			}
 		}
 
-		this.xChunks = this.level.width / 16;
-		this.yChunks = this.level.depth / 16;
-		this.zChunks = this.level.height / 16;
-		this.chunkCache = new Chunk[this.xChunks * this.yChunks * this.zChunks];
-		this.loadQueue = new Chunk[this.xChunks * this.yChunks * this.zChunks];
+		xChunks = level.width / 16;
+		yChunks = level.depth / 16;
+		zChunks = level.height / 16;
+		chunkCache = new Chunk[xChunks * yChunks * zChunks];
+		loadQueue = new Chunk[xChunks * yChunks * zChunks];
 		var1 = 0;
 
 		int var2;
 		int var4;
-		for (var2 = 0; var2 < this.xChunks; ++var2) {
-			for (int var3 = 0; var3 < this.yChunks; ++var3) {
-				for (var4 = 0; var4 < this.zChunks; ++var4) {
-					this.chunkCache[(var4 * this.yChunks + var3) * this.xChunks + var2] = new Chunk(
-							this.level, var2 << 4, var3 << 4, var4 << 4, this.baseListId + var1);
-					this.loadQueue[(var4 * this.yChunks + var3) * this.xChunks + var2] = this.chunkCache[(var4
-							* this.yChunks + var3)
-							* this.xChunks + var2];
+		for (var2 = 0; var2 < xChunks; ++var2) {
+			for (int var3 = 0; var3 < yChunks; ++var3) {
+				for (var4 = 0; var4 < zChunks; ++var4) {
+					chunkCache[(var4 * yChunks + var3) * xChunks + var2] = new Chunk(level,
+							var2 << 4, var3 << 4, var4 << 4, baseListId + var1);
+					loadQueue[(var4 * yChunks + var3) * xChunks + var2] = chunkCache[(var4
+							* yChunks + var3)
+							* xChunks + var2];
 					var1 += 2;
 				}
 			}
 		}
 
-		for (var2 = 0; var2 < this.chunks.size(); ++var2) {
-			this.chunks.get(var2).loaded = false;
+		for (var2 = 0; var2 < chunks.size(); ++var2) {
+			chunks.get(var2).loaded = false;
 		}
 
-		this.chunks.clear();
-		GL11.glNewList(this.listId, 4864);
+		chunks.clear();
+		GL11.glNewList(listId, 4864);
 		LevelRenderer var9 = this;
 		float waterLevel = 0.5F;
-		if (this.level.customLightColour != null) {
-			GL11.glColor4f(this.level.customLightColour.R, this.level.customLightColour.G,
-					this.level.customLightColour.B, 1.0F);
+		if (level.customLightColour != null) {
+			GL11.glColor4f(level.customLightColour.R, level.customLightColour.G,
+					level.customLightColour.B, 1.0F);
 		} else {
 			GL11.glColor4f(0.5F, waterLevel, waterLevel, 1.0F);
 		}
 		ShapeRenderer var11 = ShapeRenderer.instance;
-		float groundLevel = this.level.getGroundLevel();
+		float groundLevel = level.getGroundLevel();
 		int var5 = 128;
-		if (128 > this.level.width) {
-			var5 = this.level.width;
+		if (128 > level.width) {
+			var5 = level.width;
 		}
 
-		if (var5 > this.level.height) {
-			var5 = this.level.height;
+		if (var5 > level.height) {
+			var5 = level.height;
 		}
 
 		int var6 = 2048 / var5;
@@ -152,17 +152,16 @@ public final class LevelRenderer {
 					waterLevel = 0.0F;
 				}
 				var11.vertexUV(var7, waterLevel, var8 + var5, 0.0F, var5);
-				var11.vertexUV(var7 + var5, waterLevel, var8 + var5,
-						var5, var5);
+				var11.vertexUV(var7 + var5, waterLevel, var8 + var5, var5, var5);
 				var11.vertexUV(var7 + var5, waterLevel, var8, var5, 0.0F);
 				var11.vertexUV(var7, waterLevel, var8, 0.0F, 0.0F);
 			}
 		}
 
 		var11.end();
-		if (this.level.customLightColour != null) {
-			GL11.glColor4f(this.level.customLightColour.R, this.level.customLightColour.G,
-					this.level.customLightColour.B, 1.0F);
+		if (level.customLightColour != null) {
+			GL11.glColor4f(level.customLightColour.R, level.customLightColour.G,
+					level.customLightColour.B, 1.0F);
 		}
 		var11.begin();
 
@@ -172,16 +171,14 @@ public final class LevelRenderer {
 			var11.vertexUV(var7 + var5, groundLevel, 0.0F, var5, groundLevel);
 			var11.vertexUV(var7, groundLevel, 0.0F, 0.0F, groundLevel);
 			var11.vertexUV(var7, groundLevel, var9.level.height, 0.0F, groundLevel);
-			var11.vertexUV(var7 + var5, groundLevel, var9.level.height,
-					var5, groundLevel);
-			var11.vertexUV(var7 + var5, 0.0F, var9.level.height, var5,
-					0.0F);
+			var11.vertexUV(var7 + var5, groundLevel, var9.level.height, var5, groundLevel);
+			var11.vertexUV(var7 + var5, 0.0F, var9.level.height, var5, 0.0F);
 			var11.vertexUV(var7, 0.0F, var9.level.height, 0.0F, 0.0F);
 		}
 
-		if (this.level.customLightColour != null) {
-			GL11.glColor4f(this.level.customLightColour.R, this.level.customLightColour.G,
-					this.level.customLightColour.B, 1.0F);
+		if (level.customLightColour != null) {
+			GL11.glColor4f(level.customLightColour.R, level.customLightColour.G,
+					level.customLightColour.B, 1.0F);
 		}
 
 		for (var7 = 0; var7 < var9.level.height; var7 += var5) {
@@ -190,33 +187,31 @@ public final class LevelRenderer {
 			var11.vertexUV(0.0F, 0.0F, var7 + var5, var5, groundLevel);
 			var11.vertexUV(0.0F, 0.0F, var7, 0.0F, groundLevel);
 			var11.vertexUV(var9.level.width, 0.0F, var7, 0.0F, groundLevel);
-			var11.vertexUV(var9.level.width, 0.0F, var7 + var5, var5,
-					groundLevel);
-			var11.vertexUV(var9.level.width, groundLevel, var7 + var5,
-					var5, 0.0F);
+			var11.vertexUV(var9.level.width, 0.0F, var7 + var5, var5, groundLevel);
+			var11.vertexUV(var9.level.width, groundLevel, var7 + var5, var5, 0.0F);
 			var11.vertexUV(var9.level.width, groundLevel, var7, 0.0F, 0.0F);
 		}
 
 		var11.end();
 		GL11.glEndList();
 
-		GL11.glNewList(this.listId + 1, 4864);
+		GL11.glNewList(listId + 1, 4864);
 		var9 = this;
-		if (this.level.customLightColour != null) {
-			GL11.glColor4f(this.level.customLightColour.R, this.level.customLightColour.G,
-					this.level.customLightColour.B, 1.0F);
+		if (level.customLightColour != null) {
+			GL11.glColor4f(level.customLightColour.R, level.customLightColour.G,
+					level.customLightColour.B, 1.0F);
 		}
-		waterLevel = this.level.getWaterLevel();
+		waterLevel = level.getWaterLevel();
 
 		GL11.glBlendFunc(770, 771);
 		var11 = ShapeRenderer.instance;
 		var4 = 128;
-		if (128 > this.level.width) {
-			var4 = this.level.width;
+		if (128 > level.width) {
+			var4 = level.width;
 		}
 
-		if (var4 > this.level.height) {
-			var4 = this.level.height;
+		if (var4 > level.height) {
+			var4 = level.height;
 		}
 
 		var5 = 2048 / var4;
@@ -227,14 +222,12 @@ public final class LevelRenderer {
 				float var13 = waterLevel - 0.1F;
 				if (var6 < 0 || var7 < 0 || var6 >= var9.level.width || var7 >= var9.level.height) {
 					var11.vertexUV(var6, var13, var7 + var4, 0.0F, var4);
-					var11.vertexUV(var6 + var4, var13, var7 + var4,
-							var4, var4);
+					var11.vertexUV(var6 + var4, var13, var7 + var4, var4, var4);
 					var11.vertexUV(var6 + var4, var13, var7, var4, 0.0F);
 					var11.vertexUV(var6, var13, var7, 0.0F, 0.0F);
 					var11.vertexUV(var6, var13, var7, 0.0F, 0.0F);
 					var11.vertexUV(var6 + var4, var13, var7, var4, 0.0F);
-					var11.vertexUV(var6 + var4, var13, var7 + var4,
-							var4, var4);
+					var11.vertexUV(var6 + var4, var13, var7 + var4, var4, var4);
 					var11.vertexUV(var6, var13, var7 + var4, 0.0F, var4);
 				}
 			}
@@ -243,34 +236,34 @@ public final class LevelRenderer {
 		var11.end();
 		GL11.glDisable(3042);
 		GL11.glEndList();
-		this.queueChunks(0, 0, 0, this.level.width, this.level.depth, this.level.height);
+		queueChunks(0, 0, 0, level.width, level.depth, level.height);
 	}
 
 	public final int sortChunks(Player var1, int var2) {
-		float var3 = var1.x - this.lastLoadX;
-		float var4 = var1.y - this.lastLoadY;
-		float var5 = var1.z - this.lastLoadZ;
+		float var3 = var1.x - lastLoadX;
+		float var4 = var1.y - lastLoadY;
+		float var5 = var1.z - lastLoadZ;
 		if (var3 * var3 + var4 * var4 + var5 * var5 > 64.0F) {
-			this.lastLoadX = var1.x;
-			this.lastLoadY = var1.y;
-			this.lastLoadZ = var1.z;
-			Arrays.sort(this.loadQueue, new ChunkDirtyDistanceComparator(var1));
+			lastLoadX = var1.x;
+			lastLoadY = var1.y;
+			lastLoadZ = var1.z;
+			Arrays.sort(loadQueue, new ChunkDirtyDistanceComparator(var1));
 		}
 
 		int var6 = 0;
 
-		for (int var7 = 0; var7 < this.loadQueue.length; ++var7) {
-			var6 = this.loadQueue[var7].appendLists(this.chunkDataCache, var6, var2);
+		for (int var7 = 0; var7 < loadQueue.length; ++var7) {
+			var6 = loadQueue[var7].appendLists(chunkDataCache, var6, var2);
 		}
 
-		this.buffer.clear();
-		this.buffer.put(this.chunkDataCache, 0, var6);
-		this.buffer.flip();
-		if (this.buffer.remaining() > 0) {
-			GL11.glBindTexture(3553, this.textureManager.load("/terrain.png"));
-			GL11.glCallLists(this.buffer);
+		buffer.clear();
+		buffer.put(chunkDataCache, 0, var6);
+		buffer.flip();
+		if (buffer.remaining() > 0) {
+			GL11.glBindTexture(3553, textureManager.load("/terrain.png"));
+			GL11.glCallLists(buffer);
 		}
 
-		return this.buffer.remaining();
+		return buffer.remaining();
 	}
 }

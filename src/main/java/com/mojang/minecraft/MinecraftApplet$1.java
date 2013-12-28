@@ -28,7 +28,7 @@ public class MinecraftApplet$1 extends Canvas {
 	private MinecraftApplet applet;
 
 	public MinecraftApplet$1(MinecraftApplet minecraftApplet) {
-		this.applet = minecraftApplet;
+		applet = minecraftApplet;
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class MinecraftApplet$1 extends Canvas {
 		Font font = new Font("Serif", Font.BOLD, 18);
 		g2.setFont(font);
 		if (!ResourceDownloadThread.Done) {
-			g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);
+			g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 			font = new Font("Purisa", Font.BOLD, 48);
 			g2.setFont(font);
 			g.setColor(Color.black);
@@ -124,7 +124,7 @@ public class MinecraftApplet$1 extends Canvas {
 					e.printStackTrace();
 				}
 			}
-			g.drawImage(image2, 0, 0, this.getWidth(), this.getHeight(), null);
+			g.drawImage(image2, 0, 0, getWidth(), getHeight(), null);
 		}
 	}
 

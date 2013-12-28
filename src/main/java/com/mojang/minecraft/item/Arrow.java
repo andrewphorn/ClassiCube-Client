@@ -1,5 +1,9 @@
 package com.mojang.minecraft.item;
 
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.phys.AABB;
@@ -7,9 +11,6 @@ import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
-import org.lwjgl.opengl.GL11;
-
-import java.util.List;
 
 public class Arrow extends Entity {
 	public static final long serialVersionUID = 0L;
@@ -120,8 +121,8 @@ public class Arrow extends Entity {
 
 		GL11.glPushMatrix();
 		GL11.glColor4f(brightness, brightness, brightness, 1.0F);
-		GL11.glTranslatef(xo + (x - xo) * unknown0, this.yo + (this.y - this.yo) * unknown0
-				- this.heightOffset / 2.0F, this.zo + (this.z - this.zo) * unknown0);
+		GL11.glTranslatef(xo + (x - xo) * unknown0, yo + (y - yo) * unknown0 - heightOffset / 2.0F,
+				zo + (z - zo) * unknown0);
 		GL11.glRotatef(yRotO + (yRot - yRotO) * unknown0 - 90.0F, 0.0F, 1.0F, 0.0F);
 		GL11.glRotatef(xRotO + (xRot - xRotO) * unknown0, 0.0F, 0.0F, 1.0F);
 		GL11.glRotatef(45.0F, 1.0F, 0.0F, 0.0F);
@@ -221,7 +222,7 @@ public class Arrow extends Entity {
 				for (int currentEntity = 0; currentEntity < blockMapEntitiesList.size(); currentEntity++) {
 					Entity entity = blockMapEntitiesList.get(currentEntity);
 
-					if ((entity).isShootable() && (entity != owner || time > 5)) {
+					if (entity.isShootable() && (entity != owner || time > 5)) {
 						entity.hurt(this, damage);
 
 						collision = true;
