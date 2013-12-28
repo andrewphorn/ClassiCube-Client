@@ -46,6 +46,9 @@ public class InputValueScreen extends GuiScreen {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 				minecraft.setCurrentScreen((GuiScreen) null);
 				minecraft.grabMouse();

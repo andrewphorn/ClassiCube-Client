@@ -24,7 +24,8 @@ public class NBTTagIntArray extends NBTBase
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
-    void write(DataOutput par1DataOutput) throws IOException
+    @Override
+	void write(DataOutput par1DataOutput) throws IOException
     {
         par1DataOutput.writeInt(this.intArray.length);
 
@@ -37,7 +38,8 @@ public class NBTTagIntArray extends NBTBase
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
-    void load(DataInput par1DataInput) throws IOException
+    @Override
+	void load(DataInput par1DataInput) throws IOException
     {
         int i = par1DataInput.readInt();
         this.intArray = new int[i];
@@ -51,12 +53,14 @@ public class NBTTagIntArray extends NBTBase
     /**
      * Gets the type byte for the tag.
      */
-    public byte getId()
+    @Override
+	public byte getId()
     {
         return (byte)11;
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return "[" + this.intArray.length + " bytes]";
     }
@@ -64,14 +68,16 @@ public class NBTTagIntArray extends NBTBase
     /**
      * Creates a clone of the tag.
      */
-    public NBTBase copy()
+    @Override
+	public NBTBase copy()
     {
         int[] aint = new int[this.intArray.length];
         System.arraycopy(this.intArray, 0, aint, 0, this.intArray.length);
         return new NBTTagIntArray(this.getName(), aint);
     }
 
-    public boolean equals(Object par1Obj)
+    @Override
+	public boolean equals(Object par1Obj)
     {
         if (!super.equals(par1Obj))
         {
@@ -84,7 +90,8 @@ public class NBTTagIntArray extends NBTBase
         }
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return super.hashCode() ^ Arrays.hashCode(this.intArray);
     }

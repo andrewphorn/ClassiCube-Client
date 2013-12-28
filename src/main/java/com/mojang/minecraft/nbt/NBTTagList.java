@@ -10,7 +10,7 @@ import java.util.List;
 public class NBTTagList extends NBTBase
 {
     /** The array list containing the tags encapsulated in this list. */
-    private List tagList = new ArrayList();
+    private List<NBTBase> tagList = new ArrayList<NBTBase>();
 
     /**
      * The type byte for the tags in the list - they must all be of the same type.
@@ -30,11 +30,12 @@ public class NBTTagList extends NBTBase
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
-    void write(DataOutput par1DataOutput) throws IOException
+    @Override
+	void write(DataOutput par1DataOutput) throws IOException
     {
         if (!this.tagList.isEmpty())
         {
-            this.tagType = ((NBTBase)this.tagList.get(0)).getId();
+            this.tagType = this.tagList.get(0).getId();
         }
         else
         {
@@ -46,18 +47,19 @@ public class NBTTagList extends NBTBase
 
         for (int i = 0; i < this.tagList.size(); ++i)
         {
-            ((NBTBase)this.tagList.get(i)).write(par1DataOutput);
+            this.tagList.get(i).write(par1DataOutput);
         }
     }
 
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
-    void load(DataInput par1DataInput) throws IOException
+    @Override
+	void load(DataInput par1DataInput) throws IOException
     {
         this.tagType = par1DataInput.readByte();
         int i = par1DataInput.readInt();
-        this.tagList = new ArrayList();
+        this.tagList = new ArrayList<NBTBase>();
 
         for (int j = 0; j < i; ++j)
         {
@@ -70,12 +72,14 @@ public class NBTTagList extends NBTBase
     /**
      * Gets the type byte for the tag.
      */
-    public byte getId()
+    @Override
+	public byte getId()
     {
         return (byte)9;
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return "" + this.tagList.size() + " entries of type " + NBTBase.getTagName(this.tagType);
     }
@@ -94,7 +98,7 @@ public class NBTTagList extends NBTBase
      */
     public NBTBase removeTag(int par1)
     {
-        return (NBTBase)this.tagList.remove(par1);
+        return this.tagList.remove(par1);
     }
 
     /**
@@ -102,7 +106,7 @@ public class NBTTagList extends NBTBase
      */
     public NBTBase tagAt(int par1)
     {
-        return (NBTBase)this.tagList.get(par1);
+        return this.tagList.get(par1);
     }
 
     /**
@@ -116,15 +120,16 @@ public class NBTTagList extends NBTBase
     /**
      * Creates a clone of the tag.
      */
-    public NBTBase copy()
+    @Override
+	public NBTBase copy()
     {
         NBTTagList nbttaglist = new NBTTagList(this.getName());
         nbttaglist.tagType = this.tagType;
-        Iterator iterator = this.tagList.iterator();
+        Iterator<NBTBase> iterator = this.tagList.iterator();
 
         while (iterator.hasNext())
         {
-            NBTBase nbtbase = (NBTBase)iterator.next();
+            NBTBase nbtbase = iterator.next();
             NBTBase nbtbase1 = nbtbase.copy();
             nbttaglist.tagList.add(nbtbase1);
         }
@@ -132,7 +137,8 @@ public class NBTTagList extends NBTBase
         return nbttaglist;
     }
 
-    public boolean equals(Object par1Obj)
+    @Override
+	public boolean equals(Object par1Obj)
     {
         if (super.equals(par1Obj))
         {
@@ -147,7 +153,8 @@ public class NBTTagList extends NBTBase
         return false;
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return super.hashCode() ^ this.tagList.hashCode();
     }

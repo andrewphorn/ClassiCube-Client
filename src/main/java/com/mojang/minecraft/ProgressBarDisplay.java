@@ -19,7 +19,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.gui.HUDScreen;
-import com.mojang.minecraft.net.PacketType;
 import com.mojang.minecraft.render.ShapeRenderer;
 
 public final class ProgressBarDisplay {

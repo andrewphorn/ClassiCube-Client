@@ -26,8 +26,8 @@ final class LevelDialog extends Thread {
 			LoadLevelScreen var10000 = screen;
 			var1 = new JFileChooser();
 			var10000.chooser = var1;
-			FileNameExtensionFilter var3 = new FileNameExtensionFilter("Minecraft levels",
-					new String[] { "dat" });
+			FileNameExtensionFilter var3 = new FileNameExtensionFilter("ClassicWorld format (.cw)",
+					new String[] { "cw" });
 			screen.chooser.setFileFilter(var3);
 			screen.chooser.setMultiSelectionEnabled(false);
 			int var7;
@@ -46,6 +46,9 @@ final class LevelDialog extends Thread {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
-import com.mojang.minecraft.ChatLine;
 import com.mojang.minecraft.Minecraft;
 
 public class TextureSelectionScreen extends GuiScreen implements Runnable {

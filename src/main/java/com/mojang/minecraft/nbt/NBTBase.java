@@ -184,7 +184,8 @@ public abstract class NBTBase
      */
     public abstract NBTBase copy();
 
-    public boolean equals(Object par1Obj)
+    @Override
+	public boolean equals(Object par1Obj)
     {
         if (!(par1Obj instanceof NBTBase))
         {
@@ -197,7 +198,8 @@ public abstract class NBTBase
         }
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return this.name.hashCode() ^ this.getId();
     }

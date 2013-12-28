@@ -1940,8 +1940,8 @@ public final class Minecraft implements Runnable {
 
 		if (!levelLoaded) {
 			try {
-				if (level != null) {
-					if (level.creativeMode && isSinglePlayer) {
+				if (level != null && isSinglePlayer) {
+					if (level.creativeMode ) {
 						new LevelSerializer(level).saveMap("levelc");
 						// LevelIO.save(level, (new FileOutputStream(new
 						// File(mcDir, "levelc.dat"))));
@@ -1995,10 +1995,7 @@ public final class Minecraft implements Runnable {
 			String month = new SimpleDateFormat("MMM").format(cal.getTime());
 			String serverName = ProgressBarDisplay.title.toLowerCase().contains("connecting..") ? ""
 					: ProgressBarDisplay.title;
-			if (serverName == "") {
-				return;
-			}
-			if (serverName == "Loading level" || serverName == "Connecting..") {
+			if (serverName == "Loading level" || serverName == "Connecting.." || serverName == "") {
 				serverName = "Singleplayer";
 			}
 			serverName = FontRenderer.stripColor(serverName);

@@ -33,9 +33,11 @@ public class LevelSerializer {
 		this.level = level;
 	}
 
-	void save(File fullFilePath) throws FileNotFoundException, IOException {
+	void save(File fullFilePath) throws FileNotFoundException, IOException, Exception {
 		System.out.println("Saving level");
-		
+		if (level == null)
+			throw new Exception("level");
+
 		NBTTagCompound master = new NBTTagCompound("ClassicWorld");
 		master.setByte("FormatVersion", (byte) 1);
 		master.setString("Name", "SinglePlayerMap");
@@ -44,30 +46,30 @@ public class LevelSerializer {
 		master.setShort("Y", (short) level.height);
 		master.setShort("Z", (short) level.depth);
 		master.setByteArray("BlockArray", level.blocks);
-		
+
 		NBTTagCompound createdBy = new NBTTagCompound("CreatedBy");
 		createdBy.setString("Service", "ClassiCube");
 		createdBy.setString("Username", "ClassiCube User");
-		
+
 		NBTTagCompound spawn = new NBTTagCompound("Spawn");
-		spawn.setShort("X", (short)level.player.x);
-		spawn.setShort("Y", (short)level.player.y);
-		spawn.setShort("Z", (short)level.player.z);
-		spawn.setByte("H", (byte)level.player.xRot);
-		spawn.setByte("P", (byte)level.player.yRot);
-		
+		spawn.setShort("X", (short) level.player.x);
+		spawn.setShort("Y", (short) level.player.y);
+		spawn.setShort("Z", (short) level.player.z);
+		spawn.setByte("H", (byte) level.player.xRot);
+		spawn.setByte("P", (byte) level.player.yRot);
+
 		master.setCompoundTag("CreatedBy", createdBy);
 		master.setCompoundTag("Spawn", spawn);
 
-		CompressedStreamTools.writeCompressed(master,
-				new FileOutputStream(new File(fullFilePath + EXT)));
+		CompressedStreamTools.writeCompressed(master, new FileOutputStream(new File(fullFilePath
+				+ (fullFilePath.getAbsolutePath().endsWith(EXT) ? "" : EXT))));
 	}
 
-	public void saveMap(File file) throws FileNotFoundException, IOException {
+	public void saveMap(File file) throws FileNotFoundException, IOException, Exception {
 		save(file);
 	}
 
-	public void saveMap(String Name) throws FileNotFoundException, IOException {
+	public void saveMap(String Name) throws FileNotFoundException, IOException, Exception {
 		save(new File(Minecraft.getMinecraftDirectory(), Name));
 	}
 }

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
-import javax.swing.SwingWorker;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ContextCapabilities;

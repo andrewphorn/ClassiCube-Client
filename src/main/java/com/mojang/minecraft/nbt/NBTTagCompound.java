@@ -13,7 +13,7 @@ public class NBTTagCompound extends NBTBase
     /**
      * The key-value pairs for the tag. Each key is a UTF string, each value is a tag.
      */
-    private Map tagMap = new HashMap();
+    private Map<String, NBTBase> tagMap = new HashMap<String, NBTBase>();
 
     public NBTTagCompound()
     {
@@ -28,9 +28,10 @@ public class NBTTagCompound extends NBTBase
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
-    void write(DataOutput par1DataOutput) throws IOException
+    @Override
+	void write(DataOutput par1DataOutput) throws IOException
     {
-        Iterator iterator = this.tagMap.values().iterator();
+        Iterator<NBTBase> iterator = this.tagMap.values().iterator();
 
         while (iterator.hasNext())
         {
@@ -44,7 +45,8 @@ public class NBTTagCompound extends NBTBase
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
-    void load(DataInput par1DataInput) throws IOException
+    @Override
+	void load(DataInput par1DataInput) throws IOException
     {
         this.tagMap.clear();
         NBTBase nbtbase;
@@ -58,7 +60,7 @@ public class NBTTagCompound extends NBTBase
     /**
      * Returns all the values in the tagMap HashMap.
      */
-    public Collection getTags()
+    public Collection<NBTBase> getTags()
     {
         return this.tagMap.values();
     }
@@ -66,7 +68,8 @@ public class NBTTagCompound extends NBTBase
     /**
      * Gets the type byte for the tag.
      */
-    public byte getId()
+    @Override
+	public byte getId()
     {
         return (byte)10;
     }
@@ -366,12 +369,13 @@ public class NBTTagCompound extends NBTBase
         this.tagMap.remove(par1Str);
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         String s = this.getName() + ":[";
         String s1;
 
-        for (Iterator iterator = this.tagMap.keySet().iterator(); iterator.hasNext(); s = s + s1 + ":" + this.tagMap.get(s1) + ",")
+        for (Iterator<String> iterator = this.tagMap.keySet().iterator(); iterator.hasNext(); s = s + s1 + ":" + this.tagMap.get(s1) + ",")
         {
             s1 = (String)iterator.next();
         }
@@ -390,10 +394,11 @@ public class NBTTagCompound extends NBTBase
     /**
      * Creates a clone of the tag.
      */
-    public NBTBase copy()
+    @Override
+	public NBTBase copy()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound(this.getName());
-        Iterator iterator = this.tagMap.keySet().iterator();
+        Iterator<String> iterator = this.tagMap.keySet().iterator();
 
         while (iterator.hasNext())
         {
@@ -404,7 +409,8 @@ public class NBTTagCompound extends NBTBase
         return nbttagcompound;
     }
 
-    public boolean equals(Object par1Obj)
+    @Override
+	public boolean equals(Object par1Obj)
     {
         if (super.equals(par1Obj))
         {
@@ -417,7 +423,8 @@ public class NBTTagCompound extends NBTBase
         }
     }
 
-    public int hashCode()
+    @Override
+	public int hashCode()
     {
         return super.hashCode() ^ this.tagMap.hashCode();
     }
@@ -425,7 +432,7 @@ public class NBTTagCompound extends NBTBase
     /**
      * Return the tag map for this compound.
      */
-    static Map getTagMap(NBTTagCompound par0NBTTagCompound)
+    static Map<String, NBTBase> getTagMap(NBTTagCompound par0NBTTagCompound)
     {
         return par0NBTTagCompound.tagMap;
     }

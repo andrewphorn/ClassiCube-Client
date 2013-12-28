@@ -24,8 +24,8 @@ public final class SaveLevelScreen extends LoadLevelScreen {
 
 	@Override
 	protected final void openLevel(File var1) {
-		if (!var1.getName().endsWith(".dat")) {
-			var1 = new File(var1.getParentFile(), var1.getName() + ".dat");
+		if (!var1.getName().endsWith(".cw")) {
+			var1 = new File(var1.getParentFile(), var1.getName() + ".cw");
 		}
 
 		File var2 = var1;
@@ -33,10 +33,10 @@ public final class SaveLevelScreen extends LoadLevelScreen {
 		try {
 			new LevelSerializer(var3.level).saveMap(var2);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		// this.minecraft.levelIo.save(var3.level, var2);
@@ -61,6 +61,5 @@ public final class SaveLevelScreen extends LoadLevelScreen {
 			buttons.get(var2).visible = true;
 			buttons.get(var2).active = true;
 		}
-
 	}
 }

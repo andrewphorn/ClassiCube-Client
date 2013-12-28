@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GLAllocation {
 	private static final Map<Integer, Integer> displayLists = new HashMap<Integer, Integer>();
-	private static final List<?> textures = new ArrayList();
+	private static final List<Integer> textures = new ArrayList<Integer>();
 
 	public static synchronized ByteBuffer createDirectByteBuffer(int par0) {
 		return ByteBuffer.allocateDirect(par0).order(ByteOrder.nativeOrder());

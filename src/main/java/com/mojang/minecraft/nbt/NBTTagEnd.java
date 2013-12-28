@@ -14,22 +14,26 @@ public class NBTTagEnd extends NBTBase
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
-    void load(DataInput par1DataInput) throws IOException {}
+    @Override
+	void load(DataInput par1DataInput) throws IOException {}
 
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
-    void write(DataOutput par1DataOutput) throws IOException {}
+    @Override
+	void write(DataOutput par1DataOutput) throws IOException {}
 
     /**
      * Gets the type byte for the tag.
      */
-    public byte getId()
+    @Override
+	public byte getId()
     {
         return (byte)0;
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return "END";
     }
@@ -37,7 +41,8 @@ public class NBTTagEnd extends NBTBase
     /**
      * Creates a clone of the tag.
      */
-    public NBTBase copy()
+    @Override
+	public NBTBase copy()
     {
         return new NBTTagEnd();
     }
