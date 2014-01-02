@@ -35,7 +35,7 @@ public class NBTTagCompound extends NBTBase
 
         while (iterator.hasNext())
         {
-            NBTBase nbtbase = (NBTBase)iterator.next();
+            NBTBase nbtbase = iterator.next();
             NBTBase.writeNamedTag(nbtbase, par1DataOutput);
         }
 
@@ -175,7 +175,7 @@ public class NBTTagCompound extends NBTBase
      */
     public NBTBase getTag(String par1Str)
     {
-        return (NBTBase)this.tagMap.get(par1Str);
+        return this.tagMap.get(par1Str);
     }
 
     /**
@@ -377,7 +377,7 @@ public class NBTTagCompound extends NBTBase
 
         for (Iterator<String> iterator = this.tagMap.keySet().iterator(); iterator.hasNext(); s = s + s1 + ":" + this.tagMap.get(s1) + ",")
         {
-            s1 = (String)iterator.next();
+            s1 = iterator.next();
         }
 
         return s + "]";
@@ -402,8 +402,8 @@ public class NBTTagCompound extends NBTBase
 
         while (iterator.hasNext())
         {
-            String s = (String)iterator.next();
-            nbttagcompound.setTag(s, ((NBTBase)this.tagMap.get(s)).copy());
+            String s = iterator.next();
+            nbttagcompound.setTag(s, this.tagMap.get(s).copy());
         }
 
         return nbttagcompound;

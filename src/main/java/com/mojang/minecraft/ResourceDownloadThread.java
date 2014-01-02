@@ -107,20 +107,17 @@ public class ResourceDownloadThread extends Thread {
 	public void run() {
 		String[] files = new String[] { "music/calm1.ogg", "music/calm2.ogg", "music/calm3.ogg",
 				"newmusic/hal1.ogg", "newmusic/hal2.ogg", "newmusic/hal3.ogg", "newmusic/hal4.ogg",
-				"sound3/step/grass1.ogg", "sound3/step/grass2.ogg", "sound3/step/grass3.ogg",
-				"sound3/step/grass4.ogg", "sound3/step/grass5.ogg", "sound3/step/grass6.ogg",
-				"sound3/step/gravel1.ogg", "sound3/step/gravel2.ogg", "sound3/step/gravel3.ogg",
-				"sound3/step/gravel4.ogg", "sound3/step/stone1.ogg", "sound3/step/stone2.ogg",
-				"sound3/step/stone3.ogg", "sound3/step/stone4.ogg", "sound3/step/stone5.ogg",
-				"sound3/step/stone6.ogg", "sound3/step/wood1.ogg", "sound3/step/wood2.ogg",
-				"sound3/step/wood3.ogg", "sound3/step/wood4.ogg", "sound3/step/wood5.ogg",
-				"sound3/step/wood6.ogg", "sound3/step/cloth1.ogg", "sound3/step/cloth2.ogg",
-				"sound3/step/cloth3.ogg", "sound3/step/cloth4.ogg", "sound3/step/sand1.ogg",
-				"sound3/step/sand2.ogg", "sound3/step/sand3.ogg", "sound3/step/sand4.ogg",
-				"sound3/step/sand5.ogg", "sound3/step/snow1.ogg", "sound3/step/snow2.ogg",
-				"sound3/step/snow3.ogg", "sound3/step/snow4.ogg", "sound3/step/ladder1.ogg",
-				"sound3/step/ladder2.ogg", "sound3/step/ladder3.ogg", "sound3/step/ladder4.ogg",
-				"sound3/step/ladder5.ogg", "sound3/dig/grass1.ogg", "sound3/dig/grass2.ogg",
+				"newsound/step/grass1.ogg", "newsound/step/grass2.ogg", "newsound/step/grass3.ogg",
+				"newsound/step/grass4.ogg", "newsound/step/gravel1.ogg",
+				"newsound/step/gravel2.ogg", "newsound/step/gravel3.ogg",
+				"newsound/step/gravel4.ogg", "newsound/step/stone1.ogg",
+				"newsound/step/stone2.ogg", "newsound/step/stone3.ogg", "newsound/step/stone4.ogg",
+				"newsound/step/wood1.ogg", "newsound/step/wood2.ogg", "newsound/step/wood3.ogg",
+				"newsound/step/wood4.ogg", "newsound/step/cloth1.ogg", "newsound/step/cloth2.ogg",
+				"newsound/step/cloth3.ogg", "newsound/step/cloth4.ogg", "newsound/step/sand1.ogg",
+				"newsound/step/sand2.ogg", "newsound/step/sand3.ogg", "newsound/step/sand4.ogg",
+				"newsound/step/snow1.ogg", "newsound/step/snow2.ogg", "newsound/step/snow3.ogg",
+				"newsound/step/snow4.ogg", "sound3/dig/grass1.ogg", "sound3/dig/grass2.ogg",
 				"sound3/dig/grass3.ogg", "sound3/dig/grass4.ogg", "sound3/dig/gravel1.ogg",
 				"sound3/dig/gravel2.ogg", "sound3/dig/gravel3.ogg", "sound3/dig/gravel4.ogg",
 				"sound3/dig/stone1.ogg", "sound3/dig/stone2.ogg", "sound3/dig/stone3.ogg",
@@ -139,13 +136,13 @@ public class ResourceDownloadThread extends Thread {
 		folder.mkdir();
 		folder = new File(dir, "newmusic");
 		folder.mkdir();
-		folder = new File(dir, "sound3");
+		folder = new File(dir, "newsound");
 		folder.mkdir();
 		folder = new File(folder, "step");
 		folder.mkdir();
 
 		File musicFolder = new File(dir, "music");
-		File stepsFolder = new File(dir, "sound3/step");
+		File stepsFolder = new File(dir, "newsound/step");
 		File digFolder = new File(dir, "sound3/dig");
 		digFolder.mkdir();
 		File randomFolder = new File(dir, "sound3/random");
@@ -222,8 +219,6 @@ public class ResourceDownloadThread extends Thread {
 					+ i + ".ogg");
 			minecraft.sound.registerSound(new File(stepsFolder, "snow" + i + ".ogg"), "step/snow"
 					+ i + ".ogg");
-			minecraft.sound.registerSound(new File(stepsFolder, "ladder" + i + ".ogg"),
-					"step/ladder" + i + ".ogg");
 
 			minecraft.sound.registerSound(new File(digFolder, "grass" + i + ".ogg"), "dig/grass"
 					+ i + ".ogg");

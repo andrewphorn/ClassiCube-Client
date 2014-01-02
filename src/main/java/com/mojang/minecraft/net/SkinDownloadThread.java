@@ -25,12 +25,7 @@ public class SkinDownloadThread extends Thread {
 			connection = (HttpURLConnection) new URL(skinServer
 					+ (player.SkinName == null ? player.name : player.SkinName) + ".png")
 					.openConnection();
-			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			connection.setRequestProperty("Content-Language", "en-US");
-			connection
-					.setRequestProperty(
-							"User-Agent",
-							"Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11");
+			connection.addRequestProperty("User-Agent", "Mozilla/4.76");
 
 			connection.setUseCaches(false);
 			connection.setDoInput(true);

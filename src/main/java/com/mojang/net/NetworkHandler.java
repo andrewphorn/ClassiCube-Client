@@ -20,23 +20,27 @@ public final class NetworkHandler {
 	public NetworkManager netManager;
 	private Socket sock;
 	private byte[] stringBytes = new byte[64];
+	protected int soTrafficClass = 0x04 | 0x08 | 0x010;
 
 	public NetworkHandler(String var1, int var2, Minecraft m) {
 		try {
 			channel = SocketChannel.open();
 			channel.connect(new InetSocketAddress(var1, var2));
 			channel.configureBlocking(false);
+			
 			System.currentTimeMillis();
-			sock = channel.socket();
-			connected = true;
-			in.clear();
-			out.clear();
+			/*sock = channel.socket();
 			sock.setTcpNoDelay(true);
-			sock.setTrafficClass(24);
+			sock.setTrafficClass(soTrafficClass);
 			sock.setKeepAlive(false);
 			sock.setReuseAddress(false);
 			sock.setSoTimeout(100);
-			sock.getInetAddress().toString();
+			sock.getInetAddress().toString();*/
+			
+			connected = true;
+			in.clear();
+			out.clear();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			m.setCurrentScreen(new ErrorScreen("Failed to connect",

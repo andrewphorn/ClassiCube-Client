@@ -39,7 +39,6 @@ public class AnimatedTextureFX extends TextureFX {
 
 	@Override
 	public void animate() {
-
 		if (atlas.size() == 0) {
 			return;
 		}

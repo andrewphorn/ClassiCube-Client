@@ -35,7 +35,7 @@ public class GLAllocation {
 
 	public static synchronized void deleteTextures() {
 		for (int var0 = 0; var0 < textures.size(); ++var0) {
-			GL11.glDeleteTextures(((Integer) textures.get(var0)).intValue());
+			GL11.glDeleteTextures(textures.get(var0).intValue());
 		}
 
 		textures.clear();

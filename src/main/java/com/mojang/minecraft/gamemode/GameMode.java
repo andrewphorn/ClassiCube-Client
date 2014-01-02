@@ -2,49 +2,60 @@ package com.mojang.minecraft.gamemode;
 
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
+import com.mojang.minecraft.level.MobSpawner;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.player.Player;
 
-public class GameMode {
-	public Minecraft minecraft;
-
-	public boolean instantBreak;
-
-	public float reachDistance = 5.0F;
-
-	public GameMode(Minecraft minecraft) {
+public class GameMode
+{
+	public GameMode(Minecraft minecraft)
+	{
 		this.minecraft = minecraft;
 
 		instantBreak = false;
 	}
 
-	public void apply(Level level) {
+	public Minecraft minecraft;
+
+	public boolean instantBreak;
+
+	public void apply(Level level)
+	{
 		level.creativeMode = false;
 		level.growTrees = true;
 	}
 
-	public void apply(Player player) {
+	public void openInventory()
+	{
 	}
 
-	public void applyCracks(float time) {
+	public void hitBlock(int x, int y, int z)
+	{
+		this.breakBlock(x, y, z);
 	}
 
-	public void breakBlock(int x, int y, int z) {
+	public boolean canPlace(int block)
+	{
+		return true;
+	}
+
+	public void breakBlock(int x, int y, int z)
+	{
 		Level level = minecraft.level;
 		Block block = Block.blocks[level.getTile(x, y, z)];
 
 		boolean success = level.netSetTile(x, y, z, 0);
 
-		if (block != null && success) {
-			if (minecraft.isOnline()) {
-				minecraft.networkManager.sendBlockChange(x, y, z, 0,
-						minecraft.player.inventory.getSelected());
+		if(block != null && success)
+		{
+			if(minecraft.isOnline())
+			{
+				minecraft.networkManager.sendBlockChange(x, y, z, 0, minecraft.player.inventory.getSelected());
 			}
 
-			if (block.stepSound != Block.soundNone) {
-				level.playSound(block.stepSound.getBreakSound(), x + 0.5F, y + 0.5F, z + 0.5F,
-						(block.stepSound.getVolume() + 1.0F) / 2.0F,
-						block.stepSound.getPitch() * 0.8F);
+			if(block.stepSound != Block.soundNone)
+			{
+				level.playSound("step." + block.stepSound.stepSoundName, x, y, z, (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
 			}
 
 			block.spawnBreakParticles(level, x, y, z, minecraft.particleManager);
@@ -52,41 +63,53 @@ public class GameMode {
 
 	}
 
-	public boolean canPlace(int block) {
-		return true;
+	public void hitBlock(int x, int y, int z, int side)
+	{
 	}
 
-	public float getReachDistance() {
+	public void resetHits()
+	{
+	}
+
+	public void applyCracks(float time)
+	{
+	}
+	public float reachDistance = 5.0f;
+	public float getReachDistance()
+	{
 		return reachDistance;
 	}
 
-	public void hitBlock(int x, int y, int z) {
-		breakBlock(x, y, z);
+	public boolean useItem(Player player, int type)
+	{
+		return false;
 	}
 
-	public void hitBlock(int x, int y, int z, int side) {
+	public void preparePlayer(Player player)
+	{
 	}
 
-	public boolean isSurvival() {
+	public void spawnMob()
+	{
+	}
+
+	public void prepareLevel(Level level)
+	{
+	}
+	
+	public MobSpawner spawner;
+
+	public boolean isSurvival()
+	{
 		return true;
 	}
 
-	public void openInventory() {
+	public void apply(Player player)
+	{
 	}
 
-	public void prepareLevel(Level level) {
-	}
-
-	public void preparePlayer(Player player) {
-	}
-
-	public void resetHits() {
-	}
-
-	public void spawnMob() {
-	}
-
-	public boolean useItem(Player player, int type) {
-		return false;
+	public void stopSpawner(Level level) {
+		// TODO Auto-generated method stub
+		
 	}
 }
