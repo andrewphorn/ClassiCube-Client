@@ -2282,8 +2282,23 @@ public final class Minecraft implements Runnable {
 										String listName = (String) packetParams[2];
 										String groupName = (String) packetParams[3];
 										byte unusedRank = ((Byte) packetParams[4]).byteValue();
-										playerListNameData.add(new PlayerListNameData(NameId,
-												playerName, listName, groupName, unusedRank));
+										
+										int playerIndex = -1;
+										
+										for (PlayerListNameData b : playerListNameData) {
+											if (b.nameID == NameId) { // -- Already exists, update the entry.
+												playerIndex = playerListNameData.indexOf(b);
+												break;
+											}
+										}
+										
+										if (playerIndex == -1)
+											playerListNameData.add(new PlayerListNameData(NameId, playerName, listName, groupName, unusedRank));
+										else 
+											playerListNameData.set(playerIndex, new PlayerListNameData(NameId, playerName, listName, groupName, unusedRank));
+										
+											
+										
 										Collections.sort(playerListNameData,
 												new PlayerListComparator());
 									} else if (packetType == PacketType.EXT_ADD_ENTITY) {
