@@ -214,9 +214,9 @@ public final class HUDScreen extends Screen {
 			fontRenderer.render(UserDetail, width - (fontRenderer.getWidth(UserDetail) + 2), 24,
 					16777215);
 			
-			fontRenderer.render(BottomRight1, width - (fontRenderer.getWidth(BottomRight1) + 2), height - 25, 16777215);
-			fontRenderer.render(BottomRight2, width - (fontRenderer.getWidth(BottomRight2) + 2), height - 35, 16777215);
-			fontRenderer.render(BottomRight3, width - (fontRenderer.getWidth(BottomRight3) + 2), height - 45, 16777215);
+			fontRenderer.render(BottomRight1, width - (fontRenderer.getWidth(BottomRight1) + 2), height - 35, 16777215);
+			fontRenderer.render(BottomRight2, width - (fontRenderer.getWidth(BottomRight2) + 2), height - 45, 16777215);
+			fontRenderer.render(BottomRight3, width - (fontRenderer.getWidth(BottomRight3) + 2), height - 55, 16777215);
 			
 			GL11.glPushMatrix();
 			GL11.glScalef(1.5F, 1.5F, 1.0F);
@@ -252,9 +252,9 @@ public final class HUDScreen extends Screen {
 		chatsOnScreen.clear();
 		for (i = 0; i < chat.size() && i < chatLinesInScreen; ++i) {
 			if (chat.get(i).time < 200 || isLargeChatScreen) {
-				fontRenderer.render(chat.get(i).message, 2, height - 8 - i * 9 - 20, 16777215);
+				fontRenderer.render(chat.get(i).message, 2, height - 8 - i * 9 - 27, 16777215);
 				// add click data for urls
-				chatsOnScreen.add(new ChatScreenData(1, 8, 2, height - 8 - i * 9 - 20,
+				chatsOnScreen.add(new ChatScreenData(1, 8, 2, height - 8 - i * 9 - 27,
 						chat.get(i).message, fontRenderer));
 			}
 		}
