@@ -260,6 +260,8 @@ public final class Minecraft implements Runnable {
 	boolean isShuttingDown = false;
 
 	boolean canSendHeldBlock = false;
+	
+	boolean serverSupportsMessages = false;
 
 	int[] inventoryCache;
 
@@ -2112,7 +2114,10 @@ public final class Minecraft implements Runnable {
 										if (ExtName.toLowerCase().contains("heldblock")) {
 											canSendHeldBlock = true;
 										}
-
+										if (ExtName.toLowerCase().contains("messagetypes")) {
+											serverSupportsMessages = true;
+										}
+										
 										if (recievedExtensionLength == com.oyasunadev.mcraft.client.util.Constants.ServerSupportedExtensions
 												.size()) {
 											System.out.println("Sending client's supported Exts");
@@ -2567,6 +2572,37 @@ public final class Minecraft implements Runnable {
 													if (var5 < 0) {
 														networkManager.minecraft.hud.addChat("&e"
 																+ var34);
+													} else if (var5 > 0 && serverSupportsMessages) { 
+														switch (var5) {
+															case 1:
+																HUDScreen.ServerName = var34;
+																break;
+															case 2:
+																HUDScreen.Compass = var34;
+																break;
+															case 3:
+																HUDScreen.UserDetail = var34;
+																break;
+															case 11:
+																HUDScreen.BottomRight1 = var34;
+																break;
+															case 12:
+																HUDScreen.BottomRight2 = var34;
+																break;
+															case 13:
+																HUDScreen.BottomRight3 = var34;
+																break;
+															case 21:
+																break;
+															case 100:
+																HUDScreen.Announcement = var34;
+																break;
+															default:
+																networkManager.players.get(Byte
+																.valueOf(var5));
+																networkManager.minecraft.hud.addChat(var34);
+																break;
+														}
 													} else {
 														networkManager.players.get(Byte
 																.valueOf(var5));

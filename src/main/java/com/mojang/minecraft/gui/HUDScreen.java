@@ -34,7 +34,10 @@ public final class HUDScreen extends Screen {
 	public static String Compass = "";
 	public static String ServerName = "";
 	public static String UserDetail = "";
-
+	public static String BottomRight1 = "";
+	public static String BottomRight2 = "";
+	public static String BottomRight3 = "";
+	public static String Announcement = "";
 	public List<ChatScreenData> chatsOnScreen = new ArrayList<ChatScreenData>();
 
 	int Page = 0;
@@ -210,7 +213,15 @@ public final class HUDScreen extends Screen {
 
 			fontRenderer.render(UserDetail, width - (fontRenderer.getWidth(UserDetail) + 2), 24,
 					16777215);
-
+			
+			fontRenderer.render(BottomRight1, width - (fontRenderer.getWidth(BottomRight1) + 2), height - 25, 16777215);
+			fontRenderer.render(BottomRight2, width - (fontRenderer.getWidth(BottomRight2) + 2), height - 35, 16777215);
+			fontRenderer.render(BottomRight3, width - (fontRenderer.getWidth(BottomRight3) + 2), height - 45, 16777215);
+			
+			GL11.glPushMatrix();
+			GL11.glScalef(1.5F, 1.5F, 1.0F);
+			fontRenderer.render(Announcement, (width / 2) - (fontRenderer.getWidth(Announcement) + 50), 35, 16777215);
+			GL11.glPopMatrix();
 		}
 		GL11.glPushMatrix();
 		GL11.glScalef(0.7F, 0.7F, 1.0F);
