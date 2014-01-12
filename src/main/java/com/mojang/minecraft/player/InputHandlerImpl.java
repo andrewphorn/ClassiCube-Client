@@ -92,9 +92,9 @@ public class InputHandlerImpl extends InputHandler {
 			if (key == 45) {
 				keylist[9] = state;
 			}
-			if (key == 60 && state) {
+			if (key == 67 && state) {
 				cliplock = !cliplock;
-			}
+			} 
 			if (key == settings.flyKey.key && state) {
 				player.flyingMode = !player.flyingMode;
 			}
