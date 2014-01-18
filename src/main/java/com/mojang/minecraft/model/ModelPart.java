@@ -15,6 +15,7 @@ public final class ModelPart {
 	public float yaw;
 	public float roll;
 	public boolean hasList = false;
+	public boolean allowTransparency = false;
 	public int list = 0;
 	public boolean mirror = false;
 	public boolean render = true;
@@ -53,10 +54,13 @@ public final class ModelPart {
 
 	public final void render(float var1) {
 		if (render) {
-			if (!hasList) {
+			
+			if (!hasList) 
 				generateList(var1);
-			}
-
+			
+			if (allowTransparency) 
+				GL11.glEnable(3042);
+			
 			if (pitch == 0.0F && yaw == 0.0F && roll == 0.0F) {
 				if (x == 0.0F && y == 0.0F && z == 0.0F) {
 					GL11.glCallList(list);
@@ -83,6 +87,8 @@ public final class ModelPart {
 				GL11.glCallList(list);
 				GL11.glPopMatrix();
 			}
+			if (allowTransparency)
+				GL11.glDisable(3042);
 		}
 	}
 

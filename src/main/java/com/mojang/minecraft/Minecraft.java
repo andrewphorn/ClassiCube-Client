@@ -2208,6 +2208,7 @@ public final class Minecraft implements Runnable {
 										byte sideBlock = ((Byte) packetParams[1]).byteValue();
 										byte edgeBlock = ((Byte) packetParams[2]).byteValue();
 										short sideLevel = ((Short) packetParams[3]).byteValue();
+										
 										if (settings.canServerChangeTextures) {
 											if (sideBlock == -1) {
 												textureManager.customSideBlock = null;
@@ -2240,9 +2241,16 @@ public final class Minecraft implements Runnable {
 													image = ImageIO.read(file);
 													if (image.getWidth() % 16 == 0
 															&& image.getHeight() % 16 == 0) {
-														textureManager.animations.clear();
+														//textureManager.animations.clear();
 														textureManager.currentTerrainPng = image;
 													}
+												}
+											} else {
+												//textureManager.animations.clear();
+												try {
+													textureManager.currentTerrainPng = ImageIO.read(TextureManager.class.getResourceAsStream("/terrain.png"));
+												} catch (IOException e1) {
+													e1.printStackTrace();
 												}
 											}
 											textureManager.textures.clear();
