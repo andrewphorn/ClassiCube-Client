@@ -2241,12 +2241,12 @@ public final class Minecraft implements Runnable {
 													image = ImageIO.read(file);
 													if (image.getWidth() % 16 == 0
 															&& image.getHeight() % 16 == 0) {
-														//textureManager.animations.clear();
+														textureManager.animations.clear();
 														textureManager.currentTerrainPng = image;
 													}
 												}
 											} else {
-												//textureManager.animations.clear();
+												textureManager.animations.clear();
 												try {
 													textureManager.currentTerrainPng = ImageIO.read(TextureManager.class.getResourceAsStream("/terrain.png"));
 												} catch (IOException e1) {
