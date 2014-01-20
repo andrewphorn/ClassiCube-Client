@@ -439,7 +439,7 @@ public class Player extends Mob {
 			var6 -= var4;
 			GL11.glPushMatrix();
 			float var8 = animStepO + (animStep - animStepO) * var2;
-			ColorCache c = getBrightnessColor(var2);
+			ColorCache c = getBrightnessColor();
 
 			GL11.glColor3f(c.R, c.G, c.B);
 			float var9 = 0.0625F;

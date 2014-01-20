@@ -32,6 +32,9 @@ public abstract class Entity implements Serializable {
 	public float xRot;
 	public float yRotO;
 	public float xRotO;
+	/**
+	 * The bounding box of this Entity.
+	 */
 	public AABB bb;
 	public boolean onGround = false;
 	public boolean horizontalCollision = false;
@@ -74,41 +77,81 @@ public abstract class Entity implements Serializable {
 	protected void causeFallDamage(float var1) {
 	}
 
-	public float distanceTo(Entity var1) {
-		float var2 = x - var1.x;
-		float var3 = y - var1.y;
-		float var4 = z - var1.z;
-		return MathHelper.sqrt(var2 * var2 + var3 * var3 + var4 * var4);
+	/**
+	 * Calculates the distance from this entity to the specified entity.
+	 * 
+	 * @param otherEntity
+	 *            Entity to calculate the distance to.
+	 * @return The distance between the two entities.
+	 */
+	public float distanceTo(Entity otherEntity) {
+		return distanceTo(otherEntity.x, otherEntity.y, otherEntity.z);
 	}
 
-	public float distanceTo(float var1, float var2, float var3) {
-		var1 = x - var1;
-		var2 = y - var2;
-		float var4 = z - var3;
-		return MathHelper.sqrt(var1 * var1 + var2 * var2 + var4 * var4);
+	/**
+	 * Calculates the distance from this entity to the specified position.
+	 * 
+	 * @param posX
+	 *            X-Coordinate of the position to calculate the distance to.
+	 * @param posY
+	 *            Y-Coordinate of the position to calculate the distance to.
+	 * @param posZ
+	 *            Z-Coordinate of the position to calculate the distance to.
+	 * @return The distance between the entity and the position.
+	 */
+	public float distanceTo(float posX, float posY, float posZ) {
+		// Euclidean distance
+		float dx = x - posX;
+		float dy = y - posY;
+		float dz = z - posZ;
+		return MathHelper.sqrt((dx * dx) + (dy * dy) + (dz * dz));
 	}
 
-	public float distanceToSqr(Entity var1) {
-		float var2 = x - var1.x;
-		float var3 = y - var1.y;
-		float var4 = z - var1.z;
-		return var2 * var2 + var3 * var3 + var4 * var4;
+	/**
+	 * Calculates the distance from this entity to the specified entity squared.
+	 * This is basically calculating distance without using the expensive
+	 * Math.sqrt function. Should only be used for relative distance.
+	 * 
+	 * @param otherEntity
+	 *            Entity to calculate the distance to.
+	 * @return The distance between the two entities squared.
+	 */
+	public float distanceToSqr(Entity otherEntity) {
+		float dx = x - otherEntity.x;
+		float dy = y - otherEntity.y;
+		float dz = z - otherEntity.z;
+		return (dx * dx) + (dy * dy) + (dz * dz);
 	}
 
-	public float getBrightness(float var1) {
-		int var4 = (int) x;
-		int var2 = (int) (y + heightOffset / 2.0F - 0.5F);
-		int var3 = (int) z;
-		return level.getBrightness(var4, var2, var3);
+	/**
+	 * Gets the brightness of this entity
+	 * 
+	 * @return Brightness of the entity.
+	 */
+	public float getBrightness() {
+		int posX = (int) x;
+		int posY = (int) (y + heightOffset / 2.0F - 0.5F);
+		int posZ = (int) z;
+		return level.getBrightness(posX, posY, posZ);
 	}
 
-	public ColorCache getBrightnessColor(float var1) {
-		int var4 = (int) x;
-		int var2 = (int) (y + heightOffset / 2.0F - 0.5F);
-		int var3 = (int) z;
-		return level.getBrightnessColor(var4, var2, var3);
+	/**
+	 * Gets the brightness color of this entity.
+	 * 
+	 * @return ColorCache containing brightness color information.
+	 */
+	public ColorCache getBrightnessColor() {
+		int posX = (int) x;
+		int posY = (int) (y + heightOffset / 2.0F - 0.5F);
+		int posZ = (int) z;
+		return level.getBrightnessColor(posX, posY, posZ);
 	}
 
+	/**
+	 * Gets the texture ID of this entity.
+	 * 
+	 * @return Entity's Texture ID.
+	 */
 	public int getTexture() {
 		return textureId;
 	}
@@ -129,7 +172,18 @@ public abstract class Entity implements Serializable {
 
 	}
 
-	public boolean intersects(float var1, float var2, float var3, float var4, float var5, float var6) {
+	/**
+	 * Checks if this entity's bounding box intersects
+	 * @param var1
+	 * @param var2
+	 * @param var3
+	 * @param var4
+	 * @param var5
+	 * @param var6
+	 * @return
+	 */
+	public boolean intersects(float var1, float var2, float var3, float var4,
+			float var5, float var6) {
 		return bb.intersects(var1, var2, var3, var4, var5, var6);
 	}
 
@@ -139,16 +193,19 @@ public abstract class Entity implements Serializable {
 
 	public boolean isFree(float var1, float var2, float var3) {
 		AABB var4 = bb.cloneMove(var1, var2, var3);
-		return level.getCubes(var4).size() > 0 ? false : !level.containsAnyLiquid(var4);
+		return level.getCubes(var4).size() > 0 ? false : !level
+				.containsAnyLiquid(var4);
 	}
 
 	public boolean isFree(float var1, float var2, float var3, float var4) {
 		AABB var5 = bb.grow(var4, var4, var4).cloneMove(var1, var2, var3);
-		return level.getCubes(var5).size() > 0 ? false : !level.containsAnyLiquid(var5);
+		return level.getCubes(var5).size() > 0 ? false : !level
+				.containsAnyLiquid(var5);
 	}
 
 	public boolean isInLava() {
-		return level.containsLiquid(bb.grow(0.0F, -0.4F, 0.0F), LiquidType.lava);
+		return level
+				.containsLiquid(bb.grow(0.0F, -0.4F, 0.0F), LiquidType.lava);
 	}
 
 	public boolean isInOrOnRope() {
@@ -156,7 +213,8 @@ public abstract class Entity implements Serializable {
 	}
 
 	public boolean isInWater() {
-		return level.containsLiquid(bb.grow(0.0F, -0.4F, 0.0F), LiquidType.water);
+		return level.containsLiquid(bb.grow(0.0F, -0.4F, 0.0F),
+				LiquidType.water);
 	}
 
 	public boolean isLit() {
@@ -240,7 +298,8 @@ public abstract class Entity implements Serializable {
 
 			float var17;
 			float var18;
-			if (footSize > 0.0F && var16 && ySlideOffset < 0.05F && (var6 != var1 || var8 != var3)) {
+			if (footSize > 0.0F && var16 && ySlideOffset < 0.05F
+					&& (var6 != var1 || var8 != var3)) {
 				var18 = var1;
 				var17 = var2;
 				float var13 = var3;
@@ -325,7 +384,8 @@ public abstract class Entity implements Serializable {
 			z = (bb.z0 + bb.z1) / 2.0F;
 			var18 = x - var4;
 			var17 = z - var5;
-			walkDist = (float) (walkDist + MathHelper.sqrt(var18 * var18 + var17 * var17) * 0.6D);
+			walkDist = (float) (walkDist + MathHelper.sqrt(var18 * var18
+					+ var17 * var17) * 0.6D);
 		}
 		int var39 = (int) Math.floor(x);
 		int var30 = (int) Math.floor(y - 0.20000000298023224D - heightOffset);
@@ -333,12 +393,13 @@ public abstract class Entity implements Serializable {
 		int var32 = level.getTile(var39, var30, var31);
 		if (makeStepSound && onGround && !noPhysics) {
 			if (this instanceof Player && !((Player) this).noPhysics) {
-				distanceWalkedModified = (float) (distanceWalkedModified + Math.sqrt(var1 * var1
-						+ var3 * var3) * 0.6D);
+				distanceWalkedModified = (float) (distanceWalkedModified + Math
+						.sqrt(var1 * var1 + var3 * var3) * 0.6D);
 				distanceWalkedOnStepModified = (float) (distanceWalkedOnStepModified + Math
 						.sqrt(var1 * var1 + var2 * var2 + var3 * var3) * 0.6D);
 
-				if (distanceWalkedOnStepModified > nextStepDistance && var32 > 0) {
+				if (distanceWalkedOnStepModified > nextStepDistance
+						&& var32 > 0) {
 					nextStepDistance = (int) distanceWalkedOnStepModified + 1;
 
 					if (onGround) {
@@ -374,7 +435,8 @@ public abstract class Entity implements Serializable {
 		}
 	}
 
-	public void moveTo(float var1, float var2, float var3, float var4, float var5) {
+	public void moveTo(float var1, float var2, float var3, float var4,
+			float var5) {
 		xo = x = var1;
 		yo = y = var2;
 		zo = z = var3;
@@ -394,7 +456,8 @@ public abstract class Entity implements Serializable {
 		StepSound var2 = Block.blocks[var1].stepSound;
 
 		if (!Block.blocks[var1].isLiquid()) {
-			playSound(var2.getStepSound(), var2.getVolume() * 0.70F, var2.getPitch());
+			playSound(var2.getStepSound(), var2.getVolume() * 0.70F,
+					var2.getPitch());
 		}
 	}
 
@@ -464,7 +527,8 @@ public abstract class Entity implements Serializable {
 		this.z = z;
 		float var4 = bbWidth / 2.0F;
 		float var5 = bbHeight / 2.0F;
-		bb = new AABB(x - var4, y - var5, z - var4, x + var4, y + var5, z + var4);
+		bb = new AABB(x - var4, y - var5, z - var4, x + var4, y + var5, z
+				+ var4);
 	}
 
 	public void setPos(PositionUpdate var1) {

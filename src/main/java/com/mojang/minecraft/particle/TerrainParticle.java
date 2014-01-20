@@ -33,7 +33,7 @@ public class TerrainParticle extends Particle {
 		float var13 = xo + (x - xo) * var2;
 		float var14 = yo + (y - yo) * var2;
 		float var15 = zo + (z - zo) * var2;
-		ColorCache var21 = getBrightnessColor(var2);
+		ColorCache var21 = getBrightnessColor();
 		var1.color(var21.R * rCol, var21.G * gCol, var21.B * bCol);
 		var1.vertexUV(var13 - var3 * var12 - var6 * var12, var14 - var4 * var12, var15 - var5
 				* var12 - var7 * var12, var8, var11);

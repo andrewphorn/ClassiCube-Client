@@ -21,9 +21,11 @@ public final class ModelManager {
 	private CrocModel croc = new CrocModel();
 
 	/**
-	 * Gets a model from its name.
-	 * You can also get block models by providing their ID.
-	 * @param modelName String representing the name of the model
+	 * Gets a model from its name. You can also get block models by providing
+	 * their ID.
+	 * 
+	 * @param modelName
+	 *            String representing the name of the model
 	 * @return The Model with the name that was requested or null if not found.
 	 */
 	public final Model getModel(String modelName) {
@@ -33,12 +35,17 @@ public final class ModelManager {
 				return new BlockModel();
 			}
 		}
-		return modelName.equals("humanoid") ? human : modelName.equals("humanoid.armor") ? armoredHuman
-				: modelName.equals("creeper") ? creeper : modelName.equals("chicken") ? chicken : modelName
-						.equals("skeleton") ? skeleton : modelName.equals("printer") ? printer : modelName
-						.equals("croc") ? croc : modelName.equals("zombie") ? zombie : modelName
-						.equals("pig") ? pig : modelName.equals("sheep") ? sheep
-						: modelName.equals("spider") ? spider : modelName.equals("sheep.fur") ? sheepFur
-								: null;
+		return modelName.equals("humanoid") ? human : modelName
+				.equals("humanoid.armor") ? armoredHuman : modelName
+				.equals("creeper") ? creeper
+				: modelName.equals("chicken") ? chicken : modelName
+						.equals("skeleton") ? skeleton : modelName
+						.equals("printer") ? printer
+						: modelName.equals("croc") ? croc : modelName
+								.equals("zombie") ? zombie : modelName
+								.equals("pig") ? pig : modelName
+								.equals("sheep") ? sheep : modelName
+								.equals("spider") ? spider : modelName
+								.equals("sheep.fur") ? sheepFur : null;
 	}
 }

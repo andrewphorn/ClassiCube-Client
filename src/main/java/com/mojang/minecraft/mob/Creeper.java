@@ -18,7 +18,7 @@ public class Creeper extends Mob {
 	}
 
 	@Override
-	public float getBrightness(float var1) {
+	public float getBrightness() {
 		return 80;
 	}
 }
