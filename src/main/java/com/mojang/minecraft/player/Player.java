@@ -488,17 +488,17 @@ public class Player extends Mob {
 			renderModel(var1, var8, var2, var5, var6, var7, var9);
 			if (invulnerableTime > invulnerableDuration - 10) {
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
-				GL11.glEnable(3042);
-				GL11.glBlendFunc(770, 1);
+				GL11.glEnable(GL11.GL_BLEND); // 3042
+				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE); // 770, 1
 				bindTexture(var1);
 				renderModel(var1, var8, var2, var5, var6, var7, var9);
-				GL11.glDisable(3042);
-				GL11.glBlendFunc(770, 771);
+				GL11.glDisable(GL11.GL_BLEND); // 3042
+				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA); // 770, 771
 			}
-
-			GL11.glEnable(3008);
+			
+			GL11.glEnable(GL11.GL_ALPHA_TEST); // 3008
 			if (allowAlpha) {
-				GL11.glEnable(2884);
+				GL11.glEnable(GL11.GL_CULL_FACE); // 2884
 			}
 
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -507,6 +507,13 @@ public class Player extends Mob {
 	}
 
 	@Override
+	/**
+	 * @param var1
+	 * @param var2
+	 * @param var3
+	 * @param var4
+	 * @param var5
+	 */
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
 		modelCache.getModel(modelName).render(var2, var4, tickCount + var3, var5, var6, var7);
