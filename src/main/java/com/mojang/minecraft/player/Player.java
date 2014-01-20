@@ -507,16 +507,9 @@ public class Player extends Mob {
 	}
 
 	@Override
-	/**
-	 * @param var1
-	 * @param var2
-	 * @param var3
-	 * @param var4
-	 * @param var5
-	 */
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
-		modelCache.getModel(modelName).render(var2, var4, tickCount + var3, var5, var6, var7);
+		getModel().render(var2, var4, tickCount + var3, var5, var6, var7);
 	}
 
 	@Override

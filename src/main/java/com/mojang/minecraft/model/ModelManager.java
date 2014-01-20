@@ -2,6 +2,9 @@ package com.mojang.minecraft.model;
 
 import com.mojang.minecraft.SessionData;
 
+/**
+ * Manages the Models built into the Client.
+ */
 public final class ModelManager {
 
 	private HumanoidModel human = new HumanoidModel(0.0F);
@@ -17,18 +20,25 @@ public final class ModelManager {
 	private PrinterModel printer = new PrinterModel();
 	private CrocModel croc = new CrocModel();
 
-	public final Model getModel(String var1) {
+	/**
+	 * Gets a model from its name.
+	 * You can also get block models by providing their ID.
+	 * @param modelName String representing the name of the model
+	 * @return The Model with the name that was requested or null if not found.
+	 */
+	public final Model getModel(String modelName) {
+		// Try to match with a Block ID
 		for (int i = 1; i < SessionData.allowedBlocks.size(); i++) {
-			if (var1.equals("" + i)) {
+			if (modelName.equals("" + i)) {
 				return new BlockModel();
 			}
 		}
-		return var1.equals("humanoid") ? human : var1.equals("humanoid.armor") ? armoredHuman
-				: var1.equals("creeper") ? creeper : var1.equals("chicken") ? chicken : var1
-						.equals("skeleton") ? skeleton : var1.equals("printer") ? printer : var1
-						.equals("croc") ? croc : var1.equals("zombie") ? zombie : var1
-						.equals("pig") ? pig : var1.equals("sheep") ? sheep
-						: var1.equals("spider") ? spider : var1.equals("sheep.fur") ? sheepFur
+		return modelName.equals("humanoid") ? human : modelName.equals("humanoid.armor") ? armoredHuman
+				: modelName.equals("creeper") ? creeper : modelName.equals("chicken") ? chicken : modelName
+						.equals("skeleton") ? skeleton : modelName.equals("printer") ? printer : modelName
+						.equals("croc") ? croc : modelName.equals("zombie") ? zombie : modelName
+						.equals("pig") ? pig : modelName.equals("sheep") ? sheep
+						: modelName.equals("spider") ? spider : modelName.equals("sheep.fur") ? sheepFur
 								: null;
 	}
 }
