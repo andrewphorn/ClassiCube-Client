@@ -78,7 +78,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 
 	@Override
 	protected final void onKeyPress(char paramChar, int paramInt) {
-		if (paramInt == 1) {
+		if (paramInt == Keyboard.KEY_ESCAPE) {
 			minecraft.setCurrentScreen((GuiScreen) null);
 			return;
 		}
