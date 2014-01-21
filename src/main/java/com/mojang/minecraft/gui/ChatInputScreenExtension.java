@@ -92,7 +92,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 			return;
 		}
 
-		if (paramInt == 28) {
+		if (paramInt == Keyboard.KEY_RETURN) { // 28
 			String str1 = inputLine.trim();
 			if (str1.length() > 0) {
 				NetworkManager var10000 = minecraft.networkManager;
@@ -109,34 +109,34 @@ public class ChatInputScreenExtension extends GuiScreen {
 		}
 
 		int i = inputLine.length();
-		if (paramInt == 14 && i > 0 && caretPos > 0) {
+		if (paramInt == Keyboard.KEY_BACK && i > 0 && caretPos > 0) {
 			inputLine = inputLine.substring(0, caretPos - 1) + inputLine.substring(caretPos);
 			caretPos -= 1;
 		}
 
-		if (paramInt == 203 && caretPos > 0) {
+		if (paramInt == Keyboard.KEY_LEFT && caretPos > 0) {
 			caretPos -= 1;
 		}
 
-		if (paramInt == 205 && caretPos < i) {
+		if (paramInt == Keyboard.KEY_RIGHT && caretPos < i) {
 			caretPos += 1;
 		}
 
-		if (paramInt == 199) {
+		if (paramInt == Keyboard.KEY_HOME) {
 			caretPos = 0;
 		}
 
-		if (paramInt == 207) {
+		if (paramInt == Keyboard.KEY_END) {
 			caretPos = i;
 		}
 
-		if (Keyboard.isKeyDown(219) || Keyboard.isKeyDown(220) || Keyboard.isKeyDown(29)
-				|| Keyboard.isKeyDown(157)) {
-			if (paramInt == 47) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_LMETA) || Keyboard.isKeyDown(Keyboard.KEY_RMETA) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)
+				|| Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
+			if (paramInt == Keyboard.KEY_V) {
 				paramChar = '\000';
 				String str2 = getClipboard();
 				insertTextAtCaret(str2);
-			} else if (paramInt == 46) {
+			} else if (paramInt == Keyboard.KEY_C) {
 				paramChar = '\000';
 				setClipboard(inputLine);
 			}
@@ -157,7 +157,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 		 * } } }
 		 */
 
-		if (paramInt == 200) {
+		if (paramInt == Keyboard.KEY_UP) {
 			j = history.size();
 			if (historyPos < j) {
 				historyPos += 1;
@@ -166,7 +166,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 			}
 		}
 
-		if (paramInt == 208) {
+		if (paramInt == Keyboard.KEY_DOWN) {
 			j = history.size();
 			if (historyPos > 0) {
 				historyPos -= 1;
