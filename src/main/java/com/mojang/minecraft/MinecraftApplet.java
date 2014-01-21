@@ -107,7 +107,7 @@ public class MinecraftApplet extends Applet {
 			minecraft.port = port;
 		}
 
-		minecraft.levelLoaded = true;
+		minecraft.isLevelLoaded = true;
 
 		setLayout(new BorderLayout());
 
@@ -120,7 +120,7 @@ public class MinecraftApplet extends Applet {
 
 	@Override
 	public void start() {
-		minecraft.waiting = false;
+		minecraft.isWaiting = false;
 	}
 
 	public void startGameThread() {
@@ -133,12 +133,12 @@ public class MinecraftApplet extends Applet {
 
 	@Override
 	public void stop() {
-		minecraft.waiting = true;
+		minecraft.isWaiting = true;
 	}
 
 	public void stopGameThread() {
 		if (thread != null) {
-			minecraft.running = false;
+			minecraft.isRunning = false;
 
 			try {
 				thread.join(1000L);
