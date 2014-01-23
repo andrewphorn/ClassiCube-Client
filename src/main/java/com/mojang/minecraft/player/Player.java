@@ -439,7 +439,7 @@ public class Player extends Mob {
 			var6 -= var4;
 			GL11.glPushMatrix();
 			float var8 = animStepO + (animStep - animStepO) * var2;
-			ColorCache c = getBrightnessColor(var2);
+			ColorCache c = getBrightnessColor();
 
 			GL11.glColor3f(c.R, c.G, c.B);
 			float var9 = 0.0625F;
@@ -488,17 +488,17 @@ public class Player extends Mob {
 			renderModel(var1, var8, var2, var5, var6, var7, var9);
 			if (invulnerableTime > invulnerableDuration - 10) {
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
-				GL11.glEnable(3042);
-				GL11.glBlendFunc(770, 1);
+				GL11.glEnable(GL11.GL_BLEND); // 3042
+				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE); // 770, 1
 				bindTexture(var1);
 				renderModel(var1, var8, var2, var5, var6, var7, var9);
-				GL11.glDisable(3042);
-				GL11.glBlendFunc(770, 771);
+				GL11.glDisable(GL11.GL_BLEND); // 3042
+				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA); // 770, 771
 			}
-
-			GL11.glEnable(3008);
+			
+			GL11.glEnable(GL11.GL_ALPHA_TEST); // 3008
 			if (allowAlpha) {
-				GL11.glEnable(2884);
+				GL11.glEnable(GL11.GL_CULL_FACE); // 2884
 			}
 
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

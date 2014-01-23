@@ -241,7 +241,7 @@ public class MinecraftStandalone {
 			 */
 			private synchronized void stopThread() {
 				if (thread != null) {
-					minecraft.running = false;
+					minecraft.isRunning = false;
 
 					try {
 						thread.join();
@@ -278,7 +278,7 @@ public class MinecraftStandalone {
 			addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
-					minecraft.running = false;
+					minecraft.isRunning = false;
 				}
 			});
 		}
@@ -329,7 +329,7 @@ public class MinecraftStandalone {
 				@Override
 				public void run() {
 					while (true) {
-						if (!minecraft.running) {
+						if (!minecraft.isRunning) {
 							minecraft.shutdown();
 							dispose();
 						}
@@ -352,7 +352,7 @@ public class MinecraftStandalone {
 					e.printStackTrace();
 				}
 
-				if (minecraft.running) {
+				if (minecraft.isRunning) {
 					pass = true;
 				}
 			}

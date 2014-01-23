@@ -235,7 +235,7 @@ public final class ProgressBarDisplay {
 	}
 
 	public final void setProgress(int var1) {
-		if (!minecraft.running) {
+		if (!minecraft.isRunning) {
 			throw new StopGameException();
 		} else {
 			long var2;
@@ -292,7 +292,7 @@ public final class ProgressBarDisplay {
 	}
 
 	public final void setText(String message) {
-		if (!minecraft.running) {
+		if (!minecraft.isRunning) {
 			throw new StopGameException();
 		} else {
 			text = message;
@@ -336,7 +336,7 @@ public final class ProgressBarDisplay {
 	}
 
 	public final void setTitle(String var1) {
-		if (!minecraft.running) {
+		if (!minecraft.isRunning) {
 			throw new StopGameException();
 		} else {
 			title = var1;

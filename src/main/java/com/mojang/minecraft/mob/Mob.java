@@ -214,7 +214,7 @@ public class Mob extends Entity {
 			var6 -= var4;
 			GL11.glPushMatrix();
 			float var8 = animStepO + (animStep - animStepO) * var2;
-			ColorCache varaa = getBrightnessColor(var2);
+			ColorCache varaa = getBrightnessColor();
 			GL11.glColor3f(varaa.R, varaa.G, varaa.B);
 			float var9 = 0.0625F;
 			float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F * var5 * bobStrength

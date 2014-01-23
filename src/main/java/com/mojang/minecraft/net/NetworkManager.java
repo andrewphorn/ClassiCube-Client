@@ -23,7 +23,7 @@ public class NetworkManager {
 	public HashMap<Byte, NetworkPlayer> players;
 
 	public NetworkManager(Minecraft minecraft, String server, int port, String username, String key) {
-		minecraft.online = true;
+		minecraft.isOnline = true;
 
 		this.minecraft = minecraft;
 

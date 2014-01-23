@@ -12,10 +12,18 @@ public class HumanoidModel extends Model {
 	public ModelPart rightLeg;
 	public ModelPart leftLeg;
 
+	/**
+	 * Creates a new humanoid model with the default scaling.
+	 */
 	public HumanoidModel() {
 		this(0.0F);
 	}
 
+	/**
+	 * Creates a new humanoid model with the specified scaling.
+	 * The scaling seems to make the model wider but still making it occupy the same space.
+	 * @param var1 Scale value to use for the model.
+	 */
 	public HumanoidModel(float var1) {
 		head = new ModelPart(0, 0);
 		head.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, var1);

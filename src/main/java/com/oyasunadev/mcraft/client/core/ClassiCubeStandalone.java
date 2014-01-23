@@ -156,7 +156,8 @@ public class ClassiCubeStandalone {
 
 				try {
 					URL url = new URL(address);
-					out = new BufferedOutputStream(new FileOutputStream(localFileName));
+					out = new BufferedOutputStream(new FileOutputStream(
+							localFileName));
 					connection = url.openConnection();
 					// I HAVE to send this or the server responds with 403
 					connection.setRequestProperty("Content-Type",
@@ -241,7 +242,8 @@ public class ClassiCubeStandalone {
 							e.printStackTrace();
 						}
 					}
-					g.drawImage(getImage2(), 0, 0, getWidth(), getHeight(), null);
+					g.drawImage(getImage2(), 0, 0, getWidth(), getHeight(),
+							null);
 				}
 			}
 
@@ -257,18 +259,22 @@ public class ClassiCubeStandalone {
 
 			void SetImage() throws IOException {
 
-				File file = new File(Minecraft.getMinecraftDirectory().getPath() + "/rsbg.jpg");
+				File file = new File(Minecraft.getMinecraftDirectory()
+						.getPath() + "/rsbg.jpg");
 				if (!file.exists()) {
-					download("http://classicube.net/static/client/rsbg.jpg", file.getAbsolutePath());
+					download("http://classicube.net/static/client/rsbg.jpg",
+							file.getAbsolutePath());
 				}
 				image = ImageIO.read(new File(file.getAbsolutePath()));
 
 			}
 
 			void SetImage2() throws IOException {
-				File file = new File(Minecraft.getMinecraftDirectory().getPath() + "/bg.jpg");
+				File file = new File(Minecraft.getMinecraftDirectory()
+						.getPath() + "/bg.jpg");
 				if (!file.exists()) {
-					download("http://classicube.net/static/client/bg.jpg", file.getAbsolutePath());
+					download("http://classicube.net/static/client/bg.jpg",
+							file.getAbsolutePath());
 				}
 				image2 = ImageIO.read(new File(file.getAbsolutePath()));
 			}
@@ -299,7 +305,7 @@ public class ClassiCubeStandalone {
 			 */
 			private synchronized void stopThread() {
 				if (thread != null) {
-					minecraft.running = false;
+					minecraft.isRunning = false;
 
 					try {
 						thread.join();
@@ -336,21 +342,35 @@ public class ClassiCubeStandalone {
 			addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
-					minecraft.running = false;
+					minecraft.isRunning = false;
 				}
 			});
 		}
 
 		/**
-		 * Start Minecraft Classic.
+		 * Starts Minecraft Classic
+		 * 
+		 * @param Player
+		 *            Player name
+		 * @param Server
+		 *            Server address
+		 * @param Mppass
+		 *            The player's MPPass
+		 * @param Port
+		 *            Server port
+		 * @param skinServer
+		 *            The url of the skin server.
+		 * @param fullscreen
+		 *            True if the game should be in fullScreen.
 		 */
-		public void startMinecraft(String Player, String Server, String Mppass, int Port,
-				String skinServer, boolean fullscreen) {
+		public void startMinecraft(String Player, String Server, String Mppass,
+				int Port, String skinServer, boolean fullscreen) {
 
 			MCraftApplet applet = new MCraftApplet();
 			final MinecraftCanvas canvas = new MinecraftCanvas();
 
-			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(), fullscreen, true);
+			minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(),
+					fullscreen, true);
 
 			minecraft.session = new SessionData(Player, "noidea");
 			minecraft.session.mppass = Mppass;
@@ -373,7 +393,8 @@ public class ClassiCubeStandalone {
 			canvas.setFocusable(true);
 
 			pack();
-			setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - getWidth()) / 2,
+			setLocation(
+					(Toolkit.getDefaultToolkit().getScreenSize().width - getWidth()) / 2,
 					(Toolkit.getDefaultToolkit().getScreenSize().height - getHeight()) / 2);
 			setVisible(true);
 
@@ -381,7 +402,7 @@ public class ClassiCubeStandalone {
 				@Override
 				public void run() {
 					while (true) {
-						if (!minecraft.running) {
+						if (!minecraft.isRunning) {
 							minecraft.shutdown();
 							dispose();
 						}
@@ -404,7 +425,7 @@ public class ClassiCubeStandalone {
 					e.printStackTrace();
 				}
 
-				if (minecraft.running) {
+				if (minecraft.isRunning) {
 					pass = true;
 				}
 			}
@@ -438,10 +459,11 @@ public class ClassiCubeStandalone {
 		}
 		ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
 		if (player == null || server == null || mppass == null || port <= 0) {
-			classicubeStandalone.startMinecraft(null, null, null, 0, skinServer, startFullScreen);
+			classicubeStandalone.startMinecraft(null, null, null, 0,
+					skinServer, startFullScreen);
 		} else {
-			classicubeStandalone.startMinecraft(player, server, mppass, port, skinServer,
-					startFullScreen);
+			classicubeStandalone.startMinecraft(player, server, mppass, port,
+					skinServer, startFullScreen);
 		}
 	}
 
@@ -458,10 +480,11 @@ public class ClassiCubeStandalone {
 		minecraftFrame.startMinecraft(null, null, null, 0, null, false);
 	}
 
-	public void startMinecraft(String Player, String Server, String Mppass, int Port,
-			String skinServer, boolean fullscreen) {
+	public void startMinecraft(String Player, String Server, String Mppass,
+			int Port, String skinServer, boolean fullscreen) {
 		MinecraftFrame minecraftFrame = new MinecraftFrame();
 
-		minecraftFrame.startMinecraft(Player, Server, Mppass, Port, skinServer, fullscreen);
+		minecraftFrame.startMinecraft(Player, Server, Mppass, Port, skinServer,
+				fullscreen);
 	}
 }

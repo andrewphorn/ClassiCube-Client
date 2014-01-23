@@ -45,7 +45,7 @@ public final class NetworkHandler {
 			e.printStackTrace();
 			m.setCurrentScreen(new ErrorScreen("Failed to connect",
 					"You failed to connect to the server. It\'s probably down!"));
-			m.online = false;
+			m.isOnline = false;
 
 			m.networkManager = null;
 			netManager.successful = false;
