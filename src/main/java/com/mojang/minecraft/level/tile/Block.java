@@ -362,9 +362,21 @@ public class Block {
 
 		return aabb;
 	}
-
-	protected int getTextureId(int texture) {
+	/**
+	 * Gets the texture ID of a block depending on the side you want to use.
+	 * @param texture Side of the block to render.
+	 * @return ID of the texture side requested.
+	 */
+	public int getTextureId(int texture) {
 		return textureId;
+	}
+	/**
+	 * Gets the texture ID of a block depending on the side you want to use.
+	 * @param side Side of the block to render.
+	 * @return ID of the texture side requested.
+	 */
+	public int getTextureId(TextureSide side){
+		return getTextureId(side.getID());
 	}
 
 	public int getTickDelay() {

@@ -12,7 +12,7 @@ public final class BookshelfBlock extends Block {
 	}
 
 	@Override
-	protected final int getTextureId(int texture) {
+	public final int getTextureId(int texture) {
 		return texture <= 1 ? 4 : textureId;
 	}
 }

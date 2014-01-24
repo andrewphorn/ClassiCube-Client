@@ -18,7 +18,7 @@ public final class WoodBlock extends Block {
 	}
 
 	@Override
-	protected final int getTextureId(int texture) {
+	public final int getTextureId(int texture) {
 		return texture == 1 ? 21 : texture == 0 ? 21 : 20;
 	}
 }

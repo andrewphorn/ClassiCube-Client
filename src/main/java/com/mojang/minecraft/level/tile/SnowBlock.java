@@ -34,7 +34,7 @@ public final class SnowBlock extends Block {
 	}
 
 	@Override
-	protected final int getTextureId(int texture) {
+	public final int getTextureId(int texture) {
 		return textureId;
 	}
 
