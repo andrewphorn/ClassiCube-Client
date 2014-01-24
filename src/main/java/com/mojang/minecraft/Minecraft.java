@@ -69,6 +69,8 @@ import com.mojang.minecraft.level.LevelLoader;
 import com.mojang.minecraft.level.LevelSerializer;
 import com.mojang.minecraft.level.generator.LevelGenerator;
 import com.mojang.minecraft.level.liquid.LiquidType;
+import com.mojang.minecraft.level.tile.GrassBlock;
+import com.mojang.minecraft.level.tile.TNTBlock;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.HumanoidModel;
@@ -2732,7 +2734,17 @@ public final class Minecraft implements Runnable {
 											if (edgeBlock == -1) {
 												textureManager.customEdgeBlock = null;
 											} else if (edgeBlock < Block.blocks.length) {
-												int ID = Block.blocks[edgeBlock].textureId;
+												Block block = Block.blocks[edgeBlock];
+												int ID = 0;
+												if(block == Block.GRASS){
+													((GrassBlock)block).getTextureId(0);
+												}
+												else if(block == Block.TNT){
+													((TNTBlock)block).getTextureId(0);
+												}
+												else{
+													ID = Block.blocks[edgeBlock].textureId;
+												}
 												textureManager.customEdgeBlock = textureManager.textureAtlas
 														.get(ID);
 											}

@@ -18,7 +18,7 @@ public final class GrassBlock extends Block {
 	}
 
 	@Override
-	protected final int getTextureId(int texture) {
+	public final int getTextureId(int texture) {
 		return texture == 1 ? 0 : texture == 0 ? 2 : 3;
 	}
 
