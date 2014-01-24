@@ -2737,10 +2737,10 @@ public final class Minecraft implements Runnable {
 												Block block = Block.blocks[edgeBlock];
 												int ID = 0;
 												if(block == Block.GRASS){
-													((GrassBlock)block).getTextureId(0);
+													ID = ((GrassBlock)block).getTextureId(0);
 												}
 												else if(block == Block.TNT){
-													((TNTBlock)block).getTextureId(0);
+													ID = ((TNTBlock)block).getTextureId(0);
 												}
 												else{
 													ID = Block.blocks[edgeBlock].textureId;
