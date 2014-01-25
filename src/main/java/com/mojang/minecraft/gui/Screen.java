@@ -27,25 +27,28 @@ public class Screen {
 		GL11.glDisable(3042);
 	}
 
-	protected static void drawBox(int var0, int var1, int var2, int var3, int var4) {
+	protected static void drawBox(int x1, int y1, int x2, int y2, int color) {
 
-		float var5 = (var4 >>> 24) / 255.0F;
-		float var6 = (var4 >> 16 & 255) / 255.0F;
-		float var7 = (var4 >> 8 & 255) / 255.0F;
-		float var9 = (var4 & 255) / 255.0F;
-		ShapeRenderer var8 = ShapeRenderer.instance;
-		GL11.glEnable(3042);
-		GL11.glDisable(3553);
+		float alpha = (color >>> 24) / 255.0F;
+		float red = (color >> 16 & 255) / 255.0F;
+		float green = (color >> 8 & 255) / 255.0F;
+		float blue = (color & 255) / 255.0F;
+		ShapeRenderer renderer = ShapeRenderer.instance;
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		
 		GL11.glBlendFunc(770, 771);
-		GL11.glColor4f(var6, var7, var9, var5);
-		var8.begin();
-		var8.vertex(var0, var3, 0.0F);
-		var8.vertex(var2, var3, 0.0F);
-		var8.vertex(var2, var1, 0.0F);
-		var8.vertex(var0, var1, 0.0F);
-		var8.end();
-		GL11.glEnable(3553);
-		GL11.glDisable(3042);
+		GL11.glColor4f(red, green, blue, alpha);
+		
+		renderer.begin();
+		renderer.vertex(x1, y2, 0.0F);
+		renderer.vertex(x2, y2, 0.0F);
+		renderer.vertex(x2, y1, 0.0F);
+		renderer.vertex(x1, y1, 0.0F);
+		renderer.end();
+		
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
 	}
 
 	public static void drawCenteredString(FontRenderer var0, String var1, int var2, int var3,
