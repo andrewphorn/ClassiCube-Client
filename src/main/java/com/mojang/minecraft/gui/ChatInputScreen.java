@@ -92,7 +92,7 @@ public final class ChatInputScreen extends GuiScreen {
 
 	@Override
 	public final void render(int var1, int var2) {
-		drawBox(2, height - 14, width - 2, height - 2, Integer.MIN_VALUE);
+		drawBox(2, height - 14, width - 2, height - 2, ChatInputScreenExtension.ChatRGB);
 		drawString(fontRenderer, "> " + message + (counter / 6 % 2 == 0 ? "_" : ""), 4,
 				height - 12, 14737632);
 	}
