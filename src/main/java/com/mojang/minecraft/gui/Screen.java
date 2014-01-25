@@ -63,7 +63,7 @@ public class Screen {
 	 *            The color of the box. See {@Color}
 	 */
 	protected static void drawBox(int x1, int y1, int x2, int y2, int colorRGB) {
-		drawBox(x1, y1, x2, y2, colorRGB);
+		drawBox((float)x1, (float)y1, (float)x2, (float)y2, colorRGB);
 	}
 
 	/**
