@@ -220,7 +220,7 @@ public final class HUDScreen extends Screen {
 			
 			GL11.glPushMatrix();
 			GL11.glScalef(1.5F, 1.5F, 1.0F);
-			fontRenderer.render(Announcement, (width / 2) - (fontRenderer.getWidth(Announcement) + 50), 35, 16777215);
+			fontRenderer.render(Announcement, (width / 3) - (fontRenderer.getWidth(Announcement) / 2), 35, 16777215);
 			GL11.glPopMatrix();
 		}
 		GL11.glPushMatrix();
