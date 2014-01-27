@@ -26,30 +26,30 @@ public abstract class NBTBase
      */
     public abstract byte getId();
 
-    protected NBTBase(String par1Str)
+    protected NBTBase(String name)
     {
-        if (par1Str == null)
+        if (name == null)
         {
             this.name = "";
         }
         else
         {
-            this.name = par1Str;
+            this.name = name;
         }
     }
 
     /**
      * Sets the name for this tag and returns this for convenience.
      */
-    public NBTBase setName(String par1Str)
+    public NBTBase setName(String name)
     {
-        if (par1Str == null)
+        if (name == null)
         {
             this.name = "";
         }
         else
         {
-            this.name = par1Str;
+            this.name = name;
         }
 
         return this;
@@ -110,34 +110,34 @@ public abstract class NBTBase
     /**
      * Creates and returns a new tag of the specified type, or null if invalid.
      */
-    public static NBTBase newTag(byte par0, String par1Str)
+    public static NBTBase newTag(byte typeID, String name)
     {
-        switch (par0)
+        switch (tagTypeID)
         {
             case 0:
                 return new NBTTagEnd();
             case 1:
-                return new NBTTagByte(par1Str);
+                return new NBTTagByte(name);
             case 2:
-                return new NBTTagShort(par1Str);
+                return new NBTTagShort(name);
             case 3:
-                return new NBTTagInt(par1Str);
+                return new NBTTagInt(name);
             case 4:
-                return new NBTTagLong(par1Str);
+                return new NBTTagLong(name);
             case 5:
-                return new NBTTagFloat(par1Str);
+                return new NBTTagFloat(name);
             case 6:
-                return new NBTTagDouble(par1Str);
+                return new NBTTagDouble(name);
             case 7:
-                return new NBTTagByteArray(par1Str);
+                return new NBTTagByteArray(name);
             case 8:
-                return new NBTTagString(par1Str);
+                return new NBTTagString(name);
             case 9:
-                return new NBTTagList(par1Str);
+                return new NBTTagList(name);
             case 10:
-                return new NBTTagCompound(par1Str);
+                return new NBTTagCompound(name);
             case 11:
-                return new NBTTagIntArray(par1Str);
+                return new NBTTagIntArray(name);
             default:
                 return null;
         }
@@ -146,9 +146,9 @@ public abstract class NBTBase
     /**
      * Returns the string name of a tag with the specified type, or 'UNKNOWN' if invalid.
      */
-    public static String getTagName(byte par0)
+    public static String getname(byte typeID)
     {
-        switch (par0)
+        switch (tagTypeID)
         {
             case 0:
                 return "TAG_End";
@@ -185,21 +185,21 @@ public abstract class NBTBase
     public abstract NBTBase copy();
 
     @Override
-	public boolean equals(Object par1Obj)
+    public boolean equals(Object other)
     {
-        if (!(par1Obj instanceof NBTBase))
+        if (!(other instanceof NBTBase))
         {
             return false;
         }
         else
         {
-            NBTBase nbtbase = (NBTBase)par1Obj;
-            return this.getId() != nbtbase.getId() ? false : ((this.name != null || nbtbase.name == null) && (this.name == null || nbtbase.name != null) ? this.name == null || this.name.equals(nbtbase.name) : false);
+            NBTBase tempOther = (NBTBase)other;
+            return this.getId() != tempOther.getId() ? false : ((this.name != null || tempOther.name == null) && (this.name == null || tempOther.name != null) ? this.name == null || this.name.equals(tempOther.name) : false);
         }
     }
 
     @Override
-	public int hashCode()
+    public int hashCode()
     {
         return this.name.hashCode() ^ this.getId();
     }
