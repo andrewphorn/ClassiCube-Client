@@ -18,12 +18,6 @@ import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 
 public final class HUDScreen extends Screen {
-
-	public static void drawCenteredString(FontRenderer var0, String var1, int var2, int var3,
-			int var4) {
-		var0.render(var1, var2 - var0.getWidth(var1) / 2, var3, var4);
-	}
-
 	public List<ChatLine> chat = new ArrayList<ChatLine>();
 	private Random random = new Random();
 	private Minecraft mc;
@@ -62,7 +56,8 @@ public final class HUDScreen extends Screen {
 
 	}
 
-	public int FindGroupChanges(int Page, List<PlayerListNameData> playerListNames) {
+	public int FindGroupChanges(int Page,
+			List<PlayerListNameData> playerListNames) {
 		int groupChanges = 0;
 		String lastGroupName = "";
 		int rangeA = 28 * Page;
@@ -93,7 +88,8 @@ public final class HUDScreen extends Screen {
 		Inventory var8 = mc.player.inventory;
 		imgZ = -90.0F;
 		drawImage(width / 2 - 91, height - 22, 0, 0, 182, 22);
-		drawImage(width / 2 - 91 - 1 + var8.selected * 20, height - 22 - 1, 0, 22, 24, 22);
+		drawImage(width / 2 - 91 - 1 + var8.selected * 20, height - 22 - 1, 0,
+				22, 24, 22);
 		GL11.glBindTexture(3553, mc.textureManager.load("/gui/icons.png"));
 		drawImage(width / 2 - 7, height / 2 - 7, 0, 0, 16, 16);
 		boolean var9 = (mc.player.invulnerableTime / 3 & 1) == 1;
@@ -142,14 +138,18 @@ public final class HUDScreen extends Screen {
 			}
 
 			if (mc.player.isUnderWater()) {
-				var12 = (int) Math.ceil((mc.player.airSupply - 2) * 10.0D / 300.0D);
-				var26 = (int) Math.ceil(mc.player.airSupply * 10.0D / 300.0D) - var12;
+				var12 = (int) Math
+						.ceil((mc.player.airSupply - 2) * 10.0D / 300.0D);
+				var26 = (int) Math.ceil(mc.player.airSupply * 10.0D / 300.0D)
+						- var12;
 
 				for (i = 0; i < var12 + var26; ++i) {
 					if (i < var12) {
-						drawImage(width / 2 - 91 + (i << 3), height - 32 - 9, 16, 18, 9, 9);
+						drawImage(width / 2 - 91 + (i << 3), height - 32 - 9,
+								16, 18, 9, 9);
 					} else {
-						drawImage(width / 2 - 91 + (i << 3), height - 32 - 9, 25, 18, 9, 9);
+						drawImage(width / 2 - 91 + (i << 3), height - 32 - 9,
+								25, 18, 9, 9);
 					}
 				}
 			}
@@ -166,8 +166,9 @@ public final class HUDScreen extends Screen {
 				GL11.glTranslatef(var26, i, -50.0F);
 				if (var8.popTime[var12] > 0) {
 					float var18;
-					float var21 = -MathHelper.sin((var18 = (var8.popTime[var12] - var1) / 5.0F)
-							* var18 * 3.1415927F) * 8.0F;
+					float var21 = -MathHelper
+							.sin((var18 = (var8.popTime[var12] - var1) / 5.0F)
+									* var18 * 3.1415927F) * 8.0F;
 					float var19 = MathHelper.sin(var18 * var18 * 3.1415927F) + 1.0F;
 					float var16 = MathHelper.sin(var18 * 3.1415927F) + 1.0F;
 					GL11.glTranslatef(10.0F, var21 + 10.0F, 0.0F);
@@ -189,7 +190,8 @@ public final class HUDScreen extends Screen {
 				GL11.glPopMatrix();
 				if (var8.count[var12] > 1) {
 					var23 = "" + var8.count[var12];
-					fontRenderer.render(var23, var26 + 19 - fontRenderer.getWidth(var23), i + 6,
+					fontRenderer.render(var23,
+							var26 + 19 - fontRenderer.getWidth(var23), i + 6,
 							16777215);
 				}
 			}
@@ -201,26 +203,37 @@ public final class HUDScreen extends Screen {
 			GL11.glScalef(0.7F, 0.7F, 1.0F);
 			fontRenderer.render("ClassiCube", 2, 2, 16777215); // lol fuck that.
 			fontRenderer.render(mc.debug, 2, 12, 16777215);
-			fontRenderer.render("Position: (" + (int) mc.player.x + ", " + (int) mc.player.y + ", "
-					+ (int) mc.player.z + ")", 2, 22, 16777215);
+			fontRenderer.render("Position: (" + (int) mc.player.x + ", "
+					+ (int) mc.player.y + ", " + (int) mc.player.z + ")", 2,
+					22, 16777215);
 			GL11.glPopMatrix();
 
-			fontRenderer
-					.render(Compass, width - (fontRenderer.getWidth(Compass) + 2), 12, 16777215);
+			fontRenderer.render(Compass,
+					width - (fontRenderer.getWidth(Compass) + 2), 12, 16777215);
 
-			fontRenderer.render(ServerName, width - (fontRenderer.getWidth(ServerName) + 2), 2,
+			fontRenderer.render(ServerName,
+					width - (fontRenderer.getWidth(ServerName) + 2), 2,
 					16777215);
 
-			fontRenderer.render(UserDetail, width - (fontRenderer.getWidth(UserDetail) + 2), 24,
+			fontRenderer.render(UserDetail,
+					width - (fontRenderer.getWidth(UserDetail) + 2), 24,
 					16777215);
-			
-			fontRenderer.render(BottomRight1, width - (fontRenderer.getWidth(BottomRight1) + 2), height - 35, 16777215);
-			fontRenderer.render(BottomRight2, width - (fontRenderer.getWidth(BottomRight2) + 2), height - 45, 16777215);
-			fontRenderer.render(BottomRight3, width - (fontRenderer.getWidth(BottomRight3) + 2), height - 55, 16777215);
-			
+
+			fontRenderer.render(BottomRight1,
+					width - (fontRenderer.getWidth(BottomRight1) + 2),
+					height - 35, 16777215);
+			fontRenderer.render(BottomRight2,
+					width - (fontRenderer.getWidth(BottomRight2) + 2),
+					height - 45, 16777215);
+			fontRenderer.render(BottomRight3,
+					width - (fontRenderer.getWidth(BottomRight3) + 2),
+					height - 55, 16777215);
+
 			GL11.glPushMatrix();
 			GL11.glScalef(1.5F, 1.5F, 1.0F);
-			fontRenderer.render(Announcement, (width / 3) - (fontRenderer.getWidth(Announcement) / 2), 35, 16777215);
+			fontRenderer.render(Announcement,
+					(width / 3) - (fontRenderer.getWidth(Announcement) / 2),
+					35, 16777215);
 			GL11.glPopMatrix();
 		}
 		GL11.glPushMatrix();
@@ -235,9 +248,10 @@ public final class HUDScreen extends Screen {
 		GL11.glPopMatrix();
 		if (mc.gamemode instanceof SurvivalGameMode) {
 			String var24 = "Score: &e" + mc.player.getScore();
-			fontRenderer.render(var24, width - fontRenderer.getWidth(var24) - 2, 2, 16777215);
-			fontRenderer
-					.render("Arrows: " + mc.player.arrows, width / 2 + 8, height - 33, 16777215);
+			fontRenderer.render(var24,
+					width - fontRenderer.getWidth(var24) - 2, 2, 16777215);
+			fontRenderer.render("Arrows: " + mc.player.arrows, width / 2 + 8,
+					height - 33, 16777215);
 		}
 
 		byte chatLinesInScreen = 10; // chats per screen
@@ -249,13 +263,34 @@ public final class HUDScreen extends Screen {
 		chatLinesInScreen = (byte) (chatLinesInScreen
 				+ (chatLinesInScreen - chatLinesInScreen * mc.settings.scale) - 1);
 
+		if(isLargeChatScreen){
+			int chatX = 1;
+			int chatY = height - chatsOnScreen.size() * 9 - 27;
+			// The longest line's length
+			
+			String longestMessage = "";
+			for(ChatScreenData line : chatsOnScreen){
+				String lineNoColor = FontRenderer.stripColor(line.string);
+				if(lineNoColor.length() > longestMessage.length())
+					longestMessage = lineNoColor;
+			}
+			int messageWidth = fontRenderer.getWidth(longestMessage);
+			int chatWidth = (longestMessage.length() >= 64) ? messageWidth + 2 : 
+				width - messageWidth - 5;
+			// Get the chat lines, multiply by their height to get the chat height.
+			// Add the first Y-position(y1) of the chat to get the end point. (y2)
+			int chatHeight = chatY + chatsOnScreen.size() * 9 + 2;
+			drawBox(chatX, chatY, chatWidth, chatHeight, ChatInputScreenExtension.ChatRGB);
+		}
 		chatsOnScreen.clear();
 		for (i = 0; i < chat.size() && i < chatLinesInScreen; ++i) {
 			if (chat.get(i).time < 200 || isLargeChatScreen) {
-				fontRenderer.render(chat.get(i).message, 2, height - 8 - i * 9 - 27, 16777215);
+				String message = chat.get(i).message;
+				fontRenderer.render(message, 2, height - 8 - i * 9
+						- 27, 16777215);
 				// add click data for urls
-				chatsOnScreen.add(new ChatScreenData(1, 8, 2, height - 8 - i * 9 - 27,
-						chat.get(i).message, fontRenderer));
+				chatsOnScreen.add(new ChatScreenData(1, 8, 2, height - 8 - i
+						* 9 - 27, message, fontRenderer));
 			}
 		}
 
@@ -292,21 +327,24 @@ public final class HUDScreen extends Screen {
 				int maxStringsPerColumn = 14;
 				int maxStringsPerScreen = 28;
 
-				var23 = !drawDefault ? "Players online: (Page " + (Page + 1) + ")"
-						: "Players online:";
-				fontRenderer.render(var23, i - fontRenderer.getWidth(var23) / 2, var15 - 64 - 12,
+				var23 = !drawDefault ? "Players online: (Page " + (Page + 1)
+						+ ")" : "Players online:";
+				fontRenderer.render(var23,
+						i - fontRenderer.getWidth(var23) / 2, var15 - 64 - 12,
 						25855);
 				if (drawDefault) {
 					for (var11 = 0; var11 < playersOnWorld.size(); ++var11) {
 						int var28 = i + var11 % 2 * 120 - 120;
 						int var17 = var15 - 64 + (var11 / 2 << 3);
-						if (var2 && var3 >= var28 && var4 >= var17 && var3 < var28 + 120
-								&& var4 < var17 + 8) {
+						if (var2 && var3 >= var28 && var4 >= var17
+								&& var3 < var28 + 120 && var4 < var17 + 8) {
 							hoveredPlayer = playersOnWorld.get(var11);
-							fontRenderer.renderNoShadow(playersOnWorld.get(var11), var28 + 2,
+							fontRenderer.renderNoShadow(
+									playersOnWorld.get(var11), var28 + 2,
 									var17, 16777215);
 						} else {
-							fontRenderer.renderNoShadow(playersOnWorld.get(var11), var28, var17,
+							fontRenderer.renderNoShadow(
+									playersOnWorld.get(var11), var28, var17,
 									15658734);
 						}
 					}
@@ -350,14 +388,18 @@ public final class HUDScreen extends Screen {
 							groupsOnThisPage++;
 							y += 9;
 						}
-						String playerName = FontRenderer.stripColor(pi.playerName);
+						String playerName = FontRenderer
+								.stripColor(pi.playerName);
 						String listName = pi.listName;
-						if (var2 && var3 >= x && var4 >= y && var3 < x + 120 && var4 < y + 8) {
+						if (var2 && var3 >= x && var4 >= y && var3 < x + 120
+								&& var4 < y + 8) {
 							// if your mouse is hovered over this name
 							hoveredPlayer = playerName;
-							fontRenderer.renderNoShadow(listName, x + 8, y, 16777215);
+							fontRenderer.renderNoShadow(listName, x + 8, y,
+									16777215);
 						} else { // else render a normal name
-							fontRenderer.renderNoShadow(listName, x + 6, y, 15658734);
+							fontRenderer.renderNoShadow(listName, x + 6, y,
+									15658734);
 						}
 					}
 				}

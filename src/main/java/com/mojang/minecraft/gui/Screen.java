@@ -4,56 +4,107 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.render.ShapeRenderer;
 
+/**
+ * Base class for any kind of screen.
+ */
 public class Screen {
 
-	protected static void drawBox(float var0, float var1, float var2, float var3, int var4) {
+	/**
+	 * Draws a box to the screen
+	 * 
+	 * @param x1
+	 *            X coordinate of the first point of the box.
+	 * @param y1
+	 *            Y coordinate of the first point of the box.
+	 * @param x2
+	 *            X coordinate of the second point of the box.
+	 * @param y2
+	 *            Y coordinate of the second point of the box.
+	 * @param colorRGB
+	 *            The color of the box. See {@Color}
+	 */
+	protected static void drawBox(float x1, float y1, float x2, float y2,
+			int colorRGB) {
 
-		float var5 = (var4 >>> 24) / 255.0F;
-		float var6 = (var4 >> 16 & 255) / 255.0F;
-		float var7 = (var4 >> 8 & 255) / 255.0F;
-		float var9 = (var4 & 255) / 255.0F;
-		ShapeRenderer var8 = ShapeRenderer.instance;
-		GL11.glEnable(3042);
-		GL11.glDisable(3553);
-		GL11.glBlendFunc(770, 771);
-		GL11.glColor4f(var6, var7, var9, var5);
-		var8.begin();
-		var8.vertex(var0, var3, 0.0F);
-		var8.vertex(var2, var3, 0.0F);
-		var8.vertex(var2, var1, 0.0F);
-		var8.vertex(var0, var1, 0.0F);
-		var8.end();
-		GL11.glEnable(3553);
-		GL11.glDisable(3042);
+		float alpha = (colorRGB >>> 24) / 255.0F;
+		float red = (colorRGB >> 16 & 255) / 255.0F;
+		float green = (colorRGB >> 8 & 255) / 255.0F;
+		float blue = (colorRGB & 255) / 255.0F;
+		ShapeRenderer renderer = ShapeRenderer.instance;
+
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glColor4f(red, green, blue, alpha);
+
+		renderer.begin();
+		renderer.vertex(x1, y2, 0.0F);
+		renderer.vertex(x2, y2, 0.0F);
+		renderer.vertex(x2, y1, 0.0F);
+		renderer.vertex(x1, y1, 0.0F);
+		renderer.end();
+
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
 	}
 
-	protected static void drawBox(int var0, int var1, int var2, int var3, int var4) {
-
-		float var5 = (var4 >>> 24) / 255.0F;
-		float var6 = (var4 >> 16 & 255) / 255.0F;
-		float var7 = (var4 >> 8 & 255) / 255.0F;
-		float var9 = (var4 & 255) / 255.0F;
-		ShapeRenderer var8 = ShapeRenderer.instance;
-		GL11.glEnable(3042);
-		GL11.glDisable(3553);
-		GL11.glBlendFunc(770, 771);
-		GL11.glColor4f(var6, var7, var9, var5);
-		var8.begin();
-		var8.vertex(var0, var3, 0.0F);
-		var8.vertex(var2, var3, 0.0F);
-		var8.vertex(var2, var1, 0.0F);
-		var8.vertex(var0, var1, 0.0F);
-		var8.end();
-		GL11.glEnable(3553);
-		GL11.glDisable(3042);
+	/**
+	 * Draws a box to the screen
+	 * 
+	 * @param x1
+	 *            X coordinate of the first point of the box.
+	 * @param y1
+	 *            Y coordinate of the first point of the box.
+	 * @param x2
+	 *            X coordinate of the second point of the box.
+	 * @param y2
+	 *            Y coordinate of the second point of the box.
+	 * @param colorRGB
+	 *            The color of the box. See {@Color}
+	 */
+	protected static void drawBox(int x1, int y1, int x2, int y2, int colorRGB) {
+		drawBox((float)x1, (float)y1, (float)x2, (float)y2, colorRGB);
 	}
 
-	public static void drawCenteredString(FontRenderer var0, String var1, int var2, int var3,
-			int var4) {
-		var0.render(var1, var2 - var0.getWidth(var1) / 2, var3, var4);
+	/**
+	 * Draws a string that is centered.
+	 * 
+	 * @param renderer
+	 *            {@FontRenderer} used to render the used font.
+	 * @param text
+	 *            Text to draw and center
+	 * @param x
+	 *            X-Coordinate of position to draw.
+	 * @param y
+	 *            Y-Coordinate of position to draw.
+	 * @param colorRGB
+	 *            The color of the box. See {@Color}
+	 */
+	public static void drawCenteredString(FontRenderer renderer, String text,
+			int x, int y, int colorRGB) {
+		// Measure the length of the text with the current font and then divide it by two
+		drawString(renderer, text, x - renderer.getWidth(text) / 2, y, colorRGB);
 	}
-
-	protected static void drawFadingBox(int var0, int var1, int var2, int var3, int var4, int var5) {
+	/**
+	 * Draws a given string
+	 * 
+	 * @param renderer
+	 *            {@FontRenderer} used to render the used font.
+	 * @param text
+	 *            Text to draw 
+	 * @param x
+	 *            X-Coordinate of position to draw.
+	 * @param y
+	 *            Y-Coordinate of position to draw.
+	 * @param colorRGB
+	 *            The color of the box. See {@Color}
+	 */
+	public static void drawString(FontRenderer renderer, String text,
+			int x, int y, int colorRGB) {
+		renderer.render(text, x, y, colorRGB);
+	}
+	protected static void drawFadingBox(int var0, int var1, int var2, int var3,
+			int var4, int var5) {
 		GL11.glAlphaFunc(516, 0.0F);
 		float var6 = (var4 >>> 24) / 255.0F;
 		float var7 = (var4 >> 16 & 255) / 255.0F;
@@ -79,20 +130,20 @@ public class Screen {
 		GL11.glAlphaFunc(516, 0.5F);
 	}
 
-	public static void drawString(FontRenderer var0, String var1, int var2, int var3, int var4) {
-		var0.render(var1, var2, var3, var4);
-	}
-
 	protected float imgZ = 0.0F;
 
-	public final void drawImage(int var1, int var2, int var3, int var4, int var5, int var6) {
+	public final void drawImage(int var1, int var2, int var3, int var4,
+			int var5, int var6) {
 		float var7 = 0.00390625F;
 		float var8 = 0.00390625F;
 		ShapeRenderer var9 = ShapeRenderer.instance;
 		ShapeRenderer.instance.begin();
-		var9.vertexUV(var1, var2 + var6, imgZ, var3 * var7, (var4 + var6) * var8);
-		var9.vertexUV(var1 + var5, var2 + var6, imgZ, (var3 + var5) * var7, (var4 + var6) * var8);
-		var9.vertexUV(var1 + var5, var2, imgZ, (var3 + var5) * var7, var4 * var8);
+		var9.vertexUV(var1, var2 + var6, imgZ, var3 * var7, (var4 + var6)
+				* var8);
+		var9.vertexUV(var1 + var5, var2 + var6, imgZ, (var3 + var5) * var7,
+				(var4 + var6) * var8);
+		var9.vertexUV(var1 + var5, var2, imgZ, (var3 + var5) * var7, var4
+				* var8);
 		var9.vertexUV(var1, var2, imgZ, var3 * var7, var4 * var8);
 		var9.end();
 	}

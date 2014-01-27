@@ -235,10 +235,14 @@ public class ChatInputScreenExtension extends GuiScreen {
 			}
 		}
 	}
-
+	/**
+	 * The background color of the chat.
+	 */
+	public static int ChatRGB = new java.awt.Color(0, 0, 0, 155).getRGB();
 	@Override
 	public void render(int paramInt1, int paramInt2) {
-		super.drawBox(2, height - 14, width - 2, height - 2, -2147483648);
+		//super.drawBox(2, height - 14, width - 2, height - 2, -2147483648);
+		super.drawBox(2, height - 14, width - 2, height - 2, ChatRGB);
 		char[] temp = new char[128];
 		for (int a = 0; a < inputLine.length(); a++) {
 			temp[a] = inputLine.toCharArray()[a];
