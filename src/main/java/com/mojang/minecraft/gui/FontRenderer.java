@@ -170,22 +170,22 @@ public final class FontRenderer {
 		this.render(text, x, y, color, false);
 	}
 	
-	public static String stripColors(String message) {
-        if (message == null) {
-            return null;
-        }
-        int start = message.indexOf('&');
-        if (start == -1) {
-            return message;
-        }
-        int lastInsert = 0;
-        StringBuilder output = new StringBuilder(message.length());
-        while (start != -1) {
-            output.append(message, lastInsert, start);
-            lastInsert = Math.min(start + 2, message.length());
-            start = message.indexOf('&', lastInsert);
-        }
-        output.append(message, lastInsert, message.length());
-        return output.toString();
-    }
+	public static String stripColor(String message) {
+		if (message == null) {
+			return null;
+		}
+		int start = message.indexOf('&');
+		if (start == -1) {
+			return message;
+		}
+		int lastInsert = 0;
+		StringBuilder output = new StringBuilder(message.length());
+		while (start != -1) {
+			output.append(message, lastInsert, start);
+			lastInsert = Math.min(start + 2, message.length());
+			start = message.indexOf('&', lastInsert);
+		}
+		output.append(message, lastInsert, message.length());
+		return output.toString();
+	}
 }
