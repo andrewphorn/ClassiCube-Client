@@ -375,9 +375,9 @@ public class NBTTagCompound extends NBTBase
         String s = this.getName() + ":[";
         String s1;
 
-        for (Iterator<String> iterator = this.tagMap.keySet().iterator(); iterator.hasNext(); s = s + s1 + ":" + this.tagMap.get(s1) + ",")
+        for (Iterator<String> iter = this.tagMap.keySet().iterator(); iter.hasNext(); s = s + s1 + ":" + this.tagMap.get(s1) + ",")
         {
-            s1 = iterator.next();
+            s1 = iter.next();
         }
 
         return s + "]";

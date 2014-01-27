@@ -81,7 +81,7 @@ public class NBTTagList extends NBTBase
     @Override
     public String toString()
     {
-        return "" + this.tagList.size() + " entries of type " + NBTBase.getname(this.tagType);
+        return "" + this.tagList.size() + " entries of type " + NBTBase.getTagName(this.tagType);
     }
 
     /**
