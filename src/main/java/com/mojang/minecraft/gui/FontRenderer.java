@@ -12,8 +12,19 @@ import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 
 public final class FontRenderer {
-	public static String stripColor(String str) {
-		return str.replace("&", "");
+	public static String stripColor(String var0) {
+		char[] var3 = var0.toCharArray();
+		String var1 = "";
+
+		for (int var2 = 0; var2 < var3.length; ++var2) {
+			if (var3[var2] == 38) {
+				++var2;
+			} else {
+				var1 = var1 + var3[var2];
+			}
+		}
+
+		return var1;
 	}
 
 	public int charHeight;
