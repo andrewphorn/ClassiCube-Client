@@ -124,7 +124,7 @@ public class NBTTagList extends NBTBase
     public NBTBase copy()
     {
         NBTTagList finalTagList = new NBTTagList(this.getName());
-        nbttaglist.tagType = this.tagType;
+        finalTagList.tagType = this.tagType;
         Iterator<NBTBase> iter = this.tagList.iterator();
 
         while (iter.hasNext())

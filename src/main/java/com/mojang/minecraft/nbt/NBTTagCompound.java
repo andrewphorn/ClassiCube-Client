@@ -257,7 +257,7 @@ public class NBTTagCompound extends NBTBase
         }
         catch (ClassCastException e)
         {
-            throw classcastexception;
+            throw e;
         }
     }
 

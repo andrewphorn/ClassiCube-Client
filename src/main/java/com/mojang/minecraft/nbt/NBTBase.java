@@ -112,7 +112,7 @@ public abstract class NBTBase
      */
     public static NBTBase newTag(byte typeID, String name)
     {
-        switch (tagTypeID)
+        switch (typeID)
         {
             case 0:
                 return new NBTTagEnd();
@@ -146,9 +146,9 @@ public abstract class NBTBase
     /**
      * Returns the string name of a tag with the specified type, or 'UNKNOWN' if invalid.
      */
-    public static String getname(byte typeID)
+    public static String getTagName(byte typeID)
     {
-        switch (tagTypeID)
+        switch (typeID)
         {
             case 0:
                 return "TAG_End";
