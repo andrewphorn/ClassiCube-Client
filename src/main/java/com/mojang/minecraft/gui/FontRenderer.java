@@ -115,18 +115,18 @@ public final class FontRenderer {
 						code = 15;
 					}
 
-					int var9 = (code & 8) << 3;
-					int var10 = (code & 1) * 191 + var9;
-					int var11 = ((code & 2) >> 1) * 191 + var9;
-					int blue = ((code & 4) >> 2) * 191 + var9;
+					int intensity = (code & 8) << 3;
+					int blue = (code & 1) * 191 + intensity;
+					int green = ((code & 2) >> 1) * 191 + intensity;
+					int red = ((code & 4) >> 2) * 191 + intensity;
 					if (settings.anaglyph) {
-						var9 = (code * 30 + var11 * 59 + var10 * 11) / 100;
-						var11 = (code * 30 + var11 * 70) / 100;
-						var10 = (code * 30 + var10 * 70) / 100;
-						blue = var9;
+						intensity = (code * 30 + green * 59 + blue * 11) / 100;
+						green = (code * 30 + green * 70) / 100;
+						blue = (code * 30 + blue * 70) / 100;
+						red = intensity;
 					}
 
-					int c = blue << 16 | var11 << 8 | var10;
+					int c = red << 16 | green << 8 | blue;
 					if (shadow) {
 						c = (c & 16579836) >> 2;
 					}
