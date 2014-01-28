@@ -32,6 +32,8 @@ public final class FontRenderer {
 		}
 		int width = font.getWidth();
 		int height = font.getHeight();
+		charWidth = width;
+		charHeight = height;
 		int[] fontData = new int[256 * 256];
 		font.getRGB(0, 0, width, height, fontData, 0, width);
 
@@ -81,6 +83,9 @@ public final class FontRenderer {
 		return (int) Math.floor(i * settings.scale);
 	}
 
+	public int getHeight(){
+		return (int) Math.floor(charHeight * settings.scale);
+	}
 	private void render(String text, float x, float y, int color, boolean shadow) {
 		if (text != null) {
 			char[] chars = text.toCharArray();

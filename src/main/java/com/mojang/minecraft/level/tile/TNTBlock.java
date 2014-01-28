@@ -27,7 +27,7 @@ public final class TNTBlock extends Block {
 	}
 
 	@Override
-	protected final int getTextureId(int texture) {
+	public final int getTextureId(int texture) {
 		return texture == 0 ? textureId + 2 : texture == 1 ? textureId + 1 : textureId;
 	}
 

@@ -41,9 +41,9 @@ public final class ChatInputScreen extends GuiScreen {
 				message = "";
 			}
 		}
-		if (var2 == 1) {
+		if (var2 == Keyboard.KEY_ESCAPE) {
 			minecraft.setCurrentScreen((GuiScreen) null);
-		} else if (var2 == 28) {
+		} else if (var2 == Keyboard.KEY_RETURN) {
 			NetworkManager var10000 = minecraft.networkManager;
 			String var4 = message.trim();
 			NetworkManager var3 = var10000;
@@ -56,7 +56,7 @@ public final class ChatInputScreen extends GuiScreen {
 
 			minecraft.setCurrentScreen((GuiScreen) null);
 		} else {
-			if (var2 == 14 && message.length() > 0) {
+			if (var2 == Keyboard.KEY_BACK && message.length() > 0) {
 				message = message.substring(0, message.length() - 1);
 			}
 
@@ -92,7 +92,19 @@ public final class ChatInputScreen extends GuiScreen {
 
 	@Override
 	public final void render(int var1, int var2) {
-		drawBox(2, height - 14, width - 2, height - 2, Integer.MIN_VALUE);
+	    	int x1 = 2;
+		/* Add the beginning position of the box
+		 * + the length of '> _'
+		 * + the length of the trimmed message
+		 * + the x position of the '>  _' string.
+		 */
+		int x2 = x1 + fontRenderer.getWidth("> _" + message) + 4;
+
+		int y1 = height - 14;
+		int y2 = y1 + 12;
+		super.drawBox(x1, y1, x2, y2, ChatInputScreenExtension.ChatRGB);
+		//drawBox(2, height - 14, width - 2, height - 2, ChatInputScreenExtension.ChatRGB);
+		
 		drawString(fontRenderer, "> " + message + (counter / 6 % 2 == 0 ? "_" : ""), 4,
 				height - 12, 14737632);
 	}
