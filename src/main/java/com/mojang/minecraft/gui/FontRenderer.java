@@ -12,21 +12,6 @@ import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 
 public final class FontRenderer {
-	public static String stripColor(String var0) {
-		char[] var3 = var0.toCharArray();
-		String var1 = "";
-
-		for (int var2 = 0; var2 < var3.length; ++var2) {
-			if (var3[var2] == 38) {
-				++var2;
-			} else {
-				var1 = var1 + var3[var2];
-			}
-		}
-
-		return var1;
-	}
-
 	public int charHeight;
 	public int charWidth;
 
@@ -183,5 +168,24 @@ public final class FontRenderer {
 
 	public final void renderNoShadow(String text, int x, int y, int color) {
 		this.render(text, x, y, color, false);
+	}
+	
+	public static String stripColor(String message) {
+		if (message == null) {
+			return null;
+		}
+		int start = message.indexOf('&');
+		if (start == -1) {
+			return message;
+		}
+		int lastInsert = 0;
+		StringBuilder output = new StringBuilder(message.length());
+		while (start != -1) {
+			output.append(message, lastInsert, start);
+			lastInsert = Math.min(start + 2, message.length());
+			start = message.indexOf('&', lastInsert);
+		}
+		output.append(message, lastInsert, message.length());
+		return output.toString();
 	}
 }
