@@ -35,7 +35,7 @@ public class SkinDownloadThread extends Thread {
 				connection.connect();
 
 				if (connection.getResponseCode() != 404) {
-					Player.newTexture = ImageIO.read(connection.getInputStream());
+					Player.newTexture = ImageIO.read(connection.getInputStream()).getSubimage(0, 0, 64, 32);
 
 					return;
 				}
