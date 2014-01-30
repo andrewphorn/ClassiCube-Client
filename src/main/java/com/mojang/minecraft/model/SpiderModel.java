@@ -18,36 +18,37 @@ public final class SpiderModel extends Model {
 
 	public SpiderModel() {
 		head.setBounds(-4.0F, -4.0F, -8.0F, 8, 8, 8, 0.0F);
-		head.setPosition(0.0F, 0.0F, -3.0F);
+		head.setPosition(0.0F, 16.0F, -3.0F);
 		neck = new ModelPart(0, 0);
 		neck.setBounds(-3.0F, -3.0F, -3.0F, 6, 6, 6, 0.0F);
+		neck.setPosition(0.0F, 16.0F, 0.0F);
 		body = new ModelPart(0, 12);
 		body.setBounds(-5.0F, -4.0F, -6.0F, 10, 8, 12, 0.0F);
-		body.setPosition(0.0F, 0.0F, 9.0F);
+		body.setPosition(0.0F, 16.0F, 9.0F);
 		leg1 = new ModelPart(18, 0);
 		leg1.setBounds(-15.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-		leg1.setPosition(-4.0F, 0.0F, 2.0F);
+		leg1.setPosition(-4.0F, 16.0F, 2.0F);
 		leg2 = new ModelPart(18, 0);
 		leg2.setBounds(-1.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-		leg2.setPosition(4.0F, 0.0F, 2.0F);
+		leg2.setPosition(4.0F, 16.0F, 2.0F);
 		leg3 = new ModelPart(18, 0);
 		leg3.setBounds(-15.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-		leg3.setPosition(-4.0F, 0.0F, 1.0F);
+		leg3.setPosition(-4.0F, 16.0F, 1.0F);
 		leg4 = new ModelPart(18, 0);
 		leg4.setBounds(-1.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-		leg4.setPosition(4.0F, 0.0F, 1.0F);
+		leg4.setPosition(4.0F, 16.0F, 1.0F);
 		leg5 = new ModelPart(18, 0);
 		leg5.setBounds(-15.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-		leg5.setPosition(-4.0F, 0.0F, 0.0F);
+		leg5.setPosition(-4.0F, 16.0F, 0.0F);
 		leg6 = new ModelPart(18, 0);
 		leg6.setBounds(-1.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-		leg6.setPosition(4.0F, 0.0F, 0.0F);
+		leg6.setPosition(4.0F, 16.0F, 0.0F);
 		leg7 = new ModelPart(18, 0);
 		leg7.setBounds(-15.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-		leg7.setPosition(-4.0F, 0.0F, -1.0F);
+		leg7.setPosition(-4.0F, 16.0F, -1.0F);
 		leg8 = new ModelPart(18, 0);
 		leg8.setBounds(-1.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-		leg8.setPosition(4.0F, 0.0F, -1.0F);
+		leg8.setPosition(4.0F, 16.0F, -1.0F);
 	}
 
 	@Override
