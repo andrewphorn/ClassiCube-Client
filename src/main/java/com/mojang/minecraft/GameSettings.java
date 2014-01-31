@@ -54,6 +54,9 @@ public final class GameSettings implements Serializable {
 	public KeyBinding saveLocationKey = new KeyBinding("Save location", 28);
 	public KeyBinding loadLocationKey = new KeyBinding("Load location", 19);
 	public KeyBinding runKey = new KeyBinding("Run", 42);
+        public KeyBinding flyUp = new KeyBinding("Fly Up", 16 );
+        public KeyBinding flyDown = new KeyBinding("Fly Down", 18);
+        public KeyBinding flyKey = new KeyBinding("Fly", 44);
 	public KeyBinding[] bindings;
 	public transient Minecraft minecraft;
 	private File settingsFile;
@@ -74,14 +77,10 @@ public final class GameSettings implements Serializable {
 	public float scale = 1.0f;
 
 	public String[] anisotropicOptions = new String[] { "OFF", "ON" };
-	public KeyBinding flyKey = new KeyBinding("Fly", Keyboard.KEY_Z);
-
-	public KeyBinding flyUp = new KeyBinding("Fly Up", Keyboard.KEY_Q);
-	public KeyBinding flyDown = new KeyBinding("Fly Down", Keyboard.KEY_E);
 
 	public GameSettings(Minecraft minecraft, File minecraftFolder) {
 		bindings = new KeyBinding[] { forwardKey, leftKey, backKey, rightKey, jumpKey,
-				inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey, runKey };
+				inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey, runKey, flyUp, flyDown, flyKey  };
 
 		settingCount = 15;
 
