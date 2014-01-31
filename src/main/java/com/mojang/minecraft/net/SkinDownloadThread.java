@@ -37,7 +37,7 @@ public class SkinDownloadThread extends Thread {
 				return;
 			}
 
-			player.newTexture = ImageIO.read(connection.getInputStream());
+			player.newTexture = ImageIO.read(connection.getInputStream()).getSubimage(0, 0, 64, 32);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
