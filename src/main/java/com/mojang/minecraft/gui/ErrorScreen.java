@@ -32,6 +32,9 @@ public final class ErrorScreen extends GuiScreen {
 		// this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4
 		// + 96, this.minecraft
 		// .isOnline() ? "Try to reconnect..." : "Restart ClassiCube"));
+		if (minecraft.isFullScreen) {
+			minecraft.toggleFullscreen();
+		}
 	}
 
 	@Override
