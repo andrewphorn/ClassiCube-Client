@@ -127,7 +127,7 @@ public final class Minecraft implements Runnable {
 	/**
 	 * True if we are in full screen mode, false if otherwise.
 	 */
-	private boolean isFullScreen = false;
+	public boolean isFullScreen = false;
 	/**
 	 * This timer determines how much time will pass between block
 	 * modifications. It is used to prevent really fast block spamming.
