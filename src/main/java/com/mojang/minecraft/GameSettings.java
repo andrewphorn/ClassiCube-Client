@@ -40,6 +40,7 @@ public final class GameSettings implements Serializable {
 	public boolean showDebug = false;
 	public int viewDistance = 0;
 	public boolean viewBobbing = true;
+	public boolean showClouds = true;
 	public boolean anaglyph = false;
 	public boolean limitFramerate = true;
 	public boolean thirdPersonMode = false;
@@ -83,7 +84,7 @@ public final class GameSettings implements Serializable {
 		bindings = new KeyBinding[] { forwardKey, leftKey, backKey, rightKey, jumpKey,
 				inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey, runKey };
 
-		settingCount = 15;
+		settingCount = 16;
 
 		this.minecraft = minecraft;
 
@@ -111,7 +112,8 @@ public final class GameSettings implements Serializable {
 				+ (HackType == 0 ? "Normal" : "Adv") : id == 12 ? "Font Scale: "
 				+ new DecimalFormat("#.#").format(scale) : id == 13 ? "Enable Hacks: "
 				+ (HacksEnabled ? "Yes" : "No") : id == 14 ? "Show Names: "
-				+ (ShowNames == 0 ? "Hover" : "Always") : "";
+				+ (ShowNames == 0 ? "Hover" : "Always") : id == 15 ? "Clouds: "
+				+ (showClouds ? "On" : "Off") : "";
 	}
 
 	private void load() {
@@ -183,6 +185,9 @@ public final class GameSettings implements Serializable {
 					if (setting[0].equals("texturepack")) {
 						lastUsedTexturePack = setting[1];
 					}
+                                        if (setting[0].equals("showClouds")) {
+						showClouds = setting[1].equals("true");
+					}
 
 					for (int index = 0; index < bindings.length; index++) {
 						if (setting[0].equals("key_" + bindings[index].name)) {
@@ -221,6 +226,7 @@ public final class GameSettings implements Serializable {
 			writer.println("HacksEnabled:" + HacksEnabled);
 			writer.println("ShowNames:" + ShowNames);
 			writer.println("texturepack:" + lastUsedTexturePack);
+			writer.println("showClouds:" + showClouds);
 			for (int binding = 0; binding < bindings.length; binding++) {
 				writer.println("key_" + bindings[binding].name + ":" + bindings[binding].key);
 			}
@@ -357,6 +363,9 @@ public final class GameSettings implements Serializable {
 			} else {
 				ShowNames = 0;
 			}
+		}
+                if (setting == 15) {
+			showClouds = !showClouds;
 		}
 
 		save();

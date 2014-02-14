@@ -1451,56 +1451,59 @@ public final class Minecraft implements Runnable {
 										var34 = (var89.ticks + var80) * var33
 												* 0.03F;
 										var35 = 0.0F;
-										shapeRenderer.begin();
-										shapeRenderer.color(var107, var29,
-												var30);
+                                                                                if (settings.showClouds)
+                                                                                {
+                                                                                        shapeRenderer.begin();
+                                                                                        shapeRenderer.color(var107, var29,
+                                                                                                        var30);
 
-										for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
-											for (var125 = -2048; var125 < var101.level.height + 2048; var125 += 512) {
-												shapeRenderer.vertexUV(var86,
-														var74, var125 + 512,
-														var86 * var33 + var34,
-														(var125 + 512) * var33);
-												shapeRenderer.vertexUV(
-														var86 + 512, var74,
-														var125 + 512,
-														(var86 + 512) * var33
-																+ var34,
-														(var125 + 512) * var33);
-												shapeRenderer.vertexUV(
-														var86 + 512, var74,
-														var125,
-														(var86 + 512) * var33
-																+ var34, var125
-																* var33);
-												shapeRenderer.vertexUV(var86,
-														var74, var125,
-														var86 * var33 + var34,
-														var125 * var33);
-												shapeRenderer.vertexUV(var86,
-														var74, var125,
-														var86 * var33 + var34,
-														var125 * var33);
-												shapeRenderer.vertexUV(
-														var86 + 512, var74,
-														var125,
-														(var86 + 512) * var33
-																+ var34, var125
-																* var33);
-												shapeRenderer.vertexUV(
-														var86 + 512, var74,
-														var125 + 512,
-														(var86 + 512) * var33
-																+ var34,
-														(var125 + 512) * var33);
-												shapeRenderer.vertexUV(var86,
-														var74, var125 + 512,
-														var86 * var33 + var34,
-														(var125 + 512) * var33);
-											}
-										}
+                                                                                        for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
+                                                                                                for (var125 = -2048; var125 < var101.level.height + 2048; var125 += 512) {
+                                                                                                        shapeRenderer.vertexUV(var86,
+                                                                                                                        var74, var125 + 512,
+                                                                                                                        var86 * var33 + var34,
+                                                                                                                        (var125 + 512) * var33);
+                                                                                                        shapeRenderer.vertexUV(
+                                                                                                                        var86 + 512, var74,
+                                                                                                                        var125 + 512,
+                                                                                                                        (var86 + 512) * var33
+                                                                                                                                        + var34,
+                                                                                                                        (var125 + 512) * var33);
+                                                                                                        shapeRenderer.vertexUV(
+                                                                                                                        var86 + 512, var74,
+                                                                                                                        var125,
+                                                                                                                        (var86 + 512) * var33
+                                                                                                                                        + var34, var125
+                                                                                                                                        * var33);
+                                                                                                        shapeRenderer.vertexUV(var86,
+                                                                                                                        var74, var125,
+                                                                                                                        var86 * var33 + var34,
+                                                                                                                        var125 * var33);
+                                                                                                        shapeRenderer.vertexUV(var86,
+                                                                                                                        var74, var125,
+                                                                                                                        var86 * var33 + var34,
+                                                                                                                        var125 * var33);
+                                                                                                        shapeRenderer.vertexUV(
+                                                                                                                        var86 + 512, var74,
+                                                                                                                        var125,
+                                                                                                                        (var86 + 512) * var33
+                                                                                                                                        + var34, var125
+                                                                                                                                        * var33);
+                                                                                                        shapeRenderer.vertexUV(
+                                                                                                                        var86 + 512, var74,
+                                                                                                                        var125 + 512,
+                                                                                                                        (var86 + 512) * var33
+                                                                                                                                        + var34,
+                                                                                                                        (var125 + 512) * var33);
+                                                                                                        shapeRenderer.vertexUV(var86,
+                                                                                                                        var74, var125 + 512,
+                                                                                                                        var86 * var33 + var34,
+                                                                                                                        (var125 + 512) * var33);
+                                                                                                }
+                                                                                        }
 
-										shapeRenderer.end();
+                                                                                        shapeRenderer.end();
+                                                                                }
 										GL11.glDisable(3553);
 
 										shapeRenderer.begin();
