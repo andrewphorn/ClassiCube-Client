@@ -44,6 +44,7 @@ public class Level implements Serializable {
 	private boolean networkMode;
 	public transient Minecraft rendererContext$5cd64a7f;
 	public boolean creativeMode;
+	public int cloudLevel = -1;
 	public int waterLevel;
 	public int skyColor;
 	public int fogColor;

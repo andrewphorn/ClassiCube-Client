@@ -56,6 +56,7 @@ public final class GameSettings implements Serializable {
 	public KeyBinding loadLocationKey = new KeyBinding("Load location", 19);
 	public KeyBinding runKey = new KeyBinding("Run", 42);
 	public KeyBinding[] bindings;
+        public KeyBinding[] bindingsmore;
 	public transient Minecraft minecraft;
 	private File settingsFile;
 	public int settingCount;
@@ -78,13 +79,15 @@ public final class GameSettings implements Serializable {
 	public KeyBinding flyKey = new KeyBinding("Fly", Keyboard.KEY_Z);
 
 	public KeyBinding flyUp = new KeyBinding("Fly Up", Keyboard.KEY_Q);
-	public KeyBinding flyDown = new KeyBinding("Fly Down", Keyboard.KEY_E);
+	public KeyBinding flyDown = new KeyBinding("Fly Down", Keyboard.KEY_E);        
+	public KeyBinding noClip = new KeyBinding("NoClip", Keyboard.KEY_X);
 
 	public GameSettings(Minecraft minecraft, File minecraftFolder) {
 		bindings = new KeyBinding[] { forwardKey, leftKey, backKey, rightKey, jumpKey,
-				inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey, runKey };
-
-		settingCount = 16;
+				inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey };
+                bindingsmore = new KeyBinding[] { runKey, flyKey, flyUp, flyDown, noClip};
+                
+		settingCount = 15;
 
 		this.minecraft = minecraft;
 
@@ -95,6 +98,9 @@ public final class GameSettings implements Serializable {
 
 	public String getBinding(int key) {
 		return bindings[key].name + ": " + Keyboard.getKeyName(bindings[key].key);
+	}
+        public String getBindingMore(int key) {
+		return bindingsmore[key].name + ": " + Keyboard.getKeyName(bindingsmore[key].key);
 	}
 
 	public String getSetting(int id) {
@@ -112,8 +118,7 @@ public final class GameSettings implements Serializable {
 				+ (HackType == 0 ? "Normal" : "Adv") : id == 12 ? "Font Scale: "
 				+ new DecimalFormat("#.#").format(scale) : id == 13 ? "Enable Hacks: "
 				+ (HacksEnabled ? "Yes" : "No") : id == 14 ? "Show Names: "
-				+ (ShowNames == 0 ? "Hover" : "Always") : id == 15 ? "Clouds: "
-				+ (showClouds ? "On" : "Off") : "";
+				+ (ShowNames == 0 ? "Hover" : "Always") : "";
 	}
 
 	private void load() {
@@ -185,9 +190,6 @@ public final class GameSettings implements Serializable {
 					if (setting[0].equals("texturepack")) {
 						lastUsedTexturePack = setting[1];
 					}
-                                        if (setting[0].equals("showClouds")) {
-						showClouds = setting[1].equals("true");
-					}
 
 					for (int index = 0; index < bindings.length; index++) {
 						if (setting[0].equals("key_" + bindings[index].name)) {
@@ -226,7 +228,6 @@ public final class GameSettings implements Serializable {
 			writer.println("HacksEnabled:" + HacksEnabled);
 			writer.println("ShowNames:" + ShowNames);
 			writer.println("texturepack:" + lastUsedTexturePack);
-			writer.println("showClouds:" + showClouds);
 			for (int binding = 0; binding < bindings.length; binding++) {
 				writer.println("key_" + bindings[binding].name + ":" + bindings[binding].key);
 			}
@@ -241,6 +242,12 @@ public final class GameSettings implements Serializable {
 
 	public void setBinding(int key, int keyID) {
 		bindings[key].key = keyID;
+
+		save();
+	}
+        
+        public void setBindingMore(int key, int keyID) {
+		bindingsmore[key].key = keyID;
 
 		save();
 	}
@@ -363,9 +370,6 @@ public final class GameSettings implements Serializable {
 			} else {
 				ShowNames = 0;
 			}
-		}
-                if (setting == 15) {
-			showClouds = !showClouds;
 		}
 
 		save();

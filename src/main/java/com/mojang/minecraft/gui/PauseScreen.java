@@ -31,6 +31,7 @@ public final class PauseScreen extends GuiScreen {
                             HUDScreen.Compass = "";
                             HUDScreen.ServerName = "";
                             HUDScreen.UserDetail = "";
+                            ProgressBarDisplay.title = "SinglePlayer";
                             
                             minecraft.shutdown();
                             ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
@@ -102,10 +103,10 @@ public final class PauseScreen extends GuiScreen {
 		buttons.clear();
                 if (minecraft.session != null) {
                     buttons.add(new Button(0, width / 2 - 100, height / 4, "Options..."));
-                    buttons.add(new Button(1, width / 2 - 100, height / 4 + 24, "Save level.."));
-                    buttons.add(new Button(2, width / 2 - 100, height / 4 + 48, "Change texture pack.."));
-                    buttons.add(new Button(3, width / 2 - 100, height / 4 + 120, "Quit and play Single Player"));
-                    buttons.add(new Button(4, width / 2 - 100, height / 4 + 142, "Back to game"));
+                    buttons.add(new Button(1, width / 2 - 100, height / 4 + 24, "Save level..."));
+                    buttons.add(new Button(2, width / 2 - 100, height / 4 + 48, "Change texture pack..."));
+                    buttons.add(new Button(3, width / 2 - 100, ((height / 4 + 48) + (height - 36)) / 2, "Quit and play Single Player"));
+                    buttons.add(new Button(4, width / 2 - 100, height - 36, "Back to game"));
                     int w = fontRenderer.getWidth("Screenshots...");
                     buttons.add(new Button(5, width - fontRenderer.getWidth("Screenshots...") - 15,
                                     height - 36, fontRenderer.getWidth("Screenshots..."), "Screenshots"));
@@ -114,10 +115,10 @@ public final class PauseScreen extends GuiScreen {
                 else {
                     buttons.add(new Button(0, width / 2 - 100, height / 4, "Options..."));
                     buttons.add(new Button(1, width / 2 - 100, height / 4 + 24, "Generate new level..."));
-                    buttons.add(new Button(2, width / 2 - 100, height / 4 + 48, "Save level.."));
-                    buttons.add(new Button(3, width / 2 - 100, height / 4 + 72, "Load level.."));
-                    buttons.add(new Button(4, width / 2 - 100, height / 4 + 96, "Change texture pack.."));
-                    buttons.add(new Button(5, width / 2 - 100, height / 4 + 142, "Back to game"));
+                    buttons.add(new Button(2, width / 2 - 100, height / 4 + 48, "Save level..."));
+                    buttons.add(new Button(3, width / 2 - 100, height / 4 + 72, "Load level..."));
+                    buttons.add(new Button(4, width / 2 - 100, height / 4 + 96, "Change texture pack..."));
+                    buttons.add(new Button(5, width / 2 - 100, height - 36, "Back to game"));
                     int w = fontRenderer.getWidth("Screenshots...");
                     buttons.add(new Button(6, width - fontRenderer.getWidth("Screenshots...") - 15,
                                     height - 36, fontRenderer.getWidth("Screenshots..."), "Screenshots"));
@@ -131,7 +132,7 @@ public final class PauseScreen extends GuiScreen {
 
 		String titlePrint = ProgressBarDisplay.title;
 		String t = titlePrint.toLowerCase();
-		if (t.contains("loading level") || t.contains("generating level..")) {
+		if (minecraft.session == null) {
 			titlePrint = "SinglePlayer";
 		}
 

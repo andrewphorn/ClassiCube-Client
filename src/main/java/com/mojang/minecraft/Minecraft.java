@@ -1447,7 +1447,8 @@ public final class Minecraft implements Runnable {
 
 										var74 = 0.0F;
 										var33 = 4.8828125E-4F;
-										var74 = var89.level.depth + 2;
+                                                                                if (level.cloudLevel < 0) level.cloudLevel = var89.level.depth + 2;
+										var74 = level.cloudLevel;
 										var34 = (var89.ticks + var80) * var33
 												* 0.03F;
 										var35 = 0.0F;
@@ -3483,10 +3484,14 @@ public final class Minecraft implements Runnable {
 						if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
 							takeAndSaveScreenshot(width, height);
 						}
+                                                
+                                                if (Keyboard.getEventKey() == Keyboard.KEY_F3) {
+							settings.showDebug = !settings.showDebug;
+						}
 
 						if (settings.HacksEnabled) {
 							if (settings.HackType == 0) {
-								if (Keyboard.getEventKey() == Keyboard.KEY_X) {
+								if (Keyboard.getEventKey() == settings.noClip.key) {
 									if (HackState.Noclip || HackState.Noclip
 											&& player.userType >= 100) {
 										player.noPhysics = !player.noPhysics;
