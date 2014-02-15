@@ -3362,6 +3362,7 @@ public final class Minecraft implements Runnable {
 					player.inventory.swapPaint(var25);
 					break;
 				}
+                                currentScreen.mouseEvent();
 			}
                         while (Keyboard.next()) {
 				if (Keyboard.getEventKey() > 1 && Keyboard.getEventKey() < 11) {
