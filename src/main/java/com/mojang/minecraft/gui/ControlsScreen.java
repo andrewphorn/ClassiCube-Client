@@ -45,7 +45,7 @@ public final class ControlsScreen extends GuiScreen {
 			buttons.add(new OptionButton(var1, width / 2 - 155 + var1 % 2 * 160, height / 6 + 24
 					* (var1 >> 1), settings.getBinding(var1)));
 		}
-                buttons.add(new OptionButton(100, width / 2 - 155 + 10 % 2 * 160, height / 6 + 24
+                buttons.add(new OptionButton(100, width / 2 - 77 + 10 % 2 * 160, height / 6 + 24
 					* (10 >> 1), "More..."));
 
 		buttons.add(new Button(200, width / 2 - 100, height / 6 + 168, "Done"));
