@@ -3,7 +3,6 @@ package com.mojang.minecraft.gui;
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.gui.inputscreens.CloudColorInputScreen;
 import com.mojang.minecraft.gui.inputscreens.CloudLevelInputScreen;
-import com.mojang.minecraft.gui.inputscreens.WaterLevelInputScreen;
 
 public final class CloudOptionsScreen extends GuiScreen {
 
@@ -52,6 +51,7 @@ public final class CloudOptionsScreen extends GuiScreen {
                         
                         if (var1.id == 3) {
 				settings.showClouds = !settings.showClouds;
+                                buttons.set(2, new OptionButton(3, width / 2 - 77, height / 6 + 72, "Clouds: " + (settings.showClouds ? "On" : "Off")));
 			}
 
 			if (var1.id == 4) {
