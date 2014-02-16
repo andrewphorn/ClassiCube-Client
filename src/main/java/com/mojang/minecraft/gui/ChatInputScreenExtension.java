@@ -98,7 +98,13 @@ public class ChatInputScreenExtension extends GuiScreen {
 
 	if (paramInt == Keyboard.KEY_RETURN) { // 28
 	    String str1 = inputLine.trim();
-	    if (str1.length() > 0) {
+            System.out.println("(" + str1 + ")");
+            if (str1.toLowerCase().startsWith("/client"))
+            {
+                minecraft.hud.addChat("&aClient &ecommands coming soon! (Maybe?)");
+                history.add(str1);
+            }
+            else if (str1.length() > 0) {
 		NetworkManager var10000 = minecraft.networkManager;
 		NetworkManager var3 = var10000;
 		if ((str1 = str1.trim()).length() > 0) {
@@ -279,7 +285,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 		 * + the length of the trimmed message
 		 * + the x position of the '>  _' string.
 		 */
-		int x2 = x1 + fontRenderer.getWidth("> _" + messageNoCaret.trim()) + 4;
+		int x2 = x1 + fontRenderer.getWidth("> _" + messageNoCaret.replace(" ", "..").trim()) + 4;
 
 		int y1 = height - 14;
 		int y2 = y1 + 12;
