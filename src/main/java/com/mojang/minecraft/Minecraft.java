@@ -2709,14 +2709,15 @@ public final class Minecraft implements Runnable {
 											level.customShadowColour = new ColorCache(
 													r / 255.0F, g / 255.0F,
 													b / 255.0F);
+                                                                                        levelRenderer.refresh();
 											break;
 										case 4: // diffuse color
 											level.customLightColour = new ColorCache(
 													r / 255.0F, g / 255.0F,
 													b / 255.0F);
+                                                                                        levelRenderer.refresh();
 											break;
 										}
-										levelRenderer.refresh();
 									} else if (packetType == PacketType.ENV_SET_MAP_APPEARANCE) {
 										String textureUrl = (String) packetParams[0];
 										byte sideBlock = ((Byte) packetParams[1])
