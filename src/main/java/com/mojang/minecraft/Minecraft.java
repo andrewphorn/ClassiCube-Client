@@ -295,7 +295,8 @@ public final class Minecraft implements Runnable {
 	public MonitoringThread monitoringThread;
 	public int tempDisplayWidth;
 	public int tempDisplayHeight;
-	public boolean canRenderGUI = true;
+	public boolean canRenderGUI = true;        
+        public int flyToggleTimer = 7;
 
 	private static void checkGLError(String var0) {
 		int var1;
@@ -3418,6 +3419,11 @@ public final class Minecraft implements Runnable {
 			if (blockHitTime > 0) {
 				--blockHitTime;
 			}
+                        
+                        if (flyToggleTimer > 0)
+                        {
+                            --flyToggleTimer;
+                        }  
 
 			while (Keyboard.next()) {
 				player.setKey(Keyboard.getEventKey(),
@@ -3507,6 +3513,18 @@ public final class Minecraft implements Runnable {
 										player.hovered = !player.hovered;
 									}
 								}
+                                                                if (HackState.Fly && Keyboard.getEventKey() == settings.jumpKey.key)
+                                                                {
+                                                                    if (flyToggleTimer == 0)
+                                                                    {
+                                                                        this.flyToggleTimer = 7;
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        player.flyingMode = !player.flyingMode;
+                                                                        this.flyToggleTimer = 0;
+                                                                    }
+                                                                }
 
 								if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
 									if (HackState.Fly) {

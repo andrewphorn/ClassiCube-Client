@@ -83,12 +83,12 @@ public class Sheep extends QuadrupedMob {
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
 		AnimalModel var8;
-		float var9 = (var8 = (AnimalModel) modelCache.getModel(modelName)).head.y;
+		float var9 = (var8 = (AnimalModel) modelCache.getModel("sheep")).head.y;
 		float var10 = var8.head.z;
 		var8.head.y += (grazeO + (graze - grazeO) * var3) * 8.0F;
 		var8.head.z -= grazeO + (graze - grazeO) * var3;
 		super.renderModel(var1, var2, var3, var4, var5, var6, var7);
-		if (hasFur) {
+		if (hasFur || modelName.equals("sheep.fur")) {
 			GL11.glBindTexture(3553, var1.load("/mob/sheep_fur.png"));
 			GL11.glDisable(2884);
 			AnimalModel var11;

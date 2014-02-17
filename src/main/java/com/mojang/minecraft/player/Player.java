@@ -23,7 +23,6 @@ public class Player extends Mob {
 	private int noclipTrig = 0;
 	private int speedTrig = 0;
 	private int jumpCount = 0;
-        private int flyToggleTimer = 7;
 
 	boolean HacksEnabled;
 	boolean isOnIce = false;
@@ -76,24 +75,7 @@ public class Player extends Mob {
 	}
 
 	@Override
-	public void aiStep() {
-                //Almost working double-jump fly toggle
-                /*if (this.flyToggleTimer > 0)
-                {
-                    --this.flyToggleTimer;
-                }
-                if (HackState.Fly && settings.HackType == 0 && Keyboard.isKeyDown(settings.jumpKey.key))
-                {
-                    if (this.flyToggleTimer == 0)
-                    {
-                        this.flyToggleTimer = 7;
-                    }
-                    else
-                    {
-                        this.flyingMode = !this.flyingMode;
-                        this.flyToggleTimer = 0;
-                    }
-                }*/
+	public void aiStep() {                              
 		if (settings.HackType == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)
 				&& input.canMove) {
 			inventory.tick();

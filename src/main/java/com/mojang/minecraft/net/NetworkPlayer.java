@@ -115,8 +115,8 @@ public class NetworkPlayer extends HumanoidMob {
 		if (isInteger(modelName)) {
 			GL11.glBindTexture(3553, var1.load("/terrain.png"));
 			return;
-		} else if (!modelName.equals("humanoid")) {
-			GL11.glBindTexture(3553, var1.load("/mob/" + modelName + ".png"));
+		} else if (!modelName.startsWith("humanoid")) {
+			GL11.glBindTexture(3553, var1.load("/mob/" + modelName.replace('.', '_') + ".png"));
 			return;
 		}
 		if (a < 0) {

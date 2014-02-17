@@ -207,35 +207,34 @@ public final class HUDScreen extends Screen {
 		    + (int) mc.player.y + ", " + (int) mc.player.z + ")", 2,
 		    22, 16777215);
 	    GL11.glPopMatrix();
+        }
+        fontRenderer.render(Compass,
+                width - (fontRenderer.getWidth(Compass) + 2), 12, 16777215);
 
-	    fontRenderer.render(Compass,
-		    width - (fontRenderer.getWidth(Compass) + 2), 12, 16777215);
+        fontRenderer.render(ServerName,
+                width - (fontRenderer.getWidth(ServerName) + 2), 2,
+                16777215);
 
-	    fontRenderer.render(ServerName,
-		    width - (fontRenderer.getWidth(ServerName) + 2), 2,
-		    16777215);
+        fontRenderer.render(UserDetail,
+                width - (fontRenderer.getWidth(UserDetail) + 2), 24,
+                16777215);
 
-	    fontRenderer.render(UserDetail,
-		    width - (fontRenderer.getWidth(UserDetail) + 2), 24,
-		    16777215);
+        fontRenderer.render(BottomRight1,
+                width - (fontRenderer.getWidth(BottomRight1) + 2),
+                height - 35, 16777215);
+        fontRenderer.render(BottomRight2,
+                width - (fontRenderer.getWidth(BottomRight2) + 2),
+                height - 45, 16777215);
+        fontRenderer.render(BottomRight3,
+                width - (fontRenderer.getWidth(BottomRight3) + 2),
+                height - 55, 16777215);
 
-	    fontRenderer.render(BottomRight1,
-		    width - (fontRenderer.getWidth(BottomRight1) + 2),
-		    height - 35, 16777215);
-	    fontRenderer.render(BottomRight2,
-		    width - (fontRenderer.getWidth(BottomRight2) + 2),
-		    height - 45, 16777215);
-	    fontRenderer.render(BottomRight3,
-		    width - (fontRenderer.getWidth(BottomRight3) + 2),
-		    height - 55, 16777215);
-
-	    GL11.glPushMatrix();
-	    GL11.glScalef(1.5F, 1.5F, 1.0F);
-	    fontRenderer.render(Announcement,
-		    (width / 3) - (fontRenderer.getWidth(Announcement) / 2),
-		    35, 16777215);
-	    GL11.glPopMatrix();
-	}
+        GL11.glPushMatrix();
+        GL11.glScalef(1.5F, 1.5F, 1.0F);
+        fontRenderer.render(Announcement,
+                (width / 3) - (fontRenderer.getWidth(Announcement) / 2),
+                35, 16777215);
+        GL11.glPopMatrix();
 	GL11.glPushMatrix();
 	GL11.glScalef(0.7F, 0.7F, 1.0F);
 	if (mc.player.flyingMode && !mc.player.noPhysics) {
