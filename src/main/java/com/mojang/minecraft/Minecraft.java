@@ -3459,9 +3459,7 @@ public final class Minecraft implements Runnable {
 							isSnowing = !isSnowing;
 							isRaining = false;
 						}
-						if (Keyboard.getEventKey() == 53
-								&& networkManager != null
-								&& networkManager.isConnected()) {
+						if (Keyboard.getEventKey() == 53) {
 							player.releaseAllKeys();
 							ChatInputScreenExtension s = new ChatInputScreenExtension();
 							setCurrentScreen(s);
