@@ -44,7 +44,11 @@ public class ChatInputScreenExtension extends GuiScreen {
     }
 
     private void insertTextAtCaret(String paramString) {
-	int i = 64 - minecraft.session.username.length() - 2;
+	int i; 
+        if (minecraft.session != null){
+            i = 64 - minecraft.session.username.length() - 2;
+        }
+        else i = 64;
 
 	int j = paramString.length();
 	inputLine = inputLine.substring(0, caretPos) + paramString
@@ -98,10 +102,14 @@ public class ChatInputScreenExtension extends GuiScreen {
 
 	if (paramInt == Keyboard.KEY_RETURN) { // 28
 	    String str1 = inputLine.trim();
-            System.out.println("(" + str1 + ")");
             if (str1.toLowerCase().startsWith("/client"))
             {
                 minecraft.hud.addChat("&aClient &ecommands coming soon! (Maybe?)");
+                history.add(str1);
+            }
+            else if (minecraft.session == null)
+            {
+                minecraft.hud.addChat("&f" + str1);
                 history.add(str1);
             }
             else if (str1.length() > 0) {

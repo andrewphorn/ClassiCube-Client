@@ -3535,9 +3535,7 @@ public final class Minecraft implements Runnable {
 							gamemode.openInventory();
 						}
 
-						if (Keyboard.getEventKey() == settings.chatKey.key
-								&& networkManager != null
-								&& networkManager.isConnected()) {
+						if (Keyboard.getEventKey() == settings.chatKey.key) {
 							player.releaseAllKeys();
 							setCurrentScreen(new ChatInputScreenExtension());
 						}
