@@ -7,7 +7,6 @@ public class HackState {
 		Noclip = false;
 		Speed = false;
 		Fly = false;
-		Respawn = false;
 		OpHacks = false;
 	}
 
