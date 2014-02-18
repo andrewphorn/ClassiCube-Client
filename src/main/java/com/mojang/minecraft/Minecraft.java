@@ -3439,8 +3439,7 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (gamemode instanceof CreativeGameMode) {
-							if (HackState.Noclip || HackState.Fly
-									|| HackState.Speed) {
+							if (HackState.Respawn) {
 								if (Keyboard.getEventKey() == settings.loadLocationKey.key) {
 									if (!(currentScreen instanceof ChatInputScreen)) {
 										player.resetPos();
