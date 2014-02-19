@@ -19,7 +19,8 @@ public final class PauseScreen extends GuiScreen {
 
 	@Override
 	protected final void onButtonClick(Button var1) {
-                if (minecraft.session != null) {
+                if (minecraft.session != null) {                    
+                    minecraft.networkManager.netHandler.close();
                     if (var1.id == 0) minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
                     if (var1.id == 1) minecraft.setCurrentScreen(new SaveLevelScreen(this));
                     if (var1.id == 2) minecraft.setCurrentScreen(new TextureSelectionScreen(this));
