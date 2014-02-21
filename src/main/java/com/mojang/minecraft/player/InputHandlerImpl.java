@@ -22,7 +22,7 @@ public class InputHandlerImpl extends InputHandler {
 	@Override
 	public void resetKeys() {
 		keyStates = new boolean[100];
-		keylist = new boolean[10];
+		keylist = new boolean[11];
 	}
 
 	@Override
@@ -58,6 +58,9 @@ public class InputHandlerImpl extends InputHandler {
 			if (key == settings.flyDown.key) {
 				index = 7;
 			}
+                        if (key == settings.toggleTPKey.key) {
+                                index = 10;
+                        }
 			if (index >= 0) {
 				keyStates[index] = state;
 			}
@@ -98,6 +101,9 @@ public class InputHandlerImpl extends InputHandler {
 			if (key == settings.flyKey.key && state) {
 				player.flyingMode = !player.flyingMode;
 			}
+                        if (key == settings.toggleTPKey.key) {
+                                keylist[10] = state;
+                        }
 		}
 	}
 

@@ -3112,12 +3112,13 @@ public final class Minecraft implements Runnable {
 												short var38 = var66;
 												byte var5 = var10001;
 												if (var5 < 0) {
+                                                                                                    if (!settings.TPDisabled){
 													networkManager.minecraft.player
 															.moveTo(var38 / 32.0F,
 																	var36 / 32.0F,
 																	var47 / 32.0F,
 																	var53 * 360 / 256.0F,
-																	var9 * 360 / 256.0F);
+																	var9 * 360 / 256.0F);}
 												} else {
 													var53 = (byte) (var53 + 128);
 													var36 = (short) (var36 - 22);
@@ -3158,6 +3159,7 @@ public final class Minecraft implements Runnable {
 													var37 = var67;
 													byte playerID = var10001;
 													if (playerID >= 0) {
+                                                                                                            if (!settings.TPDisabled){
 														var53 = (byte) (var53 + 128);
 														if ((networkPlayer = networkManager.players
 																.get(Byte
@@ -3168,7 +3170,7 @@ public final class Minecraft implements Runnable {
 																			var49,
 																			var53 * 360 / 256.0F,
 																			var9 * 360 / 256.0F);
-														}
+														}}
 													}
 												} else if (packetType == PacketType.ROTATION_UPDATE) {
 													var10001 = ((Byte) packetParams[0])
@@ -3180,6 +3182,7 @@ public final class Minecraft implements Runnable {
 													var37 = var67;
 													byte var5 = var10001;
 													if (var5 >= 0) {
+                                                                                                            if (!settings.TPDisabled){
 														var37 = (byte) (var37 + 128);
 														NetworkPlayer var54;
 														if ((var54 = networkManager.players
@@ -3188,7 +3191,7 @@ public final class Minecraft implements Runnable {
 															var54.queue(
 																	var37 * 360 / 256.0F,
 																	var44 * 360 / 256.0F);
-														}
+														}}
 													}
 												} else if (packetType == PacketType.POSITION_UPDATE) {
 													var10001 = ((Byte) packetParams[0])
@@ -3206,10 +3209,10 @@ public final class Minecraft implements Runnable {
 													if (var5 >= 0
 															&& (var59 = networkManager.players
 																	.get(Byte
-																			.valueOf(var5))) != null) {
+																			.valueOf(var5))) != null) {if(!settings.TPDisabled){
 														var59.queue(var37,
 																var44, var49);
-													}
+                                                                                                                                                        }}
 												} else if (packetType == PacketType.DESPAWN_PLAYER) {
 													byte var5 = ((Byte) packetParams[0])
 															.byteValue();
@@ -3522,6 +3525,11 @@ public final class Minecraft implements Runnable {
 							player.releaseAllKeys();
 							setCurrentScreen(new ChatInputScreenExtension());
 						}
+                                                if (Keyboard.getEventKey() == settings.toggleTPKey.key) {
+                                                    settings.TPDisabled = !settings.TPDisabled;
+                                                    System.out.println("toggling TP");
+                                                    System.out.println(settings.TPDisabled);
+                                                }
 					}
 
 					for (var25 = 0; var25 < 9; ++var25) {

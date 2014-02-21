@@ -307,7 +307,8 @@ public final class ProgressBarDisplay {
 					.toString().toLowerCase();
 
 			if (joinedString.indexOf("-hax") > -1) {
-				HackState.setAllDisabled();
+                                HackState.setAllEnabled();
+				//HackState.setAllDisabled();
 			} else { // enable all, it's either +hax or nothing at all
 				HackState.setAllEnabled();
 			}
@@ -315,17 +316,17 @@ public final class ProgressBarDisplay {
 			if (joinedString.indexOf("+fly") > -1) {
 				HackState.Fly = true;
 			} else if (joinedString.indexOf("-fly") > -1) {
-				HackState.Fly = false;
+				//HackState.Fly = false;
 			}
 			if (joinedString.indexOf("+noclip") > -1) {
 				HackState.Noclip = true;
 			} else if (joinedString.indexOf("-noclip") > -1) {
-				HackState.Noclip = false;
+				//HackState.Noclip = false;
 			}
 			if (joinedString.indexOf("+speed") > -1) {
 				HackState.Speed = true;
 			} else if (joinedString.indexOf("-speed") > -1) {
-				HackState.Speed = false;
+				//HackState.Speed = false;
 			}
 
 			if (joinedString.indexOf("+ophax") > -1 && minecraft.player.userType >= 100) {

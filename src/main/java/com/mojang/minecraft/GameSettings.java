@@ -43,6 +43,7 @@ public final class GameSettings implements Serializable {
 	public boolean anaglyph = false;
 	public boolean limitFramerate = true;
 	public boolean thirdPersonMode = false;
+        public boolean TPDisabled = true;
 	public KeyBinding forwardKey = new KeyBinding("Forward", 17);
 	public KeyBinding leftKey = new KeyBinding("Left", 30);
 	public KeyBinding backKey = new KeyBinding("Back", 31);
@@ -54,6 +55,7 @@ public final class GameSettings implements Serializable {
 	public KeyBinding saveLocationKey = new KeyBinding("Save location", 28);
 	public KeyBinding loadLocationKey = new KeyBinding("Load location", 19);
 	public KeyBinding runKey = new KeyBinding("Run", 42);
+        public KeyBinding toggleTPKey = new KeyBinding("Toggle TP", 46);
 	public KeyBinding[] bindings;
 	public transient Minecraft minecraft;
 	private File settingsFile;
