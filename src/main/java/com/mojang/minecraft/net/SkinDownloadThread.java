@@ -1,5 +1,6 @@
 package com.mojang.minecraft.net;
 
+import java.awt.image.BufferedImage;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -36,8 +37,12 @@ public class SkinDownloadThread extends Thread {
 			if (connection.getResponseCode() == 404) {
 				return;
 			}
-
-			player.newTexture = ImageIO.read(connection.getInputStream()).getSubimage(0, 0, 64, 32);
+                            BufferedImage image = ImageIO.read(connection.getInputStream());
+                            if (image.getHeight() == image.getWidth()) {
+                                player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight() / 2);
+                            } else {
+                                player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
+                            }
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
