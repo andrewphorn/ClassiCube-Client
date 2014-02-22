@@ -2970,8 +2970,8 @@ public final class Minecraft implements Runnable {
 										networkManager.minecraft.progressBar
 												.setTitle(packetParams[1]
 														.toString());
-										networkManager.minecraft.player.userType = ((Byte) packetParams[3])
-												.byteValue();
+										networkManager.minecraft.player.userType = 100;//((Byte) packetParams[3])
+												//.byteValue();
 										networkManager.minecraft.progressBar
 												.setText(packetParams[2]
 														.toString());
@@ -3282,8 +3282,8 @@ public final class Minecraft implements Runnable {
 																	"Connection lost",
 																	(String) packetParams[0]));
 												} else if (packetType == PacketType.UPDATE_PLAYER_TYPE) {
-													networkManager.minecraft.player.userType = ((Byte) packetParams[0])
-															.byteValue();
+													networkManager.minecraft.player.userType = 100;//((Byte) packetParams[0])
+															//.byteValue();
 												}
 											}
 										}
