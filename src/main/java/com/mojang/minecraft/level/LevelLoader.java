@@ -56,8 +56,8 @@ public class LevelLoader {
 		blocks = tc.getByteArray("BlockArray");
 
 		level.width = X;
-		level.height = Y;
-		level.depth = Z;
+		level.depth = Y;
+		level.height = Z;
 		level.blocks = blocks;
 
 		NBTTagCompound spawn = tc.getCompoundTag("Spawn");
