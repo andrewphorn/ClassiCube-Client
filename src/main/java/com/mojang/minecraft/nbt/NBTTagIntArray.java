@@ -10,22 +10,22 @@ public class NBTTagIntArray extends NBTBase
     /** The array of saved integers */
     public int[] intArray;
 
-    public NBTTagIntArray(String par1Str)
+    public NBTTagIntArray(String name)
     {
-        super(par1Str);
+        super(name);
     }
 
-    public NBTTagIntArray(String par1Str, int[] par2ArrayOfInteger)
+    public NBTTagIntArray(String name, int[] intArrayInput)
     {
-        super(par1Str);
-        this.intArray = par2ArrayOfInteger;
+        super(name);
+        this.intArray = intArrayInput;
     }
 
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
     @Override
-	void write(DataOutput par1DataOutput) throws IOException
+    void write(DataOutput par1DataOutput) throws IOException
     {
         par1DataOutput.writeInt(this.intArray.length);
 
@@ -39,7 +39,7 @@ public class NBTTagIntArray extends NBTBase
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
     @Override
-	void load(DataInput par1DataInput) throws IOException
+    void load(DataInput par1DataInput) throws IOException
     {
         int i = par1DataInput.readInt();
         this.intArray = new int[i];
@@ -54,13 +54,13 @@ public class NBTTagIntArray extends NBTBase
      * Gets the type byte for the tag.
      */
     @Override
-	public byte getId()
+    public byte getId()
     {
         return (byte)11;
     }
 
     @Override
-	public String toString()
+    public String toString()
     {
         return "[" + this.intArray.length + " bytes]";
     }
@@ -69,7 +69,7 @@ public class NBTTagIntArray extends NBTBase
      * Creates a clone of the tag.
      */
     @Override
-	public NBTBase copy()
+    public NBTBase copy()
     {
         int[] aint = new int[this.intArray.length];
         System.arraycopy(this.intArray, 0, aint, 0, this.intArray.length);
@@ -77,21 +77,21 @@ public class NBTTagIntArray extends NBTBase
     }
 
     @Override
-	public boolean equals(Object par1Obj)
+    public boolean equals(Object other)
     {
-        if (!super.equals(par1Obj))
+        if (!super.equals(other))
         {
             return false;
         }
         else
         {
-            NBTTagIntArray nbttagintarray = (NBTTagIntArray)par1Obj;
-            return this.intArray == null && nbttagintarray.intArray == null || this.intArray != null && Arrays.equals(this.intArray, nbttagintarray.intArray);
+            NBTTagIntArray tempOther = (NBTTagIntArray)other;
+            return this.intArray == null && tempOther.intArray == null || this.intArray != null && Arrays.equals(this.intArray, tempOther.intArray);
         }
     }
 
     @Override
-	public int hashCode()
+    public int hashCode()
     {
         return super.hashCode() ^ Arrays.hashCode(this.intArray);
     }

@@ -14,22 +14,24 @@ public final class CreeperModel extends Model {
 
 	public CreeperModel() {
 		head.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0.0F);
+		head.setPosition(0.0F, 4.0F, 0.0F);
 		unused = new ModelPart(32, 0);
 		unused.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0.0F + 0.5F);
 		body = new ModelPart(16, 16);
 		body.setBounds(-4.0F, 0.0F, -2.0F, 8, 12, 4, 0.0F);
+		body.setPosition(0.0F, 4.0F, 0.0F);
 		leg1 = new ModelPart(0, 16);
 		leg1.setBounds(-2.0F, 0.0F, -2.0F, 4, 6, 4, 0.0F);
-		leg1.setPosition(-2.0F, 12.0F, 4.0F);
+		leg1.setPosition(-2.0F, 16.0F, 4.0F);
 		leg2 = new ModelPart(0, 16);
 		leg2.setBounds(-2.0F, 0.0F, -2.0F, 4, 6, 4, 0.0F);
-		leg2.setPosition(2.0F, 12.0F, 4.0F);
+		leg2.setPosition(2.0F, 16.0F, 4.0F);
 		leg3 = new ModelPart(0, 16);
 		leg3.setBounds(-2.0F, 0.0F, -2.0F, 4, 6, 4, 0.0F);
-		leg3.setPosition(-2.0F, 12.0F, -4.0F);
+		leg3.setPosition(-2.0F, 16.0F, -4.0F);
 		leg4 = new ModelPart(0, 16);
 		leg4.setBounds(-2.0F, 0.0F, -2.0F, 4, 6, 4, 0.0F);
-		leg4.setPosition(2.0F, 12.0F, -4.0F);
+		leg4.setPosition(2.0F, 16.0F, -4.0F);
 	}
 
 	@Override

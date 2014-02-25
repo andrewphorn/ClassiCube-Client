@@ -358,13 +358,23 @@ public class Block {
 
 	public AABB getSelectionBox(int x, int y, int z) {
 		AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
-		;
-
 		return aabb;
 	}
-
-	protected int getTextureId(int texture) {
+	/**
+	 * Gets the texture ID of a block depending on the side you want to use.
+	 * @param texture Side of the block to render.
+	 * @return ID of the texture side requested.
+	 */
+	public int getTextureId(int texture) {
 		return textureId;
+	}
+	/**
+	 * Gets the texture ID of a block depending on the side you want to use.
+	 * @param side Side of the block to render.
+	 * @return ID of the texture side requested.
+	 */
+	public int getTextureId(TextureSide side){
+		return getTextureId(side.getID());
 	}
 
 	public int getTickDelay() {
@@ -522,58 +532,61 @@ public class Block {
 	// TODO past here.
 
 	// TODO.
-	public void renderSide(ShapeRenderer var1, int var2, int var3, int var4, int var5) {
-		int var6;
-		float var7;
-		float var8 = (var7 = (var6 = getTextureId(var5)) % 16 / 16.0F) + 0.0624375F;
+	/**
+	 * Renders a side of this block.
+	 * @param renderer Shape renderer that will render this.
+	 * @param var2
+	 * @param var3
+	 * @param var4
+	 * @param side Side of the block to render. See @{TextureSide}
+	 */
+	public void renderSide(ShapeRenderer renderer, int var2, int var3, int var4, int side) {
+		int sideID = getTextureId(side);
+		float var7 = (sideID) % 16 / 16.0F; // Which place in the grid of the texture file are we in?
+		float var8 = var7 + 0.0624375F;
 		float var16;
-		float var9 = (var16 = var6 / 16 / 16.0F) + 0.0624375F;
+		float var9 = (var16 = sideID / 16 / 16.0F) + 0.0624375F;
 		float var10 = var2 + x1;
 		float var14 = var2 + x2;
 		float var11 = var3 + y1;
 		float var15 = var3 + y2;
 		float var12 = var4 + z1;
 		float var13 = var4 + z2;
-		if (var5 == 0) {
-			var1.vertexUV(var14, var11, var13, var8, var9);
-			var1.vertexUV(var14, var11, var12, var8, var16);
-			var1.vertexUV(var10, var11, var12, var7, var16);
-			var1.vertexUV(var10, var11, var13, var7, var9);
+		if (side == 0) {
+			renderer.vertexUV(var14, var11, var13, var8, var9);
+			renderer.vertexUV(var14, var11, var12, var8, var16);
+			renderer.vertexUV(var10, var11, var12, var7, var16);
+			renderer.vertexUV(var10, var11, var13, var7, var9);
 		}
-
-		if (var5 == 1) {
-			var1.vertexUV(var10, var15, var13, var7, var9);
-			var1.vertexUV(var10, var15, var12, var7, var16);
-			var1.vertexUV(var14, var15, var12, var8, var16);
-			var1.vertexUV(var14, var15, var13, var8, var9);
+		else if (side == 1) {
+			renderer.vertexUV(var10, var15, var13, var7, var9);
+			renderer.vertexUV(var10, var15, var12, var7, var16);
+			renderer.vertexUV(var14, var15, var12, var8, var16);
+			renderer.vertexUV(var14, var15, var13, var8, var9);
 		}
-
-		if (var5 == 2) {
-			var1.vertexUV(var10, var11, var12, var8, var9);
-			var1.vertexUV(var14, var11, var12, var7, var9);
-			var1.vertexUV(var14, var15, var12, var7, var16);
-			var1.vertexUV(var10, var15, var12, var8, var16);
+		else if (side == 2) {
+			renderer.vertexUV(var10, var11, var12, var8, var9);
+			renderer.vertexUV(var14, var11, var12, var7, var9);
+			renderer.vertexUV(var14, var15, var12, var7, var16);
+			renderer.vertexUV(var10, var15, var12, var8, var16);
 		}
-
-		if (var5 == 3) {
-			var1.vertexUV(var14, var15, var13, var8, var16);
-			var1.vertexUV(var14, var11, var13, var8, var9);
-			var1.vertexUV(var10, var11, var13, var7, var9);
-			var1.vertexUV(var10, var15, var13, var7, var16);
+		else if (side == 3) {
+			renderer.vertexUV(var14, var15, var13, var8, var16);
+			renderer.vertexUV(var14, var11, var13, var8, var9);
+			renderer.vertexUV(var10, var11, var13, var7, var9);
+			renderer.vertexUV(var10, var15, var13, var7, var16);
 		}
-
-		if (var5 == 4) {
-			var1.vertexUV(var10, var11, var13, var8, var9);
-			var1.vertexUV(var10, var11, var12, var7, var9);
-			var1.vertexUV(var10, var15, var12, var7, var16);
-			var1.vertexUV(var10, var15, var13, var8, var16);
+		else if (side == 4) {
+			renderer.vertexUV(var10, var11, var13, var8, var9);
+			renderer.vertexUV(var10, var11, var12, var7, var9);
+			renderer.vertexUV(var10, var15, var12, var7, var16);
+			renderer.vertexUV(var10, var15, var13, var8, var16);
 		}
-
-		if (var5 == 5) {
-			var1.vertexUV(var14, var15, var13, var7, var16);
-			var1.vertexUV(var14, var15, var12, var8, var16);
-			var1.vertexUV(var14, var11, var12, var8, var9);
-			var1.vertexUV(var14, var11, var13, var7, var9);
+		else if (side == 5) {
+			renderer.vertexUV(var14, var15, var13, var7, var16);
+			renderer.vertexUV(var14, var15, var12, var8, var16);
+			renderer.vertexUV(var14, var11, var12, var8, var9);
+			renderer.vertexUV(var14, var11, var13, var7, var9);
 		}
 
 	}

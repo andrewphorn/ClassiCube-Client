@@ -9,27 +9,27 @@ public class NBTTagString extends NBTBase
     /** The string value for the tag (cannot be empty). */
     public String data;
 
-    public NBTTagString(String par1Str)
+    public NBTTagString(String name)
     {
-        super(par1Str);
+        super(name);
     }
 
-    public NBTTagString(String par1Str, String par2Str)
+    public NBTTagString(String name, String data)
     {
-        super(par1Str);
-        this.data = par2Str;
-
-        if (par2Str == null)
+        super(name);
+        if (data == null)
         {
             throw new IllegalArgumentException("Empty string not allowed");
         }
+
+        this.data = data;
     }
 
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
     @Override
-	void write(DataOutput par1DataOutput) throws IOException
+    void write(DataOutput par1DataOutput) throws IOException
     {
         par1DataOutput.writeUTF(this.data);
     }
@@ -38,7 +38,7 @@ public class NBTTagString extends NBTBase
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
     @Override
-	void load(DataInput par1DataInput) throws IOException
+    void load(DataInput par1DataInput) throws IOException
     {
         this.data = par1DataInput.readUTF();
     }
@@ -47,13 +47,13 @@ public class NBTTagString extends NBTBase
      * Gets the type byte for the tag.
      */
     @Override
-	public byte getId()
+    public byte getId()
     {
         return (byte)8;
     }
 
     @Override
-	public String toString()
+    public String toString()
     {
         return "" + this.data;
     }
@@ -62,27 +62,27 @@ public class NBTTagString extends NBTBase
      * Creates a clone of the tag.
      */
     @Override
-	public NBTBase copy()
+    public NBTBase copy()
     {
         return new NBTTagString(this.getName(), this.data);
     }
 
     @Override
-	public boolean equals(Object par1Obj)
+    public boolean equals(Object other)
     {
-        if (!super.equals(par1Obj))
+        if (!super.equals(other))
         {
             return false;
         }
         else
         {
-            NBTTagString nbttagstring = (NBTTagString)par1Obj;
-            return this.data == null && nbttagstring.data == null || this.data != null && this.data.equals(nbttagstring.data);
+            NBTTagString tempOther = (NBTTagString)other;
+            return this.data == null && tempOther.data == null || this.data != null && this.data.equals(tempOther.data);
         }
     }
 
     @Override
-	public int hashCode()
+    public int hashCode()
     {
         return super.hashCode() ^ this.data.hashCode();
     }

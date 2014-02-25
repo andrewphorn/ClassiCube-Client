@@ -14,7 +14,7 @@ import com.mojang.minecraft.player.Player;
 
 public class LevelLoader {
 
-	// Used for recieved map streams from servers
+	// Used for received map streams from servers
 	public static byte[] decompress(InputStream var0) {
 		try {
 			DataInputStream var3;
@@ -56,8 +56,8 @@ public class LevelLoader {
 		blocks = tc.getByteArray("BlockArray");
 
 		level.width = X;
-		level.height = Y;
-		level.depth = Z;
+		level.depth = Y;
+		level.height = Z;
 		level.blocks = blocks;
 
 		NBTTagCompound spawn = tc.getCompoundTag("Spawn");

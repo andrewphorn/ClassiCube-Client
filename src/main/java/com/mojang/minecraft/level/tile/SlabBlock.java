@@ -31,7 +31,7 @@ public final class SlabBlock extends Block {
 	}
 
 	@Override
-	protected final int getTextureId(int texture) {
+	public final int getTextureId(int texture) {
 		return texture <= 1 ? 6 : 5;
 	}
 
