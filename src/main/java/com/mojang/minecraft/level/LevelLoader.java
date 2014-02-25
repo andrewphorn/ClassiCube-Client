@@ -14,7 +14,7 @@ import com.mojang.minecraft.player.Player;
 
 public class LevelLoader {
 
-	// Used for received map streams from servers
+	// Used for recieved map streams from servers
 	public static byte[] decompress(InputStream var0) {
 		try {
 			DataInputStream var3;
