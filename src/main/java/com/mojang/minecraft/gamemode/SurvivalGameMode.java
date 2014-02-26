@@ -142,7 +142,7 @@ public final class SurvivalGameMode extends GameMode {
 	public void spawnMob() {
 		if (this.spawner.HasStopped)
 			return;
-		int area = this.spawner.level.width * this.spawner.level.height * spawner.level.depth / 64
+		int area = this.spawner.level.width * this.spawner.level.length * spawner.level.height / 64
 				/ 64 / 64;
 
 		if (spawner.level.random.nextInt(100) < area

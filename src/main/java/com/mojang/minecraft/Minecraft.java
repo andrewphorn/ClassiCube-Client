@@ -1448,7 +1448,7 @@ public final class Minecraft implements Runnable {
 
 										var74 = 0.0F;
 										var33 = 4.8828125E-4F;
-                                                                                if (level.cloudLevel < 0) level.cloudLevel = var89.level.depth + 2;
+                                                                                if (level.cloudLevel < 0) level.cloudLevel = var89.level.height + 2;
 										var74 = level.cloudLevel;
 										var34 = (var89.ticks + var80) * var33
 												* 0.03F;
@@ -1460,7 +1460,7 @@ public final class Minecraft implements Runnable {
                                                                                                         var30);
 
                                                                                         for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
-                                                                                                for (var125 = -2048; var125 < var101.level.height + 2048; var125 += 512) {
+                                                                                                for (var125 = -2048; var125 < var101.level.length + 2048; var125 += 512) {
                                                                                                         shapeRenderer.vertexUV(var86,
                                                                                                                         var74, var125 + 512,
                                                                                                                         var86 * var33 + var34,
@@ -1524,10 +1524,10 @@ public final class Minecraft implements Runnable {
 
 										shapeRenderer
 												.color(var34, var35, var87);
-										var74 = var101.level.depth + 10;
+										var74 = var101.level.height + 10;
 
 										for (var125 = -2048; var125 < var101.level.width + 2048; var125 += 512) {
-											for (var68 = -2048; var68 < var101.level.height + 2048; var68 += 512) {
+											for (var68 = -2048; var68 < var101.level.length + 2048; var68 += 512) {
 												shapeRenderer.vertex(var125,
 														var74, var68);
 												shapeRenderer.vertex(

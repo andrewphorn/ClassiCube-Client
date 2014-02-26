@@ -25,8 +25,8 @@ public class Level implements Serializable {
 
 	public static final long serialVersionUID = 0L;
 	public int width;
+	public int length;
 	public int height;
-	public int depth;
 	public byte[] blocks;
 	public String name;
 	public String creator;
@@ -95,7 +95,7 @@ public class Level implements Serializable {
 				int var7 = blockers[var5 + var6 * width];
 
 				int var8;
-				for (var8 = depth - 1; var8 > 0 && !isLightBlocker(var5, var8, var6); --var8) {
+				for (var8 = height - 1; var8 > 0 && !isLightBlocker(var5, var8, var6); --var8) {
 					;
 				}
 
@@ -290,12 +290,12 @@ public class Level implements Serializable {
 			var3 = width;
 		}
 
-		if (var5 > depth) {
-			var5 = depth;
+		if (var5 > height) {
+			var5 = height;
 		}
 
-		if (var7 > height) {
-			var7 = height;
+		if (var7 > length) {
+			var7 = length;
 		}
 
 		for (int var10 = var2; var10 < var3; ++var10) {
@@ -348,12 +348,12 @@ public class Level implements Serializable {
 			var4 = width;
 		}
 
-		if (var6 > depth) {
-			var6 = depth;
+		if (var6 > height) {
+			var6 = height;
 		}
 
-		if (var8 > height) {
-			var8 = height;
+		if (var8 > length) {
+			var8 = length;
 		}
 
 		for (int var11 = var3; var11 < var4; ++var11) {
@@ -405,12 +405,12 @@ public class Level implements Serializable {
 			var4 = width;
 		}
 
-		if (var6 > depth) {
-			var6 = depth;
+		if (var6 > height) {
+			var6 = height;
 		}
 
-		if (var8 > height) {
-			var8 = height;
+		if (var8 > length) {
+			var8 = length;
 		}
 
 		for (int var11 = var3; var11 < var4; ++var11) {
@@ -463,8 +463,8 @@ public class Level implements Serializable {
 					var16 = var13 + 0.5F - var3;
 					float var17 = var14 + 0.5F - var4;
 					int var19;
-					if (var12 >= 0 && var13 >= 0 && var14 >= 0 && var12 < width && var13 < depth
-							&& var14 < height
+					if (var12 >= 0 && var13 >= 0 && var14 >= 0 && var12 < width && var13 < height
+							&& var14 < length
 							&& var15 * var15 + var16 * var16 + var17 * var17 < var5 * var5
 							&& (var19 = getTile(var12, var13, var14)) > 0
 							&& Block.blocks[var19].canExplode()) {
@@ -513,7 +513,7 @@ public class Level implements Serializable {
 		do {
 			++var2;
 			var3 = var1.nextInt(width / 2) + width / 4;
-			var4 = var1.nextInt(height / 2) + height / 4;
+			var4 = var1.nextInt(length / 2) + length / 4;
 			var5 = getHighestTile(var3, var4) + 1;
 			if (var2 == 10000) {
 				xSpawn = var3;
@@ -690,15 +690,15 @@ public class Level implements Serializable {
 			for (int var9 = var5; var9 < var6; ++var9) {
 				for (int var10 = var7; var10 < var8; ++var10) {
 					AABB var11;
-					if (var3 >= 0 && var9 >= 0 && var10 >= 0 && var3 < width && var9 < depth
-							&& var10 < height) {
+					if (var3 >= 0 && var9 >= 0 && var10 >= 0 && var3 < width && var9 < height
+							&& var10 < length) {
 						Block var12;
 						if ((var12 = Block.blocks[getTile(var3, var9, var10)]) != null
 								&& (var11 = var12.getCollisionBox(var3, var9, var10)) != null
 								&& var1.intersectsInner(var11)) {
 							var2.add(var11);
 						}
-					} else if ((var3 < 0 || var9 < 0 || var10 < 0 || var3 >= width || var10 >= height)
+					} else if ((var3 < 0 || var9 < 0 || var10 < 0 || var3 >= width || var10 >= length)
 							&& (var11 = Block.BEDROCK.getCollisionBox(var3, var9, var10)) != null
 							&& var1.intersectsInner(var11)) {
 						var2.add(var11);
@@ -716,7 +716,7 @@ public class Level implements Serializable {
 
 	public int getHighestTile(int var1, int var2) {
 		int var3;
-		for (var3 = depth; (getTile(var1, var3 - 1, var2) == 0 || Block.blocks[getTile(var1,
+		for (var3 = height; (getTile(var1, var3 - 1, var2) == 0 || Block.blocks[getTile(var1,
 				var3 - 1, var2)].getLiquidType() != LiquidType.notLiquid) && var3 > 0; --var3) {
 			;
 		}
@@ -735,8 +735,8 @@ public class Level implements Serializable {
 	}
 
 	public int getTile(int var1, int var2, int var3) {
-		return var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < depth && var3 < height ? blocks[(var2
-				* height + var3)
+		return var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length ? blocks[(var2
+				* length + var3)
 				* width + var1] & 255
 				: 0;
 	}
@@ -750,14 +750,14 @@ public class Level implements Serializable {
 			throw new RuntimeException("The level is corrupt!");
 		} else {
 			listeners = new ArrayList<LevelRenderer>();
-			blockers = new int[width * height];
-			Arrays.fill(blockers, depth);
-			calcLightDepths(0, 0, width, height);
+			blockers = new int[width * length];
+			Arrays.fill(blockers, height);
+			calcLightDepths(0, 0, width, length);
 			random = new Random();
 			randId = random.nextInt();
 			tickList = new ArrayList<NextTickListEntry>();
 			if (waterLevel == 0) {
-				waterLevel = depth / 2;
+				waterLevel = height / 2;
 			}
 
 			if (skyColor == 0) {
@@ -777,7 +777,7 @@ public class Level implements Serializable {
 			}
 
 			if (blockMap == null) {
-				blockMap = new BlockMap(width, depth, height);
+				blockMap = new BlockMap(width, height, length);
 			}
 
 		}
@@ -788,7 +788,7 @@ public class Level implements Serializable {
 	}
 
 	public boolean isInBounds(int var1, int var2, int var3) {
-		return var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < depth && var3 < height;
+		return var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length;
 	}
 
 	public boolean isLightBlocker(int var1, int var2, int var3) {
@@ -797,7 +797,7 @@ public class Level implements Serializable {
 	}
 
 	public boolean isLit(int var1, int var2, int var3) {
-		return var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < depth && var3 < height ? var2 >= blockers[var1
+		return var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length ? var2 >= blockers[var1
 				+ var3 * width]
 				: true;
 	}
@@ -848,9 +848,9 @@ public class Level implements Serializable {
 
 			for (var8 = var1 - var7; var8 <= var1 + var7 && var5; ++var8) {
 				for (var9 = var3 - var7; var9 <= var3 + var7 && var5; ++var9) {
-					if (var8 >= 0 && var6 >= 0 && var9 >= 0 && var8 < width && var6 < depth
-							&& var9 < height) {
-						if ((blocks[(var6 * height + var9) * width + var8] & 255) != 0) {
+					if (var8 >= 0 && var6 >= 0 && var9 >= 0 && var8 < width && var6 < height
+							&& var9 < length) {
+						if ((blocks[(var6 * length + var9) * width + var8] & 255) != 0) {
 							var5 = false;
 						}
 					} else {
@@ -862,8 +862,8 @@ public class Level implements Serializable {
 
 		if (!var5) {
 			return false;
-		} else if ((blocks[((var2 - 1) * height + var3) * width + var1] & 255) == Block.GRASS.id
-				&& var2 < depth - var4 - 1) {
+		} else if ((blocks[((var2 - 1) * length + var3) * width + var1] & 255) == Block.GRASS.id
+				&& var2 < height - var4 - 1) {
 			setTile(var1, var2 - 1, var3, Block.DIRT.id);
 
 			int var13;
@@ -904,18 +904,18 @@ public class Level implements Serializable {
 	}
 
 	public boolean netSetTileNoNeighborChange(int var1, int var2, int var3, int var4) {
-		if (var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < depth && var3 < height) {
-			if (var4 == blocks[(var2 * height + var3) * width + var1]) {
+		if (var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length) {
+			if (var4 == blocks[(var2 * length + var3) * width + var1]) {
 				return false;
 			} else {
 				if (var4 == 0
-						&& (var1 == 0 || var3 == 0 || var1 == width - 1 || var3 == height - 1)
+						&& (var1 == 0 || var3 == 0 || var1 == width - 1 || var3 == length - 1)
 						&& var2 >= getGroundLevel() && var2 < getWaterLevel() && !networkMode) {
 					var4 = Block.WATER.id;
 				}
 
-				byte var5 = blocks[(var2 * height + var3) * width + var1];
-				blocks[(var2 * height + var3) * width + var1] = (byte) var4;
+				byte var5 = blocks[(var2 * length + var3) * width + var1];
+				blocks[(var2 * length + var3) * width + var1] = (byte) var4;
 				if (var5 != 0) {
 					Block.blocks[var5].onRemoved(this, var1, var2, var3);
 				}
@@ -983,11 +983,11 @@ public class Level implements Serializable {
 
 	public void setData(int var1, int var2, int var3, byte[] var4) {
 		width = var1;
-		height = var3;
-		depth = var2;
+		length = var3;
+		height = var2;
 		blocks = var4;
 		blockers = new int[var1 * var3];
-		Arrays.fill(blockers, depth);
+		Arrays.fill(blockers, height);
 		calcLightDepths(0, 0, var1, var3);
 
 		for (var1 = 0; var1 < listeners.size(); ++var1) {
@@ -1027,11 +1027,11 @@ public class Level implements Serializable {
 	}
 
 	public boolean setTileNoUpdate(int var1, int var2, int var3, int var4) {
-		if (var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < depth && var3 < height) {
-			if (var4 == blocks[(var2 * height + var3) * width + var1]) {
+		if (var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length) {
+			if (var4 == blocks[(var2 * length + var3) * width + var1]) {
 				return false;
 			} else {
-				blocks[(var2 * height + var3) * width + var1] = (byte) var4;
+				blocks[(var2 * length + var3) * width + var1] = (byte) var4;
 				return true;
 			}
 		} else {
@@ -1059,13 +1059,13 @@ public class Level implements Serializable {
 			;
 		}
 
-		while (1 << var2 < height) {
+		while (1 << var2 < length) {
 			++var2;
 		}
 
-		int var3 = height - 1;
+		int var3 = length - 1;
 		int var4 = width - 1;
-		int var5 = depth - 1;
+		int var5 = height - 1;
 		int var6;
 		int var7;
 		if (tickCount % 5 == 0) {
@@ -1079,7 +1079,7 @@ public class Level implements Serializable {
 				} else {
 					byte var9;
 					if (isInBounds(var8.x, var8.y, var8.z)
-							&& (var9 = blocks[(var8.y * height + var8.z) * width + var8.x]) == var8.block
+							&& (var9 = blocks[(var8.y * length + var8.z) * width + var8.x]) == var8.block
 							&& var9 > 0) {
 						Block.blocks[var9].update(this, var8.x, var8.y, var8.z, random);
 					}
@@ -1087,7 +1087,7 @@ public class Level implements Serializable {
 			}
 		}
 
-		unprocessed += width * height * depth;
+		unprocessed += width * length * height;
 		var6 = unprocessed / 200;
 		unprocessed -= var6 * 200;
 
@@ -1097,7 +1097,7 @@ public class Level implements Serializable {
 			int var13 = (var12 = randId >> 2) & var4;
 			int var10 = var12 >> var1 & var3;
 			var12 = var12 >> var1 + var2 & var5;
-			byte var11 = blocks[(var12 * height + var10) * width + var13];
+			byte var11 = blocks[(var12 * length + var10) * width + var13];
 			if (Block.physics[var11]) {
 				Block.blocks[var11].update(this, var13, var12, var10, random);
 			}
@@ -1119,9 +1119,9 @@ public class Level implements Serializable {
 	}
 
 	private void updateTile(int var1, int var2, int var3, int var4) {
-		if (var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < depth && var3 < height) {
+		if (var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length) {
 			Block var5;
-			if ((var5 = Block.blocks[blocks[(var2 * height + var3) * width + var1]]) != null) {
+			if ((var5 = Block.blocks[blocks[(var2 * length + var3) * width + var1]]) != null) {
 				var5.onNeighborChange(this, var1, var2, var3, var4);
 			}
 

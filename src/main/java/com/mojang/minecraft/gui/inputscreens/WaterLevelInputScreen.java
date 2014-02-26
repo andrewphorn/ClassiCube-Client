@@ -30,7 +30,7 @@ public class WaterLevelInputScreen extends InputValueScreen {
 				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}
 			if (var1.id == 800) {
-				minecraft.level.waterLevel = minecraft.level.depth / 2;
+				minecraft.level.waterLevel = minecraft.level.height / 2;
 				minecraft.levelRenderer.refresh();
 				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}

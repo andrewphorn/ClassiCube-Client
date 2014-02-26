@@ -43,8 +43,8 @@ public class LevelSerializer {
 		master.setString("Name", "SinglePlayerMap");
 		master.setByteArray("UUID", asByteArray(UUID.randomUUID()));
 		master.setShort("X", (short) level.width);
-		master.setShort("Y", (short) level.depth);
-		master.setShort("Z", (short) level.height);
+		master.setShort("Y", (short) level.height);
+		master.setShort("Z", (short) level.length);
 		master.setByteArray("BlockArray", level.blocks);
 
 		NBTTagCompound createdBy = new NBTTagCompound("CreatedBy");

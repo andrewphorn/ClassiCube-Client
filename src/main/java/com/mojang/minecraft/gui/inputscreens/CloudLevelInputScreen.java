@@ -29,7 +29,7 @@ public class CloudLevelInputScreen extends InputValueScreen {
 				minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
 			}
 			if (var1.id == 800) {
-				minecraft.level.cloudLevel = minecraft.level.depth + 2;
+				minecraft.level.cloudLevel = minecraft.level.height + 2;
 				minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
 			}
 

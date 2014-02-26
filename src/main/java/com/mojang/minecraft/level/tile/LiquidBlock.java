@@ -51,7 +51,7 @@ public class LiquidBlock extends Block {
 	@Override
 	public final boolean canRenderSide(Level level, int x, int y, int z, int side) {
 		int var6;
-		return x >= 0 && y >= 0 && z >= 0 && x < level.width && z < level.height ? (var6 = level
+		return x >= 0 && y >= 0 && z >= 0 && x < level.width && z < level.length ? (var6 = level
 				.getTile(x, y, z)) != movingId && var6 != stillId ? side == 1
 				&& (level.getTile(x - 1, y, z) == 0 || level.getTile(x + 1, y, z) == 0
 						|| level.getTile(x, y, z - 1) == 0 || level.getTile(x, y, z + 1) == 0) ? true
