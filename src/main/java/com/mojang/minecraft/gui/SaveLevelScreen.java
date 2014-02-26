@@ -19,7 +19,7 @@ public final class SaveLevelScreen extends LoadLevelScreen {
 	@Override
 	public final void onOpen() {
 		super.onOpen();
-		buttons.get(5).text = "Save file...";
+		buttons.get(5).text = "Done";
 	}
 
 	@Override

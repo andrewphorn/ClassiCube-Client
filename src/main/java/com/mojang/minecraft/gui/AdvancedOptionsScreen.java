@@ -46,25 +46,20 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 				var1.text = settings.getSetting(var1.id);
 
 			}
+                        if (var1.id == 100) {
+				minecraft.setCurrentScreen(new CloudOptionsScreen(this, settings));
+			}
 
-			if (var1.id == 100) {
+			if (var1.id == 200) {
 				WaterLevelInputScreen screen = new WaterLevelInputScreen(parent, ""
 						+ minecraft.level.waterLevel, height, "Enter new value for water level...");
 				screen.numbersOnly = true;
 				minecraft.setCurrentScreen(screen);
 			}
-			if (var1.id == 200) {
+			if (var1.id == 300) {
 				SkyColorInputScreen screen = new SkyColorInputScreen(parent, ""
 						+ Integer.toHexString(minecraft.level.skyColor), height,
 						"Enter new value for sky color...");
-				screen.allowedChars = "ABCDEFabcdef1234567890";
-				screen.stringLimit = 6;
-				minecraft.setCurrentScreen(screen);
-			}
-			if (var1.id == 300) {
-				CloudColorInputScreen screen = new CloudColorInputScreen(parent, ""
-						+ Integer.toHexString(minecraft.level.cloudColor), height,
-						"Enter new value for cloud color...");
 				screen.allowedChars = "ABCDEFabcdef1234567890";
 				screen.stringLimit = 6;
 				minecraft.setCurrentScreen(screen);
@@ -126,14 +121,14 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 					/ 6 + 24 * (heightSeperator >> 1), settings.getSetting(var1)));
 			heightSeperator++;
 		}
-		buttons.add(new OptionButton(100, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
+                buttons.add(new OptionButton(100, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
+				+ 24 * (heightSeperator >> 1), "Clouds"));
+		heightSeperator++;
+                buttons.add(new OptionButton(200, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
 				+ 24 * (heightSeperator >> 1), "Water Level"));
 		heightSeperator++;
-		buttons.add(new OptionButton(200, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
-				+ 24 * (heightSeperator >> 1), "Sky Color"));
-		heightSeperator++;
 		buttons.add(new OptionButton(300, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
-				+ 24 * (heightSeperator >> 1), "Cloud Color"));
+				+ 24 * (heightSeperator >> 1), "Sky Color"));
 		heightSeperator++;
 		buttons.add(new OptionButton(400, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
 				+ 24 * (heightSeperator >> 1), "Fog Color"));

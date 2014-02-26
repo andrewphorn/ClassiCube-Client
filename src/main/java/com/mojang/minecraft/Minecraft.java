@@ -127,7 +127,7 @@ public final class Minecraft implements Runnable {
 	/**
 	 * True if we are in full screen mode, false if otherwise.
 	 */
-	private boolean isFullScreen = false;
+	public boolean isFullScreen = false;
 	/**
 	 * This timer determines how much time will pass between block
 	 * modifications. It is used to prevent really fast block spamming.
@@ -295,7 +295,8 @@ public final class Minecraft implements Runnable {
 	public MonitoringThread monitoringThread;
 	public int tempDisplayWidth;
 	public int tempDisplayHeight;
-	public boolean canRenderGUI = true;
+	public boolean canRenderGUI = true;        
+        public int flyToggleTimer = 7;
 
 	private static void checkGLError(String var0) {
 		int var1;
@@ -1447,60 +1448,64 @@ public final class Minecraft implements Runnable {
 
 										var74 = 0.0F;
 										var33 = 4.8828125E-4F;
-										var74 = var89.level.depth + 2;
+                                                                                if (level.cloudLevel < 0) level.cloudLevel = var89.level.height + 2;
+										var74 = level.cloudLevel;
 										var34 = (var89.ticks + var80) * var33
 												* 0.03F;
 										var35 = 0.0F;
-										shapeRenderer.begin();
-										shapeRenderer.color(var107, var29,
-												var30);
+                                                                                if (settings.showClouds)
+                                                                                {
+                                                                                        shapeRenderer.begin();
+                                                                                        shapeRenderer.color(var107, var29,
+                                                                                                        var30);
 
-										for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
-											for (var125 = -2048; var125 < var101.level.height + 2048; var125 += 512) {
-												shapeRenderer.vertexUV(var86,
-														var74, var125 + 512,
-														var86 * var33 + var34,
-														(var125 + 512) * var33);
-												shapeRenderer.vertexUV(
-														var86 + 512, var74,
-														var125 + 512,
-														(var86 + 512) * var33
-																+ var34,
-														(var125 + 512) * var33);
-												shapeRenderer.vertexUV(
-														var86 + 512, var74,
-														var125,
-														(var86 + 512) * var33
-																+ var34, var125
-																* var33);
-												shapeRenderer.vertexUV(var86,
-														var74, var125,
-														var86 * var33 + var34,
-														var125 * var33);
-												shapeRenderer.vertexUV(var86,
-														var74, var125,
-														var86 * var33 + var34,
-														var125 * var33);
-												shapeRenderer.vertexUV(
-														var86 + 512, var74,
-														var125,
-														(var86 + 512) * var33
-																+ var34, var125
-																* var33);
-												shapeRenderer.vertexUV(
-														var86 + 512, var74,
-														var125 + 512,
-														(var86 + 512) * var33
-																+ var34,
-														(var125 + 512) * var33);
-												shapeRenderer.vertexUV(var86,
-														var74, var125 + 512,
-														var86 * var33 + var34,
-														(var125 + 512) * var33);
-											}
-										}
+                                                                                        for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
+                                                                                                for (var125 = -2048; var125 < var101.level.length + 2048; var125 += 512) {
+                                                                                                        shapeRenderer.vertexUV(var86,
+                                                                                                                        var74, var125 + 512,
+                                                                                                                        var86 * var33 + var34,
+                                                                                                                        (var125 + 512) * var33);
+                                                                                                        shapeRenderer.vertexUV(
+                                                                                                                        var86 + 512, var74,
+                                                                                                                        var125 + 512,
+                                                                                                                        (var86 + 512) * var33
+                                                                                                                                        + var34,
+                                                                                                                        (var125 + 512) * var33);
+                                                                                                        shapeRenderer.vertexUV(
+                                                                                                                        var86 + 512, var74,
+                                                                                                                        var125,
+                                                                                                                        (var86 + 512) * var33
+                                                                                                                                        + var34, var125
+                                                                                                                                        * var33);
+                                                                                                        shapeRenderer.vertexUV(var86,
+                                                                                                                        var74, var125,
+                                                                                                                        var86 * var33 + var34,
+                                                                                                                        var125 * var33);
+                                                                                                        shapeRenderer.vertexUV(var86,
+                                                                                                                        var74, var125,
+                                                                                                                        var86 * var33 + var34,
+                                                                                                                        var125 * var33);
+                                                                                                        shapeRenderer.vertexUV(
+                                                                                                                        var86 + 512, var74,
+                                                                                                                        var125,
+                                                                                                                        (var86 + 512) * var33
+                                                                                                                                        + var34, var125
+                                                                                                                                        * var33);
+                                                                                                        shapeRenderer.vertexUV(
+                                                                                                                        var86 + 512, var74,
+                                                                                                                        var125 + 512,
+                                                                                                                        (var86 + 512) * var33
+                                                                                                                                        + var34,
+                                                                                                                        (var125 + 512) * var33);
+                                                                                                        shapeRenderer.vertexUV(var86,
+                                                                                                                        var74, var125 + 512,
+                                                                                                                        var86 * var33 + var34,
+                                                                                                                        (var125 + 512) * var33);
+                                                                                                }
+                                                                                        }
 
-										shapeRenderer.end();
+                                                                                        shapeRenderer.end();
+                                                                                }
 										GL11.glDisable(3553);
 
 										shapeRenderer.begin();
@@ -1519,10 +1524,10 @@ public final class Minecraft implements Runnable {
 
 										shapeRenderer
 												.color(var34, var35, var87);
-										var74 = var101.level.depth + 10;
+										var74 = var101.level.height + 10;
 
 										for (var125 = -2048; var125 < var101.level.width + 2048; var125 += 512) {
-											for (var68 = -2048; var68 < var101.level.height + 2048; var68 += 512) {
+											for (var68 = -2048; var68 < var101.level.length + 2048; var68 += 512) {
 												shapeRenderer.vertex(var125,
 														var74, var68);
 												shapeRenderer.vertex(
@@ -2705,14 +2710,15 @@ public final class Minecraft implements Runnable {
 											level.customShadowColour = new ColorCache(
 													r / 255.0F, g / 255.0F,
 													b / 255.0F);
+                                                                                        levelRenderer.refresh();
 											break;
 										case 4: // diffuse color
 											level.customLightColour = new ColorCache(
 													r / 255.0F, g / 255.0F,
 													b / 255.0F);
+                                                                                        levelRenderer.refresh();
 											break;
 										}
-										levelRenderer.refresh();
 									} else if (packetType == PacketType.ENV_SET_MAP_APPEARANCE) {
 										String textureUrl = (String) packetParams[0];
 										byte sideBlock = ((Byte) packetParams[1])
@@ -3358,8 +3364,18 @@ public final class Minecraft implements Runnable {
 					player.inventory.swapPaint(var25);
 					break;
 				}
-				currentScreen.mouseEvent();
+                                currentScreen.mouseEvent();
 			}
+                        while (Keyboard.next()) {
+				if (Keyboard.getEventKey() > 1 && Keyboard.getEventKey() < 11) {
+                                    if (GameSettings.CanReplaceSlot) {
+                                        player.inventory.selected = Keyboard.getEventKey() - 2;
+                                        break;
+                                    }
+                                }
+                                currentScreen.keyboardEvent();
+			}
+                        
 		}
 
 		else if (currentScreen == null) {
@@ -3403,6 +3419,11 @@ public final class Minecraft implements Runnable {
 			if (blockHitTime > 0) {
 				--blockHitTime;
 			}
+                        
+                        if (flyToggleTimer > 0)
+                        {
+                            --flyToggleTimer;
+                        }  
 
 			while (Keyboard.next()) {
 				player.setKey(Keyboard.getEventKey(),
@@ -3418,8 +3439,7 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (gamemode instanceof CreativeGameMode) {
-							if (HackState.Noclip || HackState.Fly
-									|| HackState.Speed) {
+							if (HackState.Respawn) {
 								if (Keyboard.getEventKey() == settings.loadLocationKey.key) {
 									if (!(currentScreen instanceof ChatInputScreen)) {
 										player.resetPos();
@@ -3444,9 +3464,7 @@ public final class Minecraft implements Runnable {
 							isSnowing = !isSnowing;
 							isRaining = false;
 						}
-						if (Keyboard.getEventKey() == 53
-								&& networkManager != null
-								&& networkManager.isConnected()) {
+						if (Keyboard.getEventKey() == 53) {
 							player.releaseAllKeys();
 							ChatInputScreenExtension s = new ChatInputScreenExtension();
 							setCurrentScreen(s);
@@ -3480,16 +3498,32 @@ public final class Minecraft implements Runnable {
 						if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
 							takeAndSaveScreenshot(width, height);
 						}
+                                                
+                                                if (Keyboard.getEventKey() == Keyboard.KEY_F3) {
+							settings.showDebug = !settings.showDebug;
+						}
 
 						if (settings.HacksEnabled) {
 							if (settings.HackType == 0) {
-								if (Keyboard.getEventKey() == Keyboard.KEY_X) {
+								if (Keyboard.getEventKey() == settings.noClip.key) {
 									if (HackState.Noclip || HackState.Noclip
 											&& player.userType >= 100) {
 										player.noPhysics = !player.noPhysics;
 										player.hovered = !player.hovered;
 									}
 								}
+                                                                if (HackState.Fly && Keyboard.getEventKey() == settings.jumpKey.key)
+                                                                {
+                                                                    if (flyToggleTimer == 0)
+                                                                    {
+                                                                        this.flyToggleTimer = 7;
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        player.flyingMode = !player.flyingMode;
+                                                                        this.flyToggleTimer = 0;
+                                                                    }
+                                                                }
 
 								if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
 									if (HackState.Fly) {
@@ -3516,9 +3550,7 @@ public final class Minecraft implements Runnable {
 							gamemode.openInventory();
 						}
 
-						if (Keyboard.getEventKey() == settings.chatKey.key
-								&& networkManager != null
-								&& networkManager.isConnected()) {
+						if (Keyboard.getEventKey() == settings.chatKey.key) {
 							player.releaseAllKeys();
 							setCurrentScreen(new ChatInputScreenExtension());
 						}

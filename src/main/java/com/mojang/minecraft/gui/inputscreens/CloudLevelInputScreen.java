@@ -7,12 +7,11 @@ import com.mojang.minecraft.gui.GuiScreen;
 
 ;
 
-public class CloudColorInputScreen extends InputValueScreen {
+public class CloudLevelInputScreen extends InputValueScreen {
 
-	String defaultHex = "ffffff";
-
-	public CloudColorInputScreen(GuiScreen var1, String var2, int var3, String Title) {
+	public CloudLevelInputScreen(GuiScreen var1, String var2, int var3, String Title) {
 		super(var1, var2, var3, Title);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -22,7 +21,7 @@ public class CloudColorInputScreen extends InputValueScreen {
 				Minecraft var10000 = minecraft;
 				String var2 = name;
 				Minecraft var4 = var10000;
-				var4.level.cloudColor = Integer.parseInt(var2, 16);
+				var4.level.cloudLevel = Integer.parseInt(var2);
 				minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
 			}
 
@@ -30,9 +29,10 @@ public class CloudColorInputScreen extends InputValueScreen {
 				minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
 			}
 			if (var1.id == 800) {
-				minecraft.level.cloudColor = Integer.parseInt(defaultHex, 16);
+				minecraft.level.cloudLevel = minecraft.level.height + 2;
 				minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
 			}
+
 		}
 	}
 }

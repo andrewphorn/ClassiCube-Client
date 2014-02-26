@@ -40,6 +40,7 @@ public final class GameSettings implements Serializable {
 	public boolean showDebug = false;
 	public int viewDistance = 0;
 	public boolean viewBobbing = true;
+	public boolean showClouds = true;
 	public boolean anaglyph = false;
 	public boolean limitFramerate = true;
 	public boolean thirdPersonMode = false;
@@ -55,6 +56,7 @@ public final class GameSettings implements Serializable {
 	public KeyBinding loadLocationKey = new KeyBinding("Load location", 19);
 	public KeyBinding runKey = new KeyBinding("Run", 42);
 	public KeyBinding[] bindings;
+        public KeyBinding[] bindingsmore;
 	public transient Minecraft minecraft;
 	private File settingsFile;
 	public int settingCount;
@@ -77,12 +79,14 @@ public final class GameSettings implements Serializable {
 	public KeyBinding flyKey = new KeyBinding("Fly", Keyboard.KEY_Z);
 
 	public KeyBinding flyUp = new KeyBinding("Fly Up", Keyboard.KEY_Q);
-	public KeyBinding flyDown = new KeyBinding("Fly Down", Keyboard.KEY_E);
+	public KeyBinding flyDown = new KeyBinding("Fly Down", Keyboard.KEY_E);        
+	public KeyBinding noClip = new KeyBinding("NoClip", Keyboard.KEY_X);
 
 	public GameSettings(Minecraft minecraft, File minecraftFolder) {
 		bindings = new KeyBinding[] { forwardKey, leftKey, backKey, rightKey, jumpKey,
-				inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey, runKey };
-
+				inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey };
+                bindingsmore = new KeyBinding[] { runKey, flyKey, flyUp, flyDown, noClip};
+                
 		settingCount = 15;
 
 		this.minecraft = minecraft;
@@ -94,6 +98,9 @@ public final class GameSettings implements Serializable {
 
 	public String getBinding(int key) {
 		return bindings[key].name + ": " + Keyboard.getKeyName(bindings[key].key);
+	}
+        public String getBindingMore(int key) {
+		return bindingsmore[key].name + ": " + Keyboard.getKeyName(bindingsmore[key].key);
 	}
 
 	public String getSetting(int id) {
@@ -235,6 +242,12 @@ public final class GameSettings implements Serializable {
 
 	public void setBinding(int key, int keyID) {
 		bindings[key].key = keyID;
+
+		save();
+	}
+        
+        public void setBindingMore(int key, int keyID) {
+		bindingsmore[key].key = keyID;
 
 		save();
 	}

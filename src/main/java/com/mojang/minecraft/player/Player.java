@@ -15,6 +15,7 @@ import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
+import org.lwjgl.input.Keyboard;
 
 public class Player extends Mob {
 	private int flyTrig = 0;
@@ -74,7 +75,7 @@ public class Player extends Mob {
 	}
 
 	@Override
-	public void aiStep() {
+	public void aiStep() {                              
 		if (settings.HackType == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)
 				&& input.canMove) {
 			inventory.tick();

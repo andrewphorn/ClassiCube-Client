@@ -306,29 +306,35 @@ public final class ProgressBarDisplay {
 			String joinedString = new StringBuilder().append(title).append(" ").append(text)
 					.toString().toLowerCase();
 
-			if (joinedString.indexOf("-hax") > -1) {
+			if (joinedString.indexOf("-hax") > -1 || joinedString.indexOf("-h") > -1) {
 				HackState.setAllDisabled();
 			} else { // enable all, it's either +hax or nothing at all
 				HackState.setAllEnabled();
 			}
 			// then we can manually disable others here
-			if (joinedString.indexOf("+fly") > -1) {
+			if (joinedString.indexOf("+fly") > -1 || joinedString.indexOf("+f") > -1) {
 				HackState.Fly = true;
-			} else if (joinedString.indexOf("-fly") > -1) {
+			} else if (joinedString.indexOf("-fly") > -1 || joinedString.indexOf("-f") > -1) {
 				HackState.Fly = false;
 			}
-			if (joinedString.indexOf("+noclip") > -1) {
+			if (joinedString.indexOf("+noclip") > -1 || joinedString.indexOf("+nc") > -1) {
 				HackState.Noclip = true;
-			} else if (joinedString.indexOf("-noclip") > -1) {
+			} else if (joinedString.indexOf("-noclip") > -1 || joinedString.indexOf("-nc") > -1) {
 				HackState.Noclip = false;
 			}
-			if (joinedString.indexOf("+speed") > -1) {
+			if (joinedString.indexOf("+speed") > -1 || joinedString.indexOf("+s") > -1) {
 				HackState.Speed = true;
-			} else if (joinedString.indexOf("-speed") > -1) {
+			} else if (joinedString.indexOf("-speed") > -1 || joinedString.indexOf("-s") > -1) {
 				HackState.Speed = false;
 			}
+                        if (joinedString.indexOf("+respawn") > -1 || joinedString.indexOf("+r") > -1) {
+				HackState.Respawn = true;
+			} else if (joinedString.indexOf("-respawn") > -1 || joinedString.indexOf("-r") > -1) {
+				HackState.Respawn = false;
+			}
 
-			if (joinedString.indexOf("+ophax") > -1 && minecraft.player.userType >= 100) {
+			if ((joinedString.indexOf("+ophax") > -1 || joinedString.indexOf("+oph") > -1) 
+                                && minecraft.player.userType >= 100) {
 				HackState.setAllEnabled();
 			}
 		}

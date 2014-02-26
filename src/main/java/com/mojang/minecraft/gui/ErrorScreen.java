@@ -1,6 +1,6 @@
 package com.mojang.minecraft.gui;
 
-import com.oyasunadev.mcraft.client.core.MinecraftStandalone;
+import com.oyasunadev.mcraft.client.core.ClassiCubeStandalone;
 
 public final class ErrorScreen extends GuiScreen {
 
@@ -15,10 +15,9 @@ public final class ErrorScreen extends GuiScreen {
 	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.id == 0) {
-			minecraft.isRunning = false;
-			minecraft.shutdown();
-			// System.exit(0);
-			MinecraftStandalone.main(MinecraftStandalone.storedArgs);
+                        minecraft.shutdown();
+                        ClassiCubeStandalone.main(ClassiCubeStandalone.storedArgs);
+                        minecraft.isRunning = false;
 		}
 	}
 
@@ -29,9 +28,12 @@ public final class ErrorScreen extends GuiScreen {
 	@Override
 	public final void onOpen() {
 		buttons.clear();
-		// this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4
-		// + 96, this.minecraft
-		// .isOnline() ? "Try to reconnect..." : "Restart ClassiCube"));
+		this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4
+		+ 96, minecraft.session != null ? "Try to reconnect..." : "Restart ClassiCube"));
+		if (minecraft.isFullScreen) {
+			minecraft.toggleFullscreen();
+		}
+                buttons.get(0).active = false;
 	}
 
 	@Override

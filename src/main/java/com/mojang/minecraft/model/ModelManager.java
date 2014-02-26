@@ -35,17 +35,18 @@ public final class ModelManager {
 				return new BlockModel();
 			}
 		}
-		return modelName.equals("humanoid") ? human : modelName
-				.equals("humanoid.armor") ? armoredHuman : modelName
-				.equals("creeper") ? creeper
-				: modelName.equals("chicken") ? chicken : modelName
-						.equals("skeleton") ? skeleton : modelName
-						.equals("printer") ? printer
-						: modelName.equals("croc") ? croc : modelName
-								.equals("zombie") ? zombie : modelName
-								.equals("pig") ? pig : modelName
-								.equals("sheep") ? sheep : modelName
-								.equals("spider") ? spider : modelName
-								.equals("sheep.fur") ? sheepFur : null;
+		return modelName.equals("humanoid") ? human : 
+                       modelName.equals("humanoid.armor") ? armoredHuman : 
+                       modelName.equals("creeper") ? creeper :
+                       modelName.equals("chicken") ? chicken : 
+                       modelName.equals("skeleton") ? skeleton : 
+                       modelName.equals("printer") ? printer : 
+                       modelName.equals("croc") ? croc : 
+                       modelName.equals("zombie") ? zombie : 
+                       modelName.equals("pig") ? pig : 
+                       modelName.equals("sheep") ? sheep : 
+                       modelName.equals("spider") ? spider : 
+                       modelName.equals("sheep.fur") ? sheepFur : 
+                       null;
 	}
 }

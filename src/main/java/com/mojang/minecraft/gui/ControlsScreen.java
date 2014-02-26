@@ -18,7 +18,9 @@ public final class ControlsScreen extends GuiScreen {
 			buttons.get(var2).text = settings.getBinding(var2);
 		}
 
-		if (var1.id == 200) {
+		if (var1.id == 100) {
+			minecraft.setCurrentScreen(new MoreControlsScreen(this, minecraft.settings));
+		} else if (var1.id == 200) {
 			minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
 		} else {
 			selected = var1.id;
@@ -43,6 +45,8 @@ public final class ControlsScreen extends GuiScreen {
 			buttons.add(new OptionButton(var1, width / 2 - 155 + var1 % 2 * 160, height / 6 + 24
 					* (var1 >> 1), settings.getBinding(var1)));
 		}
+                buttons.add(new OptionButton(100, width / 2 - 77 + 10 % 2 * 160, height / 6 + 24
+					* (10 >> 1), "More..."));
 
 		buttons.add(new Button(200, width / 2 - 100, height / 6 + 168, "Done"));
 	}

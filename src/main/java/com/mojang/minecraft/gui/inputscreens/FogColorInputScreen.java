@@ -23,7 +23,6 @@ public class FogColorInputScreen extends InputValueScreen {
 				String var2 = name;
 				Minecraft var4 = var10000;
 				var4.level.fogColor = Integer.parseInt(var2, 16);
-				var4.levelRenderer.refresh();
 				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}
 
@@ -32,7 +31,6 @@ public class FogColorInputScreen extends InputValueScreen {
 			}
 			if (var1.id == 800) {
 				minecraft.level.fogColor = Integer.parseInt(defaultHex, 16);
-				minecraft.levelRenderer.refresh();
 				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}
 		}

@@ -6,6 +6,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import com.mojang.minecraft.player.Player;
+import java.awt.image.BufferedImage;
 
 public class SkinDownloadThread extends Thread {
 	String skinServer;
@@ -35,8 +36,12 @@ public class SkinDownloadThread extends Thread {
 				connection.connect();
 
 				if (connection.getResponseCode() != 404) {
-					Player.newTexture = ImageIO.read(connection.getInputStream()).getSubimage(0, 0, 64, 32);
-
+                                        BufferedImage image = ImageIO.read(connection.getInputStream());
+                                        if (image.getHeight() == image.getWidth()) {
+                                            Player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight() / 2);
+                                        } else {
+                                            Player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
+                                        }
 					return;
 				}
 			} catch (Exception var4) {

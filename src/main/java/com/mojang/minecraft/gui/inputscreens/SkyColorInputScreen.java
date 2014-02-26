@@ -22,7 +22,6 @@ public class SkyColorInputScreen extends InputValueScreen {
 				String var2 = name;
 				Minecraft var4 = var10000;
 				var4.level.skyColor = Integer.parseInt(var2, 16);
-				var4.levelRenderer.refresh();
 				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}
 
@@ -31,7 +30,6 @@ public class SkyColorInputScreen extends InputValueScreen {
 			}
 			if (var1.id == 800) {
 				minecraft.level.skyColor = Integer.parseInt("99ccff", 16);
-				minecraft.levelRenderer.refresh();
 				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}
 

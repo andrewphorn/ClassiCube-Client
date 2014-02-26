@@ -95,8 +95,8 @@ public final class LevelRenderer {
 		}
 
 		xChunks = level.width / 16;
-		yChunks = level.depth / 16;
-		zChunks = level.height / 16;
+		yChunks = level.height / 16;
+		zChunks = level.length / 16;
 		chunkCache = new Chunk[xChunks * yChunks * zChunks];
 		loadQueue = new Chunk[xChunks * yChunks * zChunks];
 		var1 = 0;
@@ -137,8 +137,8 @@ public final class LevelRenderer {
 			var5 = level.width;
 		}
 
-		if (var5 > level.height) {
-			var5 = level.height;
+		if (var5 > level.length) {
+			var5 = level.length;
 		}
 
 		int var6 = 2048 / var5;
@@ -146,9 +146,9 @@ public final class LevelRenderer {
 
 		int var7;
 		for (var7 = -var5 * var6; var7 < var9.level.width + var5 * var6; var7 += var5) {
-			for (int var8 = -var5 * var6; var8 < var9.level.height + var5 * var6; var8 += var5) {
+			for (int var8 = -var5 * var6; var8 < var9.level.length + var5 * var6; var8 += var5) {
 				waterLevel = groundLevel;
-				if (var7 >= 0 && var8 >= 0 && var7 < var9.level.width && var8 < var9.level.height) {
+				if (var7 >= 0 && var8 >= 0 && var7 < var9.level.width && var8 < var9.level.length) {
 					waterLevel = 0.0F;
 				}
 				var11.vertexUV(var7, waterLevel, var8 + var5, 0.0F, var5);
@@ -170,10 +170,10 @@ public final class LevelRenderer {
 			var11.vertexUV(var7 + var5, 0.0F, 0.0F, var5, 0.0F);
 			var11.vertexUV(var7 + var5, groundLevel, 0.0F, var5, groundLevel);
 			var11.vertexUV(var7, groundLevel, 0.0F, 0.0F, groundLevel);
-			var11.vertexUV(var7, groundLevel, var9.level.height, 0.0F, groundLevel);
-			var11.vertexUV(var7 + var5, groundLevel, var9.level.height, var5, groundLevel);
-			var11.vertexUV(var7 + var5, 0.0F, var9.level.height, var5, 0.0F);
-			var11.vertexUV(var7, 0.0F, var9.level.height, 0.0F, 0.0F);
+			var11.vertexUV(var7, groundLevel, var9.level.length, 0.0F, groundLevel);
+			var11.vertexUV(var7 + var5, groundLevel, var9.level.length, var5, groundLevel);
+			var11.vertexUV(var7 + var5, 0.0F, var9.level.length, var5, 0.0F);
+			var11.vertexUV(var7, 0.0F, var9.level.length, 0.0F, 0.0F);
 		}
 
 		if (level.customLightColour != null) {
@@ -181,7 +181,7 @@ public final class LevelRenderer {
 					level.customLightColour.B, 1.0F);
 		}
 
-		for (var7 = 0; var7 < var9.level.height; var7 += var5) {
+		for (var7 = 0; var7 < var9.level.length; var7 += var5) {
 			var11.vertexUV(0.0F, groundLevel, var7, 0.0F, 0.0F);
 			var11.vertexUV(0.0F, groundLevel, var7 + var5, var5, 0.0F);
 			var11.vertexUV(0.0F, 0.0F, var7 + var5, var5, groundLevel);
@@ -210,17 +210,17 @@ public final class LevelRenderer {
 			var4 = level.width;
 		}
 
-		if (var4 > level.height) {
-			var4 = level.height;
+		if (var4 > level.length) {
+			var4 = level.length;
 		}
 
 		var5 = 2048 / var4;
 		var11.begin();
 
 		for (var6 = -var4 * var5; var6 < var9.level.width + var4 * var5; var6 += var4) {
-			for (var7 = -var4 * var5; var7 < var9.level.height + var4 * var5; var7 += var4) {
+			for (var7 = -var4 * var5; var7 < var9.level.length + var4 * var5; var7 += var4) {
 				float var13 = waterLevel - 0.1F;
-				if (var6 < 0 || var7 < 0 || var6 >= var9.level.width || var7 >= var9.level.height) {
+				if (var6 < 0 || var7 < 0 || var6 >= var9.level.width || var7 >= var9.level.length) {
 					var11.vertexUV(var6, var13, var7 + var4, 0.0F, var4);
 					var11.vertexUV(var6 + var4, var13, var7 + var4, var4, var4);
 					var11.vertexUV(var6 + var4, var13, var7, var4, 0.0F);
@@ -236,7 +236,7 @@ public final class LevelRenderer {
 		var11.end();
 		GL11.glDisable(3042);
 		GL11.glEndList();
-		queueChunks(0, 0, 0, level.width, level.depth, level.height);
+		queueChunks(0, 0, 0, level.width, level.height, level.length);
 	}
 
 	public final int sortChunks(Player var1, int var2) {

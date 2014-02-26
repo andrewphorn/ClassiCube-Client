@@ -44,7 +44,11 @@ public class ChatInputScreenExtension extends GuiScreen {
     }
 
     private void insertTextAtCaret(String paramString) {
-	int i = 64 - minecraft.session.username.length() - 2;
+	int i; 
+        if (minecraft.session != null){
+            i = 64 - minecraft.session.username.length() - 2;
+        }
+        else i = 64;
 
 	int j = paramString.length();
 	inputLine = inputLine.substring(0, caretPos) + paramString
@@ -98,16 +102,58 @@ public class ChatInputScreenExtension extends GuiScreen {
 
 	if (paramInt == Keyboard.KEY_RETURN) { // 28
 	    String str1 = inputLine.trim();
-	    if (str1.length() > 0) {
+            if (str1.toLowerCase().startsWith("/client")) {
+                if (str1.equalsIgnoreCase("/client debug")) {
+                        minecraft.settings.showDebug = !minecraft.settings.showDebug;
+                        minecraft.hud.addChat("&eDebug: &a" + (!minecraft.settings.showDebug ? "On" : "Off") 
+                                + " -> " + (minecraft.settings.showDebug ? "On" : "Off"));
+                } else if (str1.equalsIgnoreCase("/client gui")) {
+                        minecraft.canRenderGUI = !minecraft.canRenderGUI;
+                        minecraft.hud.addChat("&eGUI: &a" + (!minecraft.canRenderGUI ? "On" : "Off") 
+                                + " -> " + (minecraft.canRenderGUI ? "On" : "Off"));
+                } else if (str1.equalsIgnoreCase("/client hacks")) {
+                        minecraft.settings.HacksEnabled = !minecraft.settings.HacksEnabled;
+                        minecraft.hud.addChat("&eHacks: &a" + (!minecraft.settings.HacksEnabled ? "Enabled" : "Disabled") 
+                                + " -> " + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));
+                } else if (str1.equalsIgnoreCase("/client speedhack")) {
+                        if (minecraft.settings.HackType == 1) {
+				minecraft.settings.HackType = 0;
+			} else {
+				minecraft.settings.HackType++;
+			}
+                        minecraft.hud.addChat("&eSpeedHack: &a" + (!(minecraft.settings.HackType == 0) ? "Normal" : "Advanced") 
+                                + " -> " + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
+                } else  if (str1.equalsIgnoreCase("/client help")) {
+                    minecraft.hud.addChat("&a/Client GUI &e- Toggles the GUI");
+                    minecraft.hud.addChat("&a/Client Debug &e- Toggles the showing of the debug information");
+                    minecraft.hud.addChat("&a/Client Hacks &e- Toggles being able to use hacks");
+                    minecraft.hud.addChat("&a/Client SpeedHack &e- Switches between normal and advanced speedhack");
+                    minecraft.hud.addChat("&a/Client Status &e- Lists the settings and their current state");
+                    minecraft.hud.addChat("&a/Client Help &e- Displays this current page");
+                    minecraft.hud.addChat("&eTell us what you want as a command!");
+                } else  if (str1.equalsIgnoreCase("/client status")) {
+                    minecraft.hud.addChat("&eCurrent client command settings:");
+                    minecraft.hud.addChat("  &eGUI: &a" + (minecraft.canRenderGUI ? "On" : "Off"));
+                    minecraft.hud.addChat("  &eDebug: &a" + (minecraft.settings.showDebug ? "On" : "Off"));
+                    minecraft.hud.addChat("  &eHacks: &a" + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));
+                    minecraft.hud.addChat("  &eSpeedHack: &a" + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
+                } else {
+                    minecraft.hud.addChat("&eTo see a list of client commands type in &a/Client Help");
+                }
+            }
+            else if (minecraft.session == null) {
+                minecraft.hud.addChat("&f" + str1);
+            }
+            else if (str1.length() > 0) {
 		NetworkManager var10000 = minecraft.networkManager;
 		NetworkManager var3 = var10000;
 		if ((str1 = str1.trim()).length() > 0) {
 		    var3.netHandler.send(PacketType.CHAT_MESSAGE, new Object[] {
 			    Integer.valueOf(-1), str1 });
-		    history.add(str1);
 		}
 
 	    }
+            history.add(str1);
 	    minecraft.setCurrentScreen((GuiScreen) null);
 	    return;
 	}
@@ -279,7 +325,7 @@ public class ChatInputScreenExtension extends GuiScreen {
 		 * + the length of the trimmed message
 		 * + the x position of the '>  _' string.
 		 */
-		int x2 = x1 + fontRenderer.getWidth("> _" + messageNoCaret.trim()) + 4;
+		int x2 = x1 + fontRenderer.getWidth("> _" + messageNoCaret.replace(" ", "..").trim()) + 4;
 
 		int y1 = height - 14;
 		int y2 = y1 + 12;
