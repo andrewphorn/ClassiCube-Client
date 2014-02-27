@@ -7,8 +7,6 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.mojang.minecraft.level.LevelSerializer;
-
 final class LevelDialog extends Thread {
 
 	// $FF: synthetic field
@@ -40,19 +38,7 @@ final class LevelDialog extends Thread {
 			if (var7 == 0) {
 				screen.selectedFile = screen.chooser.getSelectedFile();
 				screen.selectedFile = new File(screen.selectedFile + "");
-				try {
-					new LevelSerializer(screen.minecraft.level).saveMap(screen.selectedFile);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+                        }
 		} finally {
 			screen.frozen = false;
 			var1 = null;

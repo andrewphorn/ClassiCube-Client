@@ -34,7 +34,7 @@ public class LevelLoader {
 	}
 
 	public Level load(File fullFilePath, Player player) throws FileNotFoundException, IOException {
-		System.out.println("Loading " + fullFilePath.getAbsolutePath());
+		System.out.println("Loading level " + fullFilePath.getAbsolutePath());
 		NBTTagCompound tc = CompressedStreamTools.readCompressed(new FileInputStream(fullFilePath));
 
 		Level level = new Level();
