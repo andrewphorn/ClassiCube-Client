@@ -124,7 +124,6 @@ public final class PauseScreen extends GuiScreen {
                     buttons.add(new Button(6, width - fontRenderer.getWidth("Screenshots...") - 15,
                                     height - 36, fontRenderer.getWidth("Screenshots..."), "Screenshots"));
                     buttons.add(new Button(7, width - w - 15, height - 58, w, "Chat Logs"));
-                    buttons.get(3).active = false;
                 }
 	}
 
