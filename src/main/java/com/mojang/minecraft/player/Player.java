@@ -11,8 +11,13 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.HackState;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.level.tile.BlockModelRenderer;
 import com.mojang.minecraft.mob.Mob;
+import static com.mojang.minecraft.mob.Mob.modelCache;
 import com.mojang.minecraft.model.HumanoidModel;
+import com.mojang.minecraft.model.Model;
+import static com.mojang.minecraft.net.NetworkPlayer.isInteger;
+import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 import org.lwjgl.input.Keyboard;
@@ -334,10 +339,37 @@ public class Player extends Mob {
 	@Override
 	public void bindTexture(TextureManager var1) {
 		if (newTexture != null) {
-			newTextureId = var1.load(newTexture);
+			BufferedImage var2 = newTexture;
+			int[] var3 = new int[512];
+			var2.getRGB(32, 0, 32, 16, var3, 0, 32);
+			int var5 = 0;
+
+			boolean var10001;
+			while (true) {
+				if (var5 >= var3.length) {
+					var10001 = false;
+					break;
+				}
+				if (var3[var5] >>> 24 < 128) {
+					var10001 = true;
+					break;
+				}
+				++var5;
+			}
+			hasHair = var10001;
+                        
+			if (modelName.equals("humanoid")) {
+				newTextureId = var1.load(newTexture);
+			}
 			newTexture = null;
 		}
-
+		if (isInteger(modelName)) {
+			GL11.glBindTexture(3553, var1.load("/terrain.png"));
+			return;
+		} else if (!modelName.startsWith("humanoid")) {
+			GL11.glBindTexture(3553, var1.load("/mob/" + modelName.replace('.', '_') + ".png"));
+			return;
+		}
 		int var2;
 		if (newTextureId < 0) {
 			var2 = var1.load("/char.png");
@@ -507,9 +539,33 @@ public class Player extends Mob {
 		}
 	}
 
+        BlockModelRenderer block;
+        
 	@Override
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
+                if (isInteger(modelName)) {
+			try {
+				block = new BlockModelRenderer(Block.blocks[Integer.parseInt(modelName)].textureId);
+				GL11.glPushMatrix();
+				GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
+				GL11.glBindTexture(3553, var1.load("/terrain.png"));
+				block.renderPreview(ShapeRenderer.instance);
+				GL11.glPopMatrix();
+			} catch (Exception e) {
+				modelName = "humanoid";
+			}
+			return;
+		}
+                Model model = modelCache.getModel(modelName);
+                if (hasHair && model instanceof HumanoidModel) {
+			GL11.glDisable(2884);
+			HumanoidModel modelHeadwear = null;
+			(modelHeadwear = (HumanoidModel) model).headwear.yaw = modelHeadwear.head.yaw;
+			modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
+			modelHeadwear.headwear.render(var7);
+			GL11.glEnable(2884);
+		}
 		modelCache.getModel(modelName).render(var2, var4, tickCount + var3, var5, var6, var7);
 	}
 

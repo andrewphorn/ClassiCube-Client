@@ -2942,19 +2942,21 @@ public final class Minecraft implements Runnable {
 										if (PlayerID >= 0) {
 											NetworkPlayer netPlayer;
 											if ((netPlayer = networkManager.players
-													.get(Byte.valueOf(PlayerID))) != null) {
-												ModelManager m = new ModelManager();
-												if (m.getModel(ModelName
-														.toLowerCase()) == null) {
-													netPlayer.modelName = "humanoid";
-												} else {
-													netPlayer.modelName = ModelName
-															.toLowerCase();
-												}
-												netPlayer
-														.bindTexture(textureManager);
+														.get(Byte.valueOf(PlayerID))) != null) {
+													ModelManager m = new ModelManager();
+													if (m.getModel(ModelName.toLowerCase()) == null) {
+															netPlayer.modelName = "humanoid";
+													} else netPlayer.modelName = ModelName.toLowerCase();
+													netPlayer.bindTexture(textureManager);
 											}
-										}
+										} else if (PlayerID == -1){
+												Player thisPlayer = player;											
+												ModelManager m = new ModelManager();
+												if (m.getModel(ModelName.toLowerCase()) == null) {
+														thisPlayer.modelName = "humanoid";
+												} else thisPlayer.modelName = ModelName.toLowerCase();
+												thisPlayer.bindTexture(textureManager);
+										}                                                                                
 									}
 
 									else if (packetType == PacketType.ENV_SET_WEATHER_TYPE) {
