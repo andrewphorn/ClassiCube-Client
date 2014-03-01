@@ -468,11 +468,7 @@ public class Mob extends Entity {
 
 		} else if (isInOrOnRope() && !flyingMode && !noPhysics) {
 			y1 = y;
-			if (multiply >= 5) {
-				multiply = 2.5F;
-			} else {
-				multiply = 1.7f;
-			}
+			multiply = 1.7f;
 			moveRelative(yya, xxa, 0.02F * multiply);
 			move(xd, yd, zd);
 

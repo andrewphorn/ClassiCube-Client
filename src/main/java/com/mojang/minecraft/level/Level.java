@@ -123,7 +123,7 @@ public class Level implements Serializable {
 				int var6 = (int) Math.floor(var1.x);
 				int var7 = (int) Math.floor(var1.y);
 				int var8 = (int) Math.floor(var1.z);
-				int var9 = 20;
+				int var9 = 1024;
 
 				while (var9-- >= 0) {
 					if (Float.isNaN(var1.x) || Float.isNaN(var1.y) || Float.isNaN(var1.z)) {
