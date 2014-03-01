@@ -139,8 +139,8 @@ public final class LevelRenderer {
 			size = level.width;
 		}
 
-		if (size > level.height) {
-			size = level.height;
+		if (size > level.length) {
+			size = level.length;
 		}
 		int extent = 2048 / size;
 		
@@ -150,9 +150,9 @@ public final class LevelRenderer {
 		renderer.begin();
 		// Bedrock horizontal axis. (beneath and outside map)
 		for (int x = -size * extent; x < level.width + size * extent; x += size) {
-			for (int z = -size * extent; z < level.height + size * extent; z += size) {
+			for (int z = -size * extent; z < level.length + size * extent; z += size) {
 				float y = groundLevel;
-				if (x >= 0 && z >= 0 && x < level.width && z < level.height) {
+				if (x >= 0 && z >= 0 && x < level.width && z < level.length) {
 					y = 0.0F;
 				}
 				renderer.vertexUV(x, y, z + size, 0.0F, size);
@@ -168,14 +168,14 @@ public final class LevelRenderer {
 			renderer.vertexUV(x + size, 0.0F, 0.0F, size, 0.0F);
 			renderer.vertexUV(x + size, groundLevel, 0.0F, size, groundLevel);
 			renderer.vertexUV(x, groundLevel, 0.0F, 0.0F, groundLevel);
-			renderer.vertexUV(x, groundLevel, level.height, 0.0F, groundLevel);
-			renderer.vertexUV(x + size, groundLevel, level.height, size, groundLevel);
-			renderer.vertexUV(x + size, 0.0F, level.height, size, 0.0F);
-			renderer.vertexUV(x, 0.0F, level.height, 0.0F, 0.0F);
+			renderer.vertexUV(x, groundLevel, level.length, 0.0F, groundLevel);
+			renderer.vertexUV(x + size, groundLevel, level.length, size, groundLevel);
+			renderer.vertexUV(x + size, 0.0F, level.length, size, 0.0F);
+			renderer.vertexUV(x, 0.0F, level.length, 0.0F, 0.0F);
 		}
 
 		// Bedrock vertical Z axis.
-		for (int z = 0; z < level.height; z += size) {
+		for (int z = 0; z < level.length; z += size) {
 			renderer.vertexUV(0.0F, groundLevel, z, 0.0F, 0.0F);
 			renderer.vertexUV(0.0F, groundLevel, z + size, size, 0.0F);
 			renderer.vertexUV(0.0F, 0.0F, z + size, size, groundLevel);
@@ -199,9 +199,9 @@ public final class LevelRenderer {
 
 		// Water horizontal axis. (outside map)
 		for (int x = -size * extent; x < level.width + size * extent; x += size) {
-			for (int z = -size * extent; z < level.height + size * extent; z += size) {
+			for (int z = -size * extent; z < level.length + size * extent; z += size) {
 				float y = waterLevel - 0.1F;
-				if (x < 0 || z < 0 || x >= level.width || z >= level.height) {
+				if (x < 0 || z < 0 || x >= level.width || z >= level.length) {
 					renderer.vertexUV(x, y, z + size, 0.0F, size);
 					renderer.vertexUV(x + size, y, z + size, size, size);
 					renderer.vertexUV(x + size, y, z, size, 0.0F);
@@ -215,7 +215,6 @@ public final class LevelRenderer {
 				}
 			}
 		}
-
 		renderer.end();
 		GL11.glDisable(3042);
 		GL11.glEndList();
