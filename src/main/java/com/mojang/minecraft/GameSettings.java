@@ -43,7 +43,7 @@ public final class GameSettings implements Serializable {
 	public boolean anaglyph = false;
 	public boolean limitFramerate = true;
 	public boolean thirdPersonMode = false;
-        public boolean TPDisabled = true;
+        public boolean TPDisabled = false;
 	public KeyBinding forwardKey = new KeyBinding("Forward", 17);
 	public KeyBinding leftKey = new KeyBinding("Left", 30);
 	public KeyBinding backKey = new KeyBinding("Back", 31);
