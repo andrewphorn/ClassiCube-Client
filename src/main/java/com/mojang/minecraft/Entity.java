@@ -209,8 +209,8 @@ public abstract class Entity implements Serializable {
 	
 	public boolean isOnIce() {
 		final AABB body = bb.copy();
-		body.move(0, -0.3F, 0);
-		return level.containsBlock(body, Block.ICE);
+		body.move(-0.00001F, -0.3F, -0.00001F);
+		return level.containsBlock(body.grow(-0.01F, 0, -0.01F), Block.ICE);
 	}
 
 	public boolean isLit() {
