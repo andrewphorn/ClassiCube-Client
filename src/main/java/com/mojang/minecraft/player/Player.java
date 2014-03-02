@@ -432,7 +432,7 @@ public class Player extends Mob {
 
 	@Override
 	public void render(TextureManager var1, float var2) {
-		if (!settings.thirdPersonMode) {
+		if (settings.thirdPersonMode == 0) {
 			return;
 		}
 		if (modelName != null) {

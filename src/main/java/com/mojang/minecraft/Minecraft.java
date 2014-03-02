@@ -1244,15 +1244,26 @@ public final class Minecraft implements Runnable {
 												renderer.minecraft.settings.viewBobbing);
 
 										var116 = renderer.minecraft.player;
-										GL11.glTranslatef(0.0F, 0.0F,
-												cameraDistance);
-
-										GL11.glRotatef(var116.xRotO
-												+ (var116.xRot - var116.xRotO)
-												* var80, 1.0F, 0.0F, 0.0F);
-										GL11.glRotatef(var116.yRotO
-												+ (var116.yRot - var116.yRotO)
-												* var80, 0.0F, 1.0F, 0.0F);
+                                                                                if (settings.thirdPersonMode == 0) {
+                                                                                    GL11.glTranslatef(0.0F, 0.0F, -0.1F);
+                                                                                } else {
+                                                                                    GL11.glTranslatef(0.0F, 0.0F, -5.1F);
+                                                                                }
+                                                                                if (settings.thirdPersonMode == 2) {
+                                                                                    GL11.glRotatef(-var116.xRotO
+                                                                                                    + (var116.xRot - var116.xRotO)
+                                                                                                    * var80, 1.0F, 0.0F, 0.0F);
+                                                                                    GL11.glRotatef((var116.yRotO
+                                                                                                    + (var116.yRot - var116.yRotO)
+                                                                                                    * var80) + 180, 0.0F, 1.0F, 0.0F);
+                                                                                } else {
+                                                                                    GL11.glRotatef(var116.xRotO
+                                                                                                    + (var116.xRot - var116.xRotO)
+                                                                                                    * var80, 1.0F, 0.0F, 0.0F);
+                                                                                    GL11.glRotatef(var116.yRotO
+                                                                                                    + (var116.yRot - var116.yRotO)
+                                                                                                    * var80, 0.0F, 1.0F, 0.0F);
+                                                                                }
 										var69 = var116.xo
 												+ (var116.x - var116.xo)
 												* var80;
@@ -2126,7 +2137,7 @@ public final class Minecraft implements Runnable {
 											GL11.glScalef(0.4F, var34, var34);
 											GL11.glTranslatef(-0.5F, -0.5F,
 													-0.5F);
-											if (!settings.thirdPersonMode
+											if (settings.thirdPersonMode == 0
 													&& canRenderGUI) {
 												GL11.glBindTexture(
 														3553,
@@ -3482,19 +3493,12 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
-							if (HackState.Noclip || HackState.Fly
-									|| HackState.Speed) {
-								if (cameraDistance == -0.1F) {
-									cameraDistance = -5.1f;
-									settings.thirdPersonMode = true;
-								} else {
-									cameraDistance = -0.1F;
-									settings.thirdPersonMode = false;
-								}
-							} else {
-								cameraDistance = -0.1F;
-								settings.thirdPersonMode = false;
-							}
+                                                    if (HackState.Noclip) {
+                                                        ++settings.thirdPersonMode;
+                                                        if (settings.thirdPersonMode > 2){
+                                                            settings.thirdPersonMode = 0;
+                                                        }
+                                                    }
 						}
 
 						if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
