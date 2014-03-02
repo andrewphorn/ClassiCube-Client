@@ -101,9 +101,9 @@ public abstract class Entity implements Serializable {
 	 */
 	public float distanceTo(float posX, float posY, float posZ) {
 		// Euclidean distance
-		float dx = x - posX;
-		float dy = y - posY;
-		float dz = z - posZ;
+		final float dx = x - posX;
+		final float dy = y - posY;
+		final float dz = z - posZ;
 		return MathHelper.sqrt((dx * dx) + (dy * dy) + (dz * dz));
 	}
 
@@ -117,9 +117,9 @@ public abstract class Entity implements Serializable {
 	 * @return The distance between the two entities squared.
 	 */
 	public float distanceToSqr(Entity otherEntity) {
-		float dx = x - otherEntity.x;
-		float dy = y - otherEntity.y;
-		float dz = z - otherEntity.z;
+		final float dx = x - otherEntity.x;
+		final float dy = y - otherEntity.y;
+		final float dz = z - otherEntity.z;
 		return (dx * dx) + (dy * dy) + (dz * dz);
 	}
 
@@ -129,9 +129,9 @@ public abstract class Entity implements Serializable {
 	 * @return Brightness of the entity.
 	 */
 	public float getBrightness() {
-		int posX = (int) x;
-		int posY = (int) (y + heightOffset / 2.0F - 0.5F);
-		int posZ = (int) z;
+		final int posX = (int) x;
+		final int posY = (int) (y + heightOffset / 2.0F - 0.5F);
+		final int posZ = (int) z;
 		return level.getBrightness(posX, posY, posZ);
 	}
 
@@ -141,9 +141,9 @@ public abstract class Entity implements Serializable {
 	 * @return ColorCache containing brightness color information.
 	 */
 	public ColorCache getBrightnessColor() {
-		int posX = (int) x;
-		int posY = (int) (y + heightOffset / 2.0F - 0.5F);
-		int posZ = (int) z;
+		final int posX = (int) x;
+		final int posY = (int) (y + heightOffset / 2.0F - 0.5F);
+		final int posZ = (int) z;
 		return level.getBrightnessColor(posX, posY, posZ);
 	}
 
@@ -182,13 +182,13 @@ public abstract class Entity implements Serializable {
 	}
 
 	public boolean isFree(float var1, float var2, float var3) {
-		AABB var4 = bb.cloneMove(var1, var2, var3);
+		final AABB var4 = bb.cloneMove(var1, var2, var3);
 		return level.getCubes(var4).size() > 0 ? false : !level
 				.containsAnyLiquid(var4);
 	}
 
 	public boolean isFree(float var1, float var2, float var3, float var4) {
-		AABB var5 = bb.grow(var4, var4, var4).cloneMove(var1, var2, var3);
+		final AABB var5 = bb.grow(var4, var4, var4).cloneMove(var1, var2, var3);
 		return level.getCubes(var5).size() > 0 ? false : !level
 				.containsAnyLiquid(var5);
 	}
@@ -206,11 +206,17 @@ public abstract class Entity implements Serializable {
 		return level.containsLiquid(bb.grow(0.0F, -0.4F, 0.0F),
 				LiquidType.water);
 	}
+	
+	public boolean isOnIce() {
+		final AABB body = bb.copy();
+		body.move(-0.00001F, -0.3F, -0.00001F);
+		return level.containsBlock(body.grow(-0.01F, 0, -0.01F), Block.ICE);
+	}
 
 	public boolean isLit() {
-		int var1 = (int) x;
-		int var2 = (int) y;
-		int var3 = (int) z;
+		final int var1 = (int) x;
+		final int var2 = (int) y;
+		final int var3 = (int) z;
 		return level.isLit(var1, var2, var3);
 	}
 
@@ -242,12 +248,12 @@ public abstract class Entity implements Serializable {
 			z = (bb.z0 + bb.z1) / 2.0F;
 			// this.yd = 0;
 		} else {
-			float var4 = x;
-			float var5 = z;
-			float var6 = var1;
-			float var7 = var2;
-			float var8 = var3;
-			AABB var9 = bb.copy();
+			final float var4 = x;
+			final float var5 = z;
+			final float var6 = var1;
+			final float var7 = var2;
+			final float var8 = var3;
+			final AABB var9 = bb.copy();
 			ArrayList<AABB> var10 = level.getCubes(bb.expand(var1, var2, var3));
 
 			for (int var11 = 0; var11 < var10.size(); ++var11) {
@@ -261,7 +267,7 @@ public abstract class Entity implements Serializable {
 				var1 = 0.0F;
 			}
 
-			boolean var16 = onGround || var7 != var2 && var7 < 0.0F;
+			final boolean var16 = onGround || var7 != var2 && var7 < 0.0F;
 
 			int var12;
 			for (var12 = 0; var12 < var10.size(); ++var12) {
@@ -292,11 +298,11 @@ public abstract class Entity implements Serializable {
 					&& (var6 != var1 || var8 != var3)) {
 				var18 = var1;
 				var17 = var2;
-				float var13 = var3;
+				final float var13 = var3;
 				var1 = var6;
 				var2 = footSize;
 				var3 = var8;
-				AABB var14 = bb.copy();
+				final AABB var14 = bb.copy();
 				bb = var9.copy();
 				var10 = level.getCubes(bb.expand(var6, var2, var8));
 
@@ -377,10 +383,10 @@ public abstract class Entity implements Serializable {
 			walkDist = (float) (walkDist + MathHelper.sqrt(var18 * var18
 					+ var17 * var17) * 0.6D);
 		}
-		int var39 = (int) Math.floor(x);
-		int var30 = (int) Math.floor(y - 0.20000000298023224D - heightOffset);
-		int var31 = (int) Math.floor(z);
-		int var32 = level.getTile(var39, var30, var31);
+		final int var39 = (int) Math.floor(x);
+		final int var30 = (int) Math.floor(y - 0.20000000298023224D - heightOffset);
+		final int var31 = (int) Math.floor(z);
+		final int var32 = level.getTile(var39, var30, var31);
 		if (makeStepSound && onGround && !noPhysics) {
 			if (this instanceof Player && !((Player) this).noPhysics) {
 				distanceWalkedModified = (float) (distanceWalkedModified + Math
@@ -443,7 +449,7 @@ public abstract class Entity implements Serializable {
 	}
 
 	protected void playStepSound(int var1) {
-		StepSound var2 = Block.blocks[var1].stepSound;
+		final StepSound var2 = Block.blocks[var1].stepSound;
 
 		if (!Block.blocks[var1].isLiquid()) {
 			playSound(var2.getStepSound(), var2.getVolume() * 0.70F,
@@ -489,10 +495,10 @@ public abstract class Entity implements Serializable {
 
 	public void resetPos() {
 		if (level != null) {
-			float var1 = level.xSpawn + 0.5F;
+			final float var1 = level.xSpawn + 0.5F;
 			float var2 = level.ySpawn;
 
-			for (double var3 = level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
+			for (final double var3 = level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
 				this.setPos(var1, var2, (float) var3);
 				if (level.isInBounds((int) var1, (int) var2, (int) var3)) {
 					if (level.getCubes(bb).size() == 0) {
@@ -515,8 +521,8 @@ public abstract class Entity implements Serializable {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		float var4 = bbWidth / 2.0F;
-		float var5 = bbHeight / 2.0F;
+		final float var4 = bbWidth / 2.0F;
+		final float var5 = bbHeight / 2.0F;
 		bb = new AABB(x - var4, y - var5, z - var4, x + var4, y + var5, z
 				+ var4);
 	}
@@ -546,15 +552,15 @@ public abstract class Entity implements Serializable {
 	}
 
 	public boolean shouldRender(Vec3D var1) {
-		float var2 = x - var1.x;
-		float var3 = y - var1.y;
+		final float var2 = x - var1.x;
+		final float var3 = y - var1.y;
 		float var4 = z - var1.z;
 		var4 = var2 * var2 + var3 * var3 + var4 * var4;
 		return shouldRenderAtSqrDistance(var4);
 	}
 
 	public boolean shouldRenderAtSqrDistance(float var1) {
-		float var2 = bb.getSize() * 64.0F;
+		final float var2 = bb.getSize() * 64.0F;
 		return var1 < var2 * var2;
 	}
 
@@ -568,8 +574,8 @@ public abstract class Entity implements Serializable {
 	}
 
 	public void turn(float var1, float var2) {
-		float var3 = xRot;
-		float var4 = yRot;
+		final float var3 = xRot;
+		final float var4 = yRot;
 		yRot = (float) (yRot + var1 * 0.15D);
 		xRot = (float) (xRot - var2 * 0.15D);
 		if (xRot < -90.0F) {

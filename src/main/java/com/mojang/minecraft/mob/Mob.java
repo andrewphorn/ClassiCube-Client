@@ -5,7 +5,6 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.ai.AI;
 import com.mojang.minecraft.mob.ai.BasicAI;
 import com.mojang.minecraft.model.ModelManager;
@@ -128,8 +127,8 @@ public class Mob extends Entity {
 
 				hurtDir = 0.0F;
 				if (var1 != null) {
-					float var3 = var1.x - x;
-					float var4 = var1.z - z;
+					final float var3 = var1.x - x;
+					final float var4 = var1.z - z;
 					hurtDir = (float) (Math.atan2(var4, var3) * 180.0D / 3.1415927410125732D)
 							- yRot;
 					knockback(var1, var2, var3, var4);
@@ -161,8 +160,8 @@ public class Mob extends Entity {
 	}
 
 	public void knockback(Entity var1, int var2, float var3, float var4) {
-		float var5 = MathHelper.sqrt(var3 * var3 + var4 * var4);
-		float var6 = 0.4F;
+		final float var5 = MathHelper.sqrt(var3 * var3 + var4 * var4);
+		final float var6 = 0.4F;
 		xd /= 2.0F;
 		yd /= 2.0F;
 		zd /= 2.0F;
@@ -207,17 +206,17 @@ public class Mob extends Entity {
 				yRotO -= 360.0F;
 			}
 
-			float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * var2;
-			float var5 = oRun + (run - oRun) * var2;
+			final float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * var2;
+			final float var5 = oRun + (run - oRun) * var2;
 			float var6 = yRotO + (yRot - yRotO) * var2;
-			float var7 = xRotO + (xRot - xRotO) * var2;
+			final float var7 = xRotO + (xRot - xRotO) * var2;
 			var6 -= var4;
 			GL11.glPushMatrix();
-			float var8 = animStepO + (animStep - animStepO) * var2;
-			ColorCache varaa = getBrightnessColor();
+			final float var8 = animStepO + (animStep - animStepO) * var2;
+			final ColorCache varaa = getBrightnessColor();
 			GL11.glColor3f(varaa.R, varaa.G, varaa.B);
-			float var9 = 0.0625F;
-			float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F * var5 * bobStrength
+			final float var9 = 0.0625F;
+			final float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F * var5 * bobStrength
 					- 23.0F;
 			GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 - 1.62F + renderOffset, zo
 					+ (z - zo) * var2);
@@ -337,8 +336,8 @@ public class Mob extends Entity {
 		++tickCount;
 		aiStep();
 		float var1 = x - xo;
-		float var2 = z - zo;
-		float var3 = MathHelper.sqrt(var1 * var1 + var2 * var2);
+		final float var2 = z - zo;
+		final float var3 = MathHelper.sqrt(var1 * var1 + var2 * var2);
 		float var4 = yBodyRot;
 		float var5 = 0.0F;
 		oRun = run;
@@ -373,7 +372,7 @@ public class Mob extends Entity {
 			var1 -= 360.0F;
 		}
 
-		boolean var7 = var1 < -90.0F || var1 >= 90.0F;
+		final boolean var7 = var1 < -90.0F || var1 >= 90.0F;
 		if (var1 < -75.0F) {
 			var1 = -75.0F;
 		}
@@ -420,7 +419,7 @@ public class Mob extends Entity {
 		float multiply = 1.0F;
 
 		if (ai instanceof BasicAI) {
-			BasicAI ai1 = (BasicAI) ai;
+			final BasicAI ai1 = (BasicAI) ai;
 			if (!flyingMode) {
 				if (ai1.running) {
 					multiply = 10F; // 6x with momentum
@@ -465,7 +464,6 @@ public class Mob extends Entity {
 			if (horizontalCollision && isFree(xd, yd + 0.6F - y + y1, zd)) {
 				yd = 0.3F;
 			}
-
 		} else if (isInOrOnRope() && !flyingMode && !noPhysics) {
 			y1 = y;
 			multiply = 1.7f;
@@ -477,11 +475,6 @@ public class Mob extends Entity {
 			zd *= 0.5F;
 
 			yd = (float) (yd - 0.02D) * multiply;
-
-			if (horizontalCollision && isFree(xd, yd + 0.6F - y + y1, zd)) {
-				yd = 0.3F;
-			}
-
 		} else {
 			if (!flyingMode) {
 				moveRelative(yya, xxa, (onGround ? 0.1F : 0.02F) * multiply);
@@ -493,14 +486,12 @@ public class Mob extends Entity {
 				m = 1;
 			}
 			move(xd, yd * m, zd);
-			int var1 = level.getTile((int) x, (int) (y - 2.12F), (int) z);
 
 			xd *= 0.91F;
 			yd *= 0.98F;
 			zd *= 0.91F;
 			yd = (float) (yd - 0.08D);
-			if (Block.blocks[var1] != Block.ICE) {
-
+			if (!isOnIce()) {
 				if (flyingMode) {
 					y1 = 0.0F;
 					xd *= y1;
@@ -513,10 +504,7 @@ public class Mob extends Entity {
 					zd *= y1;
 				}
 			} else {
-				double limit = 0.246D;
-				if (xd > limit || xd < -limit || zd < -limit || zd > limit) {
-					tilt = -20f;
-				}
+				final double limit = 0.246D;
 				if (xd > limit) {
 					xd = (float) limit;
 				}
