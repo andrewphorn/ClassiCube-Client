@@ -53,7 +53,7 @@ public class GameMode
 				minecraft.networkManager.sendBlockChange(x, y, z, 0, minecraft.player.inventory.getSelected());
 			}
 
-			if(block.stepSound != Block.soundNone)
+			if(block.stepSound != Block.soundNone && block.stepSound != null)
 			{
 				level.playSound("step." + block.stepSound.stepSoundName, x, y, z, (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
 			}
