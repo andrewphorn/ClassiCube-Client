@@ -18,11 +18,8 @@ public class WaterLevelInputScreen extends InputValueScreen {
 	protected final void onButtonClick(Button var1) {
 		if (var1.active) {
 			if (var1.id == 0 && name.length() > 0) {
-				Minecraft var10000 = minecraft;
-				String var2 = name;
-				Minecraft var4 = var10000;
-				var4.level.waterLevel = Integer.parseInt(var2);
-				var4.levelRenderer.refresh();
+				minecraft.level.waterLevel = Integer.parseInt(name);
+				minecraft.levelRenderer.refreshEnvironment();
 				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}
 
@@ -31,7 +28,7 @@ public class WaterLevelInputScreen extends InputValueScreen {
 			}
 			if (var1.id == 800) {
 				minecraft.level.waterLevel = minecraft.level.height / 2;
-				minecraft.levelRenderer.refresh();
+				minecraft.levelRenderer.refreshEnvironment();
 				minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
 			}
 
