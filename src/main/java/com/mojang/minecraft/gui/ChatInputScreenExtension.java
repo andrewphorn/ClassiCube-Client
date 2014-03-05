@@ -48,7 +48,9 @@ public class ChatInputScreenExtension extends GuiScreen {
         if (minecraft.session != null){
             i = 64 - minecraft.session.username.length() - 2;
         }
-        else i = 64;
+        else {
+            i = 64;
+    }
 
     int j = paramString.length();
     inputLine = inputLine.substring(0, caretPos) + paramString

@@ -4,7 +4,6 @@ import java.awt.Color;
 
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.gui.inputscreens.CloudColorInputScreen;
 import com.mojang.minecraft.gui.inputscreens.FogColorInputScreen;
 import com.mojang.minecraft.gui.inputscreens.LightColorInputScreen;
 import com.mojang.minecraft.gui.inputscreens.ShadowColorInputScreen;

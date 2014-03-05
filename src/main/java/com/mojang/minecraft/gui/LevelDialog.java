@@ -1,8 +1,6 @@
 package com.mojang.minecraft.gui;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;

@@ -86,10 +86,8 @@ public class ResourceDownloadThread extends Thread {
     public boolean deleteDir(File dir) {
         if (dir.isDirectory()) {
             String[] children = dir.list();
-
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-
+            for (String child : children) {
+                boolean success = deleteDir(new File(dir, child));
                 if (!success) {
                     return false;
                 }
@@ -153,29 +151,23 @@ public class ResourceDownloadThread extends Thread {
             GameSettings.StatusString = "Downloading music and sounds...";
             System.out.println("Downloading music and sounds...");
 
-            int Percent = 5;
-            for (int i = 0; i < files.length; i++) {
-                if (Percent >= 80) {
-                    Percent = 80;
+            int percent = 5;
+            for (String fileName : files) {
+                if (percent >= 80) {
+                    percent = 80;
                 }
-                Percent += 3;
-                file = new File(dir, files[i]);
-
+                percent += 3;
+                file = new File(dir, fileName);
                 if (!file.exists()) {
-                    GameSettings.PercentString = Percent + "%";
-                    GameSettings.StatusString = "Downloading https://s3.amazonaws.com/MinecraftResources/"
-                            + files[i] + "...";
-                    System.out.println("Downloading https://s3.amazonaws.com/MinecraftResources/"
-                            + files[i] + "...");
-
-                    url = new URL("https://s3.amazonaws.com/MinecraftResources/" + files[i]);
+                    GameSettings.PercentString = percent + "%";
+                    GameSettings.StatusString = "Downloading https://s3.amazonaws.com/MinecraftResources/" + fileName + "...";
+                    System.out.println("Downloading https://s3.amazonaws.com/MinecraftResources/" + fileName + "...");
+                    url = new URL("https://s3.amazonaws.com/MinecraftResources/" + fileName);
                     rbc = Channels.newChannel(url.openStream());
                     fos = new FileOutputStream(file);
                     fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-                    GameSettings.StatusString = "Downloaded https://s3.amazonaws.com/MinecraftResources/"
-                            + files[i] + "!";
-                    System.out.println("Downloaded https://s3.amazonaws.com/MinecraftResources/"
-                            + files[i] + "!");
+                    GameSettings.StatusString = "Downloaded https://s3.amazonaws.com/MinecraftResources/" + fileName + "!";
+                    System.out.println("Downloaded https://s3.amazonaws.com/MinecraftResources/" + fileName + "!");
                 }
             }
             GameSettings.PercentString = "85%";

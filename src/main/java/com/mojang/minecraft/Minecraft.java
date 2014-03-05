@@ -1458,7 +1458,9 @@ public final class Minecraft implements Runnable {
 
                                         var74 = 0.0F;
                                         var33 = 4.8828125E-4F;
-                                                                                if (level.cloudLevel < 0) level.cloudLevel = var89.level.height + 2;
+                                                                                if (level.cloudLevel < 0) {
+                                                                                    level.cloudLevel = var89.level.height + 2;
+                                        }
                                         var74 = level.cloudLevel;
                                         var34 = (var89.ticks + var80) * var33
                                                 * 0.03F;
@@ -2848,20 +2850,21 @@ public final class Minecraft implements Runnable {
                                             }
                                         }
 
-                                        if (playerIndex == -1)
+                                        if (playerIndex == -1) {
                                             playerListNameData
                                                     .add(new PlayerListNameData(
                                                             NameId, playerName,
                                                             listName,
                                                             groupName,
                                                             unusedRank));
-                                        else
+                                        } else {
                                             playerListNameData.set(playerIndex,
                                                     new PlayerListNameData(
                                                             NameId, playerName,
                                                             listName,
                                                             groupName,
                                                             unusedRank));
+                                        }
 
                                         Collections.sort(playerListNameData,
                                                 new PlayerListComparator());
@@ -2956,7 +2959,9 @@ public final class Minecraft implements Runnable {
                                                     ModelManager m = new ModelManager();
                                                     if (m.getModel(ModelName.toLowerCase()) == null) {
                                                             netPlayer.modelName = "humanoid";
-                                                    } else netPlayer.modelName = ModelName.toLowerCase();
+                                                    } else {
+                                                        netPlayer.modelName = ModelName.toLowerCase();
+                                                    }
                                                     netPlayer.bindTexture(textureManager);
                                             }
                                         } else if (PlayerID == -1){
@@ -2964,7 +2969,9 @@ public final class Minecraft implements Runnable {
                                                 ModelManager m = new ModelManager();
                                                 if (m.getModel(ModelName.toLowerCase()) == null) {
                                                         thisPlayer.modelName = "humanoid";
-                                                } else thisPlayer.modelName = ModelName.toLowerCase();
+                                                } else {
+                                                    thisPlayer.modelName = ModelName.toLowerCase();
+                                                }
                                                 thisPlayer.bindTexture(textureManager);
                                         }                                                                                
                                     }

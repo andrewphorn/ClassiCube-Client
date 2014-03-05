@@ -55,8 +55,9 @@ public final class ModelPart {
     public final void render(float var1) {
         if (render) {
             
-            if (!hasList) 
+            if (!hasList) {
                 generateList(var1);
+            }
             
             if (allowTransparency) {
                                 GL11.glEnable(3008);

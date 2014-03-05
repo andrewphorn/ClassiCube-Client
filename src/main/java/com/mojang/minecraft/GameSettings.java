@@ -190,10 +190,9 @@ public final class GameSettings implements Serializable {
                     if (setting[0].equals("texturepack")) {
                         lastUsedTexturePack = setting[1];
                     }
-
-                    for (int index = 0; index < bindings.length; index++) {
-                        if (setting[0].equals("key_" + bindings[index].name)) {
-                            bindings[index].key = Integer.parseInt(setting[1]);
+                    for (KeyBinding binding : bindings) {
+                        if (setting[0].equals("key_" + binding.name)) {
+                            binding.key = Integer.parseInt(setting[1]);
                         }
                     }
                 }
@@ -228,8 +227,8 @@ public final class GameSettings implements Serializable {
             writer.println("HacksEnabled:" + HacksEnabled);
             writer.println("ShowNames:" + ShowNames);
             writer.println("texturepack:" + lastUsedTexturePack);
-            for (int binding = 0; binding < bindings.length; binding++) {
-                writer.println("key_" + bindings[binding].name + ":" + bindings[binding].key);
+            for (KeyBinding binding : bindings) {
+                writer.println("key_" + binding.name + ":" + binding.key);
             }
 
             writer.close();

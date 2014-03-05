@@ -20,9 +20,15 @@ public final class PauseScreen extends GuiScreen {
     @Override
     protected final void onButtonClick(Button var1) {
                 if (minecraft.session != null) {
-                    if (var1.id == 0) minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
-                    if (var1.id == 1) minecraft.setCurrentScreen(new SaveLevelScreen(this));
-                    if (var1.id == 2) minecraft.setCurrentScreen(new TextureSelectionScreen(this));
+                    if (var1.id == 0) {
+                        minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
+                    }
+                    if (var1.id == 1) {
+                        minecraft.setCurrentScreen(new SaveLevelScreen(this));
+                    }
+                    if (var1.id == 2) {
+                        minecraft.setCurrentScreen(new TextureSelectionScreen(this));
+                    }
                     if (var1.id == 3) {                    
                             minecraft.networkManager.netHandler.close();
                             HUDScreen.Announcement = "";
@@ -66,11 +72,21 @@ public final class PauseScreen extends GuiScreen {
                     }
                 }
                 else {
-                    if (var1.id == 0) minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
-                    if (var1.id == 1) minecraft.setCurrentScreen(new GenerateLevelScreen(this));
-                    if (var1.id == 2) minecraft.setCurrentScreen(new SaveLevelScreen(this));
-                    if (var1.id == 3) minecraft.setCurrentScreen(new LoadLevelScreen(this));
-                    if (var1.id == 4) minecraft.setCurrentScreen(new TextureSelectionScreen(this));
+                    if (var1.id == 0) {
+                        minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
+                    }
+                    if (var1.id == 1) {
+                        minecraft.setCurrentScreen(new GenerateLevelScreen(this));
+                    }
+                    if (var1.id == 2) {
+                        minecraft.setCurrentScreen(new SaveLevelScreen(this));
+                    }
+                    if (var1.id == 3) {
+                        minecraft.setCurrentScreen(new LoadLevelScreen(this));
+                    }
+                    if (var1.id == 4) {
+                        minecraft.setCurrentScreen(new TextureSelectionScreen(this));
+                    }
                     if (var1.id == 5) {
                             minecraft.setCurrentScreen((GuiScreen) null);
                             minecraft.grabMouse();
