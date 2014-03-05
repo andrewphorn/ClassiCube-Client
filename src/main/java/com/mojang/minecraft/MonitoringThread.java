@@ -130,11 +130,13 @@ public class MonitoringThread extends Thread {
 
             long[] allThreadIds = threadBean.getAllThreadIds();
 
-            if (mappedIds != null)
+            if (mappedIds != null) {
                 removeDeadThreads(mappedIds, allThreadIds);
+            }
 
-            if (allThreadIds != null)
+            if (allThreadIds != null) {
                 mapNewThreads(allThreadIds);
+            }
 
             Collection<ThreadTime> values;
             synchronized (threadTimeMap) {

@@ -114,13 +114,15 @@ public final class SurvivalGameMode extends GameMode {
         Block block = Block.blocks[type];
         if (block == Block.RED_MUSHROOM && minecraft.player.inventory.removeResource(type)) {
             player.health += 4;
-            if (player.health > 30)
+            if (player.health > 30) {
                 player.health = 30;
+            }
             return true;
         } else if (block == Block.BROWN_MUSHROOM && minecraft.player.inventory.removeResource(type)) {
             player.health += 4;
-            if (player.health > 15)
+            if (player.health > 15) {
                 player.health = 30;
+            }
             return true;
         } else {
             return false;
@@ -130,8 +132,9 @@ public final class SurvivalGameMode extends GameMode {
     @Override
     public void preparePlayer(Player player) {
         for (int i = 0; i < 49; i++) {
-            if (i != Block.TNT.id)
+            if (i != Block.TNT.id) {
                 player.inventory.removeResource(i);
+            }
         }
         player.inventory.slots[8] = Block.TNT.id;
         player.inventory.count[8] = 20;
@@ -140,8 +143,9 @@ public final class SurvivalGameMode extends GameMode {
 
     @Override
     public void spawnMob() {
-        if (this.spawner.HasStopped)
+        if (this.spawner.HasStopped) {
             return;
+        }
         int area = this.spawner.level.width * this.spawner.level.length * spawner.level.height / 64
                 / 64 / 64;
 

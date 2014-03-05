@@ -25,13 +25,15 @@ public final class MobSpawner {
 
     public final int spawn(int var1, Entity var2, ProgressBarDisplay var3) {
         // System.out.println(Count);
-        if (HasStopped)
+        if (HasStopped) {
             return 0;
+        }
         int var4 = 0;
 
         for (int var5 = 0; var5 < var1; ++var5) {
-            if (HasStopped)
+            if (HasStopped) {
                 break;
+            }
             if (var3 != null) {
                 var3.setProgress(var5 * 100 / (var1 - 1));
             }
@@ -45,15 +47,17 @@ public final class MobSpawner {
                     && this.level.getLiquid(var7, var8, var9) == LiquidType.notLiquid
                     && (!this.level.isLit(var7, var8, var9) || this.level.random.nextInt(5) == 0)) {
                 for (int var10 = 0; var10 < 3; ++var10) {
-                    if (HasStopped)
+                    if (HasStopped) {
                         break;
+                    }
                     int var11 = var7;
                     int var12 = var8;
                     int var13 = var9;
 
                     for (int var14 = 0; var14 < 3; ++var14) {
-                        if (HasStopped)
+                        if (HasStopped) {
                             break;
+                        }
                         var11 += this.level.random.nextInt(6) - this.level.random.nextInt(6);
                         var12 += this.level.random.nextInt(1) - this.level.random.nextInt(1);
                         var13 += this.level.random.nextInt(6) - this.level.random.nextInt(6);
