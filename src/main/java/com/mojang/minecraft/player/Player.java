@@ -20,7 +20,6 @@ import static com.mojang.minecraft.net.NetworkPlayer.isInteger;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
-import org.lwjgl.input.Keyboard;
 
 public class Player extends Mob {
     private int flyTrig = 0;
