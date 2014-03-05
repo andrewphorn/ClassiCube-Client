@@ -32,8 +32,8 @@ public class CreativeGameMode extends GameMode {
                 Block.WOOD, Block.LOG, Block.LEAVES, Block.GRASS, Block.SLAB };
 
         boolean CanProceed = true;
-        for (int i = 0; i < blocks.length; i++) {
-            if (!SessionData.allowedBlocks.contains(blocks[i])) {
+        for (Block block : blocks) {
+            if (!SessionData.allowedBlocks.contains(block)) {
                 CanProceed = false;
             }
         }
