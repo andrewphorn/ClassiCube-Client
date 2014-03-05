@@ -330,63 +330,36 @@ public final class Minecraft implements Runnable {
         String folder = ".net.classicube.client";
         String home = System.getProperty("user.home");
         File minecraftFolder;
-        Minecraft$OS os = getOs();
-        switch (os.id) {
-        case 0:
-            minecraftFolder = new File(home, folder + '/');
-            break;
-        case 1:
-            minecraftFolder = new File(home, folder + '/');
-            break;
-        case 2:
-            String appData = System.getenv("APPDATA");
-
-            if (appData != null) {
-                minecraftFolder = new File(appData, folder + '/');
-            } else {
+        OperatingSystem os = OperatingSystem.detect();
+        switch (os) {
+            case LINUX:
+            case SOLARIS:
                 minecraftFolder = new File(home, folder + '/');
-            }
-            break;
-        case 3:
-            minecraftFolder = new File(home, "Library/Application Support/"
-                    + folder);
-            break;
-        default:
-            minecraftFolder = new File(home, folder + '/');
+                break;
+            case WINDOWS:
+                String appData = System.getenv("APPDATA");
+
+                if (appData != null) {
+                    minecraftFolder = new File(appData, folder + '/');
+                } else {
+                    minecraftFolder = new File(home, folder + '/');
+                }
+                break;
+            case MAC_OS_X:
+                minecraftFolder = new File(home, "Library/Application Support/"
+                        + folder);
+                break;
+            default:
+                minecraftFolder = new File(home, folder + '/');
         }
 
         if (!minecraftFolder.exists() && !minecraftFolder.mkdirs()) {
             throw new RuntimeException(
                     "The working directory could not be created: "
-                            + minecraftFolder);
+                    + minecraftFolder);
         }
 
         return minecraftFolder;
-
-    }
-
-    private static Minecraft$OS getOs() {
-        String s = System.getProperty("os.name").toLowerCase();
-        if (s.contains("win")) {
-            return Minecraft$OS.windows;
-        }
-        if (s.contains("mac")) {
-            return Minecraft$OS.macos;
-        }
-        if (s.contains("solaris")) {
-            return Minecraft$OS.solaris;
-        }
-        if (s.contains("sunos")) {
-            return Minecraft$OS.solaris;
-        }
-        if (s.contains("linux")) {
-            return Minecraft$OS.linux;
-        }
-        if (s.contains("unix")) {
-            return Minecraft$OS.linux;
-        } else {
-            return Minecraft$OS.unknown;
-        }
     }
 
     float cameraDistance = -0.1F;
@@ -2282,7 +2255,7 @@ public final class Minecraft implements Runnable {
         Collections.addAll(var1, Display.getAvailableDisplayModes());
         DisplayMode var2 = Display.getDesktopDisplayMode();
 
-        if (!var1.contains(var2) && getOs() == Minecraft$OS.macos) {
+        if (!var1.contains(var2) && OperatingSystem.detect() == OperatingSystem.MAC_OS_X) {
             Iterator<DisplayMode> var3 = displayModes.iterator();
 
             while (var3.hasNext()) {
