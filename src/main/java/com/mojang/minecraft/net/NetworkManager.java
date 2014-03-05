@@ -11,58 +11,58 @@ import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.net.NetworkHandler;
 
 public class NetworkManager {
-	public ByteArrayOutputStream levelData;
+    public ByteArrayOutputStream levelData;
 
-	public NetworkHandler netHandler;
+    public NetworkHandler netHandler;
 
-	public Minecraft minecraft;
+    public Minecraft minecraft;
 
-	public boolean successful = false;
+    public boolean successful = false;
 
-	public boolean levelLoaded = false;
-	public HashMap<Byte, NetworkPlayer> players;
+    public boolean levelLoaded = false;
+    public HashMap<Byte, NetworkPlayer> players;
 
-	public NetworkManager(Minecraft minecraft, String server, int port, String username, String key) {
-		minecraft.isOnline = true;
+    public NetworkManager(Minecraft minecraft, String server, int port, String username, String key) {
+        minecraft.isOnline = true;
 
-		this.minecraft = minecraft;
+        this.minecraft = minecraft;
 
-		players = new HashMap<Byte, NetworkPlayer>();
+        players = new HashMap<Byte, NetworkPlayer>();
 
-		new ServerConnectThread(this, server, port, username, key, minecraft).start();
-	}
+        new ServerConnectThread(this, server, port, username, key, minecraft).start();
+    }
 
-	public void error(Exception e) {
-		netHandler.close();
+    public void error(Exception e) {
+        netHandler.close();
 
-		ErrorScreen errorScreen = new ErrorScreen("Disconnected!", e.getMessage());
+        ErrorScreen errorScreen = new ErrorScreen("Disconnected!", e.getMessage());
 
-		minecraft.setCurrentScreen(errorScreen);
+        minecraft.setCurrentScreen(errorScreen);
 
-		e.printStackTrace();
-	}
+        e.printStackTrace();
+    }
 
-	public List<String> getPlayers() {
-		ArrayList<String> list = new ArrayList<String>();
+    public List<String> getPlayers() {
+        ArrayList<String> list = new ArrayList<String>();
 
-		list.add(minecraft.session.username);
+        list.add(minecraft.session.username);
 
-		Iterator<NetworkPlayer> playerIterator = players.values().iterator();
+        Iterator<NetworkPlayer> playerIterator = players.values().iterator();
 
-		while (playerIterator.hasNext()) {
-			NetworkPlayer networkPlayer = playerIterator.next();
+        while (playerIterator.hasNext()) {
+            NetworkPlayer networkPlayer = playerIterator.next();
 
-			list.add(networkPlayer.name);
-		}
+            list.add(networkPlayer.name);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public boolean isConnected() {
-		return netHandler != null && netHandler.connected;
-	}
+    public boolean isConnected() {
+        return netHandler != null && netHandler.connected;
+    }
 
-	public void sendBlockChange(int x, int y, int z, int mode, int block) {
-		netHandler.send(PacketType.PLAYER_SET_BLOCK, new Object[] { x, y, z, mode, block });
-	}
+    public void sendBlockChange(int x, int y, int z, int mode, int block) {
+        netHandler.send(PacketType.PLAYER_SET_BLOCK, new Object[] { x, y, z, mode, block });
+    }
 }

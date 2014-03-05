@@ -14,71 +14,71 @@ import com.mojang.minecraft.player.Player;
 
 public class LevelLoader {
 
-	// Used for recieved map streams from servers
-	public static byte[] decompress(InputStream var0) {
-		try {
-			DataInputStream var3;
-			byte[] var1 = new byte[(var3 = new DataInputStream(new GZIPInputStream(var0)))
-					.readInt()];
-			var3.readFully(var1);
-			var3.close();
-			return var1;
-		} catch (Exception var2) {
-			throw new RuntimeException(var2);
-		}
-	}
+    // Used for recieved map streams from servers
+    public static byte[] decompress(InputStream var0) {
+        try {
+            DataInputStream var3;
+            byte[] var1 = new byte[(var3 = new DataInputStream(new GZIPInputStream(var0)))
+                    .readInt()];
+            var3.readFully(var1);
+            var3.close();
+            return var1;
+        } catch (Exception var2) {
+            throw new RuntimeException(var2);
+        }
+    }
 
-	Level level;
+    Level level;
 
-	public LevelLoader() {
-	}
+    public LevelLoader() {
+    }
 
-	public Level load(File fullFilePath, Player player) throws FileNotFoundException, IOException {
-		System.out.println("Loading level " + fullFilePath.getAbsolutePath());
-		NBTTagCompound tc = CompressedStreamTools.readCompressed(new FileInputStream(fullFilePath));
+    public Level load(File fullFilePath, Player player) throws FileNotFoundException, IOException {
+        System.out.println("Loading level " + fullFilePath.getAbsolutePath());
+        NBTTagCompound tc = CompressedStreamTools.readCompressed(new FileInputStream(fullFilePath));
 
-		Level level = new Level();
-		byte FormatVersion;
-		String Name;
-		byte[] UUID;
-		byte[] blocks = null;
-		short X = 0;
-		short Y = 0;
-		short Z = 0;
-		FormatVersion = tc.getByte("FormatVersion");
+        Level level = new Level();
+        byte FormatVersion;
+        String Name;
+        byte[] UUID;
+        byte[] blocks = null;
+        short X = 0;
+        short Y = 0;
+        short Z = 0;
+        FormatVersion = tc.getByte("FormatVersion");
 
-		Name = tc.getString("Name");
-		UUID = tc.getByteArray("UUID");
-		X = tc.getShort("X");
-		Y = tc.getShort("Y");
-		Z = tc.getShort("Z");
+        Name = tc.getString("Name");
+        UUID = tc.getByteArray("UUID");
+        X = tc.getShort("X");
+        Y = tc.getShort("Y");
+        Z = tc.getShort("Z");
 
-		blocks = tc.getByteArray("BlockArray");
+        blocks = tc.getByteArray("BlockArray");
 
-		level.width = X;
-		level.length = Z;
-		level.height = Y;
-		level.blocks = blocks;
+        level.width = X;
+        level.length = Z;
+        level.height = Y;
+        level.blocks = blocks;
 
-		NBTTagCompound spawn = tc.getCompoundTag("Spawn");
+        NBTTagCompound spawn = tc.getCompoundTag("Spawn");
 
-		short x = spawn.getShort("X");
-		short y = spawn.getShort("Y");
-		short z = spawn.getShort("Z");
-		short r = spawn.getByte("H");
-		short l = spawn.getByte("P");
-		level.desiredSpawn = new short[] { x, y, z, r, l };
+        short x = spawn.getShort("X");
+        short y = spawn.getShort("Y");
+        short z = spawn.getShort("Z");
+        short r = spawn.getByte("H");
+        short l = spawn.getByte("P");
+        level.desiredSpawn = new short[] { x, y, z, r, l };
 
-		boolean debug = false;
-		if (debug) {
-			System.out.println("FormatVersion=" + FormatVersion);
-			System.out.println("Name=" + Name);
-			System.out.println("UUID=byte[" + UUID.length + "]");
-			System.out.println("X=" + X);
-			System.out.println("Y=" + Y);
-			System.out.println("Z=" + Z);
-			System.out.println("blocks=byte[" + blocks.length + "]");
-		}
-		return level;
-	}
+        boolean debug = false;
+        if (debug) {
+            System.out.println("FormatVersion=" + FormatVersion);
+            System.out.println("Name=" + Name);
+            System.out.println("UUID=byte[" + UUID.length + "]");
+            System.out.println("X=" + X);
+            System.out.println("Y=" + Y);
+            System.out.println("Z=" + Z);
+            System.out.println("blocks=byte[" + blocks.length + "]");
+        }
+        return level;
+    }
 }
