@@ -48,10 +48,10 @@ public final class CloudOptionsScreen extends GuiScreen {
 				screen.stringLimit = 6;
 				minecraft.setCurrentScreen(screen);
 			}
-                        
-                        if (var1.id == 3) {
+						
+						if (var1.id == 3) {
 				settings.showClouds = !settings.showClouds;
-                                buttons.set(2, new OptionButton(3, width / 2 - 77, height / 6 + 72, "Clouds: " + (settings.showClouds ? "On" : "Off")));
+								buttons.set(2, new OptionButton(3, width / 2 - 77, height / 6 + 72, "Clouds: " + (settings.showClouds ? "On" : "Off")));
 			}
 
 			if (var1.id == 4) {

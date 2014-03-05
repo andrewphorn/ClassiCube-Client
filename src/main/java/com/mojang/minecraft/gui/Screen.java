@@ -13,15 +13,15 @@ public class Screen {
 	 * Draws a box to the screen
 	 * 
 	 * @param x1
-	 *            X coordinate of the first point of the box.
+	 *			X coordinate of the first point of the box.
 	 * @param y1
-	 *            Y coordinate of the first point of the box.
+	 *			Y coordinate of the first point of the box.
 	 * @param x2
-	 *            X coordinate of the second point of the box.
+	 *			X coordinate of the second point of the box.
 	 * @param y2
-	 *            Y coordinate of the second point of the box.
+	 *			Y coordinate of the second point of the box.
 	 * @param colorRGB
-	 *            The color of the box. See {@Color}
+	 *			The color of the box. See {@Color}
 	 */
 	protected static void drawBox(float x1, float y1, float x2, float y2,
 			int colorRGB) {
@@ -52,15 +52,15 @@ public class Screen {
 	 * Draws a box to the screen
 	 * 
 	 * @param x1
-	 *            X coordinate of the first point of the box.
+	 *			X coordinate of the first point of the box.
 	 * @param y1
-	 *            Y coordinate of the first point of the box.
+	 *			Y coordinate of the first point of the box.
 	 * @param x2
-	 *            X coordinate of the second point of the box.
+	 *			X coordinate of the second point of the box.
 	 * @param y2
-	 *            Y coordinate of the second point of the box.
+	 *			Y coordinate of the second point of the box.
 	 * @param colorRGB
-	 *            The color of the box. See {@Color}
+	 *			The color of the box. See {@Color}
 	 */
 	protected static void drawBox(int x1, int y1, int x2, int y2, int colorRGB) {
 		drawBox((float)x1, (float)y1, (float)x2, (float)y2, colorRGB);
@@ -70,15 +70,15 @@ public class Screen {
 	 * Draws a string that is centered.
 	 * 
 	 * @param renderer
-	 *            {@FontRenderer} used to render the used font.
+	 *			{@FontRenderer} used to render the used font.
 	 * @param text
-	 *            Text to draw and center
+	 *			Text to draw and center
 	 * @param x
-	 *            X-Coordinate of position to draw.
+	 *			X-Coordinate of position to draw.
 	 * @param y
-	 *            Y-Coordinate of position to draw.
+	 *			Y-Coordinate of position to draw.
 	 * @param colorRGB
-	 *            The color of the box. See {@Color}
+	 *			The color of the box. See {@Color}
 	 */
 	public static void drawCenteredString(FontRenderer renderer, String text,
 			int x, int y, int colorRGB) {
@@ -89,15 +89,15 @@ public class Screen {
 	 * Draws a given string
 	 * 
 	 * @param renderer
-	 *            {@FontRenderer} used to render the used font.
+	 *			{@FontRenderer} used to render the used font.
 	 * @param text
-	 *            Text to draw 
+	 *			Text to draw 
 	 * @param x
-	 *            X-Coordinate of position to draw.
+	 *			X-Coordinate of position to draw.
 	 * @param y
-	 *            Y-Coordinate of position to draw.
+	 *			Y-Coordinate of position to draw.
 	 * @param colorRGB
-	 *            The color of the box. See {@Color}
+	 *			The color of the box. See {@Color}
 	 */
 	public static void drawString(FontRenderer renderer, String text,
 			int x, int y, int colorRGB) {

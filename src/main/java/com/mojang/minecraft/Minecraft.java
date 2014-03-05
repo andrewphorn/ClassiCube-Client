@@ -407,17 +407,17 @@ public final class Minecraft implements Runnable {
 	 * Creates a new Minecraft instance.
 	 * 
 	 * @param canvas
-	 *            Canvas to use for drawing.
+	 *			Canvas to use for drawing.
 	 * @param applet
-	 *            Applet of this instance
+	 *			Applet of this instance
 	 * @param width
-	 *            Width of the window
+	 *			Width of the window
 	 * @param height
-	 *            Height of the window
+	 *			Height of the window
 	 * @param fullscreen
-	 *            True if game should be in fullscreen
+	 *			True if game should be in fullscreen
 	 * @param isApplet
-	 *            True if the game is running as an applet
+	 *			True if the game is running as an applet
 	 */
 	public Minecraft(Canvas canvas, MinecraftApplet applet, int width,
 			int height, boolean fullscreen, boolean isApplet) {
@@ -1243,26 +1243,26 @@ public final class Minecraft implements Runnable {
 												renderer.minecraft.settings.viewBobbing);
 
 										var116 = renderer.minecraft.player;
-                                                                                if (settings.thirdPersonMode == 0) {
-                                                                                    GL11.glTranslatef(0.0F, 0.0F, -0.1F);
-                                                                                } else {
-                                                                                    GL11.glTranslatef(0.0F, 0.0F, -5.1F);
-                                                                                }
-                                                                                if (settings.thirdPersonMode == 2) {
-                                                                                    GL11.glRotatef(-var116.xRotO
-                                                                                                    + (var116.xRot - var116.xRotO)
-                                                                                                    * var80, 1.0F, 0.0F, 0.0F);
-                                                                                    GL11.glRotatef((var116.yRotO
-                                                                                                    + (var116.yRot - var116.yRotO)
-                                                                                                    * var80) + 180, 0.0F, 1.0F, 0.0F);
-                                                                                } else {
-                                                                                    GL11.glRotatef(var116.xRotO
-                                                                                                    + (var116.xRot - var116.xRotO)
-                                                                                                    * var80, 1.0F, 0.0F, 0.0F);
-                                                                                    GL11.glRotatef(var116.yRotO
-                                                                                                    + (var116.yRot - var116.yRotO)
-                                                                                                    * var80, 0.0F, 1.0F, 0.0F);
-                                                                                }
+																				if (settings.thirdPersonMode == 0) {
+																					GL11.glTranslatef(0.0F, 0.0F, -0.1F);
+																				} else {
+																					GL11.glTranslatef(0.0F, 0.0F, -5.1F);
+																				}
+																				if (settings.thirdPersonMode == 2) {
+																					GL11.glRotatef(-var116.xRotO
+																									+ (var116.xRot - var116.xRotO)
+																									* var80, 1.0F, 0.0F, 0.0F);
+																					GL11.glRotatef((var116.yRotO
+																									+ (var116.yRot - var116.yRotO)
+																									* var80) + 180, 0.0F, 1.0F, 0.0F);
+																				} else {
+																					GL11.glRotatef(var116.xRotO
+																									+ (var116.xRot - var116.xRotO)
+																									* var80, 1.0F, 0.0F, 0.0F);
+																					GL11.glRotatef(var116.yRotO
+																									+ (var116.yRot - var116.yRotO)
+																									* var80, 0.0F, 1.0F, 0.0F);
+																				}
 										var69 = var116.xo
 												+ (var116.x - var116.xo)
 												* var80;
@@ -1458,64 +1458,64 @@ public final class Minecraft implements Runnable {
 
 										var74 = 0.0F;
 										var33 = 4.8828125E-4F;
-                                                                                if (level.cloudLevel < 0) level.cloudLevel = var89.level.height + 2;
+																				if (level.cloudLevel < 0) level.cloudLevel = var89.level.height + 2;
 										var74 = level.cloudLevel;
 										var34 = (var89.ticks + var80) * var33
 												* 0.03F;
 										var35 = 0.0F;
-                                                                                if (settings.showClouds)
-                                                                                {
-                                                                                        shapeRenderer.begin();
-                                                                                        shapeRenderer.color(var107, var29,
-                                                                                                        var30);
+																				if (settings.showClouds)
+																				{
+																						shapeRenderer.begin();
+																						shapeRenderer.color(var107, var29,
+																										var30);
 
-                                                                                        for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
-                                                                                                for (var125 = -2048; var125 < var101.level.length + 2048; var125 += 512) {
-                                                                                                        shapeRenderer.vertexUV(var86,
-                                                                                                                        var74, var125 + 512,
-                                                                                                                        var86 * var33 + var34,
-                                                                                                                        (var125 + 512) * var33);
-                                                                                                        shapeRenderer.vertexUV(
-                                                                                                                        var86 + 512, var74,
-                                                                                                                        var125 + 512,
-                                                                                                                        (var86 + 512) * var33
-                                                                                                                                        + var34,
-                                                                                                                        (var125 + 512) * var33);
-                                                                                                        shapeRenderer.vertexUV(
-                                                                                                                        var86 + 512, var74,
-                                                                                                                        var125,
-                                                                                                                        (var86 + 512) * var33
-                                                                                                                                        + var34, var125
-                                                                                                                                        * var33);
-                                                                                                        shapeRenderer.vertexUV(var86,
-                                                                                                                        var74, var125,
-                                                                                                                        var86 * var33 + var34,
-                                                                                                                        var125 * var33);
-                                                                                                        shapeRenderer.vertexUV(var86,
-                                                                                                                        var74, var125,
-                                                                                                                        var86 * var33 + var34,
-                                                                                                                        var125 * var33);
-                                                                                                        shapeRenderer.vertexUV(
-                                                                                                                        var86 + 512, var74,
-                                                                                                                        var125,
-                                                                                                                        (var86 + 512) * var33
-                                                                                                                                        + var34, var125
-                                                                                                                                        * var33);
-                                                                                                        shapeRenderer.vertexUV(
-                                                                                                                        var86 + 512, var74,
-                                                                                                                        var125 + 512,
-                                                                                                                        (var86 + 512) * var33
-                                                                                                                                        + var34,
-                                                                                                                        (var125 + 512) * var33);
-                                                                                                        shapeRenderer.vertexUV(var86,
-                                                                                                                        var74, var125 + 512,
-                                                                                                                        var86 * var33 + var34,
-                                                                                                                        (var125 + 512) * var33);
-                                                                                                }
-                                                                                        }
+																						for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
+																								for (var125 = -2048; var125 < var101.level.length + 2048; var125 += 512) {
+																										shapeRenderer.vertexUV(var86,
+																														var74, var125 + 512,
+																														var86 * var33 + var34,
+																														(var125 + 512) * var33);
+																										shapeRenderer.vertexUV(
+																														var86 + 512, var74,
+																														var125 + 512,
+																														(var86 + 512) * var33
+																																		+ var34,
+																														(var125 + 512) * var33);
+																										shapeRenderer.vertexUV(
+																														var86 + 512, var74,
+																														var125,
+																														(var86 + 512) * var33
+																																		+ var34, var125
+																																		* var33);
+																										shapeRenderer.vertexUV(var86,
+																														var74, var125,
+																														var86 * var33 + var34,
+																														var125 * var33);
+																										shapeRenderer.vertexUV(var86,
+																														var74, var125,
+																														var86 * var33 + var34,
+																														var125 * var33);
+																										shapeRenderer.vertexUV(
+																														var86 + 512, var74,
+																														var125,
+																														(var86 + 512) * var33
+																																		+ var34, var125
+																																		* var33);
+																										shapeRenderer.vertexUV(
+																														var86 + 512, var74,
+																														var125 + 512,
+																														(var86 + 512) * var33
+																																		+ var34,
+																														(var125 + 512) * var33);
+																										shapeRenderer.vertexUV(var86,
+																														var74, var125 + 512,
+																														var86 * var33 + var34,
+																														(var125 + 512) * var33);
+																								}
+																						}
 
-                                                                                        shapeRenderer.end();
-                                                                                }
+																						shapeRenderer.end();
+																				}
 										GL11.glDisable(3553);
 
 										shapeRenderer.begin();
@@ -2720,13 +2720,13 @@ public final class Minecraft implements Runnable {
 											level.customShadowColour = new ColorCache(
 													r / 255.0F, g / 255.0F,
 													b / 255.0F);
-                                                                                        levelRenderer.refresh();
+																						levelRenderer.refresh();
 											break;
 										case 4: // diffuse color
 											level.customLightColour = new ColorCache(
 													r / 255.0F, g / 255.0F,
 													b / 255.0F);
-                                                                                        levelRenderer.refresh();
+																						levelRenderer.refresh();
 											break;
 										}
 									} else if (packetType == PacketType.ENV_SET_MAP_APPEARANCE) {
@@ -2966,7 +2966,7 @@ public final class Minecraft implements Runnable {
 														thisPlayer.modelName = "humanoid";
 												} else thisPlayer.modelName = ModelName.toLowerCase();
 												thisPlayer.bindTexture(textureManager);
-										}                                                                                
+										}																				
 									}
 
 									else if (packetType == PacketType.ENV_SET_WEATHER_TYPE) {
@@ -3376,18 +3376,18 @@ public final class Minecraft implements Runnable {
 					player.inventory.swapPaint(var25);
 					break;
 				}
-                                currentScreen.mouseEvent();
+								currentScreen.mouseEvent();
 			}
-                        while (Keyboard.next()) {
+						while (Keyboard.next()) {
 				if (Keyboard.getEventKey() > 1 && Keyboard.getEventKey() < 11) {
-                                    if (GameSettings.CanReplaceSlot) {
-                                        player.inventory.selected = Keyboard.getEventKey() - 2;
-                                        break;
-                                    }
-                                }
-                                currentScreen.keyboardEvent();
+									if (GameSettings.CanReplaceSlot) {
+										player.inventory.selected = Keyboard.getEventKey() - 2;
+										break;
+									}
+								}
+								currentScreen.keyboardEvent();
 			}
-                        
+						
 		}
 
 		else if (currentScreen == null) {
@@ -3487,19 +3487,19 @@ public final class Minecraft implements Runnable {
 						}
 
 						if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
-                                                    if (HackState.Noclip) {
-                                                        ++settings.thirdPersonMode;
-                                                        if (settings.thirdPersonMode > 2){
-                                                            settings.thirdPersonMode = 0;
-                                                        }
-                                                    }
+													if (HackState.Noclip) {
+														++settings.thirdPersonMode;
+														if (settings.thirdPersonMode > 2){
+															settings.thirdPersonMode = 0;
+														}
+													}
 						}
 
 						if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
 							takeAndSaveScreenshot(width, height);
 						}
-                                                
-                                                if (Keyboard.getEventKey() == Keyboard.KEY_F3) {
+												
+												if (Keyboard.getEventKey() == Keyboard.KEY_F3) {
 							settings.showDebug = !settings.showDebug;
 						}
 

@@ -27,30 +27,30 @@ public class HumanoidModel extends Model {
 	public HumanoidModel(float var1) {
 		head = new ModelPart(0, 0);
 		head.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, var1);
-                head.allowTransparency = false;
+				head.allowTransparency = false;
 		headwear = new ModelPart(32, 0);
 		headwear.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, var1 + 0.5F);
 		body = new ModelPart(16, 16);
 		body.setBounds(-4.0F, 0.0F, -2.0F, 8, 12, 4, var1);
-                body.allowTransparency = false;
+				body.allowTransparency = false;
 		rightArm = new ModelPart(40, 16);
 		rightArm.setBounds(-3.0F, -2.0F, -2.0F, 4, 12, 4, var1);
 		rightArm.setPosition(-5.0F, 2.0F, 0.0F);
-                rightArm.allowTransparency = false;
+				rightArm.allowTransparency = false;
 		leftArm = new ModelPart(40, 16);
 		leftArm.mirror = true;
 		leftArm.setBounds(-1.0F, -2.0F, -2.0F, 4, 12, 4, var1);
 		leftArm.setPosition(5.0F, 2.0F, 0.0F);
-                leftArm.allowTransparency = false;
+				leftArm.allowTransparency = false;
 		rightLeg = new ModelPart(0, 16);
 		rightLeg.setBounds(-2.0F, 0.0F, -2.0F, 4, 12, 4, var1);
 		rightLeg.setPosition(-2.0F, 12.0F, 0.0F);
-                rightLeg.allowTransparency = false;
+				rightLeg.allowTransparency = false;
 		leftLeg = new ModelPart(0, 16);
 		leftLeg.mirror = true;
 		leftLeg.setBounds(-2.0F, 0.0F, -2.0F, 4, 12, 4, var1);
 		leftLeg.setPosition(2.0F, 12.0F, 0.0F);
-                leftLeg.allowTransparency = false;
+				leftLeg.allowTransparency = false;
 	}
 
 	@Override

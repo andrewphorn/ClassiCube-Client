@@ -19,180 +19,180 @@ import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.PacketType;
 
 public class ChatInputScreenExtension extends GuiScreen {
-    public String inputLine = "";
-    private int tickCount = 0;
-    public int caretPos = 0;
-    private int historyPos = 0;
+	public String inputLine = "";
+	private int tickCount = 0;
+	public int caretPos = 0;
+	private int historyPos = 0;
 
-    public static Vector<String> history = new Vector<String>();
+	public static Vector<String> history = new Vector<String>();
 
-    int j;
+	int j;
 
-    private String getClipboard() {
+	private String getClipboard() {
 	Transferable clipboard = Toolkit.getDefaultToolkit()
 		.getSystemClipboard().getContents(null);
 	try {
-	    if (clipboard != null
-		    && clipboard.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+		if (clipboard != null
+			&& clipboard.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 		return (String) clipboard
 			.getTransferData(DataFlavor.stringFlavor);
-	    }
+		}
 	} catch (UnsupportedFlavorException ex) {
 	} catch (IOException e) {
 	}
 	return null;
-    }
+	}
 
-    private void insertTextAtCaret(String paramString) {
+	private void insertTextAtCaret(String paramString) {
 	int i; 
-        if (minecraft.session != null){
-            i = 64 - minecraft.session.username.length() - 2;
-        }
-        else i = 64;
+		if (minecraft.session != null){
+			i = 64 - minecraft.session.username.length() - 2;
+		}
+		else i = 64;
 
 	int j = paramString.length();
 	inputLine = inputLine.substring(0, caretPos) + paramString
 		+ inputLine.substring(caretPos);
 	caretPos += j;
 	if (inputLine.length() > i) {
-	    inputLine = inputLine.substring(0, i);
+		inputLine = inputLine.substring(0, i);
 	}
 	if (caretPos > inputLine.length()) {
-	    caretPos = inputLine.length();
+		caretPos = inputLine.length();
 	}
-    }
+	}
 
-    public String joinToString(String[] Names) throws Exception {
+	public String joinToString(String[] Names) throws Exception {
 	String buildable = "";
 	if (Names == null) {
-	    throw new Exception("Names cannot be null");
+		throw new Exception("Names cannot be null");
 	}
 	if (Names.length == 0) {
-	    return buildable;
+		return buildable;
 	}
 	for (int i = 0; i < Names.length; i++) {
-	    buildable += Names[i];
-	    if (i != Names.length) {
+		buildable += Names[i];
+		if (i != Names.length) {
 		buildable += ", ";
-	    }
+		}
 	}
 	return buildable;
-    }
+	}
 
-    @Override
-    public final void onClose() {
+	@Override
+	public final void onClose() {
 	Keyboard.enableRepeatEvents(false);
-    }
+	}
 
-    @Override
-    protected final void onKeyPress(char paramChar, int paramInt) {
+	@Override
+	protected final void onKeyPress(char paramChar, int paramInt) {
 	if (paramInt == Keyboard.KEY_ESCAPE) {
-	    minecraft.setCurrentScreen((GuiScreen) null);
-	    return;
+		minecraft.setCurrentScreen((GuiScreen) null);
+		return;
 	}
 	if (paramInt == Keyboard.KEY_F2) {
-	    minecraft.setCurrentScreen((GuiScreen) null);
-	    minecraft.takeAndSaveScreenshot(minecraft.width, minecraft.height);
-	    minecraft.setCurrentScreen(this);
+		minecraft.setCurrentScreen((GuiScreen) null);
+		minecraft.takeAndSaveScreenshot(minecraft.width, minecraft.height);
+		minecraft.setCurrentScreen(this);
 	}
 
 	if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
-	    return;
+		return;
 	}
 
 	if (paramInt == Keyboard.KEY_RETURN) { // 28
-	    String str1 = inputLine.trim();
-            if (str1.toLowerCase().startsWith("/client")) {
-                if (str1.equalsIgnoreCase("/client debug")) {
-                        minecraft.settings.showDebug = !minecraft.settings.showDebug;
-                        minecraft.hud.addChat("&eDebug: &a" + (!minecraft.settings.showDebug ? "On" : "Off") 
-                                + " -> " + (minecraft.settings.showDebug ? "On" : "Off"));
-                } else if (str1.equalsIgnoreCase("/client gui")) {
-                        minecraft.canRenderGUI = !minecraft.canRenderGUI;
-                        minecraft.hud.addChat("&eGUI: &a" + (!minecraft.canRenderGUI ? "On" : "Off") 
-                                + " -> " + (minecraft.canRenderGUI ? "On" : "Off"));
-                } else if (str1.equalsIgnoreCase("/client hacks")) {
-                        minecraft.settings.HacksEnabled = !minecraft.settings.HacksEnabled;
-                        minecraft.hud.addChat("&eHacks: &a" + (!minecraft.settings.HacksEnabled ? "Enabled" : "Disabled") 
-                                + " -> " + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));
-                } else if (str1.equalsIgnoreCase("/client speedhack")) {
-                        if (minecraft.settings.HackType == 1) {
+		String str1 = inputLine.trim();
+			if (str1.toLowerCase().startsWith("/client")) {
+				if (str1.equalsIgnoreCase("/client debug")) {
+						minecraft.settings.showDebug = !minecraft.settings.showDebug;
+						minecraft.hud.addChat("&eDebug: &a" + (!minecraft.settings.showDebug ? "On" : "Off") 
+								+ " -> " + (minecraft.settings.showDebug ? "On" : "Off"));
+				} else if (str1.equalsIgnoreCase("/client gui")) {
+						minecraft.canRenderGUI = !minecraft.canRenderGUI;
+						minecraft.hud.addChat("&eGUI: &a" + (!minecraft.canRenderGUI ? "On" : "Off") 
+								+ " -> " + (minecraft.canRenderGUI ? "On" : "Off"));
+				} else if (str1.equalsIgnoreCase("/client hacks")) {
+						minecraft.settings.HacksEnabled = !minecraft.settings.HacksEnabled;
+						minecraft.hud.addChat("&eHacks: &a" + (!minecraft.settings.HacksEnabled ? "Enabled" : "Disabled") 
+								+ " -> " + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));
+				} else if (str1.equalsIgnoreCase("/client speedhack")) {
+						if (minecraft.settings.HackType == 1) {
 				minecraft.settings.HackType = 0;
 			} else {
 				minecraft.settings.HackType++;
 			}
-                        minecraft.hud.addChat("&eSpeedHack: &a" + (!(minecraft.settings.HackType == 0) ? "Normal" : "Advanced") 
-                                + " -> " + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
-                } else  if (str1.equalsIgnoreCase("/client help")) {
-                    minecraft.hud.addChat("&a/Client GUI &e- Toggles the GUI");
-                    minecraft.hud.addChat("&a/Client Debug &e- Toggles the showing of the debug information");
-                    minecraft.hud.addChat("&a/Client Hacks &e- Toggles being able to use hacks");
-                    minecraft.hud.addChat("&a/Client SpeedHack &e- Switches between normal and advanced speedhack");
-                    minecraft.hud.addChat("&a/Client Status &e- Lists the settings and their current state");
-                    minecraft.hud.addChat("&a/Client Help &e- Displays this current page");
-                    minecraft.hud.addChat("&eTell us what you want as a command!");
-                } else  if (str1.equalsIgnoreCase("/client status")) {
-                    minecraft.hud.addChat("&eCurrent client command settings:");
-                    minecraft.hud.addChat("  &eGUI: &a" + (minecraft.canRenderGUI ? "On" : "Off"));
-                    minecraft.hud.addChat("  &eDebug: &a" + (minecraft.settings.showDebug ? "On" : "Off"));
-                    minecraft.hud.addChat("  &eHacks: &a" + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));
-                    minecraft.hud.addChat("  &eSpeedHack: &a" + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
-                } else {
-                    minecraft.hud.addChat("&eTo see a list of client commands type in &a/Client Help");
-                }
-            }
-            else if (minecraft.session == null) {
-                minecraft.hud.addChat("&f" + str1);
-            }
-            else if (str1.length() > 0) {
+						minecraft.hud.addChat("&eSpeedHack: &a" + (!(minecraft.settings.HackType == 0) ? "Normal" : "Advanced") 
+								+ " -> " + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
+				} else  if (str1.equalsIgnoreCase("/client help")) {
+					minecraft.hud.addChat("&a/Client GUI &e- Toggles the GUI");
+					minecraft.hud.addChat("&a/Client Debug &e- Toggles the showing of the debug information");
+					minecraft.hud.addChat("&a/Client Hacks &e- Toggles being able to use hacks");
+					minecraft.hud.addChat("&a/Client SpeedHack &e- Switches between normal and advanced speedhack");
+					minecraft.hud.addChat("&a/Client Status &e- Lists the settings and their current state");
+					minecraft.hud.addChat("&a/Client Help &e- Displays this current page");
+					minecraft.hud.addChat("&eTell us what you want as a command!");
+				} else  if (str1.equalsIgnoreCase("/client status")) {
+					minecraft.hud.addChat("&eCurrent client command settings:");
+					minecraft.hud.addChat("  &eGUI: &a" + (minecraft.canRenderGUI ? "On" : "Off"));
+					minecraft.hud.addChat("  &eDebug: &a" + (minecraft.settings.showDebug ? "On" : "Off"));
+					minecraft.hud.addChat("  &eHacks: &a" + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));
+					minecraft.hud.addChat("  &eSpeedHack: &a" + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
+				} else {
+					minecraft.hud.addChat("&eTo see a list of client commands type in &a/Client Help");
+				}
+			}
+			else if (minecraft.session == null) {
+				minecraft.hud.addChat("&f" + str1);
+			}
+			else if (str1.length() > 0) {
 		NetworkManager var10000 = minecraft.networkManager;
 		NetworkManager var3 = var10000;
 		if ((str1 = str1.trim()).length() > 0) {
-		    var3.netHandler.send(PacketType.CHAT_MESSAGE, new Object[] {
-			    Integer.valueOf(-1), str1 });
+			var3.netHandler.send(PacketType.CHAT_MESSAGE, new Object[] {
+				Integer.valueOf(-1), str1 });
 		}
 
-	    }
-            history.add(str1);
-	    minecraft.setCurrentScreen((GuiScreen) null);
-	    return;
+		}
+			history.add(str1);
+		minecraft.setCurrentScreen((GuiScreen) null);
+		return;
 	}
 
 	int i = inputLine.length();
 	if (paramInt == Keyboard.KEY_BACK && i > 0 && caretPos > 0) {
-	    inputLine = inputLine.substring(0, caretPos - 1)
-		    + inputLine.substring(caretPos);
-	    caretPos -= 1;
+		inputLine = inputLine.substring(0, caretPos - 1)
+			+ inputLine.substring(caretPos);
+		caretPos -= 1;
 	}
 
 	if (paramInt == Keyboard.KEY_LEFT && caretPos > 0) {
-	    caretPos -= 1;
+		caretPos -= 1;
 	}
 
 	if (paramInt == Keyboard.KEY_RIGHT && caretPos < i) {
-	    caretPos += 1;
+		caretPos += 1;
 	}
 
 	if (paramInt == Keyboard.KEY_HOME) {
-	    caretPos = 0;
+		caretPos = 0;
 	}
 
 	if (paramInt == Keyboard.KEY_END) {
-	    caretPos = i;
+		caretPos = i;
 	}
 
 	if (Keyboard.isKeyDown(Keyboard.KEY_LMETA)
 		|| Keyboard.isKeyDown(Keyboard.KEY_RMETA)
 		|| Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)
 		|| Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
-	    if (paramInt == Keyboard.KEY_V) {
+		if (paramInt == Keyboard.KEY_V) {
 		paramChar = '\000';
 		String str2 = getClipboard();
 		insertTextAtCaret(str2);
-	    } else if (paramInt == Keyboard.KEY_C) {
+		} else if (paramInt == Keyboard.KEY_C) {
 		paramChar = '\000';
 		setClipboard(inputLine);
-	    }
+		}
 	}
 	/*
 	 * if (paramInt == Keyboard.KEY_TAB) { String namePart = this.inputLine;
@@ -211,93 +211,93 @@ public class ChatInputScreenExtension extends GuiScreen {
 	 */
 
 	if (paramInt == Keyboard.KEY_UP) {
-	    j = history.size();
-	    if (historyPos < j) {
+		j = history.size();
+		if (historyPos < j) {
 		historyPos += 1;
 		inputLine = history.get(j - historyPos);
 		caretPos = inputLine.length();
-	    }
+		}
 	}
 
 	if (paramInt == Keyboard.KEY_DOWN) {
-	    j = history.size();
-	    if (historyPos > 0) {
+		j = history.size();
+		if (historyPos > 0) {
 		historyPos -= 1;
 
 		if (historyPos > 0) {
-		    inputLine = history.get(j - historyPos);
+			inputLine = history.get(j - historyPos);
 		} else {
-		    inputLine = "";
+			inputLine = "";
 		}
 		caretPos = inputLine.length();
-	    }
+		}
 	}
 
 	int j = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_'*!\\\"#%/()=+?[]{}<>@|$;~`^"
 		.indexOf(paramChar) >= 0 ? 1 : 0;
 
 	if (j != 0) {
-	    insertTextAtCaret(String.valueOf(paramChar));
+		insertTextAtCaret(String.valueOf(paramChar));
 	}
-    }
+	}
 
-    @Override
-    protected final void onMouseClick(int x, int y, int clickType) {
+	@Override
+	protected final void onMouseClick(int x, int y, int clickType) {
 	if (clickType == 0 && minecraft.hud.hoveredPlayer != null) {
-	    insertTextAtCaret(minecraft.hud.hoveredPlayer + " ");
+		insertTextAtCaret(minecraft.hud.hoveredPlayer + " ");
 	}
 	if (clickType == 0) {
-	    for (int i = 0; i < minecraft.hud.chat.size(); i++) {
+		for (int i = 0; i < minecraft.hud.chat.size(); i++) {
 		for (ChatScreenData data : minecraft.hud.chatsOnScreen) {
-		    if (x > data.bounds.x0 && x < data.bounds.x1
-			    && y > data.bounds.y0 && y < data.bounds.y1) {
+			if (x > data.bounds.x0 && x < data.bounds.x1
+				&& y > data.bounds.y0 && y < data.bounds.y1) {
 			ChatClickData chatClickData = new ChatClickData(
 				fontRenderer, minecraft.hud.chat.get(i), x, y);
 			if (data.string == chatClickData.message) {
-			    for (LinkData ld : chatClickData.getClickedUrls()) {
+				for (LinkData ld : chatClickData.getClickedUrls()) {
 				if (ld != null) {
-				    if (x > ld.x0 && x < ld.x1
-					    && y > data.bounds.y0
-					    && y < data.bounds.y1) {
+					if (x > ld.x0 && x < ld.x1
+						&& y > data.bounds.y0
+						&& y < data.bounds.y1) {
 					String s = FontRenderer
 						.stripColor(ld.link);
 					URI uri = chatClickData.getURI(s);
 					if (uri != null) {
-					    openWebpage(uri);
+						openWebpage(uri);
 					}
-				    }
+					}
 				}
-			    }
+				}
 			}
-		    }
+			}
 		}
-	    }
+		}
 	}
-    }
+	}
 
-    @Override
-    public final void onOpen() {
+	@Override
+	public final void onOpen() {
 	Keyboard.enableRepeatEvents(true);
-    }
+	}
 
-    public void openWebpage(URI uri) {
+	public void openWebpage(URI uri) {
 	Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop()
 		: null;
 	if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-	    try {
+		try {
 		desktop.browse(uri);
-	    } catch (Exception e) {
+		} catch (Exception e) {
 		e.printStackTrace();
-	    }
+		}
 	}
-    }
+	}
 
-    /**
-     * The background color of the chat.
-     */
-    public static int ChatRGB = new java.awt.Color(0, 0, 0, 130).getRGB();
+	/**
+	 * The background color of the chat.
+	 */
+	public static int ChatRGB = new java.awt.Color(0, 0, 0, 130).getRGB();
 
-    @Override
+	@Override
 	public void render(int paramInt1, int paramInt2) {
 		// super.drawBox(2, height - 14, width - 2, height - 2, -2147483648);
 		char[] temp = new char[128];
@@ -359,14 +359,14 @@ public class ChatInputScreenExtension extends GuiScreen {
 		}
 	}
 
-    private void setClipboard(String paramString) {
+	private void setClipboard(String paramString) {
 	StringSelection localStringSelection = new StringSelection(paramString);
 	Toolkit.getDefaultToolkit().getSystemClipboard()
 		.setContents(localStringSelection, null);
-    }
+	}
 
-    @Override
-    public final void tick() {
+	@Override
+	public final void tick() {
 	++tickCount;
-    }
+	}
 }

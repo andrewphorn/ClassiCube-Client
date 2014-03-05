@@ -15,9 +15,9 @@ public final class ErrorScreen extends GuiScreen {
 	@Override
 	protected final void onButtonClick(Button var1) {
 		if (var1.id == 0) {
-                        minecraft.shutdown();
-                        ClassiCubeStandalone.main(ClassiCubeStandalone.storedArgs);
-                        minecraft.isRunning = false;
+						minecraft.shutdown();
+						ClassiCubeStandalone.main(ClassiCubeStandalone.storedArgs);
+						minecraft.isRunning = false;
 		}
 	}
 
@@ -33,7 +33,7 @@ public final class ErrorScreen extends GuiScreen {
 		if (minecraft.isFullScreen) {
 			minecraft.toggleFullscreen();
 		}
-                buttons.get(0).active = false;
+				buttons.get(0).active = false;
 	}
 
 	@Override

@@ -80,7 +80,7 @@ public class Player extends Mob {
 	}
 
 	@Override
-	public void aiStep() {                              
+	public void aiStep() {							  
 		if (settings.HackType == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)
 				&& input.canMove) {
 			inventory.tick();
@@ -357,7 +357,7 @@ public class Player extends Mob {
 				++var5;
 			}
 			hasHair = var10001;
-                        
+						
 			if (modelName.equals("humanoid")) {
 				newTextureId = var1.load(newTexture);
 			}
@@ -539,12 +539,12 @@ public class Player extends Mob {
 		}
 	}
 
-        BlockModelRenderer block;
-        
+		BlockModelRenderer block;
+		
 	@Override
 	public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
 			float var6, float var7) {
-                if (isInteger(modelName)) {
+				if (isInteger(modelName)) {
 			try {
 				block = new BlockModelRenderer(Block.blocks[Integer.parseInt(modelName)].textureId);
 				GL11.glPushMatrix();
@@ -557,8 +557,8 @@ public class Player extends Mob {
 			}
 			return;
 		}
-                Model model = modelCache.getModel(modelName);
-                if (hasHair && model instanceof HumanoidModel) {
+				Model model = modelCache.getModel(modelName);
+				if (hasHair && model instanceof HumanoidModel) {
 			GL11.glDisable(2884);
 			HumanoidModel modelHeadwear = null;
 			(modelHeadwear = (HumanoidModel) model).headwear.yaw = modelHeadwear.head.yaw;

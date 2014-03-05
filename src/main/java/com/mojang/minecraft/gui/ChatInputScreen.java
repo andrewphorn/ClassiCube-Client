@@ -92,7 +92,7 @@ public final class ChatInputScreen extends GuiScreen {
 
 	@Override
 	public final void render(int var1, int var2) {
-	    	int x1 = 2;
+			int x1 = 2;
 		/* Add the beginning position of the box
 		 * + the length of '> _'
 		 * + the length of the trimmed message

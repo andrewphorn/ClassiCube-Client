@@ -38,7 +38,7 @@ final class LevelDialog extends Thread {
 			if (var7 == 0) {
 				screen.selectedFile = screen.chooser.getSelectedFile();
 				screen.selectedFile = new File(screen.selectedFile + "");
-                        }
+						}
 		} finally {
 			screen.frozen = false;
 			var1 = null;

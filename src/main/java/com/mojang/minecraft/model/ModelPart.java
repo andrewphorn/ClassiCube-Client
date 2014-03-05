@@ -59,9 +59,9 @@ public final class ModelPart {
 				generateList(var1);
 			
 			if (allowTransparency) {
-                                GL11.glEnable(3008);
-                                GL11.glDisable(GL11.GL_CULL_FACE);
-                        }
+								GL11.glEnable(3008);
+								GL11.glDisable(GL11.GL_CULL_FACE);
+						}
 			
 			if (pitch == 0.0F && yaw == 0.0F && roll == 0.0F) {
 				if (x == 0.0F && y == 0.0F && z == 0.0F) {
@@ -90,9 +90,9 @@ public final class ModelPart {
 				GL11.glPopMatrix();
 			}
 			if (allowTransparency){
-                                GL11.glEnable(GL11.GL_CULL_FACE);
-                                GL11.glDisable(3008);
-                        }
+								GL11.glEnable(GL11.GL_CULL_FACE);
+								GL11.glDisable(3008);
+						}
 		}
 	}
 

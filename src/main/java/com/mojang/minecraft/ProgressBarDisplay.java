@@ -314,18 +314,18 @@ public final class ProgressBarDisplay {
 			// then we can manually disable others here
 			if (joinedString.indexOf("+fly") > -1) HackState.Fly = true;
 			else if (joinedString.indexOf("-fly") > -1) HackState.Fly = false;
-                        
+						
 			if (joinedString.indexOf("+noclip") > -1) HackState.Noclip = true;
 			else if (joinedString.indexOf("-noclip") > -1) HackState.Noclip = false;
-                        
+						
 			if (joinedString.indexOf("+speed") > -1) HackState.Speed = true;
 			else if (joinedString.indexOf("-speed") > -1)HackState.Speed = false;
-                        
-                        if (joinedString.indexOf("+respawn") > -1) HackState.Respawn = true;
+						
+						if (joinedString.indexOf("+respawn") > -1) HackState.Respawn = true;
 			else if (joinedString.indexOf("-respawn") > -1) HackState.Respawn = false;
-                        
+						
 			if ((joinedString.indexOf("+ophax") > -1) 
-                                && minecraft.player.userType >= 100) {
+								&& minecraft.player.userType >= 100) {
 				HackState.setAllEnabled();
 			}
 		}

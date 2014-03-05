@@ -17,7 +17,7 @@ public final class SkeletonModel extends ZombieModel {
 		leftLeg.mirror = true;
 		leftLeg.setBounds(-1.0F, 0.0F, -1.0F, 2, 12, 2, 0.0F);
 		leftLeg.setPosition(2.0F, 12.0F, 0.0F);
-                head.allowTransparency = true;
-                body.allowTransparency = true;
+				head.allowTransparency = true;
+				body.allowTransparency = true;
 	}
 }

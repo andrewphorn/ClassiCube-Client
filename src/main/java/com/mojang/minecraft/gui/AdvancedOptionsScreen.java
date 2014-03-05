@@ -46,7 +46,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 				var1.text = settings.getSetting(var1.id);
 
 			}
-                        if (var1.id == 100) {
+						if (var1.id == 100) {
 				minecraft.setCurrentScreen(new CloudOptionsScreen(this, settings));
 			}
 
@@ -121,10 +121,10 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 					/ 6 + 24 * (heightSeperator >> 1), settings.getSetting(var1)));
 			heightSeperator++;
 		}
-                buttons.add(new OptionButton(100, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
+				buttons.add(new OptionButton(100, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
 				+ 24 * (heightSeperator >> 1), "Clouds"));
 		heightSeperator++;
-                buttons.add(new OptionButton(200, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
+				buttons.add(new OptionButton(200, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
 				+ 24 * (heightSeperator >> 1), "Water Level"));
 		heightSeperator++;
 		buttons.add(new OptionButton(300, width / 2 - 155 + heightSeperator % 2 * 160, height / 6

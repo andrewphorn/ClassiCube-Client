@@ -37,12 +37,12 @@ public class SkinDownloadThread extends Thread {
 			if (connection.getResponseCode() == 404) {
 				return;
 			}
-                            BufferedImage image = ImageIO.read(connection.getInputStream());
-                            if (image.getHeight() == image.getWidth()) {
-                                player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight() / 2);
-                            } else {
-                                player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
-                            }
+							BufferedImage image = ImageIO.read(connection.getInputStream());
+							if (image.getHeight() == image.getWidth()) {
+								player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight() / 2);
+							} else {
+								player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
+							}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
