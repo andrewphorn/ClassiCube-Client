@@ -418,17 +418,14 @@ public final class Minecraft implements Runnable {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception var7) {
-            var7.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        new SleepForeverThread();
-        new HumanoidModel();
         if (canvas != null) {
             try {
                 robot = new Robot();
-                return;
-            } catch (AWTException e) {
-                e.printStackTrace();
+            } catch (AWTException ex) {
+                ex.printStackTrace();
             }
         }
 
