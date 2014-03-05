@@ -49,8 +49,8 @@ public class MinecraftStandalone {
 		private class MCraftApplet extends MinecraftApplet {
 
 			/**
-	     * 
-	     */
+		 * 
+		 */
 			private static final long serialVersionUID = 1L;
 
 			/**
@@ -219,7 +219,7 @@ public class MinecraftStandalone {
 			 * Set the "minecraft" variable.
 			 * 
 			 * @param minecraft
-			 *            The new Minecraft variable.
+			 *			The new Minecraft variable.
 			 */
 			public void setMinecraft(Minecraft minecraft) {
 				this.minecraft = minecraft;

@@ -67,7 +67,7 @@ public interface BitInputStream {
 	 * remaining bits in the current byte are discarded
 	 * 
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public void align();
@@ -76,12 +76,12 @@ public interface BitInputStream {
 	 * reads one bit (as a boolean) from the input stream
 	 * 
 	 * @return <code>true</code> if the next bit is 1, <code>false</code>
-	 *         otherwise
+	 *		 otherwise
 	 * 
 	 * @throws IOException
-	 *             if an I/O error occurs
+	 *			 if an I/O error occurs
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public boolean getBit() throws IOException;
@@ -91,13 +91,13 @@ public interface BitInputStream {
 	 * returns the decoded value
 	 * 
 	 * @param root
-	 *            the root of the Huffman tree used to decode the codeword
+	 *			the root of the Huffman tree used to decode the codeword
 	 * @return the decoded unsigned integer value read from the stream
 	 * 
 	 * @throws IOException
-	 *             if an I/O error occurs
+	 *			 if an I/O error occurs
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public int getInt(HuffmanNode root) throws IOException;
@@ -108,9 +108,9 @@ public interface BitInputStream {
 	 * @return the unsigned integer value read from the stream
 	 * 
 	 * @throws IOException
-	 *             if an I/O error occurs
+	 *			 if an I/O error occurs
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public int getInt(int bits) throws IOException;
@@ -121,9 +121,9 @@ public interface BitInputStream {
 	 * @return the unsigned long value read from the stream
 	 * 
 	 * @throws IOException
-	 *             if an I/O error occurs
+	 *			 if an I/O error occurs
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public long getLong(int bits) throws IOException;
@@ -134,9 +134,9 @@ public interface BitInputStream {
 	 * @return the signed integer value read from the stream
 	 * 
 	 * @throws IOException
-	 *             if an I/O error occurs
+	 *			 if an I/O error occurs
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public int getSignedInt(int bits) throws IOException;
@@ -149,9 +149,9 @@ public interface BitInputStream {
 	 * @return the decoded integer value read from the stream
 	 * 
 	 * @throws IOException
-	 *             if an I/O error occurs
+	 *			 if an I/O error occurs
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public int readSignedRice(int order) throws IOException;
@@ -168,9 +168,9 @@ public interface BitInputStream {
 	 * @return the decoded integer value read from the stream
 	 * 
 	 * @throws IOException
-	 *             if an I/O error occurs
+	 *			 if an I/O error occurs
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public void readSignedRice(int order, int[] buffer, int offset, int len) throws IOException;
@@ -183,7 +183,7 @@ public interface BitInputStream {
 	 * @see #align()
 	 * 
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public void setEndian(int endian);

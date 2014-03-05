@@ -45,12 +45,12 @@ public class FileStream implements PhysicalOggStream {
 	 * have been opened for reading.
 	 * 
 	 * @param source
-	 *            the file to read from
+	 *			the file to read from
 	 * 
 	 * @throws OggFormatException
-	 *             if the stream format is incorrect
+	 *			 if the stream format is incorrect
 	 * @throws IOException
-	 *             if some other IO error occurs when reading the file
+	 *			 if some other IO error occurs when reading the file
 	 */
 
 	public FileStream(RandomAccessFile source) throws OggFormatException, IOException {

@@ -53,8 +53,8 @@ public interface PhysicalOggStream {
 	 * within this physical Ogg stream.
 	 * 
 	 * @return a collection of objects implementing
-	 *         <code>LogicalOggStream</code> which are representing the logical
-	 *         streams contained within this physical stream
+	 *		 <code>LogicalOggStream</code> which are representing the logical
+	 *		 streams contained within this physical stream
 	 * 
 	 * @see LogicalOggStream
 	 */
@@ -69,16 +69,16 @@ public interface PhysicalOggStream {
 	 * raw pages.
 	 * 
 	 * @param index
-	 *            the absolute index starting from 0 at the beginning of the
-	 *            file or stream or -1 to get the next page in a non-seekable
-	 *            stream
+	 *			the absolute index starting from 0 at the beginning of the
+	 *			file or stream or -1 to get the next page in a non-seekable
+	 *			stream
 	 * 
 	 * @return the Ogg page with the physical absolute index <code>index</code>
 	 * 
 	 * @throws OggFormatException
-	 *             if the ogg stream is corrupted
+	 *			 if the ogg stream is corrupted
 	 * @throws IOException
-	 *             if some other IO error occurs
+	 *			 if some other IO error occurs
 	 */
 
 	public OggPage getOggPage(int index) throws OggFormatException, IOException;
@@ -87,14 +87,14 @@ public interface PhysicalOggStream {
 	 * Checks if this stream is open for reading.
 	 * 
 	 * @return <code>true</code> if this stream is open for reading,
-	 *         <code>false</code> otherwise
+	 *		 <code>false</code> otherwise
 	 */
 
 	public boolean isOpen();
 
 	/**
 	 * @return <code>true</code> if the stream is seekable, <code>false</code>
-	 *         otherwise
+	 *		 otherwise
 	 */
 
 	public boolean isSeekable();
@@ -116,9 +116,9 @@ public interface PhysicalOggStream {
 	 * @param granulePosition
 	 * 
 	 * @throws OggFormatException
-	 *             if the ogg stream is corrupted
+	 *			 if the ogg stream is corrupted
 	 * @throws IOException
-	 *             if some other IO error occurs
+	 *			 if some other IO error occurs
 	 */
 
 	public void setTime(long granulePosition) throws OggFormatException, IOException;

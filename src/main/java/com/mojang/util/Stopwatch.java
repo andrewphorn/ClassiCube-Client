@@ -80,8 +80,8 @@ public class Stopwatch {
 	 * Construct a new stop watch with the given id. Does not start any task.
 	 * 
 	 * @param id
-	 *            identifier for this stop watch. Handy when we have output from
-	 *            multiple stop watches and need to distinguish between them.
+	 *			identifier for this stop watch. Handy when we have output from
+	 *			multiple stop watches and need to distinguish between them.
 	 */
 	public Stopwatch(String id) {
 		this.id = id;
@@ -166,7 +166,7 @@ public class Stopwatch {
 			sb.append("No task info kept");
 		} else {
 			sb.append("-----------------------------------------\n");
-			sb.append("ms     %     Task name\n");
+			sb.append("ms	 %	 Task name\n");
 			sb.append("-----------------------------------------\n");
 			NumberFormat nf = NumberFormat.getNumberInstance();
 			nf.setMinimumIntegerDigits(5);
@@ -214,7 +214,7 @@ public class Stopwatch {
 	 * timing methods are called without invoking this method.
 	 * 
 	 * @param taskName
-	 *            the name of the task to start
+	 *			the name of the task to start
 	 * @see #stop()
 	 */
 	public void start(String taskName) throws IllegalStateException {

@@ -190,9 +190,9 @@ public class ByteArrayBitInputStream implements BitInputStream {
 	 * @return the decoded integer value read from the stream
 	 * 
 	 * @throws IOException
-	 *             if an I/O error occurs
+	 *			 if an I/O error occurs
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public int readSignedRice(int order) throws IOException {
@@ -272,9 +272,9 @@ public class ByteArrayBitInputStream implements BitInputStream {
 	 * @return the decoded integer value read from the stream
 	 * 
 	 * @throws IOException
-	 *             if an I/O error occurs
+	 *			 if an I/O error occurs
 	 * @throws UnsupportedOperationException
-	 *             if the method is not supported by the implementation
+	 *			 if the method is not supported by the implementation
 	 */
 
 	public void readSignedRice(int order, int[] buffer, int off, int len) throws IOException {

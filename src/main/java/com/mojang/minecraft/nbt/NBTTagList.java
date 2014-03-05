@@ -92,7 +92,7 @@ public class NBTTagList extends NBTBase
 	{
 		this.tagType = tag.getId();
 		this.tagList.add(tag);
-   }
+	}
 	/**
 	 * Removes a tag at the given index.
 	 */

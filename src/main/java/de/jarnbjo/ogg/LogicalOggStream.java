@@ -45,7 +45,7 @@ public interface LogicalOggStream {
 	 * streams data is possible.
 	 * 
 	 * @throws IOException
-	 *             if an IO error occurs
+	 *			 if an IO error occurs
 	 */
 
 	public void close() throws IOException;
@@ -79,9 +79,9 @@ public interface LogicalOggStream {
 	 * @see #getNextOggPage()
 	 * 
 	 * @throws OggFormatException
-	 *             if the ogg stream is corrupted
+	 *			 if the ogg stream is corrupted
 	 * @throws IOException
-	 *             if some other IO error occurs
+	 *			 if some other IO error occurs
 	 */
 
 	public byte[] getNextOggPacket() throws OggFormatException, IOException;
@@ -96,9 +96,9 @@ public interface LogicalOggStream {
 	 * @see #getNextOggPacket()
 	 * 
 	 * @throws OggFormatException
-	 *             if the ogg stream is corrupted
+	 *			 if the ogg stream is corrupted
 	 * @throws IOException
-	 *             if some other IO error occurs
+	 *			 if some other IO error occurs
 	 */
 
 	public OggPage getNextOggPage() throws OggFormatException, IOException;
@@ -113,7 +113,7 @@ public interface LogicalOggStream {
 	 * Checks if this stream is open for reading.
 	 * 
 	 * @return <code>true</code> if this stream is open for reading,
-	 *         <code>false</code> otherwise
+	 *		 <code>false</code> otherwise
 	 */
 
 	public boolean isOpen();
@@ -123,9 +123,9 @@ public interface LogicalOggStream {
 	 * does not work if the physical Ogg stream is not seekable.
 	 * 
 	 * @throws OggFormatException
-	 *             if the ogg stream is corrupted
+	 *			 if the ogg stream is corrupted
 	 * @throws IOException
-	 *             if some other IO error occurs
+	 *			 if some other IO error occurs
 	 */
 
 	public void reset() throws OggFormatException, IOException;
@@ -141,7 +141,7 @@ public interface LogicalOggStream {
 	 * @see PhysicalOggStream#setTime(long)
 	 * 
 	 * @throws IOException
-	 *             if an IO error occurs
+	 *			 if an IO error occurs
 	 */
 
 	public void setTime(long granulePosition) throws IOException;

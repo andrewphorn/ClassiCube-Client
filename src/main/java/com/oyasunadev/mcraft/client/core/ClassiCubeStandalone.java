@@ -54,8 +54,8 @@ public class ClassiCubeStandalone {
 		public class MCraftApplet extends MinecraftApplet {
 
 			/**
-	     * 
-	     */
+		 * 
+		 */
 			private static final long serialVersionUID = 1L;
 
 			/**
@@ -283,7 +283,7 @@ public class ClassiCubeStandalone {
 			 * Set the "minecraft" variable.
 			 * 
 			 * @param minecraft
-			 *            The new Minecraft variable.
+			 *			The new Minecraft variable.
 			 */
 			public void setMinecraft(Minecraft minecraft) {
 				this.minecraft = minecraft;
@@ -351,17 +351,17 @@ public class ClassiCubeStandalone {
 		 * Starts Minecraft Classic
 		 * 
 		 * @param Player
-		 *            Player name
+		 *			Player name
 		 * @param Server
-		 *            Server address
+		 *			Server address
 		 * @param Mppass
-		 *            The player's MPPass
+		 *			The player's MPPass
 		 * @param Port
-		 *            Server port
+		 *			Server port
 		 * @param skinServer
-		 *            The url of the skin server.
+		 *			The url of the skin server.
 		 * @param fullscreen
-		 *            True if the game should be in fullScreen.
+		 *			True if the game should be in fullScreen.
 		 */
 		public void startMinecraft(String Player, String Server, String Mppass,
 				int Port, String skinServer, boolean fullscreen) {

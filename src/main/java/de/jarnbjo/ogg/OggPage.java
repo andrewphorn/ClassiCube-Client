@@ -68,21 +68,21 @@ public class OggPage {
 	 * specified byte array.
 	 * 
 	 * @param source
-	 *            the source from which the ogg page is generated
+	 *			the source from which the ogg page is generated
 	 * @param skipData
-	 *            if set to <code>true</code>, the actual page data is not read
-	 *            into memory
+	 *			if set to <code>true</code>, the actual page data is not read
+	 *			into memory
 	 * @return an ogg page created by reading data from the specified source,
-	 *         starting at the current position
+	 *		 starting at the current position
 	 * @throws FormatException
-	 *             if the data read from the specified source is not matching
-	 *             the specification for an ogg page
+	 *			 if the data read from the specified source is not matching
+	 *			 the specification for an ogg page
 	 * @throws EndOfStreamException
-	 *             if it is not possible to read an entire ogg page from the
-	 *             specified source
+	 *			 if it is not possible to read an entire ogg page from the
+	 *			 specified source
 	 * @throws IOException
-	 *             if some other I/O error is detected when reading from the
-	 *             source
+	 *			 if some other I/O error is detected when reading from the
+	 *			 source
 	 * 
 	 * @see #create(byte[])
 	 */
@@ -112,21 +112,21 @@ public class OggPage {
 	 * table.
 	 * 
 	 * @param source
-	 *            the source from which the ogg page is generated
+	 *			the source from which the ogg page is generated
 	 * @param skipData
-	 *            if set to <code>true</code>, the actual page data is not read
-	 *            into memory
+	 *			if set to <code>true</code>, the actual page data is not read
+	 *			into memory
 	 * @return an ogg page created by reading data from the specified source,
-	 *         starting at the current position
+	 *		 starting at the current position
 	 * @throws FormatException
-	 *             if the data read from the specified source is not matching
-	 *             the specification for an ogg page
+	 *			 if the data read from the specified source is not matching
+	 *			 the specification for an ogg page
 	 * @throws EndOfStreamException
-	 *             if it is not possible to read an entire ogg page from the
-	 *             specified source
+	 *			 if it is not possible to read an entire ogg page from the
+	 *			 specified source
 	 * @throws IOException
-	 *             if some other I/O error is detected when reading from the
-	 *             source
+	 *			 if some other I/O error is detected when reading from the
+	 *			 source
 	 * 
 	 * @see #create(InputStream)
 	 */
@@ -264,21 +264,21 @@ public class OggPage {
 	 * file to build a seek table.
 	 * 
 	 * @param source
-	 *            the source from which the ogg page is generated
+	 *			the source from which the ogg page is generated
 	 * @param skipData
-	 *            if set to <code>true</code>, the actual page data is not read
-	 *            into memory
+	 *			if set to <code>true</code>, the actual page data is not read
+	 *			into memory
 	 * @return an ogg page created by reading data from the specified source,
-	 *         starting at the current position
+	 *		 starting at the current position
 	 * @throws FormatException
-	 *             if the data read from the specified source is not matching
-	 *             the specification for an ogg page
+	 *			 if the data read from the specified source is not matching
+	 *			 the specification for an ogg page
 	 * @throws EndOfStreamException
-	 *             if it is not possible to read an entire ogg page from the
-	 *             specified source
+	 *			 if it is not possible to read an entire ogg page from the
+	 *			 specified source
 	 * @throws IOException
-	 *             if some other I/O error is detected when reading from the
-	 *             source
+	 *			 if some other I/O error is detected when reading from the
+	 *			 source
 	 * 
 	 * @see #create(RandomAccessFile)
 	 */
@@ -347,7 +347,7 @@ public class OggPage {
 	 * stream does not necessarily start with sample index 0.
 	 * 
 	 * @return the absolute granule position of the last packet completed on
-	 *         this page
+	 *		 this page
 	 */
 
 	public long getAbsoluteGranulePosition() {
@@ -422,7 +422,7 @@ public class OggPage {
 
 	/**
 	 * @return <code>true</code> if this page is the beginning of a logical
-	 *         stream
+	 *		 stream
 	 */
 
 	public boolean isBos() {
