@@ -33,116 +33,116 @@ import java.util.*;
 
 public class FileStream implements PhysicalOggStream {
 
-	private boolean closed = false;
-	private RandomAccessFile source;
-	private long[] pageOffsets;
+    private boolean closed = false;
+    private RandomAccessFile source;
+    private long[] pageOffsets;
 
-	private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
+    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
 
-	/**
-	 * Creates access to the specified file through the
-	 * <code>PhysicalOggStream</code> interface. The specified source file must
-	 * have been opened for reading.
-	 * 
-	 * @param source
-	 *            the file to read from
-	 * 
-	 * @throws OggFormatException
-	 *             if the stream format is incorrect
-	 * @throws IOException
-	 *             if some other IO error occurs when reading the file
-	 */
+    /**
+     * Creates access to the specified file through the
+     * <code>PhysicalOggStream</code> interface. The specified source file must
+     * have been opened for reading.
+     * 
+     * @param source
+     *            the file to read from
+     * 
+     * @throws OggFormatException
+     *             if the stream format is incorrect
+     * @throws IOException
+     *             if some other IO error occurs when reading the file
+     */
 
-	public FileStream(RandomAccessFile source) throws OggFormatException, IOException {
-		this.source = source;
+    public FileStream(RandomAccessFile source) throws OggFormatException, IOException {
+        this.source = source;
 
-		ArrayList<Long> po = new ArrayList<Long>();
-		int pageNumber = 0;
-		try {
-			while (true) {
-				po.add(new Long(this.source.getFilePointer()));
+        ArrayList<Long> po = new ArrayList<Long>();
+        int pageNumber = 0;
+        try {
+            while (true) {
+                po.add(new Long(this.source.getFilePointer()));
 
-				// skip data if pageNumber>0
-				OggPage op = getNextPage(pageNumber > 0);
-				if (op == null) {
-					break;
-				}
+                // skip data if pageNumber>0
+                OggPage op = getNextPage(pageNumber > 0);
+                if (op == null) {
+                    break;
+                }
 
-				LogicalOggStreamImpl los = (LogicalOggStreamImpl) getLogicalStream(op
-						.getStreamSerialNumber());
-				if (los == null) {
-					los = new LogicalOggStreamImpl(this);
-					logicalStreams.put(new Integer(op.getStreamSerialNumber()), los);
-				}
+                LogicalOggStreamImpl los = (LogicalOggStreamImpl) getLogicalStream(op
+                        .getStreamSerialNumber());
+                if (los == null) {
+                    los = new LogicalOggStreamImpl(this);
+                    logicalStreams.put(new Integer(op.getStreamSerialNumber()), los);
+                }
 
-				if (pageNumber == 0) {
-					los.checkFormat(op);
-				}
+                if (pageNumber == 0) {
+                    los.checkFormat(op);
+                }
 
-				los.addPageNumberMapping(pageNumber);
-				los.addGranulePosition(op.getAbsoluteGranulePosition());
+                los.addPageNumberMapping(pageNumber);
+                los.addGranulePosition(op.getAbsoluteGranulePosition());
 
-				if (pageNumber > 0) {
-					this.source.seek(this.source.getFilePointer() + op.getTotalLength());
-				}
+                if (pageNumber > 0) {
+                    this.source.seek(this.source.getFilePointer() + op.getTotalLength());
+                }
 
-				pageNumber++;
-			}
-		} catch (EndOfOggStreamException e) {
-			// ok
-		} catch (IOException e) {
-			throw e;
-		}
-		// System.out.println("pageNumber: "+pageNumber);
-		this.source.seek(0L);
-		pageOffsets = new long[po.size()];
-		int i = 0;
-		Iterator<Long> iter = po.iterator();
-		while (iter.hasNext()) {
-			pageOffsets[i++] = ((Long) iter.next()).longValue();
-		}
-	}
+                pageNumber++;
+            }
+        } catch (EndOfOggStreamException e) {
+            // ok
+        } catch (IOException e) {
+            throw e;
+        }
+        // System.out.println("pageNumber: "+pageNumber);
+        this.source.seek(0L);
+        pageOffsets = new long[po.size()];
+        int i = 0;
+        Iterator<Long> iter = po.iterator();
+        while (iter.hasNext()) {
+            pageOffsets[i++] = ((Long) iter.next()).longValue();
+        }
+    }
 
-	public void close() throws IOException {
-		closed = true;
-		source.close();
-	}
+    public void close() throws IOException {
+        closed = true;
+        source.close();
+    }
 
-	private LogicalOggStream getLogicalStream(int serialNumber) {
-		return (LogicalOggStream) logicalStreams.get(new Integer(serialNumber));
-	}
+    private LogicalOggStream getLogicalStream(int serialNumber) {
+        return (LogicalOggStream) logicalStreams.get(new Integer(serialNumber));
+    }
 
-	public Collection<LogicalOggStreamImpl> getLogicalStreams() {
-		return logicalStreams.values();
-	}
+    public Collection<LogicalOggStreamImpl> getLogicalStreams() {
+        return logicalStreams.values();
+    }
 
-	private OggPage getNextPage(boolean skipData) throws EndOfOggStreamException, IOException,
-			OggFormatException {
-		return OggPage.create(source, skipData);
-	}
+    private OggPage getNextPage(boolean skipData) throws EndOfOggStreamException, IOException,
+            OggFormatException {
+        return OggPage.create(source, skipData);
+    }
 
-	public OggPage getOggPage(int index) throws IOException {
-		source.seek(pageOffsets[index]);
-		return OggPage.create(source);
-	}
+    public OggPage getOggPage(int index) throws IOException {
+        source.seek(pageOffsets[index]);
+        return OggPage.create(source);
+    }
 
-	public boolean isOpen() {
-		return !closed;
-	}
+    public boolean isOpen() {
+        return !closed;
+    }
 
-	/**
-	 * @return always <code>true</code>
-	 */
+    /**
+     * @return always <code>true</code>
+     */
 
-	public boolean isSeekable() {
-		return true;
-	}
+    public boolean isSeekable() {
+        return true;
+    }
 
-	public void setTime(long granulePosition) throws IOException {
-		for (Iterator<LogicalOggStreamImpl> iter = logicalStreams.values().iterator(); iter
-				.hasNext();) {
-			LogicalOggStream los = (LogicalOggStream) iter.next();
-			los.setTime(granulePosition);
-		}
-	}
+    public void setTime(long granulePosition) throws IOException {
+        for (Iterator<LogicalOggStreamImpl> iter = logicalStreams.values().iterator(); iter
+                .hasNext();) {
+            LogicalOggStream los = (LogicalOggStream) iter.next();
+            los.setTime(granulePosition);
+        }
+    }
 }

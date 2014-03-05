@@ -2,21 +2,21 @@ package com.mojang.minecraft.mob.ai;
 
 public class JumpAttackAI extends BasicAttackAI {
 
-	public static final long serialVersionUID = 0L;
+    public static final long serialVersionUID = 0L;
 
-	public JumpAttackAI() {
-		// this.runSpeed *= 0.8F;
-	}
+    public JumpAttackAI() {
+        // this.runSpeed *= 0.8F;
+    }
 
-	@Override
-	protected void jumpFromGround() {
-		if (attackTarget == null) {
-			super.jumpFromGround();
-		} else {
-			mob.xd = 0.0F;
-			mob.zd = 0.0F;
-			mob.moveRelative(0.0F, 1.0F, 0.6F);
-			mob.yd = 0.5F;
-		}
-	}
+    @Override
+    protected void jumpFromGround() {
+        if (attackTarget == null) {
+            super.jumpFromGround();
+        } else {
+            mob.xd = 0.0F;
+            mob.zd = 0.0F;
+            mob.moveRelative(0.0F, 1.0F, 0.6F);
+            mob.yd = 0.5F;
+        }
+    }
 }
