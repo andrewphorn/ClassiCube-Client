@@ -3,7 +3,7 @@ package com.mojang.minecraft;
 import com.mojang.minecraft.model.Vec3D;
 
 public class MovingObjectPosition {
-    public int entityPos;
+    public boolean hasEntity;
 
     public int x;
 
@@ -16,12 +16,12 @@ public class MovingObjectPosition {
     public Entity entity;
 
     public MovingObjectPosition(Entity entity) {
-        entityPos = 1;
+        hasEntity = true;
         this.entity = entity;
     }
 
     public MovingObjectPosition(int x, int y, int z, int side, Vec3D blockPos) {
-        entityPos = 0;
+        hasEntity = false;
 
         this.x = x;
         this.y = y;

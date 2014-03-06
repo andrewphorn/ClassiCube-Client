@@ -330,10 +330,7 @@ public class Block {
     }
 
     public AABB getCollisionBox(int x, int y, int z) {
-        AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
-        ;
-
-        return aabb;
+        return new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
     }
 
     public int getDrop() {
@@ -357,8 +354,7 @@ public class Block {
     }
 
     public AABB getSelectionBox(int x, int y, int z) {
-        AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
-        return aabb;
+        return new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
     }
     /**
      * Gets the texture ID of a block depending on the side you want to use.
