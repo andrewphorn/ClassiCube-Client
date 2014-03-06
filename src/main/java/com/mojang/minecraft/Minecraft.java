@@ -12,11 +12,9 @@ import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -72,7 +70,6 @@ import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.level.tile.TextureSide;
 import com.mojang.minecraft.mob.Mob;
-import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.ModelManager;
 import com.mojang.minecraft.model.ModelPart;
 import com.mojang.minecraft.model.Vec3D;
@@ -100,8 +97,12 @@ import com.mojang.minecraft.sound.SoundPlayer;
 import com.mojang.net.NetworkHandler;
 import com.mojang.util.MathHelper;
 import com.oyasunadev.mcraft.client.util.ExtData;
+import java.lang.reflect.Field;
 
 public final class Minecraft implements Runnable {
+    // mouse button index constants
+    private static final int MB_LEFT = 0, MB_RIGHT = 1;
+
     /**
      * True if the application is waiting for something.
      */
@@ -297,26 +298,26 @@ public final class Minecraft implements Runnable {
     public int tempDisplayHeight;
     public boolean canRenderGUI = true;
 
-    private static void checkGLError(String var0) {
-        int var1;
-        if ((var1 = GL11.glGetError()) != 0) {
-            String var2 = GLU.gluErrorString(var1);
+    private static void checkGLError(String context) {
+        int error;
+        if ((error = GL11.glGetError()) != 0) {
+            String errorString = GLU.gluErrorString(error);
             System.out.println("########## GL ERROR ##########");
-            System.out.println("@ " + var0);
-            System.out.println(var1 + ": " + var2);
-            System.exit(0);
+            System.out.println("@ " + context);
+            System.out.println(error + ": " + errorString);
+            System.exit(1);
         }
-
     }
 
-    public static boolean doesUrlExistAndIsImage(String URLName) {
+    public static boolean doesUrlExistAndIsImage(URL url) {
         try {
             HttpURLConnection.setFollowRedirects(false);
-            HttpURLConnection con = (HttpURLConnection) new URL(URLName)
-                    .openConnection();
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("HEAD");
-            return con.getResponseCode() == HttpURLConnection.HTTP_OK
+            boolean result = (con.getResponseCode() == HttpURLConnection.HTTP_OK)
                     && con.getContentType().contains("image");
+            con.disconnect();
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -378,19 +379,13 @@ public final class Minecraft implements Runnable {
 
     /**
      * Creates a new Minecraft instance.
-     * 
-     * @param canvas
-     *            Canvas to use for drawing.
-     * @param applet
-     *            Applet of this instance
-     * @param width
-     *            Width of the window
-     * @param height
-     *            Height of the window
-     * @param fullscreen
-     *            True if game should be in fullscreen
-     * @param isApplet
-     *            True if the game is running as an applet
+     *
+     * @param canvas Canvas to use for drawing.
+     * @param applet Applet of this instance
+     * @param width Width of the window
+     * @param height Height of the window
+     * @param fullscreen True if game should be in fullscreen
+     * @param isApplet True if the game is running as an applet
      */
     public Minecraft(Canvas canvas, MinecraftApplet applet, int width,
             int height, boolean fullscreen, boolean isApplet) {
@@ -431,27 +426,17 @@ public final class Minecraft implements Runnable {
 
     }
 
-    void downloadImage(String source, String dest) {
-        URL url;
+    void downloadImage(URL url, File dest) {
         try {
-            if (!doesUrlExistAndIsImage(source)) {
+            if (!doesUrlExistAndIsImage(url)) {
                 return;
             }
-            url = new URL(source);
-
-            InputStream in = new BufferedInputStream(url.openStream());
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            byte[] buf = new byte[1024];
-            int n = 0;
-            while (-1 != (n = in.read(buf))) {
-                out.write(buf, 0, n);
+            InputStream is = url.openStream();
+            try {
+                IOUtil.copyStreamToFile(is, dest);
+            } finally {
+                is.close();
             }
-            out.close();
-            in.close();
-            byte[] response = out.toByteArray();
-            FileOutputStream fos = new FileOutputStream(dest);
-            fos.write(response);
-            fos.close();
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -474,12 +459,13 @@ public final class Minecraft implements Runnable {
         return arrayOfByte;
     }
 
-    public final void generateLevel(int var1) {
-        String var2 = session != null ? session.username : "anonymous";
-        Level var4 = new LevelGenerator(progressBar).generate(var2,
-                128 << var1, 128 << var1, 64);
-        gamemode.prepareLevel(var4);
-        setLevel(var4);
+    // Scale of 0 is 128x128 level. Incrementing the scale doubles the level size.
+    public final void generateLevel(int scale) {
+        String username = (session != null ? session.username : "anonymous");
+        Level newLevel = new LevelGenerator(progressBar)
+                .generate(username, 128 << scale, 128 << scale, 64);
+        gamemode.prepareLevel(newLevel);
+        setLevel(newLevel);
     }
 
     public String getHash(String urlString) throws Exception {
@@ -489,29 +475,6 @@ public final class Minecraft implements Runnable {
         return new BigInteger(1, hashBytes).toString(16);
     }
 
-    public String getOSfolderName(String s) {
-        if (s.contains("win")) {
-            return "windows";
-        }
-        if (s.contains("mac")) {
-            return "macosx";
-        }
-        if (s.contains("solaris")) {
-            return "solaris";
-        }
-        if (s.contains("sunos")) {
-            return "solaris";
-        }
-        if (s.contains("linux")) {
-            return "linux";
-        }
-        if (s.contains("unix")) {
-            return "linux";
-        } else {
-            return "linux";
-        }
-    }
-
     public final void grabMouse() {
         if (!hasMouse) {
             hasMouse = true;
@@ -519,8 +482,8 @@ public final class Minecraft implements Runnable {
                 try {
                     Mouse.setNativeCursor(cursor);
                     Mouse.setCursorPosition(width / 2, height / 2);
-                } catch (LWJGLException var2) {
-                    var2.printStackTrace();
+                } catch (LWJGLException ex) {
+                    ex.printStackTrace();
                 }
             } else {
                 Mouse.setGrabbed(true);
@@ -536,9 +499,9 @@ public final class Minecraft implements Runnable {
 
     private boolean isSystemShuttingDown() {
         try {
-            java.lang.reflect.Field running = Class.forName(
-                    "java.lang.Shutdown").getDeclaredField("RUNNING");
-            java.lang.reflect.Field state = Class.forName("java.lang.Shutdown")
+            Field running = Class.forName("java.lang.Shutdown")
+                    .getDeclaredField("RUNNING");
+            Field state = Class.forName("java.lang.Shutdown")
                     .getDeclaredField("state");
 
             running.setAccessible(true);
@@ -550,124 +513,130 @@ public final class Minecraft implements Runnable {
             return false;
         }
     }
+    
+    private void onMouseClick(int button) {
+        if (button == MB_LEFT && blockHitTime > 0) {
+            // enforce block deletion delay (survival)
+            return;
+        }
 
-    private void onMouseClick(int var1) {
-        if (var1 != 0 || blockHitTime <= 0) {
-            HeldBlock var2;
-            if (var1 == 0) {
-                var2 = renderer.heldBlock;
-                renderer.heldBlock.offset = -1;
-                var2.moving = true;
+        if (button == MB_LEFT) {
+            // Trigger the hand-waving animation on left-click (?)
+            renderer.heldBlock.offset = -1;
+            renderer.heldBlock.moving = true;
+        }
+
+        int x;
+        if (button == MB_RIGHT && (x = player.inventory.getSelected()) > 0
+                && gamemode.useItem(player, x)) {
+            // There is a block in hand
+            renderer.heldBlock.pos = 0.0F;
+
+        } else if (selected == null) {
+            // No block in hand (possible on survival mode)
+            if (button == MB_LEFT && !(gamemode instanceof CreativeGameMode)) {
+                blockHitTime = 10;
             }
+            return;
 
-            int x;
-            if (var1 == 1 && (x = player.inventory.getSelected()) > 0
-                    && gamemode.useItem(player, x)) {
-                var2 = renderer.heldBlock;
-                renderer.heldBlock.pos = 0.0F;
-            } else if (selected == null) {
-                if (var1 == 0 && !(gamemode instanceof CreativeGameMode)) {
-                    blockHitTime = 10;
+        }
+
+        if (selected.hasEntity) {
+            // Player punched something that belongs to an entity (survival)
+            if (button == MB_LEFT) {
+                selected.entity.hurt(player, 4);
+            }
+            
+        } else {
+            // Player clicked on a block
+            x = selected.x;
+            int y = selected.y;
+            int z = selected.z;
+            if (button != MB_LEFT) {
+                // When right-clicking on side of a block, figure out where to place the new block.
+                if (selected.face == 0) {
+                    --y; // below
                 }
 
+                if (selected.face == 1) {
+                    ++y; // above
+                }
+
+                if (selected.face == 2) {
+                    --z;
+                }
+
+                if (selected.face == 3) {
+                    ++z;
+                }
+
+                if (selected.face == 4) {
+                    --x;
+                }
+
+                if (selected.face == 5) {
+                    ++x;
+                }
+            }
+            
+            Block block;
+            if (level != null) {
+                block = Block.blocks[level.getTile(x, y, z)];
             } else {
-                if (selected.entityPos == 1) {
-                    if (var1 == 0) {
-                        selected.entity.hurt(player, 4);
+                // Ignore clicks if no level is loaded
+                return;
+            }
+
+            if (button == MB_LEFT) {
+                // on left-click: delete a block (if allowed)
+                if ((block != Block.BEDROCK || player.userType >= 100) && !DisallowedBreakingBlocks.contains(block)) {
+                    gamemode.hitBlock(x, y, z);
+                }
+                return;
+            }
+
+            // on right-click: build a block
+            int blockID = player.inventory.getSelected();
+            if (blockID <= 0 || disallowedPlacementBlocks.contains(Block.blocks[blockID])) {
+                return; // if air or not allowed, return
+            }
+            AABB aabb = Block.blocks[blockID].getCollisionBox(x, y, z);
+            boolean isAirOrLiquid = (block == null || block == Block.WATER
+                    || block == Block.STATIONARY_WATER
+                    || block == Block.LAVA || block == Block.STATIONARY_LAVA);
+            if (isAirOrLiquid || (aabb != null && (!(player.bb.intersects(aabb) ? false : level.isFree(aabb))))) {
+                // Ignore clicking on air/water/lava or outside the hitbox of a block (?)
+                return;
+            }
+
+            if (!gamemode.canPlace(blockID)) {
+                // Ignore if gameMode does not allow placing this block type (survival)
+                return;
+            }
+
+            if (session == null) {
+                // Singleplayer-only snow behavior code.
+                Block toCheck = Block.blocks[level.getTile(x, y - 1, z)];
+                if (toCheck != null && toCheck.id > 0 && (toCheck == Block.SNOW) && selected.face == 1) {
+                    if (block == Block.SNOW) {
+                        // Ignore placing snow-on-snow. Snow blocks don't stack, they just merge.
                         return;
-                    }
-                } else if (selected.entityPos == 0) {
-                    x = selected.x;
-                    int y = selected.y;
-                    int z = selected.z;
-                    if (var1 != 0) {
-                        if (selected.face == 0) {
-                            --y;
-                        }
-
-                        if (selected.face == 1) {
-                            ++y;
-                        }
-
-                        if (selected.face == 2) {
-                            --z;
-                        }
-
-                        if (selected.face == 3) {
-                            ++z;
-                        }
-
-                        if (selected.face == 4) {
-                            --x;
-                        }
-
-                        if (selected.face == 5) {
-                            ++x;
-                        }
-                    }
-                    Block block = Block.blocks[0];
-                    if (level != null) {
-                        block = Block.blocks[level.getTile(x, y, z)];
                     } else {
-                        return;
-                    }
-                    // if mouse click left
-                    if (var1 == 0) {
-                        if (block != Block.BEDROCK || player.userType >= 100) {
-                            if (!DisallowedBreakingBlocks.contains(block)) {
-                                gamemode.hitBlock(x, y, z);
-                                return;
-                            }
-                        }
-                        // else if its right click
-                    } else {
-                        int blockID = player.inventory.getSelected();
-                        if (blockID <= 0
-                                || disallowedPlacementBlocks
-                                        .contains(Block.blocks[blockID])) {
-                            return; // if air or not allowed, return
-                        }
-                        AABB aabb = Block.blocks[blockID].getCollisionBox(x, y,
-                                z);
-                        if ((block == null || block == Block.WATER
-                                || block == Block.STATIONARY_WATER
-                                || block == Block.LAVA || block == Block.STATIONARY_LAVA)
-                                && (aabb == null || (player.bb.intersects(aabb) ? false
-                                        : level.isFree(aabb)))) {
-                            if (!gamemode.canPlace(blockID)) {
-                                return;
-                            }
-                            if (session == null) {
-                                Block toCheck = Block.blocks[level.getTile(x,
-                                        y - 1, z)];
-                                if (toCheck != null) {
-                                    if (toCheck.id > 0) {
-                                        if (toCheck == Block.SNOW) {
-                                            if (selected.face == 1) {
-                                                if (block == Block.SNOW) {
-                                                    return;
-                                                } else {
-                                                    y -= 1;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (isOnline()) {
-                                networkManager.sendBlockChange(x, y, z, var1,
-                                        blockID);
-                            }
-
-                            level.netSetTile(x, y, z, blockID);
-                            var2 = renderer.heldBlock;
-                            renderer.heldBlock.pos = 0.0F;
-                            Block.blocks[blockID].onPlace(level, x, y, z);
-                        }
+                        // When clicking on top face of a snow block,
+                        // replace it instead of stacking another block on top of it
+                        y -= 1;
                     }
                 }
             }
+
+            if (isOnline()) {
+                networkManager.sendBlockChange(x, y, z, button, blockID);
+            }
+
+            // Update local copy of the map
+            level.netSetTile(x, y, z, blockID);
+            renderer.heldBlock.pos = 0.0F;
+            Block.blocks[blockID].onPlace(level, x, y, z);
         }
     }
 
@@ -2739,9 +2708,7 @@ public final class Minecraft implements Runnable {
                                                             hash + ".png");
                                                     BufferedImage image;
                                                     if (!file.exists()) {
-                                                        downloadImage(
-                                                                textureUrl,
-                                                                file.getAbsolutePath());
+                                                        downloadImage(new URL(textureUrl), file);
                                                     }
                                                     image = ImageIO.read(file);
                                                     if (image.getWidth() % 16 == 0
@@ -3557,7 +3524,7 @@ public final class Minecraft implements Runnable {
             boolean var26 = currentScreen == null && Mouse.isButtonDown(0)
                     && hasMouse;
             if (!gamemode.instantBreak && blockHitTime <= 0) {
-                if (var26 && selected != null && selected.entityPos == 0) {
+                if (var26 && selected != null && !selected.hasEntity) {
                     var4 = selected.x;
                     var40 = selected.y;
                     var46 = selected.z;

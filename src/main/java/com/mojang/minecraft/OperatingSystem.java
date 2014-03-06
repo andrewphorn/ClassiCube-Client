@@ -7,14 +7,14 @@ public enum OperatingSystem {
     MAC_OS_X("macos", 3),
     UNKNOWN("unknown", 4);
 
-    public final String name;
+    public final String folderName;
     public final int id;
 
     public static final OperatingSystem[] values
             = new OperatingSystem[]{LINUX, SOLARIS, WINDOWS, MAC_OS_X, UNKNOWN};
 
-    private OperatingSystem(String name, int id) {
-        this.name = name;
+    private OperatingSystem(String folderName, int id) {
+        this.folderName = folderName;
         this.id = id;
     }
 
