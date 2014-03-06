@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -95,7 +96,6 @@ import com.mojang.minecraft.sound.SoundPlayer;
 import com.mojang.net.NetworkHandler;
 import com.mojang.util.MathHelper;
 import com.oyasunadev.mcraft.client.util.ExtData;
-import java.lang.reflect.Field;
 
 public final class Minecraft implements Runnable {
     // mouse button index constants
@@ -524,11 +524,12 @@ public final class Minecraft implements Runnable {
             renderer.heldBlock.moving = true;
         }
 
-        int x;
-        if (button == MB_RIGHT && (x = player.inventory.getSelected()) > 0
-                && gamemode.useItem(player, x)) {
-            // There is a block in hand
-            renderer.heldBlock.pos = 0.0F;
+        if (button == MB_RIGHT) {
+            int selectedBlockId = player.inventory.getSelected();
+            if (selectedBlockId > 0 && gamemode.useItem(player, selectedBlockId)) {
+                // There is a block in hand, and it's not air
+                renderer.heldBlock.pos = 0.0F;
+            }
 
         } else if (selected == null) {
             // No block in hand (possible on survival mode)
@@ -547,7 +548,7 @@ public final class Minecraft implements Runnable {
 
         } else {
             // Player clicked on a block
-            x = selected.x;
+            int x = selected.x;
             int y = selected.y;
             int z = selected.z;
             if (button != MB_LEFT) {
@@ -657,7 +658,6 @@ public final class Minecraft implements Runnable {
         if (currentScreen != null) {
             currentScreen.width = width * 240 / height;
             currentScreen.height = height * 240 / height;
-
             currentScreen.onOpen();
         }
     }
@@ -719,17 +719,17 @@ public final class Minecraft implements Runnable {
 
         checkGLError("Pre startup");
 
-        GL11.glEnable(3553);
-        GL11.glShadeModel(7425);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
         GL11.glClearDepth(1.0D);
-        GL11.glEnable(2929);
-        GL11.glDepthFunc(515);
-        GL11.glEnable(3008);
-        GL11.glAlphaFunc(516, 0.5F);
-        GL11.glCullFace(1029);
-        GL11.glMatrixMode(5889);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthFunc(GL11.GL_LEQUAL);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.5F);
+        GL11.glCullFace(GL11.GL_BACK);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
-        GL11.glMatrixMode(5888);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
         checkGLError("Startup");
 
@@ -925,7 +925,7 @@ public final class Minecraft implements Runnable {
             }
 
             checkGLError("Pre render");
-            GL11.glEnable(3553);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
 
             if (!isOnline) {
                 gamemode.applyCracks(timer.delta);
@@ -944,19 +944,13 @@ public final class Minecraft implements Runnable {
                     var86 = 0;
                     if (renderer.minecraft.isLevelLoaded) {
                         if (renderer.minecraft.canvas != null) {
-                            Point var90;
-                            var70 = (var90 = renderer.minecraft.canvas
-                                    .getLocationOnScreen()).x
-                                    + renderer.minecraft.width / 2;
-                            var68 = var90.y
-                                    + renderer.minecraft.height / 2;
-                            Point var75;
-                            var81 = (var75 = MouseInfo
-                                    .getPointerInfo().getLocation()).x
-                                    - var70;
+                            Point var90 = renderer.minecraft.canvas.getLocationOnScreen();
+                            var70 = var90.x + renderer.minecraft.width / 2;
+                            var68 = var90.y + renderer.minecraft.height / 2;
+                            Point var75 = MouseInfo.getPointerInfo().getLocation();
+                            var81 = var75.x - var70;
                             var86 = -(var75.y - var68);
-                            renderer.minecraft.robot.mouseMove(
-                                    var70, var68);
+                            renderer.minecraft.robot.mouseMove(var70, var68);
                         } else {
                             Mouse.setCursorPosition(
                                     renderer.minecraft.width / 2,
@@ -1115,11 +1109,11 @@ public final class Minecraft implements Runnable {
                             GL11.glClearColor(renderer.fogRed,
                                     renderer.fogBlue,
                                     renderer.fogGreen, 0.0F);
-                            GL11.glClear(16640);
+                            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                             renderer.fogColorMultiplier = 1.0F;
-                            GL11.glEnable(2884);
+                            GL11.glEnable(GL11.GL_CULL_FACE);
                             renderer.fogEnd = 512 >> (renderer.minecraft.settings.viewDistance << 1);
-                            GL11.glMatrixMode(5889);
+                            GL11.glMatrixMode(GL11.GL_PROJECTION);
                             GL11.glLoadIdentity();
                             var29 = 0.07F;
                             if (renderer.minecraft.settings.anaglyph) {
@@ -1138,12 +1132,10 @@ public final class Minecraft implements Runnable {
                                     (float) renderer.minecraft.width
                                     / (float) renderer.minecraft.height,
                                     0.05F, renderer.fogEnd);
-                            GL11.glMatrixMode(5888);
+                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
                             GL11.glLoadIdentity();
                             if (renderer.minecraft.settings.anaglyph) {
-                                GL11.glTranslatef(
-                                        ((var77 << 1) - 1) * 0.1F,
-                                        0.0F, 0.0F);
+                                GL11.glTranslatef( ((var77 << 1) - 1) * 0.1F, 0.0F, 0.0F);
                             }
 
                             renderer.hurtEffect(var80);
@@ -1201,7 +1193,7 @@ public final class Minecraft implements Runnable {
                             }
 
                             renderer.updateFog();
-                            GL11.glEnable(2912);
+                            GL11.glEnable(GL11.GL_FOG);
                             var89.sortChunks(var126, 0);
                             int var83;
                             int var110;
@@ -1210,8 +1202,7 @@ public final class Minecraft implements Runnable {
                             int var125;
                             int var122;
                             int var120;
-                            if (var119.isSolid(var126.x, var126.y,
-                                    var126.z, 0.1F)) {
+                            if (var119.isSolid(var126.x, var126.y, var126.z, 0.1F)) {
                                 var120 = (int) var126.x;
                                 var83 = (int) var126.y;
                                 var110 = (int) var126.z;
@@ -1281,13 +1272,10 @@ public final class Minecraft implements Runnable {
                             renderer.updateFog();
                             float var107 = var80;
                             ParticleManager var96 = var93;
-                            var29 = -MathHelper
-                                    .cos(var126.yRot * 3.1415927F / 180.0F);
-                            var117 = -(var30 = -MathHelper
-                                    .sin(var126.yRot * 3.1415927F / 180.0F))
+                            var29 = -MathHelper.cos(var126.yRot * 3.1415927F / 180.0F);
+                            var117 = -(var30 = -MathHelper.sin(var126.yRot * 3.1415927F / 180.0F))
                                     * MathHelper.sin(var126.xRot * 3.1415927F / 180.0F);
-                            var32 = var29
-                                    * MathHelper.sin(var126.xRot * 3.1415927F / 180.0F);
+                            var32 = var29 * MathHelper.sin(var126.xRot * 3.1415927F / 180.0F);
                             var69 = MathHelper.cos(var126.xRot * 3.1415927F / 180.0F);
 
                             for (var83 = 0; var83 < 2; ++var83) {
@@ -1303,7 +1291,7 @@ public final class Minecraft implements Runnable {
                                                 .load("/terrain.png");
                                     }
 
-                                    GL11.glBindTexture(3553, var110);
+                                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, var110);
                                     shapeRenderer.begin();
 
                                     for (var120 = 0; var120 < var96.particles[var83]
@@ -1323,16 +1311,14 @@ public final class Minecraft implements Runnable {
                                 }
                             }
 
-                            GL11.glBindTexture(3553,
-                                    var89.textureManager.load("/rock.png"));
-                            GL11.glEnable(3553);
+                            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var89.textureManager.load("/rock.png"));
+                            GL11.glEnable(GL11.GL_TEXTURE_2D);
                             GL11.glCallList(var89.listId); // rock
                             // edges
                             renderer.updateFog();
                             var101 = var89;
 
-                            GL11.glBindTexture(3553,
-                                    var89.textureManager.load("/clouds.png"));
+                            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var89.textureManager.load("/clouds.png"));
                             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                             var107 = (var89.level.cloudColor >> 16 & 255) / 255.0F;
                             var29 = (var89.level.cloudColor >> 8 & 255) / 255.0F;
@@ -1353,13 +1339,11 @@ public final class Minecraft implements Runnable {
                                 level.cloudLevel = var89.level.height + 2;
                             }
                             var74 = level.cloudLevel;
-                            var34 = (var89.ticks + var80) * var33
-                                    * 0.03F;
+                            var34 = (var89.ticks + var80) * var33 * 0.03F;
                             var35 = 0.0F;
                             if (settings.showClouds) {
                                 shapeRenderer.begin();
-                                shapeRenderer.color(var107, var29,
-                                        var30);
+                                shapeRenderer.color(var107, var29, var30);
 
                                 for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
                                     for (var125 = -2048; var125 < var101.level.length + 2048; var125 += 512) {
@@ -1403,7 +1387,7 @@ public final class Minecraft implements Runnable {
 
                                 shapeRenderer.end();
                             }
-                            GL11.glDisable(3553);
+                            GL11.glDisable(GL11.GL_TEXTURE_2D);
 
                             shapeRenderer.begin();
                             var34 = (var101.level.skyColor >> 16 & 255) / 255.0F;
@@ -1419,40 +1403,32 @@ public final class Minecraft implements Runnable {
                                 var87 = var74;
                             }
 
-                            shapeRenderer
-                                    .color(var34, var35, var87);
+                            shapeRenderer.color(var34, var35, var87);
                             var74 = var101.level.height + 10;
 
                             for (var125 = -2048; var125 < var101.level.width + 2048; var125 += 512) {
                                 for (var68 = -2048; var68 < var101.level.length + 2048; var68 += 512) {
-                                    shapeRenderer.vertex(var125,
-                                            var74, var68);
-                                    shapeRenderer.vertex(
-                                            var125 + 512, var74,
-                                            var68);
-                                    shapeRenderer.vertex(
-                                            var125 + 512, var74,
-                                            var68 + 512);
-                                    shapeRenderer.vertex(var125,
-                                            var74, var68 + 512);
+                                    shapeRenderer.vertex(var125, var74, var68);
+                                    shapeRenderer.vertex(var125 + 512, var74, var68);
+                                    shapeRenderer.vertex(var125 + 512, var74, var68 + 512);
+                                    shapeRenderer.vertex(var125, var74, var68 + 512);
                                 }
                             }
 
                             shapeRenderer.end();
-                            GL11.glEnable(3553);
+                            GL11.glEnable(GL11.GL_TEXTURE_2D);
                             renderer.updateFog();
                             int var108;
                             if (renderer.minecraft.selected != null) {
-                                GL11.glDisable(3008);
+                                GL11.glDisable(GL11.GL_ALPHA_TEST);
                                 MovingObjectPosition var10001 = renderer.minecraft.selected;
-                                var105 = var126.inventory
-                                        .getSelected();
+                                var105 = var126.inventory.getSelected();
                                 MovingObjectPosition var102 = var10001;
                                 var101 = var89;
 
-                                GL11.glEnable(3042);
-                                GL11.glEnable(3008);
-                                GL11.glBlendFunc(770, 1);
+                                GL11.glEnable(GL11.GL_BLEND);
+                                GL11.glEnable(GL11.GL_ALPHA_TEST);
+                                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                                 GL11.glColor4f(
                                         1.0F,
                                         1.0F,
@@ -1463,7 +1439,7 @@ public final class Minecraft implements Runnable {
                                     GL11.glBlendFunc(774, 768);
                                     var108 = var89.textureManager
                                             .load("/terrain.png");
-                                    GL11.glBindTexture(3553, var108);
+                                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, var108);
                                     GL11.glColor4f(1.0F, 1.0F,
                                             1.0F, 0.5F);
                                     GL11.glPushMatrix();
@@ -1477,8 +1453,8 @@ public final class Minecraft implements Runnable {
                                     var33 = (var73.y1 + var73.y2) / 2.0F;
                                     var34 = (var73.z1 + var73.z2) / 2.0F;
                                     GL11.glTranslatef(var102.x + var74,
-                                                      var102.y + var33,
-                                                      var102.z + var34);
+                                            var102.y + var33,
+                                            var102.z + var34);
                                     var35 = 1.01F;
                                     GL11.glScalef(1.0F, var35,
                                             var35);
@@ -1504,89 +1480,67 @@ public final class Minecraft implements Runnable {
                                     GL11.glPopMatrix();
                                 }
 
-                                GL11.glDisable(3042);
-                                GL11.glDisable(3008);
+                                GL11.glDisable(GL11.GL_BLEND);
+                                GL11.glDisable(GL11.GL_ALPHA_TEST);
                                 var10001 = renderer.minecraft.selected;
                                 var126.inventory.getSelected();
                                 var102 = var10001;
-                                GL11.glEnable(3042);
-                                GL11.glBlendFunc(770, 771);
-                                GL11.glColor4f(0.0F, 0.0F, 0.0F,
-                                        0.4F);
+                                GL11.glEnable(GL11.GL_BLEND);
+                                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                                GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
                                 GL11.glLineWidth(2.0F);
-                                GL11.glDisable(3553);
+                                GL11.glDisable(GL11.GL_TEXTURE_2D);
                                 GL11.glDepthMask(false);
                                 var29 = 0.002F;
                                 if ((var104 = var89.level.getTile(
                                         var102.x, var102.y,
                                         var102.z)) > 0) {
                                     AABB var111 = Block.blocks[var104]
-                                            .getSelectionBox(
-                                                    var102.x,
-                                                    var102.y,
-                                                    var102.z).grow(var29, var29, var29);
-                                    GL11.glBegin(3);
-                                    GL11.glVertex3f(var111.x0,
-                                            var111.y0, var111.z0);
-                                    GL11.glVertex3f(var111.x1,
-                                            var111.y0, var111.z0);
-                                    GL11.glVertex3f(var111.x1,
-                                            var111.y0, var111.z1);
-                                    GL11.glVertex3f(var111.x0,
-                                            var111.y0, var111.z1);
-                                    GL11.glVertex3f(var111.x0,
-                                            var111.y0, var111.z0);
+                                            .getSelectionBox(var102.x, var102.y, var102.z)
+                                            .grow(var29, var29, var29);
+                                    GL11.glBegin(GL11.GL_LINE_STRIP);
+                                    GL11.glVertex3f(var111.x0, var111.y0, var111.z0);
+                                    GL11.glVertex3f(var111.x1, var111.y0, var111.z0);
+                                    GL11.glVertex3f(var111.x1, var111.y0, var111.z1);
+                                    GL11.glVertex3f(var111.x0, var111.y0, var111.z1);
+                                    GL11.glVertex3f(var111.x0, var111.y0, var111.z0);
                                     GL11.glEnd();
-                                    GL11.glBegin(3);
-                                    GL11.glVertex3f(var111.x0,
-                                            var111.y1, var111.z0);
-                                    GL11.glVertex3f(var111.x1,
-                                            var111.y1, var111.z0);
-                                    GL11.glVertex3f(var111.x1,
-                                            var111.y1, var111.z1);
-                                    GL11.glVertex3f(var111.x0,
-                                            var111.y1, var111.z1);
-                                    GL11.glVertex3f(var111.x0,
-                                            var111.y1, var111.z0);
+                                    GL11.glBegin(GL11.GL_LINE_STRIP);
+                                    GL11.glVertex3f(var111.x0, var111.y1, var111.z0);
+                                    GL11.glVertex3f(var111.x1, var111.y1, var111.z0);
+                                    GL11.glVertex3f(var111.x1, var111.y1, var111.z1);
+                                    GL11.glVertex3f(var111.x0, var111.y1, var111.z1);
+                                    GL11.glVertex3f(var111.x0, var111.y1, var111.z0);
                                     GL11.glEnd();
-                                    GL11.glBegin(1);
-                                    GL11.glVertex3f(var111.x0,
-                                            var111.y0, var111.z0);
-                                    GL11.glVertex3f(var111.x0,
-                                            var111.y1, var111.z0);
-                                    GL11.glVertex3f(var111.x1,
-                                            var111.y0, var111.z0);
-                                    GL11.glVertex3f(var111.x1,
-                                            var111.y1, var111.z0);
-                                    GL11.glVertex3f(var111.x1,
-                                            var111.y0, var111.z1);
-                                    GL11.glVertex3f(var111.x1,
-                                            var111.y1, var111.z1);
-                                    GL11.glVertex3f(var111.x0,
-                                            var111.y0, var111.z1);
-                                    GL11.glVertex3f(var111.x0,
-                                            var111.y1, var111.z1);
+                                    GL11.glBegin(GL11.GL_LINES);
+                                    GL11.glVertex3f(var111.x0, var111.y0, var111.z0);
+                                    GL11.glVertex3f(var111.x0, var111.y1, var111.z0);
+                                    GL11.glVertex3f(var111.x1, var111.y0, var111.z0);
+                                    GL11.glVertex3f(var111.x1, var111.y1, var111.z0);
+                                    GL11.glVertex3f(var111.x1, var111.y0, var111.z1);
+                                    GL11.glVertex3f(var111.x1, var111.y1, var111.z1);
+                                    GL11.glVertex3f(var111.x0, var111.y0, var111.z1);
+                                    GL11.glVertex3f(var111.x0, var111.y1, var111.z1);
                                     GL11.glEnd();
                                 }
 
                                 GL11.glDepthMask(true);
-                                GL11.glEnable(3553);
-                                GL11.glDisable(3042);
-                                GL11.glEnable(3008);
+                                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                                GL11.glDisable(GL11.GL_BLEND);
+                                GL11.glEnable(GL11.GL_ALPHA_TEST);
                             }
 
-                            GL11.glBlendFunc(770, 771);
+                            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                             renderer.updateFog();
-                            GL11.glEnable(3553);
-                            GL11.glEnable(3042);
-                            GL11.glBindTexture(3553,
+                            GL11.glEnable(GL11.GL_TEXTURE_2D);
+                            GL11.glEnable(GL11.GL_BLEND);
+                            GL11.glBindTexture(GL11.GL_TEXTURE_2D,
                                     var89.textureManager.load("/water.png"));
 
                             GL11.glCallList(var89.listId + 1);
-                            GL11.glDisable(3042);
-                            GL11.glEnable(3042);
-                            GL11.glColorMask(false, false, false,
-                                    false);
+                            GL11.glDisable(GL11.GL_BLEND);
+                            GL11.glEnable(GL11.GL_BLEND);
+                            GL11.glColorMask(false, false, false, false);
 
                             var120 = var89.sortChunks(var126, 1);
                             GL11.glColorMask(true, true, true, true);
@@ -1602,14 +1556,14 @@ public final class Minecraft implements Runnable {
 
                             if (var120 > 0) {
                                 GL11.glBindTexture(
-                                        3553,
+                                        GL11.GL_TEXTURE_2D,
                                         var89.textureManager.load("/terrain.png"));
                                 GL11.glCallLists(var89.buffer);
                             }
 
                             GL11.glDepthMask(true);
-                            GL11.glDisable(3042);
-                            GL11.glDisable(2912);
+                            GL11.glDisable(GL11.GL_BLEND);
+                            GL11.glDisable(GL11.GL_FOG);
                             // -------------------
 
                             Collections
@@ -1624,13 +1578,12 @@ public final class Minecraft implements Runnable {
                                         .get(i).Color;
                                 GL11.glLineWidth(2);
 
-                                GL11.glDisable(3042);
-                                GL11.glDisable(3008);
-                                GL11.glEnable(3042);
-                                GL11.glBlendFunc(770, 771);
-                                GL11.glColor4f(color.R, color.G,
-                                        color.B, color.A);
-                                GL11.glDisable(3553);
+                                GL11.glDisable(GL11.GL_BLEND);
+                                GL11.glDisable(GL11.GL_ALPHA_TEST);
+                                GL11.glEnable(GL11.GL_BLEND);
+                                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                                GL11.glColor4f(color.R, color.G, color.B, color.A);
+                                GL11.glDisable(GL11.GL_TEXTURE_2D);
                                 GL11.glDepthMask(false);
                                 GL11.glDisable(GL11.GL_CULL_FACE);
                                 // GL11.glBegin(GL11.GL_QUADS);
@@ -1638,164 +1591,122 @@ public final class Minecraft implements Runnable {
                                 // Front Face
                                 // Bottom Left
                                 shapeRenderer.begin();
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
                                 // Bottom Right
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y0, bounds.z1);
+                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
                                 // Top Right
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y1, bounds.z1);
+                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
                                 // Top Left
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
 
                                 // Back Face
                                 // Bottom Right
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
                                 // Top Right
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
                                 // Top Left
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
                                 // Bottom Left
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
 
                                 // Top Face
                                 // Top Left
                                 // Bottom Left
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z0);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
                                 // Bottom Right
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y1, bounds.z1);
+                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
                                 // Top Right
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
 
                                 // Bottom Face
                                 // Top Right
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
                                 // Top Left
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
                                 // Bottom Left
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y0, bounds.z1);
+                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
                                 // Bottom Right
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
 
                                 // Right face
                                 // Bottom Right
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
                                 // Top Right
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
                                 // Top Left
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y1, bounds.z1);
+                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
                                 // Bottom Left
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y0, bounds.z1);
+                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
 
                                 // Left Face
                                 // Bottom Left
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
                                 // Bottom Right
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
                                 // Top Right
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
                                 // Top Left
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
                                 shapeRenderer.end();
 
-                                GL11.glColor4f(color.R, color.G,
-                                        color.B, color.A + 0.2F);
+                                GL11.glColor4f(color.R, color.G, color.B, color.A + 0.2F);
 
                                 shapeRenderer.startDrawing(3);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y0, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y0, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
                                 shapeRenderer.end();
+                                
                                 shapeRenderer.startDrawing(3);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y1, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y1, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
                                 shapeRenderer.end();
+                                
                                 shapeRenderer.startDrawing(1);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z0);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y0, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y1, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y0, bounds.z1);
-                                shapeRenderer.vertex(bounds.x1,
-                                        bounds.y1, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y0, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0,
-                                        bounds.y1, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
+                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
+                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
+                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
                                 shapeRenderer.end();
 
                                 GL11.glDepthMask(true);
-                                GL11.glEnable(3553);
-                                GL11.glDisable(3042);
-                                GL11.glEnable(3008);
+                                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                                GL11.glDisable(GL11.GL_BLEND);
+                                GL11.glEnable(GL11.GL_ALPHA_TEST);
 
                                 GL11.glEnable(GL11.GL_CULL_FACE);
 
                                 // ------------------
                             }
 
-                            if (renderer.minecraft.isRaining
-                                    || renderer.minecraft.isSnowing) {
+                            if (renderer.minecraft.isRaining || renderer.minecraft.isSnowing) {
                                 float var97 = var80;
                                 float speed = 1.0F;
                                 Level var109 = renderer.minecraft.level;
                                 var104 = (int) player.x;
                                 var108 = (int) player.y;
                                 var114 = (int) player.z;
-                                GL11.glDisable(2884);
+                                GL11.glDisable(GL11.GL_CULL_FACE);
                                 GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                                GL11.glEnable(3042);
-                                GL11.glBlendFunc(770, 771);
+                                GL11.glEnable(GL11.GL_BLEND);
+                                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                                 if (renderer.minecraft.isRaining) {
                                     GL11.glBindTexture(
-                                            3553,
+                                            GL11.GL_TEXTURE_2D,
                                             renderer.minecraft.textureManager.load("/rain.png"));
                                 } else if (renderer.minecraft.isSnowing) {
                                     GL11.glBindTexture(
-                                            3553,
+                                            GL11.GL_TEXTURE_2D,
                                             renderer.minecraft.textureManager.load("/snow.png"));
                                     speed = 0.2F;
                                 }
@@ -1826,7 +1737,7 @@ public final class Minecraft implements Runnable {
                                             var35 = var122 + 0.5F
                                                     - player.z;
                                             float var92 = MathHelper.sqrt(
-                                                var124 * var124 + var35 * var35) / 5;
+                                                    var124 * var124 + var35 * var35) / 5;
                                             GL11.glColor4f(
                                                     1.0F, 1.0F, 1.0F,
                                                     (1.0F - var92 * var92) * 0.7F);
@@ -1868,15 +1779,14 @@ public final class Minecraft implements Runnable {
                                     }
                                 }
 
-                                GL11.glEnable(2884);
-                                GL11.glDisable(3042);
+                                GL11.glEnable(GL11.GL_CULL_FACE);
+                                GL11.glDisable(GL11.GL_BLEND);
                             }
                             if (!isSinglePlayer
                                     && networkManager != null
                                     && networkManager.players != null
                                     && networkManager.players.size() > 0) {
-                                if (settings.ShowNames == 1
-                                        && player.userType >= 100) {
+                                if (settings.ShowNames == 1 && player.userType >= 100) {
                                     for (int n = 0; n < networkManager.players
                                             .values().size(); n++) {
                                         NetworkPlayer np = (NetworkPlayer) networkManager.players
@@ -1897,7 +1807,7 @@ public final class Minecraft implements Runnable {
                                 }
                             }
 
-                            GL11.glClear(256);
+                            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
                             GL11.glLoadIdentity();
                             if (renderer.minecraft.settings.anaglyph) {
                                 GL11.glTranslatef(
@@ -1922,8 +1832,7 @@ public final class Minecraft implements Runnable {
                             GL11.glRotatef(var116.yRotO
                                     + (var116.yRot - var116.yRotO)
                                     * var80, 0.0F, 1.0F, 0.0F);
-                            heldBlock.minecraft.renderer
-                                    .setLighting(true);
+                            heldBlock.minecraft.renderer.setLighting(true);
                             GL11.glPopMatrix();
                             GL11.glPushMatrix();
                             var69 = 0.8F;
@@ -1932,9 +1841,9 @@ public final class Minecraft implements Runnable {
                                         .sin((var74 = (heldBlock.offset + var80) / 7.0F) * 3.1415927F);
                                 GL11.glTranslatef(
                                         -MathHelper.sin(
-                                            MathHelper.sqrt(var74) * 3.1415927F) * 0.4F,
+                                                MathHelper.sqrt(var74) * 3.1415927F) * 0.4F,
                                         MathHelper.sin(
-                                            MathHelper.sqrt(var74) * 3.1415927F * 2.0F) * 0.2F,
+                                                MathHelper.sqrt(var74) * 3.1415927F * 2.0F) * 0.2F,
                                         -var33 * 0.2F);
                             }
 
@@ -1942,7 +1851,7 @@ public final class Minecraft implements Runnable {
                                     * var69 - (1.0F - var117)
                                     * 0.6F, -0.9F * var69);
                             GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
-                            GL11.glEnable(2977);
+                            GL11.glEnable(GL11.GL_NORMALIZE);
                             if (heldBlock.moving) {
                                 var33 = MathHelper
                                         .sin((var74 = (heldBlock.offset + var80) / 7.0F)
@@ -1950,10 +1859,9 @@ public final class Minecraft implements Runnable {
                                                 * 3.1415927F);
                                 GL11.glRotatef(
                                         MathHelper.sin(
-                                            MathHelper.sqrt(var74) * 3.1415927F) * 80.0F,
+                                                MathHelper.sqrt(var74) * 3.1415927F) * 80.0F,
                                         0.0F, 1.0F, 0.0F);
-                                GL11.glRotatef(-var33 * 20.0F,
-                                        1.0F, 0.0F, 0.0F);
+                                GL11.glRotatef(-var33 * 20.0F, 1.0F, 0.0F, 0.0F);
                             }
 
                             ColorCache color = heldBlock.minecraft.level
@@ -1961,8 +1869,7 @@ public final class Minecraft implements Runnable {
                                             (int) var116.x,
                                             (int) var116.y,
                                             (int) var116.z);
-                            GL11.glColor4f(color.R, color.G,
-                                    color.B, 1.0F);
+                            GL11.glColor4f(color.R, color.G, color.B, 1.0F);
 
                             if (heldBlock.block != null) {
                                 var34 = 0.4F;
@@ -1972,7 +1879,7 @@ public final class Minecraft implements Runnable {
                                 if (settings.thirdPersonMode == 0
                                         && canRenderGUI) {
                                     GL11.glBindTexture(
-                                            3553,
+                                            GL11.GL_TEXTURE_2D,
                                             heldBlock.minecraft.textureManager.load("/terrain.png"));
                                     heldBlock.block
                                             .renderPreview(shapeRenderer);
@@ -1994,7 +1901,7 @@ public final class Minecraft implements Runnable {
                                 GL11.glCallList(var127.list);
                             }
 
-                            GL11.glDisable(2977);
+                            GL11.glDisable(GL11.GL_NORMALIZE);
                             GL11.glPopMatrix();
                             heldBlock.minecraft.renderer
                                     .setLighting(false);
@@ -2015,17 +1922,16 @@ public final class Minecraft implements Runnable {
                                 renderer.minecraft.width,
                                 renderer.minecraft.height);
                         GL11.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
-                        GL11.glClear(16640);
-                        GL11.glMatrixMode(5889);
+                        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+                        GL11.glMatrixMode(GL11.GL_PROJECTION);
                         GL11.glLoadIdentity();
-                        GL11.glMatrixMode(5888);
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glLoadIdentity();
                         renderer.enableGuiMode();
                     }
 
                     if (renderer.minecraft.currentScreen != null) {
-                        renderer.minecraft.currentScreen.render(
-                                var94, var70);
+                        renderer.minecraft.currentScreen.render(var94, var70);
                     }
 
                     Thread.yield();
@@ -2346,7 +2252,7 @@ public final class Minecraft implements Runnable {
             }
         }
 
-        GL11.glBindTexture(3553, textureManager.load("/terrain.png"));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
         TextureManager texManager = textureManager;
 
         for (var16 = 0; var16 < texManager.animations.size(); ++var16) {
@@ -2362,7 +2268,7 @@ public final class Minecraft implements Runnable {
             texManager.textureBuffer.put(texFX.textureData);
             texManager.textureBuffer.position(0)
                     .limit(texFX.textureData.length);
-            GL11.glTexSubImage2D(3553, 0, texFX.textureId % 16 << 4,
+            GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, texFX.textureId % 16 << 4,
                     texFX.textureId / 16 << 4, 16, 16, 6408, 5121,
                     texManager.textureBuffer);
         }
@@ -3143,9 +3049,9 @@ public final class Minecraft implements Runnable {
                     var20.netHandler.send(
                             PacketType.POSITION_ROTATION,
                             new Object[]{
-                                canSendHeldBlock ?
-                                   player.inventory.getSelected() :
-                                   Integer.valueOf(-1),
+                                canSendHeldBlock
+                                ? player.inventory.getSelected()
+                                : Integer.valueOf(-1),
                                 Integer.valueOf(var24),
                                 Integer.valueOf(var4),
                                 Integer.valueOf(var40),
@@ -3452,8 +3358,8 @@ public final class Minecraft implements Runnable {
                         float var56 = renderer.random.nextFloat();
                         float var62 = renderer.random.nextFloat();
                         renderer.minecraft.particleManager.spawnParticle(
-                            new WaterDropParticle(
-                                var32, var60 + var56, var57 + 0.1F, var52 + var62));
+                                new WaterDropParticle(
+                                        var32, var60 + var56, var57 + 0.1F, var52 + var62));
                     }
                 }
             }
