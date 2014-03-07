@@ -438,10 +438,10 @@ public final class Minecraft implements Runnable {
     public byte[] flipPixels(byte[] originalBuffer, int width, int height) {
         byte[] flippedBuffer = null;
         if (originalBuffer != null) {
-            flippedBuffer = new byte[width * height * 3];// There are 3 bytes per cell
+            flippedBuffer = new byte[originalBuffer.length];// There are 3 bytes per cell
             for (int y = 0; y < height; y++) {
-                System.arraycopy(originalBuffer, (height - y - 1) * width,
-                        flippedBuffer, y * width, width * 3);
+                System.arraycopy(originalBuffer, y * width,
+                        flippedBuffer, (height - y - 1) * width, width * 3);
             }
         }
         return flippedBuffer;
@@ -2115,31 +2115,29 @@ public final class Minecraft implements Runnable {
 
     public void takeAndSaveScreenshot(int width, int height) {
         try {
-            int i = 6400;
+            int i = width;
             int j = height;
             int size = i * j * 3;
 
-            GL11.glReadBuffer(1028);
+            GL11.glReadBuffer(GL11.GL_FRONT);
             ByteBuffer buffer = ByteBuffer.allocateDirect(size);
-            GL11.glReadPixels(0, 0, i, j, 6407, 5121, buffer);
+            GL11.glReadPixels(0, 0, i, j, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
 
             byte[] pixels = new byte[size];
             buffer.get(pixels);
             pixels = flipPixels(pixels, i, height);
 
-            ColorSpace colorSpace = ColorSpace.getInstance(1000);
+            ColorSpace colorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
             int[] a = {8, 8, 8};
             int[] b = {0, 1, 2};
 
-            ComponentColorModel colorComp = new ComponentColorModel(colorSpace,
-                    a, false, false, 3, 0);
+            ComponentColorModel colorComp = new ComponentColorModel(
+                    colorSpace, a, false, false, 3, 0);
 
             WritableRaster raster = Raster.createInterleavedRaster(
-                    new DataBufferByte(pixels, pixels.length), width, height,
-                    i * 3, 3, b, null);
+                    new DataBufferByte(pixels, pixels.length), width, height, i * 3, 3, b, null);
 
-            BufferedImage image = new BufferedImage(colorComp, raster, false,
-                    null);
+            BufferedImage image = new BufferedImage(colorComp, raster, false, null);
 
             String str = String.format(
                     "screenshot_%1$tY%1$tm%1$td%1$tH%1$tM%1$tS.png",
@@ -2148,25 +2146,15 @@ public final class Minecraft implements Runnable {
             String month = new SimpleDateFormat("MMM").format(cal.getTime());
             String serverName = ProgressBarDisplay.title.toLowerCase()
                     .contains("connecting..") ? "" : ProgressBarDisplay.title;
-            if (serverName == "Loading level" || serverName == "Connecting.."
-                    || serverName == "") {
+            if ("Loading level".equals(serverName) || "Connecting..".equals(serverName) || "".equals(serverName)) {
                 serverName = "Singleplayer";
             }
             serverName = FontRenderer.stripColor(serverName);
             serverName = serverName.replaceAll("[^A-Za-z0-9\\._-]+", "_");
-            File logDir = new File(Minecraft.getMinecraftDirectory(),
-                    "/Screenshots/");
+            File logDir = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
             File serverDir = new File(logDir, serverName);
             File monthDir = new File(serverDir, "/" + month + "/");
-            if (!logDir.exists()) {
-                logDir.mkdir();
-            }
-            if (!serverDir.exists()) {
-                serverDir.mkdir();
-            }
-            if (!monthDir.exists()) {
-                monthDir.mkdir();
-            }
+            monthDir.mkdirs();
             if (ImageIO.write(image, "png", new File(monthDir, str))) {
                 hud.addChat("&2Screenshot saved into the Screenshots folder");
             }
