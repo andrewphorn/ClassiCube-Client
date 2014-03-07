@@ -839,7 +839,15 @@ public final class Minecraft implements Runnable {
                 if (isWaiting) {
                     Thread.sleep(100L);
                 } else {
-                    onFrame(fps, fpsUpdateTimer);
+                    onFrame();
+
+                    fps++;
+                    while (System.currentTimeMillis() >= fpsUpdateTimer + 1000L) {
+                        debug = fps + " fps, " + Chunk.chunkUpdates + " chunk updates";
+                        Chunk.chunkUpdates = 0;
+                        fpsUpdateTimer += 1000L;
+                        fps = 0;
+                    }
                 }
             }
         } catch (StopGameException ex) {
@@ -851,7 +859,7 @@ public final class Minecraft implements Runnable {
     }
 
     // Called by run() every frame. Handles timing and rendering. Calls tick().
-    private void onFrame(int fps, long fpsUpdateTimer) {
+    private void onFrame() {
         if (canvas == null && Display.isCloseRequested()) {
             isRunning = false;
         }
@@ -1933,18 +1941,10 @@ public final class Minecraft implements Runnable {
             }
 
             checkGLError("Post render");
-            ++fps;
         } catch (Exception ex) {
             setCurrentScreen(new ErrorScreen("Client error",
                     "The game broke! [" + ex + "]"));
             ex.printStackTrace();
-        }
-
-        while (System.currentTimeMillis() >= fpsUpdateTimer + 1000L) {
-            debug = fps + " fps, " + Chunk.chunkUpdates + " chunk updates";
-            Chunk.chunkUpdates = 0;
-            fpsUpdateTimer += 1000L;
-            fps = 0;
         }
     }
 
