@@ -47,7 +47,6 @@ import org.lwjgl.util.glu.GLU;
 
 import com.mojang.minecraft.gamemode.CreativeGameMode;
 import com.mojang.minecraft.gamemode.GameMode;
-import com.mojang.minecraft.gamemode.SurvivalGameMode;
 import com.mojang.minecraft.gui.BlockSelectScreen;
 import com.mojang.minecraft.gui.ChatInputScreen;
 import com.mojang.minecraft.gui.ChatInputScreenExtension;
@@ -99,7 +98,7 @@ import com.oyasunadev.mcraft.client.util.ExtData;
 public final class Minecraft implements Runnable {
 
     // mouse button index constants
-    private static final int MB_LEFT = 0, MB_RIGHT = 1;
+    private static final int MB_LEFT = 0, MB_RIGHT = 1, MB_MIDDLE = 2;
 
     /**
      * True if the application is waiting for something.
@@ -129,7 +128,7 @@ public final class Minecraft implements Runnable {
     private Timer timer = new Timer(20.0F);
     private ResourceDownloadThread resourceThread;
     private int ticks;
-    private int blockHitTime;
+    private int punchingCooldown; // survival
     private int lastClick;
     private Cursor cursor;
 
@@ -389,7 +388,7 @@ public final class Minecraft implements Runnable {
         this.isApplet = isApplet;
         sound = new SoundManager();
         ticks = 0;
-        blockHitTime = 0;
+        punchingCooldown = 0;
         levelName = null;
         levelId = 0;
         isOnline = false;
@@ -502,14 +501,18 @@ public final class Minecraft implements Runnable {
         }
     }
 
+    private boolean isSurvival() {
+        return !(gamemode instanceof CreativeGameMode);
+    }
+
     private void onMouseClick(int button) {
-        if (button == MB_LEFT && blockHitTime > 0) {
-            // enforce block deletion delay (survival)
+        if (button == MB_LEFT && punchingCooldown > 0) {
+            // enforce punching delay (survival)
             return;
         }
 
         if (button == MB_LEFT) {
-            // Trigger the hand-waving animation on left-click (?)
+            // Trigger the punch/block-wave animation on left-click
             renderer.heldBlock.offset = -1;
             renderer.heldBlock.moving = true;
         }
@@ -517,18 +520,19 @@ public final class Minecraft implements Runnable {
         if (button == MB_RIGHT) {
             int selectedBlockId = player.inventory.getSelected();
             if (selectedBlockId > 0 && gamemode.useItem(player, selectedBlockId)) {
-                // There is a block in hand, and it's not air
+                // Player used an item from inventory (survival)
                 renderer.heldBlock.pos = 0;
                 return;
             }
+        }
 
-        } else if (selected == null) {
-            // No block in hand (possible on survival mode)
-            if (button == MB_LEFT && !(gamemode instanceof CreativeGameMode)) {
-                blockHitTime = 10;
+        if (selected == null) {
+            // The cursor is not on any block
+            if (button == MB_LEFT && isSurvival()) {
+                // Set a 10-tick punching cooldown (survival)
+                punchingCooldown = 10;
             }
             return;
-
         }
 
         if (selected.hasEntity) {
@@ -586,11 +590,10 @@ public final class Minecraft implements Runnable {
                 return; // if air or not allowed, return
             }
             AABB aabb = Block.blocks[blockID].getCollisionBox(x, y, z);
-            boolean isAirOrLiquid = (block == null || block == Block.WATER
-                    || block == Block.STATIONARY_WATER
+            boolean isAirOrLiquid
+                    = (block == null || block == Block.WATER || block == Block.STATIONARY_WATER
                     || block == Block.LAVA || block == Block.STATIONARY_LAVA);
-            if (isAirOrLiquid || (aabb != null && (!(player.bb.intersects(aabb) ? false : level.isFree(aabb))))) {
-                // Ignore clicking on air/water/lava or outside the hitbox of a block (?)
+            if (!isAirOrLiquid || (aabb != null && (!(player.bb.intersects(aabb) ? false : level.isFree(aabb))))) {
                 return;
             }
 
@@ -762,15 +765,13 @@ public final class Minecraft implements Runnable {
                 if (!isLevelLoaded) {
                     // Try to load a previously-saved level
                     Level loadedLevel = new LevelLoader().load(new File(mcDir, "levelc.cw"), player);
-                    if (gamemode instanceof CreativeGameMode) {
-                        if (loadedLevel != null) {
+                    if (loadedLevel != null) {
+                        if (isSurvival()) {
+                            setLevel(loadedLevel);
+                        } else {
                             progressBar.setText("Loading saved map...");
                             setLevel(loadedLevel);
                             isSinglePlayer = true;
-                        }
-                    } else if (gamemode instanceof SurvivalGameMode) {
-                        if (loadedLevel != null) {
-                            setLevel(loadedLevel);
                         }
                     }
                 }
@@ -999,10 +1000,10 @@ public final class Minecraft implements Runnable {
                         }
 
                         var31 = renderer.getPlayerVector(timer.delta);
-                        if (renderer.minecraft.gamemode instanceof CreativeGameMode) {
-                            reachDistance = 32.0F;
-                        } else {
+                        if (isSurvival()) {
                             reachDistance = var74;
+                        } else {
+                            reachDistance = 32.0F;
                         }
 
                         vec3D = var31.add(var34 * reachDistance,
@@ -1031,10 +1032,8 @@ public final class Minecraft implements Runnable {
                             }
                         }
 
-                        if (renderer.entity != null
-                                && !(renderer.minecraft.gamemode instanceof CreativeGameMode)) {
-                            renderer.minecraft.selected = new MovingObjectPosition(
-                                    renderer.entity);
+                        if (renderer.entity != null && isSurvival()) {
+                            renderer.minecraft.selected = new MovingObjectPosition(renderer.entity);
                         }
 
                         int var77 = 0;
@@ -2997,8 +2996,7 @@ public final class Minecraft implements Runnable {
         if (isLoadingMap) {
             while (Keyboard.next()) {
                 if (Keyboard.getEventKeyState()) {
-
-                    if (Keyboard.getEventKey() == 1) {
+                    if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
                         pause();
                     }
                 }
@@ -3010,236 +3008,7 @@ public final class Minecraft implements Runnable {
             setCurrentScreen((GuiScreen) null);
         }
 
-        int var25;
-        if (currentScreen instanceof BlockSelectScreen) {
-            while (Mouse.next()) {
-                if ((var25 = Mouse.getEventDWheel()) != 0) {
-                    player.inventory.swapPaint(var25);
-                    break;
-                }
-                currentScreen.mouseEvent();
-            }
-            while (Keyboard.next()) {
-                if (Keyboard.getEventKey() > 1 && Keyboard.getEventKey() < 11) {
-                    if (GameSettings.CanReplaceSlot) {
-                        player.inventory.selected = Keyboard.getEventKey() - 2;
-                        break;
-                    }
-                }
-                currentScreen.keyboardEvent();
-            }
-
-        } else if (currentScreen == null) {
-            while (Mouse.next()) {
-                if ((var25 = Mouse.getEventDWheel()) != 0) {
-                    player.inventory.swapPaint(var25);
-                }
-
-                if (currentScreen == null) {
-                    if (!hasMouse && Mouse.getEventButtonState()) {
-                        grabMouse();
-                    } else {
-                        if (Mouse.getEventButton() == 0
-                                && Mouse.getEventButtonState()) {
-                            onMouseClick(0);
-                            lastClick = ticks;
-                        }
-
-                        if (Mouse.getEventButton() == 1
-                                && Mouse.getEventButtonState()) {
-                            onMouseClick(1);
-                            lastClick = ticks;
-                        }
-
-                        if (Mouse.getEventButton() == 2
-                                && Mouse.getEventButtonState()
-                                && selected != null) {
-                            var16 = level.getTile(selected.x, selected.y,
-                                    selected.z);
-                            player.inventory.grabTexture(var16,
-                                    gamemode instanceof CreativeGameMode);
-                        }
-                    }
-                }
-
-                if (currentScreen != null) {
-                    currentScreen.mouseEvent();
-                }
-            }
-
-            if (blockHitTime > 0) {
-                --blockHitTime;
-            }
-
-            while (Keyboard.next()) {
-                player.setKey(Keyboard.getEventKey(),
-                        Keyboard.getEventKeyState());
-                if (Keyboard.getEventKeyState()) {
-                    if (currentScreen != null) {
-                        currentScreen.keyboardEvent();
-                    }
-
-                    if (currentScreen == null) {
-                        if (Keyboard.getEventKey() == 1) {
-                            pause();
-                        }
-
-                        if (gamemode instanceof CreativeGameMode) {
-                            if (HackState.Respawn) {
-                                if (Keyboard.getEventKey() == settings.loadLocationKey.key) {
-                                    if (!(currentScreen instanceof ChatInputScreen)) {
-                                        player.resetPos();
-                                    }
-                                }
-
-                                if (Keyboard.getEventKey() == settings.saveLocationKey.key) {
-                                    level.setSpawnPos((int) player.x,
-                                            (int) player.y, (int) player.z,
-                                            player.yRot);
-                                    player.resetPos();
-                                }
-                            }
-                        }
-
-                        Keyboard.getEventKey();
-                        if (Keyboard.getEventKey() == 63) {
-                            isRaining = !isRaining;
-                            isSnowing = false;
-                        }
-                        if (Keyboard.getEventKey() == 62) {
-                            isSnowing = !isSnowing;
-                            isRaining = false;
-                        }
-                        if (Keyboard.getEventKey() == 53) {
-                            player.releaseAllKeys();
-                            ChatInputScreenExtension s = new ChatInputScreenExtension();
-                            setCurrentScreen(s);
-                            s.inputLine = "/";
-                            s.caretPos++;
-                        }
-
-                        if (Keyboard.getEventKey() == Keyboard.KEY_F11) {
-                            toggleFullscreen();
-                        }
-                        if (Keyboard.getEventKey() == Keyboard.KEY_F1) {
-                            canRenderGUI = !canRenderGUI;
-                        }
-
-                        if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
-                            if (HackState.Noclip) {
-                                ++settings.thirdPersonMode;
-                                if (settings.thirdPersonMode > 2) {
-                                    settings.thirdPersonMode = 0;
-                                }
-                            }
-                        }
-
-                        if (Keyboard.getEventKey() == Keyboard.KEY_F2) {
-                            takeAndSaveScreenshot(width, height);
-                        }
-
-                        if (Keyboard.getEventKey() == Keyboard.KEY_F3) {
-                            settings.showDebug = !settings.showDebug;
-                        }
-
-                        if (settings.HacksEnabled) {
-                            if (settings.HackType == 0) {
-                                if (Keyboard.getEventKey() == settings.noClip.key) {
-                                    if (HackState.Noclip || HackState.Noclip
-                                            && player.userType >= 100) {
-                                        player.noPhysics = !player.noPhysics;
-                                        player.hovered = !player.hovered;
-                                    }
-                                }
-                                if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
-                                    if (HackState.Fly) {
-                                        player.flyingMode = !player.flyingMode;
-                                    }
-                                }
-                            }
-                        } else {
-                            player.flyingMode = false;
-                            player.noPhysics = false;
-                            player.hovered = false;
-                        }
-
-                        if (Keyboard.getEventKey() == 15
-                                && gamemode instanceof SurvivalGameMode
-                                && player.arrows > 0) {
-                            level.addEntity(new Arrow(level, player, player.x,
-                                    player.y, player.z, player.yRot,
-                                    player.xRot, 1.2F));
-                            --player.arrows;
-                        }
-
-                        if (Keyboard.getEventKey() == settings.inventoryKey.key) {
-                            gamemode.openInventory();
-                        }
-
-                        if (Keyboard.getEventKey() == settings.chatKey.key) {
-                            player.releaseAllKeys();
-                            setCurrentScreen(new ChatInputScreenExtension());
-                        }
-                    }
-
-                    for (var25 = 0; var25 < 9; ++var25) {
-                        if (Keyboard.getEventKey() == var25 + 2) {
-                            if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
-                                // tabbing
-                                // player
-                                // list
-                                return;
-                            } else if (GameSettings.CanReplaceSlot) {
-                                player.inventory.selected = var25;
-                            }
-                        }
-                    }
-
-                    if (Keyboard.getEventKey() == settings.toggleFogKey.key) {
-                        settings.toggleSetting(4, !Keyboard.isKeyDown(42)
-                                && !Keyboard.isKeyDown(54) ? 1 : -1);
-                    }
-                }
-            }
-
-            if (currentScreen == null) {
-                if (Mouse.isButtonDown(0)
-                        && ticks - lastClick >= timer.tps / 4.0F && hasMouse) {
-                    onMouseClick(0);
-                    lastClick = ticks;
-                }
-
-                if (Mouse.isButtonDown(1)
-                        && ticks - lastClick >= timer.tps / 4.0F && hasMouse) {
-                    onMouseClick(1);
-                    lastClick = ticks;
-                }
-            }
-
-            boolean var26 = currentScreen == null && Mouse.isButtonDown(0)
-                    && hasMouse;
-            if (!gamemode.instantBreak && blockHitTime <= 0) {
-                if (var26 && selected != null && !selected.hasEntity) {
-                    var4 = selected.x;
-                    var40 = selected.y;
-                    var46 = selected.z;
-                    gamemode.hitBlock(var4, var40, var46, selected.face);
-                } else {
-                    gamemode.resetHits();
-                }
-            }
-        }
-
-        if (currentScreen != null) {
-            lastClick = ticks + 10000;
-        }
-
-        if (currentScreen != null) {
-            currentScreen.doInput();
-            if (currentScreen != null) {
-                currentScreen.tick();
-            }
-        }
+        handleInput();
 
         if (level != null && player != null) {
             ++renderer.levelTicks;
@@ -3284,9 +3053,8 @@ public final class Minecraft implements Runnable {
                 for (i = 0; i < 50; ++i) {
                     int var60 = var40 + renderer.random.nextInt(9) - 4;
                     int var52 = var45 + renderer.random.nextInt(9) - 4;
-                    int var57;
-                    if ((var57 = var32.getHighestTile(var60, var52)) <= var46 + 4
-                            && var57 >= var46 - 4) {
+                    int var57 = var32.getHighestTile(var60, var52);
+                    if (var57 <= var46 + 4 && var57 >= var46 - 4) {
                         float var56 = renderer.random.nextFloat();
                         float var62 = renderer.random.nextFloat();
                         renderer.minecraft.particleManager.spawnParticle(
@@ -3304,7 +3072,232 @@ public final class Minecraft implements Runnable {
 
             particleManager.tick();
         }
+    }
 
+    private void handleInput() {
+        if (currentScreen instanceof BlockSelectScreen) {
+            while (Mouse.next()) {
+                int mouseScroll = Mouse.getEventDWheel();
+                if (mouseScroll != 0) {
+                    // React to mouse-scrolling while in block selection
+                    player.inventory.swapPaint(mouseScroll);
+                    break;
+                }
+                currentScreen.mouseEvent();
+            }
+            while (Keyboard.next()) {
+                if (Keyboard.getEventKey() >= Keyboard.KEY_1
+                        && Keyboard.getEventKey() <= Keyboard.KEY_9) {
+                    if (GameSettings.CanReplaceSlot) {
+                        player.inventory.selected = Keyboard.getEventKey() - 2;
+                        break;
+                    }
+                }
+                currentScreen.keyboardEvent();
+            }
+        } else if (currentScreen == null) {
+            while (Mouse.next()) {
+                if (currentScreen == null) {
+                    int mouseScroll = Mouse.getEventDWheel();
+                    if (mouseScroll != 0) {
+                        // React to mouse-scrolling while in-game
+                        player.inventory.swapPaint(mouseScroll);
+                    }
+
+                    // Send mouse event to game
+                    if (!hasMouse && Mouse.getEventButtonState()) {
+                        grabMouse();
+                    } else {
+                        if (Mouse.getEventButton() == MB_LEFT && Mouse.getEventButtonState()) {
+                            onMouseClick(MB_LEFT);
+                            lastClick = ticks;
+                        }
+
+                        if (Mouse.getEventButton() == MB_RIGHT && Mouse.getEventButtonState()) {
+                            onMouseClick(MB_RIGHT);
+                            lastClick = ticks;
+                        }
+
+                        if (Mouse.getEventButton() == MB_MIDDLE
+                                && Mouse.getEventButtonState() && selected != null) {
+                            int var16 = level.getTile(selected.x, selected.y, selected.z);
+                            player.inventory.grabTexture(var16, !isSurvival());
+                        }
+                    }
+                }
+
+                // Note sure if needed:
+                // This only triggers if currentScreen is set while handling mouse input in-game (?)
+                if (currentScreen != null) {
+                    currentScreen.mouseEvent();
+                }
+            }
+            if (punchingCooldown > 0) {
+                // Decrement punching cooldown (survival)
+                --punchingCooldown;
+            }
+            while (Keyboard.next()) {
+                player.setKey(Keyboard.getEventKey(), Keyboard.getEventKeyState());
+                if (Keyboard.getEventKeyState()) {
+                    if (currentScreen != null) {
+                        currentScreen.keyboardEvent();
+                    }
+                    if (currentScreen == null) {
+                        if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+                            pause();
+                        }
+
+                        if (!isSurvival()) {
+                            if (HackState.Respawn) {
+                                if (Keyboard.getEventKey() == settings.loadLocationKey.key) {
+                                    if (!(currentScreen instanceof ChatInputScreen)) {
+                                        player.resetPos();
+                                    }
+                                }
+
+                                if (Keyboard.getEventKey() == settings.saveLocationKey.key) {
+                                    level.setSpawnPos((int) player.x,
+                                            (int) player.y, (int) player.z,
+                                            player.yRot);
+                                    player.resetPos();
+                                }
+                            }
+                        }
+
+                        // Handle hardcoded keys (including F-keys)
+                        switch (Keyboard.getEventKey()) {
+                            case Keyboard.KEY_F1:
+                                canRenderGUI = !canRenderGUI;
+                                break;
+
+                            case Keyboard.KEY_F2:
+                                takeAndSaveScreenshot(width, height);
+                                break;
+
+                            case Keyboard.KEY_F3:
+                                settings.showDebug = !settings.showDebug;
+                                break;
+
+                            case Keyboard.KEY_F4:
+                                isSnowing = !isSnowing;
+                                isRaining = false;
+                                break;
+
+                            case Keyboard.KEY_F5:
+                                isRaining = !isRaining;
+                                isSnowing = false;
+                                break;
+
+                            case Keyboard.KEY_F6:
+                                if (HackState.Noclip) {
+                                    ++settings.thirdPersonMode;
+                                    if (settings.thirdPersonMode > 2) {
+                                        settings.thirdPersonMode = 0;
+                                    }
+                                }
+                                break;
+
+                            case Keyboard.KEY_F11:
+                                toggleFullscreen();
+                                break;
+
+                            case Keyboard.KEY_SLASH:
+                                player.releaseAllKeys();
+                                ChatInputScreenExtension s = new ChatInputScreenExtension();
+                                setCurrentScreen(s);
+                                s.inputLine = "/";
+                                s.caretPos++;
+                                break;
+                        }
+
+                        if (settings.HacksEnabled) {
+                            // Check for hack toggle keys
+                            if (settings.HackType == 0) {
+                                if (Keyboard.getEventKey() == settings.noClip.key) {
+                                    if (HackState.Noclip || HackState.Noclip
+                                            && player.userType >= 100) {
+                                        player.noPhysics = !player.noPhysics;
+                                        player.hovered = !player.hovered;
+                                    }
+                                }
+                                if (Keyboard.getEventKey() == Keyboard.KEY_Z) {
+                                    if (HackState.Fly) {
+                                        player.flyingMode = !player.flyingMode;
+                                    }
+                                }
+                            }
+                        } else {
+                            player.flyingMode = false;
+                            player.noPhysics = false;
+                            player.hovered = false;
+                        }
+
+                        if (Keyboard.getEventKey() == Keyboard.KEY_TAB && isSurvival() && player.arrows > 0) {
+                            // Shoot arrows (survival)
+                            level.addEntity(new Arrow(level, player, player.x,
+                                    player.y, player.z, player.yRot,
+                                    player.xRot, 1.2F));
+                            --player.arrows;
+                        }
+
+                        if (Keyboard.getEventKey() == settings.inventoryKey.key) {
+                            gamemode.openInventory();
+                        }
+
+                        if (Keyboard.getEventKey() == settings.chatKey.key) {
+                            player.releaseAllKeys();
+                            setCurrentScreen(new ChatInputScreenExtension());
+                        }
+                    }
+                    for (int i = 0; i < 9; ++i) {
+                        if (Keyboard.getEventKey() == i + 2) {
+                            if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
+                                // tabbing player list
+                                return;
+                            } else if (GameSettings.CanReplaceSlot) {
+                                player.inventory.selected = i;
+                            }
+                        }
+                    }
+                    if (Keyboard.getEventKey() == settings.toggleFogKey.key) {
+                        boolean shiftDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)
+                                || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
+                        settings.toggleSetting(4, shiftDown ? -1 : 1);
+                    }
+                }
+            }
+            if (currentScreen == null) {
+                if (Mouse.isButtonDown(MB_LEFT)
+                        && ticks - lastClick >= timer.tps / 4.0F && hasMouse) {
+                    onMouseClick(MB_LEFT);
+                    lastClick = ticks;
+                }
+
+                if (Mouse.isButtonDown(MB_RIGHT)
+                        && ticks - lastClick >= timer.tps / 4.0F && hasMouse) {
+                    onMouseClick(MB_RIGHT);
+                    lastClick = ticks;
+                }
+            }
+            boolean var26 = (currentScreen == null) && Mouse.isButtonDown(MB_LEFT) && hasMouse;
+            if (!gamemode.instantBreak && punchingCooldown <= 0) {
+                // survival: slow block-breaking
+                if (var26 && selected != null && !selected.hasEntity) {
+                    gamemode.hitBlock(selected.x, selected.y, selected.z, selected.face);
+                } else {
+                    gamemode.resetHits();
+                }
+            }
+        }
+        if (currentScreen != null) {
+            lastClick = ticks + 10000;
+        }
+        if (currentScreen != null) {
+            currentScreen.doInput();
+            if (currentScreen != null) {
+                currentScreen.tick();
+            }
+        }
     }
 
     /**
