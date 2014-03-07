@@ -1036,877 +1036,803 @@ public final class Minecraft implements Runnable {
                             renderer.minecraft.selected = new MovingObjectPosition(renderer.entity);
                         }
 
-                        int var77 = 0;
-
-                        while (true) {
-                            if (var77 >= 2) {
-                                GL11.glColorMask(true, true, true, false);
-                                break;
+                        Player var126 = renderer.minecraft.player;
+                        Level var119 = renderer.minecraft.level;
+                        LevelRenderer var89 = renderer.minecraft.levelRenderer;
+                        ParticleManager var93 = renderer.minecraft.particleManager;
+                        GL11.glViewport(0, 0,
+                                renderer.minecraft.width,
+                                renderer.minecraft.height);
+                        Level var26 = renderer.minecraft.level;
+                        var29 = 1.0F / (4 - renderer.minecraft.settings.viewDistance);
+                        var29 = 1.0F - (float) Math.pow(var29, 0.25D);
+                        var30 = (var26.skyColor >> 16 & 255) / 255.0F;
+                        float var117 = (var26.skyColor >> 8 & 255) / 255.0F;
+                        var32 = (var26.skyColor & 255) / 255.0F;
+                        renderer.fogRed = (var26.fogColor >> 16 & 255) / 255.0F;
+                        renderer.fogBlue = (var26.fogColor >> 8 & 255) / 255.0F;
+                        renderer.fogGreen = (var26.fogColor & 255) / 255.0F;
+                        renderer.fogRed += (var30 - renderer.fogRed) * var29;
+                        renderer.fogBlue += (var117 - renderer.fogBlue) * var29;
+                        renderer.fogGreen += (var32 - renderer.fogGreen) * var29;
+                        renderer.fogRed *= renderer.fogColorMultiplier;
+                        renderer.fogBlue *= renderer.fogColorMultiplier;
+                        renderer.fogGreen *= renderer.fogColorMultiplier;
+                        Block var73;
+                        if ((var73 = Block.blocks[var26
+                                .getTile((int) player.x,
+                                        (int) (player.y + 0.12F),
+                                        (int) player.z)]) != null
+                                && var73.getLiquidType() != LiquidType.notLiquid) {
+                            LiquidType var79;
+                            if ((var79 = var73.getLiquidType()) == LiquidType.water) {
+                                renderer.fogRed = 0.02F;
+                                renderer.fogBlue = 0.02F;
+                                renderer.fogGreen = 0.2F;
+                            } else if (var79 == LiquidType.lava) {
+                                renderer.fogRed = 0.6F;
+                                renderer.fogBlue = 0.1F;
+                                renderer.fogGreen = 0.0F;
                             }
-
-                            if (renderer.minecraft.settings.anaglyph) {
-                                if (var77 == 0) {
-                                    GL11.glColorMask(false, true, true, false);
-                                } else {
-                                    GL11.glColorMask(true, false, false, false);
-                                }
-                            }
-
-                            Player var126 = renderer.minecraft.player;
-                            Level var119 = renderer.minecraft.level;
-                            LevelRenderer var89 = renderer.minecraft.levelRenderer;
-                            ParticleManager var93 = renderer.minecraft.particleManager;
-                            GL11.glViewport(0, 0,
-                                    renderer.minecraft.width,
-                                    renderer.minecraft.height);
-                            Level var26 = renderer.minecraft.level;
-                            var29 = 1.0F / (4 - renderer.minecraft.settings.viewDistance);
-                            var29 = 1.0F - (float) Math.pow(var29, 0.25D);
-                            var30 = (var26.skyColor >> 16 & 255) / 255.0F;
-                            float var117 = (var26.skyColor >> 8 & 255) / 255.0F;
-                            var32 = (var26.skyColor & 255) / 255.0F;
-                            renderer.fogRed = (var26.fogColor >> 16 & 255) / 255.0F;
-                            renderer.fogBlue = (var26.fogColor >> 8 & 255) / 255.0F;
-                            renderer.fogGreen = (var26.fogColor & 255) / 255.0F;
-                            renderer.fogRed += (var30 - renderer.fogRed) * var29;
-                            renderer.fogBlue += (var117 - renderer.fogBlue) * var29;
-                            renderer.fogGreen += (var32 - renderer.fogGreen) * var29;
-                            renderer.fogRed *= renderer.fogColorMultiplier;
-                            renderer.fogBlue *= renderer.fogColorMultiplier;
-                            renderer.fogGreen *= renderer.fogColorMultiplier;
-                            Block var73;
-                            if ((var73 = Block.blocks[var26
-                                    .getTile((int) player.x,
-                                            (int) (player.y + 0.12F),
-                                            (int) player.z)]) != null
-                                    && var73.getLiquidType() != LiquidType.notLiquid) {
-                                LiquidType var79;
-                                if ((var79 = var73.getLiquidType()) == LiquidType.water) {
-                                    renderer.fogRed = 0.02F;
-                                    renderer.fogBlue = 0.02F;
-                                    renderer.fogGreen = 0.2F;
-                                } else if (var79 == LiquidType.lava) {
-                                    renderer.fogRed = 0.6F;
-                                    renderer.fogBlue = 0.1F;
-                                    renderer.fogGreen = 0.0F;
-                                }
-                            }
-
-                            if (renderer.minecraft.settings.anaglyph) {
-                                var74 = (renderer.fogRed * 30.0F
-                                        + renderer.fogBlue * 59.0F + renderer.fogGreen * 11.0F) / 100.0F;
-                                var33 = (renderer.fogRed * 30.0F + renderer.fogBlue * 70.0F) / 100.0F;
-                                var34 = (renderer.fogRed * 30.0F + renderer.fogGreen * 70.0F) / 100.0F;
-                                renderer.fogRed = var74;
-                                renderer.fogBlue = var33;
-                                renderer.fogGreen = var34;
-                            }
-
-                            GL11.glClearColor(renderer.fogRed,
-                                    renderer.fogBlue,
-                                    renderer.fogGreen, 0.0F);
-                            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-                            renderer.fogColorMultiplier = 1.0F;
-                            GL11.glEnable(GL11.GL_CULL_FACE);
-                            renderer.fogEnd = 512 >> (renderer.minecraft.settings.viewDistance << 1);
-                            GL11.glMatrixMode(GL11.GL_PROJECTION);
-                            GL11.glLoadIdentity();
-                            var29 = 0.07F;
-                            if (renderer.minecraft.settings.anaglyph) {
-                                GL11.glTranslatef(-((var77 << 1) - 1) * var29, 0.0F, 0.0F);
-                            }
-
-                            Player var116 = renderer.minecraft.player;
-                            var69 = 70.0F;
-                            if (var116.health <= 0) {
-                                var74 = var116.deathTime + var80;
-                                var69 /= (1.0F - 500.0F / (var74 + 500.0F)) * 2.0F + 1.0F;
-                            }
-
-                            GLU.gluPerspective(
-                                    var69,
-                                    (float) renderer.minecraft.width
-                                    / (float) renderer.minecraft.height,
-                                    0.05F, renderer.fogEnd);
-                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-                            GL11.glLoadIdentity();
-                            if (renderer.minecraft.settings.anaglyph) {
-                                GL11.glTranslatef(((var77 << 1) - 1) * 0.1F, 0.0F, 0.0F);
-                            }
-
-                            renderer.hurtEffect(var80);
-                            renderer.applyBobbing(var80,
-                                    renderer.minecraft.settings.viewBobbing);
-
-                            var116 = renderer.minecraft.player;
-                            if (settings.thirdPersonMode == 0) {
-                                GL11.glTranslatef(0.0F, 0.0F, -0.1F);
-                            } else {
-                                GL11.glTranslatef(0.0F, 0.0F, -5.1F);
-                            }
-                            if (settings.thirdPersonMode == 2) {
-                                GL11.glRotatef(-var116.xRotO
-                                        + (var116.xRot - var116.xRotO)
-                                        * var80, 1.0F, 0.0F, 0.0F);
-                                GL11.glRotatef((var116.yRotO
-                                        + (var116.yRot - var116.yRotO)
-                                        * var80) + 180, 0.0F, 1.0F, 0.0F);
-                            } else {
-                                GL11.glRotatef(var116.xRotO
-                                        + (var116.xRot - var116.xRotO)
-                                        * var80, 1.0F, 0.0F, 0.0F);
-                                GL11.glRotatef(var116.yRotO
-                                        + (var116.yRot - var116.yRotO)
-                                        * var80, 0.0F, 1.0F, 0.0F);
-                            }
-                            var69 = var116.xo + (var116.x - var116.xo) * var80;
-                            var74 = var116.yo + (var116.y - var116.yo) * var80;
-                            var33 = var116.zo + (var116.z - var116.zo) * var80;
-                            GL11.glTranslatef(-var69, -var74, -var33);
-                            Frustrum var76 = FrustrumImpl.getInstance();
-                            Frustrum var100 = var76;
-                            LevelRenderer var101 = renderer.minecraft.levelRenderer;
-
-                            int var98;
-                            for (var98 = 0; var98 < var101.chunkCache.length; ++var98) {
-                                var101.chunkCache[var98].clip(var100);
-                            }
-
-                            var101 = renderer.minecraft.levelRenderer;
-                            Collections.sort(renderer.minecraft.levelRenderer.chunks,
-                                    new ChunkDirtyDistanceComparator(var126));
-                            var98 = var101.chunks.size() - 1;
-                            int var105;
-                            if ((var105 = var101.chunks.size()) > 4) {
-                                var105 = 4;
-                            }
-
-                            int var104;
-                            for (var104 = 0; var104 < var105; ++var104) {
-                                Chunk chunkToUpdate = var101.chunks.remove(var98 - var104);
-                                chunkToUpdate.update();
-                                chunkToUpdate.loaded = false;
-                            }
-
-                            renderer.updateFog();
-                            GL11.glEnable(GL11.GL_FOG);
-                            var89.sortChunks(var126, 0);
-                            int var83;
-                            int var110;
-                            ShapeRenderer shapeRenderer = ShapeRenderer.instance;
-                            int var114;
-                            int var125;
-                            int var122;
-                            int var120;
-                            if (var119.isSolid(var126.x, var126.y, var126.z, 0.1F)) {
-                                var120 = (int) var126.x;
-                                var83 = (int) var126.y;
-                                var110 = (int) var126.z;
-
-                                for (var122 = var120 - 1; var122 <= var120 + 1; ++var122) {
-                                    for (var125 = var83 - 1; var125 <= var83 + 1; ++var125) {
-                                        for (int var38 = var110 - 1; var38 <= var110 + 1; ++var38) {
-                                            var105 = var38;
-                                            var98 = var125;
-                                            int var99 = var122;
-                                            if ((var104 = var89.level
-                                                    .getTile(
-                                                            var122,
-                                                            var125,
-                                                            var38)) != 0
-                                                    && Block.blocks[var104]
-                                                    .isSolid()) {
-                                                GL11.glColor4f(
-                                                        0.2F, 0.2F,
-                                                        0.2F, 1.0F);
-                                                GL11.glDepthFunc(513);
-
-                                                shapeRenderer
-                                                        .begin();
-
-                                                for (var114 = 0; var114 < 6; ++var114) {
-                                                    Block.blocks[var104]
-                                                            .renderInside(
-                                                                    shapeRenderer,
-                                                                    var99,
-                                                                    var98,
-                                                                    var105,
-                                                                    var114);
-                                                }
-
-                                                shapeRenderer.end();
-                                                GL11.glCullFace(1028);
-                                                shapeRenderer
-                                                        .begin();
-
-                                                for (var114 = 0; var114 < 6; ++var114) {
-                                                    Block.blocks[var104]
-                                                            .renderInside(
-                                                                    shapeRenderer,
-                                                                    var99,
-                                                                    var98,
-                                                                    var105,
-                                                                    var114);
-                                                }
-
-                                                shapeRenderer.end();
-                                                GL11.glCullFace(1029);
-                                                GL11.glDepthFunc(515);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            renderer.setLighting(true);
-                            Vec3D var103 = renderer
-                                    .getPlayerVector(var80);
-                            var89.level.blockMap.render(var103,
-                                    var76, var89.textureManager,
-                                    var80);
-                            renderer.setLighting(false);
-                            renderer.updateFog();
-                            float var107 = var80;
-                            ParticleManager var96 = var93;
-                            var29 = -MathHelper.cos(var126.yRot * 3.1415927F / 180.0F);
-                            var117 = -(var30 = -MathHelper.sin(var126.yRot * 3.1415927F / 180.0F))
-                                    * MathHelper.sin(var126.xRot * 3.1415927F / 180.0F);
-                            var32 = var29 * MathHelper.sin(var126.xRot * 3.1415927F / 180.0F);
-                            var69 = MathHelper.cos(var126.xRot * 3.1415927F / 180.0F);
-
-                            for (var83 = 0; var83 < 2; ++var83) {
-                                if (var96.particles[var83].size() != 0) {
-                                    var110 = 0;
-                                    if (var83 == 0) {
-                                        var110 = var96.textureManager
-                                                .load("/particles.png");
-                                    }
-
-                                    if (var83 == 1) {
-                                        var110 = var96.textureManager
-                                                .load("/terrain.png");
-                                    }
-
-                                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, var110);
-                                    shapeRenderer.begin();
-
-                                    for (var120 = 0; var120 < var96.particles[var83]
-                                            .size(); ++var120) {
-                                        ((Particle) var96.particles[var83]
-                                                .get(var120))
-                                                .render(shapeRenderer,
-                                                        var107,
-                                                        var29,
-                                                        var69,
-                                                        var30,
-                                                        var117,
-                                                        var32);
-                                    }
-
-                                    shapeRenderer.end();
-                                }
-                            }
-
-                            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var89.textureManager.load("/rock.png"));
-                            GL11.glEnable(GL11.GL_TEXTURE_2D);
-                            GL11.glCallList(var89.listId); // rock
-                            // edges
-                            renderer.updateFog();
-                            var101 = var89;
-
-                            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var89.textureManager.load("/clouds.png"));
-                            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                            var107 = (var89.level.cloudColor >> 16 & 255) / 255.0F;
-                            var29 = (var89.level.cloudColor >> 8 & 255) / 255.0F;
-                            var30 = (var89.level.cloudColor & 255) / 255.0F;
-                            if (var89.minecraft.settings.anaglyph) {
-                                var117 = (var107 * 30.0F + var29
-                                        * 59.0F + var30 * 11.0F) / 100.0F;
-                                var32 = (var107 * 30.0F + var29 * 70.0F) / 100.0F;
-                                var69 = (var107 * 30.0F + var30 * 70.0F) / 100.0F;
-                                var107 = var117;
-                                var29 = var32;
-                                var30 = var69;
-                            }
-
-                            var74 = 0.0F;
-                            var33 = 4.8828125E-4F;
-                            if (level.cloudLevel < 0) {
-                                level.cloudLevel = var89.level.height + 2;
-                            }
-                            var74 = level.cloudLevel;
-                            var34 = (var89.ticks + var80) * var33 * 0.03F;
-                            var35 = 0.0F;
-                            if (settings.showClouds) {
-                                shapeRenderer.begin();
-                                shapeRenderer.color(var107, var29, var30);
-
-                                for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
-                                    for (var125 = -2048; var125 < var101.level.length + 2048; var125 += 512) {
-                                        shapeRenderer.vertexUV(var86,
-                                                var74, var125 + 512,
-                                                var86 * var33 + var34,
-                                                (var125 + 512) * var33);
-                                        shapeRenderer.vertexUV(
-                                                var86 + 512, var74,
-                                                var125 + 512,
-                                                (var86 + 512) * var33 + var34,
-                                                (var125 + 512) * var33);
-                                        shapeRenderer.vertexUV(
-                                                var86 + 512, var74, var125,
-                                                (var86 + 512) * var33 + var34,
-                                                var125 * var33);
-                                        shapeRenderer.vertexUV(var86,
-                                                var74, var125,
-                                                var86 * var33 + var34,
-                                                var125 * var33);
-                                        shapeRenderer.vertexUV(var86,
-                                                var74, var125,
-                                                var86 * var33 + var34,
-                                                var125 * var33);
-                                        shapeRenderer.vertexUV(
-                                                var86 + 512, var74,
-                                                var125,
-                                                (var86 + 512) * var33
-                                                + var34, var125 * var33);
-                                        shapeRenderer.vertexUV(
-                                                var86 + 512, var74,
-                                                var125 + 512,
-                                                (var86 + 512) * var33 + var34,
-                                                (var125 + 512) * var33);
-                                        shapeRenderer.vertexUV(var86,
-                                                var74, var125 + 512,
-                                                var86 * var33 + var34,
-                                                (var125 + 512) * var33);
-                                    }
-                                }
-
-                                shapeRenderer.end();
-                            }
-                            GL11.glDisable(GL11.GL_TEXTURE_2D);
-
-                            shapeRenderer.begin();
-                            var34 = (var101.level.skyColor >> 16 & 255) / 255.0F;
-                            var35 = (var101.level.skyColor >> 8 & 255) / 255.0F;
-                            var87 = (var101.level.skyColor & 255) / 255.0F;
-                            if (var101.minecraft.settings.anaglyph) {
-                                reachDistance = (var34 * 30.0F
-                                        + var35 * 59.0F + var87 * 11.0F) / 100.0F;
-                                var69 = (var34 * 30.0F + var35 * 70.0F) / 100.0F;
-                                var74 = (var34 * 30.0F + var87 * 70.0F) / 100.0F;
-                                var34 = reachDistance;
-                                var35 = var69;
-                                var87 = var74;
-                            }
-
-                            shapeRenderer.color(var34, var35, var87);
-                            var74 = var101.level.height + 10;
-
-                            for (var125 = -2048; var125 < var101.level.width + 2048; var125 += 512) {
-                                for (var68 = -2048; var68 < var101.level.length + 2048; var68 += 512) {
-                                    shapeRenderer.vertex(var125, var74, var68);
-                                    shapeRenderer.vertex(var125 + 512, var74, var68);
-                                    shapeRenderer.vertex(var125 + 512, var74, var68 + 512);
-                                    shapeRenderer.vertex(var125, var74, var68 + 512);
-                                }
-                            }
-
-                            shapeRenderer.end();
-                            GL11.glEnable(GL11.GL_TEXTURE_2D);
-                            renderer.updateFog();
-                            int var108;
-                            if (renderer.minecraft.selected != null) {
-                                GL11.glDisable(GL11.GL_ALPHA_TEST);
-                                MovingObjectPosition var10001 = renderer.minecraft.selected;
-                                var105 = var126.inventory.getSelected();
-                                MovingObjectPosition var102 = var10001;
-                                var101 = var89;
-
-                                GL11.glEnable(GL11.GL_BLEND);
-                                GL11.glEnable(GL11.GL_ALPHA_TEST);
-                                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-                                GL11.glColor4f(
-                                        1.0F,
-                                        1.0F,
-                                        1.0F,
-                                        (MathHelper.sin(System
-                                                .currentTimeMillis() / 100.0F) * 0.2F + 0.4F) * 0.5F);
-                                if (var89.cracks > 0.0F) {
-                                    GL11.glBlendFunc(774, 768);
-                                    var108 = var89.textureManager
-                                            .load("/terrain.png");
-                                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, var108);
-                                    GL11.glColor4f(1.0F, 1.0F,
-                                            1.0F, 0.5F);
-                                    GL11.glPushMatrix();
-                                    Block var10000 = (var114 = var89.level
-                                            .getTile(var102.x,
-                                                    var102.y,
-                                                    var102.z)) > 0 ? Block.blocks[var114]
-                                            : null;
-                                    var73 = var10000;
-                                    var74 = (var10000.x1 + var73.x2) / 2.0F;
-                                    var33 = (var73.y1 + var73.y2) / 2.0F;
-                                    var34 = (var73.z1 + var73.z2) / 2.0F;
-                                    GL11.glTranslatef(var102.x + var74,
-                                            var102.y + var33,
-                                            var102.z + var34);
-                                    var35 = 1.01F;
-                                    GL11.glScalef(1.0F, var35,
-                                            var35);
-                                    GL11.glTranslatef(
-                                            -(var102.x + var74),
-                                            -(var102.y + var33),
-                                            -(var102.z + var34));
-                                    shapeRenderer.begin();
-                                    shapeRenderer.noColor();
-                                    GL11.glDepthMask(false);
-                                    for (var86 = 0; var86 < 6; ++var86) {
-                                        var73.renderSide(
-                                                shapeRenderer,
-                                                var102.x,
-                                                var102.y,
-                                                var102.z,
-                                                var86,
-                                                240 + (int) (var101.cracks * 10.0F));
-                                    }
-
-                                    shapeRenderer.end();
-                                    GL11.glDepthMask(true);
-                                    GL11.glPopMatrix();
-                                }
-
-                                GL11.glDisable(GL11.GL_BLEND);
-                                GL11.glDisable(GL11.GL_ALPHA_TEST);
-                                var10001 = renderer.minecraft.selected;
-                                var126.inventory.getSelected();
-                                var102 = var10001;
-                                GL11.glEnable(GL11.GL_BLEND);
-                                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                                GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
-                                GL11.glLineWidth(2.0F);
-                                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                                GL11.glDepthMask(false);
-                                var29 = 0.002F;
-                                if ((var104 = var89.level.getTile(
-                                        var102.x, var102.y,
-                                        var102.z)) > 0) {
-                                    AABB var111 = Block.blocks[var104]
-                                            .getSelectionBox(var102.x, var102.y, var102.z)
-                                            .grow(var29, var29, var29);
-                                    GL11.glBegin(GL11.GL_LINE_STRIP);
-                                    GL11.glVertex3f(var111.x0, var111.y0, var111.z0);
-                                    GL11.glVertex3f(var111.x1, var111.y0, var111.z0);
-                                    GL11.glVertex3f(var111.x1, var111.y0, var111.z1);
-                                    GL11.glVertex3f(var111.x0, var111.y0, var111.z1);
-                                    GL11.glVertex3f(var111.x0, var111.y0, var111.z0);
-                                    GL11.glEnd();
-                                    GL11.glBegin(GL11.GL_LINE_STRIP);
-                                    GL11.glVertex3f(var111.x0, var111.y1, var111.z0);
-                                    GL11.glVertex3f(var111.x1, var111.y1, var111.z0);
-                                    GL11.glVertex3f(var111.x1, var111.y1, var111.z1);
-                                    GL11.glVertex3f(var111.x0, var111.y1, var111.z1);
-                                    GL11.glVertex3f(var111.x0, var111.y1, var111.z0);
-                                    GL11.glEnd();
-                                    GL11.glBegin(GL11.GL_LINES);
-                                    GL11.glVertex3f(var111.x0, var111.y0, var111.z0);
-                                    GL11.glVertex3f(var111.x0, var111.y1, var111.z0);
-                                    GL11.glVertex3f(var111.x1, var111.y0, var111.z0);
-                                    GL11.glVertex3f(var111.x1, var111.y1, var111.z0);
-                                    GL11.glVertex3f(var111.x1, var111.y0, var111.z1);
-                                    GL11.glVertex3f(var111.x1, var111.y1, var111.z1);
-                                    GL11.glVertex3f(var111.x0, var111.y0, var111.z1);
-                                    GL11.glVertex3f(var111.x0, var111.y1, var111.z1);
-                                    GL11.glEnd();
-                                }
-
-                                GL11.glDepthMask(true);
-                                GL11.glEnable(GL11.GL_TEXTURE_2D);
-                                GL11.glDisable(GL11.GL_BLEND);
-                                GL11.glEnable(GL11.GL_ALPHA_TEST);
-                            }
-
-                            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                            renderer.updateFog();
-                            GL11.glEnable(GL11.GL_TEXTURE_2D);
-                            GL11.glEnable(GL11.GL_BLEND);
-                            GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                    var89.textureManager.load("/water.png"));
-
-                            GL11.glCallList(var89.listId + 1);
-                            GL11.glDisable(GL11.GL_BLEND);
-                            GL11.glEnable(GL11.GL_BLEND);
-                            GL11.glColorMask(false, false, false, false);
-
-                            var120 = var89.sortChunks(var126, 1);
-                            GL11.glColorMask(true, true, true, true);
-                            if (renderer.minecraft.settings.anaglyph) {
-                                if (var77 == 0) {
-                                    GL11.glColorMask(false, true,
-                                            true, false);
-                                } else {
-                                    GL11.glColorMask(true, false,
-                                            false, false);
-                                }
-                            }
-
-                            if (var120 > 0) {
-                                GL11.glBindTexture(
-                                        GL11.GL_TEXTURE_2D,
-                                        var89.textureManager.load("/terrain.png"));
-                                GL11.glCallLists(var89.buffer);
-                            }
-
-                            GL11.glDepthMask(true);
-                            GL11.glDisable(GL11.GL_BLEND);
-                            GL11.glDisable(GL11.GL_FOG);
-                            // -------------------
-
-                            Collections
-                                    .sort(selectionBoxes,
-                                            new SelectionBoxDistanceComparator(
-                                                    player));
-                            for (int i = 0; i < selectionBoxes
-                                    .size(); i++) {
-                                CustomAABB bounds = selectionBoxes
-                                        .get(i).Bounds;
-                                ColorCache color = selectionBoxes
-                                        .get(i).Color;
-                                GL11.glLineWidth(2);
-
-                                GL11.glDisable(GL11.GL_BLEND);
-                                GL11.glDisable(GL11.GL_ALPHA_TEST);
-                                GL11.glEnable(GL11.GL_BLEND);
-                                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                                GL11.glColor4f(color.R, color.G, color.B, color.A);
-                                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                                GL11.glDepthMask(false);
-                                GL11.glDisable(GL11.GL_CULL_FACE);
-                                // GL11.glBegin(GL11.GL_QUADS);
-
-                                // Front Face
-                                // Bottom Left
-                                shapeRenderer.begin();
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
-                                // Bottom Right
-                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
-                                // Top Right
-                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
-                                // Top Left
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
-
-                                // Back Face
-                                // Bottom Right
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
-                                // Top Right
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
-                                // Top Left
-                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
-                                // Bottom Left
-                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
-
-                                // Top Face
-                                // Top Left
-                                // Bottom Left
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
-                                // Bottom Right
-                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
-                                // Top Right
-                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
-
-                                // Bottom Face
-                                // Top Right
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
-                                // Top Left
-                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
-                                // Bottom Left
-                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
-                                // Bottom Right
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
-
-                                // Right face
-                                // Bottom Right
-                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
-                                // Top Right
-                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
-                                // Top Left
-                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
-                                // Bottom Left
-                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
-
-                                // Left Face
-                                // Bottom Left
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
-                                // Bottom Right
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
-                                // Top Right
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
-                                // Top Left
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
-                                shapeRenderer.end();
-
-                                GL11.glColor4f(color.R, color.G, color.B, color.A + 0.2F);
-
-                                shapeRenderer.startDrawing(3);
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
-                                shapeRenderer.end();
-
-                                shapeRenderer.startDrawing(3);
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
-                                shapeRenderer.end();
-
-                                shapeRenderer.startDrawing(1);
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
-                                shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
-                                shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
-                                shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
-                                shapeRenderer.end();
-
-                                GL11.glDepthMask(true);
-                                GL11.glEnable(GL11.GL_TEXTURE_2D);
-                                GL11.glDisable(GL11.GL_BLEND);
-                                GL11.glEnable(GL11.GL_ALPHA_TEST);
-
-                                GL11.glEnable(GL11.GL_CULL_FACE);
-
-                                // ------------------
-                            }
-
-                            if (renderer.minecraft.isRaining || renderer.minecraft.isSnowing) {
-                                float var97 = var80;
-                                float speed = 1.0F;
-                                Level var109 = renderer.minecraft.level;
-                                var104 = (int) player.x;
-                                var108 = (int) player.y;
-                                var114 = (int) player.z;
-                                GL11.glDisable(GL11.GL_CULL_FACE);
-                                GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                                GL11.glEnable(GL11.GL_BLEND);
-                                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                                if (renderer.minecraft.isRaining) {
-                                    GL11.glBindTexture(
-                                            GL11.GL_TEXTURE_2D,
-                                            renderer.minecraft.textureManager.load("/rain.png"));
-                                } else if (renderer.minecraft.isSnowing) {
-                                    GL11.glBindTexture(
-                                            GL11.GL_TEXTURE_2D,
-                                            renderer.minecraft.textureManager.load("/snow.png"));
-                                    speed = 0.2F;
-                                }
-
-                                for (var110 = var104 - 5; var110 <= var104 + 5; ++var110) {
-                                    for (var122 = var114 - 5; var122 <= var114 + 5; ++var122) {
-                                        var120 = var109
-                                                .getHighestTile(
-                                                        var110,
-                                                        var122);
-                                        var86 = var108 - 5;
-                                        var125 = var108 + 5;
-                                        if (var86 < var120) {
-                                            var86 = var120;
-                                        }
-
-                                        if (var125 < var120) {
-                                            var125 = var120;
-                                        }
-
-                                        if (var86 != var125) {
-                                            var74 = ((renderer.levelTicks
-                                                    + var110 * 3121 + var122 * 418711) % 32 + var97)
-                                                    / 32.0F * speed;
-                                            float var124 = var110
-                                                    + 0.5F
-                                                    - player.x;
-                                            var35 = var122 + 0.5F
-                                                    - player.z;
-                                            float var92 = MathHelper.sqrt(
-                                                    var124 * var124 + var35 * var35) / 5;
-                                            GL11.glColor4f(
-                                                    1.0F, 1.0F, 1.0F,
-                                                    (1.0F - var92 * var92) * 0.7F);
-                                            shapeRenderer.begin();
-                                            shapeRenderer.vertexUV(
-                                                    var110, var86, var122,
-                                                    0.0F,
-                                                    var86 * 2.0F / 8.0F + var74 * 2.0F);
-                                            shapeRenderer.vertexUV(
-                                                    var110 + 1, var86, var122 + 1,
-                                                    2.0F,
-                                                    var86 * 2.0F / 8.0F + var74 * 2.0F);
-                                            shapeRenderer.vertexUV(
-                                                    var110 + 1, var125, var122 + 1,
-                                                    2.0F,
-                                                    var125 * 2.0F / 8.0F + var74 * 2.0F);
-                                            shapeRenderer.vertexUV(
-                                                    var110, var125, var122,
-                                                    0.0F,
-                                                    var125 * 2.0F / 8.0F + var74 * 2.0F);
-                                            shapeRenderer.vertexUV(
-                                                    var110, var86, var122 + 1,
-                                                    0.0F,
-                                                    var86 * 2.0F / 8.0F + var74 * 2.0F);
-                                            shapeRenderer.vertexUV(
-                                                    var110 + 1, var86, var122,
-                                                    2.0F,
-                                                    var86 * 2.0F / 8.0F + var74 * 2.0F);
-                                            shapeRenderer.vertexUV(
-                                                    var110 + 1, var125, var122,
-                                                    2.0F,
-                                                    var125 * 2.0F / 8.0F + var74 * 2.0F);
-                                            shapeRenderer.vertexUV(
-                                                    var110, var125, var122 + 1,
-                                                    0.0F,
-                                                    var125 * 2.0F / 8.0F + var74 * 2.0F);
-                                            shapeRenderer.end();
-                                        }
-                                    }
-                                }
-
-                                GL11.glEnable(GL11.GL_CULL_FACE);
-                                GL11.glDisable(GL11.GL_BLEND);
-                            }
-                            if (!isSinglePlayer
-                                    && networkManager != null
-                                    && networkManager.players != null
-                                    && networkManager.players.size() > 0) {
-                                if (settings.ShowNames == 1 && player.userType >= 100) {
-                                    for (int n = 0; n < networkManager.players
-                                            .values().size(); n++) {
-                                        NetworkPlayer np = (NetworkPlayer) networkManager.players
-                                                .values().toArray()[n];
-                                        if (np != null) {
-                                            np.renderHover(
-                                                    renderer.minecraft.textureManager,
-                                                    var80);
-                                        }
-                                    }
-                                } else {
-                                    if (renderer.entity != null) {
-                                        renderer.entity
-                                                .renderHover(
-                                                        renderer.minecraft.textureManager,
-                                                        var80);
-                                    }
-                                }
-                            }
-
-                            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-                            GL11.glLoadIdentity();
-                            if (renderer.minecraft.settings.anaglyph) {
-                                GL11.glTranslatef(
-                                        ((var77 << 1) - 1) * 0.1F,
-                                        0.0F, 0.0F);
-                            }
-
-                            renderer.hurtEffect(var80);
-                            renderer.applyBobbing(
-                                    var80,
-                                    renderer.minecraft.settings.viewBobbing);
-
-                            HeldBlock heldBlock = renderer.heldBlock;
-                            var117 = renderer.heldBlock.lastPos
-                                    + (heldBlock.pos - heldBlock.lastPos)
-                                    * var80;
-                            var116 = heldBlock.minecraft.player;
-                            GL11.glPushMatrix();
+                        }
+
+                        GL11.glClearColor(renderer.fogRed,
+                                renderer.fogBlue,
+                                renderer.fogGreen, 0.0F);
+                        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+                        renderer.fogColorMultiplier = 1.0F;
+                        GL11.glEnable(GL11.GL_CULL_FACE);
+                        renderer.fogEnd = 512 >> (renderer.minecraft.settings.viewDistance << 1);
+                        GL11.glMatrixMode(GL11.GL_PROJECTION);
+                        GL11.glLoadIdentity();
+                        var29 = 0.07F;
+
+                        Player var116 = renderer.minecraft.player;
+                        var69 = 70.0F;
+                        if (var116.health <= 0) {
+                            var74 = var116.deathTime + var80;
+                            var69 /= (1.0F - 500.0F / (var74 + 500.0F)) * 2.0F + 1.0F;
+                        }
+
+                        GLU.gluPerspective(
+                                var69,
+                                (float) renderer.minecraft.width
+                                / (float) renderer.minecraft.height,
+                                0.05F, renderer.fogEnd);
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        GL11.glLoadIdentity();
+
+                        renderer.hurtEffect(var80);
+                        renderer.applyBobbing(var80,
+                                renderer.minecraft.settings.viewBobbing);
+
+                        var116 = renderer.minecraft.player;
+                        if (settings.thirdPersonMode == 0) {
+                            GL11.glTranslatef(0.0F, 0.0F, -0.1F);
+                        } else {
+                            GL11.glTranslatef(0.0F, 0.0F, -5.1F);
+                        }
+                        if (settings.thirdPersonMode == 2) {
+                            GL11.glRotatef(-var116.xRotO
+                                    + (var116.xRot - var116.xRotO)
+                                    * var80, 1.0F, 0.0F, 0.0F);
+                            GL11.glRotatef((var116.yRotO
+                                    + (var116.yRot - var116.yRotO)
+                                    * var80) + 180, 0.0F, 1.0F, 0.0F);
+                        } else {
                             GL11.glRotatef(var116.xRotO
                                     + (var116.xRot - var116.xRotO)
                                     * var80, 1.0F, 0.0F, 0.0F);
                             GL11.glRotatef(var116.yRotO
                                     + (var116.yRot - var116.yRotO)
                                     * var80, 0.0F, 1.0F, 0.0F);
-                            heldBlock.minecraft.renderer.setLighting(true);
-                            GL11.glPopMatrix();
-                            GL11.glPushMatrix();
-                            var69 = 0.8F;
-                            if (heldBlock.moving) {
-                                var33 = MathHelper
-                                        .sin((var74 = (heldBlock.offset + var80) / 7.0F) * 3.1415927F);
+                        }
+                        var69 = var116.xo + (var116.x - var116.xo) * var80;
+                        var74 = var116.yo + (var116.y - var116.yo) * var80;
+                        var33 = var116.zo + (var116.z - var116.zo) * var80;
+                        GL11.glTranslatef(-var69, -var74, -var33);
+                        Frustrum var76 = FrustrumImpl.getInstance();
+                        Frustrum var100 = var76;
+                        LevelRenderer var101 = renderer.minecraft.levelRenderer;
+
+                        int var98;
+                        for (var98 = 0; var98 < var101.chunkCache.length; ++var98) {
+                            var101.chunkCache[var98].clip(var100);
+                        }
+
+                        var101 = renderer.minecraft.levelRenderer;
+                        Collections.sort(renderer.minecraft.levelRenderer.chunks,
+                                new ChunkDirtyDistanceComparator(var126));
+                        var98 = var101.chunks.size() - 1;
+                        int var105;
+                        if ((var105 = var101.chunks.size()) > 4) {
+                            var105 = 4;
+                        }
+
+                        int var104;
+                        for (var104 = 0; var104 < var105; ++var104) {
+                            Chunk chunkToUpdate = var101.chunks.remove(var98 - var104);
+                            chunkToUpdate.update();
+                            chunkToUpdate.loaded = false;
+                        }
+
+                        renderer.updateFog();
+                        GL11.glEnable(GL11.GL_FOG);
+                        var89.sortChunks(var126, 0);
+                        int var83;
+                        int var110;
+                        ShapeRenderer shapeRenderer = ShapeRenderer.instance;
+                        int var114;
+                        int var125;
+                        int var122;
+                        int var120;
+                        if (var119.isSolid(var126.x, var126.y, var126.z, 0.1F)) {
+                            var120 = (int) var126.x;
+                            var83 = (int) var126.y;
+                            var110 = (int) var126.z;
+
+                            for (var122 = var120 - 1; var122 <= var120 + 1; ++var122) {
+                                for (var125 = var83 - 1; var125 <= var83 + 1; ++var125) {
+                                    for (int var38 = var110 - 1; var38 <= var110 + 1; ++var38) {
+                                        var105 = var38;
+                                        var98 = var125;
+                                        int var99 = var122;
+                                        if ((var104 = var89.level
+                                                .getTile(
+                                                        var122,
+                                                        var125,
+                                                        var38)) != 0
+                                                && Block.blocks[var104]
+                                                .isSolid()) {
+                                            GL11.glColor4f(
+                                                    0.2F, 0.2F,
+                                                    0.2F, 1.0F);
+                                            GL11.glDepthFunc(513);
+
+                                            shapeRenderer
+                                                    .begin();
+
+                                            for (var114 = 0; var114 < 6; ++var114) {
+                                                Block.blocks[var104]
+                                                        .renderInside(
+                                                                shapeRenderer,
+                                                                var99,
+                                                                var98,
+                                                                var105,
+                                                                var114);
+                                            }
+
+                                            shapeRenderer.end();
+                                            GL11.glCullFace(1028);
+                                            shapeRenderer
+                                                    .begin();
+
+                                            for (var114 = 0; var114 < 6; ++var114) {
+                                                Block.blocks[var104]
+                                                        .renderInside(
+                                                                shapeRenderer,
+                                                                var99,
+                                                                var98,
+                                                                var105,
+                                                                var114);
+                                            }
+
+                                            shapeRenderer.end();
+                                            GL11.glCullFace(1029);
+                                            GL11.glDepthFunc(515);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        renderer.setLighting(true);
+                        Vec3D var103 = renderer
+                                .getPlayerVector(var80);
+                        var89.level.blockMap.render(var103,
+                                var76, var89.textureManager,
+                                var80);
+                        renderer.setLighting(false);
+                        renderer.updateFog();
+                        float var107 = var80;
+                        ParticleManager var96 = var93;
+                        var29 = -MathHelper.cos(var126.yRot * 3.1415927F / 180.0F);
+                        var117 = -(var30 = -MathHelper.sin(var126.yRot * 3.1415927F / 180.0F))
+                                * MathHelper.sin(var126.xRot * 3.1415927F / 180.0F);
+                        var32 = var29 * MathHelper.sin(var126.xRot * 3.1415927F / 180.0F);
+                        var69 = MathHelper.cos(var126.xRot * 3.1415927F / 180.0F);
+
+                        for (var83 = 0; var83 < 2; ++var83) {
+                            if (!var96.particles[var83].isEmpty()) {
+                                var110 = 0;
+                                if (var83 == 0) {
+                                    var110 = var96.textureManager
+                                            .load("/particles.png");
+                                }
+
+                                if (var83 == 1) {
+                                    var110 = var96.textureManager
+                                            .load("/terrain.png");
+                                }
+
+                                GL11.glBindTexture(GL11.GL_TEXTURE_2D, var110);
+                                shapeRenderer.begin();
+
+                                for (var120 = 0; var120 < var96.particles[var83]
+                                        .size(); ++var120) {
+                                    ((Particle) var96.particles[var83]
+                                            .get(var120))
+                                            .render(shapeRenderer,
+                                                    var107,
+                                                    var29,
+                                                    var69,
+                                                    var30,
+                                                    var117,
+                                                    var32);
+                                }
+
+                                shapeRenderer.end();
+                            }
+                        }
+
+                        GL11.glBindTexture(GL11.GL_TEXTURE_2D, var89.textureManager.load("/rock.png"));
+                        GL11.glEnable(GL11.GL_TEXTURE_2D);
+                        GL11.glCallList(var89.listId); // rock
+                        // edges
+                        renderer.updateFog();
+                        var101 = var89;
+
+                        GL11.glBindTexture(GL11.GL_TEXTURE_2D, var89.textureManager.load("/clouds.png"));
+                        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                        var107 = (var89.level.cloudColor >> 16 & 255) / 255.0F;
+                        var29 = (var89.level.cloudColor >> 8 & 255) / 255.0F;
+                        var30 = (var89.level.cloudColor & 255) / 255.0F;
+
+                        var74 = 0.0F;
+                        var33 = 4.8828125E-4F;
+                        if (level.cloudLevel < 0) {
+                            level.cloudLevel = var89.level.height + 2;
+                        }
+                        var74 = level.cloudLevel;
+                        var34 = (var89.ticks + var80) * var33 * 0.03F;
+                        var35 = 0.0F;
+                        if (settings.showClouds) {
+                            shapeRenderer.begin();
+                            shapeRenderer.color(var107, var29, var30);
+
+                            for (var86 = -2048; var86 < var101.level.width + 2048; var86 += 512) {
+                                for (var125 = -2048; var125 < var101.level.length + 2048; var125 += 512) {
+                                    shapeRenderer.vertexUV(var86,
+                                            var74, var125 + 512,
+                                            var86 * var33 + var34,
+                                            (var125 + 512) * var33);
+                                    shapeRenderer.vertexUV(
+                                            var86 + 512, var74,
+                                            var125 + 512,
+                                            (var86 + 512) * var33 + var34,
+                                            (var125 + 512) * var33);
+                                    shapeRenderer.vertexUV(
+                                            var86 + 512, var74, var125,
+                                            (var86 + 512) * var33 + var34,
+                                            var125 * var33);
+                                    shapeRenderer.vertexUV(var86,
+                                            var74, var125,
+                                            var86 * var33 + var34,
+                                            var125 * var33);
+                                    shapeRenderer.vertexUV(var86,
+                                            var74, var125,
+                                            var86 * var33 + var34,
+                                            var125 * var33);
+                                    shapeRenderer.vertexUV(
+                                            var86 + 512, var74,
+                                            var125,
+                                            (var86 + 512) * var33
+                                            + var34, var125 * var33);
+                                    shapeRenderer.vertexUV(
+                                            var86 + 512, var74,
+                                            var125 + 512,
+                                            (var86 + 512) * var33 + var34,
+                                            (var125 + 512) * var33);
+                                    shapeRenderer.vertexUV(var86,
+                                            var74, var125 + 512,
+                                            var86 * var33 + var34,
+                                            (var125 + 512) * var33);
+                                }
+                            }
+
+                            shapeRenderer.end();
+                        }
+                        GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+                        shapeRenderer.begin();
+                        var34 = (var101.level.skyColor >> 16 & 255) / 255.0F;
+                        var35 = (var101.level.skyColor >> 8 & 255) / 255.0F;
+                        var87 = (var101.level.skyColor & 255) / 255.0F;
+
+                        shapeRenderer.color(var34, var35, var87);
+                        var74 = var101.level.height + 10;
+
+                        for (var125 = -2048; var125 < var101.level.width + 2048; var125 += 512) {
+                            for (var68 = -2048; var68 < var101.level.length + 2048; var68 += 512) {
+                                shapeRenderer.vertex(var125, var74, var68);
+                                shapeRenderer.vertex(var125 + 512, var74, var68);
+                                shapeRenderer.vertex(var125 + 512, var74, var68 + 512);
+                                shapeRenderer.vertex(var125, var74, var68 + 512);
+                            }
+                        }
+
+                        shapeRenderer.end();
+                        GL11.glEnable(GL11.GL_TEXTURE_2D);
+                        renderer.updateFog();
+                        int var108;
+                        if (renderer.minecraft.selected != null) {
+                            GL11.glDisable(GL11.GL_ALPHA_TEST);
+                            MovingObjectPosition var10001 = renderer.minecraft.selected;
+                            var105 = var126.inventory.getSelected();
+                            MovingObjectPosition var102 = var10001;
+                            var101 = var89;
+
+                            GL11.glEnable(GL11.GL_BLEND);
+                            GL11.glEnable(GL11.GL_ALPHA_TEST);
+                            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+                            GL11.glColor4f(
+                                    1.0F,
+                                    1.0F,
+                                    1.0F,
+                                    (MathHelper.sin(System
+                                            .currentTimeMillis() / 100.0F) * 0.2F + 0.4F) * 0.5F);
+                            if (var89.cracks > 0.0F) {
+                                GL11.glBlendFunc(774, 768);
+                                var108 = var89.textureManager
+                                        .load("/terrain.png");
+                                GL11.glBindTexture(GL11.GL_TEXTURE_2D, var108);
+                                GL11.glColor4f(1.0F, 1.0F,
+                                        1.0F, 0.5F);
+                                GL11.glPushMatrix();
+                                Block var10000 = (var114 = var89.level
+                                        .getTile(var102.x,
+                                                var102.y,
+                                                var102.z)) > 0 ? Block.blocks[var114]
+                                        : null;
+                                var73 = var10000;
+                                var74 = (var10000.x1 + var73.x2) / 2.0F;
+                                var33 = (var73.y1 + var73.y2) / 2.0F;
+                                var34 = (var73.z1 + var73.z2) / 2.0F;
+                                GL11.glTranslatef(var102.x + var74,
+                                        var102.y + var33,
+                                        var102.z + var34);
+                                var35 = 1.01F;
+                                GL11.glScalef(1.0F, var35,
+                                        var35);
                                 GL11.glTranslatef(
-                                        -MathHelper.sin(
-                                                MathHelper.sqrt(var74) * 3.1415927F) * 0.4F,
-                                        MathHelper.sin(
-                                                MathHelper.sqrt(var74) * 3.1415927F * 2.0F) * 0.2F,
-                                        -var33 * 0.2F);
+                                        -(var102.x + var74),
+                                        -(var102.y + var33),
+                                        -(var102.z + var34));
+                                shapeRenderer.begin();
+                                shapeRenderer.noColor();
+                                GL11.glDepthMask(false);
+                                for (var86 = 0; var86 < 6; ++var86) {
+                                    var73.renderSide(
+                                            shapeRenderer,
+                                            var102.x,
+                                            var102.y,
+                                            var102.z,
+                                            var86,
+                                            240 + (int) (var101.cracks * 10.0F));
+                                }
+
+                                shapeRenderer.end();
+                                GL11.glDepthMask(true);
+                                GL11.glPopMatrix();
                             }
 
-                            GL11.glTranslatef(0.7F * var69, -0.65F
-                                    * var69 - (1.0F - var117)
-                                    * 0.6F, -0.9F * var69);
-                            GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
-                            GL11.glEnable(GL11.GL_NORMALIZE);
-                            if (heldBlock.moving) {
-                                var33 = MathHelper
-                                        .sin((var74 = (heldBlock.offset + var80) / 7.0F)
-                                                * var74
-                                                * 3.1415927F);
-                                GL11.glRotatef(
-                                        MathHelper.sin(
-                                                MathHelper.sqrt(var74) * 3.1415927F) * 80.0F,
-                                        0.0F, 1.0F, 0.0F);
-                                GL11.glRotatef(-var33 * 20.0F, 1.0F, 0.0F, 0.0F);
+                            GL11.glDisable(GL11.GL_BLEND);
+                            GL11.glDisable(GL11.GL_ALPHA_TEST);
+                            var10001 = renderer.minecraft.selected;
+                            var126.inventory.getSelected();
+                            var102 = var10001;
+                            GL11.glEnable(GL11.GL_BLEND);
+                            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                            GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
+                            GL11.glLineWidth(2.0F);
+                            GL11.glDisable(GL11.GL_TEXTURE_2D);
+                            GL11.glDepthMask(false);
+                            var29 = 0.002F;
+                            if ((var104 = var89.level.getTile(
+                                    var102.x, var102.y,
+                                    var102.z)) > 0) {
+                                AABB var111 = Block.blocks[var104]
+                                        .getSelectionBox(var102.x, var102.y, var102.z)
+                                        .grow(var29, var29, var29);
+                                GL11.glBegin(GL11.GL_LINE_STRIP);
+                                GL11.glVertex3f(var111.x0, var111.y0, var111.z0);
+                                GL11.glVertex3f(var111.x1, var111.y0, var111.z0);
+                                GL11.glVertex3f(var111.x1, var111.y0, var111.z1);
+                                GL11.glVertex3f(var111.x0, var111.y0, var111.z1);
+                                GL11.glVertex3f(var111.x0, var111.y0, var111.z0);
+                                GL11.glEnd();
+                                GL11.glBegin(GL11.GL_LINE_STRIP);
+                                GL11.glVertex3f(var111.x0, var111.y1, var111.z0);
+                                GL11.glVertex3f(var111.x1, var111.y1, var111.z0);
+                                GL11.glVertex3f(var111.x1, var111.y1, var111.z1);
+                                GL11.glVertex3f(var111.x0, var111.y1, var111.z1);
+                                GL11.glVertex3f(var111.x0, var111.y1, var111.z0);
+                                GL11.glEnd();
+                                GL11.glBegin(GL11.GL_LINES);
+                                GL11.glVertex3f(var111.x0, var111.y0, var111.z0);
+                                GL11.glVertex3f(var111.x0, var111.y1, var111.z0);
+                                GL11.glVertex3f(var111.x1, var111.y0, var111.z0);
+                                GL11.glVertex3f(var111.x1, var111.y1, var111.z0);
+                                GL11.glVertex3f(var111.x1, var111.y0, var111.z1);
+                                GL11.glVertex3f(var111.x1, var111.y1, var111.z1);
+                                GL11.glVertex3f(var111.x0, var111.y0, var111.z1);
+                                GL11.glVertex3f(var111.x0, var111.y1, var111.z1);
+                                GL11.glEnd();
                             }
 
-                            ColorCache color = heldBlock.minecraft.level
-                                    .getBrightnessColor(
-                                            (int) var116.x,
-                                            (int) var116.y,
-                                            (int) var116.z);
-                            GL11.glColor4f(color.R, color.G, color.B, 1.0F);
+                            GL11.glDepthMask(true);
+                            GL11.glEnable(GL11.GL_TEXTURE_2D);
+                            GL11.glDisable(GL11.GL_BLEND);
+                            GL11.glEnable(GL11.GL_ALPHA_TEST);
+                        }
 
-                            if (heldBlock.block != null) {
-                                var34 = 0.4F;
-                                GL11.glScalef(0.4F, var34, var34);
-                                GL11.glTranslatef(-0.5F, -0.5F,
-                                        -0.5F);
-                                if (settings.thirdPersonMode == 0
-                                        && canRenderGUI) {
-                                    GL11.glBindTexture(
-                                            GL11.GL_TEXTURE_2D,
-                                            heldBlock.minecraft.textureManager.load("/terrain.png"));
-                                    heldBlock.block
-                                            .renderPreview(shapeRenderer);
+                        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                        renderer.updateFog();
+                        GL11.glEnable(GL11.GL_TEXTURE_2D);
+                        GL11.glEnable(GL11.GL_BLEND);
+                        GL11.glBindTexture(GL11.GL_TEXTURE_2D,
+                                var89.textureManager.load("/water.png"));
+
+                        GL11.glCallList(var89.listId + 1);
+                        GL11.glDisable(GL11.GL_BLEND);
+                        GL11.glEnable(GL11.GL_BLEND);
+                        GL11.glColorMask(false, false, false, false);
+
+                        var120 = var89.sortChunks(var126, 1);
+                        GL11.glColorMask(true, true, true, true);
+
+                        if (var120 > 0) {
+                            GL11.glBindTexture(
+                                    GL11.GL_TEXTURE_2D,
+                                    var89.textureManager.load("/terrain.png"));
+                            GL11.glCallLists(var89.buffer);
+                        }
+
+                        GL11.glDepthMask(true);
+                        GL11.glDisable(GL11.GL_BLEND);
+                        GL11.glDisable(GL11.GL_FOG);
+                        // -------------------
+
+                        Collections
+                                .sort(selectionBoxes,
+                                        new SelectionBoxDistanceComparator(
+                                                player));
+                        for (int i = 0; i < selectionBoxes
+                                .size(); i++) {
+                            CustomAABB bounds = selectionBoxes
+                                    .get(i).Bounds;
+                            ColorCache color = selectionBoxes
+                                    .get(i).Color;
+                            GL11.glLineWidth(2);
+
+                            GL11.glDisable(GL11.GL_BLEND);
+                            GL11.glDisable(GL11.GL_ALPHA_TEST);
+                            GL11.glEnable(GL11.GL_BLEND);
+                            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                            GL11.glColor4f(color.R, color.G, color.B, color.A);
+                            GL11.glDisable(GL11.GL_TEXTURE_2D);
+                            GL11.glDepthMask(false);
+                            GL11.glDisable(GL11.GL_CULL_FACE);
+                                // GL11.glBegin(GL11.GL_QUADS);
+
+                                // Front Face
+                            // Bottom Left
+                            shapeRenderer.begin();
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
+                            // Bottom Right
+                            shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
+                            // Top Right
+                            shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
+                            // Top Left
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
+
+                                // Back Face
+                            // Bottom Right
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
+                            // Top Right
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
+                            // Top Left
+                            shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
+                            // Bottom Left
+                            shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
+
+                                // Top Face
+                            // Top Left
+                            // Bottom Left
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
+                            // Bottom Right
+                            shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
+                            // Top Right
+                            shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
+
+                                // Bottom Face
+                            // Top Right
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
+                            // Top Left
+                            shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
+                            // Bottom Left
+                            shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
+                            // Bottom Right
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
+
+                                // Right face
+                            // Bottom Right
+                            shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
+                            // Top Right
+                            shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
+                            // Top Left
+                            shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
+                            // Bottom Left
+                            shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
+
+                                // Left Face
+                            // Bottom Left
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
+                            // Bottom Right
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
+                            // Top Right
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
+                            // Top Left
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
+                            shapeRenderer.end();
+
+                            GL11.glColor4f(color.R, color.G, color.B, color.A + 0.2F);
+
+                            shapeRenderer.startDrawing(3);
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
+                            shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
+                            shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
+                            shapeRenderer.end();
+
+                            shapeRenderer.startDrawing(3);
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
+                            shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
+                            shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
+                            shapeRenderer.end();
+
+                            shapeRenderer.startDrawing(1);
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
+                            shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
+                            shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
+                            shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
+                            shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z1);
+                            shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
+                            shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
+                            shapeRenderer.end();
+
+                            GL11.glDepthMask(true);
+                            GL11.glEnable(GL11.GL_TEXTURE_2D);
+                            GL11.glDisable(GL11.GL_BLEND);
+                            GL11.glEnable(GL11.GL_ALPHA_TEST);
+
+                            GL11.glEnable(GL11.GL_CULL_FACE);
+
+                            // ------------------
+                        }
+
+                        if (renderer.minecraft.isRaining || renderer.minecraft.isSnowing) {
+                            float var97 = var80;
+                            float speed = 1.0F;
+                            Level var109 = renderer.minecraft.level;
+                            var104 = (int) player.x;
+                            var108 = (int) player.y;
+                            var114 = (int) player.z;
+                            GL11.glDisable(GL11.GL_CULL_FACE);
+                            GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+                            GL11.glEnable(GL11.GL_BLEND);
+                            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                            if (renderer.minecraft.isRaining) {
+                                GL11.glBindTexture(
+                                        GL11.GL_TEXTURE_2D,
+                                        renderer.minecraft.textureManager.load("/rain.png"));
+                            } else if (renderer.minecraft.isSnowing) {
+                                GL11.glBindTexture(
+                                        GL11.GL_TEXTURE_2D,
+                                        renderer.minecraft.textureManager.load("/snow.png"));
+                                speed = 0.2F;
+                            }
+
+                            for (var110 = var104 - 5; var110 <= var104 + 5; ++var110) {
+                                for (var122 = var114 - 5; var122 <= var114 + 5; ++var122) {
+                                    var120 = var109
+                                            .getHighestTile(
+                                                    var110,
+                                                    var122);
+                                    var86 = var108 - 5;
+                                    var125 = var108 + 5;
+                                    if (var86 < var120) {
+                                        var86 = var120;
+                                    }
+
+                                    if (var125 < var120) {
+                                        var125 = var120;
+                                    }
+
+                                    if (var86 != var125) {
+                                        var74 = ((renderer.levelTicks
+                                                + var110 * 3121 + var122 * 418711) % 32 + var97)
+                                                / 32.0F * speed;
+                                        float var124 = var110 + 0.5F - player.x;
+                                        var35 = var122 + 0.5F - player.z;
+                                        float var92 = MathHelper.sqrt(
+                                                var124 * var124 + var35 * var35) / 5;
+                                        GL11.glColor4f(
+                                                1.0F, 1.0F, 1.0F,
+                                                (1.0F - var92 * var92) * 0.7F);
+                                        shapeRenderer.begin();
+                                        shapeRenderer.vertexUV(
+                                                var110, var86, var122,
+                                                0.0F,
+                                                var86 * 2.0F / 8.0F + var74 * 2.0F);
+                                        shapeRenderer.vertexUV(
+                                                var110 + 1, var86, var122 + 1,
+                                                2.0F,
+                                                var86 * 2.0F / 8.0F + var74 * 2.0F);
+                                        shapeRenderer.vertexUV(
+                                                var110 + 1, var125, var122 + 1,
+                                                2.0F,
+                                                var125 * 2.0F / 8.0F + var74 * 2.0F);
+                                        shapeRenderer.vertexUV(
+                                                var110, var125, var122,
+                                                0.0F,
+                                                var125 * 2.0F / 8.0F + var74 * 2.0F);
+                                        shapeRenderer.vertexUV(
+                                                var110, var86, var122 + 1,
+                                                0.0F,
+                                                var86 * 2.0F / 8.0F + var74 * 2.0F);
+                                        shapeRenderer.vertexUV(
+                                                var110 + 1, var86, var122,
+                                                2.0F,
+                                                var86 * 2.0F / 8.0F + var74 * 2.0F);
+                                        shapeRenderer.vertexUV(
+                                                var110 + 1, var125, var122,
+                                                2.0F,
+                                                var125 * 2.0F / 8.0F + var74 * 2.0F);
+                                        shapeRenderer.vertexUV(
+                                                var110, var125, var122 + 1,
+                                                0.0F,
+                                                var125 * 2.0F / 8.0F + var74 * 2.0F);
+                                        shapeRenderer.end();
+                                    }
+                                }
+                            }
+
+                            GL11.glEnable(GL11.GL_CULL_FACE);
+                            GL11.glDisable(GL11.GL_BLEND);
+                        }
+                        if (!isSinglePlayer
+                                && networkManager != null
+                                && networkManager.players != null
+                                && networkManager.players.size() > 0) {
+                            if (settings.ShowNames == 1 && player.userType >= 100) {
+                                for (int n = 0; n < networkManager.players
+                                        .values().size(); n++) {
+                                    NetworkPlayer np = (NetworkPlayer) networkManager.players
+                                            .values().toArray()[n];
+                                    if (np != null) {
+                                        np.renderHover(
+                                                renderer.minecraft.textureManager,
+                                                var80);
+                                    }
                                 }
                             } else {
-                                var116.bindTexture(heldBlock.minecraft.textureManager);
-                                GL11.glScalef(1.0F, -1.0F, -1.0F);
-                                GL11.glTranslatef(0.0F, 0.2F, 0.0F);
-                                GL11.glRotatef(-120.0F, 0.0F, 0.0F,
-                                        1.0F);
-                                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                                var34 = 0.0625F;
-                                ModelPart var127;
-                                if (!(var127 = heldBlock.minecraft.player
-                                        .getModel().leftArm).hasList) {
-                                    var127.generateList(var34);
+                                if (renderer.entity != null) {
+                                    renderer.entity
+                                            .renderHover(
+                                                    renderer.minecraft.textureManager,
+                                                    var80);
                                 }
-
-                                GL11.glCallList(var127.list);
                             }
-
-                            GL11.glDisable(GL11.GL_NORMALIZE);
-                            GL11.glPopMatrix();
-                            heldBlock.minecraft.renderer
-                                    .setLighting(false);
-                            if (!renderer.minecraft.settings.anaglyph) {
-                                break;
-                            }
-
-                            ++var77;
                         }
+
+                        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+                        GL11.glLoadIdentity();
+
+                        renderer.hurtEffect(var80);
+                        renderer.applyBobbing(
+                                var80,
+                                renderer.minecraft.settings.viewBobbing);
+
+                        HeldBlock heldBlock = renderer.heldBlock;
+                        var117 = renderer.heldBlock.lastPos
+                                + (heldBlock.pos - heldBlock.lastPos)
+                                * var80;
+                        var116 = heldBlock.minecraft.player;
+                        GL11.glPushMatrix();
+                        GL11.glRotatef(var116.xRotO
+                                + (var116.xRot - var116.xRotO)
+                                * var80, 1.0F, 0.0F, 0.0F);
+                        GL11.glRotatef(var116.yRotO
+                                + (var116.yRot - var116.yRotO)
+                                * var80, 0.0F, 1.0F, 0.0F);
+                        heldBlock.minecraft.renderer.setLighting(true);
+                        GL11.glPopMatrix();
+                        GL11.glPushMatrix();
+                        var69 = 0.8F;
+                        if (heldBlock.moving) {
+                            var33 = MathHelper
+                                    .sin((var74 = (heldBlock.offset + var80) / 7.0F) * 3.1415927F);
+                            GL11.glTranslatef(
+                                    -MathHelper.sin(
+                                            MathHelper.sqrt(var74) * 3.1415927F) * 0.4F,
+                                    MathHelper.sin(
+                                            MathHelper.sqrt(var74) * 3.1415927F * 2.0F) * 0.2F,
+                                    -var33 * 0.2F);
+                        }
+
+                        GL11.glTranslatef(0.7F * var69, -0.65F
+                                * var69 - (1.0F - var117)
+                                * 0.6F, -0.9F * var69);
+                        GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                        GL11.glEnable(GL11.GL_NORMALIZE);
+                        if (heldBlock.moving) {
+                            var33 = MathHelper
+                                    .sin((var74 = (heldBlock.offset + var80) / 7.0F)
+                                            * var74
+                                            * 3.1415927F);
+                            GL11.glRotatef(
+                                    MathHelper.sin(
+                                            MathHelper.sqrt(var74) * 3.1415927F) * 80.0F,
+                                    0.0F, 1.0F, 0.0F);
+                            GL11.glRotatef(-var33 * 20.0F, 1.0F, 0.0F, 0.0F);
+                        }
+
+                        ColorCache color = heldBlock.minecraft.level
+                                .getBrightnessColor(
+                                        (int) var116.x,
+                                        (int) var116.y,
+                                        (int) var116.z);
+                        GL11.glColor4f(color.R, color.G, color.B, 1.0F);
+
+                        if (heldBlock.block != null) {
+                            var34 = 0.4F;
+                            GL11.glScalef(0.4F, var34, var34);
+                            GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+                            if (settings.thirdPersonMode == 0
+                                    && canRenderGUI) {
+                                GL11.glBindTexture(
+                                        GL11.GL_TEXTURE_2D,
+                                        heldBlock.minecraft.textureManager.load("/terrain.png"));
+                                heldBlock.block
+                                        .renderPreview(shapeRenderer);
+                            }
+                        } else {
+                            var116.bindTexture(heldBlock.minecraft.textureManager);
+                            GL11.glScalef(1.0F, -1.0F, -1.0F);
+                            GL11.glTranslatef(0.0F, 0.2F, 0.0F);
+                            GL11.glRotatef(-120.0F, 0.0F, 0.0F,
+                                    1.0F);
+                            GL11.glScalef(1.0F, 1.0F, 1.0F);
+                            var34 = 0.0625F;
+                            ModelPart var127;
+                            if (!(var127 = heldBlock.minecraft.player
+                                    .getModel().leftArm).hasList) {
+                                var127.generateList(var34);
+                            }
+
+                            GL11.glCallList(var127.list);
+                        }
+
+                        GL11.glDisable(GL11.GL_NORMALIZE);
+                        GL11.glPopMatrix();
+                        heldBlock.minecraft.renderer.setLighting(false);
+
                         if (currentScreen != null || canRenderGUI) {
                             renderer.minecraft.hud
                                     .render(timer.delta,
