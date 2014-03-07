@@ -26,8 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -95,9 +93,11 @@ import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
 import com.mojang.net.NetworkHandler;
 import com.mojang.util.MathHelper;
+
 import com.oyasunadev.mcraft.client.util.ExtData;
 
 public final class Minecraft implements Runnable {
+
     // mouse button index constants
     private static final int MB_LEFT = 0, MB_RIGHT = 1;
 
@@ -119,17 +119,12 @@ public final class Minecraft implements Runnable {
      */
     public static File mcDir;
     /**
-     * List of display modes.
-     */
-    private static final List<DisplayMode> displayModes = new ArrayList<DisplayMode>();
-
-    /**
      * True if we are in full screen mode, false if otherwise.
      */
     public boolean isFullScreen = false;
     /**
-     * This timer determines how much time will pass between block
-     * modifications. It is used to prevent really fast block spamming.
+     * This timer determines how much time will pass between block modifications. It is used to
+     * prevent really fast block spamming.
      */
     private Timer timer = new Timer(20.0F);
     private ResourceDownloadThread resourceThread;
@@ -263,8 +258,8 @@ public final class Minecraft implements Runnable {
      */
     public int port;
     /**
-     * Set this to whatever you want to show as debug information in the HUD. It
-     * will occupy one line. Right now it shows FPS and Chunk Updates.
+     * Set this to whatever you want to show as debug information in the HUD. It will occupy one
+     * line. Right now it shows FPS and Chunk Updates.
      */
     public String debug;
     /**
@@ -345,8 +340,7 @@ public final class Minecraft implements Runnable {
                 }
                 break;
             case MAC_OS_X:
-                minecraftFolder = new File(home, "Library/Application Support/"
-                        + folder);
+                minecraftFolder = new File(home, "Library/Application Support/" + folder);
                 break;
             default:
                 minecraftFolder = new File(home, folder + '/');
@@ -441,20 +435,16 @@ public final class Minecraft implements Runnable {
         }
     }
 
-    public byte[] flipPixels(byte[] paramArrayOfByte, int paramInt1,
-            int paramInt2) {
-        paramInt1 *= 3;
-        byte[] arrayOfByte = null;
-        if (paramArrayOfByte != null) {
-            arrayOfByte = new byte[paramInt1 * paramInt2];
-            for (int i = 0; i < paramInt2; i++) {
-                for (int j = 0; j < paramInt1; j++) {
-                    arrayOfByte[(paramInt2 - i - 1) * paramInt1 + j] = paramArrayOfByte[i
-                            * paramInt1 + j];
-                }
+    public byte[] flipPixels(byte[] originalBuffer, int width, int height) {
+        byte[] flippedBuffer = null;
+        if (originalBuffer != null) {
+            flippedBuffer = new byte[width * height * 3];// There are 3 bytes per cell
+            for (int y = 0; y < height; y++) {
+                System.arraycopy(originalBuffer, (height - y - 1) * width,
+                        flippedBuffer, y * width, width * 3);
             }
         }
-        return arrayOfByte;
+        return flippedBuffer;
     }
 
     // Scale of 0 is 128x128 level. Incrementing the scale doubles the level size.
@@ -528,7 +518,8 @@ public final class Minecraft implements Runnable {
             int selectedBlockId = player.inventory.getSelected();
             if (selectedBlockId > 0 && gamemode.useItem(player, selectedBlockId)) {
                 // There is a block in hand, and it's not air
-                renderer.heldBlock.pos = 0.0F;
+                renderer.heldBlock.pos = 0;
+                return;
             }
 
         } else if (selected == null) {
@@ -875,7 +866,6 @@ public final class Minecraft implements Runnable {
             } catch (LWJGLException e) {
                 e.printStackTrace();
             }
-
             resize();
         }
 
@@ -929,7 +919,6 @@ public final class Minecraft implements Runnable {
 
             if (!isOnline) {
                 gamemode.applyCracks(timer.delta);
-                float var65 = timer.delta;
                 if (renderer.displayActive && !Display.isActive()) {
                     renderer.minecraft.pause();
                 }
@@ -975,14 +964,14 @@ public final class Minecraft implements Runnable {
                     int var94 = Mouse.getX() * var81 / renderer.minecraft.width;
                     var70 = var86 - Mouse.getY() * var86 / renderer.minecraft.height - 1;
                     if (renderer.minecraft.level != null && player != null) {
-                        float var80 = var65;
+                        float var80 = timer.delta;
                         float var29 = player.xRotO
                                 + (player.xRot - player.xRotO)
-                                * var65;
+                                * timer.delta;
                         float var30 = player.yRotO
                                 + (player.yRot - player.yRotO)
-                                * var65;
-                        Vec3D var31 = renderer.getPlayerVector(var65);
+                                * timer.delta;
+                        Vec3D var31 = renderer.getPlayerVector(timer.delta);
                         float var32 = MathHelper.cos(-var30 * 0.017453292F - 3.1415927F);
                         float var69 = MathHelper.sin(-var30 * 0.017453292F - 3.1415927F);
                         float var74 = MathHelper.cos(-var29 * 0.017453292F);
@@ -998,10 +987,10 @@ public final class Minecraft implements Runnable {
                         var74 = reachDistance;
                         if (renderer.minecraft.selected != null) {
                             var74 = renderer.minecraft.selected.vec
-                                    .distance(renderer.getPlayerVector(var65));
+                                    .distance(renderer.getPlayerVector(timer.delta));
                         }
 
-                        var31 = renderer.getPlayerVector(var65);
+                        var31 = renderer.getPlayerVector(timer.delta);
                         if (renderer.minecraft.gamemode instanceof CreativeGameMode) {
                             reachDistance = 32.0F;
                         } else {
@@ -1135,7 +1124,7 @@ public final class Minecraft implements Runnable {
                             GL11.glMatrixMode(GL11.GL_MODELVIEW);
                             GL11.glLoadIdentity();
                             if (renderer.minecraft.settings.anaglyph) {
-                                GL11.glTranslatef( ((var77 << 1) - 1) * 0.1F, 0.0F, 0.0F);
+                                GL11.glTranslatef(((var77 << 1) - 1) * 0.1F, 0.0F, 0.0F);
                             }
 
                             renderer.hurtEffect(var80);
@@ -1659,7 +1648,7 @@ public final class Minecraft implements Runnable {
                                 shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
                                 shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
                                 shapeRenderer.end();
-                                
+
                                 shapeRenderer.startDrawing(3);
                                 shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
                                 shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
@@ -1667,7 +1656,7 @@ public final class Minecraft implements Runnable {
                                 shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
                                 shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
                                 shapeRenderer.end();
-                                
+
                                 shapeRenderer.startDrawing(1);
                                 shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
                                 shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
@@ -1913,7 +1902,7 @@ public final class Minecraft implements Runnable {
                         }
                         if (currentScreen != null || canRenderGUI) {
                             renderer.minecraft.hud
-                                    .render(var65,
+                                    .render(timer.delta,
                                             renderer.minecraft.currentScreen != null,
                                             var94, var70);
                         }
@@ -1940,7 +1929,7 @@ public final class Minecraft implements Runnable {
             }
 
             if (settings.limitFramerate) {
-                Thread.sleep(5L);
+                Display.sync(60);
             }
 
             checkGLError("Post render");
@@ -1959,26 +1948,26 @@ public final class Minecraft implements Runnable {
         }
     }
 
-    public final void setCurrentScreen(GuiScreen var1) {
+    public final void setCurrentScreen(GuiScreen newScreen) {
         if (!(currentScreen instanceof ErrorScreen)) {
             if (currentScreen != null) {
                 currentScreen.onClose();
             }
 
-            if (var1 == null && player.health <= 0) {
-                var1 = new GameOverScreen();
+            if (newScreen == null && player.health <= 0) {
+                newScreen = new GameOverScreen();
             }
 
-            currentScreen = var1;
-            if (var1 != null) {
+            currentScreen = newScreen;
+            if (newScreen != null) {
                 if (hasMouse) {
                     player.releaseAllKeys();
                     hasMouse = false;
                     if (isLevelLoaded) {
                         try {
                             Mouse.setNativeCursor((Cursor) null);
-                        } catch (LWJGLException var4) {
-                            var4.printStackTrace();
+                        } catch (LWJGLException ex) {
+                            ex.printStackTrace();
                         }
                     } else {
                         Mouse.setGrabbed(false);
@@ -1987,7 +1976,7 @@ public final class Minecraft implements Runnable {
 
                 int var2 = width * 240 / height;
                 int var3 = height * 240 / height;
-                var1.open(this, var2, var3);
+                newScreen.open(this, var2, var3);
                 isOnline = false;
                 return;
             }
@@ -1996,54 +1985,10 @@ public final class Minecraft implements Runnable {
     }
 
     private void setDisplayMode() throws LWJGLException {
-        if (displayModes.size() == 0) {
-            displayModes.add(new DisplayMode(2560, 1600));
-            displayModes.add(new DisplayMode(2880, 1800));
-        }
-        HashSet<DisplayMode> var1 = new HashSet<DisplayMode>();
-        Collections.addAll(var1, Display.getAvailableDisplayModes());
-        DisplayMode var2 = Display.getDesktopDisplayMode();
-
-        if (!var1.contains(var2) && OperatingSystem.detect() == OperatingSystem.MAC_OS_X) {
-            Iterator<DisplayMode> var3 = displayModes.iterator();
-
-            while (var3.hasNext()) {
-                DisplayMode var4 = var3.next();
-                boolean var5 = true;
-                Iterator<DisplayMode> var6 = var1.iterator();
-                DisplayMode var7;
-
-                while (var6.hasNext()) {
-                    var7 = var6.next();
-
-                    if (var7.getBitsPerPixel() == 32
-                            && var7.getWidth() == var4.getWidth()
-                            && var7.getHeight() == var4.getHeight()) {
-                        var5 = false;
-                        break;
-                    }
-                }
-
-                if (!var5) {
-                    var6 = var1.iterator();
-
-                    while (var6.hasNext()) {
-                        var7 = var6.next();
-
-                        if (var7.getBitsPerPixel() == 32
-                                && var7.getWidth() == var4.getWidth() / 2
-                                && var7.getHeight() == var4.getHeight() / 2) {
-                            var2 = var7;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        Display.setDisplayMode(var2);
-        width = var2.getWidth();
-        height = var2.getHeight();
+        DisplayMode desktopMode = Display.getDesktopDisplayMode();
+        Display.setDisplayMode(desktopMode);
+        width = desktopMode.getWidth();
+        height = desktopMode.getHeight();
     }
 
     public final void setLevel(Level theLevel) {
@@ -2139,8 +2084,8 @@ public final class Minecraft implements Runnable {
             if (resourceThread != null) {
                 resourceThread.running = true;
             }
-        } catch (Exception var3) {
-            ;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         if (!isLevelLoaded) {
@@ -3026,12 +2971,12 @@ public final class Minecraft implements Runnable {
                                         .write(networkHandler.out);
                                 networkHandler.out.compact();
                             }
-                        } catch (Exception var15) {
+                        } catch (Exception ex) {
                             var20.minecraft.setCurrentScreen(new ErrorScreen(
                                     "Disconnected!",
                                     "You\'ve lost connection to the server"));
                             var20.minecraft.isOnline = false;
-                            var15.printStackTrace();
+                            ex.printStackTrace();
                             var20.netHandler.close();
                             var20.minecraft.networkManager = null;
                         }
@@ -3320,7 +3265,6 @@ public final class Minecraft implements Runnable {
                 }
             }
 
-            Player var27 = player;
             var4 = var41.minecraft.player.inventory.getSelected();
             Block var43 = null;
             if (var4 > 0) {
@@ -3343,7 +3287,7 @@ public final class Minecraft implements Runnable {
             }
 
             if (renderer.minecraft.isRaining) {
-                var27 = renderer.minecraft.player;
+                Player var27 = renderer.minecraft.player;
                 Level var32 = renderer.minecraft.level;
                 var40 = (int) var27.x;
                 var46 = (int) var27.y;
