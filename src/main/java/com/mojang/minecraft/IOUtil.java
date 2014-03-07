@@ -8,6 +8,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 
+// Utility class to simplify working with streams efficiently
 public class IOUtil {
     private static final int BUFFER_SIZE = 64 * 1024; // 64 KB
 
