@@ -1,5 +1,7 @@
 package com.mojang.minecraft.model;
 
+import com.mojang.util.Vec3D;
+import com.mojang.util.Vertex;
 import org.lwjgl.opengl.GL11;
 
 public final class ModelPart {
@@ -26,9 +28,8 @@ public final class ModelPart {
     }
 
     public void generateList(float var1) {
-        list = GL11.glGenLists(1);
-        GL11.glNewList(list, 4864);
-        GL11.glBegin(7);
+        GL11.glNewList(GL11.glGenLists(1), GL11.GL_COMPILE);
+        GL11.glBegin(GL11.GL_QUADS);
 
         for (int var2 = 0; var2 < quads.length; ++var2) {
             TexturedQuad var10000 = quads[var2];
@@ -54,16 +55,16 @@ public final class ModelPart {
 
     public final void render(float var1) {
         if (render) {
-            
+
             if (!hasList) {
                 generateList(var1);
             }
-            
+
             if (allowTransparency) {
-                                GL11.glEnable(3008);
-                                GL11.glDisable(GL11.GL_CULL_FACE);
-                        }
-            
+                GL11.glEnable(GL11.GL_ALPHA_TEST);
+                GL11.glDisable(GL11.GL_CULL_FACE);
+            }
+
             if (pitch == 0.0F && yaw == 0.0F && roll == 0.0F) {
                 if (x == 0.0F && y == 0.0F && z == 0.0F) {
                     GL11.glCallList(list);
@@ -76,15 +77,15 @@ public final class ModelPart {
                 GL11.glPushMatrix();
                 GL11.glTranslatef(x * var1, y * var1, z * var1);
                 if (roll != 0.0F) {
-                    GL11.glRotatef(roll * 57.295776F, 0.0F, 0.0F, 1.0F);
+                    GL11.glRotatef(roll * (float) (180D / Math.PI), 0.0F, 0.0F, 1.0F);
                 }
 
                 if (yaw != 0.0F) {
-                    GL11.glRotatef(yaw * 57.295776F, 0.0F, 1.0F, 0.0F);
+                    GL11.glRotatef(yaw * (float) (180D / Math.PI), 0.0F, 1.0F, 0.0F);
                 }
 
                 if (pitch != 0.0F) {
-                    GL11.glRotatef(pitch * 57.295776F, 1.0F, 0.0F, 0.0F);
+                    GL11.glRotatef(pitch * (float) (180D / Math.PI), 1.0F, 0.0F, 0.0F);
                 }
 
                 GL11.glCallList(list);
@@ -92,7 +93,7 @@ public final class ModelPart {
             }
             if (allowTransparency){
                                 GL11.glEnable(GL11.GL_CULL_FACE);
-                                GL11.glDisable(3008);
+                                GL11.glDisable(GL11.GL_ALPHA_TEST);
                         }
         }
     }

@@ -75,7 +75,7 @@ public class Item extends Entity {
     public void render(TextureManager textureManager, float unknown0) {
         textureId = textureManager.load("/terrain.png");
 
-        GL11.glBindTexture(3553, textureId);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
 
         float brightness = level.getBrightness((int) x, (int) y, (int) z);
         float unknown1 = rot + (tickCount + unknown0) * 3.0F;
@@ -95,19 +95,19 @@ public class Item extends Entity {
                 * brightness;
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, brightness * 0.4F);
-        GL11.glDisable(3553);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 1);
-        GL11.glDisable(3008);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, 1);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
 
         models[resource].generateList();
 
-        GL11.glEnable(3008);
-        GL11.glDisable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, 771);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glPopMatrix();
-        GL11.glEnable(3553);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
     @Override

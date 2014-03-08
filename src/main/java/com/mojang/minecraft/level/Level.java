@@ -12,7 +12,7 @@ import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.model.Vec3D;
+import com.mojang.util.Vec3D;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.LevelRenderer;
@@ -560,10 +560,10 @@ public class Level implements Serializable {
     }
 
     public float getCaveness(Entity var1) {
-        float var2 = MathHelper.cos(-var1.yRot * 0.017453292F + 3.1415927F);
-        float var3 = MathHelper.sin(-var1.yRot * 0.017453292F + 3.1415927F);
-        float var4 = MathHelper.cos(-var1.xRot * 0.017453292F);
-        float var5 = MathHelper.sin(-var1.xRot * 0.017453292F);
+        float var2 = MathHelper.cos(-var1.yRot * (float) (Math.PI / 180D) + (float) Math.PI);
+        float var3 = MathHelper.sin(-var1.yRot * (float) (Math.PI / 180D) + (float) Math.PI);
+        float var4 = MathHelper.cos(-var1.xRot * (float) (Math.PI / 180D));
+        float var5 = MathHelper.sin(-var1.xRot * (float) (Math.PI / 180D));
         float var6 = var1.x;
         float var7 = var1.y;
         float var21 = var1.z;
@@ -630,11 +630,11 @@ public class Level implements Serializable {
                     float var12;
                     float var13;
                     for (var13 = (float) (Math.atan2(var12 = var10 + 0.5F - var3, var11) - var4
-                            * 3.1415927F / 180.0F + 1.5707963705062866D); var13 < -3.1415927F; var13 += 6.2831855F) {
+                            * (float) Math.PI / 180.0F + 1.5707963705062866D); var13 < -(float) Math.PI; var13 += 6.2831855F) {
                         ;
                     }
 
-                    while (var13 >= 3.1415927F) {
+                    while (var13 >= (float) Math.PI) {
                         var13 -= 6.2831855F;
                     }
 
@@ -734,11 +734,8 @@ public class Level implements Serializable {
         return player;
     }
 
-    public int getTile(int var1, int var2, int var3) {
-        return var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length ? blocks[(var2
-                * length + var3)
-                * width + var1] & 255
-                : 0;
+    public int getTile(int x, int y, int z) {
+        return x >= 0 && y >= 0 && z >= 0 && x < width && y < height && z < length ? blocks[(y * length + z) * width + x] & 255 : 0;
     }
 
     public float getWaterLevel() {

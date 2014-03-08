@@ -37,8 +37,8 @@ public abstract class BaseSoundPos implements SoundPos {
             var3 = 1.0F;
         }
 
-        float var4 = MathHelper.cos(-listener.yRot * 0.017453292F + 3.1415927F);
+        float var4 = MathHelper.cos(-listener.yRot * (float) (Math.PI / 180D) + (float) Math.PI);
 
-        return (MathHelper.sin(-listener.yRot * 0.017453292F + 3.1415927F) * y - var4 * x) * var3;
+        return (MathHelper.sin(-listener.yRot * (float) (Math.PI / 180D) + (float) Math.PI) * y - var4 * x) * var3;
     }
 }

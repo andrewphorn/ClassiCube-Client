@@ -209,11 +209,8 @@ public class TextureManager {
                 }
             }
 
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA, mipWidth, mipHeight, 0,
-                    GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, mipData1);
-            // GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F * level); // Create
-            // transparency for
-            // each level.
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA, mipWidth, mipHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, mipData1);
+            // GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F * level); // Create transparency for each level.
             mipData = mipData1;
         }
     }
@@ -236,15 +233,10 @@ public class TextureManager {
 
     public int load(BufferedImage image) {
         idBuffer.clear();
-
         GL11.glGenTextures(idBuffer);
-
         int textureID = idBuffer.get(0);
-
         load(image, textureID);
-
         textureImages.put(textureID, image);
-
         return textureID;
     }
 
@@ -257,19 +249,16 @@ public class TextureManager {
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
         if (settings.smoothing > 0) {
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
-                    GL11.GL_NEAREST_MIPMAP_LINEAR);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_BASE_LEVEL, 0);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, 4);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_BASE_LEVEL, GL11.GL_POINTS);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, GL11.GL_TRIANGLES);
         } else {
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         }
 
-        // GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
-        // GL11.GL_MODULATE);
+        // GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
 
         int[] pixels = new int[width * height];
         byte[] color = new byte[width * height << 2];
@@ -516,18 +505,13 @@ public class TextureManager {
             try {
 
                 idBuffer.clear();
-
                 GL11.glGenTextures(idBuffer);
-
                 int textureID = idBuffer.get(0);
-
                 if (file.endsWith(".png")) {
                     if (file.startsWith("##")) {
-                        load(load1(loadImageFast(TextureManager.class.getResourceAsStream(file
-                                .substring(2)))), textureID);
+                        load(load1(loadImageFast(TextureManager.class.getResourceAsStream(file.substring(2)))), textureID);
                     } else {
-                        load(loadImageFast(TextureManager.class.getResourceAsStream(file)),
-                                textureID);
+                        load(loadImageFast(TextureManager.class.getResourceAsStream(file)), textureID);
                     }
 
                     textures.put(file, textureID);
@@ -536,14 +520,12 @@ public class TextureManager {
 
                     String terrainPNG = "terrain.png";
 
-                    if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1,
-                            terrainPNG.length()) : terrainPNG) != null) {
-                        load(loadImageFast(zip.getInputStream(zip.getEntry(terrainPNG
-                                .startsWith("/") ? terrainPNG.substring(1, terrainPNG.length())
-                                : terrainPNG))), textureID);
+                    if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length()) : terrainPNG) != null) {
+                        load(loadImageFast(
+                                zip.getInputStream(zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length()) : terrainPNG))
+                        ), textureID);
                     } else {
-                        load(loadImageFast(TextureManager.class.getResourceAsStream(terrainPNG)),
-                                textureID);
+                        load(loadImageFast(TextureManager.class.getResourceAsStream(terrainPNG)), textureID);
                     }
 
                     zip.close();
@@ -551,7 +533,7 @@ public class TextureManager {
 
                 return textureID;
             } catch (IOException e) {
-                throw new RuntimeException("!!", e);
+                throw new RuntimeException("Failed to load texture", e);
             }
         }
     }
@@ -582,11 +564,11 @@ public class TextureManager {
             String cloudName = "clouds.png";
             String snowName = "snow.png";
 
-            if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1,
-                    terrainPNG.length()) : terrainPNG) != null) {
-                currentTerrainPng = loadImageFast(zip.getInputStream(zip.getEntry(terrainPNG
-                        .startsWith("/") ? terrainPNG.substring(1, terrainPNG.length())
-                        : terrainPNG)));
+            // TODO Factorize this shit
+            if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length()) : terrainPNG) != null) {
+                currentTerrainPng = loadImageFast(zip.getInputStream(zip.getEntry(
+                        terrainPNG.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length()) : terrainPNG
+                )));
             }
 
             if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1, rainName.length())

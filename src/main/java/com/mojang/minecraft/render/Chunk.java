@@ -32,12 +32,12 @@ public final class Chunk {
         setAllDirty();
     }
 
-    public final int appendLists(int[] var1, int var2, int var3) {
+    public final int appendLists(int[] chunkData, int var2, int var3) {
         if (!visible) {
             return var2;
         } else {
             if (!dirty[var3]) {
-                var1[var2++] = baseListId + var3;
+                chunkData[var2++] = baseListId + var3;
             }
 
             return var2;
@@ -89,13 +89,13 @@ public final class Chunk {
             for (int posX = sx; posX < ex; ++posX) {
                 for (int posY = sy; posY < ey; ++posY) {
                     for (int posZ = sz; posZ < ez; ++posZ) {
-                        int var13;
-                        if ((var13 = level.getTile(posX, posY, posZ)) > 0) {
-                            Block var14;
-                            if ((var14 = Block.blocks[var13]).getRenderPass() != renderPassType) {
+                        int tileID = level.getTile(posX, posY, posZ);
+                        if (tileID > 0) {
+                            Block block = Block.blocks[tileID];
+                            if (block.getRenderPass() != renderPassType) {
                                 wasSkipped = true;
                             } else {
-                                wasRendered |= var14.render(level, posX, posY, posZ, shapeRenderer);
+                                wasRendered |= block.render(level, posX, posY, posZ, shapeRenderer);
                             }
                         }
                     }
@@ -106,9 +106,7 @@ public final class Chunk {
             GL11.glEndList();
             if (wasRendered) {
                 dirty[renderPassType] = false;
-            }
-
-            if (!wasSkipped) {
+            } else {
                 break;
             }
         }

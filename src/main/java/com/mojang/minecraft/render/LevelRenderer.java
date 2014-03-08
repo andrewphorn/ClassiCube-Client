@@ -124,7 +124,7 @@ public final class LevelRenderer {
         refreshEnvironment();
         queueChunks(0, 0, 0, level.width, level.height, level.length);
     }
-    
+
     public final void refreshEnvironment() {
         GL11.glNewList(listId, 4864);
         if (level.customLightColour != null) {
@@ -133,7 +133,7 @@ public final class LevelRenderer {
         } else {
             GL11.glColor4f(0.5F, 0.5F, 0.5F, 1.0F);
         }
-        
+
         int size = 128;
         if (size > level.width) {
             size = level.width;
@@ -143,10 +143,10 @@ public final class LevelRenderer {
             size = level.length;
         }
         int extent = 2048 / size;
-        
+
         ShapeRenderer renderer = ShapeRenderer.instance;
         float groundLevel = level.getGroundLevel();
-        
+
         renderer.begin();
         // Bedrock horizontal axis. (beneath and outside map)
         for (int x = -size * extent; x < level.width + size * extent; x += size) {
@@ -194,7 +194,7 @@ public final class LevelRenderer {
                     level.customLightColour.B, 1.0F);
         }
         float waterLevel = level.getWaterLevel();
-        GL11.glBlendFunc(770, 771);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         renderer.begin();
 
         // Water horizontal axis. (outside map)
@@ -206,7 +206,7 @@ public final class LevelRenderer {
                     renderer.vertexUV(x + size, y, z + size, size, size);
                     renderer.vertexUV(x + size, y, z, size, 0.0F);
                     renderer.vertexUV(x, y, z, 0.0F, 0.0F);
-                    
+
                     // Seems to be rendered twice? Not sure why, possibly used for animated textures?
                     renderer.vertexUV(x, y, z, 0.0F, 0.0F);
                     renderer.vertexUV(x + size, y, z, size, 0.0F);
@@ -216,7 +216,7 @@ public final class LevelRenderer {
             }
         }
         renderer.end();
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glEndList();
     }
 
@@ -241,7 +241,7 @@ public final class LevelRenderer {
         buffer.put(chunkDataCache, 0, var6);
         buffer.flip();
         if (buffer.remaining() > 0) {
-            GL11.glBindTexture(3553, textureManager.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
             GL11.glCallLists(buffer);
         }
 

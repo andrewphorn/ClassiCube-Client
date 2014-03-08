@@ -53,8 +53,8 @@ public final class SpiderModel extends Model {
 
     @Override
     public final void render(float var1, float var2, float var3, float var4, float var5, float var6) {
-        head.yaw = var4 / 57.295776F;
-        head.pitch = var5 / 57.295776F;
+        head.yaw = var4 / (float) (180D / Math.PI);
+        head.pitch = var5 / (float) (180D / Math.PI);
         var4 = 0.7853982F;
         leg1.roll = -var4;
         leg2.roll = var4;
@@ -74,12 +74,12 @@ public final class SpiderModel extends Model {
         leg7.yaw = -var4 * 2.0F;
         leg8.yaw = var4 * 2.0F;
         var4 = -(MathHelper.cos(var1 * 0.6662F * 2.0F) * 0.4F) * var2;
-        var5 = -(MathHelper.cos(var1 * 0.6662F * 2.0F + 3.1415927F) * 0.4F) * var2;
-        float var7 = -(MathHelper.cos(var1 * 0.6662F * 2.0F + 1.5707964F) * 0.4F) * var2;
+        var5 = -(MathHelper.cos(var1 * 0.6662F * 2.0F + (float) Math.PI) * 0.4F) * var2;
+        float var7 = -(MathHelper.cos(var1 * 0.6662F * 2.0F + (float) (Math.PI / 2D)) * 0.4F) * var2;
         float var8 = -(MathHelper.cos(var1 * 0.6662F * 2.0F + 4.712389F) * 0.4F) * var2;
         float var9 = Math.abs(MathHelper.sin(var1 * 0.6662F) * 0.4F) * var2;
-        float var10 = Math.abs(MathHelper.sin(var1 * 0.6662F + 3.1415927F) * 0.4F) * var2;
-        float var11 = Math.abs(MathHelper.sin(var1 * 0.6662F + 1.5707964F) * 0.4F) * var2;
+        float var10 = Math.abs(MathHelper.sin(var1 * 0.6662F + (float) Math.PI) * 0.4F) * var2;
+        float var11 = Math.abs(MathHelper.sin(var1 * 0.6662F + (float) (Math.PI / 2D)) * 0.4F) * var2;
         var2 = Math.abs(MathHelper.sin(var1 * 0.6662F + 4.712389F) * 0.4F) * var2;
         leg1.yaw += var4;
         leg2.yaw -= var4;

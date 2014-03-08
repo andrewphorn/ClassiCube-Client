@@ -2,7 +2,7 @@ package com.mojang.minecraft.mob.ai;
 
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.item.Arrow;
-import com.mojang.minecraft.model.Vec3D;
+import com.mojang.util.Vec3D;
 import com.mojang.util.MathHelper;
 
 public class BasicAttackAI extends BasicAI {

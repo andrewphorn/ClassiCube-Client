@@ -84,7 +84,7 @@ public class FBO {
     }
 
     public void bind_texture(int index) {
-        GL11.glBindTexture(3553, texture_index.get(index));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture_index.get(index));
     }
 
     private void init() {
@@ -98,7 +98,7 @@ public class FBO {
 
         EXTFramebufferObject.glGenRenderbuffersEXT(depth_stencil_index);
 
-        GL11.glBindTexture(3553, texture_index.get(0));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture_index.get(0));
         GL11.glTexParameteri(3553, 10241, 9729);
         GL11.glTexParameteri(3553, 10240, 9729);
 
@@ -117,7 +117,7 @@ public class FBO {
         EXTFramebufferObject.glFramebufferRenderbufferEXT(36160, 36096, 36161,
                 depth_stencil_index.get(0));
 
-        GL11.glBindTexture(3553, texture_index.get(1));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture_index.get(1));
         GL11.glTexParameteri(3553, 10241, 9729);
         GL11.glTexParameteri(3553, 10240, 9729);
         GL11.glTexParameteri(3553, 10242, 33648);
@@ -135,7 +135,7 @@ public class FBO {
         EXTFramebufferObject.glFramebufferRenderbufferEXT(36160, 36096, 36161,
                 depth_stencil_index.get(1));
 
-        GL11.glBindTexture(3553, texture_index.get(2));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture_index.get(2));
         GL11.glTexParameteri(3553, 10241, 9729);
         GL11.glTexParameteri(3553, 10240, 9729);
         GL11.glTexParameteri(3553, 10242, 33648);
@@ -202,7 +202,7 @@ public class FBO {
 
         ARBFramebufferObject.glGenRenderbuffers(depth_stencil_index);
 
-        GL11.glBindTexture(3553, texture_index.get(0));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture_index.get(0));
         GL11.glTexParameteri(3553, 10241, 9729);
         GL11.glTexParameteri(3553, 10240, 9729);
 
@@ -221,7 +221,7 @@ public class FBO {
         ARBFramebufferObject.glFramebufferRenderbuffer(36160, 36096, 36161,
                 depth_stencil_index.get(0));
 
-        GL11.glBindTexture(3553, texture_index.get(1));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture_index.get(1));
         GL11.glTexParameteri(3553, 10241, 9729);
         GL11.glTexParameteri(3553, 10240, 9729);
         GL11.glTexParameteri(3553, 10242, 33648);
@@ -239,7 +239,7 @@ public class FBO {
         ARBFramebufferObject.glFramebufferRenderbuffer(36160, 36096, 36161,
                 depth_stencil_index.get(1));
 
-        GL11.glBindTexture(3553, texture_index.get(2));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture_index.get(2));
         GL11.glTexParameteri(3553, 10241, 9729);
         GL11.glTexParameteri(3553, 10240, 9729);
         GL11.glTexParameteri(3553, 10242, 33648);
@@ -304,7 +304,7 @@ public class FBO {
 
         GL30.glGenRenderbuffers(depth_stencil_index);
 
-        GL11.glBindTexture(3553, texture_index.get(0));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture_index.get(0));
         GL11.glTexParameteri(3553, 10241, 9729);
         GL11.glTexParameteri(3553, 10240, 9729);
 
@@ -322,7 +322,7 @@ public class FBO {
 
         GL30.glFramebufferRenderbuffer(36160, 36096, 36161, depth_stencil_index.get(0));
 
-        GL11.glBindTexture(3553, texture_index.get(1));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture_index.get(1));
         GL11.glTexParameteri(3553, 10241, 9729);
         GL11.glTexParameteri(3553, 10240, 9729);
         GL11.glTexParameteri(3553, 10242, 33648);
@@ -339,7 +339,7 @@ public class FBO {
 
         GL30.glFramebufferRenderbuffer(36160, 36096, 36161, depth_stencil_index.get(1));
 
-        GL11.glBindTexture(3553, texture_index.get(2));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture_index.get(2));
         GL11.glTexParameteri(3553, 10241, 9729);
         GL11.glTexParameteri(3553, 10240, 9729);
         GL11.glTexParameteri(3553, 10242, 33648);
@@ -396,7 +396,7 @@ public class FBO {
     }
 
     public void unbind_texture() {
-        GL11.glBindTexture(3553, 0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
     public void updateFBOsize(int size_x, int size_y) {

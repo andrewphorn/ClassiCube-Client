@@ -1,5 +1,7 @@
 package com.mojang.minecraft;
 
+import com.oyasunadev.mcraft.client.util.Constants;
+
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
@@ -50,11 +52,7 @@ public class MinecraftApplet$1 extends Canvas {
             // I HAVE to send this or the server responds with 403
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestProperty("Content-Language", "en-US");
-            connection
-                    .setRequestProperty(
-                            "User-Agent",
-                            "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11");
-
+            connection.setRequestProperty("User-Agent", Constants.USER_AGENT);
             connection.setUseCaches(false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
@@ -70,8 +68,8 @@ public class MinecraftApplet$1 extends Canvas {
             }
 
             System.out.println(localFileName + "\t" + numWritten);
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             try {
                 if (in != null) {
@@ -80,8 +78,7 @@ public class MinecraftApplet$1 extends Canvas {
                 if (out != null) {
                     out.close();
                 }
-            } catch (IOException ioe) {
-            }
+            } catch (IOException ioe) { }
         }
     }
 

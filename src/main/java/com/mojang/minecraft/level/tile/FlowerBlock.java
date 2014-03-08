@@ -55,8 +55,8 @@ public class FlowerBlock extends Block {
         float var18 = (var6 + 15.99F) / 256.0F;
 
         for (int var8 = 0; var8 < 2; ++var8) {
-            float var9 = (float) (MathHelper.sin(var8 * 3.1415927F / 2.0F + 0.7853982F) * 0.5D);
-            float var10 = (float) (MathHelper.cos(var8 * 3.1415927F / 2.0F + 0.7853982F) * 0.5D);
+            float var9 = (float) (MathHelper.sin(var8 * (float) Math.PI / 2.0F + 0.7853982F) * 0.5D);
+            float var10 = (float) (MathHelper.cos(var8 * (float) Math.PI / 2.0F + 0.7853982F) * 0.5D);
             float var11 = var2 + 0.5F - var9;
             var9 += var2 + 0.5F;
             float var13 = var3 + 1.0F;

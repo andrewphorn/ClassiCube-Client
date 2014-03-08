@@ -7,7 +7,7 @@ import com.mojang.minecraft.level.BlockMap;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.model.Vec3D;
+import com.mojang.util.Vec3D;
 import com.mojang.minecraft.net.PositionUpdate;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.player.Player;
@@ -79,7 +79,7 @@ public abstract class Entity implements Serializable {
 
     /**
      * Calculates the distance from this entity to the specified entity.
-     * 
+     *
      * @param otherEntity
      *            Entity to calculate the distance to.
      * @return The distance between the two entities.
@@ -90,7 +90,7 @@ public abstract class Entity implements Serializable {
 
     /**
      * Calculates the distance from this entity to the specified position.
-     * 
+     *
      * @param posX
      *            X-Coordinate of the position to calculate the distance to.
      * @param posY
@@ -111,7 +111,7 @@ public abstract class Entity implements Serializable {
      * Calculates the distance from this entity to the specified entity squared.
      * This is basically calculating distance without using the expensive
      * Math.sqrt function. Should only be used for relative distance.
-     * 
+     *
      * @param otherEntity
      *            Entity to calculate the distance to.
      * @return The distance between the two entities squared.
@@ -125,7 +125,7 @@ public abstract class Entity implements Serializable {
 
     /**
      * Gets the brightness of this entity
-     * 
+     *
      * @return Brightness of the entity.
      */
     public float getBrightness() {
@@ -137,7 +137,7 @@ public abstract class Entity implements Serializable {
 
     /**
      * Gets the brightness color of this entity.
-     * 
+     *
      * @return ColorCache containing brightness color information.
      */
     public ColorCache getBrightnessColor() {
@@ -149,7 +149,7 @@ public abstract class Entity implements Serializable {
 
     /**
      * Gets the texture ID of this entity.
-     * 
+     *
      * @return Entity's Texture ID.
      */
     public int getTexture() {
@@ -418,8 +418,8 @@ public abstract class Entity implements Serializable {
             var4 = z / var4;
             x *= var4;
             y *= var4;
-            z = MathHelper.sin(yRot * 3.1415927F / 180.0F);
-            var4 = MathHelper.cos(yRot * 3.1415927F / 180.0F);
+            z = MathHelper.sin(yRot * (float) Math.PI / 180.0F);
+            var4 = MathHelper.cos(yRot * (float) Math.PI / 180.0F);
             xd += x * var4 - y * z;
             zd += y * var4 + x * z;
         }

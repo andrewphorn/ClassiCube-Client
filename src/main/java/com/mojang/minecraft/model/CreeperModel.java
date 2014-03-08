@@ -36,11 +36,11 @@ public final class CreeperModel extends Model {
 
     @Override
     public final void render(float var1, float var2, float var3, float var4, float var5, float var6) {
-        head.yaw = var4 / 57.295776F;
-        head.pitch = var5 / 57.295776F;
+        head.yaw = var4 / (float) (180D / Math.PI);
+        head.pitch = var5 / (float) (180D / Math.PI);
         leg1.pitch = MathHelper.cos(var1 * 0.6662F) * 1.4F * var2;
-        leg2.pitch = MathHelper.cos(var1 * 0.6662F + 3.1415927F) * 1.4F * var2;
-        leg3.pitch = MathHelper.cos(var1 * 0.6662F + 3.1415927F) * 1.4F * var2;
+        leg2.pitch = MathHelper.cos(var1 * 0.6662F + (float) Math.PI) * 1.4F * var2;
+        leg3.pitch = MathHelper.cos(var1 * 0.6662F + (float) Math.PI) * 1.4F * var2;
         leg4.pitch = MathHelper.cos(var1 * 0.6662F) * 1.4F * var2;
         head.render(var6);
         body.render(var6);

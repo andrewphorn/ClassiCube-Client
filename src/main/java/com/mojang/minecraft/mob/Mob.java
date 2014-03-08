@@ -71,7 +71,7 @@ public class Mob extends Entity {
 
     protected void bindTexture(TextureManager var1) {
         textureId = var1.load(textureName);
-        GL11.glBindTexture(3553, textureId);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
     }
 
     @Override
@@ -227,7 +227,7 @@ public class Mob extends Entity {
                     var11 = 0.0F;
                 } else {
                     var11 = MathHelper.sin((var11 /= hurtDuration) * var11 * var11 * var11
-                            * 3.1415927F) * 14.0F;
+                            * (float) Math.PI) * 14.0F;
                 }
 
                 float var12 = 0.0F;
@@ -251,9 +251,9 @@ public class Mob extends Entity {
             GL11.glScalef(1.0F, -1.0F, 1.0F);
             GL11.glRotatef(180.0F - var4 + rotOffs, 0.0F, 1.0F, 0.0F);
             if (!allowAlpha) {
-                GL11.glDisable(3008);
+                GL11.glDisable(GL11.GL_ALPHA_TEST);
             } else {
-                GL11.glDisable(2884);
+                GL11.glDisable(GL11.GL_CULL_FACE);
             }
 
             GL11.glScalef(-1.0F, 1.0F, 1.0F);
@@ -262,17 +262,17 @@ public class Mob extends Entity {
             renderModel(var1, var8, var2, var5, var6, var7, var9);
             if (invulnerableTime > invulnerableDuration - 10) {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
-                GL11.glEnable(3042);
-                GL11.glBlendFunc(770, 1);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                 bindTexture(var1);
                 renderModel(var1, var8, var2, var5, var6, var7, var9);
-                GL11.glDisable(3042);
-                GL11.glBlendFunc(770, 771);
+                GL11.glDisable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             }
 
-            GL11.glEnable(3008);
+            GL11.glEnable(GL11.GL_ALPHA_TEST);
             if (allowAlpha) {
-                GL11.glEnable(2884);
+                GL11.glEnable(GL11.GL_CULL_FACE);
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -346,7 +346,7 @@ public class Mob extends Entity {
         if (var3 > 0.05F) {
             var6 = 1.0F;
             var5 = var3 * 3.0F;
-            var4 = (float) Math.atan2(var2, var1) * 180.0F / 3.1415927F - 90.0F;
+            var4 = (float) Math.atan2(var2, var1) * 180.0F / (float) Math.PI - 90.0F;
         }
 
         if (!onGround) {

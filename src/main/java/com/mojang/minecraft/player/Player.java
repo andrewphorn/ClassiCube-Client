@@ -79,7 +79,7 @@ public class Player extends Mob {
     }
 
     @Override
-    public void aiStep() {                              
+    public void aiStep() {
         if (settings.HackType == 0 || !(HackState.Fly || HackState.Speed || HackState.Noclip)
                 && input.canMove) {
             inventory.tick();
@@ -331,12 +331,12 @@ public class Player extends Mob {
     }
 
     @Override
-    public void awardKillScore(Entity var1, int var2) {
-        score += var2;
+    public void awardKillScore(Entity var1, int score) {
+        this.score += score;
     }
 
     @Override
-    public void bindTexture(TextureManager var1) {
+    public void bindTexture(TextureManager textureManager) {
         if (newTexture != null) {
             BufferedImage var2 = newTexture;
             int[] var3 = new int[512];
@@ -356,26 +356,26 @@ public class Player extends Mob {
                 ++var5;
             }
             hasHair = var10001;
-                        
+
             if (modelName.equals("humanoid")) {
-                newTextureId = var1.load(newTexture);
+                newTextureId = textureManager.load(newTexture);
             }
             newTexture = null;
         }
         if (isInteger(modelName)) {
-            GL11.glBindTexture(3553, var1.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
             return;
         } else if (!modelName.startsWith("humanoid")) {
-            GL11.glBindTexture(3553, var1.load("/mob/" + modelName.replace('.', '_') + ".png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/mob/" + modelName.replace('.', '_') + ".png"));
             return;
         }
         int var2;
         if (newTextureId < 0) {
-            var2 = var1.load("/char.png");
-            GL11.glBindTexture(3553, var2);
+            var2 = textureManager.load("/char.png");
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var2);
         } else {
             var2 = newTextureId;
-            GL11.glBindTexture(3553, var2);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var2);
         }
     }
 
@@ -385,8 +385,8 @@ public class Player extends Mob {
         this.setPos(x, y, z);
         yd = 0.1F;
         if (var1 != null) {
-            xd = -MathHelper.cos((hurtDir + yRot) * 3.1415927F / 180.0F) * 0.1F;
-            zd = -MathHelper.sin((hurtDir + yRot) * 3.1415927F / 180.0F) * 0.1F;
+            xd = -MathHelper.cos((hurtDir + yRot) * (float) Math.PI / 180.0F) * 0.1F;
+            zd = -MathHelper.sin((hurtDir + yRot) * (float) Math.PI / 180.0F) * 0.1F;
         } else {
             xd = zd = 0.0F;
         }
@@ -426,11 +426,10 @@ public class Player extends Mob {
     }
 
     @Override
-    public void remove() {
-    }
+    public void remove() {}
 
     @Override
-    public void render(TextureManager var1, float var2) {
+    public void render(TextureManager textureManager, float var2) {
         if (settings.thirdPersonMode == 0) {
             return;
         }
@@ -474,24 +473,23 @@ public class Player extends Mob {
             ColorCache c = getBrightnessColor();
 
             GL11.glColor3f(c.R, c.G, c.B);
-            float var9 = 0.0625F;
-            float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F * var5 * bobStrength
-                    - 23.0F;
-            GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 - 1.62F + renderOffset, zo
-                    + (z - zo) * var2);
+            float var9 = 0.0625F; // 1 / 16
+            float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F * var5 * bobStrength - 23.0F;
+            GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 - 1.62F + renderOffset, zo + (z - zo) * var2);
             float var11;
             if ((var11 = hurtTime - var2) > 0.0F || health <= 0) {
                 if (var11 < 0.0F) {
                     var11 = 0.0F;
                 } else {
-                    var11 = MathHelper.sin((var11 /= hurtDuration) * var11 * var11 * var11
-                            * 3.1415927F) * 14.0F;
+                    var11 /= hurtDuration;
+                    var11 = MathHelper.sin(var11 * var11 * var11 * var11 * (float) Math.PI) * 14.0F;
                 }
 
                 float var12 = 0.0F;
                 if (health <= 0) {
                     var12 = (deathTime + var2) / 20.0F;
-                    if ((var11 += var12 * var12 * 800.0F) > 90.0F) {
+                    var11 += var12 * var12 * 800.0F;
+                    if (var11 > 90.0F) {
                         var11 = 90.0F;
                     }
                 }
@@ -509,28 +507,28 @@ public class Player extends Mob {
             GL11.glScalef(1.0F, -1.0F, 1.0F);
             GL11.glRotatef(180.0F - var4 + rotOffs, 0.0F, 1.0F, 0.0F);
             if (!allowAlpha) {
-                GL11.glDisable(3008);
+                GL11.glDisable(GL11.GL_ALPHA_TEST);
             } else {
-                GL11.glDisable(2884);
+                GL11.glDisable(GL11.GL_CULL_FACE);
             }
 
             GL11.glScalef(-1.0F, 1.0F, 1.0F);
             modelCache.getModel(modelName).attackOffset = var3 / 5.0F;
-            bindTexture(var1);
-            renderModel(var1, var8, var2, var5, var6, var7, var9);
+            bindTexture(textureManager);
+            renderModel(textureManager, var8, var2, var5, var6, var7, var9);
             if (invulnerableTime > invulnerableDuration - 10) {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
-                GL11.glEnable(GL11.GL_BLEND); // 3042
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE); // 770, 1
-                bindTexture(var1);
-                renderModel(var1, var8, var2, var5, var6, var7, var9);
-                GL11.glDisable(GL11.GL_BLEND); // 3042
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA); // 770, 771
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+                bindTexture(textureManager);
+                renderModel(textureManager, var8, var2, var5, var6, var7, var9);
+                GL11.glDisable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             }
-            
-            GL11.glEnable(GL11.GL_ALPHA_TEST); // 3008
+
+            GL11.glEnable(GL11.GL_ALPHA_TEST);
             if (allowAlpha) {
-                GL11.glEnable(GL11.GL_CULL_FACE); // 2884
+                GL11.glEnable(GL11.GL_CULL_FACE);
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -539,7 +537,7 @@ public class Player extends Mob {
     }
 
         BlockModelRenderer block;
-        
+
     @Override
     public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
             float var6, float var7) {
@@ -547,8 +545,8 @@ public class Player extends Mob {
             try {
                 block = new BlockModelRenderer(Block.blocks[Integer.parseInt(modelName)].textureId);
                 GL11.glPushMatrix();
-                GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
-                GL11.glBindTexture(3553, var1.load("/terrain.png"));
+                GL11.glTranslatef(-0.5F, 0.4F, -0.5F);
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/terrain.png"));
                 block.renderPreview(ShapeRenderer.instance);
                 GL11.glPopMatrix();
             } catch (Exception e) {
@@ -558,12 +556,12 @@ public class Player extends Mob {
         }
                 Model model = modelCache.getModel(modelName);
                 if (hasHair && model instanceof HumanoidModel) {
-            GL11.glDisable(2884);
+            GL11.glDisable(GL11.GL_CULL_FACE);
             HumanoidModel modelHeadwear = null;
             (modelHeadwear = (HumanoidModel) model).headwear.yaw = modelHeadwear.head.yaw;
             modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
             modelHeadwear.headwear.render(var7);
-            GL11.glEnable(2884);
+            GL11.glEnable(GL11.GL_CULL_FACE);
         }
         modelCache.getModel(modelName).render(var2, var4, tickCount + var3, var5, var6, var7);
     }
