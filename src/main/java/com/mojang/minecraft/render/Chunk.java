@@ -27,20 +27,19 @@ public final class Chunk {
         this.y = y;
         this.z = z;
         chunkSize = 16;
-        MathHelper.sqrt(chunkSize * chunkSize + chunkSize * chunkSize + chunkSize * chunkSize);
         baseListId = listID;
         setAllDirty();
     }
 
-    public final int appendLists(int[] chunkData, int var2, int var3) {
+    public final int appendLists(int[] chunkData, int count, int pass) {
         if (!visible) {
-            return var2;
+            return count;
         } else {
-            if (!dirty[var3]) {
-                chunkData[var2++] = baseListId + var3;
+            if (!dirty[pass]) {
+                chunkData[count++] = baseListId + pass;
             }
 
-            return var2;
+            return count;
         }
     }
 
@@ -81,7 +80,7 @@ public final class Chunk {
         }
 
         for (renderPassType = 0; renderPassType < 2; ++renderPassType) {
-            boolean wasSkipped = false; // perhaps its called this
+            boolean needNextPass = false;
             boolean wasRendered = false;
             GL11.glNewList(baseListId + renderPassType, GL11.GL_COMPILE);
 
@@ -89,11 +88,11 @@ public final class Chunk {
             for (int posX = sx; posX < ex; ++posX) {
                 for (int posY = sy; posY < ey; ++posY) {
                     for (int posZ = sz; posZ < ez; ++posZ) {
-                        int tileID = level.getTile(posX, posY, posZ);
-                        if (tileID > 0) {
-                            Block block = Block.blocks[tileID];
+                        int tile = level.getTile(posX, posY, posZ);
+                        if (tile > 0) {
+                            Block block = Block.blocks[tile];
                             if (block.getRenderPass() != renderPassType) {
-                                wasSkipped = true;
+                                needNextPass = true;
                             } else {
                                 wasRendered |= block.render(level, posX, posY, posZ, shapeRenderer);
                             }
@@ -106,7 +105,9 @@ public final class Chunk {
             GL11.glEndList();
             if (wasRendered) {
                 dirty[renderPassType] = false;
-            } else {
+            }
+
+            if (!needNextPass) {
                 break;
             }
         }
