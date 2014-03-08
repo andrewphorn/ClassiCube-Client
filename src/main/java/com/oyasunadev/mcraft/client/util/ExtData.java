@@ -8,5 +8,4 @@ public class ExtData {
         this.Name = Name;
         this.Version = Version;
     }
-
 }

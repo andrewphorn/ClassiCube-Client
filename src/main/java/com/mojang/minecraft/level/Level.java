@@ -12,7 +12,7 @@ import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.model.Vec3D;
+import com.mojang.util.Vec3D;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.LevelRenderer;

@@ -9,7 +9,7 @@ public final class SessionData {
 
     public static List<Block> allowedBlocks;
 
-    public static void AddStandardMinecraftBlocks() {
+    public static void addStandardMinecraftBlocks() {
         ArrayList<Block> ab = new ArrayList<Block>();
         for (int i = 1; i < 50; i++) { // ignore air
             ab.add(Block.blocks[i]);
@@ -20,9 +20,9 @@ public final class SessionData {
         allowedBlocks = ab;
     }
 
-    public static void SetAllowedBlocks(byte SupportLevel) {
+    public static void setAllowedBlocks(byte supportLevel) {
         // latest
-        if (SupportLevel == com.oyasunadev.mcraft.client.util.Constants.SupportLevel) {
+        if (supportLevel == com.oyasunadev.mcraft.client.util.Constants.CUSTOM_BLOCK_SUPPORT_LEVEL) {
             ArrayList<Block> ab = new ArrayList<Block>();
             for (int i = 1; i < Block.blocks.length; i++) {
                 ab.add(Block.blocks[i]);
@@ -33,7 +33,7 @@ public final class SessionData {
             allowedBlocks = ab;
         }
 
-        else if (SupportLevel == 1) { // level 1
+        else if (supportLevel == 1) { // level 1
             ArrayList<Block> ab = new ArrayList<Block>();
             for (int i = 1; i < 65; i++) {
                 ab.add(Block.blocks[i]);
@@ -42,8 +42,8 @@ public final class SessionData {
                 ab.remove(Block.BEDROCK);
             }
             allowedBlocks = ab;
-        } else if (SupportLevel <= 0) { // minecraft
-            AddStandardMinecraftBlocks();
+        } else if (supportLevel <= 0) { // minecraft
+            addStandardMinecraftBlocks();
         }
     }
 
@@ -55,7 +55,7 @@ public final class SessionData {
     public boolean haspaid;
 
     static {
-        AddStandardMinecraftBlocks(); // init
+        addStandardMinecraftBlocks(); // init
     }
 
     public SessionData(String username, String sessionID) {

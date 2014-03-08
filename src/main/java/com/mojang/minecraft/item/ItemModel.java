@@ -2,7 +2,7 @@ package com.mojang.minecraft.item;
 
 import com.mojang.minecraft.model.ModelPart;
 import com.mojang.minecraft.model.TexturedQuad;
-import com.mojang.minecraft.model.Vertex;
+import com.mojang.util.Vertex;
 
 public class ItemModel {
     private ModelPart model = new ModelPart(0, 0);

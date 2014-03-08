@@ -6,6 +6,8 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import com.mojang.minecraft.player.Player;
+import com.oyasunadev.mcraft.client.util.Constants;
+
 import java.awt.image.BufferedImage;
 
 public class SkinDownloadThread extends Thread {
@@ -25,27 +27,24 @@ public class SkinDownloadThread extends Thread {
             HttpURLConnection connection = null;
 
             try {
-                connection = (HttpURLConnection) new URL(skinServer + minecraft.session.username
-                        + ".png").openConnection();
-                connection.addRequestProperty("User-Agent", "Mozilla/4.76");
+                connection = (HttpURLConnection) new URL(skinServer + minecraft.session.username + ".png").openConnection();
+                connection.addRequestProperty("User-Agent", Constants.USER_AGENT);
                 connection.setDoInput(true);
                 connection.setDoOutput(false);
-                
-
                 connection.setUseCaches(false);
                 connection.connect();
 
                 if (connection.getResponseCode() != 404) {
-                                        BufferedImage image = ImageIO.read(connection.getInputStream());
-                                        if (image.getHeight() == image.getWidth()) {
-                                            Player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight() / 2);
-                                        } else {
-                                            Player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
-                                        }
+                    BufferedImage image = ImageIO.read(connection.getInputStream());
+                    if (image.getHeight() == image.getWidth()) {
+                        Player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight() / 2);
+                    } else {
+                        Player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
+                    }
                     return;
                 }
-            } catch (Exception var4) {
-                var4.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             } finally {
                 if (connection != null) {
                     connection.disconnect();

@@ -7,7 +7,7 @@ import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
-import com.mojang.minecraft.model.Vec3D;
+import com.mojang.util.Vec3D;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.TerrainParticle;
 import com.mojang.minecraft.phys.AABB;

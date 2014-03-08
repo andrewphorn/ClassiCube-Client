@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
+import com.oyasunadev.mcraft.client.util.Constants;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
@@ -55,14 +56,12 @@ public final class ProgressBarDisplay {
                 if (fileChannel1 != null) {
                     fileChannel1.close();
                 }
-            } catch (IOException ex) {
-            }
+            } catch (IOException ex) {}
             try {
                 if (fileChannel2 != null) {
                     fileChannel2.close();
                 }
-            } catch (IOException ex) {
-            }
+            } catch (IOException ex) {}
         }
     }
 
@@ -166,25 +165,20 @@ public final class ProgressBarDisplay {
             localURLConnection.addRequestProperty("User-Agent", new StringBuilder().append("WoM/")
                     .append("WoMClient-2.0.8").toString());
         } else {
-            localURLConnection
-                    .addRequestProperty("User-Agent",
-                            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0) Gecko/20100101 Firefox/6.0 FirePHP/0.5");
+            localURLConnection.addRequestProperty("User-Agent", Constants.USER_AGENT);
         }
 
-        localURLConnection.addRequestProperty("Accept",
-                "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        localURLConnection.addRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
         localURLConnection.addRequestProperty("Accept-Language", "en-us,en;q=0.5");
         localURLConnection.addRequestProperty("Accept-Encoding", "gzip, deflate, compress");
         localURLConnection.addRequestProperty("Connection", "keep-alive");
 
         if (s1.length() > 0) {
-            localURLConnection.addRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
+            localURLConnection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             localURLConnection.addRequestProperty("Content-Length", Integer.toString(s1.length()));
             localURLConnection.setDoOutput(true);
 
-            OutputStreamWriter localOutputStreamWriter = new OutputStreamWriter(
-                    localURLConnection.getOutputStream());
+            OutputStreamWriter localOutputStreamWriter = new OutputStreamWriter(localURLConnection.getOutputStream());
             localOutputStreamWriter.write(s1);
             localOutputStreamWriter.flush();
             localOutputStreamWriter.close();
@@ -317,26 +311,25 @@ public final class ProgressBarDisplay {
             } else if (joinedString.indexOf("-fly") > -1) {
                 HackState.Fly = false;
             }
-                        
-            if (joinedString.indexOf("+noclip") > -1) {
+             if (joinedString.indexOf("+noclip") > -1) {
                 HackState.Noclip = true;
             } else if (joinedString.indexOf("-noclip") > -1) {
                 HackState.Noclip = false;
             }
-                        
+
             if (joinedString.indexOf("+speed") > -1) {
                 HackState.Speed = true;
             } else if (joinedString.indexOf("-speed") > -1) {
                 HackState.Speed = false;
             }
-                        
+
                         if (joinedString.indexOf("+respawn") > -1) {
                             HackState.Respawn = true;
             } else if (joinedString.indexOf("-respawn") > -1) {
                 HackState.Respawn = false;
             }
-                        
-            if ((joinedString.indexOf("+ophax") > -1) 
+
+            if ((joinedString.indexOf("+ophax") > -1)
                                 && minecraft.player.userType >= 100) {
                 HackState.setAllEnabled();
             }

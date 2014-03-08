@@ -18,6 +18,11 @@ public class Constants {
     public static final String MINECRAFT_VERSION = "0.30";
 
     /**
+     * ClassiCube Version.
+     */
+    public static final String CLASSICUBE_VERSION = "0.12";
+
+    /**
      * The Minecraft Classic protocol version. Default is 0x07.
      */
     public static final byte PROTOCOL_VERSION = 0x07;
@@ -27,7 +32,13 @@ public class Constants {
      */
     public static final byte CLIENT_TYPE = 0x42;
 
-    public static final byte SupportLevel = (byte) 1;
+    public static final String CLIENT_NAME = "ClassiCube Client";
 
-    public static List<ExtData> ServerSupportedExtensions = new ArrayList<ExtData>();
+    // TODO Add system information
+    public static final String USER_AGENT = "ClassiCube " + CLASSICUBE_VERSION
+            + "(Minecraft " + MINECRAFT_VERSION + "; Protocol " + PROTOCOL_VERSION + ")";
+
+    public static final byte CUSTOM_BLOCK_SUPPORT_LEVEL = (byte) 1;
+
+    public static List<ExtData> SERVER_SUPPORTED_EXTENSIONS = new ArrayList<ExtData>();
 }

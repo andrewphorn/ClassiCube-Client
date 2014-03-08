@@ -1,6 +1,6 @@
 package com.mojang.minecraft;
 
-import com.mojang.minecraft.model.Vec3D;
+import com.mojang.util.Vec3D;
 
 public class MovingObjectPosition {
     public boolean hasEntity;

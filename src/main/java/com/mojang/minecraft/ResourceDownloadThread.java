@@ -103,7 +103,7 @@ public class ResourceDownloadThread extends Thread {
 
                     InputStream is = url.openStream();
                     try {
-                        IOUtil.copyStreamToFile(is, file);
+                        StreamingUtil.copyStreamToFile(is, file);
                     } finally {
                         is.close();
                     }
@@ -192,7 +192,7 @@ public class ResourceDownloadThread extends Thread {
 
                     InputStream is = zipFile.getInputStream(entry);
                     try {
-                        IOUtil.copyStreamToFile(is, destinationPath);
+                        StreamingUtil.copyStreamToFile(is, destinationPath);
                     } finally {
                         is.close();
                     }
@@ -230,7 +230,7 @@ public class ResourceDownloadThread extends Thread {
             } else {
                 InputStream in = new FileInputStream(src);
                 try {
-                    IOUtil.copyStreamToFile(in, dest);
+                    StreamingUtil.copyStreamToFile(in, dest);
                 } finally {
                     in.close();
                 }

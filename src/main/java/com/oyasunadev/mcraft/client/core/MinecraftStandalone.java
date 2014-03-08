@@ -27,13 +27,6 @@ import com.mojang.minecraft.ResourceDownloadThread;
 import com.mojang.minecraft.SessionData;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Oliver Yasuna
- * Date: 9/30/12
- * Time: 7:16 PM
- */
-
-/**
  * Run Minecraft Classic standalone version.
  */
 public class MinecraftStandalone {
@@ -48,9 +41,6 @@ public class MinecraftStandalone {
          */
         private class MCraftApplet extends MinecraftApplet {
 
-            /**
-         * 
-         */
             private static final long serialVersionUID = 1L;
 
             /**
@@ -67,7 +57,7 @@ public class MinecraftStandalone {
 
             /**
              * Fake the Code Base.
-             * 
+             *
              * @return new URL("http://minecraft.net:80/")
              */
             @Override
@@ -83,7 +73,7 @@ public class MinecraftStandalone {
 
             /**
              * Fake the Document Base.
-             * 
+             *
              * @return new URL("http://minecraft.net:80/play.jsp")
              */
             @Override
@@ -99,7 +89,7 @@ public class MinecraftStandalone {
 
             /**
              * Return our own parameters variable.
-             * 
+             *
              * @param name
              * @return
              */
@@ -202,13 +192,11 @@ public class MinecraftStandalone {
             @Override
             public synchronized void removeNotify() {
                 stopThread();
-
                 super.removeNotify();
             }
 
             void SetImage() throws IOException {
                 image = ImageIO.read(getClass().getResourceAsStream("/rsbg.jpg"));
-
             }
 
             void SetImage2() throws IOException {
@@ -217,7 +205,7 @@ public class MinecraftStandalone {
 
             /**
              * Set the "minecraft" variable.
-             * 
+             *
              * @param minecraft
              *            The new Minecraft variable.
              */
@@ -231,7 +219,6 @@ public class MinecraftStandalone {
             private synchronized void startThread() {
                 if (thread == null) {
                     thread = new Thread(minecraft, "Client");
-
                     thread.start();
                 }
             }
@@ -247,7 +234,6 @@ public class MinecraftStandalone {
                         thread.join();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-
                         minecraft.shutdown();
                     }
 
@@ -256,9 +242,6 @@ public class MinecraftStandalone {
             }
         }
 
-        /**
-     * 
-     */
         private static final long serialVersionUID = 1L;
 
         /**
