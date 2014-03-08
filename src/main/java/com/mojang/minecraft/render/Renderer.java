@@ -134,26 +134,12 @@ public final class Renderer {
                 var7 = 0.4F;
                 var8 = 0.4F;
                 var3 = 0.9F;
-                if (minecraft.settings.anaglyph) {
-                    var4 = (var7 * 30.0F + var8 * 59.0F + var3 * 11.0F) / 100.0F;
-                    var8 = (var7 * 30.0F + var8 * 70.0F) / 100.0F;
-                    var3 = (var7 * 30.0F + var3 * 70.0F) / 100.0F;
-                    var7 = var4;
-                }
-
                 GL11.glLightModel(2899, createBuffer(var7, var8, var3, 1.0F));
             } else if (var6 == LiquidType.lava) {
                 GL11.glFogf(2914, 2.0F);
                 var7 = 0.4F;
                 var8 = 0.3F;
                 var3 = 0.3F;
-                if (minecraft.settings.anaglyph) {
-                    var4 = (var7 * 30.0F + var8 * 59.0F + var3 * 11.0F) / 100.0F;
-                    var8 = (var7 * 30.0F + var8 * 70.0F) / 100.0F;
-                    var3 = (var7 * 30.0F + var3 * 70.0F) / 100.0F;
-                    var7 = var4;
-                }
-
                 GL11.glLightModel(2899, createBuffer(var7, var8, var3, 1.0F));
             }
         } else {

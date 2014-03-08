@@ -282,14 +282,6 @@ public class TextureManager {
             int green = pixels[pixel] >> 8 & 0xFF;
             int blue = pixels[pixel] & 0xFF;
 
-            if (settings.anaglyph) {
-                int rgba3D = (red * 30 + green * 59 + blue * 11) / 100;
-
-                green = (red * 30 + green * 70) / 100;
-                blue = (red * 30 + blue * 70) / 100;
-                red = rgba3D;
-            }
-
             int i = pixel << 2;
             color[i] = (byte) red;
             color[i + 1] = (byte) green;
@@ -338,13 +330,20 @@ public class TextureManager {
 
                 generateMipMaps(textureBuffer, width, height, false);
             }
-            if (settings.anisotropic > 0) {
-                float max = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-                GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max);
+            if (settings.anisotropy > 0) {
+                float desiredLevel = 1 << settings.anisotropy;
+                float maxLevel = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+                float actualLevel = Math.min(desiredLevel, maxLevel);
+                GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, actualLevel);
             }
         }
 
         previousMipmapMode = settings.smoothing;
+    }
+
+    public static int getMaxAnisotropySetting() {
+        float maxLevel = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+        return (int) Math.round(Math.log(maxLevel) / Math.log(2));
     }
 
     public int load(String file) {
@@ -675,7 +674,7 @@ public class TextureManager {
                     : sheepName) != null) {
                 BufferedImage image = ImageIO
                         .read(zip.getInputStream(zip.getEntry(sheepName.startsWith("/") ? sheepName
-                                .substring(1, sheepName.length()) : sheepName)));
+                                                .substring(1, sheepName.length()) : sheepName)));
                 customSheep = image;
             }
 

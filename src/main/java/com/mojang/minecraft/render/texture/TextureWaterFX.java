@@ -67,15 +67,6 @@ public final class TextureWaterFX extends TextureFX {
             var6 = (int) (50.0F + var9 * 64.0F);
             var1 = 255;
             int var10 = (int) (146.0F + var9 * 50.0F);
-            if (anaglyph) {
-                var1 = (var5 * 30 + var6 * 59 + 2805) / 100;
-                var4 = (var5 * 30 + var6 * 70) / 100;
-                int var7 = (var5 * 30 + 17850) / 100;
-                var5 = var1;
-                var6 = var4;
-                var1 = var7;
-            }
-
             textureData[var2 << 2] = (byte) var5;
             textureData[(var2 << 2) + 1] = (byte) var6;
             textureData[(var2 << 2) + 2] = (byte) var1;
