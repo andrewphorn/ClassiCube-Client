@@ -38,9 +38,9 @@ public class PrimedTnt extends Entity {
 
         float unknown0 = (float) (Math.random() * 3.1415927410125732D * 2.0D);
 
-        xd = -MathHelper.sin(unknown0 * 3.1415927F / 180.0F) * 0.02F;
+        xd = -MathHelper.sin(unknown0 * (float) Math.PI / 180.0F) * 0.02F;
         yd = 0.2F;
-        zd = -MathHelper.cos(unknown0 * 3.1415927F / 180.0F) * 0.02F;
+        zd = -MathHelper.cos(unknown0 * (float) Math.PI / 180.0F) * 0.02F;
 
         makeStepSound = false;
 
@@ -92,7 +92,7 @@ public class PrimedTnt extends Entity {
     public void render(TextureManager textureManager, float unknown0) {
         int textureID = textureManager.load("/terrain.png");
 
-        GL11.glBindTexture(3553, textureID);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
 
         float brightness = level.getBrightness((int) x, (int) y, (int) z);
 
@@ -106,8 +106,8 @@ public class PrimedTnt extends Entity {
 
         Block.TNT.renderPreview(shapeRenderer);
 
-        GL11.glDisable(3553);
-        GL11.glDisable(2896);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, (life / 4 + 1) % 2 * 0.4F);
 
         if (life <= 16) {
@@ -118,14 +118,14 @@ public class PrimedTnt extends Entity {
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
         }
 
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 1);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, 1);
 
         Block.TNT.renderPreview(shapeRenderer);
 
-        GL11.glDisable(3042);
-        GL11.glEnable(3553);
-        GL11.glEnable(2896);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }

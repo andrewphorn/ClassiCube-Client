@@ -42,10 +42,10 @@ public final class Renderer {
         float var3 = var4.oBob + (var4.bob - var4.oBob) * var1;
         float var5 = var4.oTilt + (var4.tilt - var4.oTilt) * var1;
         if (enabled) {
-            GL11.glTranslatef(MathHelper.sin(var2 * 3.1415927F) * var3 * 0.5F,
-                    -Math.abs(MathHelper.cos(var2 * 3.1415927F) * var3), 0.0F);
-            GL11.glRotatef(MathHelper.sin(var2 * 3.1415927F) * var3 * 3.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glRotatef(Math.abs(MathHelper.cos(var2 * 3.1415927F + 0.2F) * var3) * 5.0F, 1.0F,
+            GL11.glTranslatef(MathHelper.sin(var2 * (float) Math.PI) * var3 * 0.5F,
+                    -Math.abs(MathHelper.cos(var2 * (float) Math.PI) * var3), 0.0F);
+            GL11.glRotatef(MathHelper.sin(var2 * (float) Math.PI) * var3 * 3.0F, 0.0F, 0.0F, 1.0F);
+            GL11.glRotatef(Math.abs(MathHelper.cos(var2 * (float) Math.PI + 0.2F) * var3) * 5.0F, 1.0F,
                     0.0F, 0.0F);
         }
         GL11.glRotatef(var5, 1.0F, 0.0F, 0.0F);
@@ -87,7 +87,7 @@ public final class Renderer {
         }
 
         if (var2 >= 0.0F) {
-            var2 = MathHelper.sin((var2 /= var3.hurtDuration) * var2 * var2 * var2 * 3.1415927F);
+            var2 = MathHelper.sin((var2 /= var3.hurtDuration) * var2 * var2 * var2 * (float) Math.PI);
             var1 = var3.hurtDir;
             GL11.glRotatef(-var3.hurtDir, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(-var2 * 14.0F, 0.0F, 0.0F, 1.0F);
@@ -97,11 +97,11 @@ public final class Renderer {
 
     public final void setLighting(boolean var1) {
         if (!var1) {
-            GL11.glDisable(2896);
-            GL11.glDisable(16384);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_LIGHT0);
         } else {
-            GL11.glEnable(2896);
-            GL11.glEnable(16384);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_LIGHT0);
             GL11.glEnable(2903);
             GL11.glColorMaterial(1032, 5634);
             float var4 = 0.7F;

@@ -418,8 +418,8 @@ public abstract class Entity implements Serializable {
             var4 = z / var4;
             x *= var4;
             y *= var4;
-            z = MathHelper.sin(yRot * 3.1415927F / 180.0F);
-            var4 = MathHelper.cos(yRot * 3.1415927F / 180.0F);
+            z = MathHelper.sin(yRot * (float) Math.PI / 180.0F);
+            var4 = MathHelper.cos(yRot * (float) Math.PI / 180.0F);
             xd += x * var4 - y * z;
             zd += y * var4 + x * z;
         }

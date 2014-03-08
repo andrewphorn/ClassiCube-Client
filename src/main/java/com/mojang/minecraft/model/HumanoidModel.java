@@ -66,14 +66,14 @@ public class HumanoidModel extends Model {
 
     public void setRotationAngles(float var1, float var2, float var3, float var4, float var5,
             float var6) {
-        head.yaw = var4 / 57.295776F;
-        head.pitch = var5 / 57.295776F;
-        rightArm.pitch = MathHelper.cos(var1 * 0.6662F + 3.1415927F) * 2.0F * var2;
+        head.yaw = var4 / (float) (180D / Math.PI);
+        head.pitch = var5 / (float) (180D / Math.PI);
+        rightArm.pitch = MathHelper.cos(var1 * 0.6662F + (float) Math.PI) * 2.0F * var2;
         rightArm.roll = (MathHelper.cos(var1 * 0.2312F) + 1.0F) * var2;
         leftArm.pitch = MathHelper.cos(var1 * 0.6662F) * 2.0F * var2;
         leftArm.roll = (MathHelper.cos(var1 * 0.2812F) - 1.0F) * var2;
         rightLeg.pitch = MathHelper.cos(var1 * 0.6662F) * 1.4F * var2;
-        leftLeg.pitch = MathHelper.cos(var1 * 0.6662F + 3.1415927F) * 1.4F * var2;
+        leftLeg.pitch = MathHelper.cos(var1 * 0.6662F + (float) Math.PI) * 1.4F * var2;
         rightArm.roll += MathHelper.cos(var3 * 0.09F) * 0.05F + 0.05F;
         leftArm.roll -= MathHelper.cos(var3 * 0.09F) * 0.05F + 0.05F;
         rightArm.pitch += MathHelper.sin(var3 * 0.067F) * 0.05F;

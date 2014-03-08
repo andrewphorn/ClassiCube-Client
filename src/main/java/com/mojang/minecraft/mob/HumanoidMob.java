@@ -47,7 +47,7 @@ public class HumanoidMob extends Mob {
                 block = new BlockModelRenderer(Block.blocks[Integer.parseInt(modelName)].textureId);
                 GL11.glPushMatrix();
                 GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
-                GL11.glBindTexture(3553, var1.load("/terrain.png"));
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/terrain.png"));
                 block.renderPreview(ShapeRenderer.instance);
                 GL11.glPopMatrix();
             } catch (Exception e) {
@@ -57,23 +57,23 @@ public class HumanoidMob extends Mob {
         }
         super.renderModel(var1, var2, var3, var4, var5, var6, var7);
         Model model = modelCache.getModel(modelName);
-        GL11.glEnable(3008);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         if (allowAlpha) {
-            GL11.glEnable(2884);
+            GL11.glEnable(GL11.GL_CULL_FACE);
         }
 
         if (hasHair && model instanceof HumanoidModel) {
-            GL11.glDisable(2884);
+            GL11.glDisable(GL11.GL_CULL_FACE);
             HumanoidModel modelHeadwear = null;
             (modelHeadwear = (HumanoidModel) model).headwear.yaw = modelHeadwear.head.yaw;
             modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
             modelHeadwear.headwear.render(var7);
-            GL11.glEnable(2884);
+            GL11.glEnable(GL11.GL_CULL_FACE);
         }
 
         if (armor || helmet) {
-            GL11.glBindTexture(3553, var1.load("/armor/plate.png"));
-            GL11.glDisable(2884);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/armor/plate.png"));
+            GL11.glDisable(GL11.GL_CULL_FACE);
             HumanoidModel modelArmour;
             (modelArmour = (HumanoidModel) modelCache.getModel("humanoid.armor")).head.render = helmet;
             modelArmour.body.render = armor;
@@ -96,10 +96,10 @@ public class HumanoidMob extends Mob {
             modelArmour.leftArm.render(var7);
             modelArmour.rightLeg.render(var7);
             modelArmour.leftLeg.render(var7);
-            GL11.glEnable(2884);
+            GL11.glEnable(GL11.GL_CULL_FACE);
         }
 
-        GL11.glDisable(3008);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
     }
 
     public void renderSheep(TextureManager var1, float var2, float var3, float var4, float var5,
@@ -108,7 +108,7 @@ public class HumanoidMob extends Mob {
         float var9 = (var8 = (AnimalModel) modelCache.getModel("sheep")).head.y;
         float var10 = var8.head.z;
         super.renderModel(var1, var2, var3, var4, var5, var6, var7);
-        GL11.glBindTexture(3553, var1.load("/mob/sheep_fur.png"));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/mob/sheep_fur.png"));
         AnimalModel var11;
         (var11 = (AnimalModel) modelCache.getModel("sheep.fur")).head.yaw = var8.head.yaw;
         var11.head.pitch = var8.head.pitch;

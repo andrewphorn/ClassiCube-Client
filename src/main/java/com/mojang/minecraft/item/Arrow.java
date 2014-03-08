@@ -57,11 +57,11 @@ public class Arrow extends Entity {
 
         heightOffset = 0.25F;
 
-        float unknown3 = MathHelper.cos(-unknown0 * 0.017453292F - 3.1415927F);
-        float unknown4 = MathHelper.sin(-unknown0 * 0.017453292F - 3.1415927F);
+        float unknown3 = MathHelper.cos(-unknown0 * (float) (Math.PI / 180D) - (float) Math.PI);
+        float unknown4 = MathHelper.sin(-unknown0 * (float) (Math.PI / 180D) - (float) Math.PI);
 
-        unknown0 = MathHelper.cos(-unknown1 * 0.017453292F);
-        unknown1 = MathHelper.sin(-unknown1 * 0.017453292F);
+        unknown0 = MathHelper.cos(-unknown1 * (float) (Math.PI / 180D));
+        unknown1 = MathHelper.sin(-unknown1 * (float) (Math.PI / 180D));
 
         slide = false;
 

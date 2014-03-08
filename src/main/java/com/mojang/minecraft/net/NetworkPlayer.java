@@ -63,7 +63,7 @@ public class NetworkPlayer extends HumanoidMob {
         if (modelName.equals("humanoid")) {
             downloadSkin();
         } else if (isInteger(modelName)) {
-            GL11.glBindTexture(3553, var1.textureManager.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.textureManager.load("/terrain.png"));
         }
     }
 
@@ -113,29 +113,27 @@ public class NetworkPlayer extends HumanoidMob {
             newTexture = null;
         }
         if (isInteger(modelName)) {
-            GL11.glBindTexture(3553, var1.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/terrain.png"));
             return;
         } else if (!modelName.startsWith("humanoid")) {
-            GL11.glBindTexture(3553, var1.load("/mob/" + modelName.replace('.', '_') + ".png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/mob/" + modelName.replace('.', '_') + ".png"));
             return;
         }
         if (a < 0) {
-            GL11.glBindTexture(3553, var1.load("/char.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/char.png"));
         } else {
-            GL11.glBindTexture(3553, a);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, a);
         }
     }
 
     public void clear() {
         if (a >= 0 && textures != null) {
-            TextureManager var10000 = textures;
-            int var1 = a;
-            TextureManager var2 = textures;
-            var10000.textureImages.remove(Integer.valueOf(var1));
-            var2.idBuffer.clear();
-            var2.idBuffer.put(var1);
-            var2.idBuffer.flip();
-            GL11.glDeleteTextures(var2.idBuffer);
+            TextureManager textureManager = textures;
+            textureManager.textureImages.remove(Integer.valueOf(a));
+            textureManager.idBuffer.clear();
+            textureManager.idBuffer.put(a);
+            textureManager.idBuffer.flip();
+            GL11.glDeleteTextures(textureManager.idBuffer);
         }
 
     }
@@ -144,21 +142,21 @@ public class NetworkPlayer extends HumanoidMob {
         new SkinDownloadThread(this, minecraft.skinServer).start();
     }
 
-    public void queue(byte var1, byte var2, byte var3) {
-        moveQueue.add(new PositionUpdate((xp + var1 / 2.0F) / 32.0F, (yp + var2 / 2.0F) / 32.0F,
-                (zp + var3 / 2.0F) / 32.0F));
-        xp += var1;
-        yp += var2;
-        zp += var3;
+    public void queue(byte x, byte y, byte z) {
+        moveQueue.add(new PositionUpdate((xp + x / 2.0F) / 32.0F, (yp + y / 2.0F) / 32.0F,
+                (zp + z / 2.0F) / 32.0F));
+        xp += x;
+        yp += y;
+        zp += z;
         moveQueue.add(new PositionUpdate(xp / 32.0F, yp / 32.0F, zp / 32.0F));
     }
 
     public void queue(byte var1, byte var2, byte var3, float var4, float var5) {
         float var6 = var4 - yRot;
+        float var7 = var5 - xRot;
 
-        float var7;
-        for (var7 = var5 - xRot; var6 >= 180.0F; var6 -= 360.0F) {
-            ;
+        while (var6 >= 180.0F) {
+            var6 -= 360.0F;
         }
 
         while (var6 < -180.0F) {
@@ -175,8 +173,7 @@ public class NetworkPlayer extends HumanoidMob {
 
         var6 = yRot + var6 * 0.5F;
         var7 = xRot + var7 * 0.5F;
-        moveQueue.add(new PositionUpdate((xp + var1 / 2.0F) / 32.0F, (yp + var2 / 2.0F) / 32.0F,
-                (zp + var3 / 2.0F) / 32.0F, var6, var7));
+        moveQueue.add(new PositionUpdate((xp + var1 / 2.0F) / 32.0F, (yp + var2 / 2.0F) / 32.0F, (zp + var3 / 2.0F) / 32.0F, var6, var7));
         xp += var1;
         yp += var2;
         zp += var3;
@@ -185,10 +182,10 @@ public class NetworkPlayer extends HumanoidMob {
 
     public void queue(float var1, float var2) {
         float var3 = var1 - yRot;
+        float var4 = var2 - xRot;
 
-        float var4;
-        for (var4 = var2 - xRot; var3 >= 180.0F; var3 -= 360.0F) {
-            ;
+        while (var3 >= 180.0F) {
+            var3 -= 360.0F;
         }
 
         while (var3 < -180.0F) {
@@ -210,47 +207,43 @@ public class NetworkPlayer extends HumanoidMob {
     }
 
     @Override
-    public void renderHover(TextureManager var1, float var2) {
-        FontRenderer var3 = minecraft.fontRenderer;
+    public void renderHover(TextureManager textureManager, float var2) {
+        FontRenderer fontRenderer = minecraft.fontRenderer;
         GL11.glPushMatrix();
-        GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 + 0.8F + renderOffset, zo
-                + (z - zo) * var2);
+        GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 + 0.8F + renderOffset, zo + (z - zo) * var2);
         GL11.glRotatef(-minecraft.player.yRot, 0.0F, 1.0F, 0.0F);
         var2 = 0.05F;
         GL11.glScalef(0.05F, -var2, var2);
-        GL11.glTranslatef(-var3.getWidth(displayName) / 2.0F, 0.0F, 0.0F);
+        GL11.glTranslatef(-fontRenderer.getWidth(displayName) / 2.0F, 0.0F, 0.0F);
         GL11.glNormal3f(1.0F, -1.0F, 1.0F);
-        GL11.glDisable(2896);
-        GL11.glDisable(16384);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_LIGHT0);
 
-        if (name.equalsIgnoreCase("Notch")) {
-            var3.renderNoShadow(displayName, 0, 0, 16776960);
-        } else {
-            var3.renderNoShadow(displayName, 0, 0, 16777215);
-        }
+        fontRenderer.renderNoShadow(displayName, 0, 0, 16777215); // #FFFFFF
 
-        GL11.glDepthFunc(516);
+        GL11.glDepthFunc(GL11.GL_GREATER);
         GL11.glDepthMask(false);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
-        var3.renderNoShadow(displayName, 0, 0, 16777215);
-        GL11.glDisable(3042);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        fontRenderer.renderNoShadow(displayName, 0, 0, 16777215); // #FFFFFF
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
-        GL11.glDepthFunc(515);
+        GL11.glDepthFunc(GL11.GL_LEQUAL);
         GL11.glTranslatef(1.0F, 1.0F, -0.05F);
-        var3.renderNoShadow(name, 0, 0, 5263440);
-        GL11.glEnable(16384);
-        GL11.glEnable(2896);
+        fontRenderer.renderNoShadow(name, 0, 0, 5263440); // #505050
+        GL11.glEnable(GL11.GL_LIGHT0);
+        GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
     }
 
     public void teleport(short var1, short var2, short var3, float var4, float var5) {
         float var6 = var4 - yRot;
+        float var7 = var5 - xRot;
 
-        float var7;
-        for (var7 = var5 - xRot; var6 >= 180.0F; var6 -= 360.0F) {
-            ;
+        // Normalize values?
+        while (var6 >= 180.0F) {
+            var6 -= 360.0F;
         }
 
         while (var6 < -180.0F) {
@@ -267,8 +260,7 @@ public class NetworkPlayer extends HumanoidMob {
 
         var6 = yRot + var6 * 0.5F;
         var7 = xRot + var7 * 0.5F;
-        moveQueue.add(new PositionUpdate((xp + var1) / 64.0F, (yp + var2) / 64.0F,
-                (zp + var3) / 64.0F, var6, var7));
+        moveQueue.add(new PositionUpdate((xp + var1) / 64.0F, (yp + var2) / 64.0F, (zp + var3) / 64.0F, var6, var7));
         xp = var1;
         yp = var2;
         zp = var3;

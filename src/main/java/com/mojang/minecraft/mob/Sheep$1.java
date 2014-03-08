@@ -16,8 +16,8 @@ final class Sheep$1 extends BasicAI {
 
     @Override
     protected final void update() {
-        float var1 = MathHelper.sin(sheep.yRot * 3.1415927F / 180.0F);
-        float var2 = MathHelper.cos(sheep.yRot * 3.1415927F / 180.0F);
+        float var1 = MathHelper.sin(sheep.yRot * (float) Math.PI / 180.0F);
+        float var2 = MathHelper.cos(sheep.yRot * (float) Math.PI / 180.0F);
         var1 = -0.7F * var1;
         var2 = 0.7F * var2;
         int var4 = (int) (mob.x + var1);

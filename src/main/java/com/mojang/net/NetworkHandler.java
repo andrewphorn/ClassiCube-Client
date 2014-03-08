@@ -43,10 +43,7 @@ public final class NetworkHandler {
 
         } catch (Exception e) {
             e.printStackTrace();
-            mc.setCurrentScreen(new ErrorScreen(
-                    "Failed to connect",
-                    "You failed to connect to the server. It\'s probably down!"
-            ));
+            mc.setCurrentScreen(new ErrorScreen("Failed to connect", "You failed to connect to the server. It\'s probably down!"));
             mc.isOnline = false;
 
             mc.networkManager = null;
@@ -61,13 +58,13 @@ public final class NetworkHandler {
                 channel.write(out);
                 out.compact();
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {}
 
         connected = false;
 
         try {
             channel.close();
-        } catch (Exception e) { }
+        } catch (Exception e) {}
 
         sock = null;
         channel = null;
@@ -137,7 +134,6 @@ public final class NetworkHandler {
                                     if ((bytesToSend = (byte[]) packetObject).length < 1024) {
                                         bytesToSend = Arrays.copyOf(bytesToSend, 1024);
                                     }
-
                                     out.put(bytesToSend);
                                 }
                             } else {

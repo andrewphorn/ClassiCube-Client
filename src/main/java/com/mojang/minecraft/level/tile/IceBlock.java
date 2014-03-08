@@ -48,19 +48,19 @@ public final class IceBlock extends Block {
     public void renderPreview(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin();
         GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(770, 771);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         for (int face = 0; face < 6; ++face) {
             /*
              * if (face == 0) { shapeRenderer.useNormal(0.0F, 1.0F, 0.0F); }
-             * 
+             *
              * if (face == 1) { shapeRenderer.useNormal(0.0F, -1.0F, 0.0F); }
-             * 
+             *
              * if (face == 2) { shapeRenderer.useNormal(0.0F, 0.0F, 1.0F); }
-             * 
+             *
              * if (face == 3) { shapeRenderer.useNormal(0.0F, 0.0F, -1.0F); }
-             * 
+             *
              * if (face == 4) { shapeRenderer.useNormal(1.0F, 0.0F, 0.0F); }
-             * 
+             *
              * if (face == 5) { shapeRenderer.useNormal(-1.0F, 0.0F, 0.0F); }
              */
 
