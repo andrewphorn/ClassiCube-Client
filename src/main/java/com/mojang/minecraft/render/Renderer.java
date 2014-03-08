@@ -11,7 +11,7 @@ import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.model.Vec3D;
+import com.mojang.util.Vec3D;
 import com.mojang.minecraft.player.Player;
 import com.mojang.util.MathHelper;
 

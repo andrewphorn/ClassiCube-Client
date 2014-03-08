@@ -241,13 +241,11 @@ public final class GameSettings implements Serializable {
 
     public void setBinding(int key, int keyID) {
         bindings[key].key = keyID;
-
         save();
     }
 
-        public void setBindingMore(int key, int keyID) {
+    public void setBindingMore(int key, int keyID) {
         bindingsmore[key].key = keyID;
-
         save();
     }
 

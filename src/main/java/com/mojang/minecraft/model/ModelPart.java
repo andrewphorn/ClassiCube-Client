@@ -1,5 +1,7 @@
 package com.mojang.minecraft.model;
 
+import com.mojang.util.Vec3D;
+import com.mojang.util.Vertex;
 import org.lwjgl.opengl.GL11;
 
 public final class ModelPart {
@@ -54,16 +56,16 @@ public final class ModelPart {
 
     public final void render(float var1) {
         if (render) {
-            
+
             if (!hasList) {
                 generateList(var1);
             }
-            
+
             if (allowTransparency) {
                                 GL11.glEnable(3008);
                                 GL11.glDisable(GL11.GL_CULL_FACE);
                         }
-            
+
             if (pitch == 0.0F && yaw == 0.0F && roll == 0.0F) {
                 if (x == 0.0F && y == 0.0F && z == 0.0F) {
                     GL11.glCallList(list);

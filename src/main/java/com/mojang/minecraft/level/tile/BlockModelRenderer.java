@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.MovingObjectPosition;
-import com.mojang.minecraft.model.Vec3D;
+import com.mojang.util.Vec3D;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
 

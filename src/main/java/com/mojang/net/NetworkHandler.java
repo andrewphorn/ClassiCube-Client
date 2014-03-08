@@ -22,12 +22,12 @@ public final class NetworkHandler {
     private byte[] stringBytes = new byte[64];
     protected int soTrafficClass = 0x04 | 0x08 | 0x010;
 
-    public NetworkHandler(String var1, int var2, Minecraft m) {
+    public NetworkHandler(String ip, int port, Minecraft mc) {
         try {
             channel = SocketChannel.open();
-            channel.connect(new InetSocketAddress(var1, var2));
+            channel.connect(new InetSocketAddress(ip, port));
             channel.configureBlocking(false);
-            
+
             System.currentTimeMillis();
             /*sock = channel.socket();
             sock.setTcpNoDelay(true);
@@ -36,18 +36,20 @@ public final class NetworkHandler {
             sock.setReuseAddress(false);
             sock.setSoTimeout(100);
             sock.getInetAddress().toString();*/
-            
+
             connected = true;
             in.clear();
             out.clear();
 
         } catch (Exception e) {
             e.printStackTrace();
-            m.setCurrentScreen(new ErrorScreen("Failed to connect",
-                    "You failed to connect to the server. It\'s probably down!"));
-            m.isOnline = false;
+            mc.setCurrentScreen(new ErrorScreen(
+                    "Failed to connect",
+                    "You failed to connect to the server. It\'s probably down!"
+            ));
+            mc.isOnline = false;
 
-            m.networkManager = null;
+            mc.networkManager = null;
             netManager.successful = false;
         }
     }
@@ -59,65 +61,61 @@ public final class NetworkHandler {
                 channel.write(out);
                 out.compact();
             }
-        } catch (Exception var2) {
-            ;
-        }
+        } catch (Exception e) { }
 
         connected = false;
 
         try {
             channel.close();
-        } catch (Exception var1) {
-            ;
-        }
+        } catch (Exception e) { }
 
         sock = null;
         channel = null;
     }
 
     @SuppressWarnings("rawtypes")
-    public Object readObject(Class var1) {
+    public Object readObject(Class obj) {
         if (!connected) {
             return null;
         } else {
             try {
-                if (var1 == Long.TYPE) {
+                if (obj == Long.TYPE) {
                     return Long.valueOf(in.getLong());
-                } else if (var1 == Integer.TYPE) {
+                } else if (obj == Integer.TYPE) {
                     return Integer.valueOf(in.getInt());
-                } else if (var1 == Short.TYPE) {
+                } else if (obj == Short.TYPE) {
                     return Short.valueOf(in.getShort());
-                } else if (var1 == Byte.TYPE) {
+                } else if (obj == Byte.TYPE) {
                     return Byte.valueOf(in.get());
-                } else if (var1 == Double.TYPE) {
+                } else if (obj == Double.TYPE) {
                     return Double.valueOf(in.getDouble());
-                } else if (var1 == Float.TYPE) {
+                } else if (obj == Float.TYPE) {
                     return Float.valueOf(in.getFloat());
-                } else if (var1 == String.class) {
+                } else if (obj == String.class) {
                     in.get(stringBytes);
                     return new String(stringBytes, "UTF-8").trim();
-                } else if (var1 == byte[].class) {
-                    byte[] var3 = new byte[1024];
-                    in.get(var3);
-                    return var3;
+                } else if (obj == byte[].class) {
+                    byte[] theBytes = new byte[1024];
+                    in.get(theBytes);
+                    return theBytes;
                 } else {
                     return null;
                 }
-            } catch (Exception var2) {
-                netManager.error(var2);
+            } catch (Exception e) {
+                netManager.error(e);
                 return null;
             }
         }
     }
 
     @SuppressWarnings("rawtypes")
-    public final void send(PacketType packetType, Object... object) {
+    public final void send(PacketType packetType, Object... obj) {
         if (connected) {
             out.put(packetType.opcode);
 
-            for (int i = 0; i < object.length; ++i) {
+            for (int i = 0; i < obj.length; ++i) {
                 Class packetClass = packetType.params[i];
-                Object packetObject = object[i];
+                Object packetObject = obj[i];
                 if (connected) {
                     try {
                         if (packetClass == Long.TYPE) {
@@ -133,26 +131,26 @@ public final class NetworkHandler {
                         } else if (packetClass == Float.TYPE) {
                             out.putFloat(((Float) packetObject).floatValue());
                         } else {
-                            byte[] var9;
+                            byte[] bytesToSend;
                             if (packetClass != String.class) {
                                 if (packetClass == byte[].class) {
-                                    if ((var9 = (byte[]) packetObject).length < 1024) {
-                                        var9 = Arrays.copyOf(var9, 1024);
+                                    if ((bytesToSend = (byte[]) packetObject).length < 1024) {
+                                        bytesToSend = Arrays.copyOf(bytesToSend, 1024);
                                     }
 
-                                    out.put(var9);
+                                    out.put(bytesToSend);
                                 }
                             } else {
-                                var9 = ((String) packetObject).getBytes("UTF-8");
+                                bytesToSend = ((String) packetObject).getBytes("UTF-8");
                                 Arrays.fill(stringBytes, (byte) 32);
 
-                                int var8;
-                                for (var8 = 0; var8 < 64 && var8 < var9.length; ++var8) {
-                                    stringBytes[var8] = var9[var8];
+                                int j;
+                                for (j = 0; j < 64 && j < bytesToSend.length; ++j) {
+                                    stringBytes[j] = bytesToSend[j];
                                 }
 
-                                for (var8 = var9.length; var8 < 64; ++var8) {
-                                    stringBytes[var8] = 32;
+                                for (j = bytesToSend.length; j < 64; ++j) {
+                                    stringBytes[j] = 32;
                                 }
 
                                 out.put(stringBytes);
