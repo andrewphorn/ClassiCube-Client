@@ -33,8 +33,6 @@ public final class LevelRenderer {
     private float lastLoadZ = -9999.0F;
     public float cracks;
 
-    public List<BlockData> iceBlocks = new ArrayList<BlockData>();
-
     public LevelRenderer(Minecraft var1, TextureManager var2) {
         minecraft = var1;
         textureManager = var2;
@@ -42,87 +40,93 @@ public final class LevelRenderer {
         baseListId = GL11.glGenLists(4096 << 6 << 1);
     }
 
-    public final void queueChunks(int var1, int var2, int var3, int var4, int var5, int var6) {
-        var1 /= 16;
-        var2 /= 16;
-        var3 /= 16;
-        var4 /= 16;
-        var5 /= 16;
-        var6 /= 16;
-        if (var1 < 0) {
-            var1 = 0;
+    public final void queueChunks(int x1, int y1, int z1, int x2, int y2, int z2) {
+        x1 /= 16;
+        y1 /= 16;
+        z1 /= 16;
+        x2 /= 16;
+        y2 /= 16;
+        z2 /= 16;
+        
+        if (x1 < 0) {
+            x1 = 0;
+        }
+        if (y1 < 0) {
+            y1 = 0;
+        }
+        if (z1 < 0) {
+            z1 = 0;
         }
 
-        if (var2 < 0) {
-            var2 = 0;
+        if (x2 > xChunks - 1) {
+            x2 = xChunks - 1;
+        }
+        if (y2 > yChunks - 1) {
+            y2 = yChunks - 1;
+        }
+        if (z2 > zChunks - 1) {
+            z2 = zChunks - 1;
         }
 
-        if (var3 < 0) {
-            var3 = 0;
-        }
-
-        if (var4 > xChunks - 1) {
-            var4 = xChunks - 1;
-        }
-
-        if (var5 > yChunks - 1) {
-            var5 = yChunks - 1;
-        }
-
-        if (var6 > zChunks - 1) {
-            var6 = zChunks - 1;
-        }
-
-        for (; var1 <= var4; ++var1) {
-            for (int var7 = var2; var7 <= var5; ++var7) {
-                for (int var8 = var3; var8 <= var6; ++var8) {
-                    Chunk var9;
-                    if (!(var9 = chunkCache[(var8 * yChunks + var7) * xChunks + var1]).loaded) {
-                        var9.loaded = true;
-                        chunks.add(chunkCache[(var8 * yChunks + var7) * xChunks + var1]);
+        for (int x = x1; x <= x2; ++x) {
+            for (int y = y1; y <= y2; ++y) {
+                for (int z = z1; z <= z2; ++z) {
+                    Chunk chunk = chunkCache[(z * yChunks + y) * xChunks + x];
+                    if (!chunk.loaded) {
+                        chunk.loaded = true;
+                        chunks.add(chunk);
                     }
                 }
             }
         }
     }
+    
+    static int nextMultipleOf16(int value) {
+		int remainder = value % 16;
+		if( remainder != 0 ) {
+			return value + ( 16 - remainder );
+		}
+		return value;
+	}
 
     public final void refresh() {
-        int var1;
         if (chunkCache != null) {
-            for (var1 = 0; var1 < chunkCache.length; ++var1) {
-                chunkCache[var1].dispose();
+            for (int i = 0; i < chunkCache.length; ++i) {
+                chunkCache[i].dispose();
             }
         }
+        // So that worlds that are not multiples of 16 do not have invisible chunks.
+        int paddedWidth = nextMultipleOf16(level.width);
+        int paddedHeight = nextMultipleOf16(level.height);
+        int paddedLength = nextMultipleOf16(level.length);
 
-        xChunks = level.width / 16;
-        yChunks = level.height / 16;
-        zChunks = level.length / 16;
+        xChunks = paddedWidth / 16;
+        yChunks = paddedHeight / 16;
+        zChunks = paddedLength / 16;
         chunkCache = new Chunk[xChunks * yChunks * zChunks];
         loadQueue = new Chunk[xChunks * yChunks * zChunks];
-        var1 = 0;
-
-        int var2;
-        int var4;
-        for (var2 = 0; var2 < xChunks; ++var2) {
-            for (int var3 = 0; var3 < yChunks; ++var3) {
-                for (var4 = 0; var4 < zChunks; ++var4) {
-                    chunkCache[(var4 * yChunks + var3) * xChunks + var2] = new Chunk(level,
-                            var2 << 4, var3 << 4, var4 << 4, baseListId + var1);
-                    loadQueue[(var4 * yChunks + var3) * xChunks + var2] = chunkCache[(var4
-                            * yChunks + var3)
-                            * xChunks + var2];
-                    var1 += 2;
+        
+        int offset = 0;
+        for (int x = 0; x < xChunks; ++x) {
+            for (int y = 0; y < yChunks; ++y) {
+                for (int z = 0; z < zChunks; ++z) {
+                    chunkCache[(z * yChunks + y) * xChunks + x] = new Chunk(level,
+                            x << 4, y << 4, z << 4, baseListId + offset);
+                    loadQueue[(z * yChunks + y) * xChunks + x] = chunkCache[(z
+                            * yChunks + y)
+                            * xChunks + x];
+                    offset += 2;
                 }
             }
         }
 
-        for (var2 = 0; var2 < chunks.size(); ++var2) {
-            chunks.get(var2).loaded = false;
+        for (int i = 0; i < chunks.size(); ++i) {
+            chunks.get(i).loaded = false;
         }
 
         chunks.clear();
         refreshEnvironment();
-        queueChunks(0, 0, 0, level.width, level.height, level.length);
+        queueChunks(0, 0, 0, paddedWidth, paddedHeight, paddedLength);
     }
 
     public final void refreshEnvironment() {
@@ -220,25 +224,24 @@ public final class LevelRenderer {
         GL11.glEndList();
     }
 
-    public final int sortChunks(Player var1, int var2) {
-        float var3 = var1.x - lastLoadX;
-        float var4 = var1.y - lastLoadY;
-        float var5 = var1.z - lastLoadZ;
-        if (var3 * var3 + var4 * var4 + var5 * var5 > 64.0F) {
-            lastLoadX = var1.x;
-            lastLoadY = var1.y;
-            lastLoadZ = var1.z;
-            Arrays.sort(loadQueue, new ChunkDirtyDistanceComparator(var1));
+    public final int sortChunks(Player player, int renderPass) {
+        float distX = player.x - lastLoadX;
+        float distY = player.y - lastLoadY;
+        float distZ = player.z - lastLoadZ;
+        if (distX * distX + distY * distY + distZ * distZ > 64f) {
+            lastLoadX = player.x;
+            lastLoadY = player.y;
+            lastLoadZ = player.z;
+            Arrays.sort(loadQueue, new ChunkDirtyDistanceComparator(player));
         }
 
-        int var6 = 0;
-
-        for (int var7 = 0; var7 < loadQueue.length; ++var7) {
-            var6 = loadQueue[var7].appendLists(chunkDataCache, var6, var2);
+        int count = 0;
+        for (int i = 0; i < loadQueue.length; ++i) {
+            count = loadQueue[i].appendLists(chunkDataCache, count, renderPass);
         }
 
         buffer.clear();
-        buffer.put(chunkDataCache, 0, var6);
+        buffer.put(chunkDataCache, 0, count);
         buffer.flip();
         if (buffer.remaining() > 0) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
