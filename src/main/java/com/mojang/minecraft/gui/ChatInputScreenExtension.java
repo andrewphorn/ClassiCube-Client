@@ -188,12 +188,14 @@ public class ChatInputScreenExtension extends GuiScreen {
         || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)
         || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
         if (paramInt == Keyboard.KEY_V) {
-        paramChar = '\000';
-        String str2 = getClipboard();
-        insertTextAtCaret(str2);
+            paramChar = '\000';
+            String clipboardText = getClipboard();
+            if (clipboardText != null) {
+                insertTextAtCaret(clipboardText);
+            }
         } else if (paramInt == Keyboard.KEY_C) {
-        paramChar = '\000';
-        setClipboard(inputLine);
+            paramChar = '\000';
+            setClipboard(inputLine);
         }
     }
     /*
