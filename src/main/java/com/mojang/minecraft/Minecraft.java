@@ -437,7 +437,7 @@ public final class Minecraft implements Runnable {
 
     public byte[] flipPixels(byte[] originalBuffer, int width, int height) {
         byte[] flippedBuffer = null;
-		int stride = width * 3;
+	int stride = width * 3;
         if (originalBuffer != null) {
             flippedBuffer = new byte[originalBuffer.length];// There are 3 bytes per cell
             for (int y = 0; y < height; y++) {
