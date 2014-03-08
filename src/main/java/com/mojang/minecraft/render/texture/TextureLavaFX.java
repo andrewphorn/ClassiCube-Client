@@ -72,15 +72,6 @@ public final class TextureLavaFX extends TextureFX {
             var5 = (int) (var3 * 100.0F + 155.0F);
             var6 = (int) (var3 * var3 * 255.0F);
             var7 = (int) (var3 * var3 * var3 * var3 * 128.0F);
-            if (anaglyph) {
-                var8 = (var5 * 30 + var6 * 59 + var7 * 11) / 100;
-                var9 = (var5 * 30 + var6 * 70) / 100;
-                var1 = (var5 * 30 + var7 * 70) / 100;
-                var5 = var8;
-                var6 = var9;
-                var7 = var1;
-            }
-
             textureData[var2 << 2] = (byte) var5;
             textureData[(var2 << 2) + 1] = (byte) var6;
             textureData[(var2 << 2) + 2] = (byte) var7;

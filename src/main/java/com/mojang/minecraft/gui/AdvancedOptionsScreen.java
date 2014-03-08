@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.Setting;
 import com.mojang.minecraft.gui.inputscreens.FogColorInputScreen;
 import com.mojang.minecraft.gui.inputscreens.LightColorInputScreen;
 import com.mojang.minecraft.gui.inputscreens.ShadowColorInputScreen;
@@ -12,12 +13,18 @@ import com.mojang.minecraft.gui.inputscreens.WaterLevelInputScreen;
 
 public final class AdvancedOptionsScreen extends GuiScreen {
 
+    private final static Setting[] settingsOrder = new Setting[]{
+        Setting.ENABLE_HACKS,
+        Setting.SPEEDHACK_TYPE,
+        Setting.ALLOW_SERVER_TEXTURES,
+        Setting.SHOW_DEBUG
+    };
+
     public static String decToHex(int dec) {
         int sizeOfIntInHalfBytes = 8;
         int numberOfBitsInAHalfByte = 4;
         int halfByte = 0x0F;
-        char[] hexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
-                'E', 'F' };
+        char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         StringBuilder hexBuilder = new StringBuilder(sizeOfIntInHalfBytes);
         hexBuilder.setLength(sizeOfIntInHalfBytes);
         for (int i = sizeOfIntInHalfBytes - 1; i >= 0; --i) {
@@ -28,34 +35,35 @@ public final class AdvancedOptionsScreen extends GuiScreen {
         return hexBuilder.toString();
     }
 
-    private GuiScreen parent;
-    private String title = "Advanced Options";
-    private GameSettings settings;
+    private final GuiScreen parent;
+    private final String title = "Advanced Options";
+    private final GameSettings settings;
 
-    public AdvancedOptionsScreen(GuiScreen var1, GameSettings var2) {
-        parent = var1;
-        settings = var2;
+    public AdvancedOptionsScreen(GuiScreen parent, GameSettings settings) {
+        this.parent = parent;
+        this.settings = settings;
     }
 
     @Override
-    protected final void onButtonClick(Button var1) {
-        if (var1.active) {
-            if (var1.id < 100) {
-                settings.toggleSetting(var1.id, 1);
-                var1.text = settings.getSetting(var1.id);
+    protected final void onButtonClick(Button clickedButton) {
+        if (clickedButton.active) {
+            if (clickedButton.id < 100) {
+                Setting affectedSetting = settingsOrder[clickedButton.id];
+                settings.toggleSetting(affectedSetting, 1);
+                clickedButton.text = settings.getSetting(affectedSetting);
 
             }
-                        if (var1.id == 100) {
+            if (clickedButton.id == 100) {
                 minecraft.setCurrentScreen(new CloudOptionsScreen(this, settings));
             }
 
-            if (var1.id == 200) {
+            if (clickedButton.id == 200) {
                 WaterLevelInputScreen screen = new WaterLevelInputScreen(parent, ""
                         + minecraft.level.waterLevel, height, "Enter new value for water level...");
                 screen.numbersOnly = true;
                 minecraft.setCurrentScreen(screen);
             }
-            if (var1.id == 300) {
+            if (clickedButton.id == 300) {
                 SkyColorInputScreen screen = new SkyColorInputScreen(parent, ""
                         + Integer.toHexString(minecraft.level.skyColor), height,
                         "Enter new value for sky color...");
@@ -63,7 +71,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
                 screen.stringLimit = 6;
                 minecraft.setCurrentScreen(screen);
             }
-            if (var1.id == 400) {
+            if (clickedButton.id == 400) {
                 FogColorInputScreen screen = new FogColorInputScreen(parent, ""
                         + Integer.toHexString(minecraft.level.fogColor), height,
                         "Enter new value for fog color...");
@@ -71,7 +79,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
                 screen.stringLimit = 6;
                 minecraft.setCurrentScreen(screen);
             }
-            if (var1.id == 500) {
+            if (clickedButton.id == 500) {
                 ColorCache c = minecraft.level.customLightColour;
                 Color color = new Color(255, 255, 255);
                 String colorString = "";
@@ -88,7 +96,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
                 screen.stringLimit = 6;
                 minecraft.setCurrentScreen(screen);
             }
-            if (var1.id == 600) {
+            if (clickedButton.id == 600) {
                 ColorCache c = minecraft.level.customShadowColour;
                 Color color = new Color(155, 155, 155);
                 String colorString = "";
@@ -106,7 +114,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
                 minecraft.setCurrentScreen(screen);
             }
 
-            if (var1.id == 700) {
+            if (clickedButton.id == 700) {
                 minecraft.setCurrentScreen(new OptionsScreen(this, settings));
             }
         }
@@ -114,29 +122,32 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 
     @Override
     public final void onOpen() {
-        int heightSeperator = 0;
-        for (int var1 = 10; var1 < settings.settingCount; ++var1) {
-            buttons.add(new OptionButton(var1, width / 2 - 155 + heightSeperator % 2 * 160, height
-                    / 6 + 24 * (heightSeperator >> 1), settings.getSetting(var1)));
-            heightSeperator++;
+        int heightSeparator = 0;
+        for (int i = 0; i < settingsOrder.length; ++i) {
+            // TODO: advanced settings
+            buttons.add(new OptionButton(i,
+                    width / 2 - 155 + heightSeparator % 2 * 160,
+                    height / 6 + 24 * (heightSeparator >> 1),
+                    settings.getSetting(settingsOrder[i])));
+            heightSeparator++;
         }
-                buttons.add(new OptionButton(100, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
-                + 24 * (heightSeperator >> 1), "Clouds"));
-        heightSeperator++;
-                buttons.add(new OptionButton(200, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
-                + 24 * (heightSeperator >> 1), "Water Level"));
-        heightSeperator++;
-        buttons.add(new OptionButton(300, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
-                + 24 * (heightSeperator >> 1), "Sky Color"));
-        heightSeperator++;
-        buttons.add(new OptionButton(400, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
-                + 24 * (heightSeperator >> 1), "Fog Color"));
-        heightSeperator++;
-        buttons.add(new OptionButton(500, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
-                + 24 * (heightSeperator >> 1), "Sunlight Color"));
-        heightSeperator++;
-        buttons.add(new OptionButton(600, width / 2 - 155 + heightSeperator % 2 * 160, height / 6
-                + 24 * (heightSeperator >> 1), "Shadow Color"));
+        buttons.add(new OptionButton(100, width / 2 - 155 + heightSeparator % 2 * 160, height / 6
+                + 24 * (heightSeparator >> 1), "Clouds"));
+        heightSeparator++;
+        buttons.add(new OptionButton(200, width / 2 - 155 + heightSeparator % 2 * 160, height / 6
+                + 24 * (heightSeparator >> 1), "Water Level"));
+        heightSeparator++;
+        buttons.add(new OptionButton(300, width / 2 - 155 + heightSeparator % 2 * 160, height / 6
+                + 24 * (heightSeparator >> 1), "Sky Color"));
+        heightSeparator++;
+        buttons.add(new OptionButton(400, width / 2 - 155 + heightSeparator % 2 * 160, height / 6
+                + 24 * (heightSeparator >> 1), "Fog Color"));
+        heightSeparator++;
+        buttons.add(new OptionButton(500, width / 2 - 155 + heightSeparator % 2 * 160, height / 6
+                + 24 * (heightSeparator >> 1), "Sunlight Color"));
+        heightSeparator++;
+        buttons.add(new OptionButton(600, width / 2 - 155 + heightSeparator % 2 * 160, height / 6
+                + 24 * (heightSeparator >> 1), "Shadow Color"));
 
         buttons.add(new Button(700, width / 2 - 100, height / 6 + 168, "Done"));
 

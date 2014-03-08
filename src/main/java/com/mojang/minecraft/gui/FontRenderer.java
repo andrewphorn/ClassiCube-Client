@@ -23,19 +23,19 @@ public final class FontRenderer {
     public FontRenderer(GameSettings settings, String fontImage, TextureManager textures)
             throws IOException {
         this.settings = settings;
-        BufferedImage font;
+        BufferedImage fontTexture;
 
         try {
-            font = ImageIO.read(TextureManager.class.getResourceAsStream(fontImage));
+            fontTexture = ImageIO.read(TextureManager.class.getResourceAsStream(fontImage));
         } catch (IOException e) {
             throw new IOException("Missing resource");
         }
-        int width = font.getWidth();
-        int height = font.getHeight();
+        int width = fontTexture.getWidth();
+        int height = fontTexture.getHeight();
         charWidth = width;
         charHeight = height;
         int[] fontData = new int[256 * 256];
-        font.getRGB(0, 0, width, height, fontData, 0, width);
+        fontTexture.getRGB(0, 0, width, height, fontData, 0, width);
 
         for (int character = 0; character < 256; ++character) {
             int var6 = character % 16;
@@ -119,12 +119,6 @@ public final class FontRenderer {
                     int blue = (code & 1) * 191 + intensity;
                     int green = ((code & 2) >> 1) * 191 + intensity;
                     int red = ((code & 4) >> 2) * 191 + intensity;
-                    if (settings.anaglyph) {
-                        intensity = (code * 30 + green * 59 + blue * 11) / 100;
-                        green = (code * 30 + green * 70) / 100;
-                        blue = (code * 30 + blue * 70) / 100;
-                        red = intensity;
-                    }
 
                     int c = red << 16 | green << 8 | blue;
                     if (shadow) {

@@ -1525,7 +1525,7 @@ public final class Minecraft implements Runnable {
                             GL11.glDisable(GL11.GL_CULL_FACE);
                                 // GL11.glBegin(GL11.GL_QUADS);
 
-                                // Front Face
+                            // Front Face
                             // Bottom Left
                             shapeRenderer.begin();
                             shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
@@ -1536,7 +1536,7 @@ public final class Minecraft implements Runnable {
                             // Top Left
                             shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z1);
 
-                                // Back Face
+                            // Back Face
                             // Bottom Right
                             shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
                             // Top Right
@@ -1546,7 +1546,7 @@ public final class Minecraft implements Runnable {
                             // Bottom Left
                             shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
 
-                                // Top Face
+                            // Top Face
                             // Top Left
                             // Bottom Left
                             shapeRenderer.vertex(bounds.x0, bounds.y1, bounds.z0);
@@ -1556,7 +1556,7 @@ public final class Minecraft implements Runnable {
                             // Top Right
                             shapeRenderer.vertex(bounds.x1, bounds.y1, bounds.z0);
 
-                                // Bottom Face
+                            // Bottom Face
                             // Top Right
                             shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
                             // Top Left
@@ -1566,7 +1566,7 @@ public final class Minecraft implements Runnable {
                             // Bottom Right
                             shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z1);
 
-                                // Right face
+                            // Right face
                             // Bottom Right
                             shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z0);
                             // Top Right
@@ -1576,7 +1576,7 @@ public final class Minecraft implements Runnable {
                             // Bottom Left
                             shapeRenderer.vertex(bounds.x1, bounds.y0, bounds.z1);
 
-                                // Left Face
+                            // Left Face
                             // Bottom Left
                             shapeRenderer.vertex(bounds.x0, bounds.y0, bounds.z0);
                             // Bottom Right
@@ -2114,8 +2114,7 @@ public final class Minecraft implements Runnable {
         TextureManager texManager = textureManager;
 
         for (var16 = 0; var16 < texManager.animations.size(); ++var16) {
-            TextureFX texFX;
-            (texFX = texManager.animations.get(var16)).anaglyph = texManager.settings.anaglyph;
+            TextureFX texFX = texManager.animations.get(var16);
             texFX.animate();
             if (texManager.textureBuffer.capacity() != texFX.textureData.length) {
                 texManager.textureBuffer = BufferUtils
@@ -3188,7 +3187,7 @@ public final class Minecraft implements Runnable {
                     if (Keyboard.getEventKey() == settings.toggleFogKey.key) {
                         boolean shiftDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)
                                 || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
-                        settings.toggleSetting(4, shiftDown ? -1 : 1);
+                        settings.toggleSetting(Setting.RENDER_DISTANCE, shiftDown ? -1 : 1);
                     }
                 }
             }

@@ -130,21 +130,17 @@ public class Screen {
         GL11.glAlphaFunc(516, 0.5F);
     }
 
-    protected float imgZ = 0.0F;
+    protected float imgZ = 0;
 
-    public final void drawImage(int var1, int var2, int var3, int var4,
-            int var5, int var6) {
+    public final void drawImage(int screenX, int screenY, int u, int v, int width, int height) {
         float var7 = 0.00390625F;
         float var8 = 0.00390625F;
-        ShapeRenderer var9 = ShapeRenderer.instance;
-        ShapeRenderer.instance.begin();
-        var9.vertexUV(var1, var2 + var6, imgZ, var3 * var7, (var4 + var6)
-                * var8);
-        var9.vertexUV(var1 + var5, var2 + var6, imgZ, (var3 + var5) * var7,
-                (var4 + var6) * var8);
-        var9.vertexUV(var1 + var5, var2, imgZ, (var3 + var5) * var7, var4
-                * var8);
-        var9.vertexUV(var1, var2, imgZ, var3 * var7, var4 * var8);
-        var9.end();
+        ShapeRenderer renderer = ShapeRenderer.instance;
+        renderer.begin();
+        renderer.vertexUV(screenX, screenY + height, imgZ, u * var7, (v + height) * var8);
+        renderer.vertexUV(screenX + width, screenY + height, imgZ, (u + width) * var7, (v + height) * var8);
+        renderer.vertexUV(screenX + width, screenY, imgZ, (u + width) * var7, v * var8);
+        renderer.vertexUV(screenX, screenY, imgZ, u * var7, v * var8);
+        renderer.end();
     }
 }

@@ -59,14 +59,6 @@ public class TextureFireFX extends TextureFX {
                 c = '\0';
             }
             f2 = (f2 - 0.5F) * 2.0F;
-            if (anaglyph) {
-                int l2 = (k1 * 30 + i2 * 59 + k2 * 11) / 100;
-                int i3 = (k1 * 30 + i2 * 70) / 100;
-                int j3 = (k1 * 30 + k2 * 70) / 100;
-                k1 = l2;
-                i2 = i3;
-                k2 = j3;
-            }
             textureData[l * 4 + 0] = (byte) k1;
             textureData[l * 4 + 1] = (byte) i2;
             textureData[l * 4 + 2] = (byte) k2;
