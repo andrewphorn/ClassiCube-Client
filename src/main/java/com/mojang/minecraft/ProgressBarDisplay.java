@@ -220,44 +220,46 @@ public final class ProgressBarDisplay {
         if (!minecraft.isRunning) {
             throw new StopGameException();
         } else {
-            long var2;
-            if ((var2 = System.currentTimeMillis()) - start < 0L || var2 - start >= 20L) {
-                start = var2;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - start < 0L || currentTime - start >= 20L) {
+                start = currentTime;
                 int var4 = minecraft.width * 240 / minecraft.height;
                 int var5 = minecraft.height * 240 / minecraft.height;
                 GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-                ShapeRenderer var6 = ShapeRenderer.instance;
-                int var7 = minecraft.textureManager.load("/dirt.png");
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, var7);
-                float var10 = 32.0F;
-                var6.begin();
-                var6.color(4210752);
-                var6.vertexUV(0.0F, var5, 0.0F, 0.0F, var5 / var10);
-                var6.vertexUV(var4, var5, 0.0F, var4 / var10, var5 / var10);
-                var6.vertexUV(var4, 0.0F, 0.0F, var4 / var10, 0.0F);
-                var6.vertexUV(0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-                var6.end();
+                ShapeRenderer renderer = ShapeRenderer.instance;
+                int textureId = minecraft.textureManager.load("/dirt.png");
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
+                float uvScale = 32f;
+                renderer.begin();
+                renderer.color(0x404040);
+                renderer.vertexUV(0f, var5, 0f, 0f, var5 / uvScale);
+                renderer.vertexUV(var4, var5, 0f, var4 / uvScale, var5 / uvScale);
+                renderer.vertexUV(var4, 0f, 0f, var4 / uvScale, 0f);
+                renderer.vertexUV(0f, 0f, 0f, 0f, 0f);
+                renderer.end();
+                
                 if (progress >= 0) {
-                    var7 = var4 / 2 - 50;
-                    int var8 = var5 / 2 + 16;
+                    int barX = var4 / 2 - 50;
+                    int barY = var5 / 2 + 16;
                     GL11.glDisable(GL11.GL_TEXTURE_2D);
-                    var6.begin();
-                    var6.color(128, 128, 128); // #808080
-                    var6.vertex(var7, var8, 0.0F);
-                    var6.vertex(var7, var8 + 2, 0.0F);
-                    var6.vertex(var7 + 100, var8 + 2, 0.0F);
-                    var6.vertex(var7 + 100, var8, 0.0F);
-                    var6.color(128, 255, 128); // #80FF80
-                    var6.vertex(var7, var8, 0.0F);
-                    var6.vertex(var7, var8 + 2, 0.0F);
-                    var6.vertex(var7 + progress, var8 + 2, 0.0F);
-                    var6.vertex(var7 + progress, var8, 0.0F);
-                    var6.end();
+                    renderer.begin();
+                    renderer.color(0x808080);
+                    renderer.vertex(barX, barY, 0f);
+                    renderer.vertex(barX, barY + 2, 0f);
+                    renderer.vertex(barX + 100, barY + 2, 0f);
+                    renderer.vertex(barX + 100, barY, 0f);
+                    
+                    renderer.color(0x80FF80);
+                    renderer.vertex(barX, barY, 0f);
+                    renderer.vertex(barX, barY + 2, 0f);
+                    renderer.vertex(barX + progress, barY + 2, 0f);
+                    renderer.vertex(barX + progress, barY, 0f);
+                    renderer.end();
                     GL11.glEnable(GL11.GL_TEXTURE_2D);
                 }
 
                 minecraft.fontRenderer.render(title, (var4 - minecraft.fontRenderer.getWidth(title)) / 2, var5 / 2 - 4 - 16, 16777215);
-                minecraft.fontRenderer.render(text, (var4 - minecraft.fontRenderer.getWidth(text)) / 2, var5 / 2 - 4 + 8,  16777215);
+                minecraft.fontRenderer.render(text, (var4 - minecraft.fontRenderer.getWidth(text)) / 2, var5 / 2 - 4 + 8, 16777215);
                 Display.update();
 
                 try {
