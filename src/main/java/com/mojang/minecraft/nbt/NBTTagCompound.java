@@ -253,7 +253,7 @@ public class NBTTagCompound extends NBTBase
     {
         try
         {
-            return !this.tagMap.containsKey(name) ? 0.0F : ((NBTTagFloat)this.tagMap.get(name)).data;
+            return !this.tagMap.containsKey(name) ? 0F : ((NBTTagFloat)this.tagMap.get(name)).data;
         }
         catch (ClassCastException e)
         {
@@ -268,7 +268,7 @@ public class NBTTagCompound extends NBTBase
     {
         try
         {
-            return !this.tagMap.containsKey(name) ? 0.0D : ((NBTTagDouble)this.tagMap.get(name)).data;
+            return !this.tagMap.containsKey(name) ? 0D : ((NBTTagDouble)this.tagMap.get(name)).data;
         }
         catch (ClassCastException e)
         {

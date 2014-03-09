@@ -8,7 +8,7 @@ import com.mojang.util.Vec3D;
 public class AABB implements Serializable {
 
     public static final long serialVersionUID = 0L;
-    private float epsilon = 0.0F;
+    private float epsilon = 0F;
     public float x0;
     public float y0;
     public float z0;
@@ -122,11 +122,11 @@ public class AABB implements Serializable {
         if (var1.y1 > y0 && var1.y0 < y1) {
             if (var1.z1 > z0 && var1.z0 < z1) {
                 float var3;
-                if (var2 > 0.0F && var1.x1 <= x0 && (var3 = x0 - var1.x1 - epsilon) < var2) {
+                if (var2 > 0F && var1.x1 <= x0 && (var3 = x0 - var1.x1 - epsilon) < var2) {
                     var2 = var3;
                 }
 
-                if (var2 < 0.0F && var1.x0 >= x1 && (var3 = x1 - var1.x0 + epsilon) > var2) {
+                if (var2 < 0F && var1.x0 >= x1 && (var3 = x1 - var1.x0 + epsilon) > var2) {
                     var2 = var3;
                 }
 
@@ -143,11 +143,11 @@ public class AABB implements Serializable {
         if (var1.x1 > x0 && var1.x0 < x1) {
             if (var1.z1 > z0 && var1.z0 < z1) {
                 float var3;
-                if (var2 > 0.0F && var1.y1 <= y0 && (var3 = y0 - var1.y1 - epsilon) < var2) {
+                if (var2 > 0F && var1.y1 <= y0 && (var3 = y0 - var1.y1 - epsilon) < var2) {
                     var2 = var3;
                 }
 
-                if (var2 < 0.0F && var1.y0 >= y1 && (var3 = y1 - var1.y0 + epsilon) > var2) {
+                if (var2 < 0F && var1.y0 >= y1 && (var3 = y1 - var1.y0 + epsilon) > var2) {
                     var2 = var3;
                 }
 
@@ -164,11 +164,11 @@ public class AABB implements Serializable {
         if (var1.x1 > x0 && var1.x0 < x1) {
             if (var1.y1 > y0 && var1.y0 < y1) {
                 float var3;
-                if (var2 > 0.0F && var1.z1 <= z0 && (var3 = z0 - var1.z1 - epsilon) < var2) {
+                if (var2 > 0F && var1.z1 <= z0 && (var3 = z0 - var1.z1 - epsilon) < var2) {
                     var2 = var3;
                 }
 
-                if (var2 < 0.0F && var1.z0 >= z1 && (var3 = z1 - var1.z0 + epsilon) > var2) {
+                if (var2 < 0F && var1.z0 >= z1 && (var3 = z1 - var1.z0 + epsilon) > var2) {
                     var2 = var3;
                 }
 
@@ -201,27 +201,27 @@ public class AABB implements Serializable {
         float var7 = x1;
         float var8 = y1;
         float var9 = z1;
-        if (var1 < 0.0F) {
+        if (var1 < 0F) {
             var4 += var1;
         }
 
-        if (var1 > 0.0F) {
+        if (var1 > 0F) {
             var7 += var1;
         }
 
-        if (var2 < 0.0F) {
+        if (var2 < 0F) {
             var5 += var2;
         }
 
-        if (var2 > 0.0F) {
+        if (var2 > 0F) {
             var8 += var2;
         }
 
-        if (var3 < 0.0F) {
+        if (var3 < 0F) {
             var6 += var3;
         }
 
-        if (var3 > 0.0F) {
+        if (var3 > 0F) {
             var9 += var3;
         }
 
@@ -232,7 +232,7 @@ public class AABB implements Serializable {
         float var1 = x1 - x0;
         float var2 = y1 - y0;
         float var3 = z1 - z0;
-        return (var1 + var2 + var3) / 3.0F;
+        return (var1 + var2 + var3) / 3F;
     }
 
     public AABB grow(float var1, float var2, float var3) {
@@ -276,27 +276,27 @@ public class AABB implements Serializable {
         float var7 = x1;
         float var8 = y1;
         float var9 = z1;
-        if (var1 < 0.0F) {
+        if (var1 < 0F) {
             var4 -= var1;
         }
 
-        if (var1 > 0.0F) {
+        if (var1 > 0F) {
             var7 -= var1;
         }
 
-        if (var2 < 0.0F) {
+        if (var2 < 0F) {
             var5 -= var2;
         }
 
-        if (var2 > 0.0F) {
+        if (var2 > 0F) {
             var8 -= var2;
         }
 
-        if (var3 < 0.0F) {
+        if (var3 < 0F) {
             var6 -= var3;
         }
 
-        if (var3 > 0.0F) {
+        if (var3 > 0F) {
             var9 -= var3;
         }
 

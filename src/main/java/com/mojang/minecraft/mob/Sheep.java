@@ -39,12 +39,12 @@ public class Sheep extends QuadrupedMob {
             graze -= 0.2F;
         }
 
-        if (graze < 0.0F) {
-            graze = 0.0F;
+        if (graze < 0F) {
+            graze = 0F;
         }
 
-        if (graze > 1.0F) {
-            graze = 1.0F;
+        if (graze > 1F) {
+            graze = 1F;
         }
 
     }
@@ -55,7 +55,7 @@ public class Sheep extends QuadrupedMob {
             var1.awardKillScore(this, 10);
         }
 
-        int var2 = (int) (Math.random() + Math.random() + 1.0D);
+        int var2 = (int) (Math.random() + Math.random() + 1D);
 
         for (int var3 = 0; var3 < var2; ++var3) {
             level.addEntity(new Item(level, x, y, z, Block.BROWN_MUSHROOM.id));
@@ -68,7 +68,7 @@ public class Sheep extends QuadrupedMob {
     public void hurt(Entity var1, int var2) {
         if (hasFur && var1 instanceof Player) {
             hasFur = false;
-            int var3 = (int) (Math.random() * 3.0D + 1.0D);
+            int var3 = (int) (Math.random() * 3D + 1D);
 
             for (var2 = 0; var2 < var3; ++var2) {
                 level.addEntity(new Item(level, x, y, z, Block.WHITE_WOOL.id));
@@ -85,7 +85,7 @@ public class Sheep extends QuadrupedMob {
         AnimalModel var8;
         float var9 = (var8 = (AnimalModel) modelCache.getModel("sheep")).head.y;
         float var10 = var8.head.z;
-        var8.head.y += (grazeO + (graze - grazeO) * var3) * 8.0F;
+        var8.head.y += (grazeO + (graze - grazeO) * var3) * 8F;
         var8.head.z -= grazeO + (graze - grazeO) * var3;
         super.renderModel(var1, var2, var3, var4, var5, var6, var7);
         if (hasFur || modelName.equals("sheep.fur")) {

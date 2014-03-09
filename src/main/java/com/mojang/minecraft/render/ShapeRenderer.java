@@ -67,12 +67,12 @@ public class ShapeRenderer {
     }
 
     public void color(float r, float g, float b) {
-        setColorOpaque((int) (r * 255.0F), (int) (g * 255.0F), (int) (b * 255.0F));
+        setColorOpaque((int) (r * 255F), (int) (g * 255F), (int) (b * 255F));
     }
 
     public void color(float r, float g, float b, float a) {
-        colorClampRGBA((int) (r * 255.0F), (int) (g * 255.0F), (int) (b * 255.0F),
-                (int) (a * 255.0F));
+        colorClampRGBA((int) (r * 255F), (int) (g * 255F), (int) (b * 255F),
+                (int) (a * 255F));
     }
 
     public void color(int color) {
@@ -269,9 +269,9 @@ public class ShapeRenderer {
 
     public void useNormal(float x, float y, float z) {
         hasNormals = true;
-        byte nx = (byte) (int) (x * 127.0F);
-        byte ny = (byte) (int) (y * 127.0F);
-        byte nz = (byte) (int) (z * 127.0F);
+        byte nx = (byte) (int) (x * 127F);
+        byte ny = (byte) (int) (y * 127F);
+        byte nz = (byte) (int) (z * 127F);
         normal = nx & 255 | (ny & 255) << 8 | (nz & 255) << 16;
     }
 

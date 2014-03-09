@@ -23,7 +23,7 @@ public final class TextureWaterFX extends TextureFX {
         int var6;
         for (var1 = 0; var1 < 16; ++var1) {
             for (var2 = 0; var2 < 16; ++var2) {
-                var3 = 0.0F;
+                var3 = 0F;
 
                 for (var4 = var1 - 1; var4 <= var1 + 1; ++var4) {
                     var5 = var4 & 15;
@@ -38,8 +38,8 @@ public final class TextureWaterFX extends TextureFX {
         for (var1 = 0; var1 < 16; ++var1) {
             for (var2 = 0; var2 < 16; ++var2) {
                 green[var1 + (var2 << 4)] += alpha[var1 + (var2 << 4)] * 0.05F;
-                if (green[var1 + (var2 << 4)] < 0.0F) {
-                    green[var1 + (var2 << 4)] = 0.0F;
+                if (green[var1 + (var2 << 4)] < 0F) {
+                    green[var1 + (var2 << 4)] = 0F;
                 }
 
                 alpha[var1 + (var2 << 4)] -= 0.1F;
@@ -54,19 +54,19 @@ public final class TextureWaterFX extends TextureFX {
         red = var8;
 
         for (var2 = 0; var2 < 256; ++var2) {
-            if ((var3 = red[var2]) > 1.0F) {
-                var3 = 1.0F;
+            if ((var3 = red[var2]) > 1F) {
+                var3 = 1F;
             }
 
-            if (var3 < 0.0F) {
-                var3 = 0.0F;
+            if (var3 < 0F) {
+                var3 = 0F;
             }
 
             float var9 = var3 * var3;
-            var5 = (int) (32.0F + var9 * 32.0F);
-            var6 = (int) (50.0F + var9 * 64.0F);
+            var5 = (int) (32F + var9 * 32F);
+            var6 = (int) (50F + var9 * 64F);
             var1 = 255;
-            int var10 = (int) (146.0F + var9 * 50.0F);
+            int var10 = (int) (146F + var9 * 50F);
             textureData[var2 << 2] = (byte) var5;
             textureData[(var2 << 2) + 1] = (byte) var6;
             textureData[(var2 << 2) + 2] = (byte) var1;

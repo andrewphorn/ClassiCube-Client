@@ -201,7 +201,7 @@ class AudioPacket {
                 w[i + leftWindowStart] = x;
             }
 
-            for (int i = leftWindowEnd; i < rightWindowStart; w[i++] = 1.0f)
+            for (int i = leftWindowEnd; i < rightWindowStart; w[i++] = 1F)
                 ;
 
             for (int i = 0; i < rightN; i++) {

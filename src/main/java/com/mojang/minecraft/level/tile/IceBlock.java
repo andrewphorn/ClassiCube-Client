@@ -51,17 +51,17 @@ public final class IceBlock extends Block {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         for (int face = 0; face < 6; ++face) {
             /*
-             * if (face == 0) { shapeRenderer.useNormal(0.0F, 1.0F, 0.0F); }
+             * if (face == 0) { shapeRenderer.useNormal(0F, 1F, 0F); }
              *
-             * if (face == 1) { shapeRenderer.useNormal(0.0F, -1.0F, 0.0F); }
+             * if (face == 1) { shapeRenderer.useNormal(0F, -1F, 0F); }
              *
-             * if (face == 2) { shapeRenderer.useNormal(0.0F, 0.0F, 1.0F); }
+             * if (face == 2) { shapeRenderer.useNormal(0F, 0F, 1F); }
              *
-             * if (face == 3) { shapeRenderer.useNormal(0.0F, 0.0F, -1.0F); }
+             * if (face == 3) { shapeRenderer.useNormal(0F, 0F, -1F); }
              *
-             * if (face == 4) { shapeRenderer.useNormal(1.0F, 0.0F, 0.0F); }
+             * if (face == 4) { shapeRenderer.useNormal(1F, 0F, 0F); }
              *
-             * if (face == 5) { shapeRenderer.useNormal(-1.0F, 0.0F, 0.0F); }
+             * if (face == 5) { shapeRenderer.useNormal(-1F, 0F, 0F); }
              */
 
             renderInside(shapeRenderer, 0, 0, 0, face);

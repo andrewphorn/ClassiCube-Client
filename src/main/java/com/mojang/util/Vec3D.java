@@ -35,7 +35,7 @@ public final class Vec3D {
         float yDiff = other.y - y;
         float zDiff = other.z - z;
         return xDiff * xDiff < 1.0E-7F ? null
-                : (xAxis = (xAxis - x) / xDiff) >= 0.0F && xAxis <= 1.0F ? new Vec3D(x + xDiff * xAxis, y
+                : (xAxis = (xAxis - x) / xDiff) >= 0F && xAxis <= 1F ? new Vec3D(x + xDiff * xAxis, y
                         + yDiff * xAxis, z + zDiff * xAxis) : null;
     }
 
@@ -44,7 +44,7 @@ public final class Vec3D {
         float yDiff = other.y - y;
         float zDiff = other.z - z;
         return yDiff * yDiff < 1.0E-7F ? null
-                : (yAxis = (yAxis - y) / yDiff) >= 0.0F && yAxis <= 1.0F ? new Vec3D(x + xDiff * yAxis, y
+                : (yAxis = (yAxis - y) / yDiff) >= 0F && yAxis <= 1F ? new Vec3D(x + xDiff * yAxis, y
                         + yDiff * yAxis, z + zDiff * yAxis) : null;
     }
 
@@ -52,8 +52,8 @@ public final class Vec3D {
         float xDiff = other.x - x;
         float yDiff = other.y - y;
         float zDiff = other.z - z;
-        return zDiff * zDiff < 1.0E-7F ? null : (zAxis = (zAxis - z) / zDiff) >= 0.0F
-                && zAxis <= 1.0F ? new Vec3D(x + xDiff * zAxis, y + yDiff * zAxis, z + zDiff * zAxis)
+        return zDiff * zDiff < 1.0E-7F ? null : (zAxis = (zAxis - z) / zDiff) >= 0F
+                && zAxis <= 1F ? new Vec3D(x + xDiff * zAxis, y + yDiff * zAxis, z + zDiff * zAxis)
                 : null;
     }
 

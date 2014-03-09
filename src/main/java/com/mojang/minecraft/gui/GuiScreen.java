@@ -87,7 +87,7 @@ public class GuiScreen extends Screen {
             }
 
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load("/gui/gui.png"));
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GL11.glColor4f(1F, 1F, 1F, 1F);
             byte spriteOffset = 1;
             boolean isHovered = (mouseX >= button.x) && (mouseY >= button.y)
                     && (mouseX < button.x + button.width)

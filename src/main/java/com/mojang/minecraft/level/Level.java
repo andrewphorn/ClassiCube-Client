@@ -134,11 +134,11 @@ public class Level implements Serializable {
                         return null;
                     }
 
-                    float var10 = 999.0F;
-                    float var11 = 999.0F;
-                    float var12 = 999.0F;
+                    float var10 = 999F;
+                    float var11 = 999F;
+                    float var12 = 999F;
                     if (var3 > var6) {
-                        var10 = var6 + 1.0F;
+                        var10 = var6 + 1F;
                     }
 
                     if (var3 < var6) {
@@ -146,7 +146,7 @@ public class Level implements Serializable {
                     }
 
                     if (var4 > var7) {
-                        var11 = var7 + 1.0F;
+                        var11 = var7 + 1F;
                     }
 
                     if (var4 < var7) {
@@ -154,28 +154,28 @@ public class Level implements Serializable {
                     }
 
                     if (var5 > var8) {
-                        var12 = var8 + 1.0F;
+                        var12 = var8 + 1F;
                     }
 
                     if (var5 < var8) {
                         var12 = var8;
                     }
 
-                    float var13 = 999.0F;
-                    float var14 = 999.0F;
-                    float var15 = 999.0F;
+                    float var13 = 999F;
+                    float var14 = 999F;
+                    float var15 = 999F;
                     float var16 = var2.x - var1.x;
                     float var17 = var2.y - var1.y;
                     float var18 = var2.z - var1.z;
-                    if (var10 != 999.0F) {
+                    if (var10 != 999F) {
                         var13 = (var10 - var1.x) / var16;
                     }
 
-                    if (var11 != 999.0F) {
+                    if (var11 != 999F) {
                         var14 = (var11 - var1.y) / var17;
                     }
 
-                    if (var12 != 999.0F) {
+                    if (var12 != 999F) {
                         var15 = (var12 - var1.z) / var18;
                     }
 
@@ -262,15 +262,15 @@ public class Level implements Serializable {
         int var5 = (int) var1.y1 + 1;
         int var6 = (int) var1.z0;
         int var7 = (int) var1.z1 + 1;
-        if (var1.x0 < 0.0F) {
+        if (var1.x0 < 0F) {
             --var2;
         }
 
-        if (var1.y0 < 0.0F) {
+        if (var1.y0 < 0F) {
             --var4;
         }
 
-        if (var1.z0 < 0.0F) {
+        if (var1.z0 < 0F) {
             --var6;
         }
 
@@ -320,15 +320,15 @@ public class Level implements Serializable {
         int var6 = (int) var1.y1 + 1;
         int var7 = (int) var1.z0;
         int var8 = (int) var1.z1 + 1;
-        if (var1.x0 < 0.0F) {
+        if (var1.x0 < 0F) {
             --var3;
         }
 
-        if (var1.y0 < 0.0F) {
+        if (var1.y0 < 0F) {
             --var5;
         }
 
-        if (var1.z0 < 0.0F) {
+        if (var1.z0 < 0F) {
             --var7;
         }
 
@@ -377,15 +377,15 @@ public class Level implements Serializable {
         int var6 = (int) var1.y1 + 1;
         int var7 = (int) var1.z0;
         int var8 = (int) var1.z1 + 1;
-        if (var1.x0 < 0.0F) {
+        if (var1.x0 < 0F) {
             --var3;
         }
 
-        if (var1.y0 < 0.0F) {
+        if (var1.y0 < 0F) {
             --var5;
         }
 
-        if (var1.z0 < 0.0F) {
+        if (var1.z0 < 0F) {
             --var7;
         }
 
@@ -446,12 +446,12 @@ public class Level implements Serializable {
     }
 
     public void explode(Entity var1, float var2, float var3, float var4, float var5) {
-        int var6 = (int) (var2 - var5 - 1.0F);
-        int var7 = (int) (var2 + var5 + 1.0F);
-        int var8 = (int) (var3 - var5 - 1.0F);
-        int var9 = (int) (var3 + var5 + 1.0F);
-        int var10 = (int) (var4 - var5 - 1.0F);
-        int var11 = (int) (var4 + var5 + 1.0F);
+        int var6 = (int) (var2 - var5 - 1F);
+        int var7 = (int) (var2 + var5 + 1F);
+        int var8 = (int) (var3 - var5 - 1F);
+        int var9 = (int) (var3 + var5 + 1F);
+        int var10 = (int) (var4 - var5 - 1F);
+        int var11 = (int) (var4 + var5 + 1F);
 
         int var13;
         float var15;
@@ -480,9 +480,9 @@ public class Level implements Serializable {
 
         for (var13 = 0; var13 < var18.size(); ++var13) {
             Entity var20;
-            if ((var15 = (var20 = (Entity) var18.get(var13)).distanceTo(var2, var3, var4) / var5) <= 1.0F) {
-                var16 = 1.0F - var15;
-                var20.hurt(var1, (int) (var16 * 15.0F + 1.0F));
+            if ((var15 = (var20 = (Entity) var18.get(var13)).distanceTo(var2, var3, var4) / var5) <= 1F) {
+                var16 = 1F - var15;
+                var20.hurt(var1, (int) (var16 * 15F + 1F));
             }
         }
 
@@ -540,12 +540,12 @@ public class Level implements Serializable {
     }
 
     public float getBrightness(int var1, int var2, int var3) {
-        return isLit(var1, var2, var3) ? 1.0F : 0.6F;
+        return isLit(var1, var2, var3) ? 1F : 0.6F;
     }
 
     public ColorCache getBrightnessColor(int var1, int var2, int var3) {
         float a = 0.6F, b = 0.6F, c = 0.6F;
-        float d = 1.0F, e = 1.0F, f = 1.0F;
+        float d = 1F, e = 1F, f = 1F;
         if (customShadowColour != null) {
             a = customShadowColour.R;
             b = customShadowColour.G;
@@ -568,11 +568,11 @@ public class Level implements Serializable {
         float var7 = var1.y;
         float var21 = var1.z;
         float var8 = 1.6F;
-        float var9 = 0.0F;
-        float var10 = 0.0F;
+        float var9 = 0F;
+        float var10 = 0F;
 
         for (int var11 = 0; var11 <= 200; ++var11) {
-            float var12 = ((float) var11 / (float) 200 - 0.5F) * 2.0F;
+            float var12 = ((float) var11 / (float) 200 - 0.5F) * 2F;
             int var13 = 0;
 
             while (var13 <= 200) {
@@ -602,16 +602,16 @@ public class Level implements Serializable {
             }
         }
 
-        if (var9 == 0.0F) {
-            return 0.0F;
+        if (var9 == 0F) {
+            return 0F;
         } else {
             float var22;
-            if ((var22 = var10 / var9 / 0.1F) > 1.0F) {
-                var22 = 1.0F;
+            if ((var22 = var10 / var9 / 0.1F) > 1F) {
+                var22 = 1F;
             }
 
-            var22 = 1.0F - var22;
-            return 1.0F - var22 * var22 * var22;
+            var22 = 1F - var22;
+            return 1F - var22 * var22 * var22;
         }
     }
 
@@ -619,8 +619,8 @@ public class Level implements Serializable {
         int var5 = (int) var1;
         int var14 = (int) var2;
         int var6 = (int) var3;
-        float var7 = 0.0F;
-        float var8 = 0.0F;
+        float var7 = 0F;
+        float var8 = 0F;
 
         for (int var9 = var5 - 6; var9 <= var5 + 6; ++var9) {
             for (int var10 = var6 - 6; var10 <= var6 + 6; ++var10) {
@@ -630,7 +630,7 @@ public class Level implements Serializable {
                     float var12;
                     float var13;
                     for (var13 = (float) (Math.atan2(var12 = var10 + 0.5F - var3, var11) - var4
-                            * (float) Math.PI / 180.0F + 1.5707963705062866D); var13 < -(float) Math.PI; var13 += 6.2831855F) {
+                            * (float) Math.PI / 180F + 1.5707963705062866D); var13 < -(float) Math.PI; var13 += 6.2831855F) {
                         ;
                     }
 
@@ -638,18 +638,18 @@ public class Level implements Serializable {
                         var13 -= 6.2831855F;
                     }
 
-                    if (var13 < 0.0F) {
+                    if (var13 < 0F) {
                         var13 = -var13;
                     }
 
-                    var11 = MathHelper.sqrt(var11 * var11 + 4.0F + var12 * var12);
-                    var11 = 1.0F / var11;
-                    if (var13 > 1.0F) {
-                        var11 = 0.0F;
+                    var11 = MathHelper.sqrt(var11 * var11 + 4F + var12 * var12);
+                    var11 = 1F / var11;
+                    if (var13 > 1F) {
+                        var11 = 0F;
                     }
 
-                    if (var11 < 0.0F) {
-                        var11 = 0.0F;
+                    if (var11 < 0F) {
+                        var11 = 0F;
                     }
 
                     var8 += var11;
@@ -660,8 +660,8 @@ public class Level implements Serializable {
             }
         }
 
-        if (var8 == 0.0F) {
-            return 0.0F;
+        if (var8 == 0F) {
+            return 0F;
         } else {
             return var7 / var8;
         }
@@ -675,15 +675,15 @@ public class Level implements Serializable {
         int var6 = (int) var1.y1 + 1;
         int var7 = (int) var1.z0;
         int var8 = (int) var1.z1 + 1;
-        if (var1.x0 < 0.0F) {
+        if (var1.x0 < 0F) {
             --var3;
         }
 
-        if (var1.y0 < 0.0F) {
+        if (var1.y0 < 0F) {
             --var5;
         }
 
-        if (var1.z0 < 0.0F) {
+        if (var1.z0 < 0F) {
             --var7;
         }
         for (; var3 < var4; ++var3) {
@@ -711,7 +711,7 @@ public class Level implements Serializable {
     }
 
     public float getGroundLevel() {
-        return getWaterLevel() - 2.0F;
+        return getWaterLevel() - 2F;
     }
 
     public int getHighestTile(int var1, int var2) {
@@ -943,7 +943,7 @@ public class Level implements Serializable {
             }
 
             AudioInfo var6;
-            if (var2.distanceToSqr(var5.player) < 1024.0F
+            if (var2.distanceToSqr(var5.player) < 1024F
                     && (var6 = var5.sound.getAudioInfo(var1, var3, var4)) != null) {
                 var5.soundPlayer.play(var6, new EntitySoundPos(var2, var5.player));
             }

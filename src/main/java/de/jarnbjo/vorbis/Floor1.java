@@ -209,7 +209,7 @@ class Floor1 extends Floor implements Cloneable {
 
         float[] vector2 = new float[vector.length];
         float[] vector3 = new float[vector.length];
-        Arrays.fill(vector2, 1.0f);
+        Arrays.fill(vector2, 1F);
         System.arraycopy(vector, 0, vector3, 0, vector.length);
 
         for (int i = 1; i < values; i++) {

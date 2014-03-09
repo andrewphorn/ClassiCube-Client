@@ -9,7 +9,7 @@ public final class SaplingBlock extends FlowerBlock {
     protected SaplingBlock(int var1) {
         super(var1);
         float var3 = 0.4F;
-        setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F, var3 * 2.0F, var3 + 0.5F);
+        setBounds(0.5F - var3, 0F, 0.5F - var3, var3 + 0.5F, var3 * 2F, var3 + 0.5F);
     }
 
     @Override

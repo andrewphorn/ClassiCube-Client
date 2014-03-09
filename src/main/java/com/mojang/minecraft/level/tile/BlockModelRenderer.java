@@ -21,7 +21,7 @@ public class BlockModelRenderer {
 
     public BlockModelRenderer(int id) {
         textureId = id;
-        setBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+        setBounds(0F, 0F, 0F, 1F, 1F, 1F);
     }
 
     public boolean canRenderSide(int x, int y, int z, int side) {
@@ -119,7 +119,7 @@ public class BlockModelRenderer {
     }
 
     protected ColorCache getBrightness(int x, int y, int z) {
-        return new ColorCache(1.0f, 1.0f, 1.0f);
+        return new ColorCache(1F, 1F, 1F);
     }
 
     public AABB getCollisionBox(int x, int y, int z) {
@@ -148,7 +148,7 @@ public class BlockModelRenderer {
         shapeRenderer.color(red, red, red);
         renderInside(shapeRenderer, -2, 0, 0, 0);
 
-        shapeRenderer.color(1.0F, 1.0F, 1.0F);
+        shapeRenderer.color(1F, 1F, 1F);
         renderInside(shapeRenderer, -2, 0, 0, 1);
 
         shapeRenderer.color(green, green, green);
@@ -177,27 +177,27 @@ public class BlockModelRenderer {
 
         for (int face = 0; face < 6; ++face) {
             if (face == 0) {
-                shapeRenderer.normal(0.0F, 1.0F, 0.0F);
+                shapeRenderer.normal(0F, 1F, 0F);
             }
 
             if (face == 1) {
-                shapeRenderer.normal(0.0F, -1.0F, 0.0F);
+                shapeRenderer.normal(0F, -1F, 0F);
             }
 
             if (face == 2) {
-                shapeRenderer.normal(0.0F, 0.0F, 1.0F);
+                shapeRenderer.normal(0F, 0F, 1F);
             }
 
             if (face == 3) {
-                shapeRenderer.normal(0.0F, 0.0F, -1.0F);
+                shapeRenderer.normal(0F, 0F, -1F);
             }
 
             if (face == 4) {
-                shapeRenderer.normal(1.0F, 0.0F, 0.0F);
+                shapeRenderer.normal(1F, 0F, 0F);
             }
 
             if (face == 5) {
-                shapeRenderer.normal(-1.0F, 0.0F, 0.0F);
+                shapeRenderer.normal(-1F, 0F, 0F);
             }
 
             renderInside(shapeRenderer, 0, 0, 0, face);
@@ -211,9 +211,9 @@ public class BlockModelRenderer {
 
         int var6;
         float var7;
-        float var8 = (var7 = (var6 = getTextureId(var5)) % 16 / 16.0F) + 0.0624375F;
+        float var8 = (var7 = (var6 = getTextureId(var5)) % 16 / 16F) + 0.0624375F;
         float var16;
-        float var9 = (var16 = var6 / 16 / 16.0F) + 0.0624375F;
+        float var9 = (var16 = var6 / 16 / 16F) + 0.0624375F;
         float var10 = var2 + x1;
         float var14 = var2 + x2;
         float var11 = var3 + y1;
@@ -268,17 +268,17 @@ public class BlockModelRenderer {
     public void renderSide(ShapeRenderer shapeRenderer, int x, int y, int z, int side, int textureID) {
         int var7 = textureID % 16 << 4;
         int var8 = textureID / 16 << 4;
-        float var9 = var7 / 256.0F;
-        float var17 = (var7 + 15.99F) / 256.0F;
-        float var10 = var8 / 256.0F;
-        float var11 = (var8 + 15.99F) / 256.0F;
+        float var9 = var7 / 256F;
+        float var17 = (var7 + 15.99F) / 256F;
+        float var10 = var8 / 256F;
+        float var11 = (var8 + 15.99F) / 256F;
         if (side >= 2 && textureID < 240) {
-            if (y1 >= 0.0F && y2 <= 1.0F) {
-                var10 = (var8 + y1 * 15.99F) / 256.0F;
-                var11 = (var8 + y2 * 15.99F) / 256.0F;
+            if (y1 >= 0F && y2 <= 1F) {
+                var10 = (var8 + y1 * 15.99F) / 256F;
+                var11 = (var8 + y2 * 15.99F) / 256F;
             } else {
-                var10 = var8 / 256.0F;
-                var11 = (var8 + 15.99F) / 256.0F;
+                var10 = var8 / 256F;
+                var11 = (var8 + 15.99F) / 256F;
             }
         }
 

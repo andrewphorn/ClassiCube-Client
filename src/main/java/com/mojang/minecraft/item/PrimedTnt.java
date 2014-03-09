@@ -32,15 +32,15 @@ public class PrimedTnt extends Entity {
 
         setSize(0.98F, 0.98F);
 
-        heightOffset = bbHeight / 2.0F;
+        heightOffset = bbHeight / 2F;
 
         setPos(x, y, z);
 
-        float unknown0 = (float) (Math.random() * 3.1415927410125732D * 2.0D);
+        float unknown0 = (float) (Math.random() * 3.1415927410125732D * 2D);
 
-        xd = -MathHelper.sin(unknown0 * (float) Math.PI / 180.0F) * 0.02F;
+        xd = -MathHelper.sin(unknown0 * (float) Math.PI / 180F) * 0.02F;
         yd = 0.2F;
-        zd = -MathHelper.cos(unknown0 * (float) Math.PI / 180.0F) * 0.02F;
+        zd = -MathHelper.cos(unknown0 * (float) Math.PI / 180F) * 0.02F;
 
         makeStepSound = false;
 
@@ -97,7 +97,7 @@ public class PrimedTnt extends Entity {
         float brightness = level.getBrightness((int) x, (int) y, (int) z);
 
         GL11.glPushMatrix();
-        GL11.glColor4f(brightness, brightness, brightness, 1.0F);
+        GL11.glColor4f(brightness, brightness, brightness, 1F);
         GL11.glTranslatef(xo + (x - xo) * unknown0 - 0.5F, yo + (y - yo) * unknown0 - 0.5F, zo
                 + (z - zo) * unknown0 - 0.5F);
         GL11.glPushMatrix();
@@ -108,14 +108,14 @@ public class PrimedTnt extends Entity {
 
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, (life / 4 + 1) % 2 * 0.4F);
+        GL11.glColor4f(1F, 1F, 1F, (life / 4 + 1) % 2 * 0.4F);
 
         if (life <= 16) {
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, (life + 1) % 2 * 0.6F);
+            GL11.glColor4f(1F, 1F, 1F, (life + 1) % 2 * 0.6F);
         }
 
         if (life <= 2) {
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
+            GL11.glColor4f(1F, 1F, 1F, 0.9F);
         }
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -159,14 +159,14 @@ public class PrimedTnt extends Entity {
                 remove();
 
                 Random random = new Random();
-                float radius = 4.0F;
+                float radius = 4F;
 
                 level.explode(null, x, y, z, radius);
 
                 for (int i = 0; i < 100; i++) {
-                    float unknown0 = (float) random.nextGaussian() * radius / 4.0F;
-                    float unknown1 = (float) random.nextGaussian() * radius / 4.0F;
-                    float unknown2 = (float) random.nextGaussian() * radius / 4.0F;
+                    float unknown0 = (float) random.nextGaussian() * radius / 4F;
+                    float unknown1 = (float) random.nextGaussian() * radius / 4F;
+                    float unknown2 = (float) random.nextGaussian() * radius / 4F;
                     float unknown3 = MathHelper.sqrt(unknown0 * unknown0 + unknown1 * unknown1
                             + unknown2 * unknown2);
                     float unknown4 = unknown0 / unknown3 / unknown3;

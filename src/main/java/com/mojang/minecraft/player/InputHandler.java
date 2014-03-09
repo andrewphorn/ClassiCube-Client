@@ -2,8 +2,8 @@ package com.mojang.minecraft.player;
 
 public class InputHandler {
 
-    public float xxa = 0.0F;
-    public float yya = 0.0F;
+    public float xxa = 0F;
+    public float yya = 0F;
     public boolean jumping = false;
 
     public boolean running = false;
@@ -15,10 +15,10 @@ public class InputHandler {
     public boolean flyingDown = false;
     public boolean flying = false;
 
-    public float move = 0.0F;
-    public float strafe = 0.0F;
-    public float elevate = 0.0F;
-    public float mult = 1.0F;
+    public float move = 0F;
+    public float strafe = 0F;
+    public float elevate = 0F;
+    public float mult = 1F;
     public boolean fall = false;
     public boolean jump = false;
     public boolean cliplock = false;

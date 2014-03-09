@@ -83,10 +83,10 @@ public final class HUDScreen extends Screen {
     TextureManager var6 = mc.textureManager;
     GL11.glBindTexture(3553, mc.textureManager.load("/gui/gui.png"));
     ShapeRenderer var7 = ShapeRenderer.instance;
-    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    GL11.glColor4f(1F, 1F, 1F, 1F);
     GL11.glEnable(3042);
     Inventory var8 = mc.player.inventory;
-    imgZ = -90.0F;
+    imgZ = -90F;
     drawImage(width / 2 - 91, height - 22, 0, 0, 182, 22);
     drawImage(width / 2 - 91 - 1 + var8.selected * 20, height - 22 - 1, 0,
         22, 24, 22);
@@ -139,8 +139,8 @@ public final class HUDScreen extends Screen {
 
         if (mc.player.isUnderWater()) {
         var12 = (int) Math
-            .ceil((mc.player.airSupply - 2) * 10.0D / 300.0D);
-        var26 = (int) Math.ceil(mc.player.airSupply * 10.0D / 300.0D)
+            .ceil((mc.player.airSupply - 2) * 10D / 300D);
+        var26 = (int) Math.ceil(mc.player.airSupply * 10D / 300D)
             - var12;
 
         for (i = 0; i < var12 + var26; ++i) {
@@ -163,25 +163,25 @@ public final class HUDScreen extends Screen {
         i = height - 16;
         if ((var15 = var8.slots[var12]) > 0) {
         GL11.glPushMatrix();
-        GL11.glTranslatef(var26, i, -50.0F);
+        GL11.glTranslatef(var26, i, -50F);
         if (var8.popTime[var12] > 0) {
             float var18;
             float var21 = -MathHelper
-                .sin((var18 = (var8.popTime[var12] - var1) / 5.0F)
-                    * var18 * 3.1415927F) * 8.0F;
-            float var19 = MathHelper.sin(var18 * var18 * 3.1415927F) + 1.0F;
-            float var16 = MathHelper.sin(var18 * 3.1415927F) + 1.0F;
-            GL11.glTranslatef(10.0F, var21 + 10.0F, 0.0F);
-            GL11.glScalef(var19, var16, 1.0F);
-            GL11.glTranslatef(-10.0F, -10.0F, 0.0F);
+                .sin((var18 = (var8.popTime[var12] - var1) / 5F)
+                    * var18 * 3.1415927F) * 8F;
+            float var19 = MathHelper.sin(var18 * var18 * 3.1415927F) + 1F;
+            float var16 = MathHelper.sin(var18 * 3.1415927F) + 1F;
+            GL11.glTranslatef(10F, var21 + 10F, 0F);
+            GL11.glScalef(var19, var16, 1F);
+            GL11.glTranslatef(-10F, -10F, 0F);
         }
 
-        GL11.glScalef(10.0F, 10.0F, 10.0F);
-        GL11.glTranslatef(1.0F, 0.5F, 0.0F);
-        GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
-        GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+        GL11.glScalef(10F, 10F, 10F);
+        GL11.glTranslatef(1F, 0.5F, 0F);
+        GL11.glRotatef(-30F, 1F, 0F, 0F);
+        GL11.glRotatef(45F, 0F, 1F, 0F);
         GL11.glTranslatef(-1.5F, 0.5F, 0.5F);
-        GL11.glScalef(-1.0F, -1.0F, -1.0F);
+        GL11.glScalef(-1F, -1F, -1F);
         int var20 = var6.load("/terrain.png");
         GL11.glBindTexture(3553, var20);
         var7.begin();
@@ -200,7 +200,7 @@ public final class HUDScreen extends Screen {
     // var5.render("Development Build", 2, 32, 16777215);
     if (mc.settings.showDebug) {
         GL11.glPushMatrix();
-        GL11.glScalef(0.7F, 0.7F, 1.0F);
+        GL11.glScalef(0.7F, 0.7F, 1F);
         fontRenderer.render("ClassiCube", 2, 2, 16777215); // lol fuck that.
         fontRenderer.render(mc.debug, 2, 12, 16777215);
         fontRenderer.render("Position: (" + (int) mc.player.x + ", "
@@ -230,13 +230,13 @@ public final class HUDScreen extends Screen {
                 height - 55, 16777215);
 
         GL11.glPushMatrix();
-        GL11.glScalef(1.5F, 1.5F, 1.0F);
+        GL11.glScalef(1.5F, 1.5F, 1F);
         fontRenderer.render(Announcement,
                 (width / 3) - (fontRenderer.getWidth(Announcement) / 2),
                 35, 16777215);
         GL11.glPopMatrix();
     GL11.glPushMatrix();
-    GL11.glScalef(0.7F, 0.7F, 1.0F);
+    GL11.glScalef(0.7F, 0.7F, 1F);
     if (mc.player.flyingMode && !mc.player.noPhysics) {
         fontRenderer.render("Fly: ON.", 2, 32, 16777215);
     } else if (!mc.player.flyingMode && mc.player.noPhysics) {
@@ -312,7 +312,7 @@ public final class HUDScreen extends Screen {
         GL11.glDisable(3553);
         GL11.glBlendFunc(770, 771);
         GL11.glBegin(7);
-        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.7F);
+        GL11.glColor4f(0F, 0F, 0F, 0.7F);
         GL11.glVertex2f(i + 132, var15 - 72 - 12);
         GL11.glVertex2f(i - 132, var15 - 72 - 12);
         GL11.glColor4f(0.2F, 0.2F, 0.2F, 0.8F);

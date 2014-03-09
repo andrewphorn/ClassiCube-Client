@@ -28,13 +28,13 @@ final class Creeper$1 extends BasicAttackAI {
 
     @Override
     public final void beforeRemove() {
-        float var1 = 4.0F;
+        float var1 = 4F;
         level.explode(mob, mob.x, mob.y, mob.z, var1);
 
         for (int var2 = 0; var2 < 500; ++var2) {
-            float var3 = (float) random.nextGaussian() * var1 / 4.0F;
-            float var4 = (float) random.nextGaussian() * var1 / 4.0F;
-            float var5 = (float) random.nextGaussian() * var1 / 4.0F;
+            float var3 = (float) random.nextGaussian() * var1 / 4F;
+            float var4 = (float) random.nextGaussian() * var1 / 4F;
+            float var5 = (float) random.nextGaussian() * var1 / 4F;
             float var6 = MathHelper.sqrt(var3 * var3 + var4 * var4 + var5 * var5);
             float var7 = var3 / var6 / var6;
             float var8 = var4 / var6 / var6;

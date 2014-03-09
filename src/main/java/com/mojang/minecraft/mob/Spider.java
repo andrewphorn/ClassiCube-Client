@@ -15,7 +15,7 @@ public class Spider extends QuadrupedMob {
         setSize(1.4F, 0.9F);
         this.setPos(var2, var3, var4);
         deathScore = 105;
-        bobStrength = 0.0F;
+        bobStrength = 0F;
         ai = new JumpAttackAI();
     }
 }

@@ -6,11 +6,11 @@ public class Timer {
     double lastHR;
     public int elapsedTicks;
     public float delta;
-    public float speed = 1.0F;
-    public float elapsedDelta = 0.0F;
+    public float speed = 1F;
+    public float elapsedDelta = 0F;
     long lastSysClock;
     long lastHRClock;
-    double adjustment = 1.0D;
+    double adjustment = 1D;
 
     public Timer(float tps) {
         this.tps = tps;

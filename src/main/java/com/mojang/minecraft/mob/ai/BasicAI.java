@@ -58,7 +58,7 @@ public class BasicAI extends AI {
             float var4 = var3.x - var2.x;
             float var5 = var3.y - var2.y;
             float var6 = var3.z - var2.z;
-            if (var4 * var4 + var5 * var5 + var6 * var6 < 1024.0F) {
+            if (var4 * var4 + var5 * var5 + var6 * var6 < 1024F) {
                 noActionTime = 0;
             } else {
                 var2.remove();
@@ -73,9 +73,9 @@ public class BasicAI extends AI {
 
         if (var2.health <= 0) {
             jumping = false;
-            xxa = 0.0F;
-            yya = 0.0F;
-            yRotA = 0.0F;
+            xxa = 0F;
+            yya = 0F;
+            yRotA = 0F;
         } else {
             update();
         }
@@ -211,7 +211,7 @@ public class BasicAI extends AI {
         yRotA *= 0.9F;
         var2.travel(xxa, yya);
         List<Entity> var11;
-        if ((var11 = var1.findEntities(var2, var2.bb.grow(0.2F, 0.0F, 0.2F))) != null
+        if ((var11 = var1.findEntities(var2, var2.bb.grow(0.2F, 0F, 0.2F))) != null
                 && var11.size() > 0) {
             for (int var8 = 0; var8 < var11.size(); ++var8) {
                 Entity var10;
@@ -230,7 +230,7 @@ public class BasicAI extends AI {
 
         jumping = random.nextFloat() < 0.01F;
         if (random.nextFloat() < 0.04F) {
-            yRotA = (random.nextFloat() - 0.5F) * 60.0F;
+            yRotA = (random.nextFloat() - 0.5F) * 60F;
         }
 
         mob.yRot += yRotA;

@@ -8,12 +8,12 @@ public class SmokeParticle extends Particle {
     private static final long serialVersionUID = 1L;
 
     public SmokeParticle(Level var1, float var2, float var3, float var4) {
-        super(var1, var2, var3, var4, 0.0F, 0.0F, 0.0F);
+        super(var1, var2, var3, var4, 0F, 0F, 0F);
         xd *= 0.1F;
         yd *= 0.1F;
         zd *= 0.1F;
         rCol = gCol = bCol = (float) (Math.random() * 0.30000001192092896D);
-        lifetime = (int) (8.0D / (Math.random() * 0.8D + 0.2D));
+        lifetime = (int) (8D / (Math.random() * 0.8D + 0.2D));
         noPhysics = true;
     }
 

@@ -9,9 +9,9 @@ public class ZombieModel extends HumanoidModel {
             float var6) {
         super.setRotationAngles(var1, var2, var3, var4, var5, var6);
         var1 = MathHelper.sin(attackOffset * (float) Math.PI);
-        var2 = MathHelper.sin((1.0F - (1.0F - attackOffset) * (1.0F - attackOffset)) * (float) Math.PI);
-        rightArm.roll = 0.0F;
-        leftArm.roll = 0.0F;
+        var2 = MathHelper.sin((1F - (1F - attackOffset) * (1F - attackOffset)) * (float) Math.PI);
+        rightArm.roll = 0F;
+        leftArm.roll = 0F;
         rightArm.yaw = -(0.1F - var1 * 0.6F);
         leftArm.yaw = 0.1F - var1 * 0.6F;
         rightArm.pitch = -(float) (Math.PI / 2D);

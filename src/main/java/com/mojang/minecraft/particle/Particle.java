@@ -24,21 +24,21 @@ public class Particle extends Entity {
             float var7) {
         super(var1);
         setSize(0.2F, 0.2F);
-        heightOffset = bbHeight / 2.0F;
+        heightOffset = bbHeight / 2F;
         this.setPos(var2, var3, var4);
-        rCol = gCol = bCol = 1.0F;
-        xd = var5 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
-        yd = var6 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
-        zd = var7 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
-        float var8 = (float) (Math.random() + Math.random() + 1.0D) * 0.15F;
+        rCol = gCol = bCol = 1F;
+        xd = var5 + (float) (Math.random() * 2D - 1D) * 0.4F;
+        yd = var6 + (float) (Math.random() * 2D - 1D) * 0.4F;
+        zd = var7 + (float) (Math.random() * 2D - 1D) * 0.4F;
+        float var8 = (float) (Math.random() + Math.random() + 1D) * 0.15F;
         var2 = MathHelper.sqrt(xd * xd + yd * yd + zd * zd);
         xd = xd / var2 * var8 * 0.4F;
         yd = yd / var2 * var8 * 0.4F + 0.1F;
         zd = zd / var2 * var8 * 0.4F;
-        uo = (float) Math.random() * 3.0F;
-        vo = (float) Math.random() * 3.0F;
+        uo = (float) Math.random() * 3F;
+        vo = (float) Math.random() * 3F;
         size = (float) (Math.random() * 0.5D + 0.5D);
-        lifetime = (int) (4.0D / (Math.random() * 0.9D + 0.1D));
+        lifetime = (int) (4D / (Math.random() * 0.9D + 0.1D));
         age = 0;
         makeStepSound = false;
     }
@@ -50,9 +50,9 @@ public class Particle extends Entity {
     public void render(ShapeRenderer var1, float var2, float var3, float var4, float var5,
             float var6, float var7) {
         float var8;
-        float var9 = (var8 = tex % 16 / 16.0F) + 0.0624375F;
+        float var9 = (var8 = tex % 16 / 16F) + 0.0624375F;
         float var10;
-        float var11 = (var10 = tex / 16 / 16.0F) + 0.0624375F;
+        float var11 = (var10 = tex / 16 / 16F) + 0.0624375F;
         float var12 = 0.1F * size;
         float var13 = xo + (x - xo) * var2;
         float var14 = yo + (y - yo) * var2;

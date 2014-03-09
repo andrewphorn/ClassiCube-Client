@@ -12,23 +12,23 @@ public class AnimalModel extends Model {
     public ModelPart leg4;
 
     public AnimalModel(int var1) {
-        head.setBounds(-4.0F, -4.0F, -8.0F, 8, 8, 8, 0.0F);
-        head.setPosition(0.0F, 18 - var1, -6.0F);
+        head.setBounds(-4F, -4F, -8F, 8, 8, 8, 0F);
+        head.setPosition(0F, 18 - var1, -6F);
         body = new ModelPart(28, 8);
-        body.setBounds(-5.0F, -10.0F, -7.0F, 10, 16, 8, 0.0F);
-        body.setPosition(0.0F, 17 - var1, 2.0F);
+        body.setBounds(-5F, -10F, -7F, 10, 16, 8, 0F);
+        body.setPosition(0F, 17 - var1, 2F);
         leg1 = new ModelPart(0, 16);
-        leg1.setBounds(-2.0F, 0.0F, -2.0F, 4, var1, 4, 0.0F);
-        leg1.setPosition(-3.0F, 24 - var1, 7.0F);
+        leg1.setBounds(-2F, 0F, -2F, 4, var1, 4, 0F);
+        leg1.setPosition(-3F, 24 - var1, 7F);
         leg2 = new ModelPart(0, 16);
-        leg2.setBounds(-2.0F, 0.0F, -2.0F, 4, var1, 4, 0.0F);
-        leg2.setPosition(3.0F, 24 - var1, 7.0F);
+        leg2.setBounds(-2F, 0F, -2F, 4, var1, 4, 0F);
+        leg2.setPosition(3F, 24 - var1, 7F);
         leg3 = new ModelPart(0, 16);
-        leg3.setBounds(-2.0F, 0.0F, -2.0F, 4, var1, 4, 0.0F);
-        leg3.setPosition(-3.0F, 24 - var1, -5.0F);
+        leg3.setBounds(-2F, 0F, -2F, 4, var1, 4, 0F);
+        leg3.setPosition(-3F, 24 - var1, -5F);
         leg4 = new ModelPart(0, 16);
-        leg4.setBounds(-2.0F, 0.0F, -2.0F, 4, var1, 4, 0.0F);
-        leg4.setPosition(3.0F, 24 - var1, -5.0F);
+        leg4.setBounds(-2F, 0F, -2F, 4, var1, 4, 0F);
+        leg4.setPosition(3F, 24 - var1, -5F);
     }
 
     @Override

@@ -41,23 +41,23 @@ public abstract class Entity implements Serializable {
     public boolean collision = false;
     public boolean slide = true;
     public boolean removed = false;
-    public float heightOffset = 0.0F;
+    public float heightOffset = 0F;
     public float bbWidth = 0.6F;
     public float bbHeight = 1.8F;
-    public float walkDistO = 0.0F;
-    public float walkDist = 0.0F;
+    public float walkDistO = 0F;
+    public float walkDist = 0F;
     public boolean makeStepSound = true;
-    public float fallDistance = 0.0F;
+    public float fallDistance = 0F;
     private int nextStep = 1;
     public BlockMap blockMap;
     public float xOld;
     public float yOld;
     public float zOld;
     public int textureId = 0;
-    public float ySlideOffset = 0.0F;
-    public float footSize = 0.0F;
+    public float ySlideOffset = 0F;
+    public float footSize = 0F;
     public boolean noPhysics = false;
-    public float pushthrough = 0.0F;
+    public float pushthrough = 0F;
     public boolean hovered = false;
     public boolean flyingMode = false;
 
@@ -68,7 +68,7 @@ public abstract class Entity implements Serializable {
 
     public Entity(Level var1) {
         level = var1;
-        this.setPos(0.0F, 0.0F, 0.0F);
+        this.setPos(0F, 0F, 0F);
     }
 
     public void awardKillScore(Entity var1, int var2) {
@@ -130,7 +130,7 @@ public abstract class Entity implements Serializable {
      */
     public float getBrightness() {
         int posX = (int) x;
-        int posY = (int) (y + heightOffset / 2.0F - 0.5F);
+        int posY = (int) (y + heightOffset / 2F - 0.5F);
         int posZ = (int) z;
         return level.getBrightness(posX, posY, posZ);
     }
@@ -142,7 +142,7 @@ public abstract class Entity implements Serializable {
      */
     public ColorCache getBrightnessColor() {
         int posX = (int) x;
-        int posY = (int) (y + heightOffset / 2.0F - 0.5F);
+        int posY = (int) (y + heightOffset / 2F - 0.5F);
         int posZ = (int) z;
         return level.getBrightnessColor(posX, posY, posZ);
     }
@@ -162,12 +162,12 @@ public abstract class Entity implements Serializable {
     public void interpolateTurn(float var1, float var2) {
         yRot = (float) (yRot + var1 * 0.15D);
         xRot = (float) (xRot - var2 * 0.15D);
-        if (xRot < -90.0F) {
-            xRot = -90.0F;
+        if (xRot < -90F) {
+            xRot = -90F;
         }
 
-        if (xRot > 90.0F) {
-            xRot = 90.0F;
+        if (xRot > 90F) {
+            xRot = 90F;
         }
 
     }
@@ -195,15 +195,15 @@ public abstract class Entity implements Serializable {
 
     public boolean isInLava() {
         return level
-                .containsLiquid(bb.grow(0.0F, -0.4F, 0.0F), LiquidType.lava);
+                .containsLiquid(bb.grow(0F, -0.4F, 0F), LiquidType.lava);
     }
 
     public boolean isInOrOnRope() {
-        return level.containsBlock(bb.grow(-0.5F, 0.0F, -0.5F), Block.ROPE);
+        return level.containsBlock(bb.grow(-0.5F, 0F, -0.5F), Block.ROPE);
     }
 
     public boolean isInWater() {
-        return level.containsLiquid(bb.grow(0.0F, -0.4F, 0.0F),
+        return level.containsLiquid(bb.grow(0F, -0.4F, 0F),
                 LiquidType.water);
     }
 
@@ -235,11 +235,11 @@ public abstract class Entity implements Serializable {
     public void move(float var1, float var2, float var3) {
         if (noPhysics) {
             bb.move(var1, var2, var3);
-            x = (bb.x0 + bb.x1) / 2.0F;
+            x = (bb.x0 + bb.x1) / 2F;
             // if((this.bb.y0 + this.heightOffset - this.ySlideOffset) > y){
             y = bb.y0 + heightOffset - ySlideOffset;
             // }
-            z = (bb.z0 + bb.z1) / 2.0F;
+            z = (bb.z0 + bb.z1) / 2F;
             // this.yd = 0;
         } else {
             float var4 = x;
@@ -254,41 +254,41 @@ public abstract class Entity implements Serializable {
                 var2 = var10.get(var11).clipYCollide(bb, var2);
             }
 
-            bb.move(0.0F, var2, 0.0F);
+            bb.move(0F, var2, 0F);
             if (!slide && var7 != var2) {
-                var3 = 0.0F;
-                var2 = 0.0F;
-                var1 = 0.0F;
+                var3 = 0F;
+                var2 = 0F;
+                var1 = 0F;
             }
 
-            boolean var16 = onGround || var7 != var2 && var7 < 0.0F;
+            boolean var16 = onGround || var7 != var2 && var7 < 0F;
 
             int var12;
             for (var12 = 0; var12 < var10.size(); ++var12) {
                 var1 = var10.get(var12).clipXCollide(bb, var1);
             }
 
-            bb.move(var1, 0.0F, 0.0F);
+            bb.move(var1, 0F, 0F);
             if (!slide && var6 != var1) {
-                var3 = 0.0F;
-                var2 = 0.0F;
-                var1 = 0.0F;
+                var3 = 0F;
+                var2 = 0F;
+                var1 = 0F;
             }
 
             for (var12 = 0; var12 < var10.size(); ++var12) {
                 var3 = var10.get(var12).clipZCollide(bb, var3);
             }
 
-            bb.move(0.0F, 0.0F, var3);
+            bb.move(0F, 0F, var3);
             if (!slide && var8 != var3) {
-                var3 = 0.0F;
-                var2 = 0.0F;
-                var1 = 0.0F;
+                var3 = 0F;
+                var2 = 0F;
+                var1 = 0F;
             }
 
             float var17;
             float var18;
-            if (footSize > 0.0F && var16 && ySlideOffset < 0.05F
+            if (footSize > 0F && var16 && ySlideOffset < 0.05F
                     && (var6 != var1 || var8 != var3)) {
                 var18 = var1;
                 var17 = var2;
@@ -305,33 +305,33 @@ public abstract class Entity implements Serializable {
                     var2 = var10.get(var15).clipYCollide(bb, var2);
                 }
 
-                bb.move(0.0F, var2, 0.0F);
+                bb.move(0F, var2, 0F);
                 if (!slide && var7 != var2) {
-                    var3 = 0.0F;
-                    var2 = 0.0F;
-                    var1 = 0.0F;
+                    var3 = 0F;
+                    var2 = 0F;
+                    var1 = 0F;
                 }
 
                 for (var15 = 0; var15 < var10.size(); ++var15) {
                     var1 = var10.get(var15).clipXCollide(bb, var1);
                 }
 
-                bb.move(var1, 0.0F, 0.0F);
+                bb.move(var1, 0F, 0F);
                 if (!slide && var6 != var1) {
-                    var3 = 0.0F;
-                    var2 = 0.0F;
-                    var1 = 0.0F;
+                    var3 = 0F;
+                    var2 = 0F;
+                    var1 = 0F;
                 }
 
                 for (var15 = 0; var15 < var10.size(); ++var15) {
                     var3 = var10.get(var15).clipZCollide(bb, var3);
                 }
 
-                bb.move(0.0F, 0.0F, var3);
+                bb.move(0F, 0F, var3);
                 if (!slide && var8 != var3) {
-                    var3 = 0.0F;
-                    var2 = 0.0F;
-                    var1 = 0.0F;
+                    var3 = 0F;
+                    var2 = 0F;
+                    var1 = 0F;
                 }
 
                 if (var18 * var18 + var13 * var13 >= var1 * var1 + var3 * var3) {
@@ -345,33 +345,33 @@ public abstract class Entity implements Serializable {
             }
 
             horizontalCollision = var6 != var1 || var8 != var3;
-            onGround = var7 != var2 && var7 < 0.0F;
+            onGround = var7 != var2 && var7 < 0F;
             collision = horizontalCollision || var7 != var2;
             if (onGround) {
-                if (fallDistance > 0.0F) {
+                if (fallDistance > 0F) {
                     causeFallDamage(fallDistance / 2);
-                    fallDistance = 0.0F;
+                    fallDistance = 0F;
                 }
-            } else if (var2 < 0.0F) {
+            } else if (var2 < 0F) {
                 fallDistance -= var2;
             }
 
             if (var6 != var1) {
-                xd = 0.0F;
+                xd = 0F;
             }
 
             if (var7 != var2) {
-                yd = 0.0F;
+                yd = 0F;
             }
 
             if (var8 != var3) {
-                zd = 0.0F;
+                zd = 0F;
             }
 
-            x = (bb.x0 + bb.x1) / 2.0F;
+            x = (bb.x0 + bb.x1) / 2F;
             y = bb.y0 + heightOffset - ySlideOffset;
 
-            z = (bb.z0 + bb.z1) / 2.0F;
+            z = (bb.z0 + bb.z1) / 2F;
             var18 = x - var4;
             var17 = z - var5;
             walkDist = (float) (walkDist + MathHelper.sqrt(var18 * var18
@@ -411,15 +411,15 @@ public abstract class Entity implements Serializable {
 
         float var4;
         if ((var4 = MathHelper.sqrt(x * x + y * y)) >= 0.01F) {
-            if (var4 < 1.0F) {
-                var4 = 1.0F;
+            if (var4 < 1F) {
+                var4 = 1F;
             }
 
             var4 = z / var4;
             x *= var4;
             y *= var4;
-            z = MathHelper.sin(yRot * (float) Math.PI / 180.0F);
-            var4 = MathHelper.cos(yRot * (float) Math.PI / 180.0F);
+            z = MathHelper.sin(yRot * (float) Math.PI / 180F);
+            var4 = MathHelper.cos(yRot * (float) Math.PI / 180F);
             xd += x * var4 - y * z;
             zd += y * var4 + x * z;
         }
@@ -463,10 +463,10 @@ public abstract class Entity implements Serializable {
             var3 /= var4;
             var2 *= 0.05F;
             var3 *= 0.05F;
-            var2 *= 1.0F - pushthrough;
-            var3 *= 1.0F - pushthrough;
-            this.push(-var2, 0.0F, -var3);
-            var1.push(var2, 0.0F, var3);
+            var2 *= 1F - pushthrough;
+            var3 *= 1F - pushthrough;
+            this.push(-var2, 0F, -var3);
+            var1.push(var2, 0F, var3);
         }
 
     }
@@ -492,7 +492,7 @@ public abstract class Entity implements Serializable {
             float var1 = level.xSpawn + 0.5F;
             float var2 = level.ySpawn;
 
-            for (double var3 = level.zSpawn + 0.5F; var2 > 0.0F; ++var2) {
+            for (double var3 = level.zSpawn + 0.5F; var2 > 0F; ++var2) {
                 this.setPos(var1, var2, (float) var3);
                 if (level.isInBounds((int) var1, (int) var2, (int) var3)) {
                     if (level.getCubes(bb).size() == 0) {
@@ -515,8 +515,8 @@ public abstract class Entity implements Serializable {
         this.x = x;
         this.y = y;
         this.z = z;
-        float var4 = bbWidth / 2.0F;
-        float var5 = bbHeight / 2.0F;
+        float var4 = bbWidth / 2F;
+        float var5 = bbHeight / 2F;
         bb = new AABB(x - var4, y - var5, z - var4, x + var4, y + var5, z
                 + var4);
     }
@@ -554,7 +554,7 @@ public abstract class Entity implements Serializable {
     }
 
     public boolean shouldRenderAtSqrDistance(float var1) {
-        float var2 = bb.getSize() * 64.0F;
+        float var2 = bb.getSize() * 64F;
         return var1 < var2 * var2;
     }
 
@@ -572,12 +572,12 @@ public abstract class Entity implements Serializable {
         float var4 = yRot;
         yRot = (float) (yRot + var1 * 0.15D);
         xRot = (float) (xRot - var2 * 0.15D);
-        if (xRot < -90.0F) {
-            xRot = -90.0F;
+        if (xRot < -90F) {
+            xRot = -90F;
         }
 
-        if (xRot > 90.0F) {
-            xRot = 90.0F;
+        if (xRot > 90F) {
+            xRot = 90F;
         }
 
         xRotO += xRot - var3;

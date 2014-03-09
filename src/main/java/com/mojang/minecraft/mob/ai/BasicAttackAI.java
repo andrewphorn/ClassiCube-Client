@@ -16,7 +16,7 @@ public class BasicAttackAI extends BasicAI {
         } else {
             mob.attackTime = 5;
             attackDelay = random.nextInt(20) + 10;
-            int var2 = (int) ((random.nextFloat() + random.nextFloat()) / 2.0F * damage + 1.0F);
+            int var2 = (int) ((random.nextFloat() + random.nextFloat()) / 2F * damage + 1F);
             var1.hurt(mob, var2);
             noActionTime = 0;
             return true;
@@ -25,7 +25,7 @@ public class BasicAttackAI extends BasicAI {
 
     protected void doAttack() {
         Entity var1 = level.getPlayer();
-        float var2 = 16.0F;
+        float var2 = 16F;
         if (attackTarget != null && attackTarget.removed) {
             attackTarget = null;
         }
@@ -47,16 +47,16 @@ public class BasicAttackAI extends BasicAI {
             var4 = attackTarget.y - mob.y;
             var5 = attackTarget.z - mob.z;
             float var6;
-            if ((var6 = var3 * var3 + var4 * var4 + var5 * var5) > var2 * var2 * 2.0F * 2.0F
+            if ((var6 = var3 * var3 + var4 * var4 + var5 * var5) > var2 * var2 * 2F * 2F
                     && random.nextInt(100) == 0) {
                 attackTarget = null;
             }
 
             if (attackTarget != null) {
                 var6 = MathHelper.sqrt(var6);
-                mob.yRot = (float) (Math.atan2(var5, var3) * 180.0D / 3.1415927410125732D) - 90.0F;
-                mob.xRot = -((float) (Math.atan2(var4, var6) * 180.0D / 3.1415927410125732D));
-                if (MathHelper.sqrt(var3 * var3 + var4 * var4 + var5 * var5) < 2.0F
+                mob.yRot = (float) (Math.atan2(var5, var3) * 180D / 3.1415927410125732D) - 90F;
+                mob.xRot = -((float) (Math.atan2(var4, var6) * 180D / 3.1415927410125732D));
+                if (MathHelper.sqrt(var3 * var3 + var4 * var4 + var5 * var5) < 2F
                         && attackDelay == 0) {
                     attack(attackTarget);
                 }

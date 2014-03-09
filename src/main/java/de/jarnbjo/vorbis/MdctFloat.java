@@ -172,14 +172,14 @@ class MdctFloat {
 
                 /*
                  * float temp1= (xxx[xx] * trig[B+1] - xxx[xx+1] *
-                 * trig[B]);//*32767.0f; float temp2=-(xxx[xx] * trig[B] +
-                 * xxx[xx+1] * trig[B+1]);//*32767.0f;
+                 * trig[B]);//*32767F; float temp2=-(xxx[xx] * trig[B] +
+                 * xxx[xx+1] * trig[B+1]);//*32767F;
                  */
 
-                // if(temp1>32767.0f) temp1=32767.0f;
-                // if(temp1<-32768.0f) temp1=-32768.0f;
-                // if(temp2>32767.0f) temp2=32767.0f;
-                // if(temp2<-32768.0f) temp2=-32768.0f;
+                // if(temp1>32767F) temp1=32767F;
+                // if(temp1<-32768F) temp1=-32768F;
+                // if(temp2>32767F) temp2=32767F;
+                // if(temp2<-32768F) temp2=-32768F;
 
                 pcm[o1] = (int) (-temp1 * window[o1]);
                 pcm[o2] = (int) (temp1 * window[o2]);
@@ -292,10 +292,10 @@ class MdctFloat {
                 float wACO = wA * trig[C];
                 float wBCO = wB * trig[C++];
 
-                x[x1++] = (wC + wACO + wBCE) * 16383.0f;
-                x[x2--] = (-wD + wBCO - wACE) * 16383.0f;
-                x[x1++] = (wD + wBCO - wACE) * 16383.0f;
-                x[x2--] = (wC - wACO - wBCE) * 16383.0f;
+                x[x1++] = (wC + wACO + wBCE) * 16383F;
+                x[x2--] = (-wD + wBCO - wACE) * 16383F;
+                x[x1++] = (wD + wBCO - wACE) * 16383F;
+                x[x2--] = (wC - wACO - wBCE) * 16383F;
             }
         }
         return x;

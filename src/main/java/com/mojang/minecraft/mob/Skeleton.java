@@ -9,12 +9,12 @@ public class Skeleton extends Zombie {
 
     // $FF: synthetic method
     static void shootRandomArrow(Skeleton var0) {
-        int var1 = (int) ((Math.random() + Math.random()) * 3.0D + 4.0D);
+        int var1 = (int) ((Math.random() + Math.random()) * 3D + 4D);
 
         for (int var2 = 0; var2 < var1; ++var2) {
             var0.level.addEntity(new Arrow(var0.level, var0.level.getPlayer(), var0.x,
-                    var0.y - 0.2F, var0.z, (float) Math.random() * 360.0F,
-                    -((float) Math.random()) * 60.0F, 0.4F));
+                    var0.y - 0.2F, var0.z, (float) Math.random() * 360F,
+                    -((float) Math.random()) * 60F, 0.4F));
         }
 
     }
@@ -31,8 +31,8 @@ public class Skeleton extends Zombie {
     }
 
     public void shootArrow(Level var1) {
-        var1.addEntity(new Arrow(var1, this, x, y, z, yRot + 180.0F
-                + (float) (Math.random() * 45.0D - 22.5D), xRot
-                - (float) (Math.random() * 45.0D - 10.0D), 1.0F));
+        var1.addEntity(new Arrow(var1, this, x, y, z, yRot + 180F
+                + (float) (Math.random() * 45D - 22.5D), xRot
+                - (float) (Math.random() * 45D - 10D), 1F));
     }
 }

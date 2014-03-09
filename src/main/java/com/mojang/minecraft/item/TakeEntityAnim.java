@@ -24,7 +24,7 @@ public class TakeEntityAnim extends Entity {
         this.item = item;
         this.player = player;
 
-        setSize(1.0F, 1.0F);
+        setSize(1F, 1F);
 
         xorg = item.x;
         yorg = item.y;
@@ -45,14 +45,14 @@ public class TakeEntityAnim extends Entity {
         }
 
         // TODO: Is this right?
-        float distance = (distance = time / 3.0F) * distance;
+        float distance = (distance = time / 3F) * distance;
 
         xo = item.xo = item.x;
         yo = item.yo = item.y;
         zo = item.zo = item.z;
 
         x = item.x = xorg + (player.x - xorg) * distance;
-        y = item.y = yorg + (player.y - 1.0F - yorg) * distance;
+        y = item.y = yorg + (player.y - 1F - yorg) * distance;
         z = item.z = zorg + (player.z - zorg) * distance;
 
         setPos(x, y, z);

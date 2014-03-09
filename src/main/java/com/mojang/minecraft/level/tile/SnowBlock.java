@@ -10,7 +10,7 @@ public final class SnowBlock extends Block {
     public SnowBlock(int var1) {
         super(var1);
         id = var1;
-        setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.20F, 1.0F);
+        setBounds(0F, 0F, 0F, 1F, 0.20F, 1F);
     }
 
     @Override

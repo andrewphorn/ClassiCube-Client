@@ -34,7 +34,7 @@ public class Arrow extends Entity {
     private int time = 0;
     private int type = 0;
 
-    private float gravity = 0.0F;
+    private float gravity = 0F;
 
     private int damage;
 
@@ -46,7 +46,7 @@ public class Arrow extends Entity {
 
         setSize(0.3F, 0.5F);
 
-        heightOffset = bbHeight / 2.0F;
+        heightOffset = bbHeight / 2F;
         damage = 3;
 
         if (!(owner instanceof Player)) {
@@ -65,7 +65,7 @@ public class Arrow extends Entity {
 
         slide = false;
 
-        gravity = 1.0F / unknown2;
+        gravity = 1F / unknown2;
 
         xo -= unknown3 * 0.2F;
         zo += unknown4 * 0.2F;
@@ -81,8 +81,8 @@ public class Arrow extends Entity {
 
         unknown3 = MathHelper.sqrt(xd * xd + zd * zd);
 
-        yRotO = yRot = (float) (Math.atan2(xd, zd) * 180.0D / 3.1415927410125732D);
-        xRotO = xRot = (float) (Math.atan2(yd, unknown3) * 180.0D / 3.1415927410125732D);
+        yRotO = yRot = (float) (Math.atan2(xd, zd) * 180D / 3.1415927410125732D);
+        xRotO = xRot = (float) (Math.atan2(yd, unknown3) * 180D / 3.1415927410125732D);
 
         makeStepSound = false;
     }
@@ -120,59 +120,59 @@ public class Arrow extends Entity {
         float brightness = level.getBrightness((int) x, (int) y, (int) z);
 
         GL11.glPushMatrix();
-        GL11.glColor4f(brightness, brightness, brightness, 1.0F);
-        GL11.glTranslatef(xo + (x - xo) * unknown0, yo + (y - yo) * unknown0 - heightOffset / 2.0F,
+        GL11.glColor4f(brightness, brightness, brightness, 1F);
+        GL11.glTranslatef(xo + (x - xo) * unknown0, yo + (y - yo) * unknown0 - heightOffset / 2F,
                 zo + (z - zo) * unknown0);
-        GL11.glRotatef(yRotO + (yRot - yRotO) * unknown0 - 90.0F, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(xRotO + (xRot - xRotO) * unknown0, 0.0F, 0.0F, 1.0F);
-        GL11.glRotatef(45.0F, 1.0F, 0.0F, 0.0F);
+        GL11.glRotatef(yRotO + (yRot - yRotO) * unknown0 - 90F, 0F, 1F, 0F);
+        GL11.glRotatef(xRotO + (xRot - xRotO) * unknown0, 0F, 0F, 1F);
+        GL11.glRotatef(45F, 1F, 0F, 0F);
 
         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
 
         unknown0 = 0.5F;
 
-        float unknown1 = (0 + type * 10) / 32.0F;
-        float unknown2 = (5 + type * 10) / 32.0F;
+        float unknown1 = (0 + type * 10) / 32F;
+        float unknown2 = (5 + type * 10) / 32F;
         float unknown3 = 0.15625F;
 
-        float unknown4 = (5 + type * 10) / 32.0F;
-        float unknown5 = (10 + type * 10) / 32.0F;
+        float unknown4 = (5 + type * 10) / 32F;
+        float unknown5 = (10 + type * 10) / 32F;
         float unknown6 = 0.05625F;
 
         GL11.glScalef(0.05625F, unknown6, unknown6);
 
-        GL11.glNormal3f(unknown6, 0.0F, 0.0F);
+        GL11.glNormal3f(unknown6, 0F, 0F);
 
         shapeRenderer.begin();
-        shapeRenderer.vertexUV(-7.0F, -2.0F, -2.0F, 0.0F, unknown4);
-        shapeRenderer.vertexUV(-7.0F, -2.0F, 2.0F, unknown3, unknown4);
-        shapeRenderer.vertexUV(-7.0F, 2.0F, 2.0F, unknown3, unknown5);
-        shapeRenderer.vertexUV(-7.0F, 2.0F, -2.0F, 0.0F, unknown5);
+        shapeRenderer.vertexUV(-7F, -2F, -2F, 0F, unknown4);
+        shapeRenderer.vertexUV(-7F, -2F, 2F, unknown3, unknown4);
+        shapeRenderer.vertexUV(-7F, 2F, 2F, unknown3, unknown5);
+        shapeRenderer.vertexUV(-7F, 2F, -2F, 0F, unknown5);
         shapeRenderer.end();
 
-        GL11.glNormal3f(-unknown6, 0.0F, 0.0F);
+        GL11.glNormal3f(-unknown6, 0F, 0F);
 
         shapeRenderer.begin();
-        shapeRenderer.vertexUV(-7.0F, 2.0F, -2.0F, 0.0F, unknown4);
-        shapeRenderer.vertexUV(-7.0F, 2.0F, 2.0F, unknown3, unknown4);
-        shapeRenderer.vertexUV(-7.0F, -2.0F, 2.0F, unknown3, unknown5);
-        shapeRenderer.vertexUV(-7.0F, -2.0F, -2.0F, 0.0F, unknown5);
+        shapeRenderer.vertexUV(-7F, 2F, -2F, 0F, unknown4);
+        shapeRenderer.vertexUV(-7F, 2F, 2F, unknown3, unknown4);
+        shapeRenderer.vertexUV(-7F, -2F, 2F, unknown3, unknown5);
+        shapeRenderer.vertexUV(-7F, -2F, -2F, 0F, unknown5);
         shapeRenderer.end();
 
         shapeRenderer.begin();
         for (int unknown7 = 0; unknown7 < 4; unknown7++) {
-            GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(90F, 1F, 0F, 0F);
 
-            GL11.glNormal3f(0.0F, -unknown6, 0.0F);
+            GL11.glNormal3f(0F, -unknown6, 0F);
 
-            shapeRenderer.vertexUV(-8.0F, -2.0F, 0.0F, 0.0F, unknown1);
-            shapeRenderer.vertexUV(8.0F, -2.0F, 0.0F, unknown0, unknown1);
-            shapeRenderer.vertexUV(8.0F, 2.0F, 0.0F, unknown0, unknown2);
-            shapeRenderer.vertexUV(-8.0F, 2.0F, 0.0F, 0.0F, unknown2);
+            shapeRenderer.vertexUV(-8F, -2F, 0F, 0F, unknown1);
+            shapeRenderer.vertexUV(8F, -2F, 0F, unknown0, unknown1);
+            shapeRenderer.vertexUV(8F, 2F, 0F, unknown0, unknown2);
+            shapeRenderer.vertexUV(-8F, 2F, 0F, 0F, unknown2);
         }
         shapeRenderer.end();
 
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glColor4f(1F, 1F, 1F, 1F);
         GL11.glPopMatrix();
     }
 
@@ -204,7 +204,7 @@ public class Arrow extends Entity {
 
             yd -= 0.02F * gravity;
 
-            int unknown0 = (int) (MathHelper.sqrt(xd * xd + yd * yd + zd * zd) / 0.2F + 1.0F);
+            int unknown0 = (int) (MathHelper.sqrt(xd * xd + yd * yd + zd * zd) / 0.2F + 1F);
 
             float x0 = xd / unknown0;
             float y0 = yd / unknown0;
@@ -247,30 +247,30 @@ public class Arrow extends Entity {
             if (collision) {
                 hasHit = true;
 
-                xd = yd = zd = 0.0F;
+                xd = yd = zd = 0F;
             }
 
             if (!hasHit) {
                 float unknown6 = MathHelper.sqrt(xd * xd + zd * zd);
 
-                yRot = (float) (Math.atan2(xd, zd) * 180.0D / 3.1415927410125732D);
+                yRot = (float) (Math.atan2(xd, zd) * 180D / 3.1415927410125732D);
 
-                for (xRot = (float) (Math.atan2(yd, unknown6) * 180.0D / 3.1415927410125732D); xRot
-                        - xRotO < -180.0F; xRotO -= 360.0F) {
+                for (xRot = (float) (Math.atan2(yd, unknown6) * 180D / 3.1415927410125732D); xRot
+                        - xRotO < -180F; xRotO -= 360F) {
                     System.out.println("test");
                     // TODO: ?.
                 }
 
-                while (xRot - xRotO >= 180.0F) {
-                    xRotO += 360.0F;
+                while (xRot - xRotO >= 180F) {
+                    xRotO += 360F;
                 }
 
-                while (yRot - yRotO < -180.0F) {
-                    yRotO -= 360.0F;
+                while (yRot - yRotO < -180F) {
+                    yRotO -= 360F;
                 }
 
-                while (yRot - yRotO >= 180.0F) {
-                    yRotO += 360.0F;
+                while (yRot - yRotO >= 180F) {
+                    yRotO += 360F;
                 }
             }
         }

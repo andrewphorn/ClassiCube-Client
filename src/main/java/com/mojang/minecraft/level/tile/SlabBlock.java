@@ -10,7 +10,7 @@ public final class SlabBlock extends Block {
         super(var1, 6);
         doubleSlab = var2;
         if (!var2) {
-            setBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
+            setBounds(0F, 0F, 0F, 1F, 0.5F, 1F);
         }
 
     }

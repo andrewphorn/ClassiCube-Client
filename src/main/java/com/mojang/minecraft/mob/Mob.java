@@ -22,9 +22,9 @@ public class Mob extends Entity {
     public float rot;
     public float timeOffs;
     public float speed;
-    public float rotA = (float) (Math.random() + 1.0D) * 0.01F;
-    protected float yBodyRot = 0.0F;
-    protected float yBodyRotO = 0.0F;
+    public float rotA = (float) (Math.random() + 1D) * 0.01F;
+    protected float yBodyRot = 0F;
+    protected float yBodyRotO = 0F;
     protected float oRun;
     protected float run;
     protected float animStep;
@@ -33,18 +33,18 @@ public class Mob extends Entity {
     public boolean hasHair = true;
     protected String textureName = "/char.png";
     public boolean allowAlpha = true;
-    public float rotOffs = 0.0F;
+    public float rotOffs = 0F;
     public String modelName = null;
-    protected float bobStrength = 1.0F;
+    protected float bobStrength = 1F;
     protected int deathScore = 0;
-    public float renderOffset = 0.0F;
+    public float renderOffset = 0F;
     public int health = 20;
     public int lastHealth;
     public int invulnerableTime = 0;
     public int airSupply = 300;
     public int hurtTime;
     public int hurtDuration;
-    public float hurtDir = 0.0F;
+    public float hurtDir = 0F;
     public int deathTime = 0;
     public int attackTime = 0;
     public float oTilt;
@@ -55,9 +55,9 @@ public class Mob extends Entity {
     public Mob(Level var1) {
         super(var1);
         this.setPos(x, y, z);
-        timeOffs = (float) Math.random() * 12398.0F;
-        rot = (float) (Math.random() * 3.1415927410125732D * 2.0D);
-        speed = 1.0F;
+        timeOffs = (float) Math.random() * 12398F;
+        rot = (float) (Math.random() * 3.1415927410125732D * 2D);
+        speed = 1F;
         ai = new BasicAI();
         footSize = 0.5F;
     }
@@ -78,7 +78,7 @@ public class Mob extends Entity {
     protected void causeFallDamage(float var1) {
         if (!level.creativeMode) {
             int var2;
-            if ((var2 = (int) Math.ceil(var1 - 3.0F)) > 0) {
+            if ((var2 = (int) Math.ceil(var1 - 3F)) > 0) {
                 hurt((Entity) null, var2);
             }
 
@@ -113,7 +113,7 @@ public class Mob extends Entity {
                 if (ai != null) {
                     ai.hurt(var1, var2);
                 }
-                if (invulnerableTime > invulnerableDuration / 2.0F) {
+                if (invulnerableTime > invulnerableDuration / 2F) {
                     if (lastHealth - var2 >= health) {
                         return;
                     }
@@ -126,15 +126,15 @@ public class Mob extends Entity {
                     hurtTime = hurtDuration = 10;
                 }
 
-                hurtDir = 0.0F;
+                hurtDir = 0F;
                 if (var1 != null) {
                     float var3 = var1.x - x;
                     float var4 = var1.z - z;
-                    hurtDir = (float) (Math.atan2(var4, var3) * 180.0D / 3.1415927410125732D)
+                    hurtDir = (float) (Math.atan2(var4, var3) * 180D / 3.1415927410125732D)
                             - yRot;
                     knockback(var1, var2, var3, var4);
                 } else {
-                    hurtDir = (int) (Math.random() * 2.0D) * 180;
+                    hurtDir = (int) (Math.random() * 2D) * 180;
                 }
 
                 if (health <= 0) {
@@ -163,9 +163,9 @@ public class Mob extends Entity {
     public void knockback(Entity var1, int var2, float var3, float var4) {
         float var5 = MathHelper.sqrt(var3 * var3 + var4 * var4);
         float var6 = 0.4F;
-        xd /= 2.0F;
-        yd /= 2.0F;
-        zd /= 2.0F;
+        xd /= 2F;
+        yd /= 2F;
+        zd /= 2F;
         xd -= var3 / var5 * var6;
         yd += 0.4F;
         zd -= var4 / var5 * var6;
@@ -179,32 +179,32 @@ public class Mob extends Entity {
     public void render(TextureManager var1, float var2) {
         if (modelName != null) {
             float var3;
-            if ((var3 = attackTime - var2) < 0.0F) {
-                var3 = 0.0F;
+            if ((var3 = attackTime - var2) < 0F) {
+                var3 = 0F;
             }
 
-            while (yBodyRotO - yBodyRot < -180.0F) {
-                yBodyRotO += 360.0F;
+            while (yBodyRotO - yBodyRot < -180F) {
+                yBodyRotO += 360F;
             }
 
-            while (yBodyRotO - yBodyRot >= 180.0F) {
-                yBodyRotO -= 360.0F;
+            while (yBodyRotO - yBodyRot >= 180F) {
+                yBodyRotO -= 360F;
             }
 
-            while (xRotO - xRot < -180.0F) {
-                xRotO += 360.0F;
+            while (xRotO - xRot < -180F) {
+                xRotO += 360F;
             }
 
-            while (xRotO - xRot >= 180.0F) {
-                xRotO -= 360.0F;
+            while (xRotO - xRot >= 180F) {
+                xRotO -= 360F;
             }
 
-            while (yRotO - yRot < -180.0F) {
-                yRotO += 360.0F;
+            while (yRotO - yRot < -180F) {
+                yRotO += 360F;
             }
 
-            while (yRotO - yRot >= 180.0F) {
-                yRotO -= 360.0F;
+            while (yRotO - yRot >= 180F) {
+                yRotO -= 360F;
             }
 
             float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * var2;
@@ -217,51 +217,51 @@ public class Mob extends Entity {
             ColorCache varaa = getBrightnessColor();
             GL11.glColor3f(varaa.R, varaa.G, varaa.B);
             float var9 = 0.0625F;
-            float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F * var5 * bobStrength
-                    - 23.0F;
+            float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5F * var5 * bobStrength
+                    - 23F;
             GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 - 1.62F + renderOffset, zo
                     + (z - zo) * var2);
             float var11;
-            if ((var11 = hurtTime - var2) > 0.0F || health <= 0) {
-                if (var11 < 0.0F) {
-                    var11 = 0.0F;
+            if ((var11 = hurtTime - var2) > 0F || health <= 0) {
+                if (var11 < 0F) {
+                    var11 = 0F;
                 } else {
                     var11 = MathHelper.sin((var11 /= hurtDuration) * var11 * var11 * var11
-                            * (float) Math.PI) * 14.0F;
+                            * (float) Math.PI) * 14F;
                 }
 
-                float var12 = 0.0F;
+                float var12 = 0F;
                 if (health <= 0) {
-                    var12 = (deathTime + var2) / 20.0F;
-                    if ((var11 += var12 * var12 * 800.0F) > 90.0F) {
-                        var11 = 90.0F;
+                    var12 = (deathTime + var2) / 20F;
+                    if ((var11 += var12 * var12 * 800F) > 90F) {
+                        var11 = 90F;
                     }
                 }
 
                 var12 = hurtDir;
-                GL11.glRotatef(180.0F - var4 + rotOffs, 0.0F, 1.0F, 0.0F);
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                GL11.glRotatef(-var12, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-var11, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(var12, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-(180.0F - var4 + rotOffs), 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(180F - var4 + rotOffs, 0F, 1F, 0F);
+                GL11.glScalef(1F, 1F, 1F);
+                GL11.glRotatef(-var12, 0F, 1F, 0F);
+                GL11.glRotatef(-var11, 0F, 0F, 1F);
+                GL11.glRotatef(var12, 0F, 1F, 0F);
+                GL11.glRotatef(-(180F - var4 + rotOffs), 0F, 1F, 0F);
             }
 
-            GL11.glTranslatef(0.0F, -var10 * var9, 0.0F);
-            GL11.glScalef(1.0F, -1.0F, 1.0F);
-            GL11.glRotatef(180.0F - var4 + rotOffs, 0.0F, 1.0F, 0.0F);
+            GL11.glTranslatef(0F, -var10 * var9, 0F);
+            GL11.glScalef(1F, -1F, 1F);
+            GL11.glRotatef(180F - var4 + rotOffs, 0F, 1F, 0F);
             if (!allowAlpha) {
                 GL11.glDisable(GL11.GL_ALPHA_TEST);
             } else {
                 GL11.glDisable(GL11.GL_CULL_FACE);
             }
 
-            GL11.glScalef(-1.0F, 1.0F, 1.0F);
-            modelCache.getModel(modelName).attackOffset = var3 / 5.0F;
+            GL11.glScalef(-1F, 1F, 1F);
+            modelCache.getModel(modelName).attackOffset = var3 / 5F;
             bindTexture(var1);
             renderModel(var1, var8, var2, var5, var6, var7, var9);
             if (invulnerableTime > invulnerableDuration - 10) {
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
+                GL11.glColor4f(1F, 1F, 1F, 0.75F);
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                 bindTexture(var1);
@@ -275,7 +275,7 @@ public class Mob extends Entity {
                 GL11.glEnable(GL11.GL_CULL_FACE);
             }
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GL11.glColor4f(1F, 1F, 1F, 1F);
             GL11.glPopMatrix();
         }
     }
@@ -323,7 +323,7 @@ public class Mob extends Entity {
         }
 
         if (isInWater()) {
-            fallDistance = 0.0F;
+            fallDistance = 0F;
         }
 
         if (isInLava()) {
@@ -340,46 +340,46 @@ public class Mob extends Entity {
         float var2 = z - zo;
         float var3 = MathHelper.sqrt(var1 * var1 + var2 * var2);
         float var4 = yBodyRot;
-        float var5 = 0.0F;
+        float var5 = 0F;
         oRun = run;
-        float var6 = 0.0F;
+        float var6 = 0F;
         if (var3 > 0.05F) {
-            var6 = 1.0F;
-            var5 = var3 * 3.0F;
-            var4 = (float) Math.atan2(var2, var1) * 180.0F / (float) Math.PI - 90.0F;
+            var6 = 1F;
+            var5 = var3 * 3F;
+            var4 = (float) Math.atan2(var2, var1) * 180F / (float) Math.PI - 90F;
         }
 
         if (!onGround) {
-            var6 = 0.0F;
+            var6 = 0F;
         }
 
         run += (var6 - run) * 0.3F;
 
-        for (var1 = var4 - yBodyRot; var1 < -180.0F; var1 += 360.0F) {
+        for (var1 = var4 - yBodyRot; var1 < -180F; var1 += 360F) {
             ;
         }
 
-        while (var1 >= 180.0F) {
-            var1 -= 360.0F;
+        while (var1 >= 180F) {
+            var1 -= 360F;
         }
 
         yBodyRot += var1 * 0.1F;
 
-        for (var1 = yRot - yBodyRot; var1 < -180.0F; var1 += 360.0F) {
+        for (var1 = yRot - yBodyRot; var1 < -180F; var1 += 360F) {
             ;
         }
 
-        while (var1 >= 180.0F) {
-            var1 -= 360.0F;
+        while (var1 >= 180F) {
+            var1 -= 360F;
         }
 
-        boolean var7 = var1 < -90.0F || var1 >= 90.0F;
-        if (var1 < -75.0F) {
-            var1 = -75.0F;
+        boolean var7 = var1 < -90F || var1 >= 90F;
+        if (var1 < -75F) {
+            var1 = -75F;
         }
 
-        if (var1 >= 75.0F) {
-            var1 = 75.0F;
+        if (var1 >= 75F) {
+            var1 = 75F;
         }
 
         yBodyRot = yRot - var1;
@@ -388,28 +388,28 @@ public class Mob extends Entity {
             var5 = -var5;
         }
 
-        while (yRot - yRotO < -180.0F) {
-            yRotO -= 360.0F;
+        while (yRot - yRotO < -180F) {
+            yRotO -= 360F;
         }
 
-        while (yRot - yRotO >= 180.0F) {
-            yRotO += 360.0F;
+        while (yRot - yRotO >= 180F) {
+            yRotO += 360F;
         }
 
-        while (yBodyRot - yBodyRotO < -180.0F) {
-            yBodyRotO -= 360.0F;
+        while (yBodyRot - yBodyRotO < -180F) {
+            yBodyRotO -= 360F;
         }
 
-        while (yBodyRot - yBodyRotO >= 180.0F) {
-            yBodyRotO += 360.0F;
+        while (yBodyRot - yBodyRotO >= 180F) {
+            yBodyRotO += 360F;
         }
 
-        while (xRot - xRotO < -180.0F) {
-            xRotO -= 360.0F;
+        while (xRot - xRotO < -180F) {
+            xRotO -= 360F;
         }
 
-        while (xRot - xRotO >= 180.0F) {
-            xRotO += 360.0F;
+        while (xRot - xRotO >= 180F) {
+            xRotO += 360F;
         }
 
         animStep += var5;
@@ -417,7 +417,7 @@ public class Mob extends Entity {
 
     public void travel(float yya, float xxa) {
         float y1;
-        float multiply = 1.0F;
+        float multiply = 1F;
 
         if (ai instanceof BasicAI) {
             BasicAI ai1 = (BasicAI) ai;
@@ -425,7 +425,7 @@ public class Mob extends Entity {
                 if (ai1.running) {
                     multiply = 10F; // 6x with momentum
                 } else {
-                    multiply = 1.0F; // 1x
+                    multiply = 1F; // 1x
                 }
             } else if (flyingMode && ai1.running) {
                 multiply = 90F; // 6x
@@ -502,7 +502,7 @@ public class Mob extends Entity {
             if (Block.blocks[var1] != Block.ICE) {
 
                 if (flyingMode) {
-                    y1 = 0.0F;
+                    y1 = 0F;
                     xd *= y1;
                     zd *= y1;
                 }

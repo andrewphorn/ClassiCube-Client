@@ -9,7 +9,7 @@ public final class RopeBlock extends FlowerBlock {
     protected RopeBlock(int var1) {
         super(var1);
         float var3 = 0.3F;
-        setBounds(0.5F - var3, 0.0F, 0.5F - var3, var3 + 0.5F, var3 * 3.0F, var3 + 0.5F);
+        setBounds(0.5F - var3, 0F, 0.5F - var3, var3 + 0.5F, var3 * 3F, var3 + 0.5F);
     }
 
     @Override

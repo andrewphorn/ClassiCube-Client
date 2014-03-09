@@ -6,13 +6,13 @@ public final class MathHelper {
 
     static {
         for (int var0 = 0; var0 < 65536; ++var0) {
-            SIN_TABLE[var0] = (float) Math.sin(var0 * 3.141592653589793D * 2.0D / 65536.0D);
+            SIN_TABLE[var0] = (float) Math.sin(var0 * 3.141592653589793D * 2D / 65536D);
         }
 
     }
 
     public static final float cos(float var0) {
-        return SIN_TABLE[(int) (var0 * 10430.378F + 16384.0F) & '\uffff'];
+        return SIN_TABLE[(int) (var0 * 10430.378F + 16384F) & '\uffff'];
     }
 
     public static final float sin(float var0) {

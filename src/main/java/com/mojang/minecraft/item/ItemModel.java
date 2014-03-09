@@ -8,21 +8,21 @@ public class ItemModel {
     private ModelPart model = new ModelPart(0, 0);
 
     public ItemModel(int tex) {
-        float var3 = -2.0F;
-        float var4 = -2.0F;
-        float var15 = -2.0F;
+        float var3 = -2F;
+        float var4 = -2F;
+        float var15 = -2F;
 
         model.vertices = new Vertex[8];
         model.quads = new TexturedQuad[6];
 
-        Vertex vertex1 = new Vertex(var15, var4, var3, 0.0F, 0.0F);
-        Vertex vertex2 = new Vertex(2.0F, var4, var3, 0.0F, 8.0F);
-        Vertex vertex3 = new Vertex(2.0F, 2.0F, var3, 8.0F, 8.0F);
-        Vertex vertex4 = new Vertex(var15, 2.0F, var3, 8.0F, 0.0F);
-        Vertex vertex5 = new Vertex(var15, var4, 2.0F, 0.0F, 0.0F);
-        Vertex vertex6 = new Vertex(2.0F, var4, 2.0F, 0.0F, 8.0F);
-        Vertex vertex7 = new Vertex(2.0F, 2.0F, 2.0F, 8.0F, 8.0F);
-        Vertex vertex8 = new Vertex(var15, 2.0F, 2.0F, 8.0F, 0.0F);
+        Vertex vertex1 = new Vertex(var15, var4, var3, 0F, 0F);
+        Vertex vertex2 = new Vertex(2F, var4, var3, 0F, 8F);
+        Vertex vertex3 = new Vertex(2F, 2F, var3, 8F, 8F);
+        Vertex vertex4 = new Vertex(var15, 2F, var3, 8F, 0F);
+        Vertex vertex5 = new Vertex(var15, var4, 2F, 0F, 0F);
+        Vertex vertex6 = new Vertex(2F, var4, 2F, 0F, 8F);
+        Vertex vertex7 = new Vertex(2F, 2F, 2F, 8F, 8F);
+        Vertex vertex8 = new Vertex(var15, 2F, 2F, 8F, 0F);
 
         model.vertices[0] = vertex1;
         model.vertices[1] = vertex2;
@@ -33,10 +33,10 @@ public class ItemModel {
         model.vertices[6] = vertex7;
         model.vertices[7] = vertex8;
 
-        float u1 = (tex % 16 + (1.0F - 0.25F)) / 16.0F;
-        float v1 = (tex / 16 + (1.0F - 0.25F)) / 16.0F;
-        float u2 = (tex % 16 + 0.25F) / 16.0F;
-        float v2 = (tex / 16 + 0.25F) / 16.0F;
+        float u1 = (tex % 16 + (1F - 0.25F)) / 16F;
+        float v1 = (tex / 16 + (1F - 0.25F)) / 16F;
+        float u2 = (tex % 16 + 0.25F) / 16F;
+        float v2 = (tex / 16 + 0.25F) / 16F;
 
         Vertex[] vertexes1 = new Vertex[] { vertex6, vertex2, vertex3, vertex7 };
         Vertex[] vertexes2 = new Vertex[] { vertex1, vertex5, vertex8, vertex4 };
