@@ -54,8 +54,8 @@ public class BasicAttackAI extends BasicAI {
 
             if (attackTarget != null) {
                 var6 = MathHelper.sqrt(var6);
-                mob.yRot = (float) (Math.atan2(var5, var3) * 180.0D / 3.1415927410125732D) - 90F;
-                mob.xRot = -((float) (Math.atan2(var4, var6) * 180.0D / 3.1415927410125732D));
+                mob.yRot = (float) (Math.atan2(var5, var3) * 180D / 3.1415927410125732D) - 90F;
+                mob.xRot = -((float) (Math.atan2(var4, var6) * 180D / 3.1415927410125732D));
                 if (MathHelper.sqrt(var3 * var3 + var4 * var4 + var5 * var5) < 2F
                         && attackDelay == 0) {
                     attack(attackTarget);

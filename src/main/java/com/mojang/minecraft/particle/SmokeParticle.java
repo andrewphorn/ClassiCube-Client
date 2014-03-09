@@ -13,7 +13,7 @@ public class SmokeParticle extends Particle {
         yd *= 0.1F;
         zd *= 0.1F;
         rCol = gCol = bCol = (float) (Math.random() * 0.30000001192092896D);
-        lifetime = (int) (8.0D / (Math.random() * 0.8D + 0.2D));
+        lifetime = (int) (8D / (Math.random() * 0.8D + 0.2D));
         noPhysics = true;
     }
 

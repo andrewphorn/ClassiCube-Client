@@ -160,14 +160,14 @@ public final class LevelGenerator {
             var5.setProgress(var11 * 100 / (var5.width - 1));
 
             for (var12 = 0; var12 < var5.depth; ++var12) {
-                double var13 = var6.compute(var11 * var10, var12 * var10) / 6.0D + -4;
-                double var15 = var7.compute(var11 * var10, var12 * var10) / 5.0D + 10.0D + -4;
-                if (var8.compute(var11, var12) / 8.0D > 0.0D) {
+                double var13 = var6.compute(var11 * var10, var12 * var10) / 6D + -4;
+                double var15 = var7.compute(var11 * var10, var12 * var10) / 5D + 10D + -4;
+                if (var8.compute(var11, var12) / 8D > 0D) {
                     var15 = var13;
                 }
 
                 double var19;
-                if ((var19 = Math.max(var13, var15) / 2.0D) < 0.0D) {
+                if ((var19 = Math.max(var13, var15) / 2D) < 0D) {
                     var19 *= 0.8D;
                 }
 
@@ -189,9 +189,9 @@ public final class LevelGenerator {
             var5.setProgress(var51 * 100 / (var5.width - 1));
 
             for (var54 = 0; var54 < var5.depth; ++var54) {
-                double var21 = var7.compute(var51 << 1, var54 << 1) / 8.0D;
-                var12 = var49.compute(var51 << 1, var54 << 1) > 0.0D ? 1 : 0;
-                if (var21 > 2.0D) {
+                double var21 = var7.compute(var51 << 1, var54 << 1) / 8D;
+                var12 = var49.compute(var51 << 1, var54 << 1) > 0D ? 1 : 0;
+                if (var21 > 2D) {
                     var23 = ((var42[var51 + var54 * var5.width] - var12) / 2 << 1) + var12;
                     var42[var51 + var54 * var5.width] = var23;
                 }
@@ -215,7 +215,7 @@ public final class LevelGenerator {
             var5.setProgress(var24 * 100 / (var5.width - 1));
 
             for (var11 = 0; var11 < var48; ++var11) {
-                var12 = (int) (var53.compute(var24, var11) / 24.0D) - 4;
+                var12 = (int) (var53.compute(var24, var11) / 24D) - 4;
                 var25 = (var23 = var42[var24 + var11 * var46] + var5.waterLevel) + var12;
                 var42[var24 + var11 * var46] = Math.max(var23, var25);
                 if (var42[var24 + var11 * var46] > var51 - 2) {
@@ -373,8 +373,8 @@ public final class LevelGenerator {
             var5.setProgress(var11 * 100 / (var5.width - 1));
 
             for (var12 = 0; var12 < var48; ++var12) {
-                boolean var60 = var53.compute(var11, var12) > 8.0D;
-                boolean var57 = var58.compute(var11, var12) > 12.0D;
+                boolean var60 = var53.compute(var11, var12) > 8D;
+                boolean var57 = var58.compute(var11, var12) > 12D;
                 var27 = ((var26 = var42[var11 + var12 * var46]) * var5.depth + var12) * var5.width
                         + var11;
                 if (((var28 = var5.blocks[((var26 + 1) * var5.depth + var12) * var5.width + var11] & 255) == Block.WATER.id || var28 == Block.STATIONARY_WATER.id)

@@ -716,7 +716,7 @@ public final class Minecraft implements Runnable {
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glClearDepth(1.0D);
+        GL11.glClearDepth(1D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -898,16 +898,16 @@ public final class Minecraft implements Runnable {
                 timer.lastHRClock = actualNow;
             }
 
-            double actualNowSeconds = actualNow / 1000.0D;
+            double actualNowSeconds = actualNow / 1000D;
             double secondsPassed = (actualNowSeconds - timer.lastHR) * timer.adjustment;
             timer.lastHR = actualNowSeconds;
 
             // Cap seconds-passed to range [0,1]
-            if (secondsPassed < 0.0D) {
-                secondsPassed = 0.0D;
+            if (secondsPassed < 0D) {
+                secondsPassed = 0D;
             }
-            if (secondsPassed > 1.0D) {
-                secondsPassed = 1.0D;
+            if (secondsPassed > 1D) {
+                secondsPassed = 1D;
             }
 
             // Figure out how many ticks took place since last frame

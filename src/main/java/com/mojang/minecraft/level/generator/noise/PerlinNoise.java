@@ -5,7 +5,7 @@ import java.util.Random;
 public class PerlinNoise extends Noise {
     
     private static double fade(double a) {
-        return a * a * a * (a * (a * 6.0D - 15.0D) + 10.0D);
+        return a * a * a * (a * (a * 6D - 15D) + 10D);
     }
 
     private static double grad(int hash, double x, double y) {

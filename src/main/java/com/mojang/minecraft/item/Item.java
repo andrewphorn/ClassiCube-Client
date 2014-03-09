@@ -48,7 +48,7 @@ public class Item extends Entity {
 
         resource = block;
 
-        rot = (float) (Math.random() * 360.0D);
+        rot = (float) (Math.random() * 360D);
 
         xd = (float) (Math.random() * 0.20000000298023224D - 0.10000000149011612D);
         yd = 0.2F;

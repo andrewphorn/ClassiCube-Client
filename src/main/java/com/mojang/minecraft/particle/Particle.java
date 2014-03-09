@@ -27,10 +27,10 @@ public class Particle extends Entity {
         heightOffset = bbHeight / 2F;
         this.setPos(var2, var3, var4);
         rCol = gCol = bCol = 1F;
-        xd = var5 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
-        yd = var6 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
-        zd = var7 + (float) (Math.random() * 2.0D - 1.0D) * 0.4F;
-        float var8 = (float) (Math.random() + Math.random() + 1.0D) * 0.15F;
+        xd = var5 + (float) (Math.random() * 2D - 1D) * 0.4F;
+        yd = var6 + (float) (Math.random() * 2D - 1D) * 0.4F;
+        zd = var7 + (float) (Math.random() * 2D - 1D) * 0.4F;
+        float var8 = (float) (Math.random() + Math.random() + 1D) * 0.15F;
         var2 = MathHelper.sqrt(xd * xd + yd * yd + zd * zd);
         xd = xd / var2 * var8 * 0.4F;
         yd = yd / var2 * var8 * 0.4F + 0.1F;
@@ -38,7 +38,7 @@ public class Particle extends Entity {
         uo = (float) Math.random() * 3F;
         vo = (float) Math.random() * 3F;
         size = (float) (Math.random() * 0.5D + 0.5D);
-        lifetime = (int) (4.0D / (Math.random() * 0.9D + 0.1D));
+        lifetime = (int) (4D / (Math.random() * 0.9D + 0.1D));
         age = 0;
         makeStepSound = false;
     }

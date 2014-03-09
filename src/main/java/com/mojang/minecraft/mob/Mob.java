@@ -22,7 +22,7 @@ public class Mob extends Entity {
     public float rot;
     public float timeOffs;
     public float speed;
-    public float rotA = (float) (Math.random() + 1.0D) * 0.01F;
+    public float rotA = (float) (Math.random() + 1D) * 0.01F;
     protected float yBodyRot = 0F;
     protected float yBodyRotO = 0F;
     protected float oRun;
@@ -56,7 +56,7 @@ public class Mob extends Entity {
         super(var1);
         this.setPos(x, y, z);
         timeOffs = (float) Math.random() * 12398F;
-        rot = (float) (Math.random() * 3.1415927410125732D * 2.0D);
+        rot = (float) (Math.random() * 3.1415927410125732D * 2D);
         speed = 1F;
         ai = new BasicAI();
         footSize = 0.5F;
@@ -130,11 +130,11 @@ public class Mob extends Entity {
                 if (var1 != null) {
                     float var3 = var1.x - x;
                     float var4 = var1.z - z;
-                    hurtDir = (float) (Math.atan2(var4, var3) * 180.0D / 3.1415927410125732D)
+                    hurtDir = (float) (Math.atan2(var4, var3) * 180D / 3.1415927410125732D)
                             - yRot;
                     knockback(var1, var2, var3, var4);
                 } else {
-                    hurtDir = (int) (Math.random() * 2.0D) * 180;
+                    hurtDir = (int) (Math.random() * 2D) * 180;
                 }
 
                 if (health <= 0) {

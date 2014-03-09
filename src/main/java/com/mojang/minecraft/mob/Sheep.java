@@ -55,7 +55,7 @@ public class Sheep extends QuadrupedMob {
             var1.awardKillScore(this, 10);
         }
 
-        int var2 = (int) (Math.random() + Math.random() + 1.0D);
+        int var2 = (int) (Math.random() + Math.random() + 1D);
 
         for (int var3 = 0; var3 < var2; ++var3) {
             level.addEntity(new Item(level, x, y, z, Block.BROWN_MUSHROOM.id));
@@ -68,7 +68,7 @@ public class Sheep extends QuadrupedMob {
     public void hurt(Entity var1, int var2) {
         if (hasFur && var1 instanceof Player) {
             hasFur = false;
-            int var3 = (int) (Math.random() * 3.0D + 1.0D);
+            int var3 = (int) (Math.random() * 3D + 1D);
 
             for (var2 = 0; var2 < var3; ++var2) {
                 level.addEntity(new Item(level, x, y, z, Block.WHITE_WOOL.id));

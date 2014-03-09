@@ -81,8 +81,8 @@ public class Arrow extends Entity {
 
         unknown3 = MathHelper.sqrt(xd * xd + zd * zd);
 
-        yRotO = yRot = (float) (Math.atan2(xd, zd) * 180.0D / 3.1415927410125732D);
-        xRotO = xRot = (float) (Math.atan2(yd, unknown3) * 180.0D / 3.1415927410125732D);
+        yRotO = yRot = (float) (Math.atan2(xd, zd) * 180D / 3.1415927410125732D);
+        xRotO = xRot = (float) (Math.atan2(yd, unknown3) * 180D / 3.1415927410125732D);
 
         makeStepSound = false;
     }
@@ -253,9 +253,9 @@ public class Arrow extends Entity {
             if (!hasHit) {
                 float unknown6 = MathHelper.sqrt(xd * xd + zd * zd);
 
-                yRot = (float) (Math.atan2(xd, zd) * 180.0D / 3.1415927410125732D);
+                yRot = (float) (Math.atan2(xd, zd) * 180D / 3.1415927410125732D);
 
-                for (xRot = (float) (Math.atan2(yd, unknown6) * 180.0D / 3.1415927410125732D); xRot
+                for (xRot = (float) (Math.atan2(yd, unknown6) * 180D / 3.1415927410125732D); xRot
                         - xRotO < -180F; xRotO -= 360F) {
                     System.out.println("test");
                     // TODO: ?.

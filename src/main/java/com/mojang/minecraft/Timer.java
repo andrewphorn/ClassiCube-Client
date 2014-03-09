@@ -10,7 +10,7 @@ public class Timer {
     public float elapsedDelta = 0F;
     long lastSysClock;
     long lastHRClock;
-    double adjustment = 1.0D;
+    double adjustment = 1D;
 
     public Timer(float tps) {
         this.tps = tps;

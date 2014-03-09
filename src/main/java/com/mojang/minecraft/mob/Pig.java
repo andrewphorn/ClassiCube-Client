@@ -22,7 +22,7 @@ public class Pig extends QuadrupedMob {
             var1.awardKillScore(this, 10);
         }
 
-        int var2 = (int) (Math.random() + Math.random() + 1.0D);
+        int var2 = (int) (Math.random() + Math.random() + 1D);
 
         for (int var3 = 0; var3 < var2; ++var3) {
             level.addEntity(new Item(level, x, y, z, Block.BROWN_MUSHROOM.id));

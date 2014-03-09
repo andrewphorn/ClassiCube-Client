@@ -36,7 +36,7 @@ public class PrimedTnt extends Entity {
 
         setPos(x, y, z);
 
-        float unknown0 = (float) (Math.random() * 3.1415927410125732D * 2.0D);
+        float unknown0 = (float) (Math.random() * 3.1415927410125732D * 2D);
 
         xd = -MathHelper.sin(unknown0 * (float) Math.PI / 180F) * 0.02F;
         yd = 0.2F;

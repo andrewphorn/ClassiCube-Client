@@ -139,8 +139,8 @@ public final class HUDScreen extends Screen {
 
         if (mc.player.isUnderWater()) {
         var12 = (int) Math
-            .ceil((mc.player.airSupply - 2) * 10.0D / 300.0D);
-        var26 = (int) Math.ceil(mc.player.airSupply * 10.0D / 300.0D)
+            .ceil((mc.player.airSupply - 2) * 10D / 300D);
+        var26 = (int) Math.ceil(mc.player.airSupply * 10D / 300D)
             - var12;
 
         for (i = 0; i < var12 + var26; ++i) {

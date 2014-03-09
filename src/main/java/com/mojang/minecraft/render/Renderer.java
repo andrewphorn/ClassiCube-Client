@@ -64,7 +64,7 @@ public final class Renderer {
         GL11.glClear(256);
         GL11.glMatrixMode(5889);
         GL11.glLoadIdentity();
-        GL11.glOrtho(0.0D, var1, var2, 0.0D, 100.0D, 300.0D);
+        GL11.glOrtho(0D, var1, var2, 0D, 100D, 300D);
         GL11.glMatrixMode(5888);
         GL11.glLoadIdentity();
         GL11.glTranslatef(0F, 0F, -200F);

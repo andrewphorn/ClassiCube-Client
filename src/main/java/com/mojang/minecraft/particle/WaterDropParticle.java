@@ -17,7 +17,7 @@ public class WaterDropParticle extends Particle {
         bCol = 1F;
         tex = 16;
         setSize(0.01F, 0.01F);
-        lifetime = (int) (8.0D / (Math.random() * 0.8D + 0.2D));
+        lifetime = (int) (8D / (Math.random() * 0.8D + 0.2D));
     }
 
     @Override
