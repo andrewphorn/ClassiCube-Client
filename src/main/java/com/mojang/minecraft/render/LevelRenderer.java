@@ -25,6 +25,7 @@ public final class LevelRenderer {
     private int yChunks;
     private int zChunks;
     private int baseListId;
+    private int listsCount = -1;
     public Minecraft minecraft;
     private int[] chunkDataCache = new int['\uc350'];
     public int ticks = 0;
@@ -37,7 +38,6 @@ public final class LevelRenderer {
         minecraft = var1;
         textureManager = var2;
         listId = GL11.glGenLists(2);
-        baseListId = GL11.glGenLists(4096 << 6 << 1);
     }
 
     public final void queueChunks(int x1, int y1, int z1, int x2, int y2, int z2) {
@@ -95,6 +95,9 @@ public final class LevelRenderer {
                 chunkCache[i].dispose();
             }
         }
+        if (listsCount > -1) {
+            GL11.glDeleteLists(baseListId, listsCount);
+        }
         // So that worlds that are not multiples of 16 do not have invisible chunks.
         int paddedWidth = nextMultipleOf16(level.width);
         int paddedHeight = nextMultipleOf16(level.height);
@@ -107,6 +110,9 @@ public final class LevelRenderer {
         loadQueue = new Chunk[xChunks * yChunks * zChunks];
         
         int offset = 0;
+        listsCount = xChunks * yChunks * zChunks * 2;
+        baseListId = GL11.glGenLists(listsCount);
+
         for (int x = 0; x < xChunks; ++x) {
             for (int y = 0; y < yChunks; ++y) {
                 for (int z = 0; z < zChunks; ++z) {
