@@ -59,6 +59,9 @@ public final class OptionsScreen extends GuiScreen {
 
         buttons.add(new Button(200, width / 2 - 100, height / 6 + 120 + 26, "Controls..."));
         buttons.add(new Button(300, width / 2 - 100, height / 6 + 168, "Done"));
+        
+        // [Show Names] requires "OP"
+        buttons.get(9).active = minecraft.player.userType >= 100;
     }
 
     @Override

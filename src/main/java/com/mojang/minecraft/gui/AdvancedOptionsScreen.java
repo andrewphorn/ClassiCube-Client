@@ -151,8 +151,8 @@ public final class AdvancedOptionsScreen extends GuiScreen {
 
         buttons.add(new Button(700, width / 2 - 100, height / 6 + 168, "Done"));
 
-        buttons.get(0).active = minecraft.session != null;
-        buttons.get(4).active = minecraft.player.userType >= 100;
+        // [Allow server textures] requires you to be on a server
+        buttons.get(2).active = minecraft.session != null;
     }
 
     @Override
