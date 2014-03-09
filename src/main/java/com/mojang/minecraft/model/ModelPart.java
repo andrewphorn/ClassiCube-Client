@@ -28,7 +28,8 @@ public final class ModelPart {
     }
 
     public void generateList(float var1) {
-        GL11.glNewList(GL11.glGenLists(1), GL11.GL_COMPILE);
+        list = GL11.glGenLists(1);
+        GL11.glNewList(list, GL11.GL_COMPILE);
         GL11.glBegin(GL11.GL_QUADS);
 
         for (int var2 = 0; var2 < quads.length; ++var2) {
