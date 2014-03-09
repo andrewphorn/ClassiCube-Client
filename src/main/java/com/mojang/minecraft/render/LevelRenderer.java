@@ -38,7 +38,6 @@ public final class LevelRenderer {
         minecraft = var1;
         textureManager = var2;
         listId = GL11.glGenLists(2);
-        baseListId = GL11.glGenLists(4096 << 6 << 1);
     }
 
     public final void queueChunks(int x1, int y1, int z1, int x2, int y2, int z2) {
