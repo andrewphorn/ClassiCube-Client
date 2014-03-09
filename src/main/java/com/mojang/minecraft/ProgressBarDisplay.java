@@ -332,7 +332,7 @@ public final class ProgressBarDisplay {
             GL11.glOrtho(0.0D, x, y, 0.0D, 100.0D, 300.0D);
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
             GL11.glLoadIdentity();
-            GL11.glTranslatef(0.0F, 0.0F, -200.0F);
+            GL11.glTranslatef(0F, 0F, -200F);
         }
     }
 }

@@ -8,13 +8,13 @@ public class WaterDropParticle extends Particle {
     private static final long serialVersionUID = 1L;
 
     public WaterDropParticle(Level var1, float var2, float var3, float var4) {
-        super(var1, var2, var3, var4, 0.0F, 0.0F, 0.0F);
+        super(var1, var2, var3, var4, 0F, 0F, 0F);
         xd *= 0.3F;
         yd = (float) Math.random() * 0.2F + 0.1F;
         zd *= 0.3F;
-        rCol = 1.0F;
-        gCol = 1.0F;
-        bCol = 1.0F;
+        rCol = 1F;
+        gCol = 1F;
+        bCol = 1F;
         tex = 16;
         setSize(0.01F, 0.01F);
         lifetime = (int) (8.0D / (Math.random() * 0.8D + 0.2D));

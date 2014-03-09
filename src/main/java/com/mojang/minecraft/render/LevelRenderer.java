@@ -28,9 +28,9 @@ public final class LevelRenderer {
     public Minecraft minecraft;
     private int[] chunkDataCache = new int['\uc350'];
     public int ticks = 0;
-    private float lastLoadX = -9999.0F;
-    private float lastLoadY = -9999.0F;
-    private float lastLoadZ = -9999.0F;
+    private float lastLoadX = -9999F;
+    private float lastLoadY = -9999F;
+    private float lastLoadZ = -9999F;
     public float cracks;
 
     public LevelRenderer(Minecraft var1, TextureManager var2) {
@@ -133,9 +133,9 @@ public final class LevelRenderer {
         GL11.glNewList(listId, 4864);
         if (level.customLightColour != null) {
             GL11.glColor4f(level.customLightColour.R, level.customLightColour.G,
-                    level.customLightColour.B, 1.0F);
+                    level.customLightColour.B, 1F);
         } else {
-            GL11.glColor4f(0.5F, 0.5F, 0.5F, 1.0F);
+            GL11.glColor4f(0.5F, 0.5F, 0.5F, 1F);
         }
 
         int size = 128;
@@ -157,37 +157,37 @@ public final class LevelRenderer {
             for (int z = -size * extent; z < level.length + size * extent; z += size) {
                 float y = groundLevel;
                 if (x >= 0 && z >= 0 && x < level.width && z < level.length) {
-                    y = 0.0F;
+                    y = 0F;
                 }
-                renderer.vertexUV(x, y, z + size, 0.0F, size);
+                renderer.vertexUV(x, y, z + size, 0F, size);
                 renderer.vertexUV(x + size, y, z + size, size, size);
-                renderer.vertexUV(x + size, y, z, size, 0.0F);
-                renderer.vertexUV(x, y, z, 0.0F, 0.0F);
+                renderer.vertexUV(x + size, y, z, size, 0F);
+                renderer.vertexUV(x, y, z, 0F, 0F);
             }
         }
 
         // Bedrock vertical X axis.
         for (int x = 0; x < level.width; x += size) {
-            renderer.vertexUV(x, 0.0F, 0.0F, 0.0F, 0.0F);
-            renderer.vertexUV(x + size, 0.0F, 0.0F, size, 0.0F);
-            renderer.vertexUV(x + size, groundLevel, 0.0F, size, groundLevel);
-            renderer.vertexUV(x, groundLevel, 0.0F, 0.0F, groundLevel);
-            renderer.vertexUV(x, groundLevel, level.length, 0.0F, groundLevel);
+            renderer.vertexUV(x, 0F, 0F, 0F, 0F);
+            renderer.vertexUV(x + size, 0F, 0F, size, 0F);
+            renderer.vertexUV(x + size, groundLevel, 0F, size, groundLevel);
+            renderer.vertexUV(x, groundLevel, 0F, 0F, groundLevel);
+            renderer.vertexUV(x, groundLevel, level.length, 0F, groundLevel);
             renderer.vertexUV(x + size, groundLevel, level.length, size, groundLevel);
-            renderer.vertexUV(x + size, 0.0F, level.length, size, 0.0F);
-            renderer.vertexUV(x, 0.0F, level.length, 0.0F, 0.0F);
+            renderer.vertexUV(x + size, 0F, level.length, size, 0F);
+            renderer.vertexUV(x, 0F, level.length, 0F, 0F);
         }
 
         // Bedrock vertical Z axis.
         for (int z = 0; z < level.length; z += size) {
-            renderer.vertexUV(0.0F, groundLevel, z, 0.0F, 0.0F);
-            renderer.vertexUV(0.0F, groundLevel, z + size, size, 0.0F);
-            renderer.vertexUV(0.0F, 0.0F, z + size, size, groundLevel);
-            renderer.vertexUV(0.0F, 0.0F, z, 0.0F, groundLevel);
-            renderer.vertexUV(level.width, 0.0F, z, 0.0F, groundLevel);
-            renderer.vertexUV(level.width, 0.0F, z + size, size, groundLevel);
-            renderer.vertexUV(level.width, groundLevel, z + size, size, 0.0F);
-            renderer.vertexUV(level.width, groundLevel, z, 0.0F, 0.0F);
+            renderer.vertexUV(0F, groundLevel, z, 0F, 0F);
+            renderer.vertexUV(0F, groundLevel, z + size, size, 0F);
+            renderer.vertexUV(0F, 0F, z + size, size, groundLevel);
+            renderer.vertexUV(0F, 0F, z, 0F, groundLevel);
+            renderer.vertexUV(level.width, 0F, z, 0F, groundLevel);
+            renderer.vertexUV(level.width, 0F, z + size, size, groundLevel);
+            renderer.vertexUV(level.width, groundLevel, z + size, size, 0F);
+            renderer.vertexUV(level.width, groundLevel, z, 0F, 0F);
         }
         renderer.end();
         GL11.glEndList();
@@ -195,7 +195,7 @@ public final class LevelRenderer {
         GL11.glNewList(listId + 1, 4864);
         if (level.customLightColour != null) {
             GL11.glColor4f(level.customLightColour.R, level.customLightColour.G,
-                    level.customLightColour.B, 1.0F);
+                    level.customLightColour.B, 1F);
         }
         float waterLevel = level.getWaterLevel();
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -206,16 +206,16 @@ public final class LevelRenderer {
             for (int z = -size * extent; z < level.length + size * extent; z += size) {
                 float y = waterLevel - 0.1F;
                 if (x < 0 || z < 0 || x >= level.width || z >= level.length) {
-                    renderer.vertexUV(x, y, z + size, 0.0F, size);
+                    renderer.vertexUV(x, y, z + size, 0F, size);
                     renderer.vertexUV(x + size, y, z + size, size, size);
-                    renderer.vertexUV(x + size, y, z, size, 0.0F);
-                    renderer.vertexUV(x, y, z, 0.0F, 0.0F);
+                    renderer.vertexUV(x + size, y, z, size, 0F);
+                    renderer.vertexUV(x, y, z, 0F, 0F);
 
                     // Seems to be rendered twice? Not sure why, possibly used for animated textures?
-                    renderer.vertexUV(x, y, z, 0.0F, 0.0F);
-                    renderer.vertexUV(x + size, y, z, size, 0.0F);
+                    renderer.vertexUV(x, y, z, 0F, 0F);
+                    renderer.vertexUV(x + size, y, z, size, 0F);
                     renderer.vertexUV(x + size, y, z + size, size, size);
-                    renderer.vertexUV(x, y, z + size, 0.0F, size);
+                    renderer.vertexUV(x, y, z + size, 0F, size);
                 }
             }
         }

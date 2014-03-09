@@ -13,9 +13,9 @@ public class JumpAttackAI extends BasicAttackAI {
         if (attackTarget == null) {
             super.jumpFromGround();
         } else {
-            mob.xd = 0.0F;
-            mob.zd = 0.0F;
-            mob.moveRelative(0.0F, 1.0F, 0.6F);
+            mob.xd = 0F;
+            mob.zd = 0F;
+            mob.moveRelative(0F, 1F, 0.6F);
             mob.yd = 0.5F;
         }
     }

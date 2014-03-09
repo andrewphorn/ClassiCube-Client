@@ -26,10 +26,10 @@ public class Screen {
     protected static void drawBox(float x1, float y1, float x2, float y2,
             int colorRGB) {
 
-        float alpha = (colorRGB >>> 24) / 255.0F;
-        float red = (colorRGB >> 16 & 255) / 255.0F;
-        float green = (colorRGB >> 8 & 255) / 255.0F;
-        float blue = (colorRGB & 255) / 255.0F;
+        float alpha = (colorRGB >>> 24) / 255F;
+        float red = (colorRGB >> 16 & 255) / 255F;
+        float green = (colorRGB >> 8 & 255) / 255F;
+        float blue = (colorRGB & 255) / 255F;
         ShapeRenderer renderer = ShapeRenderer.instance;
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -38,10 +38,10 @@ public class Screen {
         GL11.glColor4f(red, green, blue, alpha);
 
         renderer.begin();
-        renderer.vertex(x1, y2, 0.0F);
-        renderer.vertex(x2, y2, 0.0F);
-        renderer.vertex(x2, y1, 0.0F);
-        renderer.vertex(x1, y1, 0.0F);
+        renderer.vertex(x1, y2, 0F);
+        renderer.vertex(x2, y2, 0F);
+        renderer.vertex(x2, y1, 0F);
+        renderer.vertex(x1, y1, 0F);
         renderer.end();
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -105,15 +105,15 @@ public class Screen {
     }
     protected static void drawFadingBox(int var0, int var1, int var2, int var3,
             int var4, int var5) {
-        GL11.glAlphaFunc(516, 0.0F);
-        float var6 = (var4 >>> 24) / 255.0F;
-        float var7 = (var4 >> 16 & 255) / 255.0F;
-        float var8 = (var4 >> 8 & 255) / 255.0F;
-        float var12 = (var4 & 255) / 255.0F;
-        float var9 = (var5 >>> 24) / 255.0F;
-        float var10 = (var5 >> 16 & 255) / 255.0F;
-        float var11 = (var5 >> 8 & 255) / 255.0F;
-        float var13 = (var5 & 255) / 255.0F;
+        GL11.glAlphaFunc(516, 0F);
+        float var6 = (var4 >>> 24) / 255F;
+        float var7 = (var4 >> 16 & 255) / 255F;
+        float var8 = (var4 >> 8 & 255) / 255F;
+        float var12 = (var4 & 255) / 255F;
+        float var9 = (var5 >>> 24) / 255F;
+        float var10 = (var5 >> 16 & 255) / 255F;
+        float var11 = (var5 >> 8 & 255) / 255F;
+        float var13 = (var5 & 255) / 255F;
         GL11.glDisable(3553);
         GL11.glEnable(3042);
         GL11.glBlendFunc(770, 771);

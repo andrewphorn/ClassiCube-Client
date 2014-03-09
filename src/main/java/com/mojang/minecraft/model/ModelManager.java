@@ -7,8 +7,8 @@ import com.mojang.minecraft.SessionData;
  */
 public final class ModelManager {
 
-    private HumanoidModel human = new HumanoidModel(0.0F);
-    private HumanoidModel armoredHuman = new HumanoidModel(1.0F);
+    private HumanoidModel human = new HumanoidModel(0F);
+    private HumanoidModel armoredHuman = new HumanoidModel(1F);
     private CreeperModel creeper = new CreeperModel();
     private SkeletonModel skeleton = new SkeletonModel();
     private ZombieModel zombie = new ZombieModel();

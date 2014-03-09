@@ -80,7 +80,7 @@ public abstract class Floor {
             0.23501402f, 0.25028656f, 0.26655159f, 0.28387361f, 0.30232132f, 0.32196786f,
             0.34289114f, 0.36517414f, 0.38890521f, 0.41417847f, 0.44109412f, 0.46975890f,
             0.50028648f, 0.53279791f, 0.56742212f, 0.60429640f, 0.64356699f, 0.68538959f,
-            0.72993007f, 0.77736504f, 0.82788260f, 0.88168307f, 0.9389798f, 1.0f };
+            0.72993007f, 0.77736504f, 0.82788260f, 0.88168307f, 0.9389798f, 1F };
 
     static Floor createInstance(BitInputStream source, SetupHeader header)
             throws VorbisFormatException, IOException {

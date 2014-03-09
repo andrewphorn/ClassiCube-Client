@@ -45,9 +45,9 @@ class BlockMap$Slot implements Serializable {
     }
 
     public BlockMap$Slot init(float var1, float var2, float var3) {
-        xSlot = (int) (var1 / 16.0F);
-        ySlot = (int) (var2 / 16.0F);
-        zSlot = (int) (var3 / 16.0F);
+        xSlot = (int) (var1 / 16F);
+        ySlot = (int) (var2 / 16F);
+        zSlot = (int) (var3 / 16F);
         if (xSlot < 0) {
             xSlot = 0;
         }

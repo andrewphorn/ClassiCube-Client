@@ -8,9 +8,9 @@ public class HeldBlock {
 
     public Block block = null;
 
-    public float pos = 0.0F;
+    public float pos = 0F;
 
-    public float lastPos = 0.0F;
+    public float lastPos = 0F;
     public int offset = 0;
 
     public boolean moving = false;

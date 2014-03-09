@@ -48,9 +48,9 @@ public class NetworkPlayer extends HumanoidMob {
         xp = var4;
         yp = var5;
         zp = var6;
-        heightOffset = 0.0F;
+        heightOffset = 0F;
         pushthrough = 0.8F;
-        this.setPos(var4 / 32.0F, var5 / 32.0F, var6 / 32.0F);
+        this.setPos(var4 / 32F, var5 / 32F, var6 / 32F);
         xRot = var8;
         yRot = var7;
         armor = helmet = false;
@@ -143,61 +143,61 @@ public class NetworkPlayer extends HumanoidMob {
     }
 
     public void queue(byte x, byte y, byte z) {
-        moveQueue.add(new PositionUpdate((xp + x / 2.0F) / 32.0F, (yp + y / 2.0F) / 32.0F,
-                (zp + z / 2.0F) / 32.0F));
+        moveQueue.add(new PositionUpdate((xp + x / 2F) / 32F, (yp + y / 2F) / 32F,
+                (zp + z / 2F) / 32F));
         xp += x;
         yp += y;
         zp += z;
-        moveQueue.add(new PositionUpdate(xp / 32.0F, yp / 32.0F, zp / 32.0F));
+        moveQueue.add(new PositionUpdate(xp / 32F, yp / 32F, zp / 32F));
     }
 
     public void queue(byte var1, byte var2, byte var3, float var4, float var5) {
         float var6 = var4 - yRot;
         float var7 = var5 - xRot;
 
-        while (var6 >= 180.0F) {
-            var6 -= 360.0F;
+        while (var6 >= 180F) {
+            var6 -= 360F;
         }
 
-        while (var6 < -180.0F) {
-            var6 += 360.0F;
+        while (var6 < -180F) {
+            var6 += 360F;
         }
 
-        while (var7 >= 180.0F) {
-            var7 -= 360.0F;
+        while (var7 >= 180F) {
+            var7 -= 360F;
         }
 
-        while (var7 < -180.0F) {
-            var7 += 360.0F;
+        while (var7 < -180F) {
+            var7 += 360F;
         }
 
         var6 = yRot + var6 * 0.5F;
         var7 = xRot + var7 * 0.5F;
-        moveQueue.add(new PositionUpdate((xp + var1 / 2.0F) / 32.0F, (yp + var2 / 2.0F) / 32.0F, (zp + var3 / 2.0F) / 32.0F, var6, var7));
+        moveQueue.add(new PositionUpdate((xp + var1 / 2F) / 32F, (yp + var2 / 2F) / 32F, (zp + var3 / 2F) / 32F, var6, var7));
         xp += var1;
         yp += var2;
         zp += var3;
-        moveQueue.add(new PositionUpdate(xp / 32.0F, yp / 32.0F, zp / 32.0F, var4, var5));
+        moveQueue.add(new PositionUpdate(xp / 32F, yp / 32F, zp / 32F, var4, var5));
     }
 
     public void queue(float var1, float var2) {
         float var3 = var1 - yRot;
         float var4 = var2 - xRot;
 
-        while (var3 >= 180.0F) {
-            var3 -= 360.0F;
+        while (var3 >= 180F) {
+            var3 -= 360F;
         }
 
-        while (var3 < -180.0F) {
-            var3 += 360.0F;
+        while (var3 < -180F) {
+            var3 += 360F;
         }
 
-        while (var4 >= 180.0F) {
-            var4 -= 360.0F;
+        while (var4 >= 180F) {
+            var4 -= 360F;
         }
 
-        while (var4 < -180.0F) {
-            var4 += 360.0F;
+        while (var4 < -180F) {
+            var4 += 360F;
         }
 
         var3 = yRot + var3 * 0.5F;
@@ -211,11 +211,11 @@ public class NetworkPlayer extends HumanoidMob {
         FontRenderer fontRenderer = minecraft.fontRenderer;
         GL11.glPushMatrix();
         GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 + 0.8F + renderOffset, zo + (z - zo) * var2);
-        GL11.glRotatef(-minecraft.player.yRot, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(-minecraft.player.yRot, 0F, 1F, 0F);
         var2 = 0.05F;
         GL11.glScalef(0.05F, -var2, var2);
-        GL11.glTranslatef(-fontRenderer.getWidth(displayName) / 2.0F, 0.0F, 0.0F);
-        GL11.glNormal3f(1.0F, -1.0F, 1.0F);
+        GL11.glTranslatef(-fontRenderer.getWidth(displayName) / 2F, 0F, 0F);
+        GL11.glNormal3f(1F, -1F, 1F);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_LIGHT0);
 
@@ -223,14 +223,14 @@ public class NetworkPlayer extends HumanoidMob {
 
         GL11.glDepthFunc(GL11.GL_GREATER);
         GL11.glDepthMask(false);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+        GL11.glColor4f(1F, 1F, 1F, 0.8F);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         fontRenderer.renderNoShadow(displayName, 0, 0, 16777215); // #FFFFFF
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
-        GL11.glTranslatef(1.0F, 1.0F, -0.05F);
+        GL11.glTranslatef(1F, 1F, -0.05F);
         fontRenderer.renderNoShadow(name, 0, 0, 5263440); // #505050
         GL11.glEnable(GL11.GL_LIGHT0);
         GL11.glEnable(GL11.GL_LIGHTING);
@@ -242,28 +242,28 @@ public class NetworkPlayer extends HumanoidMob {
         float var7 = var5 - xRot;
 
         // Normalize values?
-        while (var6 >= 180.0F) {
-            var6 -= 360.0F;
+        while (var6 >= 180F) {
+            var6 -= 360F;
         }
 
-        while (var6 < -180.0F) {
-            var6 += 360.0F;
+        while (var6 < -180F) {
+            var6 += 360F;
         }
 
-        while (var7 >= 180.0F) {
-            var7 -= 360.0F;
+        while (var7 >= 180F) {
+            var7 -= 360F;
         }
 
-        while (var7 < -180.0F) {
-            var7 += 360.0F;
+        while (var7 < -180F) {
+            var7 += 360F;
         }
 
         var6 = yRot + var6 * 0.5F;
         var7 = xRot + var7 * 0.5F;
-        moveQueue.add(new PositionUpdate((xp + var1) / 64.0F, (yp + var2) / 64.0F, (zp + var3) / 64.0F, var6, var7));
+        moveQueue.add(new PositionUpdate((xp + var1) / 64F, (yp + var2) / 64F, (zp + var3) / 64F, var6, var7));
         xp = var1;
         yp = var2;
         zp = var3;
-        moveQueue.add(new PositionUpdate(xp / 32.0F, yp / 32.0F, zp / 32.0F, var4, var5));
+        moveQueue.add(new PositionUpdate(xp / 32F, yp / 32F, zp / 32F, var4, var5));
     }
 }

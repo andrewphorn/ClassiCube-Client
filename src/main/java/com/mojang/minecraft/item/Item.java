@@ -42,7 +42,7 @@ public class Item extends Entity {
 
         setSize(0.25F, 0.25F);
 
-        heightOffset = bbHeight / 2.0F;
+        heightOffset = bbHeight / 2F;
 
         setPos(x, y, z);
 
@@ -78,23 +78,23 @@ public class Item extends Entity {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
 
         float brightness = level.getBrightness((int) x, (int) y, (int) z);
-        float unknown1 = rot + (tickCount + unknown0) * 3.0F;
+        float unknown1 = rot + (tickCount + unknown0) * 3F;
 
         GL11.glPushMatrix();
-        GL11.glColor4f(brightness, brightness, brightness, 1.0F);
+        GL11.glColor4f(brightness, brightness, brightness, 1F);
 
-        float unknown2 = (brightness = MathHelper.sin(unknown1 / 10.0F)) * 0.1F + 0.1F;
+        float unknown2 = (brightness = MathHelper.sin(unknown1 / 10F)) * 0.1F + 0.1F;
 
         GL11.glTranslatef(xo + (x - xo) * unknown0, yo + (y - yo) * unknown0 + unknown2, zo
                 + (z - zo) * unknown0);
-        GL11.glRotatef(unknown1, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(unknown1, 0F, 1F, 0F);
 
         models[resource].generateList();
 
         brightness = (brightness = (brightness = brightness * 0.5F + 0.5F) * brightness)
                 * brightness;
 
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, brightness * 0.4F);
+        GL11.glColor4f(1F, 1F, 1F, brightness * 0.4F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, 1);
@@ -105,7 +105,7 @@ public class Item extends Entity {
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, 771);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glColor4f(1F, 1F, 1F, 1F);
         GL11.glPopMatrix();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }

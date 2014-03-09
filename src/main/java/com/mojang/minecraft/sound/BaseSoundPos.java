@@ -17,8 +17,8 @@ public abstract class BaseSoundPos implements SoundPos {
 
         var4 = MathHelper.sqrt(x * x + y * y + var4 * var4);
 
-        if ((var4 = 1.0F - var4 / 32.0F) < 0.0F) {
-            var4 = 0.0F;
+        if ((var4 = 1F - var4 / 32F) < 0F) {
+            var4 = 0F;
         }
 
         return var4;
@@ -33,8 +33,8 @@ public abstract class BaseSoundPos implements SoundPos {
         x /= var3;
         y /= var3;
 
-        if ((var3 /= 2.0F) > 1.0F) {
-            var3 = 1.0F;
+        if ((var3 /= 2F) > 1F) {
+            var3 = 1F;
         }
 
         float var4 = MathHelper.cos(-listener.yRot * (float) (Math.PI / 180D) + (float) Math.PI);

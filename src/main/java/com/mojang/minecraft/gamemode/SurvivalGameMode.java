@@ -98,15 +98,15 @@ public final class SurvivalGameMode extends GameMode {
     @Override
     public void applyCracks(float time) {
         if (hits <= 0) {
-            minecraft.levelRenderer.cracks = 0.0F;
+            minecraft.levelRenderer.cracks = 0F;
         } else {
-            minecraft.levelRenderer.cracks = (hits + time - 1.0F) / hardness;
+            minecraft.levelRenderer.cracks = (hits + time - 1F) / hardness;
         }
     }
 
     @Override
     public float getReachDistance() {
-        return 4.0F;
+        return 4F;
     }
 
     @Override

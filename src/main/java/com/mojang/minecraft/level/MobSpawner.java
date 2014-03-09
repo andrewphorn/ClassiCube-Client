@@ -67,7 +67,7 @@ public final class MobSpawner {
                                 && !this.level.isSolidTile(var11, var12, var13)
                                 && !this.level.isSolidTile(var11, var12 + 1, var13)) {
                             float var15 = var11 + 0.5F;
-                            float var16 = var12 + 1.0F;
+                            float var16 = var12 + 1F;
                             float var17 = var13 + 0.5F;
                             float var19;
                             float var18;
@@ -76,14 +76,14 @@ public final class MobSpawner {
                                 var18 = var15 - var2.x;
                                 var19 = var16 - var2.y;
                                 var20 = var17 - var2.z;
-                                if (var18 * var18 + var19 * var19 + var20 * var20 < 256.0F) {
+                                if (var18 * var18 + var19 * var19 + var20 * var20 < 256F) {
                                     continue;
                                 }
                             } else {
                                 var18 = var15 - this.level.xSpawn;
                                 var19 = var16 - this.level.ySpawn;
                                 var20 = var17 - this.level.zSpawn;
-                                if (var18 * var18 + var19 * var19 + var20 * var20 < 256.0F) {
+                                if (var18 * var18 + var19 * var19 + var20 * var20 < 256F) {
                                     continue;
                                 }
                             }

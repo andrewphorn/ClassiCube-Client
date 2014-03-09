@@ -44,11 +44,11 @@ public class TextureFireFX extends TextureFX {
         a = af;
         for (int l = 0; l < 256; l++) {
             float f1 = a[l] * 1.8F;
-            if (f1 > 1.0F) {
-                f1 = 1.0F;
+            if (f1 > 1F) {
+                f1 = 1F;
             }
-            if (f1 < 0.0F) {
-                f1 = 0.0F;
+            if (f1 < 0F) {
+                f1 = 0F;
             }
             float f2 = f1;
             int k1 = (int) (f2 * 155F + 100F);
@@ -58,7 +58,7 @@ public class TextureFireFX extends TextureFX {
             if (f2 < 0.5F) {
                 c = '\0';
             }
-            f2 = (f2 - 0.5F) * 2.0F;
+            f2 = (f2 - 0.5F) * 2F;
             textureData[l * 4 + 0] = (byte) k1;
             textureData[l * 4 + 1] = (byte) i2;
             textureData[l * 4 + 2] = (byte) k2;

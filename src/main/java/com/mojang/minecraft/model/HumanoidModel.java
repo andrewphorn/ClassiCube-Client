@@ -16,7 +16,7 @@ public class HumanoidModel extends Model {
      * Creates a new humanoid model with the default scaling.
      */
     public HumanoidModel() {
-        this(0.0F);
+        this(0F);
     }
 
     /**
@@ -26,30 +26,30 @@ public class HumanoidModel extends Model {
      */
     public HumanoidModel(float var1) {
         head = new ModelPart(0, 0);
-        head.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, var1);
+        head.setBounds(-4F, -8F, -4F, 8, 8, 8, var1);
                 head.allowTransparency = false;
         headwear = new ModelPart(32, 0);
-        headwear.setBounds(-4.0F, -8.0F, -4.0F, 8, 8, 8, var1 + 0.5F);
+        headwear.setBounds(-4F, -8F, -4F, 8, 8, 8, var1 + 0.5F);
         body = new ModelPart(16, 16);
-        body.setBounds(-4.0F, 0.0F, -2.0F, 8, 12, 4, var1);
+        body.setBounds(-4F, 0F, -2F, 8, 12, 4, var1);
                 body.allowTransparency = false;
         rightArm = new ModelPart(40, 16);
-        rightArm.setBounds(-3.0F, -2.0F, -2.0F, 4, 12, 4, var1);
-        rightArm.setPosition(-5.0F, 2.0F, 0.0F);
+        rightArm.setBounds(-3F, -2F, -2F, 4, 12, 4, var1);
+        rightArm.setPosition(-5F, 2F, 0F);
                 rightArm.allowTransparency = false;
         leftArm = new ModelPart(40, 16);
         leftArm.mirror = true;
-        leftArm.setBounds(-1.0F, -2.0F, -2.0F, 4, 12, 4, var1);
-        leftArm.setPosition(5.0F, 2.0F, 0.0F);
+        leftArm.setBounds(-1F, -2F, -2F, 4, 12, 4, var1);
+        leftArm.setPosition(5F, 2F, 0F);
                 leftArm.allowTransparency = false;
         rightLeg = new ModelPart(0, 16);
-        rightLeg.setBounds(-2.0F, 0.0F, -2.0F, 4, 12, 4, var1);
-        rightLeg.setPosition(-2.0F, 12.0F, 0.0F);
+        rightLeg.setBounds(-2F, 0F, -2F, 4, 12, 4, var1);
+        rightLeg.setPosition(-2F, 12F, 0F);
                 rightLeg.allowTransparency = false;
         leftLeg = new ModelPart(0, 16);
         leftLeg.mirror = true;
-        leftLeg.setBounds(-2.0F, 0.0F, -2.0F, 4, 12, 4, var1);
-        leftLeg.setPosition(2.0F, 12.0F, 0.0F);
+        leftLeg.setBounds(-2F, 0F, -2F, 4, 12, 4, var1);
+        leftLeg.setPosition(2F, 12F, 0F);
                 leftLeg.allowTransparency = false;
     }
 
@@ -68,10 +68,10 @@ public class HumanoidModel extends Model {
             float var6) {
         head.yaw = var4 / (float) (180D / Math.PI);
         head.pitch = var5 / (float) (180D / Math.PI);
-        rightArm.pitch = MathHelper.cos(var1 * 0.6662F + (float) Math.PI) * 2.0F * var2;
-        rightArm.roll = (MathHelper.cos(var1 * 0.2312F) + 1.0F) * var2;
-        leftArm.pitch = MathHelper.cos(var1 * 0.6662F) * 2.0F * var2;
-        leftArm.roll = (MathHelper.cos(var1 * 0.2812F) - 1.0F) * var2;
+        rightArm.pitch = MathHelper.cos(var1 * 0.6662F + (float) Math.PI) * 2F * var2;
+        rightArm.roll = (MathHelper.cos(var1 * 0.2312F) + 1F) * var2;
+        leftArm.pitch = MathHelper.cos(var1 * 0.6662F) * 2F * var2;
+        leftArm.roll = (MathHelper.cos(var1 * 0.2812F) - 1F) * var2;
         rightLeg.pitch = MathHelper.cos(var1 * 0.6662F) * 1.4F * var2;
         leftLeg.pitch = MathHelper.cos(var1 * 0.6662F + (float) Math.PI) * 1.4F * var2;
         rightArm.roll += MathHelper.cos(var3 * 0.09F) * 0.05F + 0.05F;

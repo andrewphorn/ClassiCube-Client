@@ -65,8 +65,8 @@ public final class ModelPart {
                 GL11.glDisable(GL11.GL_CULL_FACE);
             }
 
-            if (pitch == 0.0F && yaw == 0.0F && roll == 0.0F) {
-                if (x == 0.0F && y == 0.0F && z == 0.0F) {
+            if (pitch == 0F && yaw == 0F && roll == 0F) {
+                if (x == 0F && y == 0F && z == 0F) {
                     GL11.glCallList(list);
                 } else {
                     GL11.glTranslatef(x * var1, y * var1, z * var1);
@@ -76,16 +76,16 @@ public final class ModelPart {
             } else {
                 GL11.glPushMatrix();
                 GL11.glTranslatef(x * var1, y * var1, z * var1);
-                if (roll != 0.0F) {
-                    GL11.glRotatef(roll * (float) (180D / Math.PI), 0.0F, 0.0F, 1.0F);
+                if (roll != 0F) {
+                    GL11.glRotatef(roll * (float) (180D / Math.PI), 0F, 0F, 1F);
                 }
 
-                if (yaw != 0.0F) {
-                    GL11.glRotatef(yaw * (float) (180D / Math.PI), 0.0F, 1.0F, 0.0F);
+                if (yaw != 0F) {
+                    GL11.glRotatef(yaw * (float) (180D / Math.PI), 0F, 1F, 0F);
                 }
 
-                if (pitch != 0.0F) {
-                    GL11.glRotatef(pitch * (float) (180D / Math.PI), 1.0F, 0.0F, 0.0F);
+                if (pitch != 0F) {
+                    GL11.glRotatef(pitch * (float) (180D / Math.PI), 1F, 0F, 0F);
                 }
 
                 GL11.glCallList(list);
@@ -117,14 +117,14 @@ public final class ModelPart {
             var1 = var7;
         }
 
-        Vertex var20 = new Vertex(var1, var2, var3, 0.0F, 0.0F);
-        Vertex var11 = new Vertex(var8, var2, var3, 0.0F, 8.0F);
-        Vertex var12 = new Vertex(var8, var9, var3, 8.0F, 8.0F);
-        Vertex var18 = new Vertex(var1, var9, var3, 8.0F, 0.0F);
-        Vertex var13 = new Vertex(var1, var2, var10, 0.0F, 0.0F);
-        Vertex var15 = new Vertex(var8, var2, var10, 0.0F, 8.0F);
-        Vertex var21 = new Vertex(var8, var9, var10, 8.0F, 8.0F);
-        Vertex var14 = new Vertex(var1, var9, var10, 8.0F, 0.0F);
+        Vertex var20 = new Vertex(var1, var2, var3, 0F, 0F);
+        Vertex var11 = new Vertex(var8, var2, var3, 0F, 8F);
+        Vertex var12 = new Vertex(var8, var9, var3, 8F, 8F);
+        Vertex var18 = new Vertex(var1, var9, var3, 8F, 0F);
+        Vertex var13 = new Vertex(var1, var2, var10, 0F, 0F);
+        Vertex var15 = new Vertex(var8, var2, var10, 0F, 8F);
+        Vertex var21 = new Vertex(var8, var9, var10, 8F, 8F);
+        Vertex var14 = new Vertex(var1, var9, var10, 8F, 0F);
         vertices[0] = var20;
         vertices[1] = var11;
         vertices[2] = var12;

@@ -111,8 +111,8 @@ public class InputHandlerImpl extends InputHandler {
             canMove = false;
         }
         if (HacksMode == 0) {
-            xxa = 0.0F;
-            yya = 0.0F;
+            xxa = 0F;
+            yya = 0F;
 
             if (keyStates[0]) {
                 yya--;
@@ -140,20 +140,20 @@ public class InputHandlerImpl extends InputHandler {
                 flyingDown = keyStates[7];
             }
         } else {
-            move = 0.0F;
-            strafe = 0.0F;
-            elevate = 0.0F;
+            move = 0F;
+            strafe = 0F;
+            elevate = 0F;
             if (keylist[0] != false) {
-                move -= 1.0F;
+                move -= 1F;
             }
             if (keylist[1] != false) {
-                strafe -= 1.0F;
+                strafe -= 1F;
             }
             if (keylist[2] != false) {
-                move += 1.0F;
+                move += 1F;
             }
             if (keylist[3] != false) {
-                strafe += 1.0F;
+                strafe += 1F;
             }
             if (player.flyingMode) {
                 if (keylist[5] != false) {
@@ -163,11 +163,11 @@ public class InputHandlerImpl extends InputHandler {
                     elevate -= 0.3F;
                 }
             }
-            mult = 1.0F;
+            mult = 1F;
             if (keylist[7] != false) {
-                mult = 5.0F;
+                mult = 5F;
             } else if (keylist[8] != false) {
-                mult = 2.0F;
+                mult = 2F;
             }
 
             player.noPhysics = cliplock;

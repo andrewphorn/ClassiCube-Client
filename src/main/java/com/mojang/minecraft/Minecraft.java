@@ -126,7 +126,7 @@ public final class Minecraft implements Runnable {
      * This timer determines how much time will pass between block modifications. It is used to
      * prevent really fast block spamming.
      */
-    private Timer timer = new Timer(20.0F);
+    private Timer timer = new Timer(20F);
     private ResourceDownloadThread resourceThread;
     private int ticks;
     private int punchingCooldown; // survival
@@ -624,7 +624,7 @@ public final class Minecraft implements Runnable {
 
             // Update local copy of the map
             level.netSetTile(x, y, z, blockID);
-            renderer.heldBlock.pos = 0.0F;
+            renderer.heldBlock.pos = 0F;
             Block.blocks[blockID].onPlace(level, x, y, z);
         }
     }
@@ -798,7 +798,7 @@ public final class Minecraft implements Runnable {
         // Start the sound player
         soundPlayer = new SoundPlayer(settings);
         try {
-            AudioFormat soundFormat = new AudioFormat(44100.0F, 16, 2, true, true);
+            AudioFormat soundFormat = new AudioFormat(44100F, 16, 2, true, true);
             soundPlayer.dataLine = AudioSystem.getSourceDataLine(soundFormat);
             soundPlayer.dataLine.open(soundFormat, 4410);
             soundPlayer.dataLine.start();
@@ -1004,7 +1004,7 @@ public final class Minecraft implements Runnable {
                         if (isSurvival()) {
                             reachDistance = var74;
                         } else {
-                            reachDistance = 32.0F;
+                            reachDistance = 32F;
                         }
 
                         vec3D = var31.add(var34 * reachDistance,
@@ -1015,7 +1015,7 @@ public final class Minecraft implements Runnable {
                                         player.bb.expand(var34 * reachDistance,
                                                 var33 * reachDistance,
                                                 var87 * reachDistance));
-                        float var35 = 0.0F;
+                        float var35 = 0F;
 
                         for (var81 = 0; var81 < var37.size(); ++var81) {
                             Entity var88 = var37.get(var81);
@@ -1025,7 +1025,7 @@ public final class Minecraft implements Runnable {
                                         = var88.bb.grow(var74, var74, var74).clip(var31, vec3D);
                                 if (var78 != null) {
                                     var74 = var31.distance(var78.vec);
-                                    if (var74 < var35 || var35 == 0.0F) {
+                                    if (var74 < var35 || var35 == 0F) {
                                         renderer.entity = var88;
                                         var35 = var74;
                                     }
@@ -1045,14 +1045,14 @@ public final class Minecraft implements Runnable {
                                 renderer.minecraft.width,
                                 renderer.minecraft.height);
                         Level var26 = renderer.minecraft.level;
-                        var29 = 1.0F / (4 - renderer.minecraft.settings.viewDistance);
-                        var29 = 1.0F - (float) Math.pow(var29, 0.25D);
-                        var30 = (var26.skyColor >> 16 & 255) / 255.0F;
-                        float var117 = (var26.skyColor >> 8 & 255) / 255.0F;
-                        var32 = (var26.skyColor & 255) / 255.0F;
-                        renderer.fogRed = (var26.fogColor >> 16 & 255) / 255.0F;
-                        renderer.fogBlue = (var26.fogColor >> 8 & 255) / 255.0F;
-                        renderer.fogGreen = (var26.fogColor & 255) / 255.0F;
+                        var29 = 1F / (4 - renderer.minecraft.settings.viewDistance);
+                        var29 = 1F - (float) Math.pow(var29, 0.25D);
+                        var30 = (var26.skyColor >> 16 & 255) / 255F;
+                        float var117 = (var26.skyColor >> 8 & 255) / 255F;
+                        var32 = (var26.skyColor & 255) / 255F;
+                        renderer.fogRed = (var26.fogColor >> 16 & 255) / 255F;
+                        renderer.fogBlue = (var26.fogColor >> 8 & 255) / 255F;
+                        renderer.fogGreen = (var26.fogColor & 255) / 255F;
                         renderer.fogRed += (var30 - renderer.fogRed) * var29;
                         renderer.fogBlue += (var117 - renderer.fogBlue) * var29;
                         renderer.fogGreen += (var32 - renderer.fogGreen) * var29;
@@ -1073,15 +1073,15 @@ public final class Minecraft implements Runnable {
                             } else if (var79 == LiquidType.lava) {
                                 renderer.fogRed = 0.6F;
                                 renderer.fogBlue = 0.1F;
-                                renderer.fogGreen = 0.0F;
+                                renderer.fogGreen = 0F;
                             }
                         }
 
                         GL11.glClearColor(renderer.fogRed,
                                 renderer.fogBlue,
-                                renderer.fogGreen, 0.0F);
+                                renderer.fogGreen, 0F);
                         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-                        renderer.fogColorMultiplier = 1.0F;
+                        renderer.fogColorMultiplier = 1F;
                         GL11.glEnable(GL11.GL_CULL_FACE);
                         renderer.fogEnd = 512 >> (renderer.minecraft.settings.viewDistance << 1);
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
@@ -1089,10 +1089,10 @@ public final class Minecraft implements Runnable {
                         var29 = 0.07F;
 
                         Player var116 = renderer.minecraft.player;
-                        var69 = 70.0F;
+                        var69 = 70F;
                         if (var116.health <= 0) {
                             var74 = var116.deathTime + var80;
-                            var69 /= (1.0F - 500.0F / (var74 + 500.0F)) * 2.0F + 1.0F;
+                            var69 /= (1F - 500F / (var74 + 500F)) * 2F + 1F;
                         }
 
                         GLU.gluPerspective(
@@ -1109,24 +1109,24 @@ public final class Minecraft implements Runnable {
 
                         var116 = renderer.minecraft.player;
                         if (settings.thirdPersonMode == 0) {
-                            GL11.glTranslatef(0.0F, 0.0F, -0.1F);
+                            GL11.glTranslatef(0F, 0F, -0.1F);
                         } else {
-                            GL11.glTranslatef(0.0F, 0.0F, -5.1F);
+                            GL11.glTranslatef(0F, 0F, -5.1F);
                         }
                         if (settings.thirdPersonMode == 2) {
                             GL11.glRotatef(-var116.xRotO
                                     + (var116.xRot - var116.xRotO)
-                                    * var80, 1.0F, 0.0F, 0.0F);
+                                    * var80, 1F, 0F, 0F);
                             GL11.glRotatef((var116.yRotO
                                     + (var116.yRot - var116.yRotO)
-                                    * var80) + 180, 0.0F, 1.0F, 0.0F);
+                                    * var80) + 180, 0F, 1F, 0F);
                         } else {
                             GL11.glRotatef(var116.xRotO
                                     + (var116.xRot - var116.xRotO)
-                                    * var80, 1.0F, 0.0F, 0.0F);
+                                    * var80, 1F, 0F, 0F);
                             GL11.glRotatef(var116.yRotO
                                     + (var116.yRot - var116.yRotO)
-                                    * var80, 0.0F, 1.0F, 0.0F);
+                                    * var80, 0F, 1F, 0F);
                         }
                         var69 = var116.xo + (var116.x - var116.xo) * var80;
                         var74 = var116.yo + (var116.y - var116.yo) * var80;
@@ -1187,7 +1187,7 @@ public final class Minecraft implements Runnable {
                                                 .isSolid()) {
                                             GL11.glColor4f(
                                                     0.2F, 0.2F,
-                                                    0.2F, 1.0F);
+                                                    0.2F, 1F);
                                             GL11.glDepthFunc(513);
 
                                             shapeRenderer
@@ -1237,11 +1237,11 @@ public final class Minecraft implements Runnable {
                         renderer.updateFog();
                         float var107 = var80;
                         ParticleManager var96 = var93;
-                        var29 = -MathHelper.cos(var126.yRot * 3.1415927F / 180.0F);
-                        var117 = -(var30 = -MathHelper.sin(var126.yRot * 3.1415927F / 180.0F))
-                                * MathHelper.sin(var126.xRot * 3.1415927F / 180.0F);
-                        var32 = var29 * MathHelper.sin(var126.xRot * 3.1415927F / 180.0F);
-                        var69 = MathHelper.cos(var126.xRot * 3.1415927F / 180.0F);
+                        var29 = -MathHelper.cos(var126.yRot * 3.1415927F / 180F);
+                        var117 = -(var30 = -MathHelper.sin(var126.yRot * 3.1415927F / 180F))
+                                * MathHelper.sin(var126.xRot * 3.1415927F / 180F);
+                        var32 = var29 * MathHelper.sin(var126.xRot * 3.1415927F / 180F);
+                        var69 = MathHelper.cos(var126.xRot * 3.1415927F / 180F);
 
                         for (var83 = 0; var83 < 2; ++var83) {
                             if (!var96.particles[var83].isEmpty()) {
@@ -1284,19 +1284,19 @@ public final class Minecraft implements Runnable {
                         var101 = var89;
 
                         GL11.glBindTexture(GL11.GL_TEXTURE_2D, var89.textureManager.load("/clouds.png"));
-                        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                        var107 = (var89.level.cloudColor >> 16 & 255) / 255.0F;
-                        var29 = (var89.level.cloudColor >> 8 & 255) / 255.0F;
-                        var30 = (var89.level.cloudColor & 255) / 255.0F;
+                        GL11.glColor4f(1F, 1F, 1F, 1F);
+                        var107 = (var89.level.cloudColor >> 16 & 255) / 255F;
+                        var29 = (var89.level.cloudColor >> 8 & 255) / 255F;
+                        var30 = (var89.level.cloudColor & 255) / 255F;
 
-                        var74 = 0.0F;
+                        var74 = 0F;
                         var33 = 4.8828125E-4F;
                         if (level.cloudLevel < 0) {
                             level.cloudLevel = var89.level.height + 2;
                         }
                         var74 = level.cloudLevel;
                         var34 = (var89.ticks + var80) * var33 * 0.03F;
-                        var35 = 0.0F;
+                        var35 = 0F;
                         if (settings.showClouds) {
                             shapeRenderer.begin();
                             shapeRenderer.color(var107, var29, var30);
@@ -1346,9 +1346,9 @@ public final class Minecraft implements Runnable {
                         GL11.glDisable(GL11.GL_TEXTURE_2D);
 
                         shapeRenderer.begin();
-                        var34 = (var101.level.skyColor >> 16 & 255) / 255.0F;
-                        var35 = (var101.level.skyColor >> 8 & 255) / 255.0F;
-                        var87 = (var101.level.skyColor & 255) / 255.0F;
+                        var34 = (var101.level.skyColor >> 16 & 255) / 255F;
+                        var35 = (var101.level.skyColor >> 8 & 255) / 255F;
+                        var87 = (var101.level.skyColor & 255) / 255F;
 
                         shapeRenderer.color(var34, var35, var87);
                         var74 = var101.level.height + 10;
@@ -1377,18 +1377,18 @@ public final class Minecraft implements Runnable {
                             GL11.glEnable(GL11.GL_ALPHA_TEST);
                             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                             GL11.glColor4f(
-                                    1.0F,
-                                    1.0F,
-                                    1.0F,
+                                    1F,
+                                    1F,
+                                    1F,
                                     (MathHelper.sin(System
-                                            .currentTimeMillis() / 100.0F) * 0.2F + 0.4F) * 0.5F);
-                            if (var89.cracks > 0.0F) {
+                                            .currentTimeMillis() / 100F) * 0.2F + 0.4F) * 0.5F);
+                            if (var89.cracks > 0F) {
                                 GL11.glBlendFunc(774, 768);
                                 var108 = var89.textureManager
                                         .load("/terrain.png");
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, var108);
-                                GL11.glColor4f(1.0F, 1.0F,
-                                        1.0F, 0.5F);
+                                GL11.glColor4f(1F, 1F,
+                                        1F, 0.5F);
                                 GL11.glPushMatrix();
                                 Block var10000 = (var114 = var89.level
                                         .getTile(var102.x,
@@ -1396,14 +1396,14 @@ public final class Minecraft implements Runnable {
                                                 var102.z)) > 0 ? Block.blocks[var114]
                                         : null;
                                 var73 = var10000;
-                                var74 = (var10000.x1 + var73.x2) / 2.0F;
-                                var33 = (var73.y1 + var73.y2) / 2.0F;
-                                var34 = (var73.z1 + var73.z2) / 2.0F;
+                                var74 = (var10000.x1 + var73.x2) / 2F;
+                                var33 = (var73.y1 + var73.y2) / 2F;
+                                var34 = (var73.z1 + var73.z2) / 2F;
                                 GL11.glTranslatef(var102.x + var74,
                                         var102.y + var33,
                                         var102.z + var34);
                                 var35 = 1.01F;
-                                GL11.glScalef(1.0F, var35,
+                                GL11.glScalef(1F, var35,
                                         var35);
                                 GL11.glTranslatef(
                                         -(var102.x + var74),
@@ -1419,7 +1419,7 @@ public final class Minecraft implements Runnable {
                                             var102.y,
                                             var102.z,
                                             var86,
-                                            240 + (int) (var101.cracks * 10.0F));
+                                            240 + (int) (var101.cracks * 10F));
                                 }
 
                                 shapeRenderer.end();
@@ -1434,8 +1434,8 @@ public final class Minecraft implements Runnable {
                             var102 = var10001;
                             GL11.glEnable(GL11.GL_BLEND);
                             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                            GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
-                            GL11.glLineWidth(2.0F);
+                            GL11.glColor4f(0F, 0F, 0F, 0.4F);
+                            GL11.glLineWidth(2F);
                             GL11.glDisable(GL11.GL_TEXTURE_2D);
                             GL11.glDepthMask(false);
                             var29 = 0.002F;
@@ -1629,13 +1629,13 @@ public final class Minecraft implements Runnable {
 
                         if (renderer.minecraft.isRaining || renderer.minecraft.isSnowing) {
                             float var97 = var80;
-                            float speed = 1.0F;
+                            float speed = 1F;
                             Level var109 = renderer.minecraft.level;
                             var104 = (int) player.x;
                             var108 = (int) player.y;
                             var114 = (int) player.z;
                             GL11.glDisable(GL11.GL_CULL_FACE);
-                            GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+                            GL11.glNormal3f(0F, 1F, 0F);
                             GL11.glEnable(GL11.GL_BLEND);
                             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                             if (renderer.minecraft.isRaining) {
@@ -1668,47 +1668,47 @@ public final class Minecraft implements Runnable {
                                     if (var86 != var125) {
                                         var74 = ((renderer.levelTicks
                                                 + var110 * 3121 + var122 * 418711) % 32 + var97)
-                                                / 32.0F * speed;
+                                                / 32F * speed;
                                         float var124 = var110 + 0.5F - player.x;
                                         var35 = var122 + 0.5F - player.z;
                                         float var92 = MathHelper.sqrt(
                                                 var124 * var124 + var35 * var35) / 5;
                                         GL11.glColor4f(
-                                                1.0F, 1.0F, 1.0F,
-                                                (1.0F - var92 * var92) * 0.7F);
+                                                1F, 1F, 1F,
+                                                (1F - var92 * var92) * 0.7F);
                                         shapeRenderer.begin();
                                         shapeRenderer.vertexUV(
                                                 var110, var86, var122,
-                                                0.0F,
-                                                var86 * 2.0F / 8.0F + var74 * 2.0F);
+                                                0F,
+                                                var86 * 2F / 8F + var74 * 2F);
                                         shapeRenderer.vertexUV(
                                                 var110 + 1, var86, var122 + 1,
-                                                2.0F,
-                                                var86 * 2.0F / 8.0F + var74 * 2.0F);
+                                                2F,
+                                                var86 * 2F / 8F + var74 * 2F);
                                         shapeRenderer.vertexUV(
                                                 var110 + 1, var125, var122 + 1,
-                                                2.0F,
-                                                var125 * 2.0F / 8.0F + var74 * 2.0F);
+                                                2F,
+                                                var125 * 2F / 8F + var74 * 2F);
                                         shapeRenderer.vertexUV(
                                                 var110, var125, var122,
-                                                0.0F,
-                                                var125 * 2.0F / 8.0F + var74 * 2.0F);
+                                                0F,
+                                                var125 * 2F / 8F + var74 * 2F);
                                         shapeRenderer.vertexUV(
                                                 var110, var86, var122 + 1,
-                                                0.0F,
-                                                var86 * 2.0F / 8.0F + var74 * 2.0F);
+                                                0F,
+                                                var86 * 2F / 8F + var74 * 2F);
                                         shapeRenderer.vertexUV(
                                                 var110 + 1, var86, var122,
-                                                2.0F,
-                                                var86 * 2.0F / 8.0F + var74 * 2.0F);
+                                                2F,
+                                                var86 * 2F / 8F + var74 * 2F);
                                         shapeRenderer.vertexUV(
                                                 var110 + 1, var125, var122,
-                                                2.0F,
-                                                var125 * 2.0F / 8.0F + var74 * 2.0F);
+                                                2F,
+                                                var125 * 2F / 8F + var74 * 2F);
                                         shapeRenderer.vertexUV(
                                                 var110, var125, var122 + 1,
-                                                0.0F,
-                                                var125 * 2.0F / 8.0F + var74 * 2.0F);
+                                                0F,
+                                                var125 * 2F / 8F + var74 * 2F);
                                         shapeRenderer.end();
                                     }
                                 }
@@ -1758,40 +1758,40 @@ public final class Minecraft implements Runnable {
                         GL11.glPushMatrix();
                         GL11.glRotatef(var116.xRotO
                                 + (var116.xRot - var116.xRotO)
-                                * var80, 1.0F, 0.0F, 0.0F);
+                                * var80, 1F, 0F, 0F);
                         GL11.glRotatef(var116.yRotO
                                 + (var116.yRot - var116.yRotO)
-                                * var80, 0.0F, 1.0F, 0.0F);
+                                * var80, 0F, 1F, 0F);
                         heldBlock.minecraft.renderer.setLighting(true);
                         GL11.glPopMatrix();
                         GL11.glPushMatrix();
                         var69 = 0.8F;
                         if (heldBlock.moving) {
                             var33 = MathHelper
-                                    .sin((var74 = (heldBlock.offset + var80) / 7.0F) * 3.1415927F);
+                                    .sin((var74 = (heldBlock.offset + var80) / 7F) * 3.1415927F);
                             GL11.glTranslatef(
                                     -MathHelper.sin(
                                             MathHelper.sqrt(var74) * 3.1415927F) * 0.4F,
                                     MathHelper.sin(
-                                            MathHelper.sqrt(var74) * 3.1415927F * 2.0F) * 0.2F,
+                                            MathHelper.sqrt(var74) * 3.1415927F * 2F) * 0.2F,
                                     -var33 * 0.2F);
                         }
 
                         GL11.glTranslatef(0.7F * var69, -0.65F
-                                * var69 - (1.0F - var117)
+                                * var69 - (1F - var117)
                                 * 0.6F, -0.9F * var69);
-                        GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                        GL11.glRotatef(45F, 0F, 1F, 0F);
                         GL11.glEnable(GL11.GL_NORMALIZE);
                         if (heldBlock.moving) {
                             var33 = MathHelper
-                                    .sin((var74 = (heldBlock.offset + var80) / 7.0F)
+                                    .sin((var74 = (heldBlock.offset + var80) / 7F)
                                             * var74
                                             * 3.1415927F);
                             GL11.glRotatef(
                                     MathHelper.sin(
-                                            MathHelper.sqrt(var74) * 3.1415927F) * 80.0F,
-                                    0.0F, 1.0F, 0.0F);
-                            GL11.glRotatef(-var33 * 20.0F, 1.0F, 0.0F, 0.0F);
+                                            MathHelper.sqrt(var74) * 3.1415927F) * 80F,
+                                    0F, 1F, 0F);
+                            GL11.glRotatef(-var33 * 20F, 1F, 0F, 0F);
                         }
 
                         ColorCache color = heldBlock.minecraft.level
@@ -1799,7 +1799,7 @@ public final class Minecraft implements Runnable {
                                         (int) var116.x,
                                         (int) var116.y,
                                         (int) var116.z);
-                        GL11.glColor4f(color.R, color.G, color.B, 1.0F);
+                        GL11.glColor4f(color.R, color.G, color.B, 1F);
 
                         if (heldBlock.block != null) {
                             var34 = 0.4F;
@@ -1815,11 +1815,11 @@ public final class Minecraft implements Runnable {
                             }
                         } else {
                             var116.bindTexture(heldBlock.minecraft.textureManager);
-                            GL11.glScalef(1.0F, -1.0F, -1.0F);
-                            GL11.glTranslatef(0.0F, 0.2F, 0.0F);
-                            GL11.glRotatef(-120.0F, 0.0F, 0.0F,
-                                    1.0F);
-                            GL11.glScalef(1.0F, 1.0F, 1.0F);
+                            GL11.glScalef(1F, -1F, -1F);
+                            GL11.glTranslatef(0F, 0.2F, 0F);
+                            GL11.glRotatef(-120F, 0F, 0F,
+                                    1F);
+                            GL11.glScalef(1F, 1F, 1F);
                             var34 = 0.0625F;
                             ModelPart var127;
                             if (!(var127 = heldBlock.minecraft.player
@@ -1844,7 +1844,7 @@ public final class Minecraft implements Runnable {
                         GL11.glViewport(0, 0,
                                 renderer.minecraft.width,
                                 renderer.minecraft.height);
-                        GL11.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+                        GL11.glClearColor(0F, 0F, 0F, 0F);
                         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
                         GL11.glLoadIdentity();
@@ -2244,9 +2244,9 @@ public final class Minecraft implements Runnable {
                                         // " " + Z2);
                                         SelectionBoxData data = new SelectionBoxData(
                                                 ID, Name,
-                                                new ColorCache(r / 255.0F,
-                                                        g / 255.0F, b / 255.0F,
-                                                        a / 255.0F),
+                                                new ColorCache(r / 255F,
+                                                        g / 255F, b / 255F,
+                                                        a / 255F),
                                                 new CustomAABB(X1, Y1, Z1, X2,
                                                         Y2, Z2));
                                         selectionBoxes.add(data);
@@ -2277,11 +2277,11 @@ public final class Minecraft implements Runnable {
                                                 level.fogColor = dec;
                                                 break;
                                             case 3: // ambient light
-                                                level.customShadowColour = new ColorCache(r / 255.0F, g / 255.0F, b / 255.0F);
+                                                level.customShadowColour = new ColorCache(r / 255F, g / 255F, b / 255F);
                                                 levelRenderer.refresh();
                                                 break;
                                             case 4: // diffuse color
-                                                level.customLightColour = new ColorCache(r / 255.0F, g / 255.0F, b / 255.0F);
+                                                level.customLightColour = new ColorCache(r / 255F, g / 255F, b / 255F);
                                                 levelRenderer.refresh();
                                                 break;
                                         }
@@ -2586,8 +2586,8 @@ public final class Minecraft implements Runnable {
                                                         networkManager.minecraft,
                                                         var34, var36, var47,
                                                         var10,
-                                                        var9 * 360 / 256.0F,
-                                                        var58 * 360 / 256.0F);
+                                                        var9 * 360 / 256F,
+                                                        var58 * 360 / 256F);
                                                 networkManager.players.put(Byte.valueOf(var5), var33);
                                                 networkManager.minecraft.level.addEntity(var33);
                                             } else {
@@ -2598,11 +2598,11 @@ public final class Minecraft implements Runnable {
                                                         var9 * 320 / 256
                                                 );
                                                 networkManager.minecraft.player.moveTo(
-                                                        var36 / 32.0F,
-                                                        var47 / 32.0F,
-                                                        var10 / 32.0F,
-                                                        var9 * 360 / 256.0F,
-                                                        var58 * 360 / 256.0F
+                                                        var36 / 32F,
+                                                        var47 / 32F,
+                                                        var10 / 32F,
+                                                        var9 * 360 / 256F,
+                                                        var58 * 360 / 256F
                                                 );
                                             }
                                         } else {
@@ -2623,11 +2623,11 @@ public final class Minecraft implements Runnable {
                                                 byte var5 = var10001;
                                                 if (var5 < 0) {
                                                     networkManager.minecraft.player.moveTo(
-                                                            var38 / 32.0F,
-                                                            var36 / 32.0F,
-                                                            var47 / 32.0F,
-                                                            var53 * 360 / 256.0F,
-                                                            var9 * 360 / 256.0F);
+                                                            var38 / 32F,
+                                                            var36 / 32F,
+                                                            var47 / 32F,
+                                                            var53 * 360 / 256F,
+                                                            var9 * 360 / 256F);
                                                 } else {
                                                     var53 = (byte) (var53 + 128);
                                                     var36 = (short) (var36 - 22);
@@ -2636,8 +2636,8 @@ public final class Minecraft implements Runnable {
                                                                 var38,
                                                                 var36,
                                                                 var47,
-                                                                var53 * 360 / 256.0F,
-                                                                var9 * 360 / 256.0F
+                                                                var53 * 360 / 256F,
+                                                                var9 * 360 / 256F
                                                         );
                                                     }
                                                 }
@@ -2666,8 +2666,8 @@ public final class Minecraft implements Runnable {
                                                                     var37,
                                                                     var44,
                                                                     var49,
-                                                                    var53 * 360 / 256.0F,
-                                                                    var9 * 360 / 256.0F
+                                                                    var53 * 360 / 256F,
+                                                                    var9 * 360 / 256F
                                                             );
                                                         }
                                                     }
@@ -2682,8 +2682,8 @@ public final class Minecraft implements Runnable {
                                                         NetworkPlayer var54;
                                                         if ((var54 = networkManager.players.get(Byte.valueOf(var5))) != null) {
                                                             var54.queue(
-                                                                    var37 * 360 / 256.0F,
-                                                                    var44 * 360 / 256.0F
+                                                                    var37 * 360 / 256F,
+                                                                    var44 * 360 / 256F
                                                             );
                                                         }
                                                     }
@@ -2790,11 +2790,11 @@ public final class Minecraft implements Runnable {
                 Player player = this.player;
                 var20 = networkManager;
                 if (networkManager.levelLoaded) {
-                    int var24 = (int) (player.x * 32.0F);
-                    var4 = (int) (player.y * 32.0F);
-                    var40 = (int) (player.z * 32.0F);
-                    var46 = (int) (player.yRot * 256.0F / 360.0F) & 255;
-                    var45 = (int) (player.xRot * 256.0F / 360.0F) & 255;
+                    int var24 = (int) (player.x * 32F);
+                    var4 = (int) (player.y * 32F);
+                    var40 = (int) (player.z * 32F);
+                    var46 = (int) (player.yRot * 256F / 360F) & 255;
+                    var45 = (int) (player.xRot * 256F / 360F) & 255;
                     var20.netHandler.send(
                             PacketType.POSITION_ROTATION,
                             new Object[]{
@@ -2847,7 +2847,7 @@ public final class Minecraft implements Runnable {
 
             float var48 = 0.4F;
             float var50;
-            if ((var50 = (var43 == var41.block ? 1.0F : 0.0F) - var41.pos) < -var48) {
+            if ((var50 = (var43 == var41.block ? 1F : 0F) - var41.pos) < -var48) {
                 var50 = -var48;
             }
 
@@ -3085,13 +3085,13 @@ public final class Minecraft implements Runnable {
             }
             if (currentScreen == null) {
                 if (Mouse.isButtonDown(MB_LEFT)
-                        && ticks - lastClick >= timer.tps / 4.0F && hasMouse) {
+                        && ticks - lastClick >= timer.tps / 4F && hasMouse) {
                     onMouseClick(MB_LEFT);
                     lastClick = ticks;
                 }
 
                 if (Mouse.isButtonDown(MB_RIGHT)
-                        && ticks - lastClick >= timer.tps / 4.0F && hasMouse) {
+                        && ticks - lastClick >= timer.tps / 4F && hasMouse) {
                     onMouseClick(MB_RIGHT);
                     lastClick = ticks;
                 }

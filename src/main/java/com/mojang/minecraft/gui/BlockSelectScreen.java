@@ -107,18 +107,18 @@ public final class BlockSelectScreen extends GuiScreen {
                 GL11.glPushMatrix();
                 int var5 = width / 2 + var2 % BlocksPerRow * Spacing + -128;
                 int var6 = height / 2 + var2 / BlocksPerRow * Spacing + -60;
-                GL11.glTranslatef(var5, var6, 0.0F);
-                GL11.glScalef(9.0F, 9.0F, 9.0F);
-                GL11.glTranslatef(1.0F, 0.5F, 8.0F);
-                GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glTranslatef(var5, var6, 0F);
+                GL11.glScalef(9F, 9F, 9F);
+                GL11.glTranslatef(1F, 0.5F, 8F);
+                GL11.glRotatef(-30F, 1F, 0F, 0F);
+                GL11.glRotatef(45F, 0F, 1F, 0F);
                 if (var1 == var2) {
                     GL11.glScalef(1.6F, 1.6F, 1.6F);
-                    GL11.glRotatef(lastRotation, 0.0F, 1.0F, 0.0F);
+                    GL11.glRotatef(lastRotation, 0F, 1F, 0F);
                 }
 
                 GL11.glTranslatef(-1.5F, 0.5F, 0.5F);
-                GL11.glScalef(-1.0F, -1.0F, -1.0F);
+                GL11.glScalef(-1F, -1F, -1F);
                 var8.begin();
                 var4.renderFullbright(var8);
                 var8.end();

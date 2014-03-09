@@ -258,11 +258,11 @@ public final class LevelGenerator {
             float var55 = var5.random.nextFloat() * var48;
             float var59 = var5.random.nextFloat() * var54;
             float var56 = var5.random.nextFloat() * var51;
-            var26 = (int) ((var5.random.nextFloat() + var5.random.nextFloat()) * 200.0F);
-            float var61 = var5.random.nextFloat() * (float) Math.PI * 2.0F;
-            float var64 = 0.0F;
-            float var29 = var5.random.nextFloat() * (float) Math.PI * 2.0F;
-            float var30 = 0.0F;
+            var26 = (int) ((var5.random.nextFloat() + var5.random.nextFloat()) * 200F);
+            float var61 = var5.random.nextFloat() * (float) Math.PI * 2F;
+            float var64 = 0F;
+            float var29 = var5.random.nextFloat() * (float) Math.PI * 2F;
+            float var30 = 0F;
             float var31 = var5.random.nextFloat() * var5.random.nextFloat();
 
             for (int var32 = 0; var32 < var26; ++var32) {
@@ -274,11 +274,11 @@ public final class LevelGenerator {
                 var29 = (var29 + var30 * 0.5F) * 0.5F;
                 var30 = (var30 *= 0.75F) + (var5.random.nextFloat() - var5.random.nextFloat());
                 if (var5.random.nextFloat() >= 0.25F) {
-                    float var43 = var55 + (var5.random.nextFloat() * 4.0F - 2.0F) * 0.2F;
-                    float var50 = var59 + (var5.random.nextFloat() * 4.0F - 2.0F) * 0.2F;
-                    float var33 = var56 + (var5.random.nextFloat() * 4.0F - 2.0F) * 0.2F;
+                    float var43 = var55 + (var5.random.nextFloat() * 4F - 2F) * 0.2F;
+                    float var50 = var59 + (var5.random.nextFloat() * 4F - 2F) * 0.2F;
+                    float var33 = var56 + (var5.random.nextFloat() * 4F - 2F) * 0.2F;
                     float var34 = (var5.height - var50) / var5.height;
-                    var34 = 1.2F + (var34 * 3.5F + 1.0F) * var31;
+                    var34 = 1.2F + (var34 * 3.5F + 1F) * var31;
                     var34 = MathHelper.sin(var32 * (float) Math.PI / var26) * var34;
 
                     for (int var35 = (int) (var43 - var34); var35 <= (int) (var43 + var34); ++var35) {
@@ -287,7 +287,7 @@ public final class LevelGenerator {
                                 float var38 = var35 - var43;
                                 float var39 = var36 - var50;
                                 float var40 = var37 - var33;
-                                if (var38 * var38 + var39 * var39 * 2.0F + var40 * var40 < var34
+                                if (var38 * var38 + var39 * var39 * 2F + var40 * var40 < var34
                                         * var34
                                         && var35 >= 1
                                         && var36 >= 1
@@ -522,11 +522,11 @@ public final class LevelGenerator {
             float var9 = random.nextFloat() * var4;
             float var10 = random.nextFloat() * var6;
             float var11 = random.nextFloat() * var5;
-            int var12 = (int) ((random.nextFloat() + random.nextFloat()) * 75.0F * var2 / 100.0F);
-            float var13 = random.nextFloat() * (float) Math.PI * 2.0F;
-            float var14 = 0.0F;
-            float var15 = random.nextFloat() * (float) Math.PI * 2.0F;
-            float var16 = 0.0F;
+            int var12 = (int) ((random.nextFloat() + random.nextFloat()) * 75F * var2 / 100F);
+            float var13 = random.nextFloat() * (float) Math.PI * 2F;
+            float var14 = 0F;
+            float var15 = random.nextFloat() * (float) Math.PI * 2F;
+            float var16 = 0F;
 
             for (int var17 = 0; var17 < var12; ++var17) {
                 var9 += MathHelper.sin(var13) * MathHelper.cos(var15);
@@ -536,7 +536,7 @@ public final class LevelGenerator {
                 var14 = (var14 *= 0.9F) + (random.nextFloat() - random.nextFloat());
                 var15 = (var15 + var16 * 0.5F) * 0.5F;
                 var16 = (var16 *= 0.9F) + (random.nextFloat() - random.nextFloat());
-                float var18 = MathHelper.sin(var17 * (float) Math.PI / var12) * var2 / 100.0F + 1.0F;
+                float var18 = MathHelper.sin(var17 * (float) Math.PI / var12) * var2 / 100F + 1F;
 
                 for (int var19 = (int) (var9 - var18); var19 <= (int) (var9 + var18); ++var19) {
                     for (int var20 = (int) (var10 - var18); var20 <= (int) (var10 + var18); ++var20) {
@@ -544,7 +544,7 @@ public final class LevelGenerator {
                             float var22 = var19 - var9;
                             float var23 = var20 - var10;
                             float var24 = var21 - var11;
-                            if (var22 * var22 + var23 * var23 * 2.0F + var24 * var24 < var18
+                            if (var22 * var22 + var23 * var23 * 2F + var24 * var24 < var18
                                     * var18
                                     && var19 >= 1
                                     && var20 >= 1

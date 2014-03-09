@@ -4,12 +4,12 @@ package com.mojang.minecraft.sound;
 public final class SoundInfo extends AudioInfo {
 
     private SoundData data;
-    private float seek = 0.0F;
+    private float seek = 0F;
     private float pitch;
 
     public SoundInfo(SoundData var1, float var2, float var3) {
         data = var1;
-        pitch = var2 * 44100.0F / var1.length;
+        pitch = var2 * 44100F / var1.length;
         volume = var3;
     }
 

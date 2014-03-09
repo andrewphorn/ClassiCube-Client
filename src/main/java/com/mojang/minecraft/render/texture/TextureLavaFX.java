@@ -26,9 +26,9 @@ public final class TextureLavaFX extends TextureFX {
         int var9;
         for (var1 = 0; var1 < 16; ++var1) {
             for (var2 = 0; var2 < 16; ++var2) {
-                var3 = 0.0F;
-                int var4 = (int) (MathHelper.sin(var2 * (float) Math.PI * 2.0F / 16.0F) * 1.2F);
-                var5 = (int) (MathHelper.sin(var1 * (float) Math.PI * 2.0F / 16.0F) * 1.2F);
+                var3 = 0F;
+                int var4 = (int) (MathHelper.sin(var2 * (float) Math.PI * 2F / 16F) * 1.2F);
+                var5 = (int) (MathHelper.sin(var1 * (float) Math.PI * 2F / 16F) * 1.2F);
 
                 for (var6 = var1 - 1; var6 <= var1 + 1; ++var6) {
                     for (var7 = var2 - 1; var7 <= var2 + 1; ++var7) {
@@ -39,14 +39,14 @@ public final class TextureLavaFX extends TextureFX {
                 }
 
                 green[var1 + (var2 << 4)] = var3
-                        / 10.0F
+                        / 10F
                         + (blue[(var1 & 15) + ((var2 & 15) << 4)]
                                 + blue[(var1 + 1 & 15) + ((var2 & 15) << 4)]
                                 + blue[(var1 + 1 & 15) + ((var2 + 1 & 15) << 4)] + blue[(var1 & 15)
-                                + ((var2 + 1 & 15) << 4)]) / 4.0F * 0.8F;
+                                + ((var2 + 1 & 15) << 4)]) / 4F * 0.8F;
                 blue[var1 + (var2 << 4)] += alpha[var1 + (var2 << 4)] * 0.01F;
-                if (blue[var1 + (var2 << 4)] < 0.0F) {
-                    blue[var1 + (var2 << 4)] = 0.0F;
+                if (blue[var1 + (var2 << 4)] < 0F) {
+                    blue[var1 + (var2 << 4)] = 0F;
                 }
 
                 alpha[var1 + (var2 << 4)] -= 0.06F;
@@ -61,17 +61,17 @@ public final class TextureLavaFX extends TextureFX {
         red = var10;
 
         for (var2 = 0; var2 < 256; ++var2) {
-            if ((var3 = red[var2] * 2.0F) > 1.0F) {
-                var3 = 1.0F;
+            if ((var3 = red[var2] * 2F) > 1F) {
+                var3 = 1F;
             }
 
-            if (var3 < 0.0F) {
-                var3 = 0.0F;
+            if (var3 < 0F) {
+                var3 = 0F;
             }
 
-            var5 = (int) (var3 * 100.0F + 155.0F);
-            var6 = (int) (var3 * var3 * 255.0F);
-            var7 = (int) (var3 * var3 * var3 * var3 * 128.0F);
+            var5 = (int) (var3 * 100F + 155F);
+            var6 = (int) (var3 * var3 * 255F);
+            var7 = (int) (var3 * var3 * var3 * var3 * 128F);
             textureData[var2 << 2] = (byte) var5;
             textureData[(var2 << 2) + 1] = (byte) var6;
             textureData[(var2 << 2) + 2] = (byte) var7;

@@ -195,56 +195,56 @@ public class BlockMap implements Serializable {
 
                                 if (var19.frustum[var20][0] * var18 + var19.frustum[var20][1]
                                         * var13 + var19.frustum[var20][2] * var14
-                                        + var19.frustum[var20][3] <= 0.0F) {
+                                        + var19.frustum[var20][3] <= 0F) {
                                     var10000 = false;
                                     break;
                                 }
 
                                 if (var19.frustum[var20][0] * var15 + var19.frustum[var20][1]
                                         * var13 + var19.frustum[var20][2] * var14
-                                        + var19.frustum[var20][3] <= 0.0F) {
+                                        + var19.frustum[var20][3] <= 0F) {
                                     var10000 = false;
                                     break;
                                 }
 
                                 if (var19.frustum[var20][0] * var18 + var19.frustum[var20][1]
                                         * var17 + var19.frustum[var20][2] * var14
-                                        + var19.frustum[var20][3] <= 0.0F) {
+                                        + var19.frustum[var20][3] <= 0F) {
                                     var10000 = false;
                                     break;
                                 }
 
                                 if (var19.frustum[var20][0] * var15 + var19.frustum[var20][1]
                                         * var17 + var19.frustum[var20][2] * var14
-                                        + var19.frustum[var20][3] <= 0.0F) {
+                                        + var19.frustum[var20][3] <= 0F) {
                                     var10000 = false;
                                     break;
                                 }
 
                                 if (var19.frustum[var20][0] * var18 + var19.frustum[var20][1]
                                         * var13 + var19.frustum[var20][2] * var16
-                                        + var19.frustum[var20][3] <= 0.0F) {
+                                        + var19.frustum[var20][3] <= 0F) {
                                     var10000 = false;
                                     break;
                                 }
 
                                 if (var19.frustum[var20][0] * var15 + var19.frustum[var20][1]
                                         * var13 + var19.frustum[var20][2] * var16
-                                        + var19.frustum[var20][3] <= 0.0F) {
+                                        + var19.frustum[var20][3] <= 0F) {
                                     var10000 = false;
                                     break;
                                 }
 
                                 if (var19.frustum[var20][0] * var18 + var19.frustum[var20][1]
                                         * var17 + var19.frustum[var20][2] * var16
-                                        + var19.frustum[var20][3] <= 0.0F) {
+                                        + var19.frustum[var20][3] <= 0F) {
                                     var10000 = false;
                                     break;
                                 }
 
                                 if (var19.frustum[var20][0] * var15 + var19.frustum[var20][1]
                                         * var17 + var19.frustum[var20][2] * var16
-                                        + var19.frustum[var20][3] <= 0.0F) {
+                                        + var19.frustum[var20][3] <= 0F) {
                                     var10000 = false;
                                     break;
                                 }
@@ -284,12 +284,12 @@ public class BlockMap implements Serializable {
                 all.remove(var1--);
                 slot.init(var2.xOld, var2.yOld, var2.zOld).remove(var2);
             } else {
-                int var3 = (int) (var2.xOld / 16.0F);
-                int var4 = (int) (var2.yOld / 16.0F);
-                int var5 = (int) (var2.zOld / 16.0F);
-                int var6 = (int) (var2.x / 16.0F);
-                int var7 = (int) (var2.y / 16.0F);
-                int var8 = (int) (var2.z / 16.0F);
+                int var3 = (int) (var2.xOld / 16F);
+                int var4 = (int) (var2.yOld / 16F);
+                int var5 = (int) (var2.zOld / 16F);
+                int var6 = (int) (var2.x / 16F);
+                int var7 = (int) (var2.y / 16F);
+                int var8 = (int) (var2.z / 16F);
                 if (var3 != var6 || var4 != var7 || var5 != var8) {
                     moved(var2);
                 }

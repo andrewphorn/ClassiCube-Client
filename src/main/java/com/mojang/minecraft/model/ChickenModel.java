@@ -15,29 +15,29 @@ public class ChickenModel extends Model {
     public ChickenModel() {
         byte var1 = 16;
         head = new ModelPart(0, 0);
-        head.setBounds(-2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F);
-        head.setPosition(0.0F, -1 + var1, -4.0F);
+        head.setBounds(-2F, -6F, -2F, 4, 6, 3, 0F);
+        head.setPosition(0F, -1 + var1, -4F);
         bill = new ModelPart(14, 0);
-        bill.setBounds(-2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F);
-        bill.setPosition(0.0F, -1 + var1, -4.0F);
+        bill.setBounds(-2F, -4F, -4F, 4, 2, 2, 0F);
+        bill.setPosition(0F, -1 + var1, -4F);
         chin = new ModelPart(14, 4);
-        chin.setBounds(-1.0F, -2.0F, -3.0F, 2, 2, 2, 0.0F);
-        chin.setPosition(0.0F, -1 + var1, -4.0F);
+        chin.setBounds(-1F, -2F, -3F, 2, 2, 2, 0F);
+        chin.setPosition(0F, -1 + var1, -4F);
         body = new ModelPart(0, 9);
-        body.setBounds(-3.0F, -4.0F, -3.0F, 6, 8, 6, 0.0F);
-        body.setPosition(0.0F, var1, 0.0F);
+        body.setBounds(-3F, -4F, -3F, 6, 8, 6, 0F);
+        body.setPosition(0F, var1, 0F);
         rightLeg = new ModelPart(26, 0);
-        rightLeg.setBounds(-1.0F, 0.0F, -3.0F, 3, 5, 3, 0.0F);
-        rightLeg.setPosition(-2.0F, 3 + var1, 1.0F);
+        rightLeg.setBounds(-1F, 0F, -3F, 3, 5, 3, 0F);
+        rightLeg.setPosition(-2F, 3 + var1, 1F);
         leftLeg = new ModelPart(26, 0);
-        leftLeg.setBounds(-1.0F, 0.0F, -3.0F, 3, 5, 3, 0.0F);
-        leftLeg.setPosition(1.0F, 3 + var1, 1.0F);
+        leftLeg.setBounds(-1F, 0F, -3F, 3, 5, 3, 0F);
+        leftLeg.setPosition(1F, 3 + var1, 1F);
         rightWing = new ModelPart(24, 13);
-        rightWing.setBounds(0.0F, 0.0F, -3.0F, 1, 4, 6, 0.0F);
-        rightWing.setPosition(-4.0F, -3 + var1, 0.0F);
+        rightWing.setBounds(0F, 0F, -3F, 1, 4, 6, 0F);
+        rightWing.setPosition(-4F, -3 + var1, 0F);
         leftWing = new ModelPart(24, 13);
-        leftWing.setBounds(-1.0F, 0.0F, -3.0F, 1, 4, 6, 0.0F);
-        leftWing.setPosition(4.0F, -3 + var1, 0.0F);
+        leftWing.setBounds(-1F, 0F, -3F, 1, 4, 6, 0F);
+        leftWing.setPosition(4F, -3 + var1, 0F);
     }
 
     /**

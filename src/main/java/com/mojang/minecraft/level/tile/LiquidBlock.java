@@ -27,8 +27,8 @@ public class LiquidBlock extends Block {
         stillId = var1 + 1;
         float var4 = 0.01F;
         float var3 = 0.1F;
-        setBounds(var4 + 0.0F, 0.0F - var3 + var4, var4 + 0.0F, var4 + 1.0F, 1.0F - var3 + var4,
-                var4 + 1.0F);
+        setBounds(var4 + 0F, 0F - var3 + var4, var4 + 0F, var4 + 1F, 1F - var3 + var4,
+                var4 + 1F);
         setPhysics(true);
     }
 

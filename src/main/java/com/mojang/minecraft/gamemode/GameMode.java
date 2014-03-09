@@ -55,7 +55,7 @@ public class GameMode
 
             if(block.stepSound != Block.soundNone && block.stepSound != null)
             {
-                level.playSound("step." + block.stepSound.stepSoundName, x, y, z, (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
+                level.playSound("step." + block.stepSound.stepSoundName, x, y, z, (block.stepSound.getVolume() + 1F) / 2F, block.stepSound.getPitch() * 0.8F);
             }
 
             block.spawnBreakParticles(level, x, y, z, minecraft.particleManager);
@@ -74,7 +74,7 @@ public class GameMode
     public void applyCracks(float time)
     {
     }
-    public float reachDistance = 5.0f;
+    public float reachDistance = 5F;
     public float getReachDistance()
     {
         return reachDistance;

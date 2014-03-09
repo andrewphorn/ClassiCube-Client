@@ -16,12 +16,12 @@ final class Sheep$1 extends BasicAI {
 
     @Override
     protected final void update() {
-        float var1 = MathHelper.sin(sheep.yRot * (float) Math.PI / 180.0F);
-        float var2 = MathHelper.cos(sheep.yRot * (float) Math.PI / 180.0F);
+        float var1 = MathHelper.sin(sheep.yRot * (float) Math.PI / 180F);
+        float var2 = MathHelper.cos(sheep.yRot * (float) Math.PI / 180F);
         var1 = -0.7F * var1;
         var2 = 0.7F * var2;
         int var4 = (int) (mob.x + var1);
-        int var3 = (int) (mob.y - 2.0F);
+        int var3 = (int) (mob.y - 2F);
         int var5 = (int) (mob.z + var2);
         if (sheep.grazing) {
             if (level.getTile(var4, var3, var5) != Block.GRASS.id) {
@@ -34,8 +34,8 @@ final class Sheep$1 extends BasicAI {
                     }
                 }
 
-                xxa = 0.0F;
-                yya = 0.0F;
+                xxa = 0F;
+                yya = 0F;
                 mob.xRot = 40 + sheep.grazingTime / 2 % 2 * 10;
             }
         } else {

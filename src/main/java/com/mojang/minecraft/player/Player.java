@@ -69,7 +69,7 @@ public class Player extends Mob {
         heightOffset = 1.62F;
         health = 20;
         modelName = "humanoid";
-        rotOffs = 180.0F;
+        rotOffs = 180F;
         ai = new Player$1(this);
         settings = gs;
     }
@@ -91,22 +91,22 @@ public class Player extends Mob {
             super.aiStep();
 
             float var1 = MathHelper.sqrt(xd * xd + zd * zd);
-            float var2 = (float) Math.atan(-yd * 0.2F) * 15.0F;
+            float var2 = (float) Math.atan(-yd * 0.2F) * 15F;
             if (var1 > 0.1F) {
                 var1 = 0.1F;
             }
 
             if (!onGround || health <= 0) {
-                var1 = 0.0F;
+                var1 = 0F;
             }
 
             if (onGround || health <= 0) {
-                var2 = 0.0F;
+                var2 = 0F;
             }
             bob += (var1 - bob) * 0.4F;
             tilt += (var2 - tilt) * 0.8F;
             List<?> var3;
-            if (health > 0 && (var3 = level.findEntities(this, bb.grow(1.0F, 0.0F, 1.0F))) != null) {
+            if (health > 0 && (var3 = level.findEntities(this, bb.grow(1F, 0F, 1F))) != null) {
                 for (int var4 = 0; var4 < var3.size(); ++var4) {
                     ((Entity) var3.get(var4)).playerTouch(this);
                 }
@@ -140,7 +140,7 @@ public class Player extends Mob {
             }
 
             float aaa = MathHelper.sqrt(fx * fx + fz * fz);
-            float bbb = (float) Math.atan(-fy * 0.2F) * 15.0F;
+            float bbb = (float) Math.atan(-fy * 0.2F) * 15F;
             bob += (aaa - bob) * 0.4F;
             tilt += (bbb - tilt) * 0.8F;
 
@@ -169,7 +169,7 @@ public class Player extends Mob {
             int i = 0;
             int j = 0;
             int k = 1;
-            float f1 = 1.0F;
+            float f1 = 1F;
             oBob = bob;
             if (flyingMode && flyTrig < 1) {
                 i = 1;
@@ -177,7 +177,7 @@ public class Player extends Mob {
             if (noPhysics && noclipTrig < 0) {
                 j = 1;
             }
-            if (input.mult > 1.0F && speedTrig < 1) {
+            if (input.mult > 1F && speedTrig < 1) {
                 f1 = input.mult;
             }
 
@@ -185,7 +185,7 @@ public class Player extends Mob {
                 i = 0;
                 j = 0;
                 k = 0;
-                f1 = 1.0F;
+                f1 = 1F;
             }
 
             if (flyTrig > 0 || speedTrig > 0) {
@@ -202,7 +202,7 @@ public class Player extends Mob {
             boolean bool2 = isInLava();
             boolean bool3 = isInOrOnRope();
 
-            float f2 = 0.0F;
+            float f2 = 0F;
 
             // this.input.updateMovement(1);
 
@@ -283,8 +283,8 @@ public class Player extends Mob {
                 f1 = (float) (f1 * 1.2D);
             }
 
-            float f4 = 0.0F;
-            float f3 = 0.0f;
+            float f4 = 0F;
+            float f3 = 0F;
             if (j != 0) {
                 f4 = i != 0 ? 0.72F : 0.71F;
                 if (i != 0) {
@@ -299,7 +299,7 @@ public class Player extends Mob {
 
             super.moveRelative(input.strafe, input.move, f3 * f1);
 
-            if (j != 0 && (xd != 0.0F || zd != 0.0F)) {
+            if (j != 0 && (xd != 0F || zd != 0F)) {
                 super.moveTo(x + xd, y + yd - f4, z + zd, yRot, xRot);
                 yo = y += f4;
             } else {
@@ -316,8 +316,8 @@ public class Player extends Mob {
                 zd *= 0.91F;
 
                 if (i != 0) {
-                    yd *= f2 / 4.0F;
-                    walkDist = 0.0F;
+                    yd *= f2 / 4F;
+                    walkDist = 0F;
                 } else {
                     yd = (float) (yd - 0.01D);
                 }
@@ -385,10 +385,10 @@ public class Player extends Mob {
         this.setPos(x, y, z);
         yd = 0.1F;
         if (var1 != null) {
-            xd = -MathHelper.cos((hurtDir + yRot) * (float) Math.PI / 180.0F) * 0.1F;
-            zd = -MathHelper.sin((hurtDir + yRot) * (float) Math.PI / 180.0F) * 0.1F;
+            xd = -MathHelper.cos((hurtDir + yRot) * (float) Math.PI / 180F) * 0.1F;
+            zd = -MathHelper.sin((hurtDir + yRot) * (float) Math.PI / 180F) * 0.1F;
         } else {
-            xd = zd = 0.0F;
+            xd = zd = 0F;
         }
 
         heightOffset = 0.1F;
@@ -435,32 +435,32 @@ public class Player extends Mob {
         }
         if (modelName != null) {
             float var3;
-            if ((var3 = attackTime - var2) < 0.0F) {
-                var3 = 0.0F;
+            if ((var3 = attackTime - var2) < 0F) {
+                var3 = 0F;
             }
 
-            while (yBodyRotO - yBodyRot < -180.0F) {
-                yBodyRotO += 360.0F;
+            while (yBodyRotO - yBodyRot < -180F) {
+                yBodyRotO += 360F;
             }
 
-            while (yBodyRotO - yBodyRot >= 180.0F) {
-                yBodyRotO -= 360.0F;
+            while (yBodyRotO - yBodyRot >= 180F) {
+                yBodyRotO -= 360F;
             }
 
-            while (xRotO - xRot < -180.0F) {
-                xRotO += 360.0F;
+            while (xRotO - xRot < -180F) {
+                xRotO += 360F;
             }
 
-            while (xRotO - xRot >= 180.0F) {
-                xRotO -= 360.0F;
+            while (xRotO - xRot >= 180F) {
+                xRotO -= 360F;
             }
 
-            while (yRotO - yRot < -180.0F) {
-                yRotO += 360.0F;
+            while (yRotO - yRot < -180F) {
+                yRotO += 360F;
             }
 
-            while (yRotO - yRot >= 180.0F) {
-                yRotO -= 360.0F;
+            while (yRotO - yRot >= 180F) {
+                yRotO -= 360F;
             }
 
             float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * var2;
@@ -474,50 +474,50 @@ public class Player extends Mob {
 
             GL11.glColor3f(c.R, c.G, c.B);
             float var9 = 0.0625F; // 1 / 16
-            float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5.0F * var5 * bobStrength - 23.0F;
+            float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5F * var5 * bobStrength - 23F;
             GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 - 1.62F + renderOffset, zo + (z - zo) * var2);
             float var11;
-            if ((var11 = hurtTime - var2) > 0.0F || health <= 0) {
-                if (var11 < 0.0F) {
-                    var11 = 0.0F;
+            if ((var11 = hurtTime - var2) > 0F || health <= 0) {
+                if (var11 < 0F) {
+                    var11 = 0F;
                 } else {
                     var11 /= hurtDuration;
-                    var11 = MathHelper.sin(var11 * var11 * var11 * var11 * (float) Math.PI) * 14.0F;
+                    var11 = MathHelper.sin(var11 * var11 * var11 * var11 * (float) Math.PI) * 14F;
                 }
 
-                float var12 = 0.0F;
+                float var12 = 0F;
                 if (health <= 0) {
-                    var12 = (deathTime + var2) / 20.0F;
-                    var11 += var12 * var12 * 800.0F;
-                    if (var11 > 90.0F) {
-                        var11 = 90.0F;
+                    var12 = (deathTime + var2) / 20F;
+                    var11 += var12 * var12 * 800F;
+                    if (var11 > 90F) {
+                        var11 = 90F;
                     }
                 }
 
                 var12 = hurtDir;
-                GL11.glRotatef(180.0F - var4 + rotOffs + 45, 0.0F, 1.0F, 0.0F);
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                GL11.glRotatef(-var12, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-var11, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(var12, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-(180.0F - var4 + rotOffs), 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(180F - var4 + rotOffs + 45, 0F, 1F, 0F);
+                GL11.glScalef(1F, 1F, 1F);
+                GL11.glRotatef(-var12, 0F, 1F, 0F);
+                GL11.glRotatef(-var11, 0F, 0F, 1F);
+                GL11.glRotatef(var12, 0F, 1F, 0F);
+                GL11.glRotatef(-(180F - var4 + rotOffs), 0F, 1F, 0F);
             }
 
-            GL11.glTranslatef(0.0F, -var10 * var9, 0.0F);
-            GL11.glScalef(1.0F, -1.0F, 1.0F);
-            GL11.glRotatef(180.0F - var4 + rotOffs, 0.0F, 1.0F, 0.0F);
+            GL11.glTranslatef(0F, -var10 * var9, 0F);
+            GL11.glScalef(1F, -1F, 1F);
+            GL11.glRotatef(180F - var4 + rotOffs, 0F, 1F, 0F);
             if (!allowAlpha) {
                 GL11.glDisable(GL11.GL_ALPHA_TEST);
             } else {
                 GL11.glDisable(GL11.GL_CULL_FACE);
             }
 
-            GL11.glScalef(-1.0F, 1.0F, 1.0F);
-            modelCache.getModel(modelName).attackOffset = var3 / 5.0F;
+            GL11.glScalef(-1F, 1F, 1F);
+            modelCache.getModel(modelName).attackOffset = var3 / 5F;
             bindTexture(textureManager);
             renderModel(textureManager, var8, var2, var5, var6, var7, var9);
             if (invulnerableTime > invulnerableDuration - 10) {
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
+                GL11.glColor4f(1F, 1F, 1F, 0.75F);
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                 bindTexture(textureManager);
@@ -531,7 +531,7 @@ public class Player extends Mob {
                 GL11.glEnable(GL11.GL_CULL_FACE);
             }
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GL11.glColor4f(1F, 1F, 1F, 1F);
             GL11.glPopMatrix();
         }
     }

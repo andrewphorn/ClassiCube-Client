@@ -63,7 +63,7 @@ public final class FontRenderer {
     }
 
     public float getScale() {
-        return 7.0F / charHeight * settings.scale;
+        return 7F / charHeight * settings.scale;
     }
 
     public int getWidth(String paramString) {
@@ -93,13 +93,13 @@ public final class FontRenderer {
                 color = (color & 16579836) >> 2;
             }
             float f1 = settings.scale;
-            float f2 = 1.0F / f1;
+            float f2 = 1F / f1;
             x = x * f2;
             y = y * f2;
             // if(shadow){
-            // float f3 = 1.0F * this.userScale;
+            // float f3 = 1F * this.userScale;
             // float f3 = x - (2 - x);
-            // GL11.glTranslatef(f3, f3, 0.0F);
+            // GL11.glTranslatef(f3, f3, 0F);
             // x = x+f3;
             // y= y+f3;
             // }
@@ -135,13 +135,13 @@ public final class FontRenderer {
                 int var9 = chars[count] / 16 << 3;
                 float var13 = 7.99F;
 
-                ShapeRenderer.instance.vertexUV(x + var7, y + var13, 0.0F, color / 128.0F,
-                        (var9 + var13) / 128.0F);
-                ShapeRenderer.instance.vertexUV(x + var7 + var13, y + var13, 0.0F,
-                        (color + var13) / 128.0F, (var9 + var13) / 128.0F);
-                ShapeRenderer.instance.vertexUV(x + var7 + var13, y, 0.0F,
-                        (color + var13) / 128.0F, var9 / 128.0F);
-                ShapeRenderer.instance.vertexUV(x + var7, y, 0.0F, color / 128.0F, var9 / 128.0F);
+                ShapeRenderer.instance.vertexUV(x + var7, y + var13, 0F, color / 128F,
+                        (var9 + var13) / 128F);
+                ShapeRenderer.instance.vertexUV(x + var7 + var13, y + var13, 0F,
+                        (color + var13) / 128F, (var9 + var13) / 128F);
+                ShapeRenderer.instance.vertexUV(x + var7 + var13, y, 0F,
+                        (color + var13) / 128F, var9 / 128F);
+                ShapeRenderer.instance.vertexUV(x + var7, y, 0F, color / 128F, var9 / 128F);
 
                 if (chars[count] < font.length) {
                     var7 += font[chars[count]];
@@ -150,10 +150,10 @@ public final class FontRenderer {
             GL11.glPushMatrix();
             // if (shadow)
             // {
-            // float f3 = 1.0F * this.userScale;
-            // GL11.glTranslatef(f3, f3, 0.0F);
+            // float f3 = 1F * this.userScale;
+            // GL11.glTranslatef(f3, f3, 0F);
             // }
-            GL11.glScalef(f1, f1, 1.0F);
+            GL11.glScalef(f1, f1, 1F);
             ShapeRenderer.instance.end();
             GL11.glPopMatrix();
 

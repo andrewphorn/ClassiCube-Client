@@ -12,7 +12,7 @@ public final class MathHelper {
     }
 
     public static final float cos(float var0) {
-        return SIN_TABLE[(int) (var0 * 10430.378F + 16384.0F) & '\uffff'];
+        return SIN_TABLE[(int) (var0 * 10430.378F + 16384F) & '\uffff'];
     }
 
     public static final float sin(float var0) {

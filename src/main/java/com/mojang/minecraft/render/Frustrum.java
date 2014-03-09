@@ -18,14 +18,14 @@ public class Frustrum {
 
     public boolean isBoxInFrustum(float F, float F1, float F2, float F3, float F4, float F5) {
         int i = 0;
-        if (frustum[i][0] * F + frustum[i][1] * F1 + frustum[i][2] * F2 + frustum[i][3] <= 0.0F
-                && frustum[i][0] * F3 + frustum[i][1] * F1 + frustum[i][2] * F2 + frustum[i][3] <= 0.0F
-                && frustum[i][0] * F + frustum[i][1] * F4 + frustum[i][2] * F2 + frustum[i][3] <= 0.0F
-                && frustum[i][0] * F3 + frustum[i][1] * F4 + frustum[i][2] * F2 + frustum[i][3] <= 0.0F
-                && frustum[i][0] * F + frustum[i][1] * F1 + frustum[i][2] * F5 + frustum[i][3] <= 0.0F
-                && frustum[i][0] * F3 + frustum[i][1] * F1 + frustum[i][2] * F5 + frustum[i][3] <= 0.0F
-                && frustum[i][0] * F + frustum[i][1] * F4 + frustum[i][2] * F5 + frustum[i][3] <= 0.0F
-                && frustum[i][0] * F3 + frustum[i][1] * F4 + frustum[i][2] * F5 + frustum[i][3] <= 0.0F) {
+        if (frustum[i][0] * F + frustum[i][1] * F1 + frustum[i][2] * F2 + frustum[i][3] <= 0F
+                && frustum[i][0] * F3 + frustum[i][1] * F1 + frustum[i][2] * F2 + frustum[i][3] <= 0F
+                && frustum[i][0] * F + frustum[i][1] * F4 + frustum[i][2] * F2 + frustum[i][3] <= 0F
+                && frustum[i][0] * F3 + frustum[i][1] * F4 + frustum[i][2] * F2 + frustum[i][3] <= 0F
+                && frustum[i][0] * F + frustum[i][1] * F1 + frustum[i][2] * F5 + frustum[i][3] <= 0F
+                && frustum[i][0] * F3 + frustum[i][1] * F1 + frustum[i][2] * F5 + frustum[i][3] <= 0F
+                && frustum[i][0] * F + frustum[i][1] * F4 + frustum[i][2] * F5 + frustum[i][3] <= 0F
+                && frustum[i][0] * F3 + frustum[i][1] * F4 + frustum[i][2] * F5 + frustum[i][3] <= 0F) {
             return false;
         }
 
