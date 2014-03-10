@@ -35,38 +35,6 @@ public final class ProgressBarDisplay {
 
     public static HashMap<String, String> serverConfig = new HashMap<>();
 
-    public static void copyFile(File paramFile1, File paramFile2) {
-        FileChannel fileChannel1 = null;
-        FileChannel fileChannel2 = null;
-
-        // LogUtil.logInfo("Copy " + paramFile1 + " to " + paramFile2);
-        try {
-            if (!paramFile2.exists()) {
-                paramFile2.createNewFile();
-            }
-
-            fileChannel1 = new FileInputStream(paramFile1).getChannel();
-            fileChannel2 = new FileOutputStream(paramFile2).getChannel();
-            fileChannel2.transferFrom(fileChannel1, 0L, fileChannel1.size());
-        } catch (IOException ex) {
-            LogUtil.logError("Error copying a file from " + paramFile1 + " to " + paramFile2, ex);
-            paramFile2.delete();
-        } finally {
-            try {
-                if (fileChannel1 != null) {
-                    fileChannel1.close();
-                }
-            } catch (IOException ex) {
-            }
-            try {
-                if (fileChannel2 != null) {
-                    fileChannel2.close();
-                }
-            } catch (IOException ex) {
-            }
-        }
-    }
-
     public static HashMap<String, String> fetchConfig(String location) {
         HashMap<String, String> localHashMap = new HashMap<String, String>();
         try {

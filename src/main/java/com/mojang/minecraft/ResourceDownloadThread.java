@@ -56,20 +56,6 @@ public class ResourceDownloadThread extends Thread {
         }
     }
 
-    public boolean deleteDir(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            for (String child : children) {
-                boolean success = deleteDir(new File(dir, child));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-
-        return dir.delete();
-    }
-
     public boolean isFinished() {
         return finished;
     }
@@ -162,70 +148,5 @@ public class ResourceDownloadThread extends Thread {
         }
 
         finished = true;
-    }
-
-    public void unpack(String zipFileName) {
-        String filename = zipFileName;
-
-        File srcFile = new File(filename);
-
-        String zipPath = filename.substring(0, filename.length() - 4);
-        File temp = new File(zipPath);
-        temp.mkdir();
-
-        ZipFile zipFile = null;
-
-        try {
-
-            zipFile = new ZipFile(srcFile);
-
-            Enumeration<? extends ZipEntry> e = zipFile.entries();
-
-            while (e.hasMoreElements()) {
-                ZipEntry entry = e.nextElement();
-                File destinationPath = new File(zipPath, entry.getName());
-                destinationPath.getParentFile().mkdirs();
-
-                if (!entry.isDirectory()) {
-                    LogUtil.logInfo("Extracting file: " + destinationPath);
-                    try (InputStream is = zipFile.getInputStream(entry)) {
-                        StreamingUtil.copyStreamToFile(is, destinationPath);
-                    }
-                }
-            }
-        } catch (IOException ex) {
-            LogUtil.logError("Error opening zip file " + zipFileName, ex);
-        } finally {
-            try {
-                if (zipFile != null) {
-                    zipFile.close();
-                }
-            } catch (IOException ex2) {
-                LogUtil.logError("Error closing zip file " + zipFileName, ex2);
-            }
-        }
-    }
-
-    public static void copyFolder(File src, File dest) {
-        try {
-            if (src.isDirectory()) {
-                dest.mkdirs();
-                LogUtil.logInfo("Copying directory from " + src + "  to " + dest);
-
-                for (String file : src.list()) {
-                    File srcFile = new File(src, file);
-                    File destFile = new File(dest, file);
-                    copyFolder(srcFile, destFile);
-                }
-            } else {
-                try (InputStream in = new FileInputStream(src)) {
-                    StreamingUtil.copyStreamToFile(in, dest);
-                }
-
-                LogUtil.logInfo("File copied from " + src + " to " + dest);
-            }
-        } catch (IOException ex) {
-            LogUtil.logError("Error copying folder from " + src + " to " + dest, ex);
-        }
     }
 }
