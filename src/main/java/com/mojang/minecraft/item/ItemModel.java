@@ -5,55 +5,55 @@ import com.mojang.minecraft.model.TexturedQuad;
 import com.mojang.util.Vertex;
 
 public class ItemModel {
-    private ModelPart model = new ModelPart(0, 0);
+	private ModelPart model = new ModelPart(0, 0);
 
-    public ItemModel(int tex) {
-        float var3 = -2F;
-        float var4 = -2F;
-        float var15 = -2F;
+	public ItemModel(int tex) {
+		float var3 = -2F;
+		float var4 = -2F;
+		float var15 = -2F;
 
-        model.vertices = new Vertex[8];
-        model.quads = new TexturedQuad[6];
+		model.vertices = new Vertex[8];
+		model.quads = new TexturedQuad[6];
 
-        Vertex vertex1 = new Vertex(var15, var4, var3, 0F, 0F);
-        Vertex vertex2 = new Vertex(2F, var4, var3, 0F, 8F);
-        Vertex vertex3 = new Vertex(2F, 2F, var3, 8F, 8F);
-        Vertex vertex4 = new Vertex(var15, 2F, var3, 8F, 0F);
-        Vertex vertex5 = new Vertex(var15, var4, 2F, 0F, 0F);
-        Vertex vertex6 = new Vertex(2F, var4, 2F, 0F, 8F);
-        Vertex vertex7 = new Vertex(2F, 2F, 2F, 8F, 8F);
-        Vertex vertex8 = new Vertex(var15, 2F, 2F, 8F, 0F);
+		Vertex vertex1 = new Vertex(var15, var4, var3, 0F, 0F);
+		Vertex vertex2 = new Vertex(2F, var4, var3, 0F, 8F);
+		Vertex vertex3 = new Vertex(2F, 2F, var3, 8F, 8F);
+		Vertex vertex4 = new Vertex(var15, 2F, var3, 8F, 0F);
+		Vertex vertex5 = new Vertex(var15, var4, 2F, 0F, 0F);
+		Vertex vertex6 = new Vertex(2F, var4, 2F, 0F, 8F);
+		Vertex vertex7 = new Vertex(2F, 2F, 2F, 8F, 8F);
+		Vertex vertex8 = new Vertex(var15, 2F, 2F, 8F, 0F);
 
-        model.vertices[0] = vertex1;
-        model.vertices[1] = vertex2;
-        model.vertices[2] = vertex3;
-        model.vertices[3] = vertex4;
-        model.vertices[4] = vertex5;
-        model.vertices[5] = vertex6;
-        model.vertices[6] = vertex7;
-        model.vertices[7] = vertex8;
+		model.vertices[0] = vertex1;
+		model.vertices[1] = vertex2;
+		model.vertices[2] = vertex3;
+		model.vertices[3] = vertex4;
+		model.vertices[4] = vertex5;
+		model.vertices[5] = vertex6;
+		model.vertices[6] = vertex7;
+		model.vertices[7] = vertex8;
 
-        float u1 = (tex % 16 + (1F - 0.25F)) / 16F;
-        float v1 = (tex / 16 + (1F - 0.25F)) / 16F;
-        float u2 = (tex % 16 + 0.25F) / 16F;
-        float v2 = (tex / 16 + 0.25F) / 16F;
+		float u1 = (tex % 16 + (1F - 0.25F)) / 16F;
+		float v1 = (tex / 16 + (1F - 0.25F)) / 16F;
+		float u2 = (tex % 16 + 0.25F) / 16F;
+		float v2 = (tex / 16 + 0.25F) / 16F;
 
-        Vertex[] vertexes1 = new Vertex[] { vertex6, vertex2, vertex3, vertex7 };
-        Vertex[] vertexes2 = new Vertex[] { vertex1, vertex5, vertex8, vertex4 };
-        Vertex[] vertexes3 = new Vertex[] { vertex6, vertex5, vertex1, vertex2 };
-        Vertex[] vertexes4 = new Vertex[] { vertex3, vertex4, vertex8, vertex7 };
-        Vertex[] vertexes5 = new Vertex[] { vertex2, vertex1, vertex4, vertex3 };
-        Vertex[] vertexes6 = new Vertex[] { vertex5, vertex6, vertex7, vertex8 };
+		Vertex[] vertexes1 = new Vertex[] { vertex6, vertex2, vertex3, vertex7 };
+		Vertex[] vertexes2 = new Vertex[] { vertex1, vertex5, vertex8, vertex4 };
+		Vertex[] vertexes3 = new Vertex[] { vertex6, vertex5, vertex1, vertex2 };
+		Vertex[] vertexes4 = new Vertex[] { vertex3, vertex4, vertex8, vertex7 };
+		Vertex[] vertexes5 = new Vertex[] { vertex2, vertex1, vertex4, vertex3 };
+		Vertex[] vertexes6 = new Vertex[] { vertex5, vertex6, vertex7, vertex8 };
 
-        model.quads[0] = new TexturedQuad(vertexes1, u1, v1, u2, v2);
-        model.quads[1] = new TexturedQuad(vertexes2, u1, v1, u2, v2);
-        model.quads[2] = new TexturedQuad(vertexes3, u1, v1, u2, v2);
-        model.quads[3] = new TexturedQuad(vertexes4, u1, v1, u2, v2);
-        model.quads[4] = new TexturedQuad(vertexes5, u1, v1, u2, v2);
-        model.quads[5] = new TexturedQuad(vertexes6, u1, v1, u2, v2);
-    }
+		model.quads[0] = new TexturedQuad(vertexes1, u1, v1, u2, v2);
+		model.quads[1] = new TexturedQuad(vertexes2, u1, v1, u2, v2);
+		model.quads[2] = new TexturedQuad(vertexes3, u1, v1, u2, v2);
+		model.quads[3] = new TexturedQuad(vertexes4, u1, v1, u2, v2);
+		model.quads[4] = new TexturedQuad(vertexes5, u1, v1, u2, v2);
+		model.quads[5] = new TexturedQuad(vertexes6, u1, v1, u2, v2);
+	}
 
-    public void generateList() {
-        model.render(0.0625F);
-    }
+	public void generateList() {
+		model.render(0.0625F);
+	}
 }

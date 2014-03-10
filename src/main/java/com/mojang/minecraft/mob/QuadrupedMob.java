@@ -4,12 +4,12 @@ import com.mojang.minecraft.level.Level;
 
 public class QuadrupedMob extends Mob {
 
-    public static final long serialVersionUID = 0L;
+	public static final long serialVersionUID = 0L;
 
-    public QuadrupedMob(Level var1, float var2, float var3, float var4) {
-        super(var1);
-        setSize(1.4F, 1.2F);
-        this.setPos(var2, var3, var4);
-        modelName = "pig";
-    }
+	public QuadrupedMob(Level var1, float var2, float var3, float var4) {
+		super(var1);
+		setSize(1.4F, 1.2F);
+		this.setPos(var2, var3, var4);
+		modelName = "pig";
+	}
 }

@@ -11,45 +11,45 @@ import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.net.NetworkHandler;
 
 public class NetworkManager {
-    public ByteArrayOutputStream levelData;
+	public ByteArrayOutputStream levelData;
 
-    public NetworkHandler netHandler;
+	public NetworkHandler netHandler;
 
-    public Minecraft minecraft;
+	public Minecraft minecraft;
 
-    public boolean successful = false;
+	public boolean successful = false;
 
-    public boolean levelLoaded = false;
-    public HashMap<Byte, NetworkPlayer> players = new HashMap<>();
+	public boolean levelLoaded = false;
+	public HashMap<Byte, NetworkPlayer> players = new HashMap<>();
 
-    public NetworkManager(Minecraft minecraft, String server, int port, String username, String key) {
-        minecraft.isOnline = true;
-        this.minecraft = minecraft;
+	public NetworkManager(Minecraft minecraft, String server, int port, String username, String key) {
+		minecraft.isOnline = true;
+		this.minecraft = minecraft;
 
-        new ServerConnectThread(this, server, port, username, key, minecraft).start();
-    }
+		new ServerConnectThread(this, server, port, username, key, minecraft).start();
+	}
 
-    public void error(Exception ex) {
-        LogUtil.logWarning("Network communication error", ex);
-        netHandler.close();
-        ErrorScreen errorScreen = new ErrorScreen("Disconnected!", ex.getMessage());
-        minecraft.setCurrentScreen(errorScreen);
-    }
+	public void error(Exception ex) {
+		LogUtil.logWarning("Network communication error", ex);
+		netHandler.close();
+		ErrorScreen errorScreen = new ErrorScreen("Disconnected!", ex.getMessage());
+		minecraft.setCurrentScreen(errorScreen);
+	}
 
-    public List<String> getPlayers() {
-        ArrayList<String> list = new ArrayList<>();
-        list.add(minecraft.session.username);
-        for(NetworkPlayer networkPlayer : players.values()){
-            list.add(networkPlayer.name);
-        }
-        return list;
-    }
+	public List<String> getPlayers() {
+		ArrayList<String> list = new ArrayList<>();
+		list.add(minecraft.session.username);
+		for (NetworkPlayer networkPlayer : players.values()) {
+			list.add(networkPlayer.name);
+		}
+		return list;
+	}
 
-    public boolean isConnected() {
-        return netHandler != null && netHandler.connected;
-    }
+	public boolean isConnected() {
+		return netHandler != null && netHandler.connected;
+	}
 
-    public void sendBlockChange(int x, int y, int z, int mode, int block) {
-        netHandler.send(PacketType.PLAYER_SET_BLOCK, new Object[] { x, y, z, mode, block });
-    }
+	public void sendBlockChange(int x, int y, int z, int mode, int block) {
+		netHandler.send(PacketType.PLAYER_SET_BLOCK, new Object[] { x, y, z, mode, block });
+	}
 }

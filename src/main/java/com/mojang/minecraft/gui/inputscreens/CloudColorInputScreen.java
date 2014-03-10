@@ -9,30 +9,30 @@ import com.mojang.minecraft.gui.GuiScreen;
 
 public class CloudColorInputScreen extends InputValueScreen {
 
-    String defaultHex = "ffffff";
+	String defaultHex = "ffffff";
 
-    public CloudColorInputScreen(GuiScreen var1, String var2, int var3, String Title) {
-        super(var1, var2, var3, Title);
-    }
+	public CloudColorInputScreen(GuiScreen var1, String var2, int var3, String Title) {
+		super(var1, var2, var3, Title);
+	}
 
-    @Override
-    protected final void onButtonClick(Button var1) {
-        if (var1.active) {
-            if (var1.id == 0 && name.length() > 0) {
-                Minecraft var10000 = minecraft;
-                String var2 = name;
-                Minecraft var4 = var10000;
-                var4.level.cloudColor = Integer.parseInt(var2, 16);
-                minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
-            }
+	@Override
+	protected final void onButtonClick(Button var1) {
+		if (var1.active) {
+			if (var1.id == 0 && name.length() > 0) {
+				Minecraft var10000 = minecraft;
+				String var2 = name;
+				Minecraft var4 = var10000;
+				var4.level.cloudColor = Integer.parseInt(var2, 16);
+				minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
+			}
 
-            if (var1.id == 1) {
-                minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
-            }
-            if (var1.id == 800) {
-                minecraft.level.cloudColor = Integer.parseInt(defaultHex, 16);
-                minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
-            }
-        }
-    }
+			if (var1.id == 1) {
+				minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
+			}
+			if (var1.id == 800) {
+				minecraft.level.cloudColor = Integer.parseInt(defaultHex, 16);
+				minecraft.setCurrentScreen(new CloudOptionsScreen(parent, minecraft.settings));
+			}
+		}
+	}
 }

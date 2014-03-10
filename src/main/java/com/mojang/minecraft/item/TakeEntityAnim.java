@@ -5,56 +5,56 @@ import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.render.TextureManager;
 
 public class TakeEntityAnim extends Entity {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private int time = 0;
+	private int time = 0;
 
-    private Entity item;
+	private Entity item;
 
-    private Entity player;
+	private Entity player;
 
-    private float xorg;
+	private float xorg;
 
-    private float yorg;
-    private float zorg;
+	private float yorg;
+	private float zorg;
 
-    public TakeEntityAnim(Level level1, Entity item, Entity player) {
-        super(level1);
+	public TakeEntityAnim(Level level1, Entity item, Entity player) {
+		super(level1);
 
-        this.item = item;
-        this.player = player;
+		this.item = item;
+		this.player = player;
 
-        setSize(1F, 1F);
+		setSize(1F, 1F);
 
-        xorg = item.x;
-        yorg = item.y;
-        zorg = item.z;
-    }
+		xorg = item.x;
+		yorg = item.y;
+		zorg = item.z;
+	}
 
-    @Override
-    public void render(TextureManager textureManager, float unknown0) {
-        item.render(textureManager, unknown0);
-    }
+	@Override
+	public void render(TextureManager textureManager, float unknown0) {
+		item.render(textureManager, unknown0);
+	}
 
-    @Override
-    public void tick() {
-        time++;
+	@Override
+	public void tick() {
+		time++;
 
-        if (time >= 3) {
-            remove();
-        }
+		if (time >= 3) {
+			remove();
+		}
 
-        // TODO: Is this right?
-        float distance = (distance = time / 3F) * distance;
+		// TODO: Is this right?
+		float distance = (distance = time / 3F) * distance;
 
-        xo = item.xo = item.x;
-        yo = item.yo = item.y;
-        zo = item.zo = item.z;
+		xo = item.xo = item.x;
+		yo = item.yo = item.y;
+		zo = item.zo = item.z;
 
-        x = item.x = xorg + (player.x - xorg) * distance;
-        y = item.y = yorg + (player.y - 1F - yorg) * distance;
-        z = item.z = zorg + (player.z - zorg) * distance;
+		x = item.x = xorg + (player.x - xorg) * distance;
+		y = item.y = yorg + (player.y - 1F - yorg) * distance;
+		z = item.z = zorg + (player.z - zorg) * distance;
 
-        setPos(x, y, z);
-    }
+		setPos(x, y, z);
+	}
 }

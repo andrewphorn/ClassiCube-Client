@@ -5,24 +5,24 @@ import java.util.Comparator;
 import com.mojang.minecraft.player.Player;
 
 public class BlockDistanceComparator implements Comparator<BlockData> {
-    private Player player;
+	private Player player;
 
-    public BlockDistanceComparator(Player player) {
-        this.player = player;
-    }
+	public BlockDistanceComparator(Player player) {
+		this.player = player;
+	}
 
-    @Override
-    public int compare(BlockData block, BlockData other) {
+	@Override
+	public int compare(BlockData block, BlockData other) {
 
-        float sqDist = block.distanceSquared(player);
-        float otherSqDist = other.distanceSquared(player);
+		float sqDist = block.distanceSquared(player);
+		float otherSqDist = other.distanceSquared(player);
 
-        if (sqDist == otherSqDist) {
-            return 0;
-        } else if (sqDist > otherSqDist) {
-            return -1;
-        } else {
-            return 1;
-        }
-    }
+		if (sqDist == otherSqDist) {
+			return 0;
+		} else if (sqDist > otherSqDist) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
 }
