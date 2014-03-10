@@ -4,43 +4,43 @@ import com.mojang.minecraft.Entity;
 import com.mojang.util.MathHelper;
 
 public abstract class BaseSoundPos implements SoundPos {
-	private Entity listener;
+    private Entity listener;
 
-	public BaseSoundPos(Entity listener) {
-		this.listener = listener;
-	}
+    public BaseSoundPos(Entity listener) {
+        this.listener = listener;
+    }
 
-	public float getDistanceSq(float x, float y, float z) {
-		x -= listener.x;
-		y -= listener.y;
-		float var4 = z - listener.z;
+    public float getDistanceSq(float x, float y, float z) {
+        x -= listener.x;
+        y -= listener.y;
+        float var4 = z - listener.z;
 
-		var4 = MathHelper.sqrt(x * x + y * y + var4 * var4);
+        var4 = MathHelper.sqrt(x * x + y * y + var4 * var4);
 
-		if ((var4 = 1F - var4 / 32F) < 0F) {
-			var4 = 0F;
-		}
+        if ((var4 = 1F - var4 / 32F) < 0F) {
+            var4 = 0F;
+        }
 
-		return var4;
-	}
+        return var4;
+    }
 
-	public float getRotationDiff(float x, float y) {
-		x -= listener.x;
-		y -= listener.z;
+    public float getRotationDiff(float x, float y) {
+        x -= listener.x;
+        y -= listener.z;
 
-		float var3 = MathHelper.sqrt(x * x + y * y);
+        float var3 = MathHelper.sqrt(x * x + y * y);
 
-		x /= var3;
-		y /= var3;
+        x /= var3;
+        y /= var3;
 
-		if ((var3 /= 2F) > 1F) {
-			var3 = 1F;
-		}
+        if ((var3 /= 2F) > 1F) {
+            var3 = 1F;
+        }
 
-		float var4 = MathHelper.cos(-listener.yRot * (float) (Math.PI / 180D) + (float) Math.PI);
+        float var4 = MathHelper.cos(-listener.yRot * (float) (Math.PI / 180D) + (float) Math.PI);
 
-		return (MathHelper.sin(-listener.yRot * (float) (Math.PI / 180D) + (float) Math.PI) * y - var4
-				* x)
-				* var3;
-	}
+        return (MathHelper.sin(-listener.yRot * (float) (Math.PI / 180D) + (float) Math.PI) * y - var4
+                * x)
+                * var3;
+    }
 }

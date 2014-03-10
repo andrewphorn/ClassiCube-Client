@@ -5,34 +5,34 @@ import com.mojang.minecraft.level.Level;
 
 public class Skeleton extends Zombie {
 
-	public static final long serialVersionUID = 0L;
+    public static final long serialVersionUID = 0L;
 
-	// $FF: synthetic method
-	static void shootRandomArrow(Skeleton var0) {
-		int var1 = (int) ((Math.random() + Math.random()) * 3D + 4D);
+    // $FF: synthetic method
+    static void shootRandomArrow(Skeleton var0) {
+        int var1 = (int) ((Math.random() + Math.random()) * 3D + 4D);
 
-		for (int var2 = 0; var2 < var1; ++var2) {
-			var0.level.addEntity(new Arrow(var0.level, var0.level.getPlayer(), var0.x,
-					var0.y - 0.2F, var0.z, (float) Math.random() * 360F,
-					-((float) Math.random()) * 60F, 0.4F));
-		}
+        for (int var2 = 0; var2 < var1; ++var2) {
+            var0.level.addEntity(new Arrow(var0.level, var0.level.getPlayer(), var0.x,
+                    var0.y - 0.2F, var0.z, (float) Math.random() * 360F,
+                    -((float) Math.random()) * 60F, 0.4F));
+        }
 
-	}
+    }
 
-	public Skeleton(Level var1, float var2, float var3, float var4) {
-		super(var1, var2, var3, var4);
-		modelName = "skeleton";
-		textureName = "/mob/skeleton.png";
-		Skeleton$1 var5 = new Skeleton$1(this);
-		deathScore = 120;
-		var5.runSpeed = 0.3F;
-		var5.damage = 8;
-		ai = var5;
-	}
+    public Skeleton(Level var1, float var2, float var3, float var4) {
+        super(var1, var2, var3, var4);
+        modelName = "skeleton";
+        textureName = "/mob/skeleton.png";
+        Skeleton$1 var5 = new Skeleton$1(this);
+        deathScore = 120;
+        var5.runSpeed = 0.3F;
+        var5.damage = 8;
+        ai = var5;
+    }
 
-	public void shootArrow(Level var1) {
-		var1.addEntity(new Arrow(var1, this, x, y, z, yRot + 180F
-				+ (float) (Math.random() * 45D - 22.5D),
-				xRot - (float) (Math.random() * 45D - 10D), 1F));
-	}
+    public void shootArrow(Level var1) {
+        var1.addEntity(new Arrow(var1, this, x, y, z, yRot + 180F
+                + (float) (Math.random() * 45D - 22.5D),
+                xRot - (float) (Math.random() * 45D - 10D), 1F));
+    }
 }

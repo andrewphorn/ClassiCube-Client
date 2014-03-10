@@ -1,7 +1,7 @@
 package com.mojang.minecraft.sound;
 
 public interface SoundPos {
-	float getDistanceSq();
+    float getDistanceSq();
 
-	float getRotationDiff();
+    float getRotationDiff();
 }
