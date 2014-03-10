@@ -81,12 +81,8 @@ public class ResourceDownloadThread extends Thread {
                     GameSettings.StatusString = "Downloading https://s3.amazonaws.com/MinecraftResources/" + fileName + "...";
                     LogUtil.logInfo("Downloading https://s3.amazonaws.com/MinecraftResources/" + fileName);
                     URL url = new URL("https://s3.amazonaws.com/MinecraftResources/" + fileName);
-
-                    InputStream is = url.openStream();
-                    try {
+                    try (InputStream is = url.openStream()) {
                         StreamingUtil.copyStreamToFile(is, file);
-                    } finally {
-                        is.close();
                     }
 
                     GameSettings.StatusString = "Downloaded https://s3.amazonaws.com/MinecraftResources/" + fileName + "!";

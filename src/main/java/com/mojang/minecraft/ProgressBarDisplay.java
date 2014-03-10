@@ -35,30 +35,27 @@ public final class ProgressBarDisplay {
         HashMap<String, String> localHashMap = new HashMap<>();
         try {
             URLConnection urlConnection = makeConnection(location, "");
-            InputStream localInputStream = getInputStream(urlConnection);
-
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(localInputStream));
-            String str;
-            while ((str = bufferedReader.readLine()) != null) {
-                // LogUtil.logInfo(new
-                // StringBuilder().append("Read line: ").append(str).toString());
-                String[] arrayOfString = str.split("=", 2);
-                if (arrayOfString.length > 1) {
-                    localHashMap.put(arrayOfString[0].trim(), arrayOfString[1].trim());
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getInputStream(urlConnection)))) {
+                String str;
+                while ((str = bufferedReader.readLine()) != null) {
                     // LogUtil.logInfo(new
-                    // StringBuilder().append("Adding config ")
-                    // .append(arrayOfString[0].trim()).append(" = ")
-                    // .append(arrayOfString[1].trim()).toString());
+                    // StringBuilder().append("Read line: ").append(str).toString());
+                    String[] arrayOfString = str.split("=", 2);
+                    if (arrayOfString.length > 1) {
+                        localHashMap.put(arrayOfString[0].trim(), arrayOfString[1].trim());
+                        // LogUtil.logInfo(new
+                        // StringBuilder().append("Adding config ")
+                        // .append(arrayOfString[0].trim()).append(" = ")
+                        // .append(arrayOfString[1].trim()).toString());
+                    }
                 }
             }
-            bufferedReader.close();
         } catch (IOException ex) {
-            LogUtil.logError("Error fetching config from "+location, ex);
+            LogUtil.logError("Error fetching config from " + location, ex);
         }
 
         return localHashMap;
     }
-
 
     private static InputStream getInputStream(URLConnection paramURLConnection) throws IOException {
         Object localObject = paramURLConnection.getInputStream();
@@ -102,11 +99,9 @@ public final class ProgressBarDisplay {
             localURLConnection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             localURLConnection.addRequestProperty("Content-Length", Integer.toString(body.length()));
             localURLConnection.setDoOutput(true);
-
-            OutputStreamWriter localOutputStreamWriter = new OutputStreamWriter(localURLConnection.getOutputStream());
-            localOutputStreamWriter.write(body);
-            localOutputStreamWriter.flush();
-            localOutputStreamWriter.close();
+            try (OutputStreamWriter writer = new OutputStreamWriter(localURLConnection.getOutputStream())) {
+                writer.write(body);
+            }
         }
 
         localURLConnection.connect();

@@ -514,24 +514,21 @@ public class TextureManager {
 
                     textures.put(file, textureID);
                 } else if (file.endsWith(".zip")) {
-                    ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/" + file));
-
-                    String terrainPNG = "terrain.png";
-
-                    if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length()) : terrainPNG) != null) {
-                        load(loadImageFast(
-                                zip.getInputStream(zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length()) : terrainPNG))
-                        ), textureID);
-                    } else {
-                        load(loadImageFast(TextureManager.class.getResourceAsStream(terrainPNG)), textureID);
+                    try (ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/" + file))) {
+                        String terrainPNG = "terrain.png";
+                        if (zip.getEntry(terrainPNG) != null) {
+                            try (InputStream is = zip.getInputStream(zip.getEntry(terrainPNG))) {
+                                load(loadImageFast(is), textureID);
+                            }
+                        } else {
+                            load(loadImageFast(TextureManager.class.getResourceAsStream("/" + terrainPNG)), textureID);
+                        }
                     }
-
-                    zip.close();
                 }
 
                 return textureID;
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to load texture", e);
+            } catch (IOException ex) {
+                throw new RuntimeException("Failed to load texture", ex);
             }
         }
     }
@@ -543,152 +540,152 @@ public class TextureManager {
     public void loadTexturePack(final String file) throws IOException {
         if (file.endsWith(".zip")) {
             resetAllMods();
-            ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/" + file));
-            String terrainPNG = "terrain.png";
-            String rainName = "rain.png";
-            String guiName = "gui.png";
-            String iconsName = "icons.png";
-            String fontName = "default.png";
-            String chickenName = "chicken.png";
-            String creeperName = "creeper.png";
-            String crocName = "croc.png";
-            String humanoidName = "char.png";
-            String pigName = "pig.png";
-            String printerName = "printer.png";
-            String sheepName = "sheep.png";
-            String skeletonName = "skeleton.png";
-            String spiderNAme = "spider.png";
-            String zombieName = "zombie.png";
-            String cloudName = "clouds.png";
-            String snowName = "snow.png";
+            try (ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/" + file))) {
+                String terrainPNG = "terrain.png";
+                String rainName = "rain.png";
+                String guiName = "gui.png";
+                String iconsName = "icons.png";
+                String fontName = "default.png";
+                String chickenName = "chicken.png";
+                String creeperName = "creeper.png";
+                String crocName = "croc.png";
+                String humanoidName = "char.png";
+                String pigName = "pig.png";
+                String printerName = "printer.png";
+                String sheepName = "sheep.png";
+                String skeletonName = "skeleton.png";
+                String spiderNAme = "spider.png";
+                String zombieName = "zombie.png";
+                String cloudName = "clouds.png";
+                String snowName = "snow.png";
 
-            // TODO Factorize this shit
-            if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length()) : terrainPNG) != null) {
-                currentTerrainPng = loadImageFast(zip.getInputStream(zip.getEntry(
-                        terrainPNG.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length()) : terrainPNG
-                )));
-            }
+                // TODO Factorize this shit
+                if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length()) : terrainPNG) != null) {
+                    currentTerrainPng = loadImageFast(zip.getInputStream(zip.getEntry(
+                            terrainPNG.startsWith("/") ? terrainPNG.substring(1, terrainPNG.length()) : terrainPNG
+                    )));
+                }
 
-            if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1, rainName.length())
-                    : rainName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(rainName
-                        .startsWith("/") ? rainName.substring(1, rainName.length()) : rainName)));
-                customRainPng = image;
-            }
+                if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1, rainName.length())
+                        : rainName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(rainName
+                            .startsWith("/") ? rainName.substring(1, rainName.length()) : rainName)));
+                    customRainPng = image;
+                }
 
-            if (zip.getEntry(guiName.startsWith("/") ? guiName.substring(1, guiName.length())
-                    : guiName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(guiName
-                        .startsWith("/") ? guiName.substring(1, guiName.length()) : guiName)));
-                customGUI = image;
-            }
+                if (zip.getEntry(guiName.startsWith("/") ? guiName.substring(1, guiName.length())
+                        : guiName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(guiName
+                            .startsWith("/") ? guiName.substring(1, guiName.length()) : guiName)));
+                    customGUI = image;
+                }
 
-            if (zip.getEntry(iconsName.startsWith("/") ? iconsName.substring(1, iconsName.length())
-                    : iconsName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(iconsName
-                        .startsWith("/") ? iconsName.substring(1, iconsName.length()) : iconsName)));
-                customIcons = image;
-            }
+                if (zip.getEntry(iconsName.startsWith("/") ? iconsName.substring(1, iconsName.length())
+                        : iconsName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(iconsName
+                            .startsWith("/") ? iconsName.substring(1, iconsName.length()) : iconsName)));
+                    customIcons = image;
+                }
 
-            if (zip.getEntry(snowName.startsWith("/") ? snowName.substring(1, snowName.length())
-                    : snowName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(snowName
-                        .startsWith("/") ? snowName.substring(1, snowName.length()) : snowName)));
-                customSnow = image;
-            }
+                if (zip.getEntry(snowName.startsWith("/") ? snowName.substring(1, snowName.length())
+                        : snowName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(snowName
+                            .startsWith("/") ? snowName.substring(1, snowName.length()) : snowName)));
+                    customSnow = image;
+                }
 
-            if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1, fontName.length())
-                    : fontName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(fontName
-                        .startsWith("/") ? fontName.substring(1, fontName.length()) : fontName)));
-                customFont = image;
-            }
+                if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1, fontName.length())
+                        : fontName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(fontName
+                            .startsWith("/") ? fontName.substring(1, fontName.length()) : fontName)));
+                    customFont = image;
+                }
 
-            if (zip.getEntry(chickenName.startsWith("/") ? chickenName.substring(1,
-                    chickenName.length()) : chickenName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(chickenName
-                        .startsWith("/") ? chickenName.substring(1, chickenName.length())
-                        : chickenName)));
-                customChicken = image;
-            }
+                if (zip.getEntry(chickenName.startsWith("/") ? chickenName.substring(1,
+                        chickenName.length()) : chickenName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(chickenName
+                            .startsWith("/") ? chickenName.substring(1, chickenName.length())
+                            : chickenName)));
+                    customChicken = image;
+                }
 
-            if (zip.getEntry(creeperName.startsWith("/") ? creeperName.substring(1,
-                    creeperName.length()) : creeperName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(creeperName
-                        .startsWith("/") ? creeperName.substring(1, creeperName.length())
-                        : creeperName)));
-                customCreeper = image;
-            }
+                if (zip.getEntry(creeperName.startsWith("/") ? creeperName.substring(1,
+                        creeperName.length()) : creeperName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(creeperName
+                            .startsWith("/") ? creeperName.substring(1, creeperName.length())
+                            : creeperName)));
+                    customCreeper = image;
+                }
 
-            if (zip.getEntry(crocName.startsWith("/") ? crocName.substring(1, crocName.length())
-                    : crocName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(crocName
-                        .startsWith("/") ? crocName.substring(1, crocName.length()) : crocName)));
-                customCrocodile = image;
-            }
+                if (zip.getEntry(crocName.startsWith("/") ? crocName.substring(1, crocName.length())
+                        : crocName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(crocName
+                            .startsWith("/") ? crocName.substring(1, crocName.length()) : crocName)));
+                    customCrocodile = image;
+                }
 
-            if (zip.getEntry(humanoidName.startsWith("/") ? humanoidName.substring(1,
-                    humanoidName.length()) : humanoidName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(humanoidName
-                        .startsWith("/") ? humanoidName.substring(1, humanoidName.length())
-                        : humanoidName)));
-                customHumanoid = image;
-            }
+                if (zip.getEntry(humanoidName.startsWith("/") ? humanoidName.substring(1,
+                        humanoidName.length()) : humanoidName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(humanoidName
+                            .startsWith("/") ? humanoidName.substring(1, humanoidName.length())
+                            : humanoidName)));
+                    customHumanoid = image;
+                }
 
-            if (zip.getEntry(pigName.startsWith("/") ? pigName.substring(1, pigName.length())
-                    : pigName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(pigName
-                        .startsWith("/") ? pigName.substring(1, pigName.length()) : pigName)));
-                customPig = image;
-            }
+                if (zip.getEntry(pigName.startsWith("/") ? pigName.substring(1, pigName.length())
+                        : pigName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(pigName
+                            .startsWith("/") ? pigName.substring(1, pigName.length()) : pigName)));
+                    customPig = image;
+                }
 
-            if (zip.getEntry(printerName.startsWith("/") ? printerName.substring(1,
-                    printerName.length()) : printerName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(printerName
-                        .startsWith("/") ? printerName.substring(1, printerName.length())
-                        : printerName)));
-                customPrinter = image;
-            }
+                if (zip.getEntry(printerName.startsWith("/") ? printerName.substring(1,
+                        printerName.length()) : printerName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(printerName
+                            .startsWith("/") ? printerName.substring(1, printerName.length())
+                            : printerName)));
+                    customPrinter = image;
+                }
 
-            if (zip.getEntry(sheepName.startsWith("/") ? sheepName.substring(1, sheepName.length())
-                    : sheepName) != null) {
-                BufferedImage image = ImageIO
-                        .read(zip.getInputStream(zip.getEntry(sheepName.startsWith("/") ? sheepName
-                                                .substring(1, sheepName.length()) : sheepName)));
-                customSheep = image;
-            }
+                if (zip.getEntry(sheepName.startsWith("/") ? sheepName.substring(1, sheepName.length())
+                        : sheepName) != null) {
+                    BufferedImage image = ImageIO
+                            .read(zip.getInputStream(zip.getEntry(sheepName.startsWith("/") ? sheepName
+                                                    .substring(1, sheepName.length()) : sheepName)));
+                    customSheep = image;
+                }
 
-            if (zip.getEntry(skeletonName.startsWith("/") ? skeletonName.substring(1,
-                    skeletonName.length()) : skeletonName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(skeletonName
-                        .startsWith("/") ? skeletonName.substring(1, skeletonName.length())
-                        : skeletonName)));
-                customSkeleton = image;
-            }
+                if (zip.getEntry(skeletonName.startsWith("/") ? skeletonName.substring(1,
+                        skeletonName.length()) : skeletonName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(skeletonName
+                            .startsWith("/") ? skeletonName.substring(1, skeletonName.length())
+                            : skeletonName)));
+                    customSkeleton = image;
+                }
 
-            if (zip.getEntry(spiderNAme.startsWith("/") ? spiderNAme.substring(1,
-                    spiderNAme.length()) : spiderNAme) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(spiderNAme
-                        .startsWith("/") ? spiderNAme.substring(1, spiderNAme.length())
-                        : spiderNAme)));
-                customSpider = image;
-            }
+                if (zip.getEntry(spiderNAme.startsWith("/") ? spiderNAme.substring(1,
+                        spiderNAme.length()) : spiderNAme) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(spiderNAme
+                            .startsWith("/") ? spiderNAme.substring(1, spiderNAme.length())
+                            : spiderNAme)));
+                    customSpider = image;
+                }
 
-            if (zip.getEntry(zombieName.startsWith("/") ? zombieName.substring(1,
-                    zombieName.length()) : zombieName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(zombieName
-                        .startsWith("/") ? zombieName.substring(1, zombieName.length())
-                        : zombieName)));
-                customZombie = image;
-            }
+                if (zip.getEntry(zombieName.startsWith("/") ? zombieName.substring(1,
+                        zombieName.length()) : zombieName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(zombieName
+                            .startsWith("/") ? zombieName.substring(1, zombieName.length())
+                            : zombieName)));
+                    customZombie = image;
+                }
 
-            if (zip.getEntry(cloudName.startsWith("/") ? cloudName.substring(1, cloudName.length())
-                    : cloudName) != null) {
-                BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(cloudName
-                        .startsWith("/") ? cloudName.substring(1, cloudName.length()) : cloudName)));
-                customClouds = image;
+                if (zip.getEntry(cloudName.startsWith("/") ? cloudName.substring(1, cloudName.length())
+                        : cloudName) != null) {
+                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(cloudName
+                            .startsWith("/") ? cloudName.substring(1, cloudName.length()) : cloudName)));
+                    customClouds = image;
+                }
             }
-            zip.close();
         }
         initAtlas();
         if (settings.minecraft.networkManager != null) {

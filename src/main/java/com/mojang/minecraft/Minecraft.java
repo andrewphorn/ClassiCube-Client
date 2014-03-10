@@ -423,11 +423,8 @@ public final class Minecraft implements Runnable {
             if (!doesUrlExistAndIsImage(url)) {
                 return;
             }
-            InputStream is = url.openStream();
-            try {
+            try (InputStream is = url.openStream()) {
                 StreamingUtil.copyStreamToFile(is, dest);
-            } finally {
-                is.close();
             }
         } catch (Exception ex) {
             LogUtil.logWarning("Failed download an image from " + url + " to " + dest, ex);
