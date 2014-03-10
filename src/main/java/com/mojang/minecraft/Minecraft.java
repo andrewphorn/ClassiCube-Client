@@ -311,8 +311,8 @@ public final class Minecraft implements Runnable {
                     && con.getContentType().contains("image");
             con.disconnect();
             return result;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LogUtil.logWarning("Failed to check for an image at " + url, ex);
             return false;
         }
     }
@@ -406,13 +406,13 @@ public final class Minecraft implements Runnable {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.logWarning("Failed to set UI look and feel.", ex);
         }
         if (canvas != null) {
             try {
                 robot = new Robot();
             } catch (AWTException ex) {
-                ex.printStackTrace();
+                LogUtil.logError("Failed to create the AWT Robot!", ex);
             }
         }
 
@@ -429,15 +429,14 @@ public final class Minecraft implements Runnable {
             } finally {
                 is.close();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
+        } catch (Exception ex) {
+            LogUtil.logWarning("Failed download an image from " + url + " to " + dest, ex);
         }
     }
 
     public byte[] flipPixels(byte[] originalBuffer, int width, int height) {
         byte[] flippedBuffer = null;
-	int stride = width * 3;
+        int stride = width * 3;
         if (originalBuffer != null) {
             flippedBuffer = new byte[originalBuffer.length];// There are 3 bytes per cell
             for (int y = 0; y < height; y++) {
@@ -471,7 +470,7 @@ public final class Minecraft implements Runnable {
                     Mouse.setNativeCursor(cursor);
                     Mouse.setCursorPosition(width / 2, height / 2);
                 } catch (LWJGLException ex) {
-                    ex.printStackTrace();
+                    LogUtil.logError("Failed grab mouse!", ex);
                 }
             } else {
                 Mouse.setGrabbed(true);
@@ -497,7 +496,7 @@ public final class Minecraft implements Runnable {
 
             return state.getInt(null) > running.getInt(null);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.logError("Failed to detect system shutdown.", ex);
             return false;
         }
     }
@@ -701,7 +700,7 @@ public final class Minecraft implements Runnable {
         try {
             Display.create();
         } catch (LWJGLException ex) {
-            ex.printStackTrace();
+            LogUtil.logError("Failed to create the OpenGL context.", ex);
             try {
                 Thread.sleep(1000L);
             } catch (InterruptedException ex2) {
@@ -777,7 +776,7 @@ public final class Minecraft implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LogUtil.logError("Failed to load a saved singleplayer level.", ex);
             }
 
             if (level == null) {
@@ -791,7 +790,7 @@ public final class Minecraft implements Runnable {
             try {
                 cursor = new Cursor(16, 16, 0, 0, 1, BufferUtils.createIntBuffer(256), null);
             } catch (LWJGLException ex) {
-                ex.printStackTrace();
+                LogUtil.logWarning("Failed to create a transparent native cursor.", ex);
             }
         }
 
@@ -809,7 +808,7 @@ public final class Minecraft implements Runnable {
             soundPlayerThread.start();
         } catch (Exception ex) {
             soundPlayer.running = false;
-            ex.printStackTrace();
+            LogUtil.logWarning("Failed to start the sound player.", ex);
         }
 
         checkGLError("Post startup");
@@ -828,7 +827,7 @@ public final class Minecraft implements Runnable {
         try {
             initialize();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.logError("Failed to start ClassiCube!", ex);
             JOptionPane.showMessageDialog(null, ex.toString(), "Failed to start ClassiCube", 0);
             return;
         }
@@ -854,7 +853,7 @@ public final class Minecraft implements Runnable {
             }
         } catch (StopGameException ex) {
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.logError("Fatal error in main loop (run)", ex);
         } finally {
             shutdown();
         }
@@ -873,8 +872,8 @@ public final class Minecraft implements Runnable {
             DisplayMode displayMode = new DisplayMode(canvas.getWidth(), canvas.getHeight());
             try {
                 Display.setDisplayMode(displayMode);
-            } catch (LWJGLException e) {
-                e.printStackTrace();
+            } catch (LWJGLException ex) {
+                LogUtil.logError("Error resizing the OpenGL context.", ex);
             }
             resize();
         }
@@ -1868,9 +1867,8 @@ public final class Minecraft implements Runnable {
 
             checkGLError("Post render");
         } catch (Exception ex) {
-            setCurrentScreen(new ErrorScreen("Client error",
-                    "The game broke! [" + ex + "]"));
-            ex.printStackTrace();
+            LogUtil.logError("Fatal error in main loop (onFrame)", ex);
+            setCurrentScreen(new ErrorScreen("Client error", "The game broke! [" + ex + "]"));
         }
     }
 
@@ -1893,7 +1891,7 @@ public final class Minecraft implements Runnable {
                         try {
                             Mouse.setNativeCursor((Cursor) null);
                         } catch (LWJGLException ex) {
-                            ex.printStackTrace();
+                            LogUtil.logError("Error showing the mouse cursor.", ex);
                         }
                     } else {
                         Mouse.setGrabbed(false);
@@ -2011,7 +2009,7 @@ public final class Minecraft implements Runnable {
                 resourceThread.running = true;
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.logError("Error shutting down threads.", ex);
         }
 
         if (!isLevelLoaded) {
@@ -2027,8 +2025,8 @@ public final class Minecraft implements Runnable {
                         // File(mcDir, "levels.dat"))));
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                LogUtil.logError("Error saving single-player level.", ex);
             }
         }
 
@@ -2084,8 +2082,8 @@ public final class Minecraft implements Runnable {
             if (ImageIO.write(image, "png", new File(monthDir, str))) {
                 hud.addChat("&2Screenshot saved into the Screenshots folder");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LogUtil.logError("Error taking a screenshot.", ex);
         }
     }
 
@@ -2337,8 +2335,8 @@ public final class Minecraft implements Runnable {
                                                     textureManager.currentTerrainPng = ImageIO
                                                             .read(TextureManager.class
                                                                     .getResourceAsStream("/terrain.png"));
-                                                } catch (IOException e1) {
-                                                    e1.printStackTrace();
+                                                } catch (IOException ex2) {
+                                                    LogUtil.logError("Error reading default terrain texture.", ex2);
                                                 }
                                             }
                                             textureManager.textures.clear();
@@ -2438,8 +2436,8 @@ public final class Minecraft implements Runnable {
                                         System.out.println("Custom blocks packet recieved");
                                         byte SupportLevel = ((Byte) packetParams[0]).byteValue();
                                         networkManager.netHandler.send(
-                                            PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
-                                            Constants.CUSTOM_BLOCK_SUPPORT_LEVEL
+                                                PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
+                                                Constants.CUSTOM_BLOCK_SUPPORT_LEVEL
                                         );
                                         SessionData.setAllowedBlocks(SupportLevel);
                                     } else if (packetType == PacketType.SET_BLOCK_PERMISSIONS) {
@@ -2527,8 +2525,8 @@ public final class Minecraft implements Runnable {
                                     } else if (packetType == PacketType.LEVEL_FINALIZE) {
                                         try {
                                             networkManager.levelData.close();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
+                                        } catch (IOException ex) {
+                                            LogUtil.logError("Error receiving level data.", ex);
                                         }
 
                                         byte[] decompressedStream = LevelLoader
@@ -2550,10 +2548,10 @@ public final class Minecraft implements Runnable {
                                     } else if (packetType == PacketType.BLOCK_CHANGE) {
                                         if (networkManager.minecraft.level != null) {
                                             networkManager.minecraft.level.netSetTile(
-                                                ((Short) packetParams[0]).shortValue(),
-                                                ((Short) packetParams[1]).shortValue(),
-                                                ((Short) packetParams[2]).shortValue(),
-                                                ((Byte) packetParams[3]).byteValue()
+                                                    ((Short) packetParams[0]).shortValue(),
+                                                    ((Short) packetParams[1]).shortValue(),
+                                                    ((Short) packetParams[2]).shortValue(),
+                                                    ((Byte) packetParams[3]).byteValue()
                                             );
                                         }
                                     } else {
@@ -2572,7 +2570,7 @@ public final class Minecraft implements Runnable {
                                             var10004 = ((Short) packetParams[3]).shortValue();
                                             short var10005 = ((Short) packetParams[4]).shortValue();
                                             byte var10006 = ((Byte) packetParams[5]).byteValue();
-                                            byte var58 = ((Byte) packetParams[6]) .byteValue();
+                                            byte var58 = ((Byte) packetParams[6]).byteValue();
                                             var9 = var10006;
                                             short var10 = var10005;
                                             var47 = var10004;
@@ -2778,9 +2776,10 @@ public final class Minecraft implements Runnable {
                                 networkHandler.out.compact();
                             }
                         } catch (Exception ex) {
-                            var20.minecraft.setCurrentScreen(new ErrorScreen("Disconnected!", "You\'ve lost connection to the server"));
+                            LogUtil.logWarning("Error in network handling code.", ex);
+                            var20.minecraft.setCurrentScreen(
+                                    new ErrorScreen("Disconnected!", "You\'ve lost connection to the server"));
                             var20.minecraft.isOnline = false;
-                            ex.printStackTrace();
                             var20.netHandler.close();
                             var20.minecraft.networkManager = null;
                         }
@@ -3156,8 +3155,9 @@ public final class Minecraft implements Runnable {
             Display.setFullscreen(isFullScreen);
             Display.setVSyncEnabled(settings.limitFramerate);
             Display.update();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LogUtil.logWarning(
+                    "Error toggling fullscreen " + (isFullScreen ? "ON" : "OFF"), ex);
         }
     }
 }

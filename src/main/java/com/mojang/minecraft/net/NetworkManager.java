@@ -3,9 +3,9 @@ package com.mojang.minecraft.net;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.net.NetworkHandler;
@@ -20,41 +20,28 @@ public class NetworkManager {
     public boolean successful = false;
 
     public boolean levelLoaded = false;
-    public HashMap<Byte, NetworkPlayer> players;
+    public HashMap<Byte, NetworkPlayer> players = new HashMap<>();
 
     public NetworkManager(Minecraft minecraft, String server, int port, String username, String key) {
         minecraft.isOnline = true;
-
         this.minecraft = minecraft;
-
-        players = new HashMap<Byte, NetworkPlayer>();
 
         new ServerConnectThread(this, server, port, username, key, minecraft).start();
     }
 
-    public void error(Exception e) {
+    public void error(Exception ex) {
+        LogUtil.logWarning("Network communication error", ex);
         netHandler.close();
-
-        ErrorScreen errorScreen = new ErrorScreen("Disconnected!", e.getMessage());
-
+        ErrorScreen errorScreen = new ErrorScreen("Disconnected!", ex.getMessage());
         minecraft.setCurrentScreen(errorScreen);
-
-        e.printStackTrace();
     }
 
     public List<String> getPlayers() {
-        ArrayList<String> list = new ArrayList<String>();
-
+        ArrayList<String> list = new ArrayList<>();
         list.add(minecraft.session.username);
-
-        Iterator<NetworkPlayer> playerIterator = players.values().iterator();
-
-        while (playerIterator.hasNext()) {
-            NetworkPlayer networkPlayer = playerIterator.next();
-
+        for(NetworkPlayer networkPlayer : players.values()){
             list.add(networkPlayer.name);
         }
-
         return list;
     }
 

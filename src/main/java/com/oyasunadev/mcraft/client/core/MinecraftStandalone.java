@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MinecraftApplet;
 import com.mojang.minecraft.ResourceDownloadThread;
@@ -64,8 +65,8 @@ public class MinecraftStandalone {
             public URL getCodeBase() {
                 try {
                     return new URL("http://minecraft.net:80/");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                } catch (MalformedURLException ex) {
+                    LogUtil.logError("Error getting applet code base.", ex);
                 }
 
                 return null;
@@ -80,8 +81,8 @@ public class MinecraftStandalone {
             public URL getDocumentBase() {
                 try {
                     return new URL("http://minecraft.net:80/play.jsp");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                } catch (MalformedURLException ex) {
+                    LogUtil.logError("Error getting applet document base.", ex);
                 }
 
                 return null;
@@ -147,9 +148,8 @@ public class MinecraftStandalone {
                 if (image == null) {
                     try {
                         SetImage();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                    } catch (IOException ex) {
+                        LogUtil.logError("Error setting applet background image.", ex);
                     }
                 }
                 Graphics2D g2 = (Graphics2D) g;
@@ -177,9 +177,8 @@ public class MinecraftStandalone {
                     if (image2 == null) {
                         try {
                             SetImage2();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                        } catch (IOException ex) {
+                            LogUtil.logError("Error setting applet background image #2.", ex);
                         }
                     }
                     g.drawImage(getImage2(), 0, 0, getWidth(), getHeight(), null);
@@ -232,8 +231,8 @@ public class MinecraftStandalone {
 
                     try {
                         thread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    } catch (InterruptedException ex) {
+                        LogUtil.logWarning("Interrupted while waiting for Minecraft to shut down.", ex);
                         minecraft.shutdown();
                     }
 
@@ -319,8 +318,8 @@ public class MinecraftStandalone {
 
                         try {
                             Thread.sleep(1);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        } catch (InterruptedException ex) {
+                            LogUtil.logWarning("Interrupted while running Minecraft from applet.", ex);
                         }
                     }
                 }
@@ -331,8 +330,9 @@ public class MinecraftStandalone {
             while (!pass) {
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException ex) {
+                    // TODO: figure out wtf we're doing here
+                    LogUtil.logWarning("Something happened.", ex);
                 }
 
                 if (minecraft.isRunning) {

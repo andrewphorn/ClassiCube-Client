@@ -1,12 +1,11 @@
 package com.mojang.minecraft.sound;
 
+import com.mojang.minecraft.LogUtil;
 import java.nio.ByteBuffer;
 
 // TODO.
 final class MusicPlayThread extends Thread {
-
-    // $FF: synthetic field
-    private Music music;
+    private final Music music;
 
     public MusicPlayThread(Music var1) {
         super();
@@ -61,10 +60,9 @@ final class MusicPlayThread extends Thread {
                 Thread.sleep(10L);
             } while (music.player.running);
 
-            return;
-        } catch (Exception var7) {
-            var7.printStackTrace();
-            return;
+        } catch (Exception ex) {
+            LogUtil.logError("Error while playing music.", ex);
+            
         } finally {
             music.finished = true;
         }

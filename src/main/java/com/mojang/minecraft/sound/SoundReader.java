@@ -1,13 +1,12 @@
 package com.mojang.minecraft.sound;
 
-import java.io.IOException;
 import java.net.URL;
 
+import com.mojang.minecraft.LogUtil;
+
 import de.jarnbjo.ogg.LogicalOggStreamImpl;
-import de.jarnbjo.ogg.OggFormatException;
 import de.jarnbjo.ogg.OnDemandUrlStream;
 import de.jarnbjo.vorbis.IdentificationHeader;
-import de.jarnbjo.vorbis.VorbisFormatException;
 import de.jarnbjo.vorbis.VorbisStream;
 
 // TODO.
@@ -19,12 +18,8 @@ public final class SoundReader {
             LogicalOggStreamImpl OggStream = new OnDemandUrlStream(var0).getLogicalStreams()
                     .iterator().next();
             vorbisStream = new VorbisStream(OggStream);
-        } catch (VorbisFormatException e) {
-            e.printStackTrace();
-        } catch (OggFormatException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LogUtil.logWarning("Error loading sound stream from " + var0, ex);
         }
         byte[] var2 = new byte[4096];
         int var3 = 0;
@@ -32,7 +27,8 @@ public final class SoundReader {
         short[] var5 = new short[4096];
         int var6 = 0;
 
-        label51: while (var3 >= 0) {
+        label51:
+        while (var3 >= 0) {
             int var15 = 0;
 
             while (true) {

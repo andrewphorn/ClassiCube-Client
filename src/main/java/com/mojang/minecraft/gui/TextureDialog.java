@@ -1,5 +1,6 @@
 package com.mojang.minecraft.gui;
 
+import com.mojang.minecraft.LogUtil;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -22,9 +23,8 @@ final class TextureDialog extends Thread {
     protected void openTexture(String file) {
         try {
             mc.textureManager.loadTexturePack(file);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LogUtil.logError("Error loading texture pack from " + file, ex);
         }
         mc.setCurrentScreen((GuiScreen) null);
         mc.grabMouse();
@@ -38,7 +38,7 @@ final class TextureDialog extends Thread {
             var1 = new JFileChooser();
             var10000.chooser = var1;
             FileNameExtensionFilter var3 = new FileNameExtensionFilter(".Zip Texture Packs",
-                    new String[] { "zip" });
+                    new String[]{"zip"});
             screen.chooser.setFileFilter(var3);
             screen.chooser.setMultiSelectionEnabled(false);
             int var7;

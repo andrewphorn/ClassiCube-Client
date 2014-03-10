@@ -1,8 +1,7 @@
 package com.mojang.minecraft.gui;
 
+import com.mojang.minecraft.LogUtil;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.inputscreens.InputValueScreen;
@@ -32,12 +31,9 @@ public final class SaveLevelScreen extends LoadLevelScreen {
         Minecraft var3 = minecraft;
         try {
             new LevelSerializer(var3.level).saveMap(var2);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            // TODO: report error to user
+            LogUtil.logError("Error saving a map to "+var1, ex);
         }
         // this.minecraft.levelIo.save(var3.level, var2);
         minecraft.setCurrentScreen(parent);

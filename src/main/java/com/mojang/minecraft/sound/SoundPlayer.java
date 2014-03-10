@@ -7,6 +7,7 @@ import java.util.List;
 import javax.sound.sampled.SourceDataLine;
 
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
 
 // TODO.
 public final class SoundPlayer implements Runnable {
@@ -44,9 +45,8 @@ public final class SoundPlayer implements Runnable {
         for (byte[] var3 = new byte[17640]; running; dataLine.write(var3, 0, 17640)) {
             try {
                 Thread.sleep(1L);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException ex) {
+                LogUtil.logWarning("Error waiting to play a sound", ex);
             }
 
             Arrays.fill(var1, 0, 4410, 0);

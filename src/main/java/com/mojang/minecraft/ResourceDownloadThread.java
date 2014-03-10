@@ -119,7 +119,7 @@ public class ResourceDownloadThread extends Thread {
             GameSettings.PercentString = "";
             Done = true;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.logError("Error downloading resources", ex);
         }
 
         for (int i = 1; i <= 3; i++) {
@@ -237,10 +237,8 @@ public class ResourceDownloadThread extends Thread {
 
                 System.out.println("File copied from " + src + " to " + dest);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LogUtil.logError("Error copying folder from " + src + " to " + dest, ex);
         }
     }
 }

@@ -28,6 +28,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.net.NetworkPlayer;
@@ -37,12 +38,12 @@ import com.mojang.minecraft.render.texture.TextureLavaFX;
 import com.mojang.minecraft.render.texture.TextureWaterFX;
 
 public class TextureManager {
+
     public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y)
             throws IOException {
 
         // System.out.println("---" + src.getWidth() + " - " + src.getHeight() +
         // " - " + x + " - " + y);
-
         BufferedImage clipping = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);// src.getType());
         Graphics2D area = (Graphics2D) clipping.getGraphics().create();
         area.drawImage(src, 0, 0, clipping.getWidth(), clipping.getHeight(), x, y,
@@ -125,7 +126,7 @@ public class TextureManager {
         int tilesize = atlas2d.getWidth() / tiles;
 
         int atlasescount = Math.max(1, tiles * tiles * tilesize / atlassizezlimit);
-        List<BufferedImage> atlases = new ArrayList<BufferedImage>();
+        List<BufferedImage> atlases = new ArrayList<>();
 
         // 256 x 1
         BufferedImage atlas1d = null;
@@ -142,9 +143,8 @@ public class TextureManager {
             }
             try {
                 atlas1d = crop(atlas2d, tilesize, tilesize, x * tilesize, y * tilesize);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (IOException ex) {
+                LogUtil.logWarning("Error extracting texture from an atlas.", ex);
             }
         }
         atlases.add(atlas1d);
@@ -223,8 +223,8 @@ public class TextureManager {
         } else {
             try {
                 image = loadImageFast(TextureManager.class.getResourceAsStream(textureFile));
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException ex) {
+                LogUtil.logError("Error loading default texture atlas.", ex);
             }
         }
         textureAtlas.clear();
@@ -259,7 +259,6 @@ public class TextureManager {
         }
 
         // GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-
         int[] pixels = new int[width * height];
         byte[] color = new byte[width * height << 2];
 
@@ -336,7 +335,7 @@ public class TextureManager {
     }
 
     public int load(String file) {
-        if(this.currentTerrainPng == null && animations.size() == 0){
+        if (this.currentTerrainPng == null && animations.size() == 0) {
             registerAnimations();
         }
         if (file.startsWith("/dirt") && textures.containsKey("customDirt")) {

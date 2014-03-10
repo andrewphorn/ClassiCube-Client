@@ -41,10 +41,9 @@ public class SkinDownloadThread extends Thread {
                     } else {
                         Player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
                     }
-                    return;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                LogUtil.logWarning("Error downloading skin.", ex);
             } finally {
                 if (connection != null) {
                     connection.disconnect();

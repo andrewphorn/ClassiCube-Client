@@ -26,8 +26,8 @@ public class MinecraftApplet extends Applet {
     public URL getCodeBase() {
         try {
             return new URL("http://minecraft.net:80/");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        } catch (MalformedURLException ex) {
+            LogUtil.logError("Error getting applet code base", ex);
         }
         return null;
     }
@@ -36,8 +36,8 @@ public class MinecraftApplet extends Applet {
     public URL getDocumentBase() {
         try {
             return new URL("http://minecraft.net:80/play.jsp");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        } catch (MalformedURLException ex) {
+            LogUtil.logError("Error getting applet document base", ex);
         }
 
         return null;

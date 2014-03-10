@@ -1,5 +1,6 @@
 package com.mojang.minecraft.gui;
 
+import com.mojang.minecraft.LogUtil;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -30,48 +31,47 @@ public final class PauseScreen extends GuiScreen {
                 minecraft.setCurrentScreen(new TextureSelectionScreen(this));
             }
             if (var1.id == 3) {
-                    minecraft.networkManager.netHandler.close();
-                    HUDScreen.Announcement = "";
-                    HUDScreen.BottomRight1 = "";
-                    HUDScreen.BottomRight2 = "";
-                    HUDScreen.BottomRight3 = "";
-                    HUDScreen.Compass = "";
-                    HUDScreen.ServerName = "";
-                    HUDScreen.UserDetail = "";
-                    ProgressBarDisplay.title = "SinglePlayer";
+                minecraft.networkManager.netHandler.close();
+                HUDScreen.Announcement = "";
+                HUDScreen.BottomRight1 = "";
+                HUDScreen.BottomRight2 = "";
+                HUDScreen.BottomRight3 = "";
+                HUDScreen.Compass = "";
+                HUDScreen.ServerName = "";
+                HUDScreen.UserDetail = "";
+                ProgressBarDisplay.title = "SinglePlayer";
 
-                    minecraft.shutdown();
-                    ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
-                    classicubeStandalone.startMinecraft(null, null, null, 0,
-            minecraft.skinServer, minecraft.isFullScreen);
-                    minecraft.isRunning = false;
+                minecraft.shutdown();
+                ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
+                classicubeStandalone.startMinecraft(null, null, null, 0,
+                        minecraft.skinServer, minecraft.isFullScreen);
+                minecraft.isRunning = false;
             }
             if (var1.id == 4) {
-                    minecraft.setCurrentScreen((GuiScreen) null);
-                    minecraft.grabMouse();
+                minecraft.setCurrentScreen((GuiScreen) null);
+                minecraft.grabMouse();
             }
             if (var1.id == 5) {
-                    File file = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
-                    file.mkdirs();
-                    try {
-                            Desktop.getDesktop().open(file);
-                    } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                    }
+                File file = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
+                file.mkdirs();
+                try {
+                    Desktop.getDesktop().open(file);
+                } catch (IOException ex) {
+                    // TODO: add dialog for fallback
+                    LogUtil.logError("Error opening screenshots folder.", ex);
+                }
             }
             if (var1.id == 6) {
-                    File file = new File(Minecraft.getMinecraftDirectory(), "/logs/");
-                    file.mkdirs();
-                    try {
-                            Desktop.getDesktop().open(file);
-                    } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                    }
+                File file = new File(Minecraft.getMinecraftDirectory(), "/logs/");
+                file.mkdirs();
+                try {
+                    Desktop.getDesktop().open(file);
+                } catch (IOException ex) {
+                    // TODO: add dialog for fallback
+                    LogUtil.logError("Error opening chat logs folder.", ex);
+                }
             }
-        }
-        else {
+        } else {
             if (var1.id == 0) {
                 minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
             }
@@ -88,28 +88,28 @@ public final class PauseScreen extends GuiScreen {
                 minecraft.setCurrentScreen(new TextureSelectionScreen(this));
             }
             if (var1.id == 5) {
-                    minecraft.setCurrentScreen((GuiScreen) null);
-                    minecraft.grabMouse();
+                minecraft.setCurrentScreen((GuiScreen) null);
+                minecraft.grabMouse();
             }
             if (var1.id == 6) {
-                    File file = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
-                    file.mkdirs();
-                    try {
-                            Desktop.getDesktop().open(file);
-                    } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                    }
+                File file = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
+                file.mkdirs();
+                try {
+                    Desktop.getDesktop().open(file);
+                } catch (IOException ex) {
+                    // TODO: add dialog for fallback
+                    LogUtil.logError("Error opening screenshots folder.", ex);
+                }
             }
             if (var1.id == 7) {
-                    File file = new File(Minecraft.getMinecraftDirectory(), "/logs/");
-                    file.mkdirs();
-                    try {
-                            Desktop.getDesktop().open(file);
-                    } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                    }
+                File file = new File(Minecraft.getMinecraftDirectory(), "/logs/");
+                file.mkdirs();
+                try {
+                    Desktop.getDesktop().open(file);
+                } catch (IOException ex) {
+                    // TODO: add dialog for fallback
+                    LogUtil.logError("Error opening chat logs folder.", ex);
+                }
             }
         }
     }
@@ -125,10 +125,9 @@ public final class PauseScreen extends GuiScreen {
             buttons.add(new Button(4, width / 2 - 100, height - 36, "Back to game"));
             int w = fontRenderer.getWidth("Screenshots...");
             buttons.add(new Button(5, width - fontRenderer.getWidth("Screenshots...") - 15,
-                            height - 36, fontRenderer.getWidth("Screenshots..."), "Screenshots"));
+                    height - 36, fontRenderer.getWidth("Screenshots..."), "Screenshots"));
             buttons.add(new Button(6, width - w - 15, height - 58, w, "Chat Logs"));
-        }
-        else {
+        } else {
             buttons.add(new Button(0, width / 2 - 100, height / 4, "Options..."));
             buttons.add(new Button(1, width / 2 - 100, height / 4 + 24, "Generate new level..."));
             buttons.add(new Button(2, width / 2 - 100, height / 4 + 48, "Save level..."));
@@ -137,7 +136,7 @@ public final class PauseScreen extends GuiScreen {
             buttons.add(new Button(5, width / 2 - 100, height - 36, "Back to game"));
             int w = fontRenderer.getWidth("Screenshots...");
             buttons.add(new Button(6, width - fontRenderer.getWidth("Screenshots...") - 15,
-                            height - 36, fontRenderer.getWidth("Screenshots..."), "Screenshots"));
+                    height - 36, fontRenderer.getWidth("Screenshots..."), "Screenshots"));
             buttons.add(new Button(7, width - w - 15, height - 58, w, "Chat Logs"));
         }
     }
