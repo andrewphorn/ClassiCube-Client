@@ -18,7 +18,7 @@ import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 
 public final class HUDScreen extends Screen {
-    public List<ChatLine> chat = new ArrayList<ChatLine>();
+    public List<ChatLine> chat = new ArrayList<>();
     private Random random = new Random();
     private Minecraft mc;
     public int width;
@@ -32,7 +32,7 @@ public final class HUDScreen extends Screen {
     public static String BottomRight2 = "";
     public static String BottomRight3 = "";
     public static String Announcement = "";
-    public List<ChatScreenData> chatsOnScreen = new ArrayList<ChatScreenData>();
+    public List<ChatScreenData> chatsOnScreen = new ArrayList<>();
 
     int Page = 0;
 
@@ -63,7 +63,7 @@ public final class HUDScreen extends Screen {
     int rangeA = 28 * Page;
     int rangeB = rangeA + 28;
     rangeB = Math.min(rangeB, playerListNames.size());
-    List<PlayerListNameData> namesToPrint = new ArrayList<PlayerListNameData>();
+    List<PlayerListNameData> namesToPrint = new ArrayList<>();
     for (int k = rangeA; k < rangeB; k++) {
         namesToPrint.add(playerListNames.get(k));
     }
@@ -357,7 +357,7 @@ public final class HUDScreen extends Screen {
             int groupChanges = 0;
             boolean hasStartedNewColumn = false;
 
-            List<PlayerListNameData> namesToPrint = new ArrayList<PlayerListNameData>();
+            List<PlayerListNameData> namesToPrint = new ArrayList<>();
 
             for (int m = 0; m < Page; m++) {
             groupChanges += FindGroupChanges(m, playerListNames);

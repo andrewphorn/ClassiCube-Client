@@ -13,7 +13,7 @@ import com.mojang.minecraft.render.TextureManager;
 public class AnimatedTextureFX extends TextureFX {
 
     protected int index = 0;
-    protected List<BufferedImage> atlas = new ArrayList<BufferedImage>();
+    protected List<BufferedImage> atlas = new ArrayList<>();
 
     protected BufferedImage file;
 

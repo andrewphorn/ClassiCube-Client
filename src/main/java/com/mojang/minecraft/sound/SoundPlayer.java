@@ -14,7 +14,7 @@ public final class SoundPlayer implements Runnable {
 
     public boolean running = false;
     public SourceDataLine dataLine;
-    private List<Audio> audioQueue = new ArrayList<Audio>();
+    private List<Audio> audioQueue = new ArrayList<>();
     public GameSettings settings;
 
     public SoundPlayer(GameSettings var1) {

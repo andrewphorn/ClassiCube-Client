@@ -15,7 +15,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
     protected GuiScreen parent;
     private boolean finished = false;
     private boolean loaded = false;
-    private ArrayList<TexturePackData> textures = new ArrayList<TexturePackData>();
+    private ArrayList<TexturePackData> textures = new ArrayList<>();
     private String status = "";
     protected String title = "Load texture";
     boolean frozen = false;

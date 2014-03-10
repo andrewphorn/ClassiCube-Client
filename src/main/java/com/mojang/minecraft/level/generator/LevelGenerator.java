@@ -28,7 +28,7 @@ public final class LevelGenerator {
 
     private long flood(int var1, int var2, int var3, int var5) {
         byte var20 = (byte) var5;
-        ArrayList<int[]> var21 = new ArrayList<int[]>();
+        ArrayList<int[]> var21 = new ArrayList<>();
         byte var6 = 0;
         int var7 = 1;
 

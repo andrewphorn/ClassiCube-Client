@@ -6,9 +6,7 @@ public class MovingObjectPosition {
     public boolean hasEntity;
 
     public int x;
-
     public int y;
-
     public int z;
     public int face;
     public Vec3D vec;

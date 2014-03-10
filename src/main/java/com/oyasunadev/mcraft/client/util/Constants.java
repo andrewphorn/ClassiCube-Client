@@ -40,5 +40,5 @@ public class Constants {
 
     public static final byte CUSTOM_BLOCK_SUPPORT_LEVEL = (byte) 1;
 
-    public static List<ExtData> SERVER_SUPPORTED_EXTENSIONS = new ArrayList<ExtData>();
+    public static List<ExtData> SERVER_SUPPORTED_EXTENSIONS = new ArrayList<>();
 }

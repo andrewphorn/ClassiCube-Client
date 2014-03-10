@@ -37,9 +37,9 @@ public class BlockMap implements Serializable {
 
     public List<Entity>[] entityGrid;
 
-    public List<Entity> all = new ArrayList<Entity>();
+    public List<Entity> all = new ArrayList<>();
 
-    private List<Entity> tmp = new ArrayList<Entity>();
+    private List<Entity> tmp = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     public BlockMap(int x, int y, int z) {
@@ -63,7 +63,7 @@ public class BlockMap implements Serializable {
         for (x = 0; x < width; ++x) {
             for (y = 0; y < depth; ++y) {
                 for (z = 0; z < height; ++z) {
-                    entityGrid[(z * depth + y) * width + x] = new ArrayList<Entity>();
+                    entityGrid[(z * depth + y) * width + x] = new ArrayList<>();
                 }
             }
         }

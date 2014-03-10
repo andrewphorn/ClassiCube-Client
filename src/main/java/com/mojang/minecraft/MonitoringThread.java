@@ -45,7 +45,7 @@ public class MonitoringThread extends Thread {
     private long refreshInterval;
 
     private boolean stopped;
-    private Map<Long, ThreadTime> threadTimeMap = new HashMap<Long, ThreadTime>();
+    private Map<Long, ThreadTime> threadTimeMap = new HashMap<>();
     private ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 
     private OperatingSystemMXBean opBean = ManagementFactory.getOperatingSystemMXBean();
@@ -69,7 +69,7 @@ public class MonitoringThread extends Thread {
     public double getTotalUsage() {
         Collection<ThreadTime> values;
         synchronized (threadTimeMap) {
-            values = new HashSet<ThreadTime>(threadTimeMap.values());
+            values = new HashSet<>(threadTimeMap.values());
         }
 
         double usage = 0D;
@@ -125,7 +125,7 @@ public class MonitoringThread extends Thread {
         while (!stopped) {
             Set<Long> mappedIds;
             synchronized (threadTimeMap) {
-                mappedIds = new HashSet<Long>(threadTimeMap.keySet());
+                mappedIds = new HashSet<>(threadTimeMap.keySet());
             }
 
             long[] allThreadIds = threadBean.getAllThreadIds();
@@ -140,7 +140,7 @@ public class MonitoringThread extends Thread {
 
             Collection<ThreadTime> values;
             synchronized (threadTimeMap) {
-                values = new HashSet<ThreadTime>(threadTimeMap.values());
+                values = new HashSet<>(threadTimeMap.values());
             }
 
             for (ThreadTime threadTime : values) {

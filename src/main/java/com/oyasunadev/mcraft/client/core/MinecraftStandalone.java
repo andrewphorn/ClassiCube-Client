@@ -53,7 +53,7 @@ public class MinecraftStandalone {
              * Default constructor.
              */
             public MCraftApplet() {
-                parameters = new HashMap<String, String>();
+                parameters = new HashMap<>();
             }
 
             /**

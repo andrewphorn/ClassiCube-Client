@@ -15,5 +15,4 @@ public class PlayerListNameData {
         groupName = GroupName;
         groupRank = GroupRank;
     }
-
 }

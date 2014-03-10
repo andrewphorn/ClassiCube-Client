@@ -11,8 +11,8 @@ import java.util.Random;
 // TODO.
 public final class SoundManager {
 
-    public Map<String, Object> sounds = new HashMap<String, Object>();
-    private Map<String, Object> music = new HashMap<String, Object>();
+    public Map<String, Object> sounds = new HashMap<>();
+    private Map<String, Object> music = new HashMap<>();
     public Random random = new Random();
     public long lastMusic = System.currentTimeMillis() + 60000L;
 
@@ -62,7 +62,7 @@ public final class SoundManager {
 
             Object var4;
             if ((var4 = music.get(var1)) == null) {
-                var4 = new ArrayList<Object>();
+                var4 = new ArrayList<>();
                 music.put(var1, var4);
             }
 
@@ -83,7 +83,7 @@ public final class SoundManager {
             synchronized (sounds) {
                 Object var4;
                 if ((var4 = sounds.get(var2)) == null) {
-                    var4 = new ArrayList<Object>();
+                    var4 = new ArrayList<>();
                     sounds.put(var2, var4);
                 }
 
