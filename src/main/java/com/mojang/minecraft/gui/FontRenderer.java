@@ -12,176 +12,179 @@ import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 
 public final class FontRenderer {
-	public static String stripColor(String var0) {
-		char[] var3 = var0.toCharArray();
-		String var1 = "";
+    public int charHeight;
+    public int charWidth;
 
-		for (int var2 = 0; var2 < var3.length; ++var2) {
-			if (var3[var2] == 38) {
-				++var2;
-			} else {
-				var1 = var1 + var3[var2];
-			}
-		}
+    private int fontId = 0;
 
-		return var1;
-	}
+    private GameSettings settings;
+    public int[] font = new int[256];
 
-	public int charHeight;
-	public int charWidth;
+    public FontRenderer(GameSettings settings, String fontImage, TextureManager textures)
+            throws IOException {
+        this.settings = settings;
+        BufferedImage fontTexture;
 
-	private int fontId = 0;
+        try {
+            fontTexture = ImageIO.read(TextureManager.class.getResourceAsStream(fontImage));
+        } catch (IOException e) {
+            throw new IOException("Missing resource");
+        }
+        int width = fontTexture.getWidth();
+        int height = fontTexture.getHeight();
+        charWidth = width;
+        charHeight = height;
+        int[] fontData = new int[256 * 256];
+        fontTexture.getRGB(0, 0, width, height, fontData, 0, width);
 
-	private GameSettings settings;
-	public int[] font = new int[256];
+        for (int character = 0; character < 256; ++character) {
+            int var6 = character % 16;
+            int var7 = character / 16;
+            float chWidth = 0;
 
-	public FontRenderer(GameSettings settings, String fontImage, TextureManager textures)
-			throws IOException {
-		this.settings = settings;
-		BufferedImage font;
+            for (boolean var9 = false; chWidth < 8 && !var9; chWidth++) {
+                int var10 = (var6 << 3) + (int) chWidth;
+                var9 = true;
 
-		try {
-			font = ImageIO.read(TextureManager.class.getResourceAsStream(fontImage));
-		} catch (IOException e) {
-			throw new IOException("Missing resource");
-		}
-		int width = font.getWidth();
-		int height = font.getHeight();
-		int[] fontData = new int[256 * 256];
-		font.getRGB(0, 0, width, height, fontData, 0, width);
+                for (int var11 = 0; var11 < 8 && var9; ++var11) {
+                    int var12 = ((var7 << 3) + var11) * width;
+                    if ((fontData[var10 + var12] & 255) > 128) {
+                        var9 = false;
+                    }
+                }
+            }
 
-		for (int character = 0; character < 256; ++character) {
-			int var6 = character % 16;
-			int var7 = character / 16;
-			float chWidth = 0;
+            if (character == 32) {
+                chWidth = 4 * this.settings.scale;
+            }
+            this.font[character] = (int) chWidth;
+        }
+        fontId = textures.load(fontImage);
+    }
 
-			for (boolean var9 = false; chWidth < 8 && !var9; chWidth++) {
-				int var10 = (var6 << 3) + (int) chWidth;
-				var9 = true;
+    public float getScale() {
+        return 7F / charHeight * settings.scale;
+    }
 
-				for (int var11 = 0; var11 < 8 && var9; ++var11) {
-					int var12 = ((var7 << 3) + var11) * width;
-					if ((fontData[var10 + var12] & 255) > 128) {
-						var9 = false;
-					}
-				}
-			}
+    public int getWidth(String paramString) {
+        if (paramString == null) {
+            return 0;
+        }
+        char[] arrayOfChar = paramString.toCharArray();
+        int i = 0;
+        for (int j = 0; j < arrayOfChar.length; j++) {
+            int k = arrayOfChar[j];
+            if (k == 38) {
+                j++;
+            } else {
+                i += font[k];
+            }
+        }
+        return (int) Math.floor(i * settings.scale);
+    }
 
-			if (character == 32) {
-				chWidth = 4 * this.settings.scale;
-			}
-			this.font[character] = (int) chWidth;
-		}
-		fontId = textures.load(fontImage);
-	}
+    public int getHeight(){
+        return (int) Math.floor(charHeight * settings.scale);
+    }
+    private void render(String text, float x, float y, int color, boolean shadow) {
+        if (text != null) {
+            char[] chars = text.toCharArray();
+            if (shadow) {
+                color = (color & 16579836) >> 2;
+            }
+            float f1 = settings.scale;
+            float f2 = 1F / f1;
+            x = x * f2;
+            y = y * f2;
+            // if(shadow){
+            // float f3 = 1F * this.userScale;
+            // float f3 = x - (2 - x);
+            // GL11.glTranslatef(f3, f3, 0F);
+            // x = x+f3;
+            // y= y+f3;
+            // }
+            GL11.glBindTexture(3553, fontId);
 
-	public float getScale() {
-		return 7.0F / charHeight * settings.scale;
-	}
+            ShapeRenderer.instance.begin();
+            ShapeRenderer.instance.color(color);
+            int var7 = 0;
+            for (int count = 0; count < chars.length; ++count) {
+                if (chars[count] == '&' && chars.length > count + 1) {
+                    int code = "0123456789abcdef".indexOf(chars[count + 1]);
+                    if (code < 0) {
+                        code = 15;
+                    }
 
-	public int getWidth(String paramString) {
-		if (paramString == null) {
-			return 0;
-		}
-		char[] arrayOfChar = paramString.toCharArray();
-		int i = 0;
-		for (int j = 0; j < arrayOfChar.length; j++) {
-			int k = arrayOfChar[j];
-			if (k == 38) {
-				j++;
-			} else {
-				i += font[k];
-			}
-		}
-		return (int) Math.floor(i * settings.scale);
-	}
+                    int intensity = (code & 8) << 3;
+                    int blue = (code & 1) * 191 + intensity;
+                    int green = ((code & 2) >> 1) * 191 + intensity;
+                    int red = ((code & 4) >> 2) * 191 + intensity;
 
-	private void render(String text, float x, float y, int color, boolean shadow) {
-		if (text != null) {
-			char[] chars = text.toCharArray();
-			if (shadow) {
-				color = (color & 16579836) >> 2;
-			}
-			float f1 = settings.scale;
-			float f2 = 1.0F / f1;
-			x = x * f2;
-			y = y * f2;
-			// if(shadow){
-			// float f3 = 1.0F * this.userScale;
-			// float f3 = x - (2 - x);
-			// GL11.glTranslatef(f3, f3, 0.0F);
-			// x = x+f3;
-			// y= y+f3;
-			// }
-			GL11.glBindTexture(3553, fontId);
+                    int c = red << 16 | green << 8 | blue;
+                    if (shadow) {
+                        c = (c & 16579836) >> 2;
+                    }
 
-			ShapeRenderer.instance.begin();
-			ShapeRenderer.instance.color(color);
-			int var7 = 0;
-			for (int count = 0; count < chars.length; ++count) {
-				if (chars[count] == '&' && chars.length > count + 1) {
-					int code = "0123456789abcdef".indexOf(chars[count + 1]);
-					if (code < 0) {
-						code = 15;
-					}
+                    ShapeRenderer.instance.color(c);
+                    if (chars.length - 2 == count) {
+                        break;
+                    }
+                    count += 2;
+                }
+                color = chars[count] % 16 << 3;
+                int var9 = chars[count] / 16 << 3;
+                float var13 = 7.99F;
 
-					int var9 = (code & 8) << 3;
-					int var10 = (code & 1) * 191 + var9;
-					int var11 = ((code & 2) >> 1) * 191 + var9;
-					int blue = ((code & 4) >> 2) * 191 + var9;
-					if (settings.anaglyph) {
-						var9 = (code * 30 + var11 * 59 + var10 * 11) / 100;
-						var11 = (code * 30 + var11 * 70) / 100;
-						var10 = (code * 30 + var10 * 70) / 100;
-						blue = var9;
-					}
+                ShapeRenderer.instance.vertexUV(x + var7, y + var13, 0F, color / 128F,
+                        (var9 + var13) / 128F);
+                ShapeRenderer.instance.vertexUV(x + var7 + var13, y + var13, 0F,
+                        (color + var13) / 128F, (var9 + var13) / 128F);
+                ShapeRenderer.instance.vertexUV(x + var7 + var13, y, 0F,
+                        (color + var13) / 128F, var9 / 128F);
+                ShapeRenderer.instance.vertexUV(x + var7, y, 0F, color / 128F, var9 / 128F);
 
-					int c = blue << 16 | var11 << 8 | var10;
-					if (shadow) {
-						c = (c & 16579836) >> 2;
-					}
+                if (chars[count] < font.length) {
+                    var7 += font[chars[count]];
+                }
+            }
+            GL11.glPushMatrix();
+            // if (shadow)
+            // {
+            // float f3 = 1F * this.userScale;
+            // GL11.glTranslatef(f3, f3, 0F);
+            // }
+            GL11.glScalef(f1, f1, 1F);
+            ShapeRenderer.instance.end();
+            GL11.glPopMatrix();
 
-					ShapeRenderer.instance.color(c);
-					if (chars.length - 2 == count) {
-						break;
-					}
-					count += 2;
-				}
-				color = chars[count] % 16 << 3;
-				int var9 = chars[count] / 16 << 3;
-				float var13 = 7.99F;
+        }
+    }
 
-				ShapeRenderer.instance.vertexUV(x + var7, y + var13, 0.0F, color / 128.0F,
-						(var9 + var13) / 128.0F);
-				ShapeRenderer.instance.vertexUV(x + var7 + var13, y + var13, 0.0F,
-						(color + var13) / 128.0F, (var9 + var13) / 128.0F);
-				ShapeRenderer.instance.vertexUV(x + var7 + var13, y, 0.0F,
-						(color + var13) / 128.0F, var9 / 128.0F);
-				ShapeRenderer.instance.vertexUV(x + var7, y, 0.0F, color / 128.0F, var9 / 128.0F);
+    public final void render(String text, int x, int y, int color) {
+        this.render(text, x + 1 * settings.scale, y + 1 * settings.scale, color, true);
+        renderNoShadow(text, x, y, color);
+    }
 
-				if (chars[count] < font.length) {
-					var7 += font[chars[count]];
-				}
-			}
-			GL11.glPushMatrix();
-			// if (shadow)
-			// {
-			// float f3 = 1.0F * this.userScale;
-			// GL11.glTranslatef(f3, f3, 0.0F);
-			// }
-			GL11.glScalef(f1, f1, 1.0F);
-			ShapeRenderer.instance.end();
-			GL11.glPopMatrix();
-
-		}
-	}
-
-	public final void render(String text, int x, int y, int color) {
-		this.render(text, x + 1 * settings.scale, y + 1 * settings.scale, color, true);
-		renderNoShadow(text, x, y, color);
-	}
-
-	public final void renderNoShadow(String text, int x, int y, int color) {
-		this.render(text, x, y, color, false);
-	}
+    public final void renderNoShadow(String text, int x, int y, int color) {
+        this.render(text, x, y, color, false);
+    }
+    
+    public static String stripColor(String message) {
+        if (message == null) {
+            return null;
+        }
+        int start = message.indexOf('&');
+        if (start == -1) {
+            return message;
+        }
+        int lastInsert = 0;
+        StringBuilder output = new StringBuilder(message.length());
+        while (start != -1) {
+            output.append(message, lastInsert, start);
+            lastInsert = Math.min(start + 2, message.length());
+            start = message.indexOf('&', lastInsert);
+        }
+        output.append(message, lastInsert, message.length());
+        return output.toString();
+    }
 }

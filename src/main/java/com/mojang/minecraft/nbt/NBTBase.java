@@ -26,30 +26,22 @@ public abstract class NBTBase
      */
     public abstract byte getId();
 
-    protected NBTBase(String par1Str)
-    {
-        if (par1Str == null)
-        {
+    protected NBTBase(String name) {
+        if (name == null) {
             this.name = "";
-        }
-        else
-        {
-            this.name = par1Str;
+        } else {
+            this.name = name;
         }
     }
 
     /**
      * Sets the name for this tag and returns this for convenience.
      */
-    public NBTBase setName(String par1Str)
-    {
-        if (par1Str == null)
-        {
+    public NBTBase setName(String name) {
+        if (name == null) {
             this.name = "";
-        }
-        else
-        {
-            this.name = par1Str;
+        } else {
+            this.name = name;
         }
 
         return this;
@@ -58,37 +50,24 @@ public abstract class NBTBase
     /**
      * Gets the name corresponding to the tag, or an empty string if none set.
      */
-    public String getName()
-    {
+    public String getName() {
         return this.name == null ? "" : this.name;
     }
 
     /**
      * Reads and returns a tag from the given DataInput, or the End tag if no tag could be read.
      */
-    public static NBTBase readNamedTag(DataInput par0DataInput) throws IOException
-    {
+    public static NBTBase readNamedTag(DataInput par0DataInput) throws IOException {
         byte b0 = par0DataInput.readByte();
 
-        if (b0 == 0)
-        {
+        if (b0 == 0) {
             return new NBTTagEnd();
-        }
-        else
-        {
+        } else {
             String s = par0DataInput.readUTF();
             NBTBase nbtbase = newTag(b0, s);
 
-            try
-            {
-                nbtbase.load(par0DataInput);
-                return nbtbase;
-            }
-            catch (IOException ioexception)
-            {
-                
-                throw ioexception;
-            }
+            nbtbase.load(par0DataInput);
+            return nbtbase;
         }
     }
 
@@ -96,12 +75,10 @@ public abstract class NBTBase
      * Writes the specified tag to the given DataOutput, writing the type byte, the UTF string key and then calling the
      * tag to write its data.
      */
-    public static void writeNamedTag(NBTBase par0NBTBase, DataOutput par1DataOutput) throws IOException
-    {
+    public static void writeNamedTag(NBTBase par0NBTBase, DataOutput par1DataOutput) throws IOException {
         par1DataOutput.writeByte(par0NBTBase.getId());
 
-        if (par0NBTBase.getId() != 0)
-        {
+        if (par0NBTBase.getId() != 0) {
             par1DataOutput.writeUTF(par0NBTBase.getName());
             par0NBTBase.write(par1DataOutput);
         }
@@ -110,34 +87,32 @@ public abstract class NBTBase
     /**
      * Creates and returns a new tag of the specified type, or null if invalid.
      */
-    public static NBTBase newTag(byte par0, String par1Str)
-    {
-        switch (par0)
-        {
+    public static NBTBase newTag(byte typeID, String name) {
+        switch (typeID) {
             case 0:
                 return new NBTTagEnd();
             case 1:
-                return new NBTTagByte(par1Str);
+                return new NBTTagByte(name);
             case 2:
-                return new NBTTagShort(par1Str);
+                return new NBTTagShort(name);
             case 3:
-                return new NBTTagInt(par1Str);
+                return new NBTTagInt(name);
             case 4:
-                return new NBTTagLong(par1Str);
+                return new NBTTagLong(name);
             case 5:
-                return new NBTTagFloat(par1Str);
+                return new NBTTagFloat(name);
             case 6:
-                return new NBTTagDouble(par1Str);
+                return new NBTTagDouble(name);
             case 7:
-                return new NBTTagByteArray(par1Str);
+                return new NBTTagByteArray(name);
             case 8:
-                return new NBTTagString(par1Str);
+                return new NBTTagString(name);
             case 9:
-                return new NBTTagList(par1Str);
+                return new NBTTagList(name);
             case 10:
-                return new NBTTagCompound(par1Str);
+                return new NBTTagCompound(name);
             case 11:
-                return new NBTTagIntArray(par1Str);
+                return new NBTTagIntArray(name);
             default:
                 return null;
         }
@@ -146,10 +121,8 @@ public abstract class NBTBase
     /**
      * Returns the string name of a tag with the specified type, or 'UNKNOWN' if invalid.
      */
-    public static String getTagName(byte par0)
-    {
-        switch (par0)
-        {
+    public static String getTagName(byte typeID) {
+        switch (typeID) {
             case 0:
                 return "TAG_End";
             case 1:
@@ -185,22 +158,18 @@ public abstract class NBTBase
     public abstract NBTBase copy();
 
     @Override
-	public boolean equals(Object par1Obj)
+    public boolean equals(Object other)
     {
-        if (!(par1Obj instanceof NBTBase))
-        {
+        if (!(other instanceof NBTBase)) {
             return false;
-        }
-        else
-        {
-            NBTBase nbtbase = (NBTBase)par1Obj;
-            return this.getId() != nbtbase.getId() ? false : ((this.name != null || nbtbase.name == null) && (this.name == null || nbtbase.name != null) ? this.name == null || this.name.equals(nbtbase.name) : false);
+        } else {
+            NBTBase tempOther = (NBTBase)other;
+            return this.getId() != tempOther.getId() ? false : ((this.name != null || tempOther.name == null) && (this.name == null || tempOther.name != null) ? this.name == null || this.name.equals(tempOther.name) : false);
         }
     }
 
     @Override
-	public int hashCode()
-    {
+    public int hashCode() {
         return this.name.hashCode() ^ this.getId();
     }
 }

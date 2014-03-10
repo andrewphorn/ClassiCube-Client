@@ -20,7 +20,7 @@ class CallableTagCompound2 implements Callable<Object>
     }
 
     @Override
-	public Object call()
+    public Object call()
     {
         return this.func_82586_a();
     }

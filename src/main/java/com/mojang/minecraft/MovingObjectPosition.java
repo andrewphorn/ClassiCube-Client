@@ -1,34 +1,32 @@
 package com.mojang.minecraft;
 
-import com.mojang.minecraft.model.Vec3D;
+import com.mojang.util.Vec3D;
 
 public class MovingObjectPosition {
-	public int entityPos;
+    public boolean hasEntity;
 
-	public int x;
+    public int x;
+    public int y;
+    public int z;
+    public int face;
+    public Vec3D vec;
 
-	public int y;
+    public Entity entity;
 
-	public int z;
-	public int face;
-	public Vec3D vec;
+    public MovingObjectPosition(Entity entity) {
+        hasEntity = true;
+        this.entity = entity;
+    }
 
-	public Entity entity;
+    public MovingObjectPosition(int x, int y, int z, int side, Vec3D blockPos) {
+        hasEntity = false;
 
-	public MovingObjectPosition(Entity entity) {
-		entityPos = 1;
-		this.entity = entity;
-	}
+        this.x = x;
+        this.y = y;
+        this.z = z;
 
-	public MovingObjectPosition(int x, int y, int z, int side, Vec3D blockPos) {
-		entityPos = 0;
+        face = side;
 
-		this.x = x;
-		this.y = y;
-		this.z = z;
-
-		face = side;
-
-		vec = new Vec3D(blockPos.x, blockPos.y, blockPos.z);
-	}
+        vec = new Vec3D(blockPos.x, blockPos.y, blockPos.z);
+    }
 }

@@ -29,43 +29,43 @@ import de.jarnbjo.util.io.*;
 
 class Mode {
 
-	private boolean blockFlag;
-	private int windowType, transformType, mapping;
+    private boolean blockFlag;
+    private int windowType, transformType, mapping;
 
-	protected Mode(BitInputStream source, SetupHeader header) throws VorbisFormatException,
-			IOException {
-		blockFlag = source.getBit();
-		windowType = source.getInt(16);
-		transformType = source.getInt(16);
-		mapping = source.getInt(8);
+    protected Mode(BitInputStream source, SetupHeader header) throws VorbisFormatException,
+            IOException {
+        blockFlag = source.getBit();
+        windowType = source.getInt(16);
+        transformType = source.getInt(16);
+        mapping = source.getInt(8);
 
-		if (windowType != 0) {
-			throw new VorbisFormatException("Window type = " + windowType + ", != 0");
-		}
+        if (windowType != 0) {
+            throw new VorbisFormatException("Window type = " + windowType + ", != 0");
+        }
 
-		if (transformType != 0) {
-			throw new VorbisFormatException("Transform type = " + transformType + ", != 0");
-		}
+        if (transformType != 0) {
+            throw new VorbisFormatException("Transform type = " + transformType + ", != 0");
+        }
 
-		if (mapping > header.getMappings().length) {
-			throw new VorbisFormatException(
-					"Mode mapping number is higher than total number of mappings.");
-		}
-	}
+        if (mapping > header.getMappings().length) {
+            throw new VorbisFormatException(
+                    "Mode mapping number is higher than total number of mappings.");
+        }
+    }
 
-	protected boolean getBlockFlag() {
-		return blockFlag;
-	}
+    protected boolean getBlockFlag() {
+        return blockFlag;
+    }
 
-	protected int getMapping() {
-		return mapping;
-	}
+    protected int getMapping() {
+        return mapping;
+    }
 
-	protected int getTransformType() {
-		return transformType;
-	}
+    protected int getTransformType() {
+        return transformType;
+    }
 
-	protected int getWindowType() {
-		return windowType;
-	}
+    protected int getWindowType() {
+        return windowType;
+    }
 }

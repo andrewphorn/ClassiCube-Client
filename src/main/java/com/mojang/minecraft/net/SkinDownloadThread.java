@@ -1,49 +1,58 @@
 package com.mojang.minecraft.net;
 
+import com.mojang.minecraft.LogUtil;
+import com.oyasunadev.mcraft.client.util.Constants;
+
+import java.awt.image.BufferedImage;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 
 public class SkinDownloadThread extends Thread {
-	String skinServer;
 
-	private NetworkPlayer player;
+    String skinServer;
 
-	public SkinDownloadThread(NetworkPlayer networkPlayer, String skinServer) {
-		super();
+    private NetworkPlayer player;
 
-		player = networkPlayer;
-		this.skinServer = skinServer;
-	}
+    public SkinDownloadThread(NetworkPlayer networkPlayer, String skinServer) {
+        super();
 
-	@Override
-	public void run() {
-		HttpURLConnection connection = null;
+        player = networkPlayer;
+        this.skinServer = skinServer;
+    }
 
-		try {
-			connection = (HttpURLConnection) new URL(skinServer
-					+ (player.SkinName == null ? player.name : player.SkinName) + ".png")
-					.openConnection();
-			connection.addRequestProperty("User-Agent", "Mozilla/4.76");
+    @Override
+    public void run() {
+        HttpURLConnection connection = null;
 
-			connection.setUseCaches(false);
-			connection.setDoInput(true);
-			connection.setDoOutput(false);
+        try {
+            String skinName = (player.SkinName == null ? player.name : player.SkinName);
+            URL skinUrl = new URL(skinServer + skinName + ".png");
+            connection = (HttpURLConnection) skinUrl.openConnection();
+            connection.addRequestProperty("User-Agent", Constants.USER_AGENT);
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+            connection.setDoOutput(false);
+            connection.connect();
 
-			connection.connect();
-
-			if (connection.getResponseCode() == 404) {
-				return;
-			}
-
-			player.newTexture = ImageIO.read(connection.getInputStream());
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-		}
-	}
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND ) {
+                // Don't throw errors on 404 errors
+                return;
+            }
+            
+            BufferedImage image = ImageIO.read(connection.getInputStream());
+            if (image.getHeight() == image.getWidth()) {
+                player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight() / 2);
+            } else {
+                player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
+            }
+        } catch (Exception ex) {
+            LogUtil.logWarning("Error downloading a player skin.", ex);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
 }

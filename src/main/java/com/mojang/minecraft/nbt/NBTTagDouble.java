@@ -9,22 +9,22 @@ public class NBTTagDouble extends NBTBase
     /** The double value for the tag. */
     public double data;
 
-    public NBTTagDouble(String par1Str)
+    public NBTTagDouble(String name)
     {
-        super(par1Str);
+        super(name);
     }
 
-    public NBTTagDouble(String par1Str, double par2)
+    public NBTTagDouble(String name, double data)
     {
-        super(par1Str);
-        this.data = par2;
+        super(name);
+        this.data = data;
     }
 
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
     @Override
-	void write(DataOutput par1DataOutput) throws IOException
+    void write(DataOutput par1DataOutput) throws IOException
     {
         par1DataOutput.writeDouble(this.data);
     }
@@ -33,7 +33,7 @@ public class NBTTagDouble extends NBTBase
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
     @Override
-	void load(DataInput par1DataInput) throws IOException
+    void load(DataInput par1DataInput) throws IOException
     {
         this.data = par1DataInput.readDouble();
     }
@@ -42,13 +42,13 @@ public class NBTTagDouble extends NBTBase
      * Gets the type byte for the tag.
      */
     @Override
-	public byte getId()
+    public byte getId()
     {
         return (byte)6;
     }
 
     @Override
-	public String toString()
+    public String toString()
     {
         return "" + this.data;
     }
@@ -57,18 +57,18 @@ public class NBTTagDouble extends NBTBase
      * Creates a clone of the tag.
      */
     @Override
-	public NBTBase copy()
+    public NBTBase copy()
     {
         return new NBTTagDouble(this.getName(), this.data);
     }
 
     @Override
-	public boolean equals(Object par1Obj)
+    public boolean equals(Object other)
     {
-        if (super.equals(par1Obj))
+        if (super.equals(other))
         {
-            NBTTagDouble nbttagdouble = (NBTTagDouble)par1Obj;
-            return this.data == nbttagdouble.data;
+            NBTTagDouble tempOther = (NBTTagDouble)other;
+            return this.data == tempOther.data;
         }
         else
         {
@@ -77,7 +77,7 @@ public class NBTTagDouble extends NBTBase
     }
 
     @Override
-	public int hashCode()
+    public int hashCode()
     {
         long i = Double.doubleToLongBits(this.data);
         return super.hashCode() ^ (int)(i ^ i >>> 32);

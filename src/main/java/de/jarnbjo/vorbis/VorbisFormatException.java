@@ -31,16 +31,16 @@ import java.io.IOException;
 
 public class VorbisFormatException extends IOException {
 
-	/**
+    /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public VorbisFormatException() {
-		super();
-	}
+    public VorbisFormatException() {
+        super();
+    }
 
-	public VorbisFormatException(String message) {
-		super(message);
-	}
+    public VorbisFormatException(String message) {
+        super(message);
+    }
 }

@@ -2,13 +2,13 @@ package com.mojang.minecraft.model;
 
 public final class SheepModel extends AnimalModel {
 
-	public SheepModel() {
-		super(12);
-		head = new ModelPart(0, 0);
-		head.setBounds(-3.0F, -4.0F, -6.0F, 6, 6, 8, 0.0F);
-		head.setPosition(0.0F, 6.0F, -8.0F);
-		body = new ModelPart(28, 8);
-		body.setBounds(-4.0F, -10.0F, -7.0F, 8, 16, 6, 0.0F);
-		body.setPosition(0.0F, 5.0F, 2.0F);
-	}
+    public SheepModel() {
+        super(12);
+        head = new ModelPart(0, 0);
+        head.setBounds(-3F, -4F, -6F, 6, 6, 8, 0F);
+        head.setPosition(0F, 6F, -8F);
+        body = new ModelPart(28, 8);
+        body.setBounds(-4F, -10F, -7F, 8, 16, 6, 0F);
+        body.setPosition(0F, 5F, 2F);
+    }
 }

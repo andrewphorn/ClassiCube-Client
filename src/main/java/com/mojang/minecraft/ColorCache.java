@@ -1,39 +1,45 @@
 package com.mojang.minecraft;
 
+import java.awt.Color;
 import java.io.Serializable;
 
 public class ColorCache implements Serializable {
 
-	/**
-     * 
-     */
-	private static final long serialVersionUID = 1L;
-	public float R;
-	public float G;
-	public float B;
-	public float A;
+    private static final long serialVersionUID = 1L;
+    public float R;
+    public float G;
+    public float B;
+    public float A;
 
-	public ColorCache(float r, float g, float b) {
-		R = FixColor(r);
-		G = FixColor(g);
-		B = FixColor(b);
-		A = 1F;
-	}
+    public ColorCache(float r, float g, float b) {
+        R = FixColor(r);
+        G = FixColor(g);
+        B = FixColor(b);
+        A = 1F;
+    }
 
-	public ColorCache(float r, float g, float b, float a) {
-		R = FixColor(r);
-		G = FixColor(g);
-		B = FixColor(b);
-		A = a;
-	}
+    public ColorCache(float r, float g, float b, float a) {
+        R = FixColor(r);
+        G = FixColor(g);
+        B = FixColor(b);
+        A = a;
+    }
 
-	float FixColor(float color) {
-		if (color > 1.0F) {
-			return 1F;
-		}
-		if (color < 0.00F) {
-			return 0.00F;
-		}
-		return color;
-	}
+    float FixColor(float color) {
+        if (color > 1f) {
+            return 1f;
+        }
+        if (color < 0f) {
+            return 0f;
+        }
+        return color;
+    }
+    
+    public static ColorCache parseHex(String hex) {
+        Color col = Color.decode("#" + hex);
+        float r = col.getRed() / 255f;
+        float g = col.getGreen() / 255f;
+        float b = col.getBlue() / 255f;
+        return new ColorCache(r, g, b);
+    }
 }

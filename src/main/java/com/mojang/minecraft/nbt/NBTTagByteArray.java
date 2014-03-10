@@ -10,22 +10,22 @@ public class NBTTagByteArray extends NBTBase
     /** The byte array stored in the tag. */
     public byte[] byteArray;
 
-    public NBTTagByteArray(String par1Str)
+    public NBTTagByteArray(String name)
     {
-        super(par1Str);
+        super(name);
     }
 
-    public NBTTagByteArray(String par1Str, byte[] par2ArrayOfByte)
+    public NBTTagByteArray(String name, byte[] byteArrayInput)
     {
-        super(par1Str);
-        this.byteArray = par2ArrayOfByte;
+        super(name);
+        this.byteArray = byteArrayInput;
     }
 
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
     @Override
-	void write(DataOutput par1DataOutput) throws IOException
+    void write(DataOutput par1DataOutput) throws IOException
     {
         par1DataOutput.writeInt(this.byteArray.length);
         par1DataOutput.write(this.byteArray);
@@ -35,7 +35,7 @@ public class NBTTagByteArray extends NBTBase
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */
     @Override
-	void load(DataInput par1DataInput) throws IOException
+    void load(DataInput par1DataInput) throws IOException
     {
         int i = par1DataInput.readInt();
         this.byteArray = new byte[i];
@@ -46,13 +46,13 @@ public class NBTTagByteArray extends NBTBase
      * Gets the type byte for the tag.
      */
     @Override
-	public byte getId()
+    public byte getId()
     {
         return (byte)7;
     }
 
     @Override
-	public String toString()
+    public String toString()
     {
         return "[" + this.byteArray.length + " bytes]";
     }
@@ -61,7 +61,7 @@ public class NBTTagByteArray extends NBTBase
      * Creates a clone of the tag.
      */
     @Override
-	public NBTBase copy()
+    public NBTBase copy()
     {
         byte[] abyte = new byte[this.byteArray.length];
         System.arraycopy(this.byteArray, 0, abyte, 0, this.byteArray.length);
@@ -69,13 +69,13 @@ public class NBTTagByteArray extends NBTBase
     }
 
     @Override
-	public boolean equals(Object par1Obj)
+    public boolean equals(Object other)
     {
-        return super.equals(par1Obj) ? Arrays.equals(this.byteArray, ((NBTTagByteArray)par1Obj).byteArray) : false;
+        return super.equals(other) ? Arrays.equals(this.byteArray, ((NBTTagByteArray)other).byteArray) : false;
     }
 
     @Override
-	public int hashCode()
+    public int hashCode()
     {
         return super.hashCode() ^ Arrays.hashCode(this.byteArray);
     }
