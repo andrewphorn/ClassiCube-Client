@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.nbt.CompressedStreamTools;
 import com.mojang.minecraft.nbt.NBTTagCompound;
 import com.mojang.minecraft.player.Player;
@@ -23,8 +24,8 @@ public class LevelLoader {
             var3.readFully(var1);
             var3.close();
             return var1;
-        } catch (Exception var2) {
-            throw new RuntimeException(var2);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -34,31 +35,24 @@ public class LevelLoader {
     }
 
     public Level load(File fullFilePath, Player player) throws FileNotFoundException, IOException {
-        System.out.println("Loading level " + fullFilePath.getAbsolutePath());
+        LogUtil.logInfo("Loading level " + fullFilePath.getAbsolutePath());
         NBTTagCompound tc = CompressedStreamTools.readCompressed(new FileInputStream(fullFilePath));
 
-        Level level = new Level();
-        byte FormatVersion;
-        String Name;
-        byte[] UUID;
-        byte[] blocks = null;
-        short X = 0;
-        short Y = 0;
-        short Z = 0;
-        FormatVersion = tc.getByte("FormatVersion");
+        Level newLevel = new Level();
+        byte FormatVersion = tc.getByte("FormatVersion");
 
-        Name = tc.getString("Name");
-        UUID = tc.getByteArray("UUID");
-        X = tc.getShort("X");
-        Y = tc.getShort("Y");
-        Z = tc.getShort("Z");
+        String Name = tc.getString("Name");
+        byte[] UUID = tc.getByteArray("UUID");
+        short X = tc.getShort("X");
+        short Y = tc.getShort("Y");
+        short Z = tc.getShort("Z");
 
-        blocks = tc.getByteArray("BlockArray");
+        byte[] blocks = tc.getByteArray("BlockArray");
 
-        level.width = X;
-        level.length = Z;
-        level.height = Y;
-        level.blocks = blocks;
+        newLevel.width = X;
+        newLevel.length = Z;
+        newLevel.height = Y;
+        newLevel.blocks = blocks;
 
         NBTTagCompound spawn = tc.getCompoundTag("Spawn");
 
@@ -67,18 +61,18 @@ public class LevelLoader {
         short z = spawn.getShort("Z");
         short r = spawn.getByte("H");
         short l = spawn.getByte("P");
-        level.desiredSpawn = new short[] { x, y, z, r, l };
+        newLevel.desiredSpawn = new short[] { x, y, z, r, l };
 
         boolean debug = false;
         if (debug) {
-            System.out.println("FormatVersion=" + FormatVersion);
-            System.out.println("Name=" + Name);
-            System.out.println("UUID=byte[" + UUID.length + "]");
-            System.out.println("X=" + X);
-            System.out.println("Y=" + Y);
-            System.out.println("Z=" + Z);
-            System.out.println("blocks=byte[" + blocks.length + "]");
+            LogUtil.logInfo("FormatVersion=" + FormatVersion);
+            LogUtil.logInfo("Name=" + Name);
+            LogUtil.logInfo("UUID=byte[" + UUID.length + "]");
+            LogUtil.logInfo("X=" + X);
+            LogUtil.logInfo("Y=" + Y);
+            LogUtil.logInfo("Z=" + Z);
+            LogUtil.logInfo("blocks=byte[" + blocks.length + "]");
         }
-        return level;
+        return newLevel;
     }
 }

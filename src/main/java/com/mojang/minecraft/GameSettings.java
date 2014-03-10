@@ -15,7 +15,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
 import com.mojang.minecraft.render.TextureManager;
-import java.util.logging.Level;
 
 public final class GameSettings implements Serializable {
     private static final long serialVersionUID = 2L;

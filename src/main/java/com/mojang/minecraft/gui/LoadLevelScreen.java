@@ -2,7 +2,6 @@ package com.mojang.minecraft.gui;
 
 import com.mojang.minecraft.LogUtil;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;

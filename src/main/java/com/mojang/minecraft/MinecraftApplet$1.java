@@ -67,9 +67,9 @@ public class MinecraftApplet$1 extends Canvas {
                 numWritten += numRead;
             }
 
-            System.out.println(localFileName + "\t" + numWritten);
-        } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.logInfo(localFileName + "\t" + numWritten);
+        } catch (Exception ex) {
+            LogUtil.logError("Error downloading an applet resource from "+ address, ex);
         } finally {
             try {
                 if (in != null) {

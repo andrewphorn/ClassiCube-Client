@@ -33,13 +33,13 @@ public final class ProgressBarDisplay {
     public static String sideId = "";
     public static String edgeId = "";
 
-    public static HashMap<String, String> serverConfig = new HashMap<String, String>();
+    public static HashMap<String, String> serverConfig = new HashMap<>();
 
     public static void copyFile(File paramFile1, File paramFile2) {
         FileChannel fileChannel1 = null;
         FileChannel fileChannel2 = null;
 
-        // System.out.println("Copy " + paramFile1 + " to " + paramFile2);
+        // LogUtil.logInfo("Copy " + paramFile1 + " to " + paramFile2);
         try {
             if (!paramFile2.exists()) {
                 paramFile2.createNewFile();
@@ -49,19 +49,21 @@ public final class ProgressBarDisplay {
             fileChannel2 = new FileOutputStream(paramFile2).getChannel();
             fileChannel2.transferFrom(fileChannel1, 0L, fileChannel1.size());
         } catch (IOException ex) {
+            LogUtil.logError("Error copying a file from " + paramFile1 + " to " + paramFile2, ex);
             paramFile2.delete();
-            System.out.println("IO Error copying file: " + ex);
         } finally {
             try {
                 if (fileChannel1 != null) {
                     fileChannel1.close();
                 }
-            } catch (IOException ex) {}
+            } catch (IOException ex) {
+            }
             try {
                 if (fileChannel2 != null) {
                     fileChannel2.close();
                 }
-            } catch (IOException ex) {}
+            } catch (IOException ex) {
+            }
         }
     }
 
@@ -75,22 +77,20 @@ public final class ProgressBarDisplay {
                     localInputStream));
             String str;
             while ((str = bufferedReader.readLine()) != null) {
-                // System.out
-                // .println(new
+                // LogUtil.logInfo(new
                 // StringBuilder().append("Read line: ").append(str).toString());
                 String[] arrayOfString = str.split("=", 2);
                 if (arrayOfString.length > 1) {
                     localHashMap.put(arrayOfString[0].trim(), arrayOfString[1].trim());
-                    // System.out.println(new
+                    // LogUtil.logInfo(new
                     // StringBuilder().append("Adding config ")
                     // .append(arrayOfString[0].trim()).append(" = ")
                     // .append(arrayOfString[1].trim()).toString());
                 }
             }
             bufferedReader.close();
-        } catch (IOException e) {
-            System.out.println(new StringBuilder().append("Caught exception: ").append(e)
-                    .toString());
+        } catch (IOException ex) {
+            LogUtil.logError("Error fetching config from "+location, ex);
         }
 
         return localHashMap;
@@ -115,11 +115,8 @@ public final class ProgressBarDisplay {
             localInputStream.close();
 
             return i;
-        } catch (IOException localIOException) {
-            System.out.println(new StringBuilder().append("Error fetching ").append(paramString1)
-                    .append(" to file: ").append(paramFile).append(": ").append(localIOException)
-                    .toString());
-
+        } catch (IOException ex) {
+            LogUtil.logError("Error fetching "+paramString1+ " to file "+paramFile, ex);
             paramFile.delete();
         }
         return 0;
@@ -147,7 +144,7 @@ public final class ProgressBarDisplay {
     }
 
     private static URLConnection makeConnection(String url, String body, String referrer) throws IOException {
-        // System.out.println(new
+        // LogUtil.logInfo(new
         // StringBuilder().append("Making connection to ").append(url)
         // .toString());
 
@@ -193,13 +190,13 @@ public final class ProgressBarDisplay {
                 String splitlineText = lineText.substring(i + 4).split(" ")[0];
                 String Url = "http://" + splitlineText.replace("$U", minecraft.session.username);
 
-                // System.out.println("Fetching config from: " + Url);
+                LogUtil.logInfo("Fetching config from: " + Url);
                 serverConfig = fetchConfig(Url);
                 if (serverConfig.containsKey("server.detail")) {
                     try {
                         text = serverConfig.get("server.detail");
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+                    } catch (Exception ex) {
+                        LogUtil.logWarning("Error getting server.detail parameter from cfg", ex);
                     }
                 }
             }
@@ -237,7 +234,7 @@ public final class ProgressBarDisplay {
                 renderer.vertexUV(var4, 0f, 0f, var4 / uvScale, 0f);
                 renderer.vertexUV(0f, 0f, 0f, 0f, 0f);
                 renderer.end();
-                
+
                 if (progress >= 0) {
                     int barX = var4 / 2 - 50;
                     int barY = var5 / 2 + 16;
@@ -248,7 +245,7 @@ public final class ProgressBarDisplay {
                     renderer.vertex(barX, barY + 2, 0f);
                     renderer.vertex(barX + 100, barY + 2, 0f);
                     renderer.vertex(barX + 100, barY, 0f);
-                    
+
                     renderer.color(0x80FF80);
                     renderer.vertex(barX, barY, 0f);
                     renderer.vertex(barX, barY + 2, 0f);
@@ -264,7 +261,8 @@ public final class ProgressBarDisplay {
 
                 try {
                     Thread.yield();
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
         }
     }
@@ -294,7 +292,7 @@ public final class ProgressBarDisplay {
             } else if (joinedString.contains("-fly")) {
                 HackState.Fly = false;
             }
-             if (joinedString.contains("+noclip")) {
+            if (joinedString.contains("+noclip")) {
                 HackState.Noclip = true;
             } else if (joinedString.contains("-noclip")) {
                 HackState.Noclip = false;

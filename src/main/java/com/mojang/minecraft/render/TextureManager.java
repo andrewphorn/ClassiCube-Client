@@ -42,7 +42,7 @@ public class TextureManager {
     public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y)
             throws IOException {
 
-        // System.out.println("---" + src.getWidth() + " - " + src.getHeight() +
+        // LogUtil.logInfo("---" + src.getWidth() + " - " + src.getHeight() +
         // " - " + x + " - " + y);
         BufferedImage clipping = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);// src.getType());
         Graphics2D area = (Graphics2D) clipping.getGraphics().create();
@@ -293,27 +293,26 @@ public class TextureManager {
                 ContextCapabilities capabilities = GLContext.getCapabilities();
                 if (capabilities.OpenGL30) {
                     if (previousMipmapMode != settings.smoothing) {
-                        System.out.println("Using OpenGL 3.0 for mipmap generation.");
+                        LogUtil.logInfo("Using OpenGL 3.0 for mipmap generation.");
                     }
 
                     GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
                 } else if (capabilities.GL_EXT_framebuffer_object) {
                     if (previousMipmapMode != settings.smoothing) {
-                        System.out
-                                .println("Using GL_EXT_framebuffer_object extension for mipmap generation.");
+                        LogUtil.logInfo("Using GL_EXT_framebuffer_object extension for mipmap generation.");
                     }
 
                     EXTFramebufferObject.glGenerateMipmapEXT(GL11.GL_TEXTURE_2D);
                 } else if (capabilities.OpenGL14) {
                     if (previousMipmapMode != settings.smoothing) {
-                        System.out.println("Using OpenGL 1.4 for mipmap generation.");
+                        LogUtil.logInfo("Using OpenGL 1.4 for mipmap generation.");
                     }
 
                     GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_GENERATE_MIPMAP, GL11.GL_TRUE);
                 }
             } else if (settings.smoothing == 2) {
                 if (previousMipmapMode != settings.smoothing) {
-                    System.out.println("Using custom system for mipmap generation.");
+                    LogUtil.logInfo("Using custom system for mipmap generation.");
                 }
 
                 generateMipMaps(textureBuffer, width, height, false);

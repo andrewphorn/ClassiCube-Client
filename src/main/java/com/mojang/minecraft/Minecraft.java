@@ -295,9 +295,9 @@ public final class Minecraft implements Runnable {
         int error;
         if ((error = GL11.glGetError()) != 0) {
             String errorString = GLU.gluErrorString(error);
-            System.out.println("########## GL ERROR ##########");
-            System.out.println("@ " + context);
-            System.out.println(error + ": " + errorString);
+            LogUtil.logError("########## GL ERROR ##########");
+            LogUtil.logError("@ " + context);
+            LogUtil.logError(error + ": " + errorString);
             System.exit(1);
         }
     }
@@ -693,7 +693,7 @@ public final class Minecraft implements Runnable {
             Display.setDisplayMode(new DisplayMode(width, height));
         }
 
-        System.out.println("Using LWJGL Version: " + Sys.getVersion());
+        LogUtil.logInfo("Using LWJGL Version: " + Sys.getVersion());
         Display.setResizable(true);
         Display.setTitle("ClassiCube");
 
@@ -2172,8 +2172,7 @@ public final class Minecraft implements Runnable {
                                     if (packetType == PacketType.EXT_INFO) {
                                         String AppName = (String) packetParams[0];
                                         short ExtensionCount = (Short) packetParams[1];
-                                        System.out
-                                                .println("Connecting to AppName: "
+                                        LogUtil.logInfo("Connecting to AppName: "
                                                         + AppName
                                                         + " with extension count: "
                                                         + ExtensionCount);
@@ -2195,7 +2194,7 @@ public final class Minecraft implements Runnable {
                                         }
 
                                         if (recievedExtensionLength == Constants.SERVER_SUPPORTED_EXTENSIONS.size()) {
-                                            System.out.println("Sending client's supported Exts");
+                                            LogUtil.logInfo("Sending client's supported Exts");
                                             List<ExtData> temp = new ArrayList<ExtData>();
                                             for (int j = 0; j < PacketType.packets.length - 1; j++) {
                                                 if (PacketType.packets[j] != null
@@ -2213,7 +2212,7 @@ public final class Minecraft implements Runnable {
                                                     PacketType.EXT_INFO,
                                                     toSendParams);
                                             for (int k = 0; k < temp.size(); k++) {
-                                                System.out.println("Sending ext: " + temp.get(k).Name + " with version: " + temp.get(k).Version);
+                                                LogUtil.logInfo("Sending ext: " + temp.get(k).Name + " with version: " + temp.get(k).Version);
                                                 toSendParams = new Object[]{
                                                     temp.get(k).Name,
                                                     temp.get(k).Version};
@@ -2236,7 +2235,7 @@ public final class Minecraft implements Runnable {
                                         Short b = ((Short) packetParams[10]).shortValue();
                                         Short a = ((Short) packetParams[11]).shortValue();
 
-                                        // System.out.println(ID + " " + Name +
+                                        // LogUtil.logInfo(ID + " " + Name +
                                         // " " + X1 + " " + Y1
                                         // + " " + Z1 + " " + X2 + " " + Y2 +
                                         // " " + Z2);
@@ -2433,7 +2432,7 @@ public final class Minecraft implements Runnable {
                                         }
                                         playerListNameData = cache;
                                     } else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-                                        System.out.println("Custom blocks packet recieved");
+                                        LogUtil.logInfo("Custom blocks packet recieved");
                                         byte SupportLevel = ((Byte) packetParams[0]).byteValue();
                                         networkManager.netHandler.send(
                                                 PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
@@ -2451,23 +2450,23 @@ public final class Minecraft implements Runnable {
                                         if (AllowPlacement == 0) {
                                             if (!disallowedPlacementBlocks.contains(block)) {
                                                 disallowedPlacementBlocks.add(block);
-                                                System.out.println("DisallowingPlacement block: " + block);
+                                                LogUtil.logInfo("DisallowingPlacement block: " + block);
                                             }
                                         } else {
                                             if (disallowedPlacementBlocks.contains(block)) {
                                                 disallowedPlacementBlocks.remove(block);
-                                                System.out.println("AllowingPlacement block: " + block);
+                                                LogUtil.logInfo("AllowingPlacement block: " + block);
                                             }
                                         }
                                         if (AllowDeletion == 0) {
                                             if (!DisallowedBreakingBlocks.contains(block)) {
                                                 DisallowedBreakingBlocks.add(block);
-                                                System.out.println("DisallowingDeletion block: " + block);
+                                                LogUtil.logInfo("DisallowingDeletion block: " + block);
                                             }
                                         } else {
                                             if (DisallowedBreakingBlocks.contains(block)) {
                                                 DisallowedBreakingBlocks.remove(block);
-                                                System.out.println("AllowingDeletion block: " + block);
+                                                LogUtil.logInfo("AllowingDeletion block: " + block);
                                             }
                                         }
                                     } else if (packetType == PacketType.CHANGE_MODEL) {

@@ -1,14 +1,11 @@
 package com.mojang.minecraft.sound;
 
 import com.mojang.minecraft.LogUtil;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 
 import de.jarnbjo.ogg.LogicalOggStreamImpl;
-import de.jarnbjo.ogg.OggFormatException;
 import de.jarnbjo.ogg.OnDemandUrlStream;
-import de.jarnbjo.vorbis.VorbisFormatException;
 import de.jarnbjo.vorbis.VorbisStream;
 
 // TODO.

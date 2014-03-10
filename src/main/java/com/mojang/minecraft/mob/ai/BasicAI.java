@@ -99,7 +99,7 @@ public class BasicAI extends AI {
             }
             if (mob.flyingMode && !mob.noPhysics) {
                 if (flyingUp) {
-                    // System.out.println("flying up");
+                    // LogUtil.logInfo("flying up");
                     if (running) {
                         mob.yd = 0.08F;
                     } else {
@@ -107,7 +107,7 @@ public class BasicAI extends AI {
                     }
 
                 } else if (flyingDown) {
-                    // System.out.println("flying down");
+                    // LogUtil.logInfo("flying down");
                     if (running) {
                         mob.yd = -0.08F;
                     } else {
@@ -147,7 +147,7 @@ public class BasicAI extends AI {
 
             else if (mob.noPhysics && mob.flyingMode) {
                 if (flyingUp) {
-                    // System.out.println("flying up");
+                    // LogUtil.logInfo("flying up");
                     if (running) {
                         mob.yd = 0.08F;
                     } else {
@@ -155,7 +155,7 @@ public class BasicAI extends AI {
                     }
 
                 } else if (flyingDown) {
-                    // System.out.println("flying down");
+                    // LogUtil.logInfo("flying down");
                     if (running) {
                         mob.yd = -0.08F;
                     } else {
