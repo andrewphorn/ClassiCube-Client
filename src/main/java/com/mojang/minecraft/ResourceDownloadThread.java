@@ -1,13 +1,9 @@
 package com.mojang.minecraft;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class ResourceDownloadThread extends Thread {
 

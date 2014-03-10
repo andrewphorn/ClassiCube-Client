@@ -69,14 +69,14 @@ public class TextureManager {
     }
 
     public boolean Applet;
-    public HashMap<String, Integer> textures = new HashMap<String, Integer>();
-    public HashMap<Integer, BufferedImage> textureImages = new HashMap<Integer, BufferedImage>();
+    public HashMap<String, Integer> textures = new HashMap<>();
+    public HashMap<Integer, BufferedImage> textureImages = new HashMap<>();
     public IntBuffer idBuffer = BufferUtils.createIntBuffer(1);
     public ByteBuffer textureBuffer = BufferUtils.createByteBuffer(262144);
-    public List<TextureFX> animations = new ArrayList<TextureFX>();
+    public List<TextureFX> animations = new ArrayList<>();
     public GameSettings settings;
 
-    public List<BufferedImage> textureAtlas = new ArrayList<BufferedImage>();
+    public List<BufferedImage> textureAtlas = new ArrayList<>();
     public BufferedImage currentTerrainPng = null;
     public BufferedImage customSideBlock = null;
     public BufferedImage customEdgeBlock = null;

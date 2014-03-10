@@ -23,7 +23,7 @@ final class LevelDialog extends Thread {
             var1 = new JFileChooser();
             var10000.chooser = var1;
             FileNameExtensionFilter var3 = new FileNameExtensionFilter("ClassicWorld format (.cw)",
-                    new String[] { "cw" });
+                    new String[]{"cw"});
             screen.chooser.setFileFilter(var3);
             screen.chooser.setMultiSelectionEnabled(false);
             int var7;
@@ -36,12 +36,11 @@ final class LevelDialog extends Thread {
             if (var7 == 0) {
                 screen.selectedFile = screen.chooser.getSelectedFile();
                 screen.selectedFile = new File(screen.selectedFile + "");
-                        }
+            }
         } finally {
             screen.frozen = false;
             var1 = null;
             screen.chooser = var1;
         }
-
     }
 }

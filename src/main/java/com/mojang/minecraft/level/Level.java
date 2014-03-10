@@ -35,7 +35,7 @@ public class Level implements Serializable {
     public int ySpawn;
     public int zSpawn;
     public float rotSpawn;
-    private transient ArrayList<LevelRenderer> listeners = new ArrayList<LevelRenderer>();
+    private transient ArrayList<LevelRenderer> listeners = new ArrayList<>();
     private transient int[] blockers;
     public transient Random random = new Random();
     private transient int randId;
@@ -61,7 +61,7 @@ public class Level implements Serializable {
 
     public Level() {
         randId = random.nextInt();
-        tickList = new ArrayList<NextTickListEntry>();
+        tickList = new ArrayList<>();
         networkMode = false;
         unprocessed = 0;
         tickCount = 0;
@@ -668,7 +668,7 @@ public class Level implements Serializable {
     }
 
     public ArrayList<AABB> getCubes(AABB var1) {
-        ArrayList<AABB> var2 = new ArrayList<AABB>();
+        ArrayList<AABB> var2 = new ArrayList<>();
         int var3 = (int) var1.x0;
         int var4 = (int) var1.x1 + 1;
         int var5 = (int) var1.y0;
@@ -746,13 +746,13 @@ public class Level implements Serializable {
         if (blocks == null) {
             throw new RuntimeException("The level is corrupt!");
         } else {
-            listeners = new ArrayList<LevelRenderer>();
+            listeners = new ArrayList<>();
             blockers = new int[width * length];
             Arrays.fill(blockers, height);
             calcLightDepths(0, 0, width, length);
             random = new Random();
             randId = random.nextInt();
-            tickList = new ArrayList<NextTickListEntry>();
+            tickList = new ArrayList<>();
             if (waterLevel == 0) {
                 waterLevel = height / 2;
             }

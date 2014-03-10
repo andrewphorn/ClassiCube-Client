@@ -18,7 +18,7 @@ public final class LevelRenderer {
     public TextureManager textureManager;
     public int listId;
     public IntBuffer buffer = BufferUtils.createIntBuffer(65536);
-    public List<Chunk> chunks = new ArrayList<Chunk>();
+    public List<Chunk> chunks = new ArrayList<>();
     private Chunk[] loadQueue;
     public Chunk[] chunkCache;
     private int xChunks;

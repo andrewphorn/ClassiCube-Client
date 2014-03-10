@@ -1,16 +1,12 @@
 package com.mojang.minecraft;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
@@ -36,13 +32,12 @@ public final class ProgressBarDisplay {
     public static HashMap<String, String> serverConfig = new HashMap<>();
 
     public static HashMap<String, String> fetchConfig(String location) {
-        HashMap<String, String> localHashMap = new HashMap<String, String>();
+        HashMap<String, String> localHashMap = new HashMap<>();
         try {
             URLConnection urlConnection = makeConnection(location, "");
             InputStream localInputStream = getInputStream(urlConnection);
 
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
-                    localInputStream));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(localInputStream));
             String str;
             while ((str = bufferedReader.readLine()) != null) {
                 // LogUtil.logInfo(new
@@ -64,31 +59,6 @@ public final class ProgressBarDisplay {
         return localHashMap;
     }
 
-    public static int fetchUrl(File paramFile, String paramString1, String paramString2) {
-        try {
-            URLConnection localURLConnection = makeConnection(paramString1, paramString2);
-            InputStream localInputStream = getInputStream(localURLConnection);
-
-            FileOutputStream localFileOutputStream = new FileOutputStream(paramFile);
-            byte[] arrayOfByte = new byte[10240];
-            int i = 0;
-            int j = 0;
-            while ((j = localInputStream.read(arrayOfByte, 0, 10240)) >= 0) {
-                if (j > 0) {
-                    localFileOutputStream.write(arrayOfByte, 0, j);
-                    i += j;
-                }
-            }
-            localFileOutputStream.close();
-            localInputStream.close();
-
-            return i;
-        } catch (IOException ex) {
-            LogUtil.logError("Error fetching "+paramString1+ " to file "+paramFile, ex);
-            paramFile.delete();
-        }
-        return 0;
-    }
 
     private static InputStream getInputStream(URLConnection paramURLConnection) throws IOException {
         Object localObject = paramURLConnection.getInputStream();

@@ -128,7 +128,7 @@ public final class BlockSelectScreen extends GuiScreen {
 
     }
 
-    void Rotate() {
+    void rotate() {
         lastRotation += 2.7F;
     }
 
@@ -136,7 +136,7 @@ public final class BlockSelectScreen extends GuiScreen {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Rotate();
+                rotate();
                 // timer.cancel();
             }
         }, miliseconds, miliseconds);

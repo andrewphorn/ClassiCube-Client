@@ -68,7 +68,7 @@ public class ClassiCubeStandalone {
              * Default constructor.
              */
             public MCraftApplet() {
-                parameters = new HashMap<String, String>();
+                parameters = new HashMap<>();
             }
 
             /**

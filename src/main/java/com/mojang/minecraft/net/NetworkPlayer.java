@@ -24,7 +24,7 @@ public class NetworkPlayer extends HumanoidMob {
         return true;
     }
 
-    public transient List<PositionUpdate> moveQueue = new LinkedList<PositionUpdate>();
+    public transient List<PositionUpdate> moveQueue = new LinkedList<>();
     private transient Minecraft minecraft;
     private int xp;
     private int yp;

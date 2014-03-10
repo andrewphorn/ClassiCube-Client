@@ -26,7 +26,7 @@ public class ChatInputScreenExtension extends GuiScreen {
     public int caretPos = 0;
     private int historyPos = 0;
 
-    public static Vector<String> history = new Vector<String>();
+    public static Vector<String> history = new Vector<>();
 
     int j;
 

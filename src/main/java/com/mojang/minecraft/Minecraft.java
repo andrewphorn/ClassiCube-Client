@@ -279,13 +279,13 @@ public final class Minecraft implements Runnable {
      */
     public MinecraftApplet applet;
 
-    public List<SelectionBoxData> selectionBoxes = new ArrayList<SelectionBoxData>();
-    public List<HotKeyData> hotKeys = new ArrayList<HotKeyData>();
+    public List<SelectionBoxData> selectionBoxes = new ArrayList<>();
+    public List<HotKeyData> hotKeys = new ArrayList<>();
     public HackState hackState;
-    public List<PlayerListNameData> playerListNameData = new ArrayList<PlayerListNameData>();
+    public List<PlayerListNameData> playerListNameData = new ArrayList<>();
 
-    public List<Block> disallowedPlacementBlocks = new ArrayList<Block>();
-    public List<Block> DisallowedBreakingBlocks = new ArrayList<Block>();
+    public List<Block> disallowedPlacementBlocks = new ArrayList<>();
+    public List<Block> DisallowedBreakingBlocks = new ArrayList<>();
     public MonitoringThread monitoringThread;
     public int tempDisplayWidth;
     public int tempDisplayHeight;
@@ -2195,7 +2195,7 @@ public final class Minecraft implements Runnable {
 
                                         if (recievedExtensionLength == Constants.SERVER_SUPPORTED_EXTENSIONS.size()) {
                                             LogUtil.logInfo("Sending client's supported Exts");
-                                            List<ExtData> temp = new ArrayList<ExtData>();
+                                            List<ExtData> temp = new ArrayList<>();
                                             for (int j = 0; j < PacketType.packets.length - 1; j++) {
                                                 if (PacketType.packets[j] != null
                                                         && PacketType.packets[j].extName != "") {

@@ -62,7 +62,7 @@ public class ChatClickData {
     }
 
     private ArrayList<LinkData> pullLinks(String text, FontRenderer fr) {
-        ArrayList<LinkData> links = new ArrayList<LinkData>();
+        ArrayList<LinkData> links = new ArrayList<>();
         Matcher m = compiledPattern.matcher(text);
         while (m.find()) {
             String urlStr = m.group();
