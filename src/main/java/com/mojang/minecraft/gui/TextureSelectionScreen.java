@@ -1,5 +1,6 @@
 package com.mojang.minecraft.gui;
 
+import com.mojang.minecraft.LogUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,8 +55,8 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
                 try {
                     minecraft.fontRenderer = new FontRenderer(minecraft.settings, "/default.png",
                             minecraft.textureManager);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException ex) {
+                    LogUtil.logError("Error creating default font renderer.", ex);
                 }
                 minecraft.settings.lastUsedTexturePack = null;
                 minecraft.settings.save();
@@ -95,8 +96,8 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
                     minecraft.textureManager);
             minecraft.settings.lastUsedTexturePack = file;
             minecraft.settings.save();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LogUtil.logError("Error loading texture pack from "+file, ex);
         }
         minecraft.setCurrentScreen((GuiScreen) null);
         minecraft.grabMouse();
@@ -118,8 +119,8 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
             try {
                 Thread.sleep(20L);
-            } catch (InterruptedException var3) {
-                var3.printStackTrace();
+            } catch (InterruptedException ex) {
+                LogUtil.logError("Error waiting to render TextureSelectionScreen", ex);
             }
         } else {
             if (!loaded) {
@@ -136,8 +137,8 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
             if (frozen) {
                 try {
                     Thread.sleep(100L);
-                } catch (InterruptedException var2) {
-                    var2.printStackTrace();
+                } catch (InterruptedException ex) {
+                    LogUtil.logError("Error waiting to run TextureSelectionScreen", ex);
                 }
             }
 
@@ -158,8 +159,8 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
             status = "Finished loading textures";
             finished = true;
-        } catch (Exception var3) {
-            var3.printStackTrace();
+        } catch (Exception ex) {
+            LogUtil.logError("Error running TextureSelectionScreen", ex);
             status = "Failed to load textures";
             finished = true;
         }

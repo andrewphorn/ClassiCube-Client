@@ -1,5 +1,6 @@
 package com.mojang.net;
 
+import com.mojang.minecraft.LogUtil;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -30,20 +31,21 @@ public final class NetworkHandler {
 
             System.currentTimeMillis();
             /*sock = channel.socket();
-            sock.setTcpNoDelay(true);
-            sock.setTrafficClass(soTrafficClass);
-            sock.setKeepAlive(false);
-            sock.setReuseAddress(false);
-            sock.setSoTimeout(100);
-            sock.getInetAddress().toString();*/
+             sock.setTcpNoDelay(true);
+             sock.setTrafficClass(soTrafficClass);
+             sock.setKeepAlive(false);
+             sock.setReuseAddress(false);
+             sock.setSoTimeout(100);
+             sock.getInetAddress().toString();*/
 
             connected = true;
             in.clear();
             out.clear();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            mc.setCurrentScreen(new ErrorScreen("Failed to connect", "You failed to connect to the server. It\'s probably down!"));
+        } catch (Exception ex) {
+            LogUtil.logWarning("Error initializing network connection to " + ip + ":" + port, ex);
+            mc.setCurrentScreen(new ErrorScreen("Failed to connect",
+                    "You failed to connect to the server. It\'s probably down!"));
             mc.isOnline = false;
 
             mc.networkManager = null;
@@ -58,13 +60,15 @@ public final class NetworkHandler {
                 channel.write(out);
                 out.compact();
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         connected = false;
 
         try {
             channel.close();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         sock = null;
         channel = null;

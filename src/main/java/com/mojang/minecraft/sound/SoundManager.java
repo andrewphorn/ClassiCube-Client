@@ -1,8 +1,7 @@
 package com.mojang.minecraft.sound;
 
+import com.mojang.minecraft.LogUtil;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,10 +43,8 @@ public final class SoundManager {
 
             try {
                 var1.play(new Music(var1, var8.toURI().toURL()));
-            } catch (MalformedURLException var5) {
-                var5.printStackTrace();
-            } catch (@SuppressWarnings("hiding") IOException var6) {
-                var6.printStackTrace();
+            } catch (Exception ex) {
+                LogUtil.logError("Error queueing music to play from " + var2, ex);
             }
 
             return true;
@@ -59,7 +56,7 @@ public final class SoundManager {
         synchronized (music) {
             for (var1 = var1.substring(0, var1.length() - 4).replaceAll("/", "."); Character
                     .isDigit(var1.charAt(var1.length() - 1)); var1 = var1.substring(0,
-                    var1.length() - 1)) {
+                            var1.length() - 1)) {
                 ;
             }
 
@@ -78,7 +75,7 @@ public final class SoundManager {
         try {
             for (var2 = var2.substring(0, var2.length() - 4).replaceAll("/", "."); Character
                     .isDigit(var2.charAt(var2.length() - 1)); var2 = var2.substring(0,
-                    var2.length() - 1)) {
+                            var2.length() - 1)) {
                 ;
             }
 
@@ -92,9 +89,8 @@ public final class SoundManager {
 
                 ((List<SoundData>) var4).add(var7);
             }
-        } catch (Exception var6) {
-            var6.printStackTrace();
+        } catch (Exception ex) {
+            LogUtil.logError("Error registering sound " + var2 + " from " + var1, ex);
         }
-
     }
 }

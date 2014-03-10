@@ -1,7 +1,7 @@
 package com.mojang.minecraft.gui;
 
+import com.mojang.minecraft.LogUtil;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -86,12 +86,9 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
             } else {
                 var4.setLevel(var5);
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException ex) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LogUtil.logError("Error loading level from file.", ex);
         }
 
         minecraft.setCurrentScreen(parent);
@@ -109,13 +106,12 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
         drawFadingBox(0, 0, width, height, 1610941696, -1607454624);
         drawCenteredString(fontRenderer, title, width / 2, 20, 16777215);
         if (frozen) {
-            drawCenteredString(fontRenderer, "Selecting file..", width / 2, height / 2 - 4,
-                    16777215);
+            drawCenteredString(fontRenderer, "Selecting file..", width / 2, height / 2 - 4, 16777215);
 
             try {
                 Thread.sleep(20L);
-            } catch (InterruptedException var3) {
-                var3.printStackTrace();
+            } catch (InterruptedException ex) {
+                LogUtil.logError("Error waiting to render LoadLevelScreen.", ex);
             }
         } else {
             if (!loaded) {
@@ -132,8 +128,8 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
             if (frozen) {
                 try {
                     Thread.sleep(100L);
-                } catch (InterruptedException var2) {
-                    var2.printStackTrace();
+                } catch (InterruptedException ex) {
+                    LogUtil.logError("Error waiting to run LoadLevelScreen.", ex);
                 }
             }
             levels = new String[] { "" };
@@ -145,8 +141,8 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
 
             status = levels[0];
             finished = true;
-        } catch (Exception var3) {
-            var3.printStackTrace();
+        } catch (Exception ex) {
+            LogUtil.logError("Error while running LoadLevelScreen.", ex);
             status = "Failed to load levels";
             // this.finished = true;
         }

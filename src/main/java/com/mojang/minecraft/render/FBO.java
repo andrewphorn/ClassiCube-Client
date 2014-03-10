@@ -1,5 +1,6 @@
 package com.mojang.minecraft.render;
 
+import com.mojang.minecraft.LogUtil;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -34,11 +35,11 @@ public class FBO {
 
         if (size_x * anti_aliasing >= maxResolution) {
             anti_aliasing = (int) Math.floor(maxResolution / size_x);
-            System.out.println("Anti aliasing reset to " + anti_aliasing);
+            LogUtil.logInfo("Anti aliasing reset to " + anti_aliasing);
         }
         if (size_y * anti_aliasing >= maxResolution) {
             anti_aliasing = (int) Math.floor(maxResolution / size_y);
-            System.out.println("Anti aliasing reset to " + anti_aliasing);
+            LogUtil.logInfo("Anti aliasing reset to " + anti_aliasing);
         }
 
         size_x *= anti_aliasing;
@@ -186,7 +187,7 @@ public class FBO {
 
     private void initarb() {
         if (!GLContext.getCapabilities().GL_ARB_framebuffer_object) {
-            System.out.println("Swapping to FBO EXT");
+            LogUtil.logInfo("Swapping to FBO EXT");
 
             fboarb = false;
             fbocore = false;
@@ -288,7 +289,7 @@ public class FBO {
         String version = GL11.glGetString(7938);
 
         if (Integer.valueOf(version.substring(0, 1)).intValue() < 3) {
-            System.out.println("Swapping to FBO ARB");
+            LogUtil.logInfo("Swapping to FBO ARB");
 
             fboarb = true;
             fbocore = false;
@@ -406,11 +407,11 @@ public class FBO {
         if (sx != size_x && sy != size_y) {
             if (size_x * anti_aliasing >= maxResolution) {
                 anti_aliasing = (int) Math.floor(maxResolution / size_x);
-                System.out.println("Anti aliasing reset to " + anti_aliasing);
+                LogUtil.logInfo("Anti aliasing reset to " + anti_aliasing);
             }
             if (size_y * anti_aliasing >= maxResolution) {
                 anti_aliasing = (int) Math.floor(maxResolution / size_y);
-                System.out.println("Anti aliasing reset to " + anti_aliasing);
+                LogUtil.logInfo("Anti aliasing reset to " + anti_aliasing);
             }
 
             sx = size_x;

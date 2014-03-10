@@ -1,5 +1,6 @@
 package com.mojang.minecraft.level.generator;
 
+import com.mojang.minecraft.LogUtil;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -71,7 +72,7 @@ public final class LevelGenerator {
             int var16 = var2 >> var7 & var9;
             int var17 = var2 >> var7 + var8;
             if (var16 != var3 || var17 != var13) {
-                System.out.println("Diagonal flood!?");
+                LogUtil.logWarning("Diagonal flood!?");
             }
 
             boolean var23 = false;

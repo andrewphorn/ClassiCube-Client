@@ -1,5 +1,6 @@
 package com.mojang.minecraft.render.texture;
 
+import com.mojang.minecraft.LogUtil;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ public class AnimatedTextureFX extends TextureFX {
         super(targetTextureID);
         try {
             file = ImageIO.read(TextureManager.class.getResourceAsStream(fileToLoad));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LogUtil.logError("Error loading texture from " + fileToLoad, ex);
         }
         scaling = file.getWidth() / 16;
         int frames = file.getHeight() / file.getWidth();

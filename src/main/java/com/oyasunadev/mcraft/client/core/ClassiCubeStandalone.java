@@ -27,6 +27,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MinecraftApplet;
 import com.mojang.minecraft.ResourceDownloadThread;
@@ -79,8 +80,8 @@ public class ClassiCubeStandalone {
             public URL getCodeBase() {
                 try {
                     return new URL("http://minecraft.net:80/");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                } catch (MalformedURLException ex) {
+                    LogUtil.logError("Error getting applet code base.", ex);
                 }
 
                 return null;
@@ -95,8 +96,8 @@ public class ClassiCubeStandalone {
             public URL getDocumentBase() {
                 try {
                     return new URL("http://minecraft.net:80/play.jsp");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                } catch (MalformedURLException ex) {
+                    LogUtil.logError("Error getting applet document base.", ex);
                 }
 
                 return null;
@@ -179,8 +180,8 @@ public class ClassiCubeStandalone {
                         out.write(buffer, 0, numRead);
                     }
 
-                } catch (Exception exception) {
-                    exception.printStackTrace();
+                } catch (Exception ex) {
+                    LogUtil.logError("Error downloading an applet resource.", ex);
                 } finally {
                     try {
                         if (in != null) {
@@ -207,9 +208,8 @@ public class ClassiCubeStandalone {
                 if (image == null) {
                     try {
                         SetImage();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                    } catch (IOException ex) {
+                        LogUtil.logError("Error setting applet background image.", ex);
                     }
                 }
                 Graphics2D g2 = (Graphics2D) g;
@@ -237,9 +237,8 @@ public class ClassiCubeStandalone {
                     if (image2 == null) {
                         try {
                             SetImage2();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                        } catch (IOException ex) {
+                            LogUtil.logError("Error setting applet background image #2.", ex);
                         }
                     }
                     g.drawImage(getImage2(), 0, 0, getWidth(), getHeight(),
@@ -258,7 +257,6 @@ public class ClassiCubeStandalone {
             }
 
             void SetImage() throws IOException {
-
                 File file = new File(Minecraft.getMinecraftDirectory()
                         .getPath() + "/rsbg.jpg");
                 if (!file.exists()) {
@@ -309,9 +307,8 @@ public class ClassiCubeStandalone {
 
                     try {
                         thread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-
+                    } catch (InterruptedException ex) {
+                        LogUtil.logWarning("Interrupted while waiting for Minecraft to shut down.", ex);
                         minecraft.shutdown();
                     }
 
@@ -409,8 +406,8 @@ public class ClassiCubeStandalone {
 
                         try {
                             Thread.sleep(1);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        } catch (InterruptedException ex) {
+                            LogUtil.logWarning("Interrupted while running Minecraft from applet.", ex);
                         }
                     }
                 }
@@ -421,8 +418,9 @@ public class ClassiCubeStandalone {
             while (!pass) {
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException ex) {
+                    // TODO: figure out wtf we're doing here
+                    LogUtil.logWarning("Something happened.", ex);
                 }
 
                 if (minecraft.isRunning) {

@@ -154,9 +154,8 @@ public final class GameSettings implements Serializable {
                     parseLoadedSettings(rawSettings);
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Failed to load options");
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LogUtil.logError("Failed to load options.", ex);
         }
     }
 
@@ -248,9 +247,8 @@ public final class GameSettings implements Serializable {
                     writer.println("key_" + binding.name + ":" + binding.key);
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Failed to save options");
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LogUtil.logError("Failed to save options.", ex);
         }
     }
 

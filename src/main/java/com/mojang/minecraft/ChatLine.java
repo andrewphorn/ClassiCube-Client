@@ -9,6 +9,7 @@ import java.util.Calendar;
 import com.mojang.minecraft.gui.FontRenderer;
 
 public class ChatLine {
+
     public String message;
     public int time;
 
@@ -21,7 +22,7 @@ public class ChatLine {
         String month = new SimpleDateFormat("MMM").format(cal.getTime());
         String serverName = ProgressBarDisplay.title.toLowerCase().contains("connecting..") ? ""
                 : ProgressBarDisplay.title;
-        if (serverName == "" || Minecraft.isSinglePlayer) {
+        if ("".equals(serverName) || Minecraft.isSinglePlayer) {
             return;
         }
         serverName = FontRenderer.stripColor(serverName);
@@ -29,28 +30,19 @@ public class ChatLine {
         File logDir = new File(Minecraft.getMinecraftDirectory(), "/logs/");
         File serverDir = new File(logDir, serverName);
         File monthDir = new File(serverDir, "/" + month + "/");
-        if (!logDir.exists()) {
-            logDir.mkdir();
-        }
-        if (!serverDir.exists()) {
-            serverDir.mkdir();
-        }
-        if (!monthDir.exists()) {
-            monthDir.mkdir();
-        }
+        monthDir.mkdirs();
         String dateStamp = new SimpleDateFormat("MM-dd-yyyy").format(Calendar.getInstance()
                 .getTime());
         String timeStamp = new SimpleDateFormat("HH:mm:ss")
                 .format(Calendar.getInstance().getTime());
+        File logFile = new File(monthDir, dateStamp + ".log");
         try {
-            File logFile = new File(monthDir, dateStamp + ".log");
             String str = FontRenderer.stripColor(this.message);
-            FileWriter fileWriter = new FileWriter(logFile, true);
-            fileWriter.write("[" + timeStamp + "] " + str + eol);
-            fileWriter.close();
-        } catch (IOException IOException) {
-            System.out.println("Cannot log to chatlog: " + IOException);
+            try (FileWriter fileWriter = new FileWriter(logFile, true)) {
+                fileWriter.write("[" + timeStamp + "] " + str + eol);
+            }
+        } catch (IOException ex) {
+            LogUtil.logError("Error logging a chat message to " + logFile, ex);
         }
-
     }
 }

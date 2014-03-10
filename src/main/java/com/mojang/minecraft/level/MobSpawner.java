@@ -24,7 +24,7 @@ public final class MobSpawner {
     }
 
     public final int spawn(int var1, Entity var2, ProgressBarDisplay var3) {
-        // System.out.println(Count);
+        // LogUtil.logInfo(Count);
         if (HasStopped) {
             return 0;
         }
@@ -121,7 +121,7 @@ public final class MobSpawner {
                                             && !this.level.creativeMode) {
                                         ++var4;
                                         this.level.addEntity((Entity) var21);
-                                        // System.out.println("Added mob");
+                                        // LogUtil.logInfo("Added mob");
                                     }
                                 }
                             }

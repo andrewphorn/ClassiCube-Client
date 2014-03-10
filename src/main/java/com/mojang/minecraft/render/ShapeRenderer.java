@@ -10,6 +10,7 @@ import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
 
 public class ShapeRenderer {
     private static boolean convertQuadsToTriangles;
@@ -50,7 +51,7 @@ public class ShapeRenderer {
         useVBO = false; // GLContext.getCapabilities().GL_ARB_vertex_buffer_object;
 
         if (useVBO) {
-            System.out.println("GPU allows VBOs: Enabling");
+            LogUtil.logInfo("GPU allows VBOs: Enabling");
             vertexBuffers = GLAllocation.createDirectIntBuffer(vboCount);
             ARBBufferObject.glGenBuffersARB(vertexBuffers);
         }

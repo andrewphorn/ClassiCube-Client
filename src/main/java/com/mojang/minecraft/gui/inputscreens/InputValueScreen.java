@@ -1,11 +1,9 @@
 package com.mojang.minecraft.gui.inputscreens;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import com.mojang.minecraft.LogUtil;
 
 import org.lwjgl.input.Keyboard;
 
-import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.Button;
 import com.mojang.minecraft.gui.GuiScreen;
 import com.mojang.minecraft.level.LevelSerializer;
@@ -36,19 +34,10 @@ public class InputValueScreen extends GuiScreen {
     protected void onButtonClick(Button var1) {
         if (var1.active) {
             if (var1.id == 0 && name.trim().length() > 1) {
-                Minecraft var10000 = minecraft;
-                int var10001 = id;
-                name.trim();
-                Minecraft var4 = var10000;
                 try {
-                    new LevelSerializer(var4.level).saveMap("test");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    new LevelSerializer(minecraft.level).saveMap("test");
+                } catch (Exception ex) {
+                    LogUtil.logError("Error saving map to test", ex);
                 }
                 minecraft.setCurrentScreen((GuiScreen) null);
                 minecraft.grabMouse();

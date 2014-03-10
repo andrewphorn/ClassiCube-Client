@@ -28,6 +28,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.net.NetworkPlayer;
@@ -37,12 +38,12 @@ import com.mojang.minecraft.render.texture.TextureLavaFX;
 import com.mojang.minecraft.render.texture.TextureWaterFX;
 
 public class TextureManager {
+
     public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y)
             throws IOException {
 
-        // System.out.println("---" + src.getWidth() + " - " + src.getHeight() +
+        // LogUtil.logInfo("---" + src.getWidth() + " - " + src.getHeight() +
         // " - " + x + " - " + y);
-
         BufferedImage clipping = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);// src.getType());
         Graphics2D area = (Graphics2D) clipping.getGraphics().create();
         area.drawImage(src, 0, 0, clipping.getWidth(), clipping.getHeight(), x, y,
@@ -125,7 +126,7 @@ public class TextureManager {
         int tilesize = atlas2d.getWidth() / tiles;
 
         int atlasescount = Math.max(1, tiles * tiles * tilesize / atlassizezlimit);
-        List<BufferedImage> atlases = new ArrayList<BufferedImage>();
+        List<BufferedImage> atlases = new ArrayList<>();
 
         // 256 x 1
         BufferedImage atlas1d = null;
@@ -142,9 +143,8 @@ public class TextureManager {
             }
             try {
                 atlas1d = crop(atlas2d, tilesize, tilesize, x * tilesize, y * tilesize);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (IOException ex) {
+                LogUtil.logWarning("Error extracting texture from an atlas.", ex);
             }
         }
         atlases.add(atlas1d);
@@ -223,8 +223,8 @@ public class TextureManager {
         } else {
             try {
                 image = loadImageFast(TextureManager.class.getResourceAsStream(textureFile));
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException ex) {
+                LogUtil.logError("Error loading default texture atlas.", ex);
             }
         }
         textureAtlas.clear();
@@ -259,7 +259,6 @@ public class TextureManager {
         }
 
         // GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-
         int[] pixels = new int[width * height];
         byte[] color = new byte[width * height << 2];
 
@@ -294,27 +293,26 @@ public class TextureManager {
                 ContextCapabilities capabilities = GLContext.getCapabilities();
                 if (capabilities.OpenGL30) {
                     if (previousMipmapMode != settings.smoothing) {
-                        System.out.println("Using OpenGL 3.0 for mipmap generation.");
+                        LogUtil.logInfo("Using OpenGL 3.0 for mipmap generation.");
                     }
 
                     GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
                 } else if (capabilities.GL_EXT_framebuffer_object) {
                     if (previousMipmapMode != settings.smoothing) {
-                        System.out
-                                .println("Using GL_EXT_framebuffer_object extension for mipmap generation.");
+                        LogUtil.logInfo("Using GL_EXT_framebuffer_object extension for mipmap generation.");
                     }
 
                     EXTFramebufferObject.glGenerateMipmapEXT(GL11.GL_TEXTURE_2D);
                 } else if (capabilities.OpenGL14) {
                     if (previousMipmapMode != settings.smoothing) {
-                        System.out.println("Using OpenGL 1.4 for mipmap generation.");
+                        LogUtil.logInfo("Using OpenGL 1.4 for mipmap generation.");
                     }
 
                     GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_GENERATE_MIPMAP, GL11.GL_TRUE);
                 }
             } else if (settings.smoothing == 2) {
                 if (previousMipmapMode != settings.smoothing) {
-                    System.out.println("Using custom system for mipmap generation.");
+                    LogUtil.logInfo("Using custom system for mipmap generation.");
                 }
 
                 generateMipMaps(textureBuffer, width, height, false);
@@ -336,7 +334,7 @@ public class TextureManager {
     }
 
     public int load(String file) {
-        if(this.currentTerrainPng == null && animations.size() == 0){
+        if (this.currentTerrainPng == null && animations.size() == 0) {
             registerAnimations();
         }
         if (file.startsWith("/dirt") && textures.containsKey("customDirt")) {
