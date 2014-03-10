@@ -163,7 +163,7 @@ public final class GameSettings implements Serializable {
         for (String key : settings.keySet()) {
             String value = settings.get(key);
             boolean isTrue = "true".equalsIgnoreCase(value) || "1".equals(value);
-            switch (value) {
+            switch (key) {
                 case "music":
                     music = isTrue;
                     break;
