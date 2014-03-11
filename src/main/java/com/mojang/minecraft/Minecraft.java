@@ -488,21 +488,6 @@ public final class Minecraft implements Runnable {
         return networkManager != null;
     }
 
-    private boolean isSystemShuttingDown() {
-        try {
-            Field running = Class.forName("java.lang.Shutdown").getDeclaredField("RUNNING");
-            Field state = Class.forName("java.lang.Shutdown").getDeclaredField("state");
-
-            running.setAccessible(true);
-            state.setAccessible(true);
-
-            return state.getInt(null) > running.getInt(null);
-        } catch (Exception ex) {
-            LogUtil.logError("Failed to detect system shutdown.", ex);
-            return false;
-        }
-    }
-
     private boolean isSurvival() {
         return !(gamemode instanceof CreativeGameMode);
     }
@@ -866,6 +851,7 @@ public final class Minecraft implements Runnable {
             LogUtil.logError("Fatal error in main loop (run)", ex);
         } finally {
             shutdown();
+            Display.destroy();
         }
     }
 
@@ -1859,12 +1845,8 @@ public final class Minecraft implements Runnable {
                 if (level != null && isSinglePlayer) {
                     if (level.creativeMode) {
                         new LevelSerializer(level).saveMap("levelc");
-                        // LevelIO.save(level, (new FileOutputStream(new
-                        // File(mcDir, "levelc.dat"))));
                     } else {
                         new LevelSerializer(level).saveMap("levels");
-                        // LevelIO.save(level, (new FileOutputStream(new
-                        // File(mcDir, "levels.dat"))));
                     }
                 }
             } catch (Exception ex) {
@@ -1874,9 +1856,6 @@ public final class Minecraft implements Runnable {
 
         Mouse.destroy();
         Keyboard.destroy();
-        if (!isSystemShuttingDown()) {
-            Display.destroy();
-        }
     }
 
     public void takeAndSaveScreenshot(int width, int height) {

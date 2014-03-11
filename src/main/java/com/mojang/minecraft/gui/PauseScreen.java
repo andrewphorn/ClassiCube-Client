@@ -40,11 +40,6 @@ public final class PauseScreen extends GuiScreen {
                 HUDScreen.ServerName = "";
                 HUDScreen.UserDetail = "";
                 ProgressBarDisplay.title = "Singleplayer";
-
-                minecraft.shutdown();
-                ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
-                classicubeStandalone.startMinecraft(null, null, null, 0, minecraft.skinServer,
-                        minecraft.isFullScreen);
                 minecraft.isRunning = false;
             }
             if (button.id == 4) {
