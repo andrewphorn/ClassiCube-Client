@@ -19,10 +19,10 @@ public class Sheep extends QuadrupedMob {
     public float graze;
     public float grazeO;
 
-    public Sheep(Level var1, float var2, float var3, float var4) {
-        super(var1, var2, var3, var4);
+    public Sheep(Level level, float posX, float posY, float posZ) {
+        super(level, posX, posY, posZ);
         setSize(1.4F, 1.72F);
-        this.setPos(var2, var3, var4);
+        this.setPos(posX, posY, posZ);
         heightOffset = 1.72F;
         modelName = "sheep";
         textureName = "/mob/sheep.png";
@@ -50,9 +50,9 @@ public class Sheep extends QuadrupedMob {
     }
 
     @Override
-    public void die(Entity var1) {
-        if (var1 != null) {
-            var1.awardKillScore(this, 10);
+    public void die(Entity killedBy) {
+        if (killedBy != null) {
+            killedBy.awardKillScore(this, 10);
         }
 
         int var2 = (int) (Math.random() + Math.random() + 1D);
@@ -61,21 +61,21 @@ public class Sheep extends QuadrupedMob {
             level.addEntity(new Item(level, x, y, z, Block.BROWN_MUSHROOM.id));
         }
 
-        super.die(var1);
+        super.die(killedBy);
     }
 
     @Override
-    public void hurt(Entity var1, int var2) {
-        if (hasFur && var1 instanceof Player) {
+    public void hurt(Entity entity, int hurtBy) {
+        if (hasFur && entity instanceof Player) {
             hasFur = false;
             int var3 = (int) (Math.random() * 3D + 1D);
 
-            for (var2 = 0; var2 < var3; ++var2) {
+            for (hurtBy = 0; hurtBy < var3; ++hurtBy) {
                 level.addEntity(new Item(level, x, y, z, Block.WHITE_WOOL.id));
             }
 
         } else {
-            super.hurt(var1, var2);
+            super.hurt(entity, hurtBy);
         }
     }
 

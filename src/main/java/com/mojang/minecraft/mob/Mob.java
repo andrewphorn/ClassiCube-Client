@@ -22,7 +22,7 @@ public class Mob extends Entity {
     public float rot;
     public float timeOffs;
     public float speed;
-    public float rotA = (float) (Math.random() + 1D) * 0.01F;
+    public float rotA = (float) (Math.random() + 1D) * 0.01F; // Unused?
     protected float yBodyRot = 0F;
     protected float yBodyRotO = 0F;
     protected float oRun;
@@ -52,8 +52,8 @@ public class Mob extends Entity {
     protected boolean dead = false;
     public AI ai;
 
-    public Mob(Level var1) {
-        super(var1);
+    public Mob(Level level) {
+        super(level);
         this.setPos(x, y, z);
         timeOffs = (float) Math.random() * 12398F;
         rot = (float) (Math.random() * 3.1415927410125732D * 2D);
@@ -69,35 +69,35 @@ public class Mob extends Entity {
 
     }
 
-    protected void bindTexture(TextureManager var1) {
-        textureId = var1.load(textureName);
+    protected void bindTexture(TextureManager textureManager) {
+        textureId = textureManager.load(textureName);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
     }
 
     @Override
-    protected void causeFallDamage(float var1) {
+    protected void causeFallDamage(float height) {
         if (!level.creativeMode) {
             int var2;
-            if ((var2 = (int) Math.ceil(var1 - 3F)) > 0) {
+            if ((var2 = (int) Math.ceil(height - 3F)) > 0) {
                 hurt((Entity) null, var2);
             }
 
         }
     }
 
-    public void die(Entity var1) {
+    public void die(Entity killedBy) {
         if (!level.creativeMode) {
-            if (deathScore > 0 && var1 != null) {
-                var1.awardKillScore(this, deathScore);
+            if (deathScore > 0 && killedBy != null) {
+                killedBy.awardKillScore(this, deathScore);
             }
 
             dead = true;
         }
     }
 
-    public void heal(int var1) {
+    public void heal(int healBy) {
         if (health > 0) {
-            health += var1;
+            health += healBy;
             if (health > 20) {
                 health = 20;
             }
@@ -107,37 +107,37 @@ public class Mob extends Entity {
     }
 
     @Override
-    public void hurt(Entity var1, int var2) {
+    public void hurt(Entity entity, int hurtBy) {
         if (!level.creativeMode) {
             if (health > 0) {
                 if (ai != null) {
-                    ai.hurt(var1, var2);
+                    ai.hurt(entity, hurtBy);
                 }
                 if (invulnerableTime > invulnerableDuration / 2F) {
-                    if (lastHealth - var2 >= health) {
+                    if (lastHealth - hurtBy >= health) {
                         return;
                     }
 
-                    health = lastHealth - var2;
+                    health = lastHealth - hurtBy;
                 } else {
                     lastHealth = health;
                     invulnerableTime = invulnerableDuration;
-                    health -= var2;
+                    health -= hurtBy;
                     hurtTime = hurtDuration = 10;
                 }
 
                 hurtDir = 0F;
-                if (var1 != null) {
-                    float var3 = var1.x - x;
-                    float var4 = var1.z - z;
-                    hurtDir = (float) (Math.atan2(var4, var3) * 180D / 3.1415927410125732D) - yRot;
-                    knockback(var1, var2, var3, var4);
+                if (entity != null) {
+                    float distanceX = entity.x - x;
+                    float distanceY = entity.z - z;
+                    hurtDir = (float) (Math.atan2(distanceY, distanceX) * 180D / Math.PI) - yRot;
+                    knockback(entity, hurtBy, distanceX, distanceY);
                 } else {
                     hurtDir = (int) (Math.random() * 2D) * 180;
                 }
 
                 if (health <= 0) {
-                    die(var1);
+                    die(entity);
                 }
 
             }
@@ -159,6 +159,7 @@ public class Mob extends Entity {
         return true;
     }
 
+    // TODO First two variable never used
     public void knockback(Entity var1, int var2, float var3, float var4) {
         float var5 = MathHelper.sqrt(var3 * var3 + var4 * var4);
         float var6 = 0.4F;
@@ -175,10 +176,10 @@ public class Mob extends Entity {
     }
 
     @Override
-    public void render(TextureManager var1, float var2) {
+    public void render(TextureManager textureManager, float var2) {
         if (modelName != null) {
-            float var3;
-            if ((var3 = attackTime - var2) < 0F) {
+            float var3 = attackTime - var2;
+            if (var3 < 0F) {
                 var3 = 0F;
             }
 
@@ -213,8 +214,8 @@ public class Mob extends Entity {
             var6 -= var4;
             GL11.glPushMatrix();
             float var8 = animStepO + (animStep - animStepO) * var2;
-            ColorCache varaa = getBrightnessColor();
-            GL11.glColor3f(varaa.R, varaa.G, varaa.B);
+            ColorCache brightness = getBrightnessColor();
+            GL11.glColor3f(brightness.R, brightness.G, brightness.B);
             float var9 = 0.0625F;
             float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5F * var5 * bobStrength - 23F;
             GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 - 1.62F + renderOffset, zo
@@ -256,14 +257,14 @@ public class Mob extends Entity {
 
             GL11.glScalef(-1F, 1F, 1F);
             modelCache.getModel(modelName).attackOffset = var3 / 5F;
-            bindTexture(var1);
-            renderModel(var1, var8, var2, var5, var6, var7, var9);
+            bindTexture(textureManager);
+            renderModel(textureManager, var8, var2, var5, var6, var7, var9);
             if (invulnerableTime > invulnerableDuration - 10) {
                 GL11.glColor4f(1F, 1F, 1F, 0.75F);
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-                bindTexture(var1);
-                renderModel(var1, var8, var2, var5, var6, var7, var9);
+                bindTexture(textureManager);
+                renderModel(textureManager, var8, var2, var5, var6, var7, var9);
                 GL11.glDisable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             }
@@ -334,17 +335,17 @@ public class Mob extends Entity {
         xRotO = xRot;
         ++tickCount;
         aiStep();
-        float var1 = x - xo;
-        float var2 = z - zo;
-        float var3 = MathHelper.sqrt(var1 * var1 + var2 * var2);
+        float distanceX = x - xo;
+        float distanceY = z - zo;
+        float hyp = MathHelper.sqrt(distanceX * distanceX + distanceY * distanceY);
         float var4 = yBodyRot;
         float var5 = 0F;
         oRun = run;
         float var6 = 0F;
-        if (var3 > 0.05F) {
+        if (hyp > 0.05F) {
             var6 = 1F;
-            var5 = var3 * 3F;
-            var4 = (float) Math.atan2(var2, var1) * 180F / (float) Math.PI - 90F;
+            var5 = hyp * 3F;
+            var4 = (float) Math.atan2(distanceY, distanceX) * 180F / (float) Math.PI - 90F;
         }
 
         if (!onGround) {
@@ -353,8 +354,9 @@ public class Mob extends Entity {
 
         run += (var6 - run) * 0.3F;
 
-        for (var1 = var4 - yBodyRot; var1 < -180F; var1 += 360F) {
-            ;
+        float var1 = var4 - yBodyRot;
+        while (var1 < -180F) {
+            var1 += 360F;
         }
 
         while (var1 >= 180F) {
@@ -362,13 +364,13 @@ public class Mob extends Entity {
         }
 
         yBodyRot += var1 * 0.1F;
-
-        for (var1 = yRot - yBodyRot; var1 < -180F; var1 += 360F) {
-            ;
+        float var2 = yRot - yBodyRot;
+        while (var2 < -180F) {
+            var2 += 360F;
         }
 
-        while (var1 >= 180F) {
-            var1 -= 360F;
+        while (var2 >= 180F) {
+            var2 -= 360F;
         }
 
         boolean var7 = var1 < -90F || var1 >= 90F;
@@ -418,14 +420,14 @@ public class Mob extends Entity {
         float multiply = 1F;
 
         if (ai instanceof BasicAI) {
-            BasicAI ai1 = (BasicAI) ai;
+            BasicAI ai = (BasicAI) this.ai;
             if (!flyingMode) {
-                if (ai1.running) {
+                if (ai.running) {
                     multiply = 10F; // 6x with momentum
                 } else {
                     multiply = 1F; // 1x
                 }
-            } else if (flyingMode && ai1.running) {
+            } else if (flyingMode && ai.running) {
                 multiply = 90F; // 6x
             } else {
                 multiply = 15F; // 1x
@@ -511,9 +513,9 @@ public class Mob extends Entity {
                     zd *= y1;
                 }
             } else {
-                double limit = 0.246D;
+                double limit = (Math.sqrt(Math.PI) - 1D) / Math.PI;
                 if (xd > limit || xd < -limit || zd < -limit || zd > limit) {
-                    tilt = -20f;
+                    tilt = -20F;
                 }
                 if (xd > limit) {
                     xd = (float) limit;

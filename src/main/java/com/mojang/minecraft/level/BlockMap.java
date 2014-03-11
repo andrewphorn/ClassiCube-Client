@@ -15,18 +15,18 @@ public class BlockMap implements Serializable {
     public static final long serialVersionUID = 0L;
 
     // $FF: synthetic method
-    static int getDepth(BlockMap var0) {
-        return var0.depth;
+    static int getDepth(BlockMap blockMap) {
+        return blockMap.depth;
     }
 
     // $FF: synthetic method
-    static int getHeight(BlockMap var0) {
-        return var0.height;
+    static int getHeight(BlockMap blockMap) {
+        return blockMap.height;
     }
 
     // $FF: synthetic method
-    static int getWidth(BlockMap var0) {
-        return var0.width;
+    static int getWidth(BlockMap blockMap) {
+        return blockMap.width;
     }
 
     private int width;
@@ -107,12 +107,8 @@ public class BlockMap implements Serializable {
                 for (int k = BlockMap$Slot.getZSlot(thisSlot) - 1; k <= BlockMap$Slot
                         .getZSlot(otherSlot) + 1; ++k) {
                     if (i >= 0 && j >= 0 && k >= 0 && i < width && j < depth && k < height) {
-                        List<?> entitySlotInGrid = entityGrid[(k * depth + j) * width + i];
-
-                        for (int l = 0; l < entitySlotInGrid.size(); ++l) {
-                            Entity theEntity;
-                            if ((theEntity = (Entity) entitySlotInGrid.get(l)) != entity
-                                    && theEntity.intersects(x1, y1, z1, x2, y2, z2)) {
+                        for (Entity theEntity : entityGrid[(k * depth + j) * width + i]) {
+                            if (theEntity != entity && theEntity.intersects(x1, y1, z1, x2, y2, z2)) {
                                 entityListToChange.add(theEntity);
                             }
                         }

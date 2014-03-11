@@ -2,8 +2,8 @@ package com.mojang.minecraft.level.tile;
 
 public final class WoodBlock extends Block {
 
-    protected WoodBlock(int var1) {
-        super(var1);
+    protected WoodBlock(int id) {
+        super(id);
         textureId = 20;
     }
 

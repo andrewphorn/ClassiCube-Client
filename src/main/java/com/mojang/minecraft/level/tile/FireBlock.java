@@ -8,8 +8,8 @@ import com.mojang.util.MathHelper;
 
 public final class FireBlock extends Block {
 
-    protected FireBlock(int var1) {
-        super(var1);
+    protected FireBlock(int id) {
+        super(id);
         float var3 = 0.4F;
         setBounds(0.5F - var3, 0F, 0.5F - var3, var3 + 0.5F, var3 * 2F, var3 + 0.5F);
     }
@@ -35,10 +35,10 @@ public final class FireBlock extends Block {
     }
 
     @Override
-    public final boolean render(Level var1, int var2, int var3, int var4, ShapeRenderer var5) {
-        ColorCache var6 = getBrightness(var1, var2, var3, var4);
-        var5.color(var6.R, var6.G, var6.B);
-        this.render(var5, var2, var3, var4);
+    public final boolean render(Level level, int x, int y, int z, ShapeRenderer shapeRenderer) {
+        ColorCache var6 = getBrightness(level, x, y, z);
+        shapeRenderer.color(var6.R, var6.G, var6.B);
+        this.render(shapeRenderer, x, y, z);
         return true;
     }
 

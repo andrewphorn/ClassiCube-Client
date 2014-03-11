@@ -5,8 +5,8 @@ import com.mojang.minecraft.level.Level;
 
 public final class MagmaBlock extends Block {
 
-    protected MagmaBlock(int var1) {
-        super(var1);
+    protected MagmaBlock(int id) {
+        super(id);
     }
 
     @Override

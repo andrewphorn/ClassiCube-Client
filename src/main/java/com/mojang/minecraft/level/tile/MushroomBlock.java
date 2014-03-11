@@ -6,10 +6,10 @@ import com.mojang.minecraft.level.Level;
 
 public final class MushroomBlock extends FlowerBlock {
 
-    protected MushroomBlock(int var1) {
-        super(var1);
-        float var3 = 0.2F;
-        setBounds(0.5F - var3, 0F, 0.5F - var3, var3 + 0.5F, var3 * 2F, var3 + 0.5F);
+    protected MushroomBlock(int id) {
+        super(id);
+        float offset = 0.2F;
+        setBounds(0.5F - offset, 0F, 0.5F - offset, offset + 0.5F, offset * 2F, offset + 0.5F);
     }
 
     @Override

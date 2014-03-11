@@ -6,8 +6,8 @@ import com.mojang.minecraft.level.Level;
 
 public final class GrassBlock extends Block {
 
-    protected GrassBlock(int var1) {
-        super(var1);
+    protected GrassBlock(int id) {
+        super(id);
         textureId = 3;
         setPhysics(true);
     }

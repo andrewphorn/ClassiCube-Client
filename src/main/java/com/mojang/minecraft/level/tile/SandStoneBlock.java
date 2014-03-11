@@ -2,8 +2,8 @@ package com.mojang.minecraft.level.tile;
 
 public final class SandStoneBlock extends Block {
 
-    public SandStoneBlock(int var1) {
-        super(var1);
+    public SandStoneBlock(int id) {
+        super(id);
     }
 
     @Override

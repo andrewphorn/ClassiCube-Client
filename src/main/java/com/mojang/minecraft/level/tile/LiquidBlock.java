@@ -14,17 +14,17 @@ public class LiquidBlock extends Block {
     protected int stillId;
     protected int movingId;
 
-    protected LiquidBlock(int var1, LiquidType var2) {
-        super(var1);
-        type = var2;
+    protected LiquidBlock(int id, LiquidType liquidType) {
+        super(id);
+        type = liquidType;
         textureId = 14;
-        if (var2 == LiquidType.lava) {
+        if (liquidType == LiquidType.lava) {
             textureId = 30;
         }
 
-        Block.liquid[var1] = true;
-        movingId = var1;
-        stillId = var1 + 1;
+        Block.liquid[id] = true;
+        movingId = id;
+        stillId = id + 1;
         float var4 = 0.01F;
         float var3 = 0.1F;
         setBounds(var4 + 0F, 0F - var3 + var4, var4 + 0F, var4 + 1F, 1F - var3 + var4, var4 + 1F);
@@ -49,28 +49,30 @@ public class LiquidBlock extends Block {
 
     @Override
     public final boolean canRenderSide(Level level, int x, int y, int z, int side) {
-        int var6;
-        return x >= 0 && y >= 0 && z >= 0 && x < level.width && z < level.length ? (var6 = level
-                .getTile(x, y, z)) != movingId && var6 != stillId ? side == 1
-                && (level.getTile(x - 1, y, z) == 0 || level.getTile(x + 1, y, z) == 0
-                        || level.getTile(x, y, z - 1) == 0 || level.getTile(x, y, z + 1) == 0) ? true
-                : super.canRenderSide(level, x, y, z, side)
-                : false
-                : false;
+        int var6 = level.getTile(x, y, z);
+
+        return
+                // Is there space to spread?
+                x >= 0 && y >= 0 && z >= 0 && x < level.width && z < level.length
+                // Can we move?
+                && (var6 != movingId && var6 != stillId &&
+                // Is there air around us?
+                (side == 1 && (level.getTile(x - 1, y, z) == 0 || level.getTile(x + 1, y, z) == 0
+                        || level.getTile(x, y, z - 1) == 0 || level.getTile(x, y, z + 1) == 0)
+                        || super.canRenderSide(level, x, y, z, side)));
     }
 
     @Override
-    public final void dropItems(Level var1, int var2, int var3, int var4, float var5) {
-    }
+    public final void dropItems(Level level, int x, int y, int z, float dropProbability) {}
 
-    private boolean flow(Level var1, int var2, int var3, int var4) {
-        if (var1.getTile(var2, var3, var4) == 0) {
-            if (!canFlow(var1, var2, var3, var4)) {
+    private boolean flow(Level level, int x, int y, int z) {
+        if (level.getTile(x, y, z) == 0) {
+            if (!canFlow(level, x, y, z)) {
                 return false;
             }
 
-            if (var1.setTile(var2, var3, var4, movingId)) {
-                var1.addToTickNextTick(var2, var3, var4, movingId);
+            if (level.setTile(x, y, z, movingId)) {
+                level.addToTickNextTick(x, y, z, movingId);
             }
         }
 
@@ -131,21 +133,20 @@ public class LiquidBlock extends Block {
     }
 
     @Override
-    public final void onBreak(Level var1, int var2, int var3, int var4) {
-    }
+    public final void onBreak(Level level, int x, int y, int z) {}
 
     @Override
-    public void onNeighborChange(Level var1, int var2, int var3, int var4, int var5) {
-        if (var5 != 0) {
-            LiquidType var6 = Block.blocks[var5].getLiquidType();
+    public void onNeighborChange(Level level, int x, int y, int z, int side) {
+        if (side != 0) {
+            LiquidType var6 = Block.blocks[side].getLiquidType();
             if (type == LiquidType.water && var6 == LiquidType.lava || var6 == LiquidType.water
                     && type == LiquidType.lava) {
-                var1.setTile(var2, var3, var4, Block.OBSIDIAN.id);
+                level.setTile(x, y, z, Block.OBSIDIAN.id);
                 return;
             }
         }
 
-        var1.addToTickNextTick(var2, var3, var4, var5);
+        level.addToTickNextTick(x, y, z, side);
     }
 
     @Override

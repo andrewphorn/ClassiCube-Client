@@ -2,8 +2,8 @@ package com.mojang.minecraft.level.tile;
 
 public final class StoneBlock extends Block {
 
-    public StoneBlock(int var1) {
-        super(var1);
+    public StoneBlock(int id) {
+        super(id);
     }
 
     @Override

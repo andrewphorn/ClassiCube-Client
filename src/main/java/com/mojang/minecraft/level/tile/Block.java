@@ -45,12 +45,12 @@ public class Block {
 
     private int hardness;
     private boolean explodes;
-    public float x1;
-    public float y1;
-    public float z1;
-    public float x2;
-    public float y2;
-    public float z2;
+    public float maxX;
+    public float maxY;
+    public float maxZ;
+    public float minX;
+    public float minY;
+    public float minZ;
     public float particleGravity;
     public boolean isLiquid;
 
@@ -219,12 +219,12 @@ public class Block {
     public final MovingObjectPosition clip(int var1, int var2, int var3, Vec3D vector, Vec3D other) {
         vector = vector.add(-var1, -var2, -var3);
         other = other.add(-var1, -var2, -var3);
-        Vec3D var6 = vector.getXIntersection(other, x1);
-        Vec3D var7 = vector.getXIntersection(other, x2);
-        Vec3D var8 = vector.getYIntersection(other, y1);
-        Vec3D var9 = vector.getYIntersection(other, y2);
-        Vec3D var10 = vector.getZIntersection(other, z1);
-        other = vector.getZIntersection(other, z2);
+        Vec3D var6 = vector.getXIntersection(other, maxX);
+        Vec3D var7 = vector.getXIntersection(other, minX);
+        Vec3D var8 = vector.getYIntersection(other, maxY);
+        Vec3D var9 = vector.getYIntersection(other, minY);
+        Vec3D var10 = vector.getZIntersection(other, maxZ);
+        other = vector.getZIntersection(other, minZ);
         if (!xIntersects(var6)) {
             var6 = null;
         }
@@ -306,32 +306,31 @@ public class Block {
         }
     }
 
-    public void dropItems(Level var1, int var2, int var3, int var4, float var5) {
-        if (!var1.creativeMode) {
-            int var6 = getDropCount();
+    public void dropItems(Level level, int x, int y, int z, float dropProbability) {
+        if (!level.creativeMode) {
+            int dropCount = getDropCount();
 
-            for (int var7 = 0; var7 < var6; ++var7) {
-                if (random.nextFloat() <= var5) {
+            for (int var7 = 0; var7 < dropCount; ++var7) {
+                if (random.nextFloat() <= dropProbability) {
                     float var8 = 0.7F;
                     float var9 = random.nextFloat() * var8 + (1F - var8) * 0.5F;
                     float var10 = random.nextFloat() * var8 + (1F - var8) * 0.5F;
                     var8 = random.nextFloat() * var8 + (1F - var8) * 0.5F;
-                    var1.addEntity(new Item(var1, var2 + var9, var3 + var10, var4 + var8, getDrop()));
+                    level.addEntity(new Item(level, x + var9, y + var10, z + var8, getDrop()));
                 }
             }
 
         }
     }
 
-    public void explode(Level var1, int var2, int var3, int var4) {
-    }
+    public void explode(Level level, int x, int y, int z) {}
 
     protected ColorCache getBrightness(Level level, int x, int y, int z) {
         return level.getBrightnessColor(x, y, z);
     }
 
     public AABB getCollisionBox(int x, int y, int z) {
-        return new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
+        return new AABB(x + maxX, y + maxY, z + maxZ, x + minX, y + minY, z + minZ);
     }
 
     public int getDrop() {
@@ -355,7 +354,7 @@ public class Block {
     }
 
     public AABB getSelectionBox(int x, int y, int z) {
-        return new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
+        return new AABB(x + maxX, y + maxY, z + maxZ, x + minX, y + minY, z + minZ);
     }
 
     /**
@@ -400,72 +399,66 @@ public class Block {
         return true;
     }
 
-    public void onAdded(Level level, int x, int y, int z) {
-    }
+    public void onAdded(Level level, int x, int y, int z) {}
 
-    public void onBreak(Level var1, int var2, int var3, int var4) {
-        dropItems(var1, var2, var3, var4, 1F);
+    public void onBreak(Level level, int x, int y, int z) {
+        dropItems(level, x, y, z, 1F);
     }
 
     // TODO.
-    public void onNeighborChange(Level var1, int var2, int var3, int var4, int var5) {
-    }
+    public void onNeighborChange(Level level, int x, int y, int z, int side) {}
+    public void onPlace(Level level, int x, int y, int z) {}
+    public void onRemoved(Level level, int x, int y, int z) {}
 
-    public void onPlace(Level level, int x, int y, int z) {
-    }
-
-    public void onRemoved(Level var1, int var2, int var3, int var4) {
-    }
-
-    public boolean render(Level var1, int var2, int var3, int var4, ShapeRenderer var5) {
-        boolean var6 = false;
+    public boolean render(Level level, int x, int y, int z, ShapeRenderer shapeRenderer) {
+        boolean rendered = false;
         float var7 = 0.5F;
         float var8 = 0.8F;
         float var9 = 0.6F;
-        ColorCache var10;
-        if (canRenderSide(var1, var2, var3 - 1, var4, 0)) {
-            var10 = getBrightness(var1, var2, var3 - 1, var4);
-            var5.color(var7 * var10.R, var7 * var10.G, var7 * var10.B);
-            renderInside(var5, var2, var3, var4, 0);
-            var6 = true;
+        ColorCache colorCache;
+        if (canRenderSide(level, x, y - 1, z, 0)) {
+            colorCache = getBrightness(level, x, y - 1, z);
+            shapeRenderer.color(var7 * colorCache.R, var7 * colorCache.G, var7 * colorCache.B);
+            renderInside(shapeRenderer, x, y, z, 0);
+            rendered = true;
         }
 
-        if (canRenderSide(var1, var2, var3 + 1, var4, 1)) {
-            var10 = getBrightness(var1, var2, var3 + 1, var4);
-            var5.color(var10.R * 1F, var10.G * 1F, var10.B * 1F);
-            renderInside(var5, var2, var3, var4, 1);
-            var6 = true;
+        if (canRenderSide(level, x, y + 1, z, 1)) {
+            colorCache = getBrightness(level, x, y + 1, z);
+            shapeRenderer.color(colorCache.R * 1F, colorCache.G * 1F, colorCache.B * 1F);
+            renderInside(shapeRenderer, x, y, z, 1);
+            rendered = true;
         }
 
-        if (canRenderSide(var1, var2, var3, var4 - 1, 2)) {
-            var10 = getBrightness(var1, var2, var3, var4 - 1);
-            var5.color(var8 * var10.R, var8 * var10.G, var8 * var10.B);
-            renderInside(var5, var2, var3, var4, 2);
-            var6 = true;
+        if (canRenderSide(level, x, y, z - 1, 2)) {
+            colorCache = getBrightness(level, x, y, z - 1);
+            shapeRenderer.color(var8 * colorCache.R, var8 * colorCache.G, var8 * colorCache.B);
+            renderInside(shapeRenderer, x, y, z, 2);
+            rendered = true;
         }
 
-        if (canRenderSide(var1, var2, var3, var4 + 1, 3)) {
-            var10 = getBrightness(var1, var2, var3, var4 + 1);
-            var5.color(var8 * var10.R, var8 * var10.G, var8 * var10.B);
-            renderInside(var5, var2, var3, var4, 3);
-            var6 = true;
+        if (canRenderSide(level, x, y, z + 1, 3)) {
+            colorCache = getBrightness(level, x, y, z + 1);
+            shapeRenderer.color(var8 * colorCache.R, var8 * colorCache.G, var8 * colorCache.B);
+            renderInside(shapeRenderer, x, y, z, 3);
+            rendered = true;
         }
 
-        if (canRenderSide(var1, var2 - 1, var3, var4, 4)) {
-            var10 = getBrightness(var1, var2 - 1, var3, var4);
-            var5.color(var9 * var10.R, var9 * var10.G, var9 * var10.B);
-            renderInside(var5, var2, var3, var4, 4);
-            var6 = true;
+        if (canRenderSide(level, x - 1, y, z, 4)) {
+            colorCache = getBrightness(level, x - 1, y, z);
+            shapeRenderer.color(var9 * colorCache.R, var9 * colorCache.G, var9 * colorCache.B);
+            renderInside(shapeRenderer, x, y, z, 4);
+            rendered = true;
         }
 
-        if (canRenderSide(var1, var2 + 1, var3, var4, 5)) {
-            var10 = getBrightness(var1, var2 + 1, var3, var4);
-            var5.color(var9 * var10.R, var9 * var10.G, var9 * var10.B);
-            renderInside(var5, var2, var3, var4, 5);
-            var6 = true;
+        if (canRenderSide(level, x + 1, y, z, 5)) {
+            colorCache = getBrightness(level, x + 1, y, z);
+            shapeRenderer.color(var9 * colorCache.R, var9 * colorCache.G, var9 * colorCache.B);
+            renderInside(shapeRenderer, x, y, z, 5);
+            rendered = true;
         }
 
-        return var6;
+        return rendered;
     }
 
     public void renderFullBrightness(ShapeRenderer shapeRenderer) {
@@ -501,32 +494,32 @@ public class Block {
     public void renderPreview(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin();
 
-        for (int var2 = 0; var2 < 6; ++var2) {
-            if (var2 == 0) {
+        for (int side = 0; side < 6; ++side) {
+            if (side == 0) {
                 shapeRenderer.normal(0F, 1F, 0F);
             }
 
-            if (var2 == 1) {
+            if (side == 1) {
                 shapeRenderer.normal(0F, -1F, 0F);
             }
 
-            if (var2 == 2) {
+            if (side == 2) {
                 shapeRenderer.normal(0F, 0F, 1F);
             }
 
-            if (var2 == 3) {
+            if (side == 3) {
                 shapeRenderer.normal(0F, 0F, -1F);
             }
 
-            if (var2 == 4) {
+            if (side == 4) {
                 shapeRenderer.normal(1F, 0F, 0F);
             }
 
-            if (var2 == 5) {
+            if (side == 5) {
                 shapeRenderer.normal(-1F, 0F, 0F);
             }
 
-            renderInside(shapeRenderer, 0, 0, 0, var2);
+            renderInside(shapeRenderer, 0, 0, 0, side);
         }
 
         shapeRenderer.end();
@@ -540,25 +533,24 @@ public class Block {
      *
      * @param renderer
      *            Shape renderer that will render this.
-     * @param var2
-     * @param var3
-     * @param var4
+     * @param x
+     * @param y
+     * @param z
      * @param side
      *            Side of the block to render. See @{TextureSide}
      */
-    public void renderSide(ShapeRenderer renderer, int var2, int var3, int var4, int side) {
+    public void renderSide(ShapeRenderer renderer, int x, int y, int z, int side) {
         int sideID = getTextureId(side);
-        float var7 = (sideID) % 16 / 16F; // Which place in the grid of the
-                                          // texture file are we in?
-        float var8 = var7 + 0.0624375F;
+        float var7 = (sideID) % 16 / 16F; // Which place in the grid of the texture file are we in?
+        float var8 = var7 + 0.0624375F; // 51 / 260pi for some reason
         float var16;
         float var9 = (var16 = sideID / 16 / 16F) + 0.0624375F;
-        float var10 = var2 + x1;
-        float var14 = var2 + x2;
-        float var11 = var3 + y1;
-        float var15 = var3 + y2;
-        float var12 = var4 + z1;
-        float var13 = var4 + z2;
+        float var10 = x + maxX;
+        float var14 = x + minX;
+        float var11 = y + maxY;
+        float var15 = y + minY;
+        float var12 = z + maxZ;
+        float var13 = z + minZ;
         if (side == 0) {
             renderer.vertexUV(var14, var11, var13, var8, var9);
             renderer.vertexUV(var14, var11, var12, var8, var16);
@@ -602,21 +594,21 @@ public class Block {
         float var10 = var8 / 256F;
         float var11 = (var8 + 15.99F) / 256F;
         if (side >= 2 && textureID < 240) {
-            if (y1 >= 0F && y2 <= 1F) {
-                var10 = (var8 + y1 * 15.99F) / 256F;
-                var11 = (var8 + y2 * 15.99F) / 256F;
+            if (maxY >= 0F && minY <= 1F) {
+                var10 = (var8 + maxY * 15.99F) / 256F;
+                var11 = (var8 + minY * 15.99F) / 256F;
             } else {
                 var10 = var8 / 256F;
                 var11 = (var8 + 15.99F) / 256F;
             }
         }
 
-        float var16 = x + x1;
-        float var14 = x + x2;
-        float var18 = y + y1;
-        float var15 = y + y2;
-        float var12 = z + z1;
-        float var13 = z + z2;
+        float var16 = x + maxX;
+        float var14 = x + minX;
+        float var18 = y + maxY;
+        float var15 = y + minY;
+        float var12 = z + maxZ;
+        float var13 = z + minZ;
         if (side == 0) {
             shapeRenderer.vertexUV(var16, var18, var13, var9, var11);
             shapeRenderer.vertexUV(var16, var18, var12, var9, var10);
@@ -650,13 +642,13 @@ public class Block {
         }
     }
 
-    protected void setBounds(float x1, float y1, float z1, float x2, float y2, float z2) {
-        this.x1 = x1;
-        this.y1 = y1;
-        this.z1 = z1;
-        this.x2 = x2;
-        this.y2 = y2;
-        this.z2 = z2;
+    protected void setBounds(float maxX, float maxY, float maxZ, float minX, float minY, float minZ) {
+        this.maxX = maxX;
+        this.maxY = maxY;
+        this.maxZ = maxZ;
+        this.minX = minX;
+        this.minY = minY;
+        this.minZ = minZ;
     }
 
     protected Block setHardness(float hardnessFactor) {
@@ -664,13 +656,13 @@ public class Block {
         return this;
     }
 
-    protected Block setLiquid(boolean var1) {
-        isLiquid = var1;
+    protected Block setLiquid(boolean isLiquid) {
+        this.isLiquid = isLiquid;
         return this;
     }
 
-    protected Block setParticleGravity(float var1) {
-        particleGravity = var1;
+    protected Block setParticleGravity(float particleGravity) {
+        this.particleGravity = particleGravity;
         return this;
     }
 
@@ -678,45 +670,45 @@ public class Block {
         Block.physics[id] = physics;
     }
 
-    protected Block setStepSound(StepSound par1StepSound) {
-        stepSound = par1StepSound;
+    protected Block setStepSound(StepSound stepSound) {
+        this.stepSound = stepSound;
         return this;
     }
 
-    protected Block setTextureId(int var1) {
-        textureId = var1;
+    protected Block setTextureId(int textureId) {
+        this.textureId = textureId;
         return this;
     }
 
     // TODO.
-    public final void spawnBlockParticles(Level level, int var2, int var3, int var4, int var5,
+    public final void spawnBlockParticles(Level level, int x, int y, int z, int side,
             ParticleManager particleManager) {
-        float var7 = 0.1F;
-        float var8 = var2 + random.nextFloat() * (x2 - x1 - var7 * 2F) + var7 + x1;
-        float var9 = var3 + random.nextFloat() * (y2 - y1 - var7 * 2F) + var7 + y1;
-        float var10 = var4 + random.nextFloat() * (z2 - z1 - var7 * 2F) + var7 + z1;
-        if (var5 == 0) {
-            var9 = var3 + y1 - var7;
+        float offset = 0.1F;
+        float var8 = x + random.nextFloat() * (minX - maxX - offset * 2F) + offset + maxX;
+        float var9 = y + random.nextFloat() * (minY - maxY - offset * 2F) + offset + maxY;
+        float var10 = z + random.nextFloat() * (minZ - maxZ - offset * 2F) + offset + maxZ;
+        if (side == 0) {
+            var9 = y + maxY - offset;
         }
 
-        if (var5 == 1) {
-            var9 = var3 + y2 + var7;
+        if (side == 1) {
+            var9 = y + minY + offset;
         }
 
-        if (var5 == 2) {
-            var10 = var4 + z1 - var7;
+        if (side == 2) {
+            var10 = z + maxZ - offset;
         }
 
-        if (var5 == 3) {
-            var10 = var4 + z2 + var7;
+        if (side == 3) {
+            var10 = z + minZ + offset;
         }
 
-        if (var5 == 4) {
-            var8 = var2 + x1 - var7;
+        if (side == 4) {
+            var8 = x + maxX - offset;
         }
 
-        if (var5 == 5) {
-            var8 = var2 + x2 + var7;
+        if (side == 5) {
+            var8 = x + minX + offset;
         }
 
         particleManager.spawnParticle(new TerrainParticle(
@@ -744,14 +736,14 @@ public class Block {
     public void update(Level level, int x, int y, int z, Random rand) {}
 
     private boolean xIntersects(Vec3D vec) {
-        return IntersectionHelper.xIntersects(vec, y1, z1, y2, z2);
+        return IntersectionHelper.xIntersects(vec, maxY, maxZ, minY, minZ);
     }
 
     private boolean yIntersects(Vec3D vec) {
-        return IntersectionHelper.yIntersects(vec, x1, z1, x2, z2);
+        return IntersectionHelper.yIntersects(vec, maxX, maxZ, minX, minZ);
     }
 
     private boolean zIntersects(Vec3D vec) {
-        return IntersectionHelper.zIntersects(vec, x1, y1, x2, y2);
+        return IntersectionHelper.zIntersects(vec, maxX, maxY, minX, minY);
     }
 }

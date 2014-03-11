@@ -2,8 +2,8 @@ package com.mojang.minecraft.level.tile;
 
 public final class BookshelfBlock extends Block {
 
-    public BookshelfBlock(int var1) {
-        super(var1);
+    public BookshelfBlock(int id) {
+        super(id);
     }
 
     @Override

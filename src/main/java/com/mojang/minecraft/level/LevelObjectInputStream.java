@@ -12,8 +12,8 @@ public final class LevelObjectInputStream extends ObjectInputStream {
 
     private final Set<String> classes = new HashSet<>();
 
-    public LevelObjectInputStream(InputStream var1) throws IOException {
-        super(var1);
+    public LevelObjectInputStream(InputStream inputStream) throws IOException {
+        super(inputStream);
         classes.add("Player$1");
         classes.add("Creeper$1");
         classes.add("Skeleton$1");

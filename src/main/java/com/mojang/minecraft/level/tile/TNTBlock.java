@@ -6,17 +6,16 @@ import com.mojang.minecraft.particle.ParticleManager;
 
 public final class TNTBlock extends Block {
 
-    public TNTBlock(int var1) {
-        super(var1);
+    public TNTBlock(int id) {
+        super(id);
     }
 
     @Override
-    public final void explode(Level var1, int var2, int var3, int var4) {
+    public final void explode(Level var1, int x, int y, int z) {
         if (!var1.creativeMode) {
-            PrimedTnt var5;
-            (var5 = new PrimedTnt(var1, var2 + 0.5F, var3 + 0.5F, var4 + 0.5F)).life = random
-                    .nextInt(var5.life / 4) + var5.life / 8;
-            var1.addEntity(var5);
+            PrimedTnt primedTnt = new PrimedTnt(var1, x + 0.5F, y + 0.5F, z + 0.5F);
+            primedTnt.life = random.nextInt(primedTnt.life / 4) + primedTnt.life / 8;
+            var1.addEntity(primedTnt);
         }
 
     }

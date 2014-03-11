@@ -6,8 +6,8 @@ public class LeavesBaseBlock extends Block {
 
     private boolean showNeighborSides = true;
 
-    protected LeavesBaseBlock(int var1) {
-        super(var1);
+    protected LeavesBaseBlock(int id) {
+        super(id);
     }
 
     @Override

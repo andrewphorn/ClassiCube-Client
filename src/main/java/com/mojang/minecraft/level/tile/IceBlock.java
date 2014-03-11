@@ -7,19 +7,17 @@ import com.mojang.minecraft.render.ShapeRenderer;
 
 public final class IceBlock extends Block {
 
-    int ID;
     boolean showNeighborSides = false;
 
-    protected IceBlock(int var1) {
-        super(var1);
-        ID = var1;
-        Block.liquid[var1] = true;
+    protected IceBlock(int id) {
+        super(id);
+        Block.liquid[id] = true;
     }
 
     @Override
     public final boolean canRenderSide(Level level, int x, int y, int z, int side) {
-        int var6 = level.getTile(x, y, z);
-        return !showNeighborSides && var6 == id ? false : super.canRenderSide(level, x, y, z, side);
+        int tile = level.getTile(x, y, z);
+        return !(!showNeighborSides && tile == id) && super.canRenderSide(level, x, y, z, side);
     }
 
     @Override
@@ -52,15 +50,15 @@ public final class IceBlock extends Block {
         for (int face = 0; face < 6; ++face) {
             /*
              * if (face == 0) { shapeRenderer.useNormal(0F, 1F, 0F); }
-             * 
+             *
              * if (face == 1) { shapeRenderer.useNormal(0F, -1F, 0F); }
-             * 
+             *
              * if (face == 2) { shapeRenderer.useNormal(0F, 0F, 1F); }
-             * 
+             *
              * if (face == 3) { shapeRenderer.useNormal(0F, 0F, -1F); }
-             * 
+             *
              * if (face == 4) { shapeRenderer.useNormal(1F, 0F, 0F); }
-             * 
+             *
              * if (face == 5) { shapeRenderer.useNormal(-1F, 0F, 0F); }
              */
 

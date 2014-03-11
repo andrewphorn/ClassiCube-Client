@@ -6,10 +6,10 @@ public final class CobblestoneSlabBlock extends Block {
 
     private boolean doubleSlab;
 
-    public CobblestoneSlabBlock(int var1, boolean var2) {
-        super(var1);
-        doubleSlab = var2;
-        if (!var2) {
+    public CobblestoneSlabBlock(int id, boolean isDoubleSlab) {
+        super(id);
+        doubleSlab = isDoubleSlab;
+        if (!isDoubleSlab) {
             setBounds(0F, 0F, 0F, 1F, 0.5F, 1F);
         }
 
@@ -21,8 +21,9 @@ public final class CobblestoneSlabBlock extends Block {
             super.canRenderSide(level, x, y, z, side);
         }
 
-        return side == 1 ? true : !super.canRenderSide(level, x, y, z, side) ? false
-                : side == 0 ? true : level.getTile(x, y, z) != id;
+        return side == 1
+                || (super.canRenderSide(level, x, y, z, side)
+                && (side == 0 || level.getTile(x, y, z) != id));
     }
 
     @Override
@@ -58,8 +59,9 @@ public final class CobblestoneSlabBlock extends Block {
 
     }
 
+    // TODO
     @Override
-    public final void onNeighborChange(Level var1, int var2, int var3, int var4, int var5) {
+    public final void onNeighborChange(Level level, int x, int y, int z, int side) {
         if (this == COBBLESTONE_SLAB) {
             ;
         }
