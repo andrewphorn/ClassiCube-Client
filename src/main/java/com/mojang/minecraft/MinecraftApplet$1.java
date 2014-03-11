@@ -78,8 +78,7 @@ public class MinecraftApplet$1 extends Canvas {
                 if (out != null) {
                     out.close();
                 }
-            } catch (IOException ioe) {
-            }
+            } catch (IOException ioe) {}
         }
     }
 

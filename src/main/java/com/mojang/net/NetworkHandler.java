@@ -21,7 +21,7 @@ public final class NetworkHandler {
     private byte[] stringBytes = new byte[64];
     protected int soTrafficClass = 0x04 | 0x08 | 0x010;
 
-    public NetworkHandler(String ip, int port, Minecraft mc) {
+    public NetworkHandler(String ip, int port, Minecraft minecraft) {
         try {
             channel = SocketChannel.open();
             channel.connect(new InetSocketAddress(ip, port));
@@ -41,11 +41,11 @@ public final class NetworkHandler {
 
         } catch (Exception ex) {
             LogUtil.logWarning("Error initializing network connection to " + ip + ":" + port, ex);
-            mc.setCurrentScreen(new ErrorScreen("Failed to connect",
+            minecraft.setCurrentScreen(new ErrorScreen("Failed to connect",
                     "You failed to connect to the server. It\'s probably down!"));
-            mc.isOnline = false;
+            minecraft.isOnline = false;
 
-            mc.networkManager = null;
+            minecraft.networkManager = null;
             netManager.successful = false;
         }
     }
@@ -57,15 +57,13 @@ public final class NetworkHandler {
                 channel.write(out);
                 out.compact();
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
 
         connected = false;
 
         try {
             channel.close();
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
 
         channel = null;
     }

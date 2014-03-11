@@ -66,8 +66,7 @@ public class MinecraftApplet extends Applet {
             // You have to remove it twice, otherwise the problem isn't fixed
             kfm.removeKeyEventDispatcher(ked);
             kfm.removeKeyEventDispatcher(ked);
-        } catch (ClassCastException e) {
-        }
+        } catch (ClassCastException e) {}
 
         canvas = new MinecraftApplet$1(this);
 
@@ -142,7 +141,7 @@ public class MinecraftApplet extends Applet {
 
             try {
                 thread.join(1000L);
-            } catch (InterruptedException var3) {
+            } catch (InterruptedException e) {
                 minecraft.shutdown();
             }
 
