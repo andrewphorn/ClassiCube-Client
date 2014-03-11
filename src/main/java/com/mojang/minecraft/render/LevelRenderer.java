@@ -34,9 +34,9 @@ public final class LevelRenderer {
     private float lastLoadZ = -9999F;
     public float cracks;
 
-    public LevelRenderer(Minecraft var1, TextureManager var2) {
-        minecraft = var1;
-        textureManager = var2;
+    public LevelRenderer(Minecraft minecraft, TextureManager textureManager) {
+        this.minecraft = minecraft;
+        this.textureManager = textureManager;
         listId = GL11.glGenLists(2);
     }
 

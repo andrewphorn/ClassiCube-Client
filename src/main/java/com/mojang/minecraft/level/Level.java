@@ -14,7 +14,7 @@ import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.util.Vec3D;
 import com.mojang.minecraft.particle.ParticleManager;
-import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.LevelRenderer;
 import com.mojang.minecraft.sound.AudioInfo;
 import com.mojang.minecraft.sound.EntitySoundPos;
@@ -256,21 +256,21 @@ public class Level implements Serializable {
     }
 
     public boolean containsAnyLiquid(AABB var1) {
-        int var2 = (int) var1.x0;
-        int var3 = (int) var1.x1 + 1;
-        int var4 = (int) var1.y0;
-        int var5 = (int) var1.y1 + 1;
-        int var6 = (int) var1.z0;
-        int var7 = (int) var1.z1 + 1;
-        if (var1.x0 < 0F) {
+        int var2 = (int) var1.maxX;
+        int var3 = (int) var1.minX + 1;
+        int var4 = (int) var1.maxY;
+        int var5 = (int) var1.minY + 1;
+        int var6 = (int) var1.maxZ;
+        int var7 = (int) var1.minZ + 1;
+        if (var1.maxX < 0F) {
             --var2;
         }
 
-        if (var1.y0 < 0F) {
+        if (var1.maxY < 0F) {
             --var4;
         }
 
-        if (var1.z0 < 0F) {
+        if (var1.maxZ < 0F) {
             --var6;
         }
 
@@ -314,21 +314,21 @@ public class Level implements Serializable {
     }
 
     public boolean containsBlock(AABB var1, Block var2) {
-        int var3 = (int) var1.x0;
-        int var4 = (int) var1.x1 + 1;
-        int var5 = (int) var1.y0;
-        int var6 = (int) var1.y1 + 1;
-        int var7 = (int) var1.z0;
-        int var8 = (int) var1.z1 + 1;
-        if (var1.x0 < 0F) {
+        int var3 = (int) var1.maxX;
+        int var4 = (int) var1.minX + 1;
+        int var5 = (int) var1.maxY;
+        int var6 = (int) var1.minY + 1;
+        int var7 = (int) var1.maxZ;
+        int var8 = (int) var1.minZ + 1;
+        if (var1.maxX < 0F) {
             --var3;
         }
 
-        if (var1.y0 < 0F) {
+        if (var1.maxY < 0F) {
             --var5;
         }
 
-        if (var1.z0 < 0F) {
+        if (var1.maxZ < 0F) {
             --var7;
         }
 
@@ -371,21 +371,21 @@ public class Level implements Serializable {
     }
 
     public boolean containsLiquid(AABB var1, LiquidType var2) {
-        int var3 = (int) var1.x0;
-        int var4 = (int) var1.x1 + 1;
-        int var5 = (int) var1.y0;
-        int var6 = (int) var1.y1 + 1;
-        int var7 = (int) var1.z0;
-        int var8 = (int) var1.z1 + 1;
-        if (var1.x0 < 0F) {
+        int var3 = (int) var1.maxX;
+        int var4 = (int) var1.minX + 1;
+        int var5 = (int) var1.maxY;
+        int var6 = (int) var1.minY + 1;
+        int var7 = (int) var1.maxZ;
+        int var8 = (int) var1.minZ + 1;
+        if (var1.maxX < 0F) {
             --var3;
         }
 
-        if (var1.y0 < 0F) {
+        if (var1.maxY < 0F) {
             --var5;
         }
 
-        if (var1.z0 < 0F) {
+        if (var1.maxZ < 0F) {
             --var7;
         }
 
@@ -669,21 +669,21 @@ public class Level implements Serializable {
 
     public ArrayList<AABB> getCubes(AABB var1) {
         ArrayList<AABB> var2 = new ArrayList<>();
-        int var3 = (int) var1.x0;
-        int var4 = (int) var1.x1 + 1;
-        int var5 = (int) var1.y0;
-        int var6 = (int) var1.y1 + 1;
-        int var7 = (int) var1.z0;
-        int var8 = (int) var1.z1 + 1;
-        if (var1.x0 < 0F) {
+        int var3 = (int) var1.maxX;
+        int var4 = (int) var1.minX + 1;
+        int var5 = (int) var1.maxY;
+        int var6 = (int) var1.minY + 1;
+        int var7 = (int) var1.maxZ;
+        int var8 = (int) var1.minZ + 1;
+        if (var1.maxX < 0F) {
             --var3;
         }
 
-        if (var1.y0 < 0F) {
+        if (var1.maxY < 0F) {
             --var5;
         }
 
-        if (var1.z0 < 0F) {
+        if (var1.maxZ < 0F) {
             --var7;
         }
         for (; var3 < var4; ++var3) {

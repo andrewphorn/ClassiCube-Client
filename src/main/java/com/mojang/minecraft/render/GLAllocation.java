@@ -17,46 +17,43 @@ public class GLAllocation {
     private static final Map<Integer, Integer> displayLists = new HashMap<>();
     private static final List<Integer> textures = new ArrayList<>();
 
-    public static synchronized ByteBuffer createDirectByteBuffer(int par0) {
-        return ByteBuffer.allocateDirect(par0).order(ByteOrder.nativeOrder());
+    public static synchronized ByteBuffer createDirectByteBuffer(int size) {
+        return ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder());
     }
 
-    public static FloatBuffer createDirectFloatBuffer(int par0) {
-        return createDirectByteBuffer(par0 << 2).asFloatBuffer();
+    public static FloatBuffer createDirectFloatBuffer(int size) {
+        return createDirectByteBuffer(size << 2).asFloatBuffer();
     }
 
-    public static IntBuffer createDirectIntBuffer(int par0) {
-        return createDirectByteBuffer(par0 << 2).asIntBuffer();
+    public static IntBuffer createDirectIntBuffer(int size) {
+        return createDirectByteBuffer(size << 2).asIntBuffer();
     }
 
-    public static synchronized void deleteDisplayLists(int par0) {
-        GL11.glDeleteLists(par0, displayLists.remove(Integer.valueOf(par0)).intValue());
+    public static synchronized void deleteDisplayLists(int listID) {
+        GL11.glDeleteLists(listID, displayLists.remove(listID));
     }
 
     public static synchronized void deleteTextures() {
-        for (int var0 = 0; var0 < textures.size(); ++var0) {
-            GL11.glDeleteTextures(textures.get(var0).intValue());
-        }
-
-        textures.clear();
+    for (int i : textures) {
+        GL11.glDeleteTextures(i);
     }
 
-    public static synchronized void deleteTexturesAndDisplayLists() {
-        Iterator<?> var0 = displayLists.entrySet().iterator();
+    textures.clear();
+}
 
-        while (var0.hasNext()) {
-            Entry<?, ?> var1 = (Entry<?, ?>) var0.next();
-            GL11.glDeleteLists(((Integer) var1.getKey()).intValue(),
-                    ((Integer) var1.getValue()).intValue());
+    public static synchronized void deleteTexturesAndDisplayLists() {
+        for (Entry i:  displayLists.entrySet()) {
+            Entry<Integer, Integer> entity = (Entry<Integer, Integer>) i;
+            GL11.glDeleteLists(entity.getKey(), entity.getValue());
         }
 
         displayLists.clear();
         deleteTextures();
     }
 
-    public static synchronized int generateDisplayLists(int par0) {
-        int var1 = GL11.glGenLists(par0);
-        displayLists.put(Integer.valueOf(var1), Integer.valueOf(par0));
-        return var1;
+    public static synchronized int generateDisplayLists(int listID) {
+        int listKey = GL11.glGenLists(listID);
+        displayLists.put(listKey, listID);
+        return listKey;
     }
 }

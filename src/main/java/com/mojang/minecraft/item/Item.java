@@ -15,20 +15,18 @@ public class Item extends Entity {
     private static ItemModel[] models = new ItemModel[256];
 
     public static void initModels() {
-        for (int unknown0 = 0; unknown0 < 256; unknown0++) {
-            Block var1 = Block.blocks[unknown0];
+        for (int validBlocks = 0; validBlocks < 256; validBlocks++) {
+            Block block = Block.blocks[validBlocks];
 
-            if (var1 != null) {
-                models[unknown0] = new ItemModel(var1.textureId);
+            if (block != null) {
+                models[validBlocks] = new ItemModel(block.textureId);
             }
         }
 
     }
 
     private float xd;
-
     private float yd;
-
     private float zd;
 
     private float rot;
@@ -37,8 +35,8 @@ public class Item extends Entity {
 
     private int age = 0;
 
-    public Item(Level level1, float x, float y, float z, int block) {
-        super(level1);
+    public Item(Level level, float x, float y, float z, int block) {
+        super(level);
 
         setSize(0.25F, 0.25F);
 
@@ -63,9 +61,7 @@ public class Item extends Entity {
 
         if (player.addResource(resource)) {
             TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this, player);
-
             level.addEntity(takeEntityAnim);
-
             remove();
         }
 

@@ -7,8 +7,8 @@ public class WaterDropParticle extends Particle {
 
     private static final long serialVersionUID = 1L;
 
-    public WaterDropParticle(Level var1, float var2, float var3, float var4) {
-        super(var1, var2, var3, var4, 0F, 0F, 0F);
+    public WaterDropParticle(Level level, float var2, float var3, float var4) {
+        super(level, var2, var3, var4, 0F, 0F, 0F);
         xd *= 0.3F;
         yd = (float) Math.random() * 0.2F + 0.1F;
         zd *= 0.3F;
@@ -21,9 +21,9 @@ public class WaterDropParticle extends Particle {
     }
 
     @Override
-    public void render(ShapeRenderer var1, float var2, float var3, float var4, float var5,
+    public void render(ShapeRenderer shapeRenderer, float var2, float var3, float var4, float var5,
             float var6, float var7) {
-        super.render(var1, var2, var3, var4, var5, var6, var7);
+        super.render(shapeRenderer, var2, var3, var4, var5, var6, var7);
     }
 
     @Override

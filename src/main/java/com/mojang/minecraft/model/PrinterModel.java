@@ -2,9 +2,10 @@ package com.mojang.minecraft.model;
 
 /*
  * Based on PrinterModel.java from Minechem v4.x. Minechem v4.x is licensed under Creative Commons
- * Attribution-ShareAlike 3.0 Unported. 
+ * Attribution-ShareAlike 3.0 Unported.
  * The details of the licence can be found at: http://creativecommons.org/licenses/by-sa/3.0/us/
  */
+
 public class PrinterModel extends Model {
     // fields
     ModelPart Base;

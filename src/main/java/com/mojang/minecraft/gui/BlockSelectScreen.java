@@ -120,7 +120,7 @@ public final class BlockSelectScreen extends GuiScreen {
                 GL11.glTranslatef(-1.5F, 0.5F, 0.5F);
                 GL11.glScalef(-1F, -1F, -1F);
                 var8.begin();
-                var4.renderFullbright(var8);
+                var4.renderFullBrightness(var8);
                 var8.end();
                 GL11.glPopMatrix();
             }

@@ -75,8 +75,7 @@ public class MonitoringThread extends Thread {
         double usage = 0D;
         for (ThreadTime threadTime : values) {
             synchronized (threadTime) {
-                usage += (threadTime.getCurrent() - threadTime.getLast())
-                        / (refreshInterval * 10000);
+                usage += (threadTime.getCurrent() - threadTime.getLast()) / (refreshInterval * 10000);
             }
         }
         return usage;

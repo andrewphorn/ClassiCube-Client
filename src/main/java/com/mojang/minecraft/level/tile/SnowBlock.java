@@ -1,7 +1,7 @@
 package com.mojang.minecraft.level.tile;
 
 import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.physics.AABB;
 
 public final class SnowBlock extends Block {
 

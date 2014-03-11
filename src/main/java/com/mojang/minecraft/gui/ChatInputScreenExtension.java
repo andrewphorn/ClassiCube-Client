@@ -258,15 +258,15 @@ public class ChatInputScreenExtension extends GuiScreen {
         if (clickType == 0) {
             for (int i = 0; i < minecraft.hud.chat.size(); i++) {
                 for (ChatScreenData data : minecraft.hud.chatsOnScreen) {
-                    if (x > data.bounds.x0 && x < data.bounds.x1 && y > data.bounds.y0
-                            && y < data.bounds.y1) {
+                    if (x > data.bounds.maxX && x < data.bounds.minX && y > data.bounds.maxY
+                            && y < data.bounds.minY) {
                         ChatClickData chatClickData = new ChatClickData(fontRenderer,
                                 minecraft.hud.chat.get(i));
                         if (data.string == chatClickData.message) {
                             for (LinkData ld : chatClickData.getClickedUrls()) {
                                 if (ld != null) {
-                                    if (x > ld.x0 && x < ld.x1 && y > data.bounds.y0
-                                            && y < data.bounds.y1) {
+                                    if (x > ld.x0 && x < ld.x1 && y > data.bounds.maxY
+                                            && y < data.bounds.minY) {
                                         String s = FontRenderer.stripColor(ld.link);
                                         URI uri = chatClickData.getURI(s);
                                         if (uri != null) {
@@ -342,15 +342,15 @@ public class ChatInputScreenExtension extends GuiScreen {
         int y = height - Mouse.getEventY() * height / minecraft.height - 1;
         for (int i = 0; i < minecraft.hud.chat.size(); i++) {
             for (ChatScreenData data : minecraft.hud.chatsOnScreen) {
-                if (x > data.bounds.x0 && x < data.bounds.x1 && y > data.bounds.y0
-                        && y < data.bounds.y1) {
+                if (x > data.bounds.maxX && x < data.bounds.minX && y > data.bounds.maxY
+                        && y < data.bounds.minY) {
                     ChatClickData chatClickData = new ChatClickData(fontRenderer,
                             minecraft.hud.chat.get(i));
                     if (data.string == chatClickData.message) {
                         for (LinkData ld : chatClickData.getClickedUrls()) {
                             if (ld != null) {
-                                if (x > ld.x0 && x < ld.x1 && y > data.bounds.y0
-                                        && y < data.bounds.y1) {
+                                if (x > ld.x0 && x < ld.x1 && y > data.bounds.maxY
+                                        && y < data.bounds.minY) {
                                     super.drawBox(ld.x0, data.y - 1, ld.x1 + 3 * scale, data.y + 9
                                             * scale, -2147483648);
                                 }

@@ -14,33 +14,40 @@ public final class ParticleManager {
     public TextureManager textureManager;
 
     @SuppressWarnings("rawtypes")
-    public ParticleManager(Level var1, TextureManager var2) {
-        if (var1 != null) {
-            var1.particleEngine = this;
+    public ParticleManager(Level level, TextureManager textureManager) {
+        if (level != null) {
+            level.particleEngine = this;
         }
 
-        textureManager = var2;
+        this.textureManager = textureManager;
 
-        for (int var3 = 0; var3 < 2; ++var3) {
-            particles[var3] = new ArrayList();
+        for (int i = 0; i < 2; ++i) {
+            particles[i] = new ArrayList();
         }
 
     }
 
+    /**
+     * Spawn a particle.
+     * @param entity The entity spawning the particle.
+     */
     @SuppressWarnings("unchecked")
-    public final void spawnParticle(Entity var1) {
-        Particle var3;
-        int var2 = (var3 = (Particle) var1).getParticleTexture();
-        particles[var2].add(var3);
+    public final void spawnParticle(Entity entity) {
+        Particle particle = (Particle) entity;
+        int textureID = particle.getParticleTexture();
+        particles[textureID].add(particle);
     }
 
+    /**
+     * A tick. Calls tick() for all particles I control.
+     */
     public final void tick() {
-        for (int var1 = 0; var1 < 2; ++var1) {
-            for (int var2 = 0; var2 < particles[var1].size(); ++var2) {
-                Particle var3;
-                (var3 = (Particle) particles[var1].get(var2)).tick();
-                if (var3.removed) {
-                    particles[var1].remove(var2--);
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < particles[i].size(); ++j) {
+                Particle particle = (Particle) particles[i].get(j);
+                particle.tick();
+                if (particle.removed) {
+                    particles[i].remove(j--);
                 }
             }
         }

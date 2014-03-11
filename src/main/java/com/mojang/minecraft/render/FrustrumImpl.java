@@ -17,74 +17,72 @@ public final class FrustrumImpl extends Frustrum {
 
     private FloatBuffer projectionMatrixBuffer;
 
-    private FloatBuffer modelviewMatrixBuffer;
+    private FloatBuffer modelViewMatrixBuffer;
 
     private FloatBuffer unused;
 
     public FrustrumImpl() {
         projectionMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
-        modelviewMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
-        unused = GLAllocation.createDirectFloatBuffer(16);
+        modelViewMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
     }
 
     private void init() {
         projectionMatrixBuffer.clear();
-        modelviewMatrixBuffer.clear();
-        unused.clear();
-        GL11.glGetFloat(2983 /* GL_PROJECTION_MATRIX */, projectionMatrixBuffer);
-        GL11.glGetFloat(2982 /* GL_MODELVIEW_MATRIX */, modelviewMatrixBuffer);
+        modelViewMatrixBuffer.clear();
+        GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projectionMatrixBuffer);
+        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixBuffer);
         projectionMatrixBuffer.flip().limit(16);
         projectionMatrixBuffer.get(projectionMatrix);
-        modelviewMatrixBuffer.flip().limit(16);
-        modelviewMatrixBuffer.get(modelviewMatrix);
-        clippingMatrix[0] = modelviewMatrix[0] * projectionMatrix[0] + modelviewMatrix[1]
-                * projectionMatrix[4] + modelviewMatrix[2] * projectionMatrix[8]
-                + modelviewMatrix[3] * projectionMatrix[12];
-        clippingMatrix[1] = modelviewMatrix[0] * projectionMatrix[1] + modelviewMatrix[1]
-                * projectionMatrix[5] + modelviewMatrix[2] * projectionMatrix[9]
-                + modelviewMatrix[3] * projectionMatrix[13];
-        clippingMatrix[2] = modelviewMatrix[0] * projectionMatrix[2] + modelviewMatrix[1]
-                * projectionMatrix[6] + modelviewMatrix[2] * projectionMatrix[10]
-                + modelviewMatrix[3] * projectionMatrix[14];
-        clippingMatrix[3] = modelviewMatrix[0] * projectionMatrix[3] + modelviewMatrix[1]
-                * projectionMatrix[7] + modelviewMatrix[2] * projectionMatrix[11]
-                + modelviewMatrix[3] * projectionMatrix[15];
-        clippingMatrix[4] = modelviewMatrix[4] * projectionMatrix[0] + modelviewMatrix[5]
-                * projectionMatrix[4] + modelviewMatrix[6] * projectionMatrix[8]
-                + modelviewMatrix[7] * projectionMatrix[12];
-        clippingMatrix[5] = modelviewMatrix[4] * projectionMatrix[1] + modelviewMatrix[5]
-                * projectionMatrix[5] + modelviewMatrix[6] * projectionMatrix[9]
-                + modelviewMatrix[7] * projectionMatrix[13];
-        clippingMatrix[6] = modelviewMatrix[4] * projectionMatrix[2] + modelviewMatrix[5]
-                * projectionMatrix[6] + modelviewMatrix[6] * projectionMatrix[10]
-                + modelviewMatrix[7] * projectionMatrix[14];
-        clippingMatrix[7] = modelviewMatrix[4] * projectionMatrix[3] + modelviewMatrix[5]
-                * projectionMatrix[7] + modelviewMatrix[6] * projectionMatrix[11]
-                + modelviewMatrix[7] * projectionMatrix[15];
-        clippingMatrix[8] = modelviewMatrix[8] * projectionMatrix[0] + modelviewMatrix[9]
-                * projectionMatrix[4] + modelviewMatrix[10] * projectionMatrix[8]
-                + modelviewMatrix[11] * projectionMatrix[12];
-        clippingMatrix[9] = modelviewMatrix[8] * projectionMatrix[1] + modelviewMatrix[9]
-                * projectionMatrix[5] + modelviewMatrix[10] * projectionMatrix[9]
-                + modelviewMatrix[11] * projectionMatrix[13];
-        clippingMatrix[10] = modelviewMatrix[8] * projectionMatrix[2] + modelviewMatrix[9]
-                * projectionMatrix[6] + modelviewMatrix[10] * projectionMatrix[10]
-                + modelviewMatrix[11] * projectionMatrix[14];
-        clippingMatrix[11] = modelviewMatrix[8] * projectionMatrix[3] + modelviewMatrix[9]
-                * projectionMatrix[7] + modelviewMatrix[10] * projectionMatrix[11]
-                + modelviewMatrix[11] * projectionMatrix[15];
-        clippingMatrix[12] = modelviewMatrix[12] * projectionMatrix[0] + modelviewMatrix[13]
-                * projectionMatrix[4] + modelviewMatrix[14] * projectionMatrix[8]
-                + modelviewMatrix[15] * projectionMatrix[12];
-        clippingMatrix[13] = modelviewMatrix[12] * projectionMatrix[1] + modelviewMatrix[13]
-                * projectionMatrix[5] + modelviewMatrix[14] * projectionMatrix[9]
-                + modelviewMatrix[15] * projectionMatrix[13];
-        clippingMatrix[14] = modelviewMatrix[12] * projectionMatrix[2] + modelviewMatrix[13]
-                * projectionMatrix[6] + modelviewMatrix[14] * projectionMatrix[10]
-                + modelviewMatrix[15] * projectionMatrix[14];
-        clippingMatrix[15] = modelviewMatrix[12] * projectionMatrix[3] + modelviewMatrix[13]
-                * projectionMatrix[7] + modelviewMatrix[14] * projectionMatrix[11]
-                + modelviewMatrix[15] * projectionMatrix[15];
+        modelViewMatrixBuffer.flip().limit(16);
+        modelViewMatrixBuffer.get(modelViewMatrix);
+        clippingMatrix[0] = modelViewMatrix[0] * projectionMatrix[0] + modelViewMatrix[1]
+                * projectionMatrix[4] + modelViewMatrix[2] * projectionMatrix[8]
+                + modelViewMatrix[3] * projectionMatrix[12];
+        clippingMatrix[1] = modelViewMatrix[0] * projectionMatrix[1] + modelViewMatrix[1]
+                * projectionMatrix[5] + modelViewMatrix[2] * projectionMatrix[9]
+                + modelViewMatrix[3] * projectionMatrix[13];
+        clippingMatrix[2] = modelViewMatrix[0] * projectionMatrix[2] + modelViewMatrix[1]
+                * projectionMatrix[6] + modelViewMatrix[2] * projectionMatrix[10]
+                + modelViewMatrix[3] * projectionMatrix[14];
+        clippingMatrix[3] = modelViewMatrix[0] * projectionMatrix[3] + modelViewMatrix[1]
+                * projectionMatrix[7] + modelViewMatrix[2] * projectionMatrix[11]
+                + modelViewMatrix[3] * projectionMatrix[15];
+        clippingMatrix[4] = modelViewMatrix[4] * projectionMatrix[0] + modelViewMatrix[5]
+                * projectionMatrix[4] + modelViewMatrix[6] * projectionMatrix[8]
+                + modelViewMatrix[7] * projectionMatrix[12];
+        clippingMatrix[5] = modelViewMatrix[4] * projectionMatrix[1] + modelViewMatrix[5]
+                * projectionMatrix[5] + modelViewMatrix[6] * projectionMatrix[9]
+                + modelViewMatrix[7] * projectionMatrix[13];
+        clippingMatrix[6] = modelViewMatrix[4] * projectionMatrix[2] + modelViewMatrix[5]
+                * projectionMatrix[6] + modelViewMatrix[6] * projectionMatrix[10]
+                + modelViewMatrix[7] * projectionMatrix[14];
+        clippingMatrix[7] = modelViewMatrix[4] * projectionMatrix[3] + modelViewMatrix[5]
+                * projectionMatrix[7] + modelViewMatrix[6] * projectionMatrix[11]
+                + modelViewMatrix[7] * projectionMatrix[15];
+        clippingMatrix[8] = modelViewMatrix[8] * projectionMatrix[0] + modelViewMatrix[9]
+                * projectionMatrix[4] + modelViewMatrix[10] * projectionMatrix[8]
+                + modelViewMatrix[11] * projectionMatrix[12];
+        clippingMatrix[9] = modelViewMatrix[8] * projectionMatrix[1] + modelViewMatrix[9]
+                * projectionMatrix[5] + modelViewMatrix[10] * projectionMatrix[9]
+                + modelViewMatrix[11] * projectionMatrix[13];
+        clippingMatrix[10] = modelViewMatrix[8] * projectionMatrix[2] + modelViewMatrix[9]
+                * projectionMatrix[6] + modelViewMatrix[10] * projectionMatrix[10]
+                + modelViewMatrix[11] * projectionMatrix[14];
+        clippingMatrix[11] = modelViewMatrix[8] * projectionMatrix[3] + modelViewMatrix[9]
+                * projectionMatrix[7] + modelViewMatrix[10] * projectionMatrix[11]
+                + modelViewMatrix[11] * projectionMatrix[15];
+        clippingMatrix[12] = modelViewMatrix[12] * projectionMatrix[0] + modelViewMatrix[13]
+                * projectionMatrix[4] + modelViewMatrix[14] * projectionMatrix[8]
+                + modelViewMatrix[15] * projectionMatrix[12];
+        clippingMatrix[13] = modelViewMatrix[12] * projectionMatrix[1] + modelViewMatrix[13]
+                * projectionMatrix[5] + modelViewMatrix[14] * projectionMatrix[9]
+                + modelViewMatrix[15] * projectionMatrix[13];
+        clippingMatrix[14] = modelViewMatrix[12] * projectionMatrix[2] + modelViewMatrix[13]
+                * projectionMatrix[6] + modelViewMatrix[14] * projectionMatrix[10]
+                + modelViewMatrix[15] * projectionMatrix[14];
+        clippingMatrix[15] = modelViewMatrix[12] * projectionMatrix[3] + modelViewMatrix[13]
+                * projectionMatrix[7] + modelViewMatrix[14] * projectionMatrix[11]
+                + modelViewMatrix[15] * projectionMatrix[15];
         frustum[0][0] = clippingMatrix[3] - clippingMatrix[0];
         frustum[0][1] = clippingMatrix[7] - clippingMatrix[4];
         frustum[0][2] = clippingMatrix[11] - clippingMatrix[8];

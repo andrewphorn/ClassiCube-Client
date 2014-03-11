@@ -1,11 +1,12 @@
 package com.mojang.minecraft.level.tile;
 
+import com.mojang.util.IntersectionHelper;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.util.Vec3D;
-import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
 
 public class BlockModelRenderer {
@@ -330,16 +331,15 @@ public class BlockModelRenderer {
         this.z2 = z2;
     }
 
-    private boolean xIntersects(Vec3D var1) {
-        return var1 == null ? false : var1.y >= y1 && var1.y <= y2 && var1.z >= z1 && var1.z <= z2;
+    private boolean xIntersects(Vec3D vec) {
+        return IntersectionHelper.xIntersects(vec, y1, z1, y2, z2);
     }
 
-    private boolean yIntersects(Vec3D var1) {
-        return var1 == null ? false : var1.x >= x1 && var1.x <= x2 && var1.z >= z1 && var1.z <= z2;
+    private boolean yIntersects(Vec3D vec) {
+        return IntersectionHelper.yIntersects(vec, x1, z1, x2, z2);
     }
 
-    private boolean zIntersects(Vec3D var1) {
-        return var1 == null ? false : var1.x >= x1 && var1.x <= x2 && var1.y >= y1 && var1.y <= y2;
+    private boolean zIntersects(Vec3D vec) {
+        return IntersectionHelper.zIntersects(vec, x1, y1, x2, y2);
     }
-
 }

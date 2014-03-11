@@ -9,7 +9,7 @@ import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.util.Vec3D;
 import com.mojang.minecraft.net.PositionUpdate;
-import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.sound.StepSound;
@@ -79,7 +79,7 @@ public abstract class Entity implements Serializable {
 
     /**
      * Calculates the distance from this entity to the specified entity.
-     * 
+     *
      * @param otherEntity
      *            Entity to calculate the distance to.
      * @return The distance between the two entities.
@@ -90,7 +90,7 @@ public abstract class Entity implements Serializable {
 
     /**
      * Calculates the distance from this entity to the specified position.
-     * 
+     *
      * @param posX
      *            X-Coordinate of the position to calculate the distance to.
      * @param posY
@@ -111,7 +111,7 @@ public abstract class Entity implements Serializable {
      * Calculates the distance from this entity to the specified entity squared.
      * This is basically calculating distance without using the expensive
      * Math.sqrt function. Should only be used for relative distance.
-     * 
+     *
      * @param otherEntity
      *            Entity to calculate the distance to.
      * @return The distance between the two entities squared.
@@ -125,7 +125,7 @@ public abstract class Entity implements Serializable {
 
     /**
      * Gets the brightness of this entity
-     * 
+     *
      * @return Brightness of the entity.
      */
     public float getBrightness() {
@@ -137,7 +137,7 @@ public abstract class Entity implements Serializable {
 
     /**
      * Gets the brightness color of this entity.
-     * 
+     *
      * @return ColorCache containing brightness color information.
      */
     public ColorCache getBrightnessColor() {
@@ -149,7 +149,7 @@ public abstract class Entity implements Serializable {
 
     /**
      * Gets the texture ID of this entity.
-     * 
+     *
      * @return Entity's Texture ID.
      */
     public int getTexture() {
@@ -232,9 +232,9 @@ public abstract class Entity implements Serializable {
     public void move(float xMove, float yMove, float zMove) {
         if (noPhysics) {
             boundingBox.move(xMove, yMove, zMove);
-            x = (boundingBox.x0 + boundingBox.x1) / 2F;
-            y = boundingBox.y0 + heightOffset - ySlideOffset;
-            z = (boundingBox.z0 + boundingBox.z1) / 2F;
+            x = (boundingBox.maxX + boundingBox.minX) / 2F;
+            y = boundingBox.maxY + heightOffset - ySlideOffset;
+            z = (boundingBox.maxZ + boundingBox.minZ) / 2F;
         } else {
             float var4 = x;
             float var5 = z;
@@ -359,10 +359,10 @@ public abstract class Entity implements Serializable {
                 zd = 0F;
             }
 
-            x = (boundingBox.x0 + boundingBox.x1) / 2F;
-            y = boundingBox.y0 + heightOffset - ySlideOffset;
+            x = (boundingBox.maxX + boundingBox.minX) / 2F;
+            y = boundingBox.maxY + heightOffset - ySlideOffset;
 
-            z = (boundingBox.z0 + boundingBox.z1) / 2F;
+            z = (boundingBox.maxZ + boundingBox.minZ) / 2F;
             var18 = x - var4;
             var17 = z - var5;
             walkDist = (float) (walkDist + MathHelper.sqrt(var18 * var18 + var17 * var17) * 0.6D);

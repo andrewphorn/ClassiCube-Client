@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.mojang.minecraft.Entity;
 import com.mojang.util.Vec3D;
-import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.Frustrum;
 import com.mojang.minecraft.render.TextureManager;
 
@@ -83,11 +83,11 @@ public class BlockMap implements Serializable {
 
     public List<Entity> getEntities(Entity entitiy, AABB aabb) {
         tmp.clear();
-        return this.getEntities(entitiy, aabb.x0, aabb.y0, aabb.z0, aabb.x1, aabb.y1, aabb.z1, tmp);
+        return this.getEntities(entitiy, aabb.maxX, aabb.maxY, aabb.maxZ, aabb.minX, aabb.minY, aabb.minZ, tmp);
     }
 
     public List<Entity> getEntities(Entity var1, AABB var2, List<Entity> var3) {
-        return this.getEntities(var1, var2.x0, var2.y0, var2.z0, var2.x1, var2.y1, var2.z1, var3);
+        return this.getEntities(var1, var2.maxX, var2.maxY, var2.maxZ, var2.minX, var2.minY, var2.minZ, var3);
     }
 
     public List<Entity> getEntities(Entity entity, float x1, float y1, float z1, float x2,
@@ -266,8 +266,8 @@ public class BlockMap implements Serializable {
                                         .shouldRender(var1)) {
                                     if (!var21) {
                                         AABB var24 = var22.boundingBox;
-                                        if (!frustrum.isBoxInFrustum(var24.x0, var24.y0, var24.z0,
-                                                var24.x1, var24.y1, var24.z1)) {
+                                        if (!frustrum.isBoxInFrustum(var24.maxX, var24.maxY, var24.maxZ,
+                                                var24.minX, var24.minY, var24.minZ)) {
                                             continue;
                                         }
                                     }

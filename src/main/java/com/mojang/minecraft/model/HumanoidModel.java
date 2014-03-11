@@ -22,35 +22,34 @@ public class HumanoidModel extends Model {
     /**
      * Creates a new humanoid model with the specified scaling. The scaling
      * seems to make the model wider but still making it occupy the same space.
-     * 
-     * @param var1
-     *            Scale value to use for the model.
+     *
+     * @param scale Scale value to use for the model.
      */
-    public HumanoidModel(float var1) {
+    public HumanoidModel(float scale) {
         head = new ModelPart(0, 0);
-        head.setBounds(-4F, -8F, -4F, 8, 8, 8, var1);
+        head.setBounds(-4F, -8F, -4F, 8, 8, 8, scale);
         head.allowTransparency = false;
         headwear = new ModelPart(32, 0);
-        headwear.setBounds(-4F, -8F, -4F, 8, 8, 8, var1 + 0.5F);
+        headwear.setBounds(-4F, -8F, -4F, 8, 8, 8, scale + 0.5F);
         body = new ModelPart(16, 16);
-        body.setBounds(-4F, 0F, -2F, 8, 12, 4, var1);
+        body.setBounds(-4F, 0F, -2F, 8, 12, 4, scale);
         body.allowTransparency = false;
         rightArm = new ModelPart(40, 16);
-        rightArm.setBounds(-3F, -2F, -2F, 4, 12, 4, var1);
+        rightArm.setBounds(-3F, -2F, -2F, 4, 12, 4, scale);
         rightArm.setPosition(-5F, 2F, 0F);
         rightArm.allowTransparency = false;
         leftArm = new ModelPart(40, 16);
         leftArm.mirror = true;
-        leftArm.setBounds(-1F, -2F, -2F, 4, 12, 4, var1);
+        leftArm.setBounds(-1F, -2F, -2F, 4, 12, 4, scale);
         leftArm.setPosition(5F, 2F, 0F);
         leftArm.allowTransparency = false;
         rightLeg = new ModelPart(0, 16);
-        rightLeg.setBounds(-2F, 0F, -2F, 4, 12, 4, var1);
+        rightLeg.setBounds(-2F, 0F, -2F, 4, 12, 4, scale);
         rightLeg.setPosition(-2F, 12F, 0F);
         rightLeg.allowTransparency = false;
         leftLeg = new ModelPart(0, 16);
         leftLeg.mirror = true;
-        leftLeg.setBounds(-2F, 0F, -2F, 4, 12, 4, var1);
+        leftLeg.setBounds(-2F, 0F, -2F, 4, 12, 4, scale);
         leftLeg.setPosition(2F, 12F, 0F);
         leftLeg.allowTransparency = false;
     }
