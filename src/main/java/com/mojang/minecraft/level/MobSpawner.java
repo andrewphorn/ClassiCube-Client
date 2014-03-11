@@ -14,28 +14,28 @@ import com.mojang.minecraft.mob.Zombie;
 public final class MobSpawner {
 
     public Level level;
-    public boolean HasStopped;
+    public boolean hasStopped;
 
     // public static int Count = 0;
-    public MobSpawner(Level var1) {
-        this.level = var1;
-        HasStopped = false;
+    public MobSpawner(Level level) {
+        this.level = level;
+        hasStopped = false;
         // Count++;
     }
 
-    public final int spawn(int var1, Entity var2, ProgressBarDisplay var3) {
+    public final int spawn(int amount, Entity entity, ProgressBarDisplay progressBarDisplay) {
         // LogUtil.logInfo(Count);
-        if (HasStopped) {
+        if (hasStopped) {
             return 0;
         }
         int var4 = 0;
 
-        for (int var5 = 0; var5 < var1; ++var5) {
-            if (HasStopped) {
+        for (int i = 0; i < amount; ++i) {
+            if (hasStopped) {
                 break;
             }
-            if (var3 != null) {
-                var3.setProgress(var5 * 100 / (var1 - 1));
+            if (progressBarDisplay != null) {
+                progressBarDisplay.setProgress(i * 100 / (amount - 1));
             }
 
             int var6 = this.level.random.nextInt(7);
@@ -47,7 +47,7 @@ public final class MobSpawner {
                     && this.level.getLiquid(var7, var8, var9) == LiquidType.notLiquid
                     && (!this.level.isLit(var7, var8, var9) || this.level.random.nextInt(5) == 0)) {
                 for (int var10 = 0; var10 < 3; ++var10) {
-                    if (HasStopped) {
+                    if (hasStopped) {
                         break;
                     }
                     int var11 = var7;
@@ -55,7 +55,7 @@ public final class MobSpawner {
                     int var13 = var9;
 
                     for (int var14 = 0; var14 < 3; ++var14) {
-                        if (HasStopped) {
+                        if (hasStopped) {
                             break;
                         }
                         var11 += this.level.random.nextInt(6) - this.level.random.nextInt(6);
@@ -72,10 +72,10 @@ public final class MobSpawner {
                             float var19;
                             float var18;
                             float var20;
-                            if (var2 != null) {
-                                var18 = var15 - var2.x;
-                                var19 = var16 - var2.y;
-                                var20 = var17 - var2.z;
+                            if (entity != null) {
+                                var18 = var15 - entity.x;
+                                var19 = var16 - entity.y;
+                                var20 = var17 - entity.z;
                                 if (var18 * var18 + var19 * var19 + var20 * var20 < 256F) {
                                     continue;
                                 }
@@ -88,39 +88,39 @@ public final class MobSpawner {
                                 }
                             }
 
-                            Object var21 = null;
-                            if (!this.HasStopped) {
-
+                            Object entityObject = null;
+                            if (!this.hasStopped) {
+                                // TODO
                                 if (var6 == 0) {
-                                    var21 = new Zombie(this.level, var15, var16, var17);
+                                    entityObject = new Zombie(this.level, var15, var16, var17);
                                 }
 
                                 if (var6 == 1) {
-                                    var21 = new Skeleton(this.level, var15, var16, var17);
+                                    entityObject = new Skeleton(this.level, var15, var16, var17);
                                 }
 
                                 if (var6 == 3) {
-                                    var21 = new Creeper(this.level, var15, var16, var17);
+                                    entityObject = new Creeper(this.level, var15, var16, var17);
                                 }
 
                                 if (var6 == 4) {
-                                    var21 = new Spider(this.level, var15, var16, var17);
+                                    entityObject = new Spider(this.level, var15, var16, var17);
                                 }
 
                                 if (var6 == 2) {
-                                    var21 = new Pig(this.level, var15, var16, var17);
+                                    entityObject = new Pig(this.level, var15, var16, var17);
                                 }
 
                                 if (var6 == 5) {
-                                    var21 = new Sheep(this.level, var15, var16, var17);
+                                    entityObject = new Sheep(this.level, var15, var16, var17);
                                 }
 
-                                if (var21 != null) {
+                                if (entityObject != null) {
 
-                                    if (this.level.isFree(((Mob) var21).boundingBox)
+                                    if (this.level.isFree(((Mob) entityObject).boundingBox)
                                             && !this.level.creativeMode) {
                                         ++var4;
-                                        this.level.addEntity((Entity) var21);
+                                        this.level.addEntity((Entity) entityObject);
                                         // LogUtil.logInfo("Added mob");
                                     }
                                 }

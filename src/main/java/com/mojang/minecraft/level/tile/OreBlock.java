@@ -2,8 +2,8 @@ package com.mojang.minecraft.level.tile;
 
 public final class OreBlock extends Block {
 
-    public OreBlock(int var1) {
-        super(var1);
+    public OreBlock(int id) {
+        super(id);
     }
 
     @Override

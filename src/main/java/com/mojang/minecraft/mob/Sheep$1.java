@@ -10,25 +10,23 @@ final class Sheep$1 extends BasicAI {
     // $FF: synthetic field
     final Sheep sheep;
 
-    Sheep$1(Sheep var1) {
-        sheep = var1;
+    Sheep$1(Sheep sheep) {
+        this.sheep = sheep;
     }
 
     @Override
     protected final void update() {
-        float var1 = MathHelper.sin(sheep.yRot * (float) Math.PI / 180F);
-        float var2 = MathHelper.cos(sheep.yRot * (float) Math.PI / 180F);
-        var1 = -0.7F * var1;
-        var2 = 0.7F * var2;
-        int var4 = (int) (mob.x + var1);
-        int var3 = (int) (mob.y - 2F);
-        int var5 = (int) (mob.z + var2);
+        float rotation = sheep.yRot * (float) Math.PI / 180F;
+        // Calculate which tile the sheep is on
+        int x = (int) (mob.x + -0.7F * MathHelper.sin(rotation));
+        int y = (int) (mob.y - 2F);
+        int z = (int) (mob.z + 0.7F * MathHelper.cos(rotation));
         if (sheep.grazing) {
-            if (level.getTile(var4, var3, var5) != Block.GRASS.id) {
+            if (level.getTile(x, y, z) != Block.GRASS.id) {
                 sheep.grazing = false;
             } else {
                 if (++sheep.grazingTime == 60) {
-                    level.setTile(var4, var3, var5, Block.DIRT.id);
+                    level.setTile(x, y, z, Block.DIRT.id);
                     if (random.nextInt(5) == 0) {
                         sheep.hasFur = true;
                     }
@@ -39,7 +37,7 @@ final class Sheep$1 extends BasicAI {
                 mob.xRot = 40 + sheep.grazingTime / 2 % 2 * 10;
             }
         } else {
-            if (level.getTile(var4, var3, var5) == Block.GRASS.id) {
+            if (level.getTile(x, y, z) == Block.GRASS.id) {
                 sheep.grazing = true;
                 sheep.grazingTime = 0;
             }

@@ -1,4 +1,4 @@
-package com.mojang.minecraft;
+package com.mojang.minecraft.physics;
 
 /**
  * A custom implementation of AABB designed to stop the graphical glitches in
@@ -20,9 +20,9 @@ public class CustomAABB {
         this.maxX = maxX - 0.02F;
         this.maxY = maxY - 0.02F;
         this.maxZ = maxZ - 0.02F;
-        this.minX = minX - 0.02F;
-        this.minY = minY - 0.02F;
-        this.minZ = minZ - 0.02F;
+        this.minX = minX + 0.02F;
+        this.minY = minY + 0.02F;
+        this.minZ = minZ + 0.02F;
     }
 
 }

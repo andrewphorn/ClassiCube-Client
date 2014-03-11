@@ -6,8 +6,8 @@ import com.mojang.minecraft.level.Level;
 
 public final class SaplingBlock extends FlowerBlock {
 
-    protected SaplingBlock(int var1) {
-        super(var1);
+    protected SaplingBlock(int id) {
+        super(id);
         float var3 = 0.4F;
         setBounds(0.5F - var3, 0F, 0.5F - var3, var3 + 0.5F, var3 * 2F, var3 + 0.5F);
     }

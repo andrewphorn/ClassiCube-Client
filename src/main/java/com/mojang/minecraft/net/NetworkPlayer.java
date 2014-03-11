@@ -83,8 +83,8 @@ public class NetworkPlayer extends HumanoidMob {
     }
 
     @Override
-    public void bindTexture(TextureManager var1) {
-        textures = var1;
+    public void bindTexture(TextureManager textureManager) {
+        textures = textureManager;
         if (newTexture != null) {
             BufferedImage var2 = newTexture;
             int[] var3 = new int[512];
@@ -108,20 +108,20 @@ public class NetworkPlayer extends HumanoidMob {
 
             hasHair = var10001;
             if (modelName.equals("humanoid")) {
-                a = var1.load(newTexture);
+                a = textureManager.load(newTexture);
             }
             newTexture = null;
         }
         if (isInteger(modelName)) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
             return;
         } else if (!modelName.startsWith("humanoid")) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                    var1.load("/mob/" + modelName.replace('.', '_') + ".png"));
+                    textureManager.load("/mob/" + modelName.replace('.', '_') + ".png"));
             return;
         }
         if (a < 0) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/char.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/char.png"));
         } else {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, a);
         }

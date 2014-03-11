@@ -10,8 +10,8 @@ import com.mojang.util.MathHelper;
 
 public class FlowerBlock extends Block {
 
-    protected FlowerBlock(int var1) {
-        super(var1);
+    protected FlowerBlock(int id) {
+        super(id);
         setPhysics(true);
         float var3 = 0.2F;
         setBounds(0.5F - var3, 0F, 0.5F - var3, var3 + 0.5F, var3 * 3F, var3 + 0.5F);
@@ -38,10 +38,10 @@ public class FlowerBlock extends Block {
     }
 
     @Override
-    public final boolean render(Level var1, int var2, int var3, int var4, ShapeRenderer var5) {
-        ColorCache var6 = var1.getBrightnessColor(var2, var3, var4);
-        var5.color(var6.R, var6.G, var6.B);
-        this.render(var5, var2, var3, var4);
+    public final boolean render(Level level, int x, int y, int z, ShapeRenderer shapeRenderer) {
+        ColorCache var6 = level.getBrightnessColor(x, y, z);
+        shapeRenderer.color(var6.R, var6.G, var6.B);
+        this.render(shapeRenderer, x, y, z);
         return true;
     }
 

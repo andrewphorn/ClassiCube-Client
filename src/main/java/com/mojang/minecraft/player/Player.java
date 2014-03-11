@@ -381,11 +381,11 @@ public class Player extends Mob {
     }
 
     @Override
-    public void die(Entity var1) {
+    public void die(Entity killedBy) {
         setSize(0.2F, 0.2F);
         this.setPos(x, y, z);
         yd = 0.1F;
-        if (var1 != null) {
+        if (killedBy != null) {
             xd = -MathHelper.cos((hurtDir + yRot) * (float) Math.PI / 180F) * 0.1F;
             zd = -MathHelper.sin((hurtDir + yRot) * (float) Math.PI / 180F) * 0.1F;
         } else {
@@ -404,9 +404,9 @@ public class Player extends Mob {
     }
 
     @Override
-    public void hurt(Entity var1, int var2) {
+    public void hurt(Entity entity, int hurtBy) {
         if (!level.creativeMode) {
-            super.hurt(var1, var2);
+            super.hurt(entity, hurtBy);
         }
 
     }

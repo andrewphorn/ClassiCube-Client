@@ -9,18 +9,18 @@ class BlockMap$Slot implements Serializable {
     public static final long serialVersionUID = 0L;
 
     // $FF: synthetic method
-    static int getXSlot(BlockMap$Slot var0) {
-        return var0.xSlot;
+    static int getXSlot(BlockMap$Slot slot) {
+        return slot.xSlot;
     }
 
     // $FF: synthetic method
-    static int getYSlot(BlockMap$Slot var0) {
-        return var0.ySlot;
+    static int getYSlot(BlockMap$Slot slot) {
+        return slot.ySlot;
     }
 
     // $FF: synthetic method
-    static int getZSlot(BlockMap$Slot var0) {
-        return var0.zSlot;
+    static int getZSlot(BlockMap$Slot slot) {
+        return slot.zSlot;
     }
 
     private int xSlot;
@@ -32,22 +32,14 @@ class BlockMap$Slot implements Serializable {
     // $FF: synthetic field
     final BlockMap blockMap;
 
-    public BlockMap$Slot(BlockMap var1) {
-        blockMap = var1;
+    public BlockMap$Slot(BlockMap blockMap) {
+        this.blockMap = blockMap;
     }
 
-    public void add(Entity var1) {
-        if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
-            blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
-                    * BlockMap.getWidth(blockMap) + xSlot].add(var1);
-        }
-
-    }
-
-    public BlockMap$Slot init(float var1, float var2, float var3) {
-        xSlot = (int) (var1 / 16F);
-        ySlot = (int) (var2 / 16F);
-        zSlot = (int) (var3 / 16F);
+    public BlockMap$Slot init(float x, float y, float z) {
+        xSlot = (int) (x / 16F);
+        ySlot = (int) (y / 16F);
+        zSlot = (int) (z / 16F);
         if (xSlot < 0) {
             xSlot = 0;
         }
@@ -75,10 +67,26 @@ class BlockMap$Slot implements Serializable {
         return this;
     }
 
-    public void remove(Entity var1) {
+    /**
+     * Adds an entity to the BlockMap slot.
+     * @param entity
+     */
+    public void add(Entity entity) {
         if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
             blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
-                    * BlockMap.getWidth(blockMap) + xSlot].remove(var1);
+                    * BlockMap.getWidth(blockMap) + xSlot].add(entity);
+        }
+
+    }
+
+    /**
+     * Removes an entity from the BlockMap slot.
+     * @param entity
+     */
+    public void remove(Entity entity) {
+        if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
+            blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
+                    * BlockMap.getWidth(blockMap) + xSlot].remove(entity);
         }
 
     }

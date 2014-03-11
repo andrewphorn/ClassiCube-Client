@@ -6,8 +6,8 @@ public class GlassBlock extends Block {
 
     private boolean showNeighborSides = false;
 
-    protected GlassBlock(int var1) {
-        super(var1);
+    protected GlassBlock(int id) {
+        super(id);
     }
 
     @Override

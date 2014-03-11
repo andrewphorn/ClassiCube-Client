@@ -68,13 +68,17 @@ public class Level implements Serializable {
         growTrees = false;
     }
 
-    public void addEntity(Entity var1) {
-        blockMap.insert(var1);
-        var1.setLevel(this);
+    /**
+     * Adds an entity to the level.
+     * @param entity
+     */
+    public void addEntity(Entity entity) {
+        blockMap.insert(entity);
+        entity.setLevel(this);
     }
 
-    public void addListener(LevelRenderer var1) {
-        listeners.add(var1);
+    public void addListener(LevelRenderer levelRenderer) {
+        listeners.add(levelRenderer);
     }
 
     public void addToTickNextTick(int var1, int var2, int var3, int var4) {
@@ -972,25 +976,33 @@ public class Level implements Serializable {
         blockMap.removeAllNonCreativeModeEntities();
     }
 
-    public void removeEntity(Entity var1) {
-        blockMap.remove(var1);
+    /**
+     * Removes an entity from the level.
+     * @param entity
+     */
+    public void removeEntity(Entity entity) {
+        blockMap.remove(entity);
     }
 
-    public void removeListener(LevelRenderer var1) {
-        listeners.remove(var1);
+    /**
+     * Removes a listener.
+     * @param levelRenderer
+     */
+    public void removeListener(LevelRenderer levelRenderer) {
+        listeners.remove(levelRenderer);
     }
 
-    public void setData(int var1, int var2, int var3, byte[] var4) {
-        width = var1;
-        length = var3;
-        height = var2;
-        blocks = var4;
-        blockers = new int[var1 * var3];
-        Arrays.fill(blockers, height);
-        calcLightDepths(0, 0, var1, var3);
+    public void setData(int width, int height, int length, byte[] blockArray) {
+        this.width = width;
+        this.length = length;
+        this.height = height;
+        blocks = blockArray;
+        blockers = new int[width * length];
+        Arrays.fill(blockers, this.height);
+        calcLightDepths(0, 0, width, length);
 
-        for (var1 = 0; var1 < listeners.size(); ++var1) {
-            listeners.get(var1).refresh();
+        for (width = 0; width < listeners.size(); ++width) {
+            listeners.get(width).refresh();
         }
 
         tickList.clear();
@@ -999,38 +1011,38 @@ public class Level implements Serializable {
         System.gc();
     }
 
-    public void setNetworkMode(boolean var1) {
-        networkMode = var1;
+    public void setNetworkMode(boolean networkMode) {
+        this.networkMode = networkMode;
     }
 
-    public void setSpawnPos(int var1, int var2, int var3, float var4) {
-        xSpawn = var1;
-        ySpawn = var2;
-        zSpawn = var3;
-        rotSpawn = var4;
+    public void setSpawnPos(int x, int y, int z, float rot) {
+        xSpawn = x;
+        ySpawn = y;
+        zSpawn = z;
+        rotSpawn = rot;
     }
 
-    public boolean setTile(int var1, int var2, int var3, int var4) {
+    public boolean setTile(int x, int y, int z, int block) {
         if (networkMode) {
             return false;
-        } else if (setTileNoNeighborChange(var1, var2, var3, var4)) {
-            updateNeighborsAt(var1, var2, var3, var4);
+        } else if (setTileNoNeighborChange(x, y, z, block)) {
+            updateNeighborsAt(x, y, z, block);
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean setTileNoNeighborChange(int var1, int var2, int var3, int var4) {
-        return networkMode ? false : netSetTileNoNeighborChange(var1, var2, var3, var4);
+    public boolean setTileNoNeighborChange(int x, int y, int z, int side) {
+        return !networkMode && netSetTileNoNeighborChange(x, y, z, side);
     }
 
-    public boolean setTileNoUpdate(int var1, int var2, int var3, int var4) {
-        if (var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length) {
-            if (var4 == blocks[(var2 * length + var3) * width + var1]) {
+    public boolean setTileNoUpdate(int x, int y, int z, int side) {
+        if (x >= 0 && y >= 0 && z >= 0 && x < width && y < height && z < length) {
+            if (side == blocks[(y * length + z) * width + x]) {
                 return false;
             } else {
-                blocks[(var2 * length + var3) * width + var1] = (byte) var4;
+                blocks[(y * length + z) * width + x] = (byte) side;
                 return true;
             }
         } else {
@@ -1038,24 +1050,24 @@ public class Level implements Serializable {
         }
     }
 
-    public void swap(int var1, int var2, int var3, int var4, int var5, int var6) {
+    public void swap(int x0, int y0, int z0, int x1, int y1, int z1) {
         if (!networkMode) {
-            int var7 = getTile(var1, var2, var3);
-            int var8 = getTile(var4, var5, var6);
-            setTileNoNeighborChange(var1, var2, var3, var8);
-            setTileNoNeighborChange(var4, var5, var6, var7);
-            updateNeighborsAt(var1, var2, var3, var8);
-            updateNeighborsAt(var4, var5, var6, var7);
+            int var7 = getTile(x0, y0, z0);
+            int var8 = getTile(x1, y1, z1);
+            setTileNoNeighborChange(x0, y0, z0, var8);
+            setTileNoNeighborChange(x1, y1, z1, var7);
+            updateNeighborsAt(x0, y0, z0, var8);
+            updateNeighborsAt(x1, y1, z1, var7);
         }
     }
 
     public void tick() {
         ++tickCount;
         int var1 = 1;
+        int var2 = 1;
 
-        int var2;
-        for (var2 = 1; 1 << var1 < width; ++var1) {
-            ;
+        while (1 << var1 < width) {
+            ++var1;
         }
 
         while (1 << var2 < length) {
@@ -1066,21 +1078,19 @@ public class Level implements Serializable {
         int var4 = width - 1;
         int var5 = height - 1;
         int var6;
-        int var7;
+        int i;
         if (tickCount % 5 == 0) {
             var6 = tickList.size();
 
-            for (var7 = 0; var7 < var6; ++var7) {
-                NextTickListEntry var8;
-                if ((var8 = tickList.remove(0)).ticks > 0) {
-                    --var8.ticks;
-                    tickList.add(var8);
+            for (i = 0; i < var6; ++i) {
+                NextTickListEntry nextEntity = tickList.remove(0);
+                if (nextEntity.ticks > 0) {
+                    --nextEntity.ticks;
+                    tickList.add(nextEntity);
                 } else {
-                    byte var9;
-                    if (isInBounds(var8.x, var8.y, var8.z)
-                            && (var9 = blocks[(var8.y * length + var8.z) * width + var8.x]) == var8.block
-                            && var9 > 0) {
-                        Block.blocks[var9].update(this, var8.x, var8.y, var8.z, random);
+                    byte block = blocks[(nextEntity.y * length + nextEntity.z) * width + nextEntity.x];
+                    if (isInBounds(nextEntity.x, nextEntity.y, nextEntity.z) && block == nextEntity.block && block > 0) {
+                        Block.blocks[block].update(this, nextEntity.x, nextEntity.y, nextEntity.z, random);
                     }
                 }
             }
@@ -1090,7 +1100,7 @@ public class Level implements Serializable {
         var6 = unprocessed / 200;
         unprocessed -= var6 * 200;
 
-        for (var7 = 0; var7 < var6; ++var7) {
+        for (i = 0; i < var6; ++i) {
             randId = randId * 3 + 1013904223;
             int var12;
             int var13 = (var12 = randId >> 2) & var4;
@@ -1108,20 +1118,20 @@ public class Level implements Serializable {
         blockMap.tickAll();
     }
 
-    public void updateNeighborsAt(int var1, int var2, int var3, int var4) {
-        updateTile(var1 - 1, var2, var3, var4);
-        updateTile(var1 + 1, var2, var3, var4);
-        updateTile(var1, var2 - 1, var3, var4);
-        updateTile(var1, var2 + 1, var3, var4);
-        updateTile(var1, var2, var3 - 1, var4);
-        updateTile(var1, var2, var3 + 1, var4);
+    public void updateNeighborsAt(int x, int y, int z, int side) {
+        updateTile(x - 1, y, z, side);
+        updateTile(x + 1, y, z, side);
+        updateTile(x, y - 1, z, side);
+        updateTile(x, y + 1, z, side);
+        updateTile(x, y, z - 1, side);
+        updateTile(x, y, z + 1, side);
     }
 
-    private void updateTile(int var1, int var2, int var3, int var4) {
-        if (var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length) {
+    private void updateTile(int x, int y, int z, int side) {
+        if (x >= 0 && y >= 0 && z >= 0 && x < width && y < height && z < length) {
             Block var5;
-            if ((var5 = Block.blocks[blocks[(var2 * length + var3) * width + var1]]) != null) {
-                var5.onNeighborChange(this, var1, var2, var3, var4);
+            if ((var5 = Block.blocks[blocks[(y * length + z) * width + x]]) != null) {
+                var5.onNeighborChange(this, x, y, z, side);
             }
 
         }

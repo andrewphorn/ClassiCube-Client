@@ -34,6 +34,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import com.mojang.minecraft.physics.CustomAABB;
 import com.oyasunadev.mcraft.client.util.Constants;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -49,7 +50,6 @@ import org.lwjgl.util.glu.GLU;
 import com.mojang.minecraft.gamemode.CreativeGameMode;
 import com.mojang.minecraft.gamemode.GameMode;
 import com.mojang.minecraft.gui.BlockSelectScreen;
-import com.mojang.minecraft.gui.ChatInputScreen;
 import com.mojang.minecraft.gui.ChatInputScreen;
 import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.minecraft.gui.FontRenderer;
@@ -1314,9 +1314,9 @@ public final class Minecraft implements Runnable {
                                 GL11.glColor4f(1F, 1F, 1F, 0.5F);
                                 GL11.glPushMatrix();
                                 block = (var114 = levelRenderer.level.getTile(var102.x, var102.y, var102.z)) > 0 ? Block.blocks[var114] : null;
-                                float blockXAverage = (block.x1 + block.x2) / 2F;
-                                float blockYAverage = (block.y1 + block.y2) / 2F;
-                                float blockZAverage = (block.z1 + block.z2) / 2F;
+                                float blockXAverage = (block.maxX + block.minX) / 2F;
+                                float blockYAverage = (block.maxY + block.minY) / 2F;
+                                float blockZAverage = (block.maxZ + block.minZ) / 2F;
                                 GL11.glTranslatef(var102.x + blockXAverage,
                                         var102.y + blockYAverage, var102.z + blockZAverage);
                                 GL11.glScalef(1F, 1.01F, 1.01F);

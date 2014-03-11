@@ -29,7 +29,7 @@ public final class SurvivalGameMode extends GameMode {
 
     @Override
     public void stopSpawner(Level level) {
-        this.spawner.HasStopped = true;
+        this.spawner.hasStopped = true;
     }
 
     @Override
@@ -143,7 +143,7 @@ public final class SurvivalGameMode extends GameMode {
 
     @Override
     public void spawnMob() {
-        if (this.spawner.HasStopped) {
+        if (this.spawner.hasStopped) {
             return;
         }
         int area = this.spawner.level.width * this.spawner.level.length * spawner.level.height / 64
