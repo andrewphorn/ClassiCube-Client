@@ -4,7 +4,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.level.tile.BlockModelRenderer;
+import com.mojang.minecraft.level.tile.FlowerBlock;
+import com.mojang.minecraft.level.tile.FireBlock;
 import com.mojang.minecraft.model.AnimalModel;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
@@ -28,8 +29,6 @@ public class HumanoidMob extends Mob {
 
     public boolean armor = Math.random() < 0.20000000298023224D;
 
-    BlockModelRenderer block;
-
     public HumanoidMob(Level var1, float var2, float var3, float var4) {
         super(var1);
         modelName = "humanoid";
@@ -44,12 +43,27 @@ public class HumanoidMob extends Mob {
             return;
         } else if (isInteger(modelName)) {
             try {
-                block = new BlockModelRenderer(Block.blocks[Integer.parseInt(modelName)].textureId);
+            	GL11.glEnable(GL11.GL_ALPHA_TEST);
+            	GL11.glEnable(GL11.GL_BLEND);       	   	
                 GL11.glPushMatrix();
-                GL11.glTranslatef(-0.5f, 0.4f, -0.5f);
+                
+                // These are here to revert the scalef calls in Mob.java.
+            	// While those calls are useful for entity models, they cause the
+            	// block models to be rendered upside down.  
+                GL11.glScalef(-1f, 1f, 1f);
+            	GL11.glScalef(1f, -1f, 1f);
+                Block block = Block.blocks[Integer.parseInt(modelName)];
+                // TODO: Implement proper detection of which blocks need translation.
+                float yTranslation = -1.4f;
+                if (block instanceof FlowerBlock || block instanceof FireBlock) {
+                	yTranslation = -1.8f;
+                }
+                GL11.glTranslatef(-0.5f, yTranslation, -0.5f);
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/terrain.png"));
+                
                 block.renderPreview(ShapeRenderer.instance);
                 GL11.glPopMatrix();
+                GL11.glDisable(GL11.GL_BLEND);
             } catch (Exception e) {
                 modelName = "humanoid";
             }
