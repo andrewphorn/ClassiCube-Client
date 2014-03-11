@@ -16,7 +16,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -35,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import com.mojang.minecraft.physics.CustomAABB;
+import com.mojang.minecraft.render.*;
 import com.oyasunadev.mcraft.client.util.Constants;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -78,15 +78,7 @@ import com.mojang.minecraft.particle.WaterDropParticle;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.player.InputHandlerImpl;
 import com.mojang.minecraft.player.Player;
-import com.mojang.minecraft.render.Renderer;
-import com.mojang.minecraft.render.Chunk;
-import com.mojang.minecraft.render.ChunkDirtyDistanceComparator;
-import com.mojang.minecraft.render.Frustrum;
-import com.mojang.minecraft.render.FrustrumImpl;
-import com.mojang.minecraft.render.HeldBlock;
-import com.mojang.minecraft.render.LevelRenderer;
-import com.mojang.minecraft.render.ShapeRenderer;
-import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.FrustumImpl;
 import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
@@ -1030,7 +1022,7 @@ public final class Minecraft implements Runnable {
                         Level level = renderer.minecraft.level;
                         LevelRenderer levelRenderer = renderer.minecraft.levelRenderer;
                         ParticleManager particleManager = renderer.minecraft.particleManager;
-                        Frustrum frustrum = FrustrumImpl.getInstance();
+                        Frustum frustum = FrustumImpl.getInstance();
 
                         GL11.glViewport(0, 0, renderer.minecraft.width, renderer.minecraft.height);
                         float viewDistanceFactor = 1F - (float) (Math.pow(
@@ -1108,7 +1100,7 @@ public final class Minecraft implements Runnable {
                         GL11.glTranslatef(-var69, -var74, -var33);
 
                         for (i = 0; i < levelRenderer.chunkCache.length; ++i) {
-                            levelRenderer.chunkCache[i].clip(frustrum);
+                            levelRenderer.chunkCache[i].clip(frustum);
                         }
 
                         levelRenderer = renderer.minecraft.levelRenderer;
@@ -1178,7 +1170,7 @@ public final class Minecraft implements Runnable {
 
                         renderer.setLighting(true);
                         Vec3D var103 = renderer.getPlayerVector(delta);
-                        levelRenderer.level.blockMap.render(var103, frustrum, levelRenderer.textureManager, delta);
+                        levelRenderer.level.blockMap.render(var103, frustum, levelRenderer.textureManager, delta);
                         renderer.setLighting(false);
                         renderer.updateFog();
                         var29 = -MathHelper.cos(player.yRot * (float) Math.PI / 180F);
@@ -2613,7 +2605,7 @@ public final class Minecraft implements Runnable {
                 }
             }
 
-            var4 = var41.minecraft.player.inventory.getSelected();
+            var4 = var41.minecraft.player.inventory.getSelected(); // TODO WTF?
             Block var43 = null;
             if (var4 > 0) {
                 var43 = Block.blocks[var4];
@@ -2867,10 +2859,10 @@ public final class Minecraft implements Runnable {
                     lastClick = ticks;
                 }
             }
-            boolean var26 = (currentScreen == null) && Mouse.isButtonDown(MB_LEFT) && hasMouse;
             if (!gamemode.instantBreak && punchingCooldown <= 0) {
                 // survival: slow block-breaking
-                if (var26 && selected != null && !selected.hasEntity) {
+                if ((currentScreen == null) && Mouse.isButtonDown(MB_LEFT) && hasMouse
+                        && selected != null && !selected.hasEntity) {
                     gamemode.hitBlock(selected.x, selected.y, selected.z, selected.face);
                 } else {
                     gamemode.resetHits();

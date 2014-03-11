@@ -24,7 +24,6 @@ public class OctaveNoise extends Noise {
 
         for (int count = 0; count < octaves; count++) {
             result += perlin[count].compute(x / noiseLevel, z / noiseLevel) * noiseLevel;
-
             noiseLevel *= 2D;
         }
 

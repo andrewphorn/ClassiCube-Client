@@ -1,6 +1,6 @@
 package com.mojang.minecraft.render;
 
-public class Frustrum {
+public class Frustum {
 
     public float frustum[][];
 
@@ -9,7 +9,7 @@ public class Frustrum {
     public float modelViewMatrix[];
     public float clippingMatrix[];
 
-    public Frustrum() {
+    public Frustum() {
         frustum = new float[16][16];
         projectionMatrix = new float[16];
         modelViewMatrix = new float[16];
@@ -26,7 +26,7 @@ public class Frustrum {
      * @param F5
      * @return boolean
      */
-    // TODO Looks like soem kind of product - simplify?
+    // TODO Looks like some kind of product - simplify?
     public boolean isBoxInFrustum(float F0, float F1, float F2, float F3, float F4, float F5) {
         return !(frustum[0][0] * F0 + frustum[0][1] * F1 + frustum[0][2] * F2 + frustum[0][3] <= 0F
                 && frustum[0][0] * F3 + frustum[0][1] * F1 + frustum[0][2] * F2 + frustum[0][3] <= 0F

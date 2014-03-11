@@ -30,17 +30,17 @@ public final class Renderer {
     public float fogBlue;
     public float fogGreen;
 
-    public Renderer(Minecraft var1) {
-        minecraft = var1;
-        heldBlock = new HeldBlock(var1);
+    public Renderer(Minecraft minecraft) {
+        this.minecraft = minecraft;
+        heldBlock = new HeldBlock(minecraft);
     }
 
     public void applyBobbing(float var1, boolean enabled) {
-        Player var4;
-        float var2 = (var4 = minecraft.player).walkDist - var4.walkDistO;
-        var2 = var4.walkDist + var2 * var1;
-        float var3 = var4.oBob + (var4.bob - var4.oBob) * var1;
-        float var5 = var4.oTilt + (var4.tilt - var4.oTilt) * var1;
+        Player player = minecraft.player;
+        float var2 = player.walkDist - player.walkDistO;
+        var2 = player.walkDist + var2 * var1;
+        float var3 = player.oBob + (player.bob - player.oBob) * var1;
+        float var5 = player.oTilt + (player.tilt - player.oTilt) * var1;
         if (enabled) {
             GL11.glTranslatef(MathHelper.sin(var2 * (float) Math.PI) * var3 * 0.5F,
                     -Math.abs(MathHelper.cos(var2 * (float) Math.PI) * var3), 0F);
@@ -71,10 +71,10 @@ public final class Renderer {
     }
 
     public Vec3D getPlayerVector(float var1) {
-        Player var4;
-        float var2 = (var4 = minecraft.player).xo + (var4.x - var4.xo) * var1;
-        float var3 = var4.yo + (var4.y - var4.yo) * var1;
-        float var5 = var4.zo + (var4.z - var4.zo) * var1;
+        Player player = minecraft.player;
+        float var2 = player.xo + (player.x - player.xo) * var1;
+        float var3 = player.yo + (player.y - player.yo) * var1;
+        float var5 = player.zo + (player.z - player.zo) * var1;
         return new Vec3D(var2, var3, var5);
     }
 

@@ -7,7 +7,7 @@ import java.util.List;
 import com.mojang.minecraft.Entity;
 import com.mojang.util.Vec3D;
 import com.mojang.minecraft.physics.AABB;
-import com.mojang.minecraft.render.Frustrum;
+import com.mojang.minecraft.render.Frustum;
 import com.mojang.minecraft.render.TextureManager;
 
 public class BlockMap implements Serializable {
@@ -163,7 +163,7 @@ public class BlockMap implements Serializable {
 
     }
 
-    public void render(Vec3D var1, Frustrum frustrum, TextureManager textureManager, float var4) {
+    public void render(Vec3D var1, Frustum frustum, TextureManager textureManager, float var4) {
         for (int var5 = 0; var5 < width; ++var5) {
             float var6 = (var5 << 4) - 2;
             float var7 = (var5 + 1 << 4) + 2;
@@ -178,14 +178,14 @@ public class BlockMap implements Serializable {
                             .size() != 0) {
                         float var13 = (var11 << 4) - 2;
                         float var14 = (var11 + 1 << 4) + 2;
-                        if (frustrum.isBoxInFrustum(var6, var9, var13, var7, var10, var14)) {
+                        if (frustum.isBoxInFrustum(var6, var9, var13, var7, var10, var14)) {
                             float var16 = var14;
                             float var17 = var10;
                             float var15 = var7;
                             var14 = var13;
                             var13 = var9;
                             float var18 = var6;
-                            Frustrum var19 = frustrum;
+                            Frustum var19 = frustum;
                             int var20 = 0;
 
                             boolean var10000;
@@ -262,7 +262,7 @@ public class BlockMap implements Serializable {
                                         .shouldRender(var1)) {
                                     if (!var21) {
                                         AABB var24 = var22.boundingBox;
-                                        if (!frustrum.isBoxInFrustum(var24.maxX, var24.maxY, var24.maxZ,
+                                        if (!frustum.isBoxInFrustum(var24.maxX, var24.maxY, var24.maxZ,
                                                 var24.minX, var24.minY, var24.minZ)) {
                                             continue;
                                         }

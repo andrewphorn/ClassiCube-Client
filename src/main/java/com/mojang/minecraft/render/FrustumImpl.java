@@ -6,11 +6,11 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.util.MathHelper;
 
-public final class FrustrumImpl extends Frustrum {
+public final class FrustumImpl extends Frustum {
 
-    private static FrustrumImpl instance = new FrustrumImpl();
+    private static FrustumImpl instance = new FrustumImpl();
 
-    public static FrustrumImpl getInstance() {
+    public static FrustumImpl getInstance() {
         instance.init();
         return instance;
     }
@@ -19,7 +19,7 @@ public final class FrustrumImpl extends Frustrum {
 
     private FloatBuffer modelViewMatrixBuffer;
 
-    public FrustrumImpl() {
+    public FrustumImpl() {
         projectionMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
         modelViewMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
     }
