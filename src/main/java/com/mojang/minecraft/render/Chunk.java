@@ -42,8 +42,8 @@ public final class Chunk {
         }
     }
 
-    public final void clip(Frustrum frustrum) {
-        visible = frustrum.isBoxInFrustum(x, y, z, x + chunkSize, y + chunkSize, z + chunkSize);
+    public final void clip(Frustum frustum) {
+        visible = frustum.isBoxInFrustum(x, y, z, x + chunkSize, y + chunkSize, z + chunkSize);
     }
 
     public final void dispose() {
