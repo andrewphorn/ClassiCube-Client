@@ -50,7 +50,7 @@ import com.mojang.minecraft.gamemode.CreativeGameMode;
 import com.mojang.minecraft.gamemode.GameMode;
 import com.mojang.minecraft.gui.BlockSelectScreen;
 import com.mojang.minecraft.gui.ChatInputScreen;
-import com.mojang.minecraft.gui.ChatInputScreenExtension;
+import com.mojang.minecraft.gui.ChatInputScreen;
 import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.gui.GameOverScreen;
@@ -874,7 +874,6 @@ public final class Minecraft implements Runnable {
         // For all your looping needs
         int x;
         int y;
-        int z;
         int i;
         if (canvas == null && Display.isCloseRequested()) {
             isRunning = false;
@@ -2815,7 +2814,7 @@ public final class Minecraft implements Runnable {
 
                         case Keyboard.KEY_SLASH:
                             player.releaseAllKeys();
-                            ChatInputScreenExtension s = new ChatInputScreenExtension();
+                            ChatInputScreen s = new ChatInputScreen();
                             setCurrentScreen(s);
                             s.inputLine = "/";
                             s.caretPos++;
@@ -2858,7 +2857,7 @@ public final class Minecraft implements Runnable {
 
                         if (Keyboard.getEventKey() == settings.chatKey.key) {
                             player.releaseAllKeys();
-                            setCurrentScreen(new ChatInputScreenExtension());
+                            setCurrentScreen(new ChatInputScreen());
                         }
                     }
                     for (int i = 0; i < 9; ++i) {

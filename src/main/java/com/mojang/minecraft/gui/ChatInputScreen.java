@@ -1,15 +1,82 @@
 package com.mojang.minecraft.gui;
 
-import org.lwjgl.input.Keyboard;
+import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Vector;
 
-import com.mojang.minecraft.GameSettings;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
+import com.mojang.minecraft.ChatClickData;
+import com.mojang.minecraft.ChatClickData.LinkData;
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.PacketType;
 
-public final class ChatInputScreen extends GuiScreen {
+public class ChatInputScreen extends GuiScreen {
 
-    public String message = "";
-    private int counter = 0;
+    public String inputLine = "";
+    private int tickCount = 0;
+    public int caretPos = 0;
+    private int historyPos = 0;
+
+    public static Vector<String> history = new Vector<>();
+
+    int j;
+
+    private String getClipboard() {
+        Transferable clipboard = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+        try {
+            if (clipboard != null && clipboard.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                return (String) clipboard.getTransferData(DataFlavor.stringFlavor);
+            }
+        } catch (UnsupportedFlavorException ex) {
+        } catch (IOException e) {
+        }
+        return null;
+    }
+
+    private void insertTextAtCaret(String paramString) {
+        int i;
+        if (minecraft.session != null) {
+            i = 64 - minecraft.session.username.length() - 2;
+        } else {
+            i = 64;
+        }
+
+        int j = paramString.length();
+        inputLine = inputLine.substring(0, caretPos) + paramString + inputLine.substring(caretPos);
+        caretPos += j;
+        if (inputLine.length() > i) {
+            inputLine = inputLine.substring(0, i);
+        }
+        if (caretPos > inputLine.length()) {
+            caretPos = inputLine.length();
+        }
+    }
+
+    public String joinToString(String[] Names) throws Exception {
+        String buildable = "";
+        if (Names == null) {
+            throw new Exception("Names cannot be null");
+        }
+        if (Names.length == 0) {
+            return buildable;
+        }
+        for (int i = 0; i < Names.length; i++) {
+            buildable += Names[i];
+            if (i != Names.length) {
+                buildable += ", ";
+            }
+        }
+        return buildable;
+    }
 
     @Override
     public final void onClose() {
@@ -17,72 +84,202 @@ public final class ChatInputScreen extends GuiScreen {
     }
 
     @Override
-    protected final void onKeyPress(char var1, int var2) {
-        if (var2 == Keyboard.KEY_UP) {
-            GameSettings.typinglogpos--;
-            if (GameSettings.typinglogpos < 0) {
-                GameSettings.typinglogpos = 0;
+    protected final void onKeyPress(char paramChar, int paramInt) {
+        if (paramInt == Keyboard.KEY_ESCAPE) {
+            minecraft.setCurrentScreen((GuiScreen) null);
+            return;
+        }
+        if (paramInt == Keyboard.KEY_F2) {
+            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.takeAndSaveScreenshot(minecraft.width, minecraft.height);
+            minecraft.setCurrentScreen(this);
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
+            return;
+        }
+
+        if (paramInt == Keyboard.KEY_RETURN) { // 28
+            String str1 = inputLine.trim();
+            if (str1.toLowerCase().startsWith("/client")) {
+                if (str1.equalsIgnoreCase("/client debug")) {
+                    minecraft.settings.showDebug = !minecraft.settings.showDebug;
+                    minecraft.hud.addChat("&eDebug: &a"
+                            + (!minecraft.settings.showDebug ? "On" : "Off") + " -> "
+                            + (minecraft.settings.showDebug ? "On" : "Off"));
+                } else if (str1.equalsIgnoreCase("/client gui")) {
+                    minecraft.canRenderGUI = !minecraft.canRenderGUI;
+                    minecraft.hud.addChat("&eGUI: &a" + (!minecraft.canRenderGUI ? "On" : "Off")
+                            + " -> " + (minecraft.canRenderGUI ? "On" : "Off"));
+                } else if (str1.equalsIgnoreCase("/client hacks")) {
+                    minecraft.settings.HacksEnabled = !minecraft.settings.HacksEnabled;
+                    minecraft.hud.addChat("&eHacks: &a"
+                            + (!minecraft.settings.HacksEnabled ? "Enabled" : "Disabled") + " -> "
+                            + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));
+                } else if (str1.equalsIgnoreCase("/client speedhack")) {
+                    if (minecraft.settings.HackType == 1) {
+                        minecraft.settings.HackType = 0;
+                    } else {
+                        minecraft.settings.HackType++;
+                    }
+                    minecraft.hud
+                            .addChat("&eSpeedHack: &a"
+                                    + (!(minecraft.settings.HackType == 0) ? "Normal" : "Advanced")
+                                    + " -> "
+                                    + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
+                } else if (str1.equalsIgnoreCase("/client help")) {
+                    minecraft.hud.addChat("&a/Client GUI &e- Toggles the GUI");
+                    minecraft.hud
+                            .addChat("&a/Client Debug &e- Toggles the showing of the debug information");
+                    minecraft.hud.addChat("&a/Client Hacks &e- Toggles being able to use hacks");
+                    minecraft.hud
+                            .addChat("&a/Client SpeedHack &e- Switches between normal and advanced speedhack");
+                    minecraft.hud
+                            .addChat("&a/Client Status &e- Lists the settings and their current state");
+                    minecraft.hud.addChat("&a/Client Help &e- Displays this current page");
+                    minecraft.hud.addChat("&eTell us what you want as a command!");
+                } else if (str1.equalsIgnoreCase("/client status")) {
+                    minecraft.hud.addChat("&eCurrent client command settings:");
+                    minecraft.hud.addChat("  &eGUI: &a" + (minecraft.canRenderGUI ? "On" : "Off"));
+                    minecraft.hud.addChat("  &eDebug: &a"
+                            + (minecraft.settings.showDebug ? "On" : "Off"));
+                    minecraft.hud.addChat("  &eHacks: &a"
+                            + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));
+                    minecraft.hud.addChat("  &eSpeedHack: &a"
+                            + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
+                } else {
+                    minecraft.hud
+                            .addChat("&eTo see a list of client commands type in &a/Client Help");
+                }
+            } else if (minecraft.session == null) {
+                minecraft.hud.addChat("&f" + str1);
+            } else if (str1.length() > 0) {
+                NetworkManager var10000 = minecraft.networkManager;
+                NetworkManager var3 = var10000;
+                if ((str1 = str1.trim()).length() > 0) {
+                    var3.netHandler.send(PacketType.CHAT_MESSAGE,
+                            new Object[] { Integer.valueOf(-1), str1 });
+                }
+
             }
-            if (GameSettings.typinglogpos >= 0
-                    && GameSettings.typinglogpos < GameSettings.typinglog.size()) {
-                message = GameSettings.typinglog.get(GameSettings.typinglogpos);
+            history.add(str1);
+            minecraft.setCurrentScreen((GuiScreen) null);
+            return;
+        }
+
+        int i = inputLine.length();
+        if (paramInt == Keyboard.KEY_BACK && i > 0 && caretPos > 0) {
+            inputLine = inputLine.substring(0, caretPos - 1) + inputLine.substring(caretPos);
+            caretPos -= 1;
+        }
+
+        if (paramInt == Keyboard.KEY_LEFT && caretPos > 0) {
+            caretPos -= 1;
+        }
+
+        if (paramInt == Keyboard.KEY_RIGHT && caretPos < i) {
+            caretPos += 1;
+        }
+
+        if (paramInt == Keyboard.KEY_HOME) {
+            caretPos = 0;
+        }
+
+        if (paramInt == Keyboard.KEY_END) {
+            caretPos = i;
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_LMETA) || Keyboard.isKeyDown(Keyboard.KEY_RMETA)
+                || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)
+                || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
+            if (paramInt == Keyboard.KEY_V) {
+                paramChar = '\000';
+                String clipboardText = getClipboard();
+                if (clipboardText != null) {
+                    insertTextAtCaret(clipboardText);
+                }
+            } else if (paramInt == Keyboard.KEY_C) {
+                paramChar = '\000';
+                setClipboard(inputLine);
             }
         }
-        if (var2 == Keyboard.KEY_DOWN) {
-            GameSettings.typinglogpos++;
-            if (GameSettings.typinglogpos > GameSettings.typinglog.size()) {
-                GameSettings.typinglogpos = GameSettings.typinglog.size();
-            }
-            if (GameSettings.typinglogpos >= 0
-                    && GameSettings.typinglogpos < GameSettings.typinglog.size()) {
-                message = GameSettings.typinglog.get(GameSettings.typinglogpos);
-            }
-            if (GameSettings.typinglogpos == GameSettings.typinglog.size()) {
-                message = "";
+        /*
+         * if (paramInt == Keyboard.KEY_TAB) { String namePart = this.inputLine;
+         * if (namePart == null || namePart.length() == 0) return; List<String>
+         * potentials = new ArrayList<String>(); for (int index = 0; index <
+         * this.minecraft.networkManager.players.size(); index++) { if
+         * (this.minecraft
+         * .networkManager.players.get(index).name.toLowerCase().contains
+         * (namePart .toLowerCase())) {
+         * potentials.add(this.minecraft.networkManager
+         * .players.get(index).name); } } if (potentials.size() == 0) return; if
+         * (potentials.size() == 1) { this.inputLine = potentials.get(0); } else
+         * { try { this.minecraft.hud.addChat(joinToString((String[])
+         * potentials.toArray())); } catch (Exception e) { e.printStackTrace();
+         * } } }
+         */
+
+        if (paramInt == Keyboard.KEY_UP) {
+            j = history.size();
+            if (historyPos < j) {
+                historyPos += 1;
+                inputLine = history.get(j - historyPos);
+                caretPos = inputLine.length();
             }
         }
-        if (var2 == Keyboard.KEY_ESCAPE) {
-            minecraft.setCurrentScreen((GuiScreen) null);
-        } else if (var2 == Keyboard.KEY_RETURN) {
-            NetworkManager var10000 = minecraft.networkManager;
-            String var4 = message.trim();
-            NetworkManager var3 = var10000;
-            if ((var4 = var4.trim()).length() > 0) {
-                var3.netHandler.send(PacketType.CHAT_MESSAGE, new Object[] { Integer.valueOf(-1),
-                        var4 });
-                GameSettings.typinglog.add(var4);
-                GameSettings.typinglogpos = GameSettings.typinglog.size();
-            }
 
-            minecraft.setCurrentScreen((GuiScreen) null);
-        } else {
-            if (var2 == Keyboard.KEY_BACK && message.length() > 0) {
-                message = message.substring(0, message.length() - 1);
-            }
+        if (paramInt == Keyboard.KEY_DOWN) {
+            j = history.size();
+            if (historyPos > 0) {
+                historyPos -= 1;
 
-            if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_\'*!\\\"#%/()=+?[]{}<>@|$;^`~"
-                    .indexOf(var1) >= 0
-                    && message.length() < 64 - (minecraft.session.username.length() + 2)) {
-                message = message + var1;
+                if (historyPos > 0) {
+                    inputLine = history.get(j - historyPos);
+                } else {
+                    inputLine = "";
+                }
+                caretPos = inputLine.length();
             }
+        }
 
+        int j = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_'*!\\\"#%/()=+?[]{}<>@|$;~`^"
+                .indexOf(paramChar) >= 0 ? 1 : 0;
+
+        if (j != 0) {
+            insertTextAtCaret(String.valueOf(paramChar));
         }
     }
 
     @Override
-    protected final void onMouseClick(int var1, int var2, int var3) {
-        if (var3 == 0 && minecraft.hud.hoveredPlayer != null) {
-            if (message.length() > 0 && !message.endsWith(" ")) {
-                message = message + " ";
-            }
-
-            message = message + minecraft.hud.hoveredPlayer;
-            var1 = 64 - (minecraft.session.username.length() + 2);
-            if (message.length() > var1) {
-                message = message.substring(0, var1);
+    protected final void onMouseClick(int x, int y, int clickType) {
+        if (clickType == 0 && minecraft.hud.hoveredPlayer != null) {
+            insertTextAtCaret(minecraft.hud.hoveredPlayer + " ");
+        }
+        if (clickType == 0) {
+            for (int i = 0; i < minecraft.hud.chat.size(); i++) {
+                for (ChatScreenData data : minecraft.hud.chatsOnScreen) {
+                    if (x > data.bounds.maxX && x < data.bounds.minX && y > data.bounds.maxY
+                            && y < data.bounds.minY) {
+                        ChatClickData chatClickData = new ChatClickData(fontRenderer,
+                                minecraft.hud.chat.get(i));
+                        if (data.string == chatClickData.message) {
+                            for (LinkData ld : chatClickData.getClickedUrls()) {
+                                if (ld != null) {
+                                    if (x > ld.x0 && x < ld.x1 && y > data.bounds.maxY
+                                            && y < data.bounds.minY) {
+                                        String s = FontRenderer.stripColor(ld.link);
+                                        URI uri = chatClickData.getURI(s);
+                                        if (uri != null) {
+                                            openWebpage(uri);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-
     }
 
     @Override
@@ -90,27 +287,88 @@ public final class ChatInputScreen extends GuiScreen {
         Keyboard.enableRepeatEvents(true);
     }
 
+    public void openWebpage(URI uri) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(uri);
+            } catch (Exception ex) {
+                LogUtil.logError("Error opening a chat link: " + uri, ex);
+            }
+        }
+    }
+
+    /**
+     * The background color of the chat.
+     */
+    public static int ChatRGB = new java.awt.Color(0, 0, 0, 130).getRGB();
+
     @Override
-    public final void render(int var1, int var2) {
+    public void render(int paramInt1, int paramInt2) {
+        // super.drawBox(2, height - 14, width - 2, height - 2, -2147483648);
+        char[] temp = new char[128];
+        for (int a = 0; a < inputLine.length(); a++) {
+            temp[a] = inputLine.toCharArray()[a];
+        }
+
+        if (temp.length == 0) {
+            temp[temp.length] = tickCount / 6 % 2 == 0 ? '_' : ' ';
+        } else {
+            temp[caretPos] = tickCount / 6 % 2 == 0 ? '_' : temp[caretPos];
+        }
+
+        String string = "";
+        String messageNoCaret = "";
+        for (int i = 0; i < temp.length; i++) {
+            if (i != caretPos) {
+                messageNoCaret += temp[i];
+            }
+            string += temp[i];
+        }
         int x1 = 2;
         /*
          * Add the beginning position of the box + the length of '> _' + the
          * length of the trimmed message + the x position of the '> _' string.
          */
-        int x2 = x1 + fontRenderer.getWidth("> _" + message) + 4;
+        int x2 = x1 + fontRenderer.getWidth("> _" + messageNoCaret.replace(" ", "..").trim()) + 4;
 
         int y1 = height - 14;
         int y2 = y1 + 12;
-        super.drawBox(x1, y1, x2, y2, ChatInputScreenExtension.ChatRGB);
-        // drawBox(2, height - 14, width - 2, height - 2,
-        // ChatInputScreenExtension.ChatRGB);
+        super.drawBox(x1, y1, x2, y2, ChatRGB);
 
-        drawString(fontRenderer, "> " + message + (counter / 6 % 2 == 0 ? "_" : ""), 4,
-                height - 12, 14737632);
+        drawString(fontRenderer, "> " + string, 4, height - 12, 14737632);
+        float scale = 0.6f;
+        int x = Mouse.getEventX() * width / minecraft.width;
+        int y = height - Mouse.getEventY() * height / minecraft.height - 1;
+        for (int i = 0; i < minecraft.hud.chat.size(); i++) {
+            for (ChatScreenData data : minecraft.hud.chatsOnScreen) {
+                if (x > data.bounds.maxX && x < data.bounds.minX && y > data.bounds.maxY
+                        && y < data.bounds.minY) {
+                    ChatClickData chatClickData = new ChatClickData(fontRenderer,
+                            minecraft.hud.chat.get(i));
+                    if (data.string == chatClickData.message) {
+                        for (LinkData ld : chatClickData.getClickedUrls()) {
+                            if (ld != null) {
+                                if (x > ld.x0 && x < ld.x1 && y > data.bounds.maxY
+                                        && y < data.bounds.minY) {
+                                    super.drawBox(ld.x0, data.y - 1, ld.x1 + 3 * scale, data.y + 9
+                                            * scale, -2147483648);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void setClipboard(String paramString) {
+        StringSelection localStringSelection = new StringSelection(paramString);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(localStringSelection, null);
     }
 
     @Override
     public final void tick() {
-        ++counter;
+        ++tickCount;
     }
 }

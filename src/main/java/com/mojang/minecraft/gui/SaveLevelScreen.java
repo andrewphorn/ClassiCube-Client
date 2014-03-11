@@ -9,8 +9,8 @@ import com.mojang.minecraft.level.LevelSerializer;
 
 public final class SaveLevelScreen extends LoadLevelScreen {
 
-    public SaveLevelScreen(GuiScreen var1) {
-        super(var1);
+    public SaveLevelScreen(GuiScreen screen) {
+        super(screen);
         title = "Save level";
         saving = true;
     }
@@ -22,18 +22,16 @@ public final class SaveLevelScreen extends LoadLevelScreen {
     }
 
     @Override
-    protected final void openLevel(File var1) {
-        if (!var1.getName().endsWith(".cw")) {
-            var1 = new File(var1.getParentFile(), var1.getName() + ".cw");
+    protected final void openLevel(File file) {
+        if (!file.getName().endsWith(".cw")) {
+            file = new File(file.getParentFile(), file.getName() + ".cw");
         }
-
-        File var2 = var1;
         Minecraft var3 = minecraft;
         try {
-            new LevelSerializer(var3.level).saveMap(var2);
+            new LevelSerializer(var3.level).saveMap(file);
         } catch (Exception ex) {
             // TODO: report error to user
-            LogUtil.logError("Error saving a map to " + var1, ex);
+            LogUtil.logError("Error saving a map to " + file, ex);
         }
         // this.minecraft.levelIo.save(var3.level, var2);
         minecraft.setCurrentScreen(parent);

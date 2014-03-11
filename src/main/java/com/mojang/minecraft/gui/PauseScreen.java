@@ -16,21 +16,21 @@ public final class PauseScreen extends GuiScreen {
     int orangeColor = 16750160;
 
     int redColor = 16737380;
-    String VersionString = "0.12";
+    String VersionString = "0.13";
 
     @Override
-    protected final void onButtonClick(Button var1) {
+    protected final void onButtonClick(Button button) {
         if (minecraft.session != null) {
-            if (var1.id == 0) {
-                minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
+            if (button.id == 0) {
+                minecraft.setCurrentScreen(new OptionsScreen(minecraft.settings));
             }
-            if (var1.id == 1) {
+            if (button.id == 1) {
                 minecraft.setCurrentScreen(new SaveLevelScreen(this));
             }
-            if (var1.id == 2) {
+            if (button.id == 2) {
                 minecraft.setCurrentScreen(new TextureSelectionScreen(this));
             }
-            if (var1.id == 3) {
+            if (button.id == 3) {
                 minecraft.networkManager.netHandler.close();
                 HUDScreen.Announcement = "";
                 HUDScreen.BottomRight1 = "";
@@ -47,11 +47,11 @@ public final class PauseScreen extends GuiScreen {
                         minecraft.isFullScreen);
                 minecraft.isRunning = false;
             }
-            if (var1.id == 4) {
+            if (button.id == 4) {
                 minecraft.setCurrentScreen((GuiScreen) null);
                 minecraft.grabMouse();
             }
-            if (var1.id == 5) {
+            if (button.id == 5) {
                 File file = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
                 file.mkdirs();
                 try {
@@ -61,7 +61,7 @@ public final class PauseScreen extends GuiScreen {
                     LogUtil.logError("Error opening screenshots folder.", ex);
                 }
             }
-            if (var1.id == 6) {
+            if (button.id == 6) {
                 File file = new File(Minecraft.getMinecraftDirectory(), "/logs/");
                 file.mkdirs();
                 try {
@@ -72,26 +72,26 @@ public final class PauseScreen extends GuiScreen {
                 }
             }
         } else {
-            if (var1.id == 0) {
-                minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
+            if (button.id == 0) {
+                minecraft.setCurrentScreen(new OptionsScreen(minecraft.settings));
             }
-            if (var1.id == 1) {
+            if (button.id == 1) {
                 minecraft.setCurrentScreen(new GenerateLevelScreen(this));
             }
-            if (var1.id == 2) {
+            if (button.id == 2) {
                 minecraft.setCurrentScreen(new SaveLevelScreen(this));
             }
-            if (var1.id == 3) {
+            if (button.id == 3) {
                 minecraft.setCurrentScreen(new LoadLevelScreen(this));
             }
-            if (var1.id == 4) {
+            if (button.id == 4) {
                 minecraft.setCurrentScreen(new TextureSelectionScreen(this));
             }
-            if (var1.id == 5) {
+            if (button.id == 5) {
                 minecraft.setCurrentScreen((GuiScreen) null);
                 minecraft.grabMouse();
             }
-            if (var1.id == 6) {
+            if (button.id == 6) {
                 File file = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
                 file.mkdirs();
                 try {
@@ -101,7 +101,7 @@ public final class PauseScreen extends GuiScreen {
                     LogUtil.logError("Error opening screenshots folder.", ex);
                 }
             }
-            if (var1.id == 7) {
+            if (button.id == 7) {
                 File file = new File(Minecraft.getMinecraftDirectory(), "/logs/");
                 file.mkdirs();
                 try {

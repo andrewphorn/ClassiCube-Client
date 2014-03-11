@@ -7,14 +7,14 @@ public final class ErrorScreen extends GuiScreen {
     private String title;
     private String text;
 
-    public ErrorScreen(String var1, String var2) {
-        title = var1;
-        text = var2;
+    public ErrorScreen(String title, String subtitle) {
+        this.title = title;
+        text = subtitle;
     }
 
     @Override
-    protected final void onButtonClick(Button var1) {
-        if (var1.id == 0) {
+    protected final void onButtonClick(Button button) {
+        if (button.id == 0) {
             minecraft.shutdown();
             ClassiCubeStandalone.main(ClassiCubeStandalone.storedArgs);
             minecraft.isRunning = false;

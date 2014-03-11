@@ -8,21 +8,21 @@ public final class MoreControlsScreen extends GuiScreen {
     private GameSettings settings;
     private int selected = -1;
 
-    public MoreControlsScreen(GuiScreen var1, GameSettings var2) {
-        settings = var2;
+    public MoreControlsScreen(GameSettings gameSettings) {
+        settings = gameSettings;
     }
 
     @Override
-    protected final void onButtonClick(Button var1) {
-        for (int var2 = 0; var2 < settings.bindingsmore.length; ++var2) {
-            buttons.get(var2).text = settings.getBindingMore(var2);
+    protected final void onButtonClick(Button button) {
+        for (int i = 0; i < settings.bindingsmore.length; ++i) {
+            buttons.get(i).text = settings.getBindingMore(i);
         }
 
-        if (var1.id == 200) {
-            minecraft.setCurrentScreen(new ControlsScreen(this, minecraft.settings));
+        if (button.id == 200) {
+            minecraft.setCurrentScreen(new ControlsScreen(minecraft.settings));
         } else {
-            selected = var1.id;
-            var1.text = "> " + settings.getBindingMore(var1.id) + " <";
+            selected = button.id;
+            button.text = "> " + settings.getBindingMore(button.id) + " <";
         }
     }
 
@@ -39,9 +39,9 @@ public final class MoreControlsScreen extends GuiScreen {
 
     @Override
     public final void onOpen() {
-        for (int var1 = 0; var1 < settings.bindingsmore.length; ++var1) {
-            buttons.add(new OptionButton(var1, width / 2 - 155 + var1 % 2 * 160, height / 6 + 24
-                    * (var1 >> 1), settings.getBindingMore(var1)));
+        for (int i = 0; i < settings.bindingsmore.length; ++i) {
+            buttons.add(new OptionButton(i, width / 2 - 155 + i % 2 * 160, height / 6 + 24
+                    * (i >> 1), settings.getBindingMore(i)));
         }
 
         buttons.add(new Button(200, width / 2 - 100, height / 6 + 168, "Done"));

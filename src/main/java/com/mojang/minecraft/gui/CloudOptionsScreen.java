@@ -26,21 +26,21 @@ public final class CloudOptionsScreen extends GuiScreen {
     private String title = "Cloud Options";
     private GameSettings settings;
 
-    public CloudOptionsScreen(GuiScreen var1, GameSettings var2) {
-        parent = var1;
-        settings = var2;
+    public CloudOptionsScreen(GuiScreen guiScreen, GameSettings settings) {
+        parent = guiScreen;
+        this.settings = settings;
     }
 
     @Override
-    protected final void onButtonClick(Button var1) {
-        if (var1.active) {
-            if (var1.id == 1) {
+    protected final void onButtonClick(Button button) {
+        if (button.active) {
+            if (button.id == 1) {
                 CloudLevelInputScreen screen = new CloudLevelInputScreen(parent, ""
                         + minecraft.level.cloudLevel, height, "Enter new value for cloud level...");
                 screen.numbersOnly = true;
                 minecraft.setCurrentScreen(screen);
             }
-            if (var1.id == 2) {
+            if (button.id == 2) {
                 CloudColorInputScreen screen = new CloudColorInputScreen(parent, ""
                         + Integer.toHexString(minecraft.level.cloudColor), height,
                         "Enter new value for cloud color...");
@@ -49,13 +49,13 @@ public final class CloudOptionsScreen extends GuiScreen {
                 minecraft.setCurrentScreen(screen);
             }
 
-            if (var1.id == 3) {
+            if (button.id == 3) {
                 settings.showClouds = !settings.showClouds;
                 buttons.set(2, new OptionButton(3, width / 2 - 77, height / 6 + 72, "Clouds: "
                         + (settings.showClouds ? "On" : "Off")));
             }
 
-            if (var1.id == 4) {
+            if (button.id == 4) {
                 minecraft.setCurrentScreen(new AdvancedOptionsScreen(this, settings));
             }
         }

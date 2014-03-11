@@ -24,16 +24,16 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
     protected boolean saving = false;
     protected File selectedFile;
 
-    public LoadLevelScreen(GuiScreen var1) {
-        parent = var1;
+    public LoadLevelScreen(GuiScreen parent) {
+        this.parent = parent;
     }
 
     @Override
-    protected final void onButtonClick(Button var1) {
+    protected final void onButtonClick(Button button) {
         if (!frozen) {
-            if (var1.active) {
-                if (loaded && var1.id < 5) {
-                    this.openLevel(var1.id);
+            if (button.active) {
+                if (loaded && button.id < 5) {
+                    this.openLevel(button.id);
                 }
 
                 // if (finished || loaded && var1.id == 5) {
@@ -43,7 +43,7 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
                 // SwingUtilities.invokeLater(var2);
                 // }
 
-                if (finished || loaded && var1.id == 6) {
+                if (finished || loaded && button.id == 6) {
                     minecraft.setCurrentScreen(parent);
                 }
             }
@@ -63,10 +63,10 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
     public void onOpen() {
         new Thread(this).start();
 
-        for (int var1 = 0; var1 < 5; ++var1) {
-            buttons.add(new Button(var1, width / 2 - 100, height / 6 + var1 * 24, "---"));
-            buttons.get(var1).visible = false;
-            buttons.get(var1).active = false;
+        for (int i = 0; i < 5; ++i) {
+            buttons.add(new Button(i, width / 2 - 100, height / 6 + i * 24, "---"));
+            buttons.get(i).visible = false;
+            buttons.get(i).active = false;
         }
 
         // buttons.add(new Button(5, width / 2 - 100, height / 6 + 120 + 12,
@@ -78,14 +78,12 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
         SwingUtilities.invokeLater(var2);
     }
 
-    protected void openLevel(File var1) {
-        File var2 = var1;
-        Minecraft var4 = minecraft;
-        Level var5;
+    protected void openLevel(File file) {
+        Level level;
         try {
-            if ((var5 = new LevelLoader().load(var2, this.minecraft.player)) == null) {
+            if ((level = new LevelLoader().load(file, this.minecraft.player)) == null) {
             } else {
-                var4.setLevel(var5);
+            	minecraft.setLevel(level);
             }
         } catch (IOException ex) {
             // TODO Auto-generated catch block

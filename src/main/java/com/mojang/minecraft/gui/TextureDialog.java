@@ -10,13 +10,12 @@ import com.mojang.minecraft.Minecraft;
 
 final class TextureDialog extends Thread {
 
-    // $FF: synthetic field
     private TextureSelectionScreen screen;
     private Minecraft mc;
 
-    TextureDialog(TextureSelectionScreen var1, Minecraft minecraft) {
+    TextureDialog(TextureSelectionScreen screen, Minecraft minecraft) {
         super();
-        screen = var1;
+        this.screen = screen;
         mc = minecraft;
     }
 
@@ -32,11 +31,10 @@ final class TextureDialog extends Thread {
 
     @Override
     public final void run() {
-        JFileChooser var1;
+        JFileChooser fileChooser;
         try {
-            TextureSelectionScreen var10000 = screen;
-            var1 = new JFileChooser();
-            var10000.chooser = var1;
+            fileChooser = new JFileChooser();
+            screen.chooser = fileChooser;
             FileNameExtensionFilter var3 = new FileNameExtensionFilter(".Zip Texture Packs",
                     new String[] { "zip" });
             screen.chooser.setFileFilter(var3);
@@ -55,8 +53,8 @@ final class TextureDialog extends Thread {
             }
         } finally {
             screen.frozen = false;
-            var1 = null;
-            screen.chooser = var1;
+            fileChooser = null;
+            screen.chooser = fileChooser;
         }
 
     }

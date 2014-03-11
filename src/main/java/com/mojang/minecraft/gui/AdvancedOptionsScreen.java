@@ -112,7 +112,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
             }
 
             if (clickedButton.id == 700) {
-                minecraft.setCurrentScreen(new OptionsScreen(this, settings));
+                minecraft.setCurrentScreen(new OptionsScreen(settings));
             }
         }
     }

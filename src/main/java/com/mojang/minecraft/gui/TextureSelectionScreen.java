@@ -28,30 +28,29 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
     }
 
     @Override
-    protected final void onButtonClick(Button var1) {
-        if (!frozen && var1.active) {
-            if (loaded && var1.id < 5) {
-                this.openTexture(textures.get(var1.id));
+    protected final void onButtonClick(Button button) {
+        if (!frozen && button.active) {
+            if (loaded && button.id < 5) {
+                this.openTexture(textures.get(button.id));
             }
 
-            if (loaded && var1.id == 6) {
+            if (loaded && button.id == 6) {
                 frozen = true;
-                TextureDialog var2;
-                (var2 = new TextureDialog(this, minecraft)).setDaemon(true);
-                SwingUtilities.invokeLater(var2);
+                TextureDialog dialog;
+                (dialog = new TextureDialog(this, minecraft)).setDaemon(true);
+                SwingUtilities.invokeLater(dialog);
             }
 
-            if (finished || loaded && var1.id == 7) {
+            if (finished || loaded && button.id == 7) {
                 minecraft.setCurrentScreen(parent);
             }
-            if (var1.id == 8) {
+            if (button.id == 8) {
                 minecraft.textureManager.resetAllMods();
                 minecraft.textureManager.load("/terrain.png");
                 minecraft.textureManager.initAtlas();
                 minecraft.setCurrentScreen((GuiScreen) null);
                 minecraft.grabMouse();
                 minecraft.textureManager.textures.clear();
-                // this.minecraft.levelRenderer.refresh();
                 try {
                     minecraft.fontRenderer = new FontRenderer(minecraft.settings, "/default.png",
                             minecraft.textureManager);
@@ -78,10 +77,10 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
     public void onOpen() {
         new Thread(this).start();
 
-        for (int var1 = 0; var1 < 5; ++var1) {
-            buttons.add(new Button(var1, width / 2 - 100, height / 6 + var1 * 24, "---"));
-            buttons.get(var1).visible = false;
-            buttons.get(var1).active = false;
+        for (int i = 0; i < 5; ++i) {
+            buttons.add(new Button(i, width / 2 - 100, height / 6 + i * 24, "---"));
+            buttons.get(i).visible = false;
+            buttons.get(i).active = false;
         }
 
         buttons.add(new Button(6, width / 2 - 100, height / 6 + 120 + 12, "Load file..."));
@@ -103,9 +102,9 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
         minecraft.grabMouse();
     }
 
-    protected void openTexture(TexturePackData var1) {
-        selectedFile = new File(var1.location);
-        openTexture(var1.location);
+    protected void openTexture(TexturePackData data) {
+        selectedFile = new File(data.location);
+        openTexture(data.location);
         minecraft.setCurrentScreen(parent);
     }
 
@@ -167,12 +166,12 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
     }
 
-    protected void setTextures(ArrayList<TexturePackData> var1) {
-        for (int var2 = 0; var2 < Math.min(var1.size(), 5); ++var2) {
+    protected void setTextures(ArrayList<TexturePackData> texturePacks) {
+        for (int i = 0; i < Math.min(texturePacks.size(), 5); ++i) {
 
-            buttons.get(var2).active = !var1.get(var2).equals("-");
-            buttons.get(var2).text = var1.get(var2).name;
-            buttons.get(var2).visible = true;
+            buttons.get(i).active = !texturePacks.get(i).equals("-");
+            buttons.get(i).text = texturePacks.get(i).name;
+            buttons.get(i).visible = true;
         }
     }
 

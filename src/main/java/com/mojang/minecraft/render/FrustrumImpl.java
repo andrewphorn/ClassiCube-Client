@@ -19,8 +19,6 @@ public final class FrustrumImpl extends Frustrum {
 
     private FloatBuffer modelViewMatrixBuffer;
 
-    private FloatBuffer unused;
-
     public FrustrumImpl() {
         projectionMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
         modelViewMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);

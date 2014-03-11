@@ -6,7 +6,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,7 +41,7 @@ public class GLAllocation {
 }
 
     public static synchronized void deleteTexturesAndDisplayLists() {
-        for (Entry i:  displayLists.entrySet()) {
+        for (Entry<Integer, Integer> i:  displayLists.entrySet()) {
             Entry<Integer, Integer> entity = (Entry<Integer, Integer>) i;
             GL11.glDeleteLists(entity.getKey(), entity.getValue());
         }

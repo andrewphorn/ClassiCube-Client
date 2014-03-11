@@ -16,11 +16,11 @@ import com.mojang.minecraft.level.LevelLoader;
 public final class GamemodeScreen extends GuiScreen {
 
     @Override
-    protected final void onButtonClick(Button var1) {
-        if (var1.id == 0) {
+    protected final void onButtonClick(Button button) {
+        if (button.id == 0) {
         }
 
-        if (var1.id == 1) {
+        if (button.id == 1) {
             minecraft.gamemode = new SurvivalGameMode(minecraft);
         }
         Level level = null;

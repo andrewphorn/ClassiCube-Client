@@ -127,7 +127,6 @@ public final class Renderer {
             LiquidType var6 = var5.getLiquidType();
             GL11.glFogi(2917, 2048);
             float var3;
-            float var4;
             float var7;
             float var8;
             if (var6 == LiquidType.water) {

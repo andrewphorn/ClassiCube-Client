@@ -5,16 +5,16 @@ import org.lwjgl.opengl.GL11;
 public final class GameOverScreen extends GuiScreen {
 
     @Override
-    protected final void onButtonClick(Button var1) {
-        if (var1.id == 0) {
-            minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
+    protected final void onButtonClick(Button button) {
+        if (button.id == 0) {
+            minecraft.setCurrentScreen(new OptionsScreen(minecraft.settings));
         }
 
-        if (var1.id == 1) {
+        if (button.id == 1) {
             minecraft.setCurrentScreen(new GenerateLevelScreen(this));
         }
 
-        if (minecraft.session != null && var1.id == 2) {
+        if (minecraft.session != null && button.id == 2) {
             minecraft.setCurrentScreen(new LoadLevelScreen(this));
         }
 

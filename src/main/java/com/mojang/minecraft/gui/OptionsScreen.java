@@ -13,7 +13,7 @@ public final class OptionsScreen extends GuiScreen {
     private final String title = "Options";
     private final GameSettings settings;
 
-    public OptionsScreen(GuiScreen parent, GameSettings settings) {
+    public OptionsScreen(GameSettings settings) {
         this.settings = settings;
     }
 
@@ -33,7 +33,7 @@ public final class OptionsScreen extends GuiScreen {
 
             } else if (clickedButton.id == 200) {
                 // [Controls] was clicked
-                minecraft.setCurrentScreen(new ControlsScreen(this, settings));
+                minecraft.setCurrentScreen(new ControlsScreen(settings));
 
             } else if (clickedButton.id == 300) {
                 // [Done] was clicked

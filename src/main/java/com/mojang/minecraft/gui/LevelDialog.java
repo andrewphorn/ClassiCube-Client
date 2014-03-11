@@ -10,37 +10,37 @@ final class LevelDialog extends Thread {
     // $FF: synthetic field
     private LoadLevelScreen screen;
 
-    LevelDialog(LoadLevelScreen var1) {
+    LevelDialog(LoadLevelScreen screen) {
         super();
-        screen = var1;
+        this.screen = screen;
     }
 
     @Override
     public final void run() {
-        JFileChooser var1;
+        JFileChooser fileChooser;
         try {
-            LoadLevelScreen var10000 = screen;
-            var1 = new JFileChooser();
-            var10000.chooser = var1;
-            FileNameExtensionFilter var3 = new FileNameExtensionFilter("ClassicWorld format (.cw)",
+            LoadLevelScreen llScreen = screen;
+            fileChooser = new JFileChooser();
+            llScreen.chooser = fileChooser;
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("ClassicWorld format (.cw)",
                     new String[] { "cw" });
-            screen.chooser.setFileFilter(var3);
+            screen.chooser.setFileFilter(filter);
             screen.chooser.setMultiSelectionEnabled(false);
-            int var7;
+            int chosenID;
             if (screen.saving) {
-                var7 = screen.chooser.showSaveDialog(screen.minecraft.canvas);
+                chosenID = screen.chooser.showSaveDialog(screen.minecraft.canvas);
             } else {
-                var7 = screen.chooser.showOpenDialog(screen.minecraft.canvas);
+                chosenID = screen.chooser.showOpenDialog(screen.minecraft.canvas);
             }
 
-            if (var7 == 0) {
+            if (chosenID == 0) {
                 screen.selectedFile = screen.chooser.getSelectedFile();
                 screen.selectedFile = new File(screen.selectedFile + "");
             }
         } finally {
             screen.frozen = false;
-            var1 = null;
-            screen.chooser = var1;
+            fileChooser = null;
+            screen.chooser = fileChooser;
         }
     }
 }

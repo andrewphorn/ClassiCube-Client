@@ -8,23 +8,23 @@ public final class ControlsScreen extends GuiScreen {
     private GameSettings settings;
     private int selected = -1;
 
-    public ControlsScreen(GuiScreen var1, GameSettings var2) {
-        settings = var2;
+    public ControlsScreen(GameSettings gameSettings) {
+        settings = gameSettings;
     }
 
     @Override
-    protected final void onButtonClick(Button var1) {
-        for (int var2 = 0; var2 < settings.bindings.length; ++var2) {
-            buttons.get(var2).text = settings.getBinding(var2);
+    protected final void onButtonClick(Button button) {
+        for (int i = 0; i < settings.bindings.length; ++i) {
+            buttons.get(i).text = settings.getBinding(i);
         }
 
-        if (var1.id == 100) {
-            minecraft.setCurrentScreen(new MoreControlsScreen(this, minecraft.settings));
-        } else if (var1.id == 200) {
-            minecraft.setCurrentScreen(new OptionsScreen(this, minecraft.settings));
+        if (button.id == 100) {
+            minecraft.setCurrentScreen(new MoreControlsScreen(minecraft.settings));
+        } else if (button.id == 200) {
+            minecraft.setCurrentScreen(new OptionsScreen(minecraft.settings));
         } else {
-            selected = var1.id;
-            var1.text = "> " + settings.getBinding(var1.id) + " <";
+            selected = button.id;
+            button.text = "> " + settings.getBinding(button.id) + " <";
         }
     }
 
@@ -41,9 +41,9 @@ public final class ControlsScreen extends GuiScreen {
 
     @Override
     public final void onOpen() {
-        for (int var1 = 0; var1 < settings.bindings.length; ++var1) {
-            buttons.add(new OptionButton(var1, width / 2 - 155 + var1 % 2 * 160, height / 6 + 24
-                    * (var1 >> 1), settings.getBinding(var1)));
+        for (int i = 0; i < settings.bindings.length; ++i) {
+            buttons.add(new OptionButton(i, width / 2 - 155 + i % 2 * 160, height / 6 + 24
+                    * (i >> 1), settings.getBinding(i)));
         }
         buttons.add(new OptionButton(100, width / 2 - 77 + 10 % 2 * 160, height / 6 + 24
                 * (10 >> 1), "More..."));

@@ -2,7 +2,6 @@ package com.mojang.net;
 
 import com.mojang.minecraft.LogUtil;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
@@ -19,7 +18,6 @@ public final class NetworkHandler {
     public ByteBuffer in = ByteBuffer.allocate(1048576);
     public ByteBuffer out = ByteBuffer.allocate(1048576);
     public NetworkManager netManager;
-    private Socket sock;
     private byte[] stringBytes = new byte[64];
     protected int soTrafficClass = 0x04 | 0x08 | 0x010;
 
@@ -69,7 +67,6 @@ public final class NetworkHandler {
         } catch (Exception e) {
         }
 
-        sock = null;
         channel = null;
     }
 

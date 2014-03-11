@@ -66,11 +66,11 @@ public final class FontRenderer {
         return 7F / charHeight * settings.scale;
     }
 
-    public int getWidth(String paramString) {
-        if (paramString == null) {
+    public int getWidth(String text) {
+        if (text == null) {
             return 0;
         }
-        char[] arrayOfChar = paramString.toCharArray();
+        char[] arrayOfChar = text.toCharArray();
         int i = 0;
         for (int j = 0; j < arrayOfChar.length; j++) {
             int k = arrayOfChar[j];
@@ -97,13 +97,6 @@ public final class FontRenderer {
             float f2 = 1F / f1;
             x = x * f2;
             y = y * f2;
-            // if(shadow){
-            // float f3 = 1F * this.userScale;
-            // float f3 = x - (2 - x);
-            // GL11.glTranslatef(f3, f3, 0F);
-            // x = x+f3;
-            // y= y+f3;
-            // }
             GL11.glBindTexture(3553, fontId);
 
             ShapeRenderer.instance.begin();
@@ -149,11 +142,6 @@ public final class FontRenderer {
                 }
             }
             GL11.glPushMatrix();
-            // if (shadow)
-            // {
-            // float f3 = 1F * this.userScale;
-            // GL11.glTranslatef(f3, f3, 0F);
-            // }
             GL11.glScalef(f1, f1, 1F);
             ShapeRenderer.instance.end();
             GL11.glPopMatrix();

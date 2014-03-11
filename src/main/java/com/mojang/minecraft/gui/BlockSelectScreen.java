@@ -13,9 +13,9 @@ import com.mojang.minecraft.render.TextureManager;
 
 public final class BlockSelectScreen extends GuiScreen {
 
-    boolean lessThan49 = SessionData.allowedBlocks.size() <= 50;
-    int BlocksPerRow = 13;
-    int Spacing = 20;
+    boolean defaultSizeBlocks = SessionData.allowedBlocks.size() <= 50;
+    int blocksPerRow = 13;
+    int spacing = 20;
 
     private final Timer timer = new Timer();
 
@@ -27,13 +27,13 @@ public final class BlockSelectScreen extends GuiScreen {
     public BlockSelectScreen() {
         grabsMouse = true;
         start();
-        if (lessThan49) {
-            BlocksPerRow = 11;
-            Spacing = 24;
+        if (defaultSizeBlocks) {
+            blocksPerRow = 11;
+            spacing = 24;
         }
     }
 
-    String GetBlockName(int id) {
+    String getBlockName(int id) {
         String s;
         if (id < 0 || id > 255) {
             return "";
@@ -56,13 +56,13 @@ public final class BlockSelectScreen extends GuiScreen {
         return s;
     }
 
-    private int getBlockOnScreen(int var1, int var2) {
-        for (int var3 = 0; var3 < SessionData.allowedBlocks.size(); ++var3) {
-            int var4 = width / 2 + var3 % BlocksPerRow * Spacing + -128 - 3;
-            int var5 = height / 2 + var3 / BlocksPerRow * Spacing + -60 + 3;
-            if (var1 >= var4 && var1 <= var4 + 22 && var2 >= var5 - BlocksPerRow
-                    && var2 <= var5 + BlocksPerRow) {
-                return var3;
+    private int getBlockOnScreen(int x, int y) {
+        for (int i = 0; i < SessionData.allowedBlocks.size(); ++i) {
+            int var4 = width / 2 + i % blocksPerRow * spacing + -128 - 3;
+            int var5 = height / 2 + i / blocksPerRow * spacing + -60 + 3;
+            if (x >= var4 && x <= var4 + 22 && y >= var5 - blocksPerRow
+                    && y <= var5 + blocksPerRow) {
+                return i;
             }
         }
 
@@ -70,58 +70,57 @@ public final class BlockSelectScreen extends GuiScreen {
     }
 
     @Override
-    protected final void onMouseClick(int var1, int var2, int var3) {
-        if (var3 == 0) {
-            minecraft.player.inventory.replaceSlot(getBlockOnScreen(var1, var2));
+    protected final void onMouseClick(int x, int y, int clickType) {
+        if (clickType == 0) {
+            minecraft.player.inventory.replaceSlot(getBlockOnScreen(x, y));
             minecraft.setCurrentScreen((GuiScreen) null);
         }
-
     }
 
     @Override
     public final void render(int var1, int var2) {
         var1 = getBlockOnScreen(var1, var2);
-        if (lessThan49) {
+        if (defaultSizeBlocks) {
             drawFadingBox(width / 2 - 140, 30, width / 2 + 140, 195, -1878719232, -1070583712);
         } else {
             drawFadingBox(width / 2 - 140, 30, width / 2 + 140, 180, -1878719232, -1070583712);
         }
         if (var1 >= 0) {
-            var2 = width / 2 + var1 % BlocksPerRow * Spacing + -128;
-            if (lessThan49) {
-                drawCenteredString(fontRenderer, GetBlockName(var1), width / 2, 180, 16777215);
+            var2 = width / 2 + var1 % blocksPerRow * spacing + -128;
+            if (defaultSizeBlocks) {
+                drawCenteredString(fontRenderer, getBlockName(var1), width / 2, 180, 16777215);
             } else {
-                drawCenteredString(fontRenderer, GetBlockName(var1), width / 2, 165, 16777215);
+                drawCenteredString(fontRenderer, getBlockName(var1), width / 2, 165, 16777215);
             }
         }
 
         drawCenteredString(fontRenderer, "Select block", width / 2, 40, 16777215);
-        TextureManager var7 = minecraft.textureManager;
-        ShapeRenderer var8 = ShapeRenderer.instance;
-        var2 = var7.load("/terrain.png");
+        TextureManager textureManager = minecraft.textureManager;
+        ShapeRenderer shapeRenderer = ShapeRenderer.instance;
+        var2 = textureManager.load("/terrain.png");
         GL11.glBindTexture(3553, var2);
 
-        for (var2 = 0; var2 < SessionData.allowedBlocks.size(); ++var2) {
-            Block var4 = SessionData.allowedBlocks.get(var2);
-            if (var4 != null) {
+        for (int i = 0; i < SessionData.allowedBlocks.size(); ++i) {
+            Block block = SessionData.allowedBlocks.get(i);
+            if (block != null) {
                 GL11.glPushMatrix();
-                int var5 = width / 2 + var2 % BlocksPerRow * Spacing + -128;
-                int var6 = height / 2 + var2 / BlocksPerRow * Spacing + -60;
+                int var5 = width / 2 + i % blocksPerRow * spacing + -128;
+                int var6 = height / 2 + i / blocksPerRow * spacing + -60;
                 GL11.glTranslatef(var5, var6, 0F);
                 GL11.glScalef(9F, 9F, 9F);
                 GL11.glTranslatef(1F, 0.5F, 8F);
                 GL11.glRotatef(-30F, 1F, 0F, 0F);
                 GL11.glRotatef(45F, 0F, 1F, 0F);
-                if (var1 == var2) {
+                if (var1 == i) {
                     GL11.glScalef(1.6F, 1.6F, 1.6F);
                     GL11.glRotatef(lastRotation, 0F, 1F, 0F);
                 }
 
                 GL11.glTranslatef(-1.5F, 0.5F, 0.5F);
                 GL11.glScalef(-1F, -1F, -1F);
-                var8.begin();
-                var4.renderFullBrightness(var8);
-                var8.end();
+                shapeRenderer.begin();
+                block.renderFullBrightness(shapeRenderer);
+                shapeRenderer.end();
                 GL11.glPopMatrix();
             }
         }
@@ -137,7 +136,6 @@ public final class BlockSelectScreen extends GuiScreen {
             @Override
             public void run() {
                 rotate();
-                // timer.cancel();
             }
         }, miliseconds, miliseconds);
     }

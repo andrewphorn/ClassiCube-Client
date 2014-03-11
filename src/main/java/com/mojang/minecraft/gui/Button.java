@@ -11,20 +11,20 @@ public class Button extends Screen {
     public boolean active;
     public boolean visible;
 
-    public Button(int var1, int var2, int var3, int var4, String var6) {
+    public Button(int buttonID, int buttonX, int buttonY, int buttonWidth, String buttonText) {
         width = 200;
         height = 20;
         active = true;
         visible = true;
-        id = var1;
-        x = var2;
-        y = var3;
-        width = var4;
+        id = buttonID;
+        x = buttonX;
+        y = buttonY;
+        width = buttonWidth;
         height = 20;
-        text = var6;
+        text = buttonText;
     }
 
-    public Button(int var1, int var2, int var3, String var4) {
-        this(var1, var2, var3, 200, var4);
+    public Button(int id, int x, int y, String text) {
+        this(id, x, y, 200, text);
     }
 }

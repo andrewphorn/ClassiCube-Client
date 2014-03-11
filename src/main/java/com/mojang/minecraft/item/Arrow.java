@@ -1,7 +1,5 @@
 package com.mojang.minecraft.item;
 
-import java.util.List;
-
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.Entity;

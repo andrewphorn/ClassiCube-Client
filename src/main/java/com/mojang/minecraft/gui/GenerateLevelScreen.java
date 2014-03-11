@@ -4,16 +4,16 @@ public final class GenerateLevelScreen extends GuiScreen {
 
     private GuiScreen parent;
 
-    public GenerateLevelScreen(GuiScreen var1) {
-        parent = var1;
+    public GenerateLevelScreen(GuiScreen parent) {
+        this.parent = parent;
     }
 
     @Override
-    protected final void onButtonClick(Button var1) {
-        if (var1.id == 3) {
+    protected final void onButtonClick(Button button) {
+        if (button.id == 3) {
             minecraft.setCurrentScreen(parent);
         } else {
-            minecraft.generateLevel(var1.id);
+            minecraft.generateLevel(button.id);
             minecraft.setCurrentScreen((GuiScreen) null);
             minecraft.grabMouse();
         }

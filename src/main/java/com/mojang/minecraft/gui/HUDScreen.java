@@ -36,19 +36,19 @@ public final class HUDScreen extends Screen {
 
     int Page = 0;
 
-    public HUDScreen(Minecraft var1, int var2, int var3) {
-        mc = var1;
+    public HUDScreen(Minecraft minecraft, int var2, int var3) {
+        mc = minecraft;
         width = var2 * 240 / var3;
         height = var3 * 240 / var3;
     }
 
-    public final void addChat(String var1) {
-        if (var1.contains("^detail.user=")) {
-            Compass = var1.replace("^detail.user=", "");
+    public final void addChat(String text) {
+        if (text.contains("^detail.user=")) {
+            Compass = text.replace("^detail.user=", "");
             return;
         }
 
-        chat.add(0, new ChatLine(var1));
+        chat.add(0, new ChatLine(text));
 
         while (chat.size() > 50) {
             chat.remove(chat.size() - 1);
@@ -56,7 +56,7 @@ public final class HUDScreen extends Screen {
 
     }
 
-    public int FindGroupChanges(int Page, List<PlayerListNameData> playerListNames) {
+    public int findGroupChanges(int Page, List<PlayerListNameData> playerListNames) {
         int groupChanges = 0;
         String lastGroupName = "";
         int rangeA = 28 * Page;
@@ -66,8 +66,8 @@ public final class HUDScreen extends Screen {
         for (int k = rangeA; k < rangeB; k++) {
             namesToPrint.add(playerListNames.get(k));
         }
-        for (int var11 = 0; var11 < namesToPrint.size(); ++var11) {
-            PlayerListNameData pi = namesToPrint.get(var11);
+        for (int i = 0; i < namesToPrint.size(); ++i) {
+            PlayerListNameData pi = namesToPrint.get(i);
             if (!lastGroupName.equals(pi.groupName)) {
                 lastGroupName = pi.groupName;
                 groupChanges++;
@@ -95,8 +95,8 @@ public final class HUDScreen extends Screen {
             var9 = false;
         }
 
-        int var10 = mc.player.health;
-        int var11 = mc.player.lastHealth;
+        int health = mc.player.health;
+        int lastHealth = mc.player.lastHealth;
         random.setSeed(ticks * 312871);
         int var12;
         int i;
@@ -111,26 +111,26 @@ public final class HUDScreen extends Screen {
 
                 i = width / 2 - 91 + (var12 << 3);
                 var15 = height - 32;
-                if (var10 <= 4) {
+                if (health <= 4) {
                     var15 += random.nextInt(2);
                 }
 
                 drawImage(i, var15, 16 + var13 * 9, 0, 9, 9);
                 if (var9) {
-                    if ((var12 << 1) + 1 < var11) {
+                    if ((var12 << 1) + 1 < lastHealth) {
                         drawImage(i, var15, 70, 0, 9, 9);
                     }
 
-                    if ((var12 << 1) + 1 == var11) {
+                    if ((var12 << 1) + 1 == lastHealth) {
                         drawImage(i, var15, 79, 0, 9, 9);
                     }
                 }
 
-                if ((var12 << 1) + 1 < var10) {
+                if ((var12 << 1) + 1 < health) {
                     drawImage(i, var15, 52, 0, 9, 9);
                 }
 
-                if ((var12 << 1) + 1 == var10) {
+                if ((var12 << 1) + 1 == health) {
                     drawImage(i, var15, 61, 0, 9, 9);
                 }
             }
@@ -238,7 +238,7 @@ public final class HUDScreen extends Screen {
 
         byte chatLinesInScreen = 10; // chats per screen
         boolean isLargeChatScreen = false;
-        if (mc.currentScreen instanceof ChatInputScreenExtension) {
+        if (mc.currentScreen instanceof ChatInputScreen) {
             chatLinesInScreen = 20;
             isLargeChatScreen = true;
         }
@@ -264,7 +264,7 @@ public final class HUDScreen extends Screen {
             // Get the chat lines, multiply by their height to get the chat
             // height.
             int chatHeight = chatY + chatsOnScreen.size() * 9 + 6;
-            drawBox(chatX, chatY, chatWidth, chatHeight, ChatInputScreenExtension.ChatRGB);
+            drawBox(chatX, chatY, chatWidth, chatHeight, ChatInputScreen.ChatRGB);
         }
         chatsOnScreen.clear();
         for (i = 0; i < chat.size() && i < chatLinesInScreen; ++i) {
@@ -315,16 +315,16 @@ public final class HUDScreen extends Screen {
                 fontRenderer.render(var23, i - fontRenderer.getWidth(var23) / 2, var15 - 64 - 12,
                         25855);
                 if (drawDefault) {
-                    for (var11 = 0; var11 < playersOnWorld.size(); ++var11) {
-                        int var28 = i + var11 % 2 * 120 - 120;
-                        int var17 = var15 - 64 + (var11 / 2 << 3);
+                    for (lastHealth = 0; lastHealth < playersOnWorld.size(); ++lastHealth) {
+                        int var28 = i + lastHealth % 2 * 120 - 120;
+                        int var17 = var15 - 64 + (lastHealth / 2 << 3);
                         if (var2 && var3 >= var28 && var4 >= var17 && var3 < var28 + 120
                                 && var4 < var17 + 8) {
-                            hoveredPlayer = playersOnWorld.get(var11);
-                            fontRenderer.renderNoShadow(playersOnWorld.get(var11), var28 + 2,
+                            hoveredPlayer = playersOnWorld.get(lastHealth);
+                            fontRenderer.renderNoShadow(playersOnWorld.get(lastHealth), var28 + 2,
                                     var17, 16777215);
                         } else {
-                            fontRenderer.renderNoShadow(playersOnWorld.get(var11), var28, var17,
+                            fontRenderer.renderNoShadow(playersOnWorld.get(lastHealth), var28, var17,
                                     15658734);
                         }
                     }
@@ -338,21 +338,21 @@ public final class HUDScreen extends Screen {
                     List<PlayerListNameData> namesToPrint = new ArrayList<>();
 
                     for (int m = 0; m < Page; m++) {
-                        groupChanges += FindGroupChanges(m, playerListNames);
+                        groupChanges += findGroupChanges(m, playerListNames);
                     }
                     int rangeA = maxStringsPerScreen * Page - groupChanges;
                     int rangeB = rangeA + maxStringsPerScreen
-                            - FindGroupChanges(Page, playerListNames);
+                            - findGroupChanges(Page, playerListNames);
                     rangeB = Math.min(rangeB, playerListNames.size());
                     for (int k = rangeA; k < rangeB; k++) {
                         namesToPrint.add(playerListNames.get(k));
                     }
                     int groupsOnThisPage = 0;
-                    for (var11 = 0; var11 < namesToPrint.size(); ++var11) {
-                        if (var11 < maxStringsPerColumn - groupsOnThisPage) {
+                    for (lastHealth = 0; lastHealth < namesToPrint.size(); ++lastHealth) {
+                        if (lastHealth < maxStringsPerColumn - groupsOnThisPage) {
                             x = i - 128 + 8;
                         } else {
-                            if (var11 >= maxStringsPerColumn - groupsOnThisPage
+                            if (lastHealth >= maxStringsPerColumn - groupsOnThisPage
                                     && !hasStartedNewColumn) {
                                 y = var15 - 73;
                                 hasStartedNewColumn = true;
@@ -361,7 +361,7 @@ public final class HUDScreen extends Screen {
                         }
 
                         y += 9;
-                        PlayerListNameData pi = namesToPrint.get(var11);
+                        PlayerListNameData pi = namesToPrint.get(lastHealth);
                         if (!lastGroupName.equals(pi.groupName)) {
                             lastGroupName = pi.groupName;
                             fontRenderer.render(lastGroupName, x + 2, y, 51455);
