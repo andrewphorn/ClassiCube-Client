@@ -32,83 +32,55 @@ import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MinecraftApplet;
 import com.mojang.minecraft.ResourceDownloadThread;
 import com.mojang.minecraft.SessionData;
-
-/**
- * Created with IntelliJ IDEA.
- * User: Oliver Yasuna
- * Date: 9/30/12
- * Time: 7:16 PM
- */
+import com.mojang.minecraft.StreamingUtil;
+import com.oyasunadev.mcraft.client.util.Constants;
 
 /**
  * Run Minecraft Classic standalone version.
  */
 public class ClassiCubeStandalone {
+    private static final String CODE_BASE_URL = "http://minecraft.net:80/",
+            DOCUMENT_BASE_URL = "http://minecraft.net:80/play.jsp",
+            BACKGROUND_URL_1 = "http://static.classicube.net/client/rsbg.jpg",
+            BACKGROUND_URL_2 = "http://static.classicube.net/client/bg.jpg";
+
+    private ClassiCubeStandalone() {
+    }
+
     /**
-     * A class representing the Minecraft Classic game.
+     * The game window.
      */
     public class MinecraftFrame extends JFrame {
+
         /**
-         * Override the MinecraftApplet class because we need to fake the
-         * Document Base and Code Base.
+         * Override the MinecraftApplet class because we need to fake the Document Base and Code
+         * Base.
          */
         public class MCraftApplet extends MinecraftApplet {
 
-            /**
-         * 
-         */
             private static final long serialVersionUID = 1L;
+            private final Map<String, String> parameters = new HashMap<>();
 
-            /**
-             * Use our own parameters map.
-             */
-            private Map<String, String> parameters;
-
-            /**
-             * Default constructor.
-             */
-            public MCraftApplet() {
-                parameters = new HashMap<>();
-            }
-
-            /**
-             * Fake the Code Base.
-             * 
-             * @return new URL("http://minecraft.net:80/")
-             */
             @Override
             public URL getCodeBase() {
                 try {
-                    return new URL("http://minecraft.net:80/");
+                    return new URL(CODE_BASE_URL);
                 } catch (MalformedURLException ex) {
                     LogUtil.logError("Error getting applet code base.", ex);
+                    return null;
                 }
-
-                return null;
             }
 
-            /**
-             * Fake the Document Base.
-             * 
-             * @return new URL("http://minecraft.net:80/play.jsp")
-             */
             @Override
             public URL getDocumentBase() {
                 try {
-                    return new URL("http://minecraft.net:80/play.jsp");
+                    return new URL(DOCUMENT_BASE_URL);
                 } catch (MalformedURLException ex) {
                     LogUtil.logError("Error getting applet document base.", ex);
+                    return null;
                 }
-
-                return null;
             }
 
-            /**
-             * Return our own parameters variable.
-             * 
-             * @param name
-             * @return
-             */
             @Override
             public String getParameter(String name) {
                 return parameters.get(name);
@@ -119,26 +91,17 @@ public class ClassiCubeStandalone {
          * A canvas for the Minecraft thread.
          */
         public class MinecraftCanvas extends Canvas {
+
+            private static final long serialVersionUID = 1L;
             public Image image;
             private Image image2;
 
-            private static final long serialVersionUID = 1L;
-
-            /**
-             * The Minecraft variable.
-             */
             private Minecraft minecraft;
 
             /**
              * The Minecraft thread.
              */
             private Thread thread;
-
-            /**
-             * Default constructor.
-             */
-            public MinecraftCanvas() {
-            }
 
             /**
              * Start the thread.
@@ -151,46 +114,17 @@ public class ClassiCubeStandalone {
             }
 
             public void download(String address, String localFileName) {
-                OutputStream out = null;
-                URLConnection connection = null;
-                InputStream in = null;
-
+                URLConnection connection;
                 try {
                     URL url = new URL(address);
-                    out = new BufferedOutputStream(new FileOutputStream(localFileName));
                     connection = url.openConnection();
-                    // I HAVE to send this or the server responds with 403
-                    connection.setRequestProperty("Content-Type",
-                            "application/x-www-form-urlencoded");
-                    connection.setRequestProperty("Content-Language", "en-US");
-                    connection
-                            .setRequestProperty(
-                                    "User-Agent",
-                                    "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11");
-
-                    connection.setUseCaches(false);
+                    connection.setRequestProperty("User-Agent", Constants.USER_AGENT);
                     connection.setDoInput(true);
-                    connection.setDoOutput(true);
-                    in = connection.getInputStream();
-                    byte[] buffer = new byte[1024];
-
-                    int numRead;
-                    while ((numRead = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, numRead);
+                    try (InputStream in = connection.getInputStream()) {
+                        StreamingUtil.copyStreamToFile(in, new File(localFileName));
                     }
-
                 } catch (Exception ex) {
                     LogUtil.logError("Error downloading an applet resource.", ex);
-                } finally {
-                    try {
-                        if (in != null) {
-                            in.close();
-                        }
-                        if (out != null) {
-                            out.close();
-                        }
-                    } catch (IOException ioe) {
-                    }
                 }
             }
 
@@ -212,8 +146,7 @@ public class ClassiCubeStandalone {
                     }
                 }
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 Font font = new Font("Serif", Font.BOLD, 18);
                 g2.setFont(font);
                 if (!ResourceDownloadThread.done) {
@@ -250,14 +183,13 @@ public class ClassiCubeStandalone {
             @Override
             public synchronized void removeNotify() {
                 stopThread();
-
                 super.removeNotify();
             }
 
             void SetImage() throws IOException {
                 File file = new File(Minecraft.getMinecraftDirectory().getPath() + "/rsbg.jpg");
                 if (!file.exists()) {
-                    download("http://classicube.net/static/client/rsbg.jpg", file.getAbsolutePath());
+                    download(BACKGROUND_URL_1, file.getAbsolutePath());
                 }
                 image = ImageIO.read(new File(file.getAbsolutePath()));
 
@@ -266,16 +198,15 @@ public class ClassiCubeStandalone {
             void SetImage2() throws IOException {
                 File file = new File(Minecraft.getMinecraftDirectory().getPath() + "/bg.jpg");
                 if (!file.exists()) {
-                    download("http://classicube.net/static/client/bg.jpg", file.getAbsolutePath());
+                    download(BACKGROUND_URL_2, file.getAbsolutePath());
                 }
                 image2 = ImageIO.read(new File(file.getAbsolutePath()));
             }
 
             /**
              * Set the "minecraft" variable.
-             * 
-             * @param minecraft
-             *            The new Minecraft variable.
+             *
+             * @param minecraft The new Minecraft variable.
              */
             public void setMinecraft(Minecraft minecraft) {
                 this.minecraft = minecraft;
@@ -302,8 +233,6 @@ public class ClassiCubeStandalone {
                     try {
                         thread.join();
                     } catch (InterruptedException ex) {
-                        LogUtil.logWarning("Interrupted while waiting for Minecraft to shut down.",
-                                ex);
                         minecraft.shutdown();
                     }
 
@@ -313,8 +242,8 @@ public class ClassiCubeStandalone {
         }
 
         /**
-     * 
-     */
+         *
+         */
         private static final long serialVersionUID = 1L;
 
         /**
@@ -328,12 +257,13 @@ public class ClassiCubeStandalone {
         public MinecraftFrame() {
             setSize(1024, 512);
             // setResizable(false);
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             setLayout(new BorderLayout());
 
             addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
+                    setVisible(false);
                     minecraft.isRunning = false;
                 }
             });
@@ -341,19 +271,13 @@ public class ClassiCubeStandalone {
 
         /**
          * Starts Minecraft Classic
-         * 
-         * @param Player
-         *            Player name
-         * @param Server
-         *            Server address
-         * @param Mppass
-         *            The player's MPPass
-         * @param Port
-         *            Server port
-         * @param skinServer
-         *            The url of the skin server.
-         * @param fullscreen
-         *            True if the game should be in fullScreen.
+         *
+         * @param Player Player name
+         * @param Server Server address
+         * @param Mppass The player's MPPass
+         * @param Port Server port
+         * @param skinServer The url of the skin server.
+         * @param fullscreen True if the game should be in fullScreen.
          */
         public void startMinecraft(String Player, String Server, String Mppass, int Port,
                 String skinServer, boolean fullscreen) {
@@ -388,41 +312,18 @@ public class ClassiCubeStandalone {
                     (Toolkit.getDefaultToolkit().getScreenSize().height - getHeight()) / 2);
             setVisible(true);
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (true) {
-                        if (!minecraft.isRunning) {
-                            minecraft.shutdown();
-                            dispose();
-                        }
-
-                        try {
-                            Thread.sleep(1);
-                        } catch (InterruptedException ex) {
-                            LogUtil.logWarning("Interrupted while running Minecraft from applet.",
-                                    ex);
-                        }
-                    }
+            while (true) {
+                if (!minecraft.isRunning) {
+                    minecraft.shutdown();
+                    dispose();
+                    System.exit(0);
                 }
-            }).start();
 
-            boolean pass = false;
-
-            while (!pass) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1);
                 } catch (InterruptedException ex) {
-                    // TODO: figure out wtf we're doing here
-                    LogUtil.logWarning("Something happened.", ex);
-                }
-
-                if (minecraft.isRunning) {
-                    pass = true;
                 }
             }
-
-            // DO SHIT...?
         }
     }
 
@@ -453,16 +354,8 @@ public class ClassiCubeStandalone {
         if (player == null || server == null || mppass == null || port <= 0) {
             classicubeStandalone.startMinecraft(null, null, null, 0, skinServer, startFullScreen);
         } else {
-            classicubeStandalone.startMinecraft(player, server, mppass, port, skinServer,
-                    startFullScreen);
+            classicubeStandalone.startMinecraft(player, server, mppass, port, skinServer, startFullScreen);
         }
-    }
-
-    /**
-     * Default constructor.
-     */
-    public ClassiCubeStandalone() {
-
     }
 
     public void startMinecraft() {

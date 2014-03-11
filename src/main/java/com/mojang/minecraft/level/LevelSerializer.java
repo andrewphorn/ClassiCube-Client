@@ -12,6 +12,14 @@ import com.mojang.minecraft.nbt.CompressedStreamTools;
 import com.mojang.minecraft.nbt.NBTTagCompound;
 
 public class LevelSerializer {
+
+    Level level;
+    String EXT = ".cw";
+
+    public LevelSerializer(Level level) {
+        this.level = level;
+    }
+
     private static byte[] asByteArray(UUID uuid) {
         long msb = uuid.getMostSignificantBits();
         long lsb = uuid.getLeastSignificantBits();
@@ -24,14 +32,6 @@ public class LevelSerializer {
             buffer[i] = (byte) (lsb >>> 8 * (7 - i));
         }
         return buffer;
-    }
-
-    String EXT = ".cw";
-
-    Level level;
-
-    public LevelSerializer(Level level) {
-        this.level = level;
     }
 
     void save(File fullFilePath) throws FileNotFoundException, IOException, Exception {
@@ -63,8 +63,11 @@ public class LevelSerializer {
         master.setCompoundTag("CreatedBy", createdBy);
         master.setCompoundTag("Spawn", spawn);
 
-        CompressedStreamTools.writeCompressed(master, new FileOutputStream(new File(fullFilePath
-                + (fullFilePath.getAbsolutePath().endsWith(EXT) ? "" : EXT))));
+        String fileName = fullFilePath
+                + (fullFilePath.getAbsolutePath().endsWith(EXT) ? "" : EXT);
+        try (FileOutputStream fs = new FileOutputStream(new File(fileName))) {
+            CompressedStreamTools.writeCompressed(master, fs);
+        }
     }
 
     public void saveMap(File file) throws FileNotFoundException, IOException, Exception {
