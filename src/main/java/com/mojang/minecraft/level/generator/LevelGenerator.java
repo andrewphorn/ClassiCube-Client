@@ -32,9 +32,9 @@ public final class LevelGenerator {
         byte var6 = 0;
         int var7 = 1;
 
-        int var8;
-        for (var8 = 1; 1 << var7 < width; ++var7) {
-            ;
+        int var8 = 1;
+        while (1 << var7 < width) {
+            ++var7;
         }
 
         while (1 << var8 < depth) {
@@ -138,31 +138,38 @@ public final class LevelGenerator {
         return var11;
     }
 
-    public final Level generate(String var1, int var2, int var3, int var4) {
+    /**
+     * Generates a level
+     * @param creator
+     * @param width
+     * @param depth
+     * @param height Seems to be unused.
+     * @return
+     */
+    public final Level generate(String creator, int width, int depth, int height) {
         progressBar.setTitle("Generating level");
-        width = var2;
-        depth = var3;
-        height = 64;
+        this.width = width;
+        this.depth = depth;
+        this.height = 64;
         waterLevel = 32;
-        blocks = new byte[var2 * var3 << 6];
+        blocks = new byte[width * depth << 6];
         progressBar.setText("Raising..");
-        LevelGenerator var5 = this;
-        CombinedNoise var6 = new CombinedNoise(new OctaveNoise(random, 8), new OctaveNoise(random,
-                8));
-        CombinedNoise var7 = new CombinedNoise(new OctaveNoise(random, 8), new OctaveNoise(random,
-                8));
+        CombinedNoise noise1 = new CombinedNoise(new OctaveNoise(random, 8),
+                new OctaveNoise(random, 8));
+        CombinedNoise noise2 = new CombinedNoise(new OctaveNoise(random, 8),
+                new OctaveNoise(random, 8));
         OctaveNoise var8 = new OctaveNoise(random, 6);
-        int[] var9 = new int[width * depth];
+        int[] var9 = new int[this.width * this.depth];
         float var10 = 1.3F;
 
         int var11;
         int var12;
-        for (var11 = 0; var11 < var5.width; ++var11) {
-            var5.setProgress(var11 * 100 / (var5.width - 1));
+        for (var11 = 0; var11 < this.width; ++var11) {
+            this.setProgress(var11 * 100 / (this.width - 1));
 
-            for (var12 = 0; var12 < var5.depth; ++var12) {
-                double var13 = var6.compute(var11 * var10, var12 * var10) / 6D + -4;
-                double var15 = var7.compute(var11 * var10, var12 * var10) / 5D + 10D + -4;
+            for (var12 = 0; var12 < this.depth; ++var12) {
+                double var13 = noise1.compute(var11 * var10, var12 * var10) / 6D + -4;
+                double var15 = noise2.compute(var11 * var10, var12 * var10) / 5D + 10D + -4;
                 if (var8.compute(var11, var12) / 8D > 0D) {
                     var15 = var13;
                 }
@@ -172,40 +179,38 @@ public final class LevelGenerator {
                     var19 *= 0.8D;
                 }
 
-                var9[var11 + var12 * var5.width] = (int) var19;
+                var9[var11 + var12 * this.width] = (int) var19;
             }
         }
 
         progressBar.setText("Eroding..");
         int[] var42 = var9;
-        var5 = this;
-        var7 = new CombinedNoise(new OctaveNoise(random, 8), new OctaveNoise(random, 8));
+        CombinedNoise noise3 = new CombinedNoise(new OctaveNoise(random, 8), new OctaveNoise(random, 8));
         CombinedNoise var49 = new CombinedNoise(new OctaveNoise(random, 8), new OctaveNoise(random,
                 8));
 
         int var23;
         int var51;
         int var54;
-        for (var51 = 0; var51 < var5.width; ++var51) {
-            var5.setProgress(var51 * 100 / (var5.width - 1));
+        for (var51 = 0; var51 < this.width; ++var51) {
+            this.setProgress(var51 * 100 / (this.width - 1));
 
-            for (var54 = 0; var54 < var5.depth; ++var54) {
-                double var21 = var7.compute(var51 << 1, var54 << 1) / 8D;
+            for (var54 = 0; var54 < this.depth; ++var54) {
+                double var21 = noise3.compute(var51 << 1, var54 << 1) / 8D;
                 var12 = var49.compute(var51 << 1, var54 << 1) > 0D ? 1 : 0;
                 if (var21 > 2D) {
-                    var23 = ((var42[var51 + var54 * var5.width] - var12) / 2 << 1) + var12;
-                    var42[var51 + var54 * var5.width] = var23;
+                    var23 = ((var42[var51 + var54 * this.width] - var12) / 2 << 1) + var12;
+                    var42[var51 + var54 * this.width] = var23;
                 }
             }
         }
 
         progressBar.setText("Soiling..");
         var42 = var9;
-        var5 = this;
-        int var46 = width;
-        int var48 = depth;
-        var51 = height;
-        OctaveNoise var53 = new OctaveNoise(random, 8);
+        int var46 = this.width;
+        int var48 = this.depth;
+        var51 = this.height;
+        OctaveNoise noise4 = new OctaveNoise(random, 8);
 
         int var25;
         int var24;
@@ -213,11 +218,11 @@ public final class LevelGenerator {
         int var26;
         int var28;
         for (var24 = 0; var24 < var46; ++var24) {
-            var5.setProgress(var24 * 100 / (var5.width - 1));
+            this.setProgress(var24 * 100 / (this.width - 1));
 
             for (var11 = 0; var11 < var48; ++var11) {
-                var12 = (int) (var53.compute(var24, var11) / 24D) - 4;
-                var25 = (var23 = var42[var24 + var11 * var46] + var5.waterLevel) + var12;
+                var12 = (int) (noise4.compute(var24, var11) / 24D) - 4;
+                var25 = (var23 = var42[var24 + var11 * var46] + this.waterLevel) + var12;
                 var42[var24 + var11 * var46] = Math.max(var23, var25);
                 if (var42[var24 + var11 * var46] > var51 - 2) {
                     var42[var24 + var11 * var46] = var51 - 2;
@@ -228,7 +233,7 @@ public final class LevelGenerator {
                 }
 
                 for (var26 = 0; var26 < var51; ++var26) {
-                    var27 = (var26 * var5.depth + var11) * var5.width + var24;
+                    var27 = (var26 * this.depth + var11) * this.width + var24;
                     var28 = 0;
                     if (var26 <= var23) {
                         var28 = Block.DIRT.id;
@@ -242,43 +247,42 @@ public final class LevelGenerator {
                         var28 = Block.LAVA.id;
                     }
 
-                    var5.blocks[var27] = (byte) var28;
+                    this.blocks[var27] = (byte) var28;
                 }
             }
         }
 
         progressBar.setText("Carving..");
-        var5 = this;
-        var48 = width;
-        var51 = depth;
-        var54 = height;
+        var48 = this.width;
+        var51 = this.depth;
+        var54 = this.height;
         var24 = var48 * var51 * var54 / 256 / 64 << 1;
 
         for (var11 = 0; var11 < var24; ++var11) {
-            var5.setProgress(var11 * 100 / (var24 - 1) / 4);
-            float var55 = var5.random.nextFloat() * var48;
-            float var59 = var5.random.nextFloat() * var54;
-            float var56 = var5.random.nextFloat() * var51;
-            var26 = (int) ((var5.random.nextFloat() + var5.random.nextFloat()) * 200F);
-            float var61 = var5.random.nextFloat() * (float) Math.PI * 2F;
+            this.setProgress(var11 * 100 / (var24 - 1) / 4);
+            float var55 = this.random.nextFloat() * var48;
+            float var59 = this.random.nextFloat() * var54;
+            float var56 = this.random.nextFloat() * var51;
+            var26 = (int) ((this.random.nextFloat() + this.random.nextFloat()) * 200F);
+            float var61 = this.random.nextFloat() * (float) Math.PI * 2F;
             float var64 = 0F;
-            float var29 = var5.random.nextFloat() * (float) Math.PI * 2F;
+            float var29 = this.random.nextFloat() * (float) Math.PI * 2F;
             float var30 = 0F;
-            float var31 = var5.random.nextFloat() * var5.random.nextFloat();
+            float var31 = this.random.nextFloat() * this.random.nextFloat();
 
             for (int var32 = 0; var32 < var26; ++var32) {
                 var55 += MathHelper.sin(var61) * MathHelper.cos(var29);
                 var56 += MathHelper.cos(var61) * MathHelper.cos(var29);
                 var59 += MathHelper.sin(var29);
                 var61 += var64 * 0.2F;
-                var64 = (var64 *= 0.9F) + (var5.random.nextFloat() - var5.random.nextFloat());
+                var64 = (var64 *= 0.9F) + (this.random.nextFloat() - this.random.nextFloat());
                 var29 = (var29 + var30 * 0.5F) * 0.5F;
-                var30 = (var30 *= 0.75F) + (var5.random.nextFloat() - var5.random.nextFloat());
-                if (var5.random.nextFloat() >= 0.25F) {
-                    float var43 = var55 + (var5.random.nextFloat() * 4F - 2F) * 0.2F;
-                    float var50 = var59 + (var5.random.nextFloat() * 4F - 2F) * 0.2F;
-                    float var33 = var56 + (var5.random.nextFloat() * 4F - 2F) * 0.2F;
-                    float var34 = (var5.height - var50) / var5.height;
+                var30 = (var30 *= 0.75F) + (this.random.nextFloat() - this.random.nextFloat());
+                if (this.random.nextFloat() >= 0.25F) {
+                    float var43 = var55 + (this.random.nextFloat() * 4F - 2F) * 0.2F;
+                    float var50 = var59 + (this.random.nextFloat() * 4F - 2F) * 0.2F;
+                    float var33 = var56 + (this.random.nextFloat() * 4F - 2F) * 0.2F;
+                    float var34 = (this.height - var50) / this.height;
                     var34 = 1.2F + (var34 * 3.5F + 1F) * var31;
                     var34 = MathHelper.sin(var32 * (float) Math.PI / var26) * var34;
 
@@ -288,17 +292,16 @@ public final class LevelGenerator {
                                 float var38 = var35 - var43;
                                 float var39 = var36 - var50;
                                 float var40 = var37 - var33;
-                                if (var38 * var38 + var39 * var39 * 2F + var40 * var40 < var34
-                                        * var34
+                                if (var38 * var38 + var39 * var39 * 2F + var40 * var40 < var34 * var34
                                         && var35 >= 1
                                         && var36 >= 1
                                         && var37 >= 1
-                                        && var35 < var5.width - 1
-                                        && var36 < var5.height - 1
-                                        && var37 < var5.depth - 1) {
-                                    int var66 = (var36 * var5.depth + var37) * var5.width + var35;
-                                    if (var5.blocks[var66] == Block.STONE.id) {
-                                        var5.blocks[var66] = 0;
+                                        && var35 < this.width - 1
+                                        && var36 < this.height - 1
+                                        && var37 < this.depth - 1) {
+                                    int var66 = (var36 * this.depth + var37) * this.width + var35;
+                                    if (this.blocks[var66] == Block.STONE.id) {
+                                        this.blocks[var66] = 0;
                                     }
                                 }
                             }
@@ -312,75 +315,72 @@ public final class LevelGenerator {
         populateOre(Block.IRON_ORE.id, 70, 2, 4);
         populateOre(Block.GOLD_ORE.id, 50, 3, 4);
         progressBar.setText("Watering..");
-        var5 = this;
         var51 = Block.STATIONARY_WATER.id;
         setProgress(0);
 
-        for (var54 = 0; var54 < var5.width; ++var54) {
-            var5.flood(var54, var5.height / 2 - 1, 0, var51);
-            var5.flood(var54, var5.height / 2 - 1, var5.depth - 1, var51);
+        for (var54 = 0; var54 < this.width; ++var54) {
+            this.flood(var54, this.height / 2 - 1, 0, var51);
+            this.flood(var54, this.height / 2 - 1, this.depth - 1, var51);
         }
 
-        for (var54 = 0; var54 < var5.depth; ++var54) {
-            var5.flood(0, var5.height / 2 - 1, var54, var51);
-            var5.flood(var5.width - 1, var5.height / 2 - 1, var54, var51);
+        for (var54 = 0; var54 < this.depth; ++var54) {
+            this.flood(0, this.height / 2 - 1, var54, var51);
+            this.flood(this.width - 1, this.height / 2 - 1, var54, var51);
         }
 
-        var54 = var5.width * var5.depth / 8000;
+        var54 = this.width * this.depth / 8000;
 
         for (var24 = 0; var24 < var54; ++var24) {
             if (var24 % 100 == 0) {
-                var5.setProgress(var24 * 100 / (var54 - 1));
+                this.setProgress(var24 * 100 / (var54 - 1));
             }
 
-            var11 = var5.random.nextInt(var5.width);
-            var12 = var5.waterLevel - 1 - var5.random.nextInt(2);
-            var23 = var5.random.nextInt(var5.depth);
-            if (var5.blocks[(var12 * var5.depth + var23) * var5.width + var11] == 0) {
-                var5.flood(var11, var12, var23, var51);
+            var11 = this.random.nextInt(this.width);
+            var12 = this.waterLevel - 1 - this.random.nextInt(2);
+            var23 = this.random.nextInt(this.depth);
+            if (this.blocks[(var12 * this.depth + var23) * this.width + var11] == 0) {
+                this.flood(var11, var12, var23, var51);
             }
         }
 
-        var5.setProgress(100);
+        this.setProgress(100);
         progressBar.setText("Melting..");
-        var5 = this;
-        var46 = width * depth * height / 20000;
+        var46 = this.width * this.depth * this.height / 20000;
 
         for (var48 = 0; var48 < var46; ++var48) {
             if (var48 % 100 == 0) {
-                var5.setProgress(var48 * 100 / (var46 - 1));
+                this.setProgress(var48 * 100 / (var46 - 1));
             }
 
-            var51 = var5.random.nextInt(var5.width);
-            var54 = (int) (var5.random.nextFloat() * var5.random.nextFloat() * (var5.waterLevel - 3));
-            var24 = var5.random.nextInt(var5.depth);
-            if (var5.blocks[(var54 * var5.depth + var24) * var5.width + var51] == 0) {
-                var5.flood(var51, var54, var24, Block.STATIONARY_LAVA.id);
+            var51 = this.random.nextInt(this.width);
+            var54 = (int) (this.random.nextFloat() * this.random.nextFloat() * (this.waterLevel - 3));
+            var24 = this.random.nextInt(this.depth);
+            if (this.blocks[(var54 * this.depth + var24) * this.width + var51] == 0) {
+                this.flood(var51, var54, var24, Block.STATIONARY_LAVA.id);
             }
         }
 
-        var5.setProgress(100);
+        this.setProgress(100);
         progressBar.setText("Growing..");
         var42 = var9;
-        var5 = this;
-        var46 = width;
-        var48 = depth;
-        var51 = height;
-        var53 = new OctaveNoise(random, 8);
+        var46 = this.width;
+        var48 = this.depth;
+        var51 = this.height;
+        noise4 = new OctaveNoise(random, 8);
         OctaveNoise var58 = new OctaveNoise(random, 8);
 
         int var63;
         for (var11 = 0; var11 < var46; ++var11) {
-            var5.setProgress(var11 * 100 / (var5.width - 1));
+            this.setProgress(var11 * 100 / (this.width - 1));
 
             for (var12 = 0; var12 < var48; ++var12) {
-                boolean var60 = var53.compute(var11, var12) > 8D;
+                boolean var60 = noise4.compute(var11, var12) > 8D;
                 boolean var57 = var58.compute(var11, var12) > 12D;
-                var27 = ((var26 = var42[var11 + var12 * var46]) * var5.depth + var12) * var5.width
+                var27 = ((var26 = var42[var11 + var12 * var46]) * this.depth + var12) * this.width
                         + var11;
-                if (((var28 = var5.blocks[((var26 + 1) * var5.depth + var12) * var5.width + var11] & 255) == Block.WATER.id || var28 == Block.STATIONARY_WATER.id)
+                if (((var28 = this.blocks[((var26 + 1) * this.depth + var12) * this.width + var11] & 255) == Block.WATER.id || var28 == Block.STATIONARY_WATER.id)
                         && var26 <= var51 / 2 - 1 && var57) {
-                    var5.blocks[var27] = (byte) Block.GRAVEL.id;
+                    this.blocks[var27] = (byte) Block.GRAVEL.id;
                 }
 
                 if (var28 == 0) {
@@ -389,41 +389,40 @@ public final class LevelGenerator {
                         var63 = Block.SAND.id;
                     }
 
-                    var5.blocks[var27] = (byte) var63;
+                    this.blocks[var27] = (byte) var63;
                 }
             }
         }
 
         progressBar.setText("Planting..");
         var42 = var9;
-        var5 = this;
-        var46 = width;
-        var48 = width * depth / 3000;
+        var46 = this.width;
+        var48 = this.width * this.depth / 3000;
 
         for (var51 = 0; var51 < var48; ++var51) {
-            var54 = var5.random.nextInt(2);
-            var5.setProgress(var51 * 50 / (var48 - 1));
-            var24 = var5.random.nextInt(var5.width);
-            var11 = var5.random.nextInt(var5.depth);
+            var54 = this.random.nextInt(2);
+            this.setProgress(var51 * 50 / (var48 - 1));
+            var24 = this.random.nextInt(this.width);
+            var11 = this.random.nextInt(this.depth);
 
             for (var12 = 0; var12 < 10; ++var12) {
                 var23 = var24;
                 var25 = var11;
 
                 for (var26 = 0; var26 < 5; ++var26) {
-                    var23 += var5.random.nextInt(6) - var5.random.nextInt(6);
-                    var25 += var5.random.nextInt(6) - var5.random.nextInt(6);
-                    if ((var54 < 2 || var5.random.nextInt(4) == 0) && var23 >= 0 && var25 >= 0
-                            && var23 < var5.width && var25 < var5.depth) {
+                    var23 += this.random.nextInt(6) - this.random.nextInt(6);
+                    var25 += this.random.nextInt(6) - this.random.nextInt(6);
+                    if ((var54 < 2 || this.random.nextInt(4) == 0) && var23 >= 0 && var25 >= 0
+                            && var23 < this.width && var25 < this.depth) {
                         var27 = var42[var23 + var25 * var46] + 1;
-                        if ((var5.blocks[(var27 * var5.depth + var25) * var5.width + var23] & 255) == 0) {
-                            var63 = (var27 * var5.depth + var25) * var5.width + var23;
-                            if ((var5.blocks[((var27 - 1) * var5.depth + var25) * var5.width
+                        if ((this.blocks[(var27 * this.depth + var25) * this.width + var23] & 255) == 0) {
+                            var63 = (var27 * this.depth + var25) * this.width + var23;
+                            if ((this.blocks[((var27 - 1) * this.depth + var25) * this.width
                                     + var23] & 255) == Block.GRASS.id) {
                                 if (var54 == 0) {
-                                    var5.blocks[var63] = (byte) Block.DANDELION.id;
+                                    this.blocks[var63] = (byte) Block.DANDELION.id;
                                 } else if (var54 == 1) {
-                                    var5.blocks[var63] = (byte) Block.ROSE.id;
+                                    this.blocks[var63] = (byte) Block.ROSE.id;
                                 }
                             }
                         }
@@ -433,16 +432,15 @@ public final class LevelGenerator {
         }
 
         var42 = var9;
-        var5 = this;
-        var46 = width;
-        var51 = width * depth * height / 2000;
+        var46 = this.width;
+        var51 = this.width * this.depth * this.height / 2000;
 
         for (var54 = 0; var54 < var51; ++var54) {
-            var24 = var5.random.nextInt(2);
-            var5.setProgress(var54 * 50 / (var51 - 1) + 50);
-            var11 = var5.random.nextInt(var5.width);
-            var12 = var5.random.nextInt(var5.height);
-            var23 = var5.random.nextInt(var5.depth);
+            var24 = this.random.nextInt(2);
+            this.setProgress(var54 * 50 / (var51 - 1) + 50);
+            var11 = this.random.nextInt(this.width);
+            var12 = this.random.nextInt(this.height);
+            var23 = this.random.nextInt(this.depth);
 
             for (var25 = 0; var25 < 20; ++var25) {
                 var26 = var11;
@@ -450,23 +448,23 @@ public final class LevelGenerator {
                 var28 = var23;
 
                 for (var63 = 0; var63 < 5; ++var63) {
-                    var26 += var5.random.nextInt(6) - var5.random.nextInt(6);
-                    var27 += var5.random.nextInt(2) - var5.random.nextInt(2);
-                    var28 += var5.random.nextInt(6) - var5.random.nextInt(6);
-                    if ((var24 < 2 || var5.random.nextInt(4) == 0)
+                    var26 += this.random.nextInt(6) - this.random.nextInt(6);
+                    var27 += this.random.nextInt(2) - this.random.nextInt(2);
+                    var28 += this.random.nextInt(6) - this.random.nextInt(6);
+                    if ((var24 < 2 || this.random.nextInt(4) == 0)
                             && var26 >= 0
                             && var28 >= 0
                             && var27 >= 1
-                            && var26 < var5.width
-                            && var28 < var5.depth
+                            && var26 < this.width
+                            && var28 < this.depth
                             && var27 < var42[var26 + var28 * var46] - 1
-                            && (var5.blocks[(var27 * var5.depth + var28) * var5.width + var26] & 255) == 0) {
-                        int var62 = (var27 * var5.depth + var28) * var5.width + var26;
-                        if ((var5.blocks[((var27 - 1) * var5.depth + var28) * var5.width + var26] & 255) == Block.STONE.id) {
+                            && (this.blocks[(var27 * this.depth + var28) * this.width + var26] & 255) == 0) {
+                        int var62 = (var27 * this.depth + var28) * this.width + var26;
+                        if ((this.blocks[((var27 - 1) * this.depth + var28) * this.width + var26] & 255) == Block.STONE.id) {
                             if (var24 == 0) {
-                                var5.blocks[var62] = (byte) Block.BROWN_MUSHROOM.id;
+                                this.blocks[var62] = (byte) Block.BROWN_MUSHROOM.id;
                             } else if (var24 == 1) {
-                                var5.blocks[var62] = (byte) Block.RED_MUSHROOM.id;
+                                this.blocks[var62] = (byte) Block.RED_MUSHROOM.id;
                             }
                         }
                     }
@@ -474,41 +472,38 @@ public final class LevelGenerator {
             }
         }
 
-        Level var65;
-        (var65 = new Level()).waterLevel = waterLevel;
-        var65.setData(var2, 64, var3, blocks);
-        var65.createTime = System.currentTimeMillis();
-        var65.creator = var1;
-        var65.name = "A Nice World";
-        int[] var52 = var9;
-        Level var47 = var65;
-        var5 = this;
-        var48 = width;
-        var51 = width * depth / 4000;
+        Level level = new Level();
+        level.waterLevel = waterLevel;
+        level.setData(width, 64, depth, blocks);
+        level.createTime = System.currentTimeMillis();
+        level.creator = creator;
+        level.name = "A Nice World";
+        var48 = this.width;
+        var51 = this.width * this.depth / 4000;
 
         for (var54 = 0; var54 < var51; ++var54) {
-            var5.setProgress(var54 * 50 / (var51 - 1) + 50);
-            var24 = var5.random.nextInt(var5.width);
-            var11 = var5.random.nextInt(var5.depth);
+            this.setProgress(var54 * 50 / (var51 - 1) + 50);
+            var24 = this.random.nextInt(this.width);
+            var11 = this.random.nextInt(this.depth);
 
             for (var12 = 0; var12 < 20; ++var12) {
                 var23 = var24;
                 var25 = var11;
 
                 for (var26 = 0; var26 < 20; ++var26) {
-                    var23 += var5.random.nextInt(6) - var5.random.nextInt(6);
-                    var25 += var5.random.nextInt(6) - var5.random.nextInt(6);
-                    if (var23 >= 0 && var25 >= 0 && var23 < var5.width && var25 < var5.depth) {
-                        var27 = var52[var23 + var25 * var48] + 1;
-                        if (var5.random.nextInt(4) == 0) {
-                            var47.maybeGrowTree(var23, var27, var25);
+                    var23 += this.random.nextInt(6) - this.random.nextInt(6);
+                    var25 += this.random.nextInt(6) - this.random.nextInt(6);
+                    if (var23 >= 0 && var25 >= 0 && var23 < this.width && var25 < this.depth) {
+                        var27 = var9[var23 + var25 * var48] + 1;
+                        if (this.random.nextInt(4) == 0) {
+                            level.maybeGrowTree(var23, var27, var25);
                         }
                     }
                 }
             }
         }
 
-        return var65;
+        return level;
     }
 
     private void populateOre(int var1, int var2, int var3, int var4) {

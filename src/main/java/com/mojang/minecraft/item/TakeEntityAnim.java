@@ -18,8 +18,8 @@ public class TakeEntityAnim extends Entity {
     private float yorg;
     private float zorg;
 
-    public TakeEntityAnim(Level level1, Entity item, Entity player) {
-        super(level1);
+    public TakeEntityAnim(Level level, Entity item, Entity player) {
+        super(level);
 
         this.item = item;
         this.player = player;

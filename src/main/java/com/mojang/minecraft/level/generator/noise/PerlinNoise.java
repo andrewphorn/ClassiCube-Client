@@ -29,10 +29,12 @@ public class PerlinNoise extends Noise {
     public PerlinNoise(Random random) {
         noise = new int[512];
 
-        for (int count = 0; count < 256; noise[count] = count++) {
+        int count = 0;
+        while (count < 256) {
+            noise[count] = count++;
         }
 
-        for (int count = 0; count < 256; count++) {
+        for (count = 0; count < 256; count++) {
             int unknown0 = random.nextInt(256 - count) + count;
             int unknown1 = noise[count];
 

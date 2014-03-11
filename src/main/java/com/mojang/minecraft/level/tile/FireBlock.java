@@ -2,7 +2,7 @@ package com.mojang.minecraft.level.tile;
 
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.util.MathHelper;
 
@@ -72,7 +72,7 @@ public final class FireBlock extends Block {
     }
 
     @Override
-    public final void renderFullbright(ShapeRenderer shapeRenderer) {
+    public final void renderFullBrightness(ShapeRenderer shapeRenderer) {
         shapeRenderer.color(1F, 1F, 1F);
         this.render(shapeRenderer, -2, 0F, 0F);
     }

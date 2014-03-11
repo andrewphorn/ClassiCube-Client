@@ -30,12 +30,9 @@ public class InputHandler {
     // so that I can import that module to check status of
     // noclip, fly, and speed.
 
-    public void resetKeys() {
-    }
+    public void resetKeys() {}
 
-    public void setKeyState(int key, boolean state) {
-    }
+    public void setKeyState(int key, boolean state) {}
 
-    public void updateMovement(int HackMode) {
-    }
+    public void updateMovement(int HackMode) {}
 }

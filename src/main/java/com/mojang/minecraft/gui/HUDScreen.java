@@ -161,9 +161,9 @@ public final class HUDScreen extends Screen {
                 if (var8.popTime[var12] > 0) {
                     float var18;
                     float var21 = -MathHelper.sin((var18 = (var8.popTime[var12] - var1) / 5F)
-                            * var18 * 3.1415927F) * 8F;
-                    float var19 = MathHelper.sin(var18 * var18 * 3.1415927F) + 1F;
-                    float var16 = MathHelper.sin(var18 * 3.1415927F) + 1F;
+                            * var18 * (float) Math.PI) * 8F;
+                    float var19 = MathHelper.sin(var18 * var18 * (float) Math.PI) + 1F;
+                    float var16 = MathHelper.sin(var18 * (float) Math.PI) + 1F;
                     GL11.glTranslatef(10F, var21 + 10F, 0F);
                     GL11.glScalef(var19, var16, 1F);
                     GL11.glTranslatef(-10F, -10F, 0F);
@@ -178,7 +178,7 @@ public final class HUDScreen extends Screen {
                 int var20 = var6.load("/terrain.png");
                 GL11.glBindTexture(3553, var20);
                 var7.begin();
-                Block.blocks[var15].renderFullbright(var7);
+                Block.blocks[var15].renderFullBrightness(var7);
                 var7.end();
                 GL11.glPopMatrix();
                 if (var8.count[var12] > 1) {

@@ -5,7 +5,7 @@ import java.util.Random;
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
-import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
 
 public class LiquidBlock extends Block {

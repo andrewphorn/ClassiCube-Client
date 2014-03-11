@@ -27,17 +27,16 @@ public final class ModelPart {
         v = var2;
     }
 
-    public void generateList(float var1) {
+    public void generateList(float scale) {
         list = GL11.glGenLists(1);
         GL11.glNewList(list, GL11.GL_COMPILE);
         GL11.glBegin(GL11.GL_QUADS);
 
         for (int var2 = 0; var2 < quads.length; ++var2) {
-            TexturedQuad var10000 = quads[var2];
-            float var3 = var1;
-            TexturedQuad var4 = var10000;
-            Vec3D var5 = var10000.vertices[1].vector.subtract(var4.vertices[0].vector).normalize();
+            TexturedQuad var4 = quads[var2];
+            Vec3D var5 = var4.vertices[1].vector.subtract(var4.vertices[0].vector).normalize();
             Vec3D var6 = var4.vertices[1].vector.subtract(var4.vertices[2].vector).normalize();
+            // TODO ???
             GL11.glNormal3f((var5 = new Vec3D(var5.y * var6.z - var5.z * var6.y, var5.z * var6.x
                     - var5.x * var6.z, var5.x * var6.y - var5.y * var6.x).normalize()).x, var5.y,
                     var5.z);
@@ -45,7 +44,7 @@ public final class ModelPart {
             for (int var7 = 0; var7 < 4; ++var7) {
                 Vertex var8;
                 GL11.glTexCoord2f((var8 = var4.vertices[var7]).u, var8.v);
-                GL11.glVertex3f(var8.vector.x * var3, var8.vector.y * var3, var8.vector.z * var3);
+                GL11.glVertex3f(var8.vector.x * scale, var8.vector.y * scale, var8.vector.z * scale);
             }
         }
 

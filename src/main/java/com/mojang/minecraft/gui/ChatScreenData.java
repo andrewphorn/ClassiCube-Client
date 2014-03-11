@@ -1,6 +1,6 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.physics.AABB;
 
 public class ChatScreenData {
 

@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
@@ -16,14 +16,11 @@ public class Arrow extends Entity {
     public static final long serialVersionUID = 0L;
 
     private float xd;
-
     private float yd;
-
     private float zd;
 
-    private float yRot;
-
     private float xRot;
+    private float yRot;
 
     private float yRotO;
     private float xRotO;
@@ -38,9 +35,9 @@ public class Arrow extends Entity {
 
     private int damage;
 
-    public Arrow(Level level1, Entity owner, float x, float y, float z, float unknown0,
+    public Arrow(Level level, Entity owner, float x, float y, float z, float unknown0,
             float unknown1, float unknown2) {
-        super(level1);
+        super(level);
 
         this.owner = owner;
 
@@ -81,8 +78,8 @@ public class Arrow extends Entity {
 
         unknown3 = MathHelper.sqrt(xd * xd + zd * zd);
 
-        yRotO = yRot = (float) (Math.atan2(xd, zd) * 180D / 3.1415927410125732D);
-        xRotO = xRot = (float) (Math.atan2(yd, unknown3) * 180D / 3.1415927410125732D);
+        yRotO = yRot = (float) (Math.atan2(xd, zd) * 180D / Math.PI);
+        xRotO = xRot = (float) (Math.atan2(yd, unknown3) * 180D / Math.PI);
 
         makeStepSound = false;
     }
@@ -102,11 +99,8 @@ public class Arrow extends Entity {
 
         if (hasHit && owner == player && player.arrows < 99) {
             TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this, player);
-
             level.addEntity(takeEntityAnim);
-
             player.arrows++;
-
             remove();
         }
     }
@@ -131,7 +125,7 @@ public class Arrow extends Entity {
 
         unknown0 = 0.5F;
 
-        float unknown1 = (0 + type * 10) / 32F;
+        float unknown1 = (type * 10) / 32F;
         float unknown2 = (5 + type * 10) / 32F;
         float unknown3 = 0.15625F;
 
@@ -217,18 +211,11 @@ public class Arrow extends Entity {
                     collision = true;
                 }
 
-                List<Entity> blockMapEntitiesList = level.blockMap.getEntities(this, unknown5);
-
-                for (int currentEntity = 0; currentEntity < blockMapEntitiesList.size(); currentEntity++) {
-                    Entity entity = blockMapEntitiesList.get(currentEntity);
-
+                for (Entity entity : level.blockMap.getEntities(this, unknown5)) {
                     if (entity.isShootable() && (entity != owner || time > 5)) {
                         entity.hurt(this, damage);
-
                         collision = true;
-
                         remove();
-
                         return;
                     }
                 }
@@ -253,11 +240,12 @@ public class Arrow extends Entity {
             if (!hasHit) {
                 float unknown6 = MathHelper.sqrt(xd * xd + zd * zd);
 
-                yRot = (float) (Math.atan2(xd, zd) * 180D / 3.1415927410125732D);
+                yRot = (float) (Math.atan2(xd, zd) * 180D / Math.PI);
 
-                for (xRot = (float) (Math.atan2(yd, unknown6) * 180D / 3.1415927410125732D); xRot
-                        - xRotO < -180F; xRotO -= 360F) {
-                    System.out.println("test");
+                for (xRot = (float) (Math.atan2(yd, unknown6) * 180D / Math.PI);
+                     xRot - xRotO < -180F;
+                     xRotO -= 360F) {
+                    //System.out.println("test");
                     // TODO: ?.
                 }
 

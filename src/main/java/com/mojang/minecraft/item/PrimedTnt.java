@@ -27,8 +27,8 @@ public class PrimedTnt extends Entity {
 
     private boolean defused;
 
-    public PrimedTnt(Level level1, float x, float y, float z) {
-        super(level1);
+    public PrimedTnt(Level level, float x, float y, float z) {
+        super(level);
 
         setSize(0.98F, 0.98F);
 
@@ -36,7 +36,7 @@ public class PrimedTnt extends Entity {
 
         setPos(x, y, z);
 
-        float unknown0 = (float) (Math.random() * 3.1415927410125732D * 2D);
+        float unknown0 = (float) (Math.random() * Math.PI * 2D);
 
         xd = -MathHelper.sin(unknown0 * (float) Math.PI / 180F) * 0.02F;
         yd = 0.2F;
@@ -58,9 +58,7 @@ public class PrimedTnt extends Entity {
 
             if (entity instanceof Player) {
                 remove();
-
                 Item item = new Item(level, x, y, z, Block.TNT.id);
-
                 level.addEntity(item);
             }
 
@@ -76,12 +74,9 @@ public class PrimedTnt extends Entity {
     public void playerTouch(Entity entity) {
         if (defused) {
             Player player = (Player) entity;
-
             if (player.addResource(Block.TNT.id)) {
                 TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this, player);
-
                 level.addEntity(takeEntityAnim);
-
                 remove();
             }
 
@@ -98,8 +93,9 @@ public class PrimedTnt extends Entity {
 
         GL11.glPushMatrix();
         GL11.glColor4f(brightness, brightness, brightness, 1F);
-        GL11.glTranslatef(xo + (x - xo) * unknown0 - 0.5F, yo + (y - yo) * unknown0 - 0.5F, zo
-                + (z - zo) * unknown0 - 0.5F);
+        GL11.glTranslatef(xo + (x - xo) * unknown0 - 0.5F,
+                yo + (y - yo) * unknown0 - 0.5F,
+                zo + (z - zo) * unknown0 - 0.5F);
         GL11.glPushMatrix();
 
         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
@@ -153,22 +149,20 @@ public class PrimedTnt extends Entity {
         if (!defused) {
             if (life-- > 0) {
                 SmokeParticle smokeParticle = new SmokeParticle(level, x, y + 0.6F, z);
-
                 level.particleEngine.spawnParticle(smokeParticle);
             } else {
                 remove();
 
                 Random random = new Random();
                 float radius = 4F;
-
                 level.explode(null, x, y, z, radius);
 
                 for (int i = 0; i < 100; i++) {
                     float unknown0 = (float) random.nextGaussian() * radius / 4F;
                     float unknown1 = (float) random.nextGaussian() * radius / 4F;
                     float unknown2 = (float) random.nextGaussian() * radius / 4F;
-                    float unknown3 = MathHelper.sqrt(unknown0 * unknown0 + unknown1 * unknown1
-                            + unknown2 * unknown2);
+                    float unknown3 = MathHelper.sqrt(unknown0 * unknown0
+                            + unknown1 * unknown1 + unknown2 * unknown2);
                     float unknown4 = unknown0 / unknown3 / unknown3;
                     float unknown5 = unknown1 / unknown3 / unknown3;
 
@@ -176,10 +170,8 @@ public class PrimedTnt extends Entity {
 
                     TerrainParticle terrainParticle = new TerrainParticle(level, x + unknown0, y
                             + unknown1, z + unknown2, unknown4, unknown5, unknown3, Block.TNT);
-
                     level.particleEngine.spawnParticle(terrainParticle);
                 }
-
             }
         }
     }

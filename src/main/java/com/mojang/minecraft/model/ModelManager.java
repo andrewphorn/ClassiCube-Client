@@ -23,11 +23,12 @@ public final class ModelManager {
     /**
      * Gets a model from its name. You can also get block models by providing
      * their ID.
-     * 
+     *
      * @param modelName
      *            String representing the name of the model
      * @return The Model with the name that was requested or null if not found.
      */
+    // TODO Use an enum
     public final Model getModel(String modelName) {
         // Try to match with a Block ID
         for (int i = 1; i < SessionData.allowedBlocks.size(); i++) {

@@ -7,10 +7,11 @@ import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
+import com.mojang.util.IntersectionHelper;
 import com.mojang.util.Vec3D;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.TerrainParticle;
-import com.mojang.minecraft.phys.AABB;
+import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.sound.StepSound;
 import com.mojang.minecraft.sound.StepSoundSand;
@@ -215,15 +216,15 @@ public class Block {
         return !level.isSolidTile(x, y, z);
     }
 
-    public final MovingObjectPosition clip(int var1, int var2, int var3, Vec3D var4, Vec3D var5) {
-        var4 = var4.add(-var1, -var2, -var3);
-        var5 = var5.add(-var1, -var2, -var3);
-        Vec3D var6 = var4.getXIntersection(var5, x1);
-        Vec3D var7 = var4.getXIntersection(var5, x2);
-        Vec3D var8 = var4.getYIntersection(var5, y1);
-        Vec3D var9 = var4.getYIntersection(var5, y2);
-        Vec3D var10 = var4.getZIntersection(var5, z1);
-        var5 = var4.getZIntersection(var5, z2);
+    public final MovingObjectPosition clip(int var1, int var2, int var3, Vec3D vector, Vec3D other) {
+        vector = vector.add(-var1, -var2, -var3);
+        other = other.add(-var1, -var2, -var3);
+        Vec3D var6 = vector.getXIntersection(other, x1);
+        Vec3D var7 = vector.getXIntersection(other, x2);
+        Vec3D var8 = vector.getYIntersection(other, y1);
+        Vec3D var9 = vector.getYIntersection(other, y2);
+        Vec3D var10 = vector.getZIntersection(other, z1);
+        other = vector.getZIntersection(other, z2);
         if (!xIntersects(var6)) {
             var6 = null;
         }
@@ -244,8 +245,8 @@ public class Block {
             var10 = null;
         }
 
-        if (!zIntersects(var5)) {
-            var5 = null;
+        if (!zIntersects(other)) {
+            other = null;
         }
 
         Vec3D var11 = null;
@@ -253,24 +254,24 @@ public class Block {
             var11 = var6;
         }
 
-        if (var7 != null && (var11 == null || var4.distance(var7) < var4.distance(var11))) {
+        if (var7 != null && (var11 == null || vector.distance(var7) < vector.distance(var11))) {
             var11 = var7;
         }
 
-        if (var8 != null && (var11 == null || var4.distance(var8) < var4.distance(var11))) {
+        if (var8 != null && (var11 == null || vector.distance(var8) < vector.distance(var11))) {
             var11 = var8;
         }
 
-        if (var9 != null && (var11 == null || var4.distance(var9) < var4.distance(var11))) {
+        if (var9 != null && (var11 == null || vector.distance(var9) < vector.distance(var11))) {
             var11 = var9;
         }
 
-        if (var10 != null && (var11 == null || var4.distance(var10) < var4.distance(var11))) {
+        if (var10 != null && (var11 == null || vector.distance(var10) < vector.distance(var11))) {
             var11 = var10;
         }
 
-        if (var5 != null && (var11 == null || var4.distance(var5) < var4.distance(var11))) {
-            var11 = var5;
+        if (other != null && (var11 == null || vector.distance(other) < vector.distance(var11))) {
+            var11 = other;
         }
 
         if (var11 == null) {
@@ -297,7 +298,7 @@ public class Block {
                 var12 = 2;
             }
 
-            if (var11 == var5) {
+            if (var11 == other) {
                 var12 = 3;
             }
 
@@ -359,7 +360,7 @@ public class Block {
 
     /**
      * Gets the texture ID of a block depending on the side you want to use.
-     * 
+     *
      * @param texture
      *            Side of the block to render.
      * @return ID of the texture side requested.
@@ -370,7 +371,7 @@ public class Block {
 
     /**
      * Gets the texture ID of a block depending on the side you want to use.
-     * 
+     *
      * @param side
      *            Side of the block to render.
      * @return ID of the texture side requested.
@@ -467,7 +468,7 @@ public class Block {
         return var6;
     }
 
-    public void renderFullbright(ShapeRenderer shapeRenderer) {
+    public void renderFullBrightness(ShapeRenderer shapeRenderer) {
         float red = 0.5F;
         float green = 0.8F;
         float blue = 0.6F;
@@ -497,38 +498,38 @@ public class Block {
         renderSide(shapeRenderer, x, y, z, side, textureID1);
     }
 
-    public void renderPreview(ShapeRenderer var1) {
-        var1.begin();
+    public void renderPreview(ShapeRenderer shapeRenderer) {
+        shapeRenderer.begin();
 
         for (int var2 = 0; var2 < 6; ++var2) {
             if (var2 == 0) {
-                var1.normal(0F, 1F, 0F);
+                shapeRenderer.normal(0F, 1F, 0F);
             }
 
             if (var2 == 1) {
-                var1.normal(0F, -1F, 0F);
+                shapeRenderer.normal(0F, -1F, 0F);
             }
 
             if (var2 == 2) {
-                var1.normal(0F, 0F, 1F);
+                shapeRenderer.normal(0F, 0F, 1F);
             }
 
             if (var2 == 3) {
-                var1.normal(0F, 0F, -1F);
+                shapeRenderer.normal(0F, 0F, -1F);
             }
 
             if (var2 == 4) {
-                var1.normal(1F, 0F, 0F);
+                shapeRenderer.normal(1F, 0F, 0F);
             }
 
             if (var2 == 5) {
-                var1.normal(-1F, 0F, 0F);
+                shapeRenderer.normal(-1F, 0F, 0F);
             }
 
-            renderInside(var1, 0, 0, 0, var2);
+            renderInside(shapeRenderer, 0, 0, 0, var2);
         }
 
-        var1.end();
+        shapeRenderer.end();
     }
 
     // TODO past here.
@@ -536,7 +537,7 @@ public class Block {
     // TODO.
     /**
      * Renders a side of this block.
-     * 
+     *
      * @param renderer
      *            Shape renderer that will render this.
      * @param var2
@@ -658,8 +659,8 @@ public class Block {
         this.z2 = z2;
     }
 
-    protected Block setHardness(float var1) {
-        hardness = (int) (var1 * 20F);
+    protected Block setHardness(float hardnessFactor) {
+        hardness = (int) (hardnessFactor * 20F);
         return this;
     }
 
@@ -688,8 +689,8 @@ public class Block {
     }
 
     // TODO.
-    public final void spawnBlockParticles(Level var1, int var2, int var3, int var4, int var5,
-            ParticleManager var6) {
+    public final void spawnBlockParticles(Level level, int var2, int var3, int var4, int var5,
+            ParticleManager particleManager) {
         float var7 = 0.1F;
         float var8 = var2 + random.nextFloat() * (x2 - x1 - var7 * 2F) + var7 + x1;
         float var9 = var3 + random.nextFloat() * (y2 - y1 - var7 * 2F) + var7 + y1;
@@ -718,8 +719,8 @@ public class Block {
             var8 = var2 + x2 + var7;
         }
 
-        var6.spawnParticle(new TerrainParticle(var1, var8, var9, var10, 0F, 0F, 0F, this).setPower(
-                0.2F).scale(0.6F));
+        particleManager.spawnParticle(new TerrainParticle(
+                level, var8, var9, var10, 0F, 0F, 0F, this).setPower(0.2F).scale(0.6F));
     }
 
     // TODO.
@@ -740,19 +741,17 @@ public class Block {
 
     }
 
-    public void update(Level level, int x, int y, int z, Random rand) {
+    public void update(Level level, int x, int y, int z, Random rand) {}
+
+    private boolean xIntersects(Vec3D vec) {
+        return IntersectionHelper.xIntersects(vec, y1, z1, y2, z2);
     }
 
-    private boolean xIntersects(Vec3D var1) {
-        return var1 == null ? false : var1.y >= y1 && var1.y <= y2 && var1.z >= z1 && var1.z <= z2;
+    private boolean yIntersects(Vec3D vec) {
+        return IntersectionHelper.yIntersects(vec, x1, z1, x2, z2);
     }
 
-    private boolean yIntersects(Vec3D var1) {
-        return var1 == null ? false : var1.x >= x1 && var1.x <= x2 && var1.z >= z1 && var1.z <= z2;
+    private boolean zIntersects(Vec3D vec) {
+        return IntersectionHelper.zIntersects(vec, x1, y1, x2, y2);
     }
-
-    private boolean zIntersects(Vec3D var1) {
-        return var1 == null ? false : var1.x >= x1 && var1.x <= x2 && var1.y >= y1 && var1.y <= y2;
-    }
-
 }

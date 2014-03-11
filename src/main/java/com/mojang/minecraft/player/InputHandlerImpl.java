@@ -143,35 +143,35 @@ public class InputHandlerImpl extends InputHandler {
             move = 0F;
             strafe = 0F;
             elevate = 0F;
-            if (keylist[0] != false) {
+            if (keylist[0]) {
                 move -= 1F;
             }
-            if (keylist[1] != false) {
+            if (keylist[1]) {
                 strafe -= 1F;
             }
-            if (keylist[2] != false) {
+            if (keylist[2]) {
                 move += 1F;
             }
-            if (keylist[3] != false) {
+            if (keylist[3]) {
                 strafe += 1F;
             }
             if (player.flyingMode) {
-                if (keylist[5] != false) {
+                if (keylist[5]) {
                     elevate += 0.3F;
                 }
-                if (keylist[6] != false) {
+                if (keylist[6]) {
                     elevate -= 0.3F;
                 }
             }
             mult = 1F;
-            if (keylist[7] != false) {
+            if (keylist[7]) {
                 mult = 5F;
-            } else if (keylist[8] != false) {
+            } else if (keylist[8]) {
                 mult = 2F;
             }
 
             player.noPhysics = cliplock;
-            if (keylist[9] != false) {
+            if (keylist[9]) {
                 player.noPhysics = !player.noPhysics;
             }
 

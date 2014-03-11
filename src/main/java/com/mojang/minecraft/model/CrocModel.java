@@ -4,25 +4,22 @@ import com.mojang.util.MathHelper;
 
 public class CrocModel extends Model {
     // fields
-    ModelPart Tail;
-
+    ModelPart tail;
     ModelPart head;
-
     ModelPart body;
-
     ModelPart leg1;
     ModelPart leg2;
     ModelPart leg4;
     ModelPart leg3;
 
     public CrocModel() {
-        Tail = new ModelPart(0, 0);
-        Tail.setBounds(0F, 0F, 0F, 8, 2, 17, 0F);
-        Tail.setPosition(-4F, 11F, 5F);
-        Tail.pitch = 0F;
-        Tail.yaw = 0F;
-        Tail.roll = 0F;
-        Tail.mirror = false;
+        tail = new ModelPart(0, 0);
+        tail.setBounds(0F, 0F, 0F, 8, 2, 17, 0F);
+        tail.setPosition(-4F, 11F, 5F);
+        tail.pitch = 0F;
+        tail.yaw = 0F;
+        tail.roll = 0F;
+        tail.mirror = false;
         head = new ModelPart(0, 0);
         head.setBounds(-4F, -4F, -8F, 8, 5, 11, 0F);
         head.setPosition(0F, 15F, -9F);
@@ -71,7 +68,7 @@ public class CrocModel extends Model {
     public void render(float f, float f1, float f2, float f3, float f4, float f5) {
         super.render(f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5);
-        Tail.render(f5);
+        tail.render(f5);
         head.render(f5);
         body.render(f5);
         leg1.render(f5);
@@ -82,6 +79,6 @@ public class CrocModel extends Model {
 
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
         // super.setRotationAngles(f, f1, f2, f3, f4, f5);
-        Tail.yaw = MathHelper.cos(f / (1.919107651F * 0.5F) * 0.0349065850398866F * f1 + 0);
+        tail.yaw = MathHelper.cos(f / (0.9595538255F) * (float) (Math.PI / 90) * f1 + 0);
     }
 }
