@@ -373,17 +373,17 @@ public class Mob extends Entity {
             var2 -= 360F;
         }
 
-        boolean var7 = var1 < -90F || var1 >= 90F;
-        if (var1 < -75F) {
-            var1 = -75F;
+        boolean var7 = var2 < -90F || var2 >= 90F;
+        if (var2 < -75F) {
+            var2 = -75F;
         }
 
-        if (var1 >= 75F) {
-            var1 = 75F;
+        if (var2 >= 75F) {
+            var2 = 75F;
         }
 
-        yBodyRot = yRot - var1;
-        yBodyRot += var1 * 0.1F;
+        yBodyRot = yRot - var2;
+        yBodyRot += var2 * 0.1F;
         if (var7) {
             var5 = -var5;
         }
