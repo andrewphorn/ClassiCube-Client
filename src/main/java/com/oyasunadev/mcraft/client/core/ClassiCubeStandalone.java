@@ -315,7 +315,6 @@ public class ClassiCubeStandalone {
             while (true) {
                 if (!minecraft.isRunning) {
                     minecraft.shutdown();
-                    dispose();
                     System.exit(0);
                 }
 

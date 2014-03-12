@@ -843,7 +843,6 @@ public final class Minecraft implements Runnable {
             LogUtil.logError("Fatal error in main loop (run)", ex);
         } finally {
             shutdown();
-            Display.destroy();
         }
     }
 
