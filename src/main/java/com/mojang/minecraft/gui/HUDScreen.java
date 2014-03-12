@@ -79,6 +79,7 @@ public final class HUDScreen extends Screen {
     public final void render(float var1, boolean var2, int var3, int var4) {
         FontRenderer fontRenderer = mc.fontRenderer;
         mc.renderer.enableGuiMode();
+        if(!mc.canRenderGUI) return;
         TextureManager var6 = mc.textureManager;
         GL11.glBindTexture(3553, mc.textureManager.load("/gui/gui.png"));
         ShapeRenderer var7 = ShapeRenderer.instance;

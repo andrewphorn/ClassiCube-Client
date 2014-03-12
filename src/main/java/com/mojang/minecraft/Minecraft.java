@@ -1669,10 +1669,9 @@ public final class Minecraft implements Runnable {
                         GL11.glPopMatrix();
                         heldBlock.minecraft.renderer.setLighting(false);
 
-                        if (currentScreen != null || canRenderGUI) {
-                            renderer.minecraft.hud.render(timer.delta,
-                                    renderer.minecraft.currentScreen != null, mouseX, mouseY);
-                        }
+                        
+                        renderer.minecraft.hud.render(timer.delta,
+                                renderer.minecraft.currentScreen != null, mouseX, mouseY);
                     } else {
                         GL11.glViewport(0, 0, renderer.minecraft.width, renderer.minecraft.height);
                         GL11.glClearColor(0F, 0F, 0F, 0F);
