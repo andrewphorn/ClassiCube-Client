@@ -1076,11 +1076,18 @@ public final class Minecraft implements Runnable {
 
                         renderer.hurtEffect(delta);
                         renderer.applyBobbing(delta, renderer.minecraft.settings.viewBobbing);
+                        
+                        float cameraDistance = -5.1F;
+                        if (renderer.minecraft.selected != null && settings.thirdPersonMode == 2) {
+                            cameraDistance = -(renderer.minecraft.selected.vec.distance(renderer
+                                    .getPlayerVector(timer.delta)) - 0.51F);
+                            if (cameraDistance < -5.1F) cameraDistance = -5.1F;
+                        }
 
                         if (settings.thirdPersonMode == 0) {
                             GL11.glTranslatef(0F, 0F, -0.1F);
                         } else {
-                            GL11.glTranslatef(0F, 0F, -5.1F);
+                            GL11.glTranslatef(0F, 0F, cameraDistance);
                         }
                         if (settings.thirdPersonMode == 2) {
                             GL11.glRotatef(-player.xRotO + (player.xRot - player.xRotO) * delta,
@@ -1220,7 +1227,8 @@ public final class Minecraft implements Runnable {
                         if (level.cloudLevel < 0) {
                             level.cloudLevel = levelRenderer.level.height + 2;
                         }
-                        int cloudLevel = level.cloudLevel;
+                        int cloudLevel = level.cloudLevel;                        
+
                         float unknownCloud = 1F / 2048F;
                         float cloudTickOffset = (levelRenderer.ticks + delta) * unknownCloud * 0.03F;
                         if (settings.showClouds) {
@@ -1263,6 +1271,9 @@ public final class Minecraft implements Runnable {
                         shapeRenderer.begin();
                         shapeRenderer.color(skyColorRed, skyColorBlue, skyColorGreen);
                         int levelHeight = levelRenderer.level.height + 10;
+                        if (player.y > levelRenderer.level.height) {
+                            levelHeight = (int)(player.y + 10);
+                        }
 
                         for (x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
                             for (y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
@@ -1572,18 +1583,18 @@ public final class Minecraft implements Runnable {
                         if (!isSinglePlayer && networkManager != null
                                 && networkManager.players != null
                                 && networkManager.players.size() > 0) {
-                            if (settings.ShowNames == 1 && this.player.userType >= 100) {
+                            if ((settings.ShowNames == 2 || settings.ShowNames == 3)
+                                    && this.player.userType >= 100) {
                                 for (int n = 0; n < networkManager.players.values().size(); n++) {
                                     NetworkPlayer np = (NetworkPlayer) networkManager.players
                                             .values().toArray()[n];
                                     if (np != null) {
-                                        np.renderHover(renderer.minecraft.textureManager, delta);
+                                        np.renderHover(renderer.minecraft.textureManager);
                                     }
                                 }
                             } else {
                                 if (renderer.entity != null) {
-                                    renderer.entity.renderHover(renderer.minecraft.textureManager,
-                                            delta);
+                                    renderer.entity.renderHover(renderer.minecraft.textureManager);
                                 }
                             }
                         }

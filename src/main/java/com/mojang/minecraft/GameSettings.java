@@ -133,7 +133,9 @@ public final class GameSettings implements Serializable {
         case ENABLE_HACKS:
             return "Enable Hacks: " + (HacksEnabled ? "Yes" : "No");
         case SHOW_NAMES:
-            return "Show Names: " + (ShowNames == 0 ? "Hover" : "Always");
+            return "Show Names: " + ((ShowNames == 0 || ShowNames == 1) ?
+                    (ShowNames == 0 ? "Hover" : "Hover No-Scale") : 
+                    (ShowNames == 2 ? "Always" : "Always No-Scale"));
         default:
             throw new IllegalArgumentException();
         }
@@ -323,10 +325,10 @@ public final class GameSettings implements Serializable {
             HacksEnabled = !HacksEnabled;
             break;
         case SHOW_NAMES:
-            if (ShowNames == 0) {
-                ShowNames = 1;
-            } else {
+            if (ShowNames == 3) {
                 ShowNames = 0;
+            } else {
+                ShowNames++;
             }
             break;
         }

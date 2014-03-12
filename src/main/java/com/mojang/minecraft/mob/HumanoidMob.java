@@ -58,7 +58,7 @@ public class HumanoidMob extends Mob {
                 if (block instanceof FlowerBlock || block instanceof FireBlock) {
                 	yTranslation = -1.8F;
                 }
-                GL11.glTranslatef(-0.5F, yTranslation, -0.5F);
+                GL11.glTranslatef(-0.5F, yTranslation, -0.2F);
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
 
                 block.renderPreview(ShapeRenderer.instance);

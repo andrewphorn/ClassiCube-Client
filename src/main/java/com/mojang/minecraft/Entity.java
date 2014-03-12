@@ -473,7 +473,7 @@ public abstract class Entity implements Serializable {
     public void render(TextureManager textureManager, float var2) {
     }
 
-    public void renderHover(TextureManager textureManager, float var2) {
+    public void renderHover(TextureManager textureManager) {
     }
 
     public void resetPos() {

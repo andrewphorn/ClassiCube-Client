@@ -11,7 +11,8 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.HackState;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.level.tile.BlockModelRenderer;
+import com.mojang.minecraft.level.tile.FireBlock;
+import com.mojang.minecraft.level.tile.FlowerBlock;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
@@ -539,19 +540,33 @@ public class Player extends Mob {
         }
     }
 
-    BlockModelRenderer block;
 
     @Override
     public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
             float var6, float var7) {
         if (isInteger(modelName)) {
             try {
-                block = new BlockModelRenderer(Block.blocks[Integer.parseInt(modelName)].textureId);
+            	GL11.glEnable(GL11.GL_ALPHA_TEST);
+            	GL11.glEnable(GL11.GL_BLEND);
                 GL11.glPushMatrix();
-                GL11.glTranslatef(-0.5F, 0.4F, -0.5F);
+
+                // These are here to revert the scalef calls in Mob.java.
+            	// While those calls are useful for entity models, they cause the
+            	// block models to be rendered upside down.
+                GL11.glScalef(-1F, 1F, 1F);
+            	GL11.glScalef(1F, -1F, 1F);
+                Block block = Block.blocks[Integer.parseInt(modelName)];
+                // TODO: Implement proper detection of which blocks need translation.
+                float yTranslation = -1.4F;
+                if (block instanceof FlowerBlock || block instanceof FireBlock) {
+                	yTranslation = -1.8F;
+                }
+                GL11.glTranslatef(-0.5F, yTranslation, -0.2F);
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/terrain.png"));
+
                 block.renderPreview(ShapeRenderer.instance);
                 GL11.glPopMatrix();
+                GL11.glDisable(GL11.GL_BLEND);
             } catch (Exception e) {
                 modelName = "humanoid";
             }
@@ -561,12 +576,13 @@ public class Player extends Mob {
         if (hasHair && model instanceof HumanoidModel) {
             GL11.glDisable(GL11.GL_CULL_FACE);
             HumanoidModel modelHeadwear = null;
-            (modelHeadwear = (HumanoidModel) model).headwear.yaw = modelHeadwear.head.yaw;
+            modelHeadwear = (HumanoidModel)model;
+            modelHeadwear.headwear.yaw = modelHeadwear.head.yaw;
             modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
             modelHeadwear.headwear.render(var7);
             GL11.glEnable(GL11.GL_CULL_FACE);
         }
-        modelCache.getModel(modelName).render(var2, var4, tickCount + var3, var5, var6, var7);
+        model.render(var2, var4, tickCount + var3, var5, var6, var7);
     }
 
     @Override

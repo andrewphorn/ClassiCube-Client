@@ -209,14 +209,19 @@ public class NetworkPlayer extends HumanoidMob {
     }
 
     @Override
-    public void renderHover(TextureManager textureManager, float var2) {
+    public void renderHover(TextureManager textureManager) {
         FontRenderer fontRenderer = minecraft.fontRenderer;
         GL11.glPushMatrix();
-        GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 + 0.8F + renderOffset, zo
-                + (z - zo) * var2);
+        float var1 = minecraft.player.distanceTo(this) / 128;
+        GL11.glTranslatef(xo + (x - xo) * var1, yo + (y - yo) * var1 + 0.8F + renderOffset, zo
+                + (z - zo) * var1);
         GL11.glRotatef(-minecraft.player.yRot, 0F, 1F, 0F);
-        var2 = 0.05F;
-        GL11.glScalef(0.05F, -var2, var2);
+        GL11.glRotatef(-minecraft.player.xRot, 1F, 0F, 0F);
+        if (minecraft.settings.ShowNames == 1 || minecraft.settings.ShowNames == 3
+                && minecraft.player.userType >= 100) {
+            GL11.glScalef(var1, -var1, var1);
+        } else GL11.glScalef(0.05F, -0.05F, 0.05F);
+
         GL11.glTranslatef(-fontRenderer.getWidth(displayName) / 2F, 0F, 0F);
         GL11.glNormal3f(1F, -1F, 1F);
         GL11.glDisable(GL11.GL_LIGHTING);

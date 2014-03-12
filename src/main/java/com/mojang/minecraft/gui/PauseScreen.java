@@ -31,22 +31,10 @@ public final class PauseScreen extends GuiScreen {
                 minecraft.setCurrentScreen(new TextureSelectionScreen(this));
             }
             if (button.id == 3) {
-                minecraft.networkManager.netHandler.close();
-                HUDScreen.Announcement = "";
-                HUDScreen.BottomRight1 = "";
-                HUDScreen.BottomRight2 = "";
-                HUDScreen.BottomRight3 = "";
-                HUDScreen.Compass = "";
-                HUDScreen.ServerName = "";
-                HUDScreen.UserDetail = "";
-                ProgressBarDisplay.title = "Singleplayer";
-                minecraft.isRunning = false;
-            }
-            if (button.id == 4) {
                 minecraft.setCurrentScreen((GuiScreen) null);
                 minecraft.grabMouse();
             }
-            if (button.id == 5) {
+            if (button.id == 4) {
                 File file = new File(Minecraft.getMinecraftDirectory(), "/Screenshots/");
                 file.mkdirs();
                 try {
@@ -56,7 +44,7 @@ public final class PauseScreen extends GuiScreen {
                     LogUtil.logError("Error opening screenshots folder.", ex);
                 }
             }
-            if (button.id == 6) {
+            if (button.id == 5) {
                 File file = new File(Minecraft.getMinecraftDirectory(), "/logs/");
                 file.mkdirs();
                 try {
@@ -116,13 +104,11 @@ public final class PauseScreen extends GuiScreen {
             buttons.add(new Button(0, width / 2 - 100, height / 4, "Options..."));
             buttons.add(new Button(1, width / 2 - 100, height / 4 + 24, "Save level..."));
             buttons.add(new Button(2, width / 2 - 100, height / 4 + 48, "Change texture pack..."));
-            buttons.add(new Button(3, width / 2 - 100, ((height / 4 + 48) + (height - 36)) / 2,
-                    "Quit and play Single Player"));
-            buttons.add(new Button(4, width / 2 - 100, height - 36, "Back to game"));
+            buttons.add(new Button(3, width / 2 - 100, height - 36, "Back to game"));
             int w = fontRenderer.getWidth("Screenshots...");
-            buttons.add(new Button(5, width - fontRenderer.getWidth("Screenshots...") - 15,
+            buttons.add(new Button(4, width - fontRenderer.getWidth("Screenshots...") - 15,
                     height - 36, fontRenderer.getWidth("Screenshots..."), "Screenshots"));
-            buttons.add(new Button(6, width - w - 15, height - 58, w, "Chat Logs"));
+            buttons.add(new Button(5, width - w - 15, height - 58, w, "Chat Logs"));
         } else {
             buttons.add(new Button(0, width / 2 - 100, height / 4, "Options..."));
             buttons.add(new Button(1, width / 2 - 100, height / 4 + 24, "Generate new level..."));
