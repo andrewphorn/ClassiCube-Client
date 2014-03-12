@@ -492,6 +492,7 @@ public abstract class Entity implements Serializable {
                     break;
                 }
             }
+            yRot = level.rotSpawn;
 
         }
     }
