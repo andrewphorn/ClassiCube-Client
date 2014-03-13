@@ -345,7 +345,8 @@ public class Mob extends Entity {
         if (hyp > 0.05F) {
             var6 = 1F;
             var5 = hyp * 3F;
-            var4 = (float) Math.atan2(distanceY, distanceX) * 180F / (float) Math.PI - 90F;
+            if (!(this instanceof Player))
+                var4 = (float) Math.atan2(distanceY, distanceX) * 180F / (float) Math.PI - 90F;
         }
 
         if (!onGround) {
