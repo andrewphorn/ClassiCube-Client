@@ -1021,7 +1021,6 @@ public final class Minecraft implements Runnable {
                         Level level = renderer.minecraft.level;
                         LevelRenderer levelRenderer = renderer.minecraft.levelRenderer;
                         ParticleManager particleManager = renderer.minecraft.particleManager;
-                        Frustum frustum = FrustumImpl.getInstance();
 
                         GL11.glViewport(0, 0, renderer.minecraft.width, renderer.minecraft.height);
                         float viewDistanceFactor = 1F - (float) (Math.pow(
@@ -1104,7 +1103,8 @@ public final class Minecraft implements Runnable {
                         var74 = player.yo + (player.y - player.yo) * delta;
                         var33 = player.zo + (player.z - player.zo) * delta;
                         GL11.glTranslatef(-var69, -var74, -var33);
-
+                        Frustum frustum = FrustumImpl.getInstance();
+                        
                         for (i = 0; i < levelRenderer.chunkCache.length; ++i) {
                             levelRenderer.chunkCache[i].clip(frustum);
                         }
