@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,14 +14,10 @@ import org.lwjgl.opengl.Display;
 
 import com.mojang.minecraft.render.TextureManager;
 
-public final class GameSettings implements Serializable {
-    private static final long serialVersionUID = 2L;
+public final class GameSettings {
+
     public static String StatusString = "";
     public static String PercentString = "";
-
-    public static String[] smoothingOptions = new String[] { "OFF", "Automatic", "Universal" };
-    private static final String[] viewDistanceOptions = new String[] { "FAR", "NORMAL", "SHORT",
-            "TINY" };
 
     public static boolean CanReplaceSlot = true;
 
@@ -38,8 +32,44 @@ public final class GameSettings implements Serializable {
     private final File settingsFile;
     public int settingCount;
 
-    // ==== BINDINGS
-    // ===============================================================================
+    // ==== CONSTANTS =============================================================================
+    public static String[] smoothingOptions = new String[]{"OFF", "Automatic", "Universal"};
+    public static String[] showNamesOptions
+            = new String[]{"Hover", "Hover (No Scaling)", "Always", "Always (No Scaling)"};
+    private static final String[] viewDistanceOptions
+            = new String[]{"FAR", "NORMAL", "SHORT", "TINY"};
+
+    // showNames values
+    public static final int SHOWNAMES_HOVER = 0,
+            SHOWNAMES_HOVER_UNSCALED = 1,
+            SHOWNAMES_ALWAYS = 2,
+            SHOWNAMES_ALWAYS_UNSCALED = 3;
+
+    // thirdPersonMode values
+    public static final int FIRST_PERSON = 0,
+            THIRD_PERSON_BACK = 1,
+            THIRD_PERSON_FRONT = 2;
+
+    // hackType values
+    public static final int HACKTYPE_NORMAL = 0,
+            HACKTYPE_ADVANCED = 1;
+
+    // valid range of values for viewDistance
+    public static final int VIEWDISTANCE_MIN = 0,
+            VIEWDISTANCE_MAX = viewDistanceOptions.length - 1;
+
+    // smoothing values
+    public static final int SMOOTHING_OFF = 0,
+            SMOOTHING_AUTO = 1,
+            SMOOTHING_UNIVERSAL = 2;
+    
+    public static final float SCALE_MIN = 0.6f,
+            SCALE_MAX = 1.2f;
+
+    // min valid value for anisotropy. Max is set by TextureManager.
+    public static final int ANISOTROPY_OFF = 0;
+
+    // ==== BINDINGS ==============================================================================
     public KeyBinding forwardKey = new KeyBinding("Forward", Keyboard.KEY_W);
     public KeyBinding leftKey = new KeyBinding("Left", Keyboard.KEY_A);
     public KeyBinding backKey = new KeyBinding("Back", Keyboard.KEY_S);
@@ -58,8 +88,7 @@ public final class GameSettings implements Serializable {
     public KeyBinding[] bindings;
     public KeyBinding[] bindingsmore;
 
-    // ==== SETTINGS
-    // ===============================================================================
+    // ==== SETTINGS ==============================================================================
     public int HackType = 0;
     public int ShowNames = 0;
     public String lastUsedTexturePack;
@@ -69,8 +98,7 @@ public final class GameSettings implements Serializable {
     public boolean viewBobbing = true;
     public int viewDistance;
 
-    // 0 = off, higher values mean powers-of-2 (e.g. 1=>2x, 2=>4x, 3=>8x,
-    // 4=>16x)
+    // 0 = off, higher values mean nth-powers-of-2 (e.g. 1 => 2x, 2 => 4x, 3 => 8x, 4 => 16x)
     public int anisotropy;
 
     // Interface font scale, as a ratio of default font (1.0 => 100%)
@@ -82,9 +110,10 @@ public final class GameSettings implements Serializable {
     public boolean showDebug = false;
 
     public GameSettings(Minecraft minecraft, File minecraftFolder) {
-        bindings = new KeyBinding[] { forwardKey, leftKey, backKey, rightKey, jumpKey,
-                inventoryKey, chatKey, toggleFogKey, saveLocationKey, loadLocationKey };
-        bindingsmore = new KeyBinding[] { runKey, flyKey, flyUp, flyDown, noClip };
+        bindings = new KeyBinding[]{
+            forwardKey, leftKey, backKey, rightKey, jumpKey, inventoryKey,
+            chatKey, toggleFogKey, saveLocationKey, loadLocationKey};
+        bindingsmore = new KeyBinding[]{runKey, flyKey, flyUp, flyDown, noClip};
 
         this.minecraft = minecraft;
 
@@ -106,66 +135,69 @@ public final class GameSettings implements Serializable {
 
     public String getSetting(Setting id) {
         switch (id) {
-        case MUSIC:
-            return "Music: " + toOnOff(music);
-        case SOUND:
-            return "Sound: " + toOnOff(sound);
-        case INVERT_MOUSE:
-            return "Invert mouse: " + toOnOff(invertMouse);
-        case SHOW_DEBUG:
-            return "Show Debug: " + toOnOff(showDebug);
-        case RENDER_DISTANCE:
-            return "Render distance: " + viewDistanceOptions[viewDistance];
-        case VIEW_BOBBING:
-            return "View bobbing: " + toOnOff(viewBobbing);
-        case LIMIT_FRAMERATE:
-            return "Limit framerate: " + toOnOff(limitFramerate);
-        case SMOOTHING:
-            return "Smoothing: " + smoothingOptions[smoothing];
-        case ANISOTROPIC:
-            return "Anisotropic: " + (anisotropy == 0 ? "OFF" : (1 << anisotropy) + "x");
-        case ALLOW_SERVER_TEXTURES:
-            return "Allow server textures: " + (canServerChangeTextures ? "Yes" : "No");
-        case SPEEDHACK_TYPE:
-            return "SpeedHack type: " + (HackType == 0 ? "Normal" : "Adv");
-        case FONT_SCALE:
-            return "Font Scale: " + new DecimalFormat("#.#").format(scale);
-        case ENABLE_HACKS:
-            return "Enable Hacks: " + (HacksEnabled ? "Yes" : "No");
-        case SHOW_NAMES:
-            return "Show Names: " + ((ShowNames == 0 || ShowNames == 1) ?
-                    (ShowNames == 0 ? "Hover" : "Hover No-Scale") : 
-                    (ShowNames == 2 ? "Always" : "Always No-Scale"));
-        default:
-            throw new IllegalArgumentException();
+            case MUSIC:
+                return "Music: " + toOnOff(music);
+            case SOUND:
+                return "Sound: " + toOnOff(sound);
+            case INVERT_MOUSE:
+                return "Invert mouse: " + toOnOff(invertMouse);
+            case SHOW_DEBUG:
+                return "Show Debug: " + toOnOff(showDebug);
+            case RENDER_DISTANCE:
+                return "Render distance: " + viewDistanceOptions[viewDistance];
+            case VIEW_BOBBING:
+                return "View bobbing: " + toOnOff(viewBobbing);
+            case LIMIT_FRAMERATE:
+                return "Limit framerate: " + toOnOff(limitFramerate);
+            case SMOOTHING:
+                return "Smoothing: " + smoothingOptions[smoothing];
+            case ANISOTROPIC:
+                return "Anisotropic: " + (anisotropy == 0 ? "OFF" : (1 << anisotropy) + "x");
+            case ALLOW_SERVER_TEXTURES:
+                return "Allow server textures: " + (canServerChangeTextures ? "Yes" : "No");
+            case SPEEDHACK_TYPE:
+                return "SpeedHack type: " + (HackType == 0 ? "Normal" : "Adv");
+            case FONT_SCALE:
+                return "Font Scale: " + Math.round(scale * 100) + "%";
+            case ENABLE_HACKS:
+                return "Enable Hacks: " + (HacksEnabled ? "Yes" : "No");
+            case SHOW_NAMES:
+                return "Show Names: " + showNamesOptions[ShowNames];
+            default:
+                throw new IllegalArgumentException();
         }
     }
 
     private void load() {
         try {
             if (settingsFile.exists()) {
-                try (FileReader fileReader = new FileReader(settingsFile)) {
-                    BufferedReader reader = new BufferedReader(fileReader);
-                    HashMap<String, String> rawSettings = new HashMap<>();
+                try (FileReader fileReader = new FileReader(settingsFile);
+                        BufferedReader reader = new BufferedReader(fileReader)) {
+                    // Read the raw settings keys/values
                     String line;
                     while ((line = reader.readLine()) != null) {
                         String[] setting = line.split(":");
-                        rawSettings.put(setting[0].toLowerCase(), setting[1]);
+                        String key = setting[0].toLowerCase();
+                        String value = setting[1];
+                        try {
+                            parseOneSetting(key, value);
+                        } catch (Exception ex) {
+                            String errorMsg = String.format("Error parsing a setting: %s=%s", key, value);
+                            LogUtil.logWarning(errorMsg, ex);
+                        }
                     }
-                    parseLoadedSettings(rawSettings);
-                    reader.close();
                 }
+            } else {
+                LogUtil.logWarning("Options file not found at " + settingsFile + ", using defaults.");
             }
         } catch (Exception ex) {
-            LogUtil.logError("Failed to load options.", ex);
+            LogUtil.logError("Failed to load options from " + settingsFile, ex);
         }
     }
 
-    private void parseLoadedSettings(HashMap<String, String> settings) {
-        for (String key : settings.keySet()) {
-            String value = settings.get(key);
-            boolean isTrue = "true".equalsIgnoreCase(value) || "1".equals(value);
-            switch (key) {
+    private void parseOneSetting(String key, String value) {
+        boolean isTrue = "true".equalsIgnoreCase(value) || "1".equals(value);
+        switch (key) {
             case "music":
                 music = isTrue;
                 break;
@@ -179,8 +211,8 @@ public final class GameSettings implements Serializable {
                 showDebug = isTrue;
                 break;
             case "viewdistance":
-                viewDistance = Math.min(Math.max(Integer.parseInt(value), 0),
-                        viewDistanceOptions.length - 1);
+                viewDistance = Math.min(Math.max(Byte.parseByte(value),
+                        VIEWDISTANCE_MIN), VIEWDISTANCE_MAX);
                 break;
             case "bobview":
                 viewBobbing = isTrue;
@@ -190,25 +222,30 @@ public final class GameSettings implements Serializable {
                 Display.setVSyncEnabled(limitFramerate);
                 break;
             case "smoothing":
-                smoothing = Integer.parseInt(value);
+                smoothing = Math.min(Math.max(Byte.parseByte(value),
+                        SMOOTHING_OFF), SMOOTHING_UNIVERSAL);
                 break;
             case "anisotropic":
-                smoothing = Integer.parseInt(value);
+                anisotropy = Byte.parseByte(value);
                 break;
             case "canserverchangetextures":
                 canServerChangeTextures = isTrue;
                 break;
             case "hacktype":
-                HackType = Integer.parseInt(value);
+                HackType = Math.min(Math.max(Byte.parseByte(value),
+                        HACKTYPE_NORMAL), HACKTYPE_ADVANCED);
                 break;
             case "scale":
-                scale = Float.parseFloat(value);
+                // Round scale to nearest 10% step (0.1)
+                float roundedVal = Math.round(Float.parseFloat(value) * 10) / 10f;
+                scale = Math.min(Math.max(roundedVal, SCALE_MIN), SCALE_MAX);
                 break;
             case "hacksenabled":
                 HacksEnabled = isTrue;
                 break;
             case "shownames":
-                ShowNames = Integer.parseInt(value);
+                ShowNames = Math.min(Math.max(Byte.parseByte(value),
+                        SHOWNAMES_HOVER), SHOWNAMES_ALWAYS_UNSCALED);
                 break;
             case "texturepack":
                 lastUsedTexturePack = value;
@@ -221,15 +258,13 @@ public final class GameSettings implements Serializable {
                     }
                 }
                 break;
-            }
         }
     }
 
     public void save() {
         try {
-            try (FileWriter fileWriter = new FileWriter(settingsFile)) {
-                PrintWriter writer = new PrintWriter(fileWriter);
-
+            try (FileWriter fileWriter = new FileWriter(settingsFile);
+                    PrintWriter writer = new PrintWriter(fileWriter)) {
                 writer.println("music:" + music);
                 writer.println("sound:" + sound);
                 writer.println("invertYMouse:" + invertMouse);
@@ -248,7 +283,6 @@ public final class GameSettings implements Serializable {
                 for (KeyBinding binding : bindings) {
                     writer.println("key_" + binding.name + ":" + binding.key);
                 }
-                writer.close();
             }
         } catch (Exception ex) {
             LogUtil.logError("Failed to save options.", ex);
@@ -267,70 +301,74 @@ public final class GameSettings implements Serializable {
 
     public void toggleSetting(Setting setting, int fogValue) {
         switch (setting) {
-        case MUSIC:
-            music = !music;
-            break;
-        case SOUND:
-            sound = !sound;
-            break;
-        case INVERT_MOUSE:
-            invertMouse = !invertMouse;
-            break;
-        case SHOW_DEBUG:
-            showDebug = !showDebug;
-            break;
-        case RENDER_DISTANCE:
-            int newViewDist = viewDistance + fogValue;
-            if (newViewDist < 0) {
-                newViewDist = viewDistanceOptions.length - 1;
-            } else {
-                newViewDist = newViewDist % viewDistanceOptions.length;
-            }
-            viewDistance = newViewDist;
-            break;
-        case VIEW_BOBBING:
-            viewBobbing = !viewBobbing;
-            break;
-        case LIMIT_FRAMERATE:
-            limitFramerate = !limitFramerate;
-            if (Display.isCreated()) {
-                Display.setVSyncEnabled(limitFramerate);
-            }
-            break;
-        case SMOOTHING:
-            smoothing = (smoothing + 1) % smoothingOptions.length;
-            minecraft.textureManager.textures.clear();
-            break;
-        case ANISOTROPIC:
-            anisotropy = (anisotropy + 1) % TextureManager.getMaxAnisotropySetting();
-            minecraft.textureManager.textures.clear();
-            break;
-        case ALLOW_SERVER_TEXTURES:
-            canServerChangeTextures = !canServerChangeTextures;
-            break;
-        case SPEEDHACK_TYPE:
-            if (HackType == 1) {
-                HackType = 0;
-            } else {
+            case MUSIC:
+                music = !music;
+                break;
+            case SOUND:
+                sound = !sound;
+                break;
+            case INVERT_MOUSE:
+                invertMouse = !invertMouse;
+                break;
+            case SHOW_DEBUG:
+                showDebug = !showDebug;
+                break;
+            case RENDER_DISTANCE:
+                int newViewDist = viewDistance + fogValue;
+                if (newViewDist < VIEWDISTANCE_MIN) {
+                    newViewDist = VIEWDISTANCE_MAX;
+                } else if(newViewDist > VIEWDISTANCE_MAX){
+                    newViewDist = VIEWDISTANCE_MIN;
+                }
+                viewDistance = newViewDist;
+                break;
+            case VIEW_BOBBING:
+                viewBobbing = !viewBobbing;
+                break;
+            case LIMIT_FRAMERATE:
+                limitFramerate = !limitFramerate;
+                if (Display.isCreated()) {
+                    Display.setVSyncEnabled(limitFramerate);
+                }
+                break;
+            case SMOOTHING:
+                smoothing++;
+                if(smoothing > SMOOTHING_UNIVERSAL){
+                    smoothing = SMOOTHING_OFF;
+                }
+                minecraft.textureManager.textures.clear();
+                break;
+            case ANISOTROPIC:
+                anisotropy++;
+                if(anisotropy > TextureManager.getMaxAnisotropySetting()){
+                    anisotropy = ANISOTROPY_OFF;
+                }
+                minecraft.textureManager.textures.clear();
+                break;
+            case ALLOW_SERVER_TEXTURES:
+                canServerChangeTextures = !canServerChangeTextures;
+                break;
+            case SPEEDHACK_TYPE:
                 HackType++;
-            }
-            break;
-        case FONT_SCALE:
-            scale += 0.1;
-            if (scale > 1.2f) {
-                scale = 0.6f;
-            }
-            break;
-        case ENABLE_HACKS:
-            HacksEnabled = !HacksEnabled;
-            break;
-        case SHOW_NAMES:
-            if (ShowNames == 3) {
-                ShowNames = 0;
-            } else {
+                if (HackType > HACKTYPE_ADVANCED) {
+                    HackType = HACKTYPE_NORMAL;
+                }
+                break;
+            case FONT_SCALE:
+                scale += 0.1;
+                if (scale > SCALE_MAX) {
+                    scale = SCALE_MIN;
+                }
+                break;
+            case ENABLE_HACKS:
+                HacksEnabled = !HacksEnabled;
+                break;
+            case SHOW_NAMES:
                 ShowNames++;
-            }
-            break;
+                if (ShowNames > SHOWNAMES_ALWAYS_UNSCALED) {
+                    ShowNames = SHOWNAMES_HOVER;
+                }
+                break;
         }
         save();
     }
