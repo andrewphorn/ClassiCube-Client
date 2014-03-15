@@ -1,15 +1,15 @@
 package com.mojang.minecraft.level.generator;
 
 import com.mojang.minecraft.LogUtil;
-import java.util.ArrayList;
-import java.util.Random;
-
 import com.mojang.minecraft.ProgressBarDisplay;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.generator.noise.CombinedNoise;
 import com.mojang.minecraft.level.generator.noise.OctaveNoise;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.util.MathHelper;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public final class LevelGenerator {
 

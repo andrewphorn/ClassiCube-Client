@@ -23,9 +23,9 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.IOException;
-
 import de.jarnbjo.util.io.BitInputStream;
+
+import java.io.IOException;
 
 class Residue2 extends Residue {
 
@@ -34,7 +34,7 @@ class Residue2 extends Residue {
     private Residue2() {
     }
 
-    protected Residue2(BitInputStream source, SetupHeader header) throws VorbisFormatException,
+    protected Residue2(BitInputStream source, SetupHeader header) throws
             IOException {
         super(source, header);
     }
@@ -46,7 +46,7 @@ class Residue2 extends Residue {
     }
 
     protected void decodeResidue(VorbisStream vorbis, BitInputStream source, Mode mode, int ch,
-            boolean[] doNotDecodeFlags, float[][] vectors) throws VorbisFormatException,
+            boolean[] doNotDecodeFlags, float[][] vectors) throws
             IOException {
 
         Look look = getLook(vorbis, mode);
@@ -60,8 +60,8 @@ class Residue2 extends Residue {
         int partWords = (partitionsToRead + partitionsPerWord - 1) / partitionsPerWord;
 
         int realCh = 0;
-        for (int i = 0; i < doNotDecodeFlags.length; i++) {
-            if (!doNotDecodeFlags[i]) {
+        for (boolean doNotDecodeFlag : doNotDecodeFlags) {
+            if (!doNotDecodeFlag) {
                 realCh++;
             }
         }

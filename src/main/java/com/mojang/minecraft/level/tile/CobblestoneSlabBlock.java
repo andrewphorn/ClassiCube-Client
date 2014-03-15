@@ -63,7 +63,6 @@ public final class CobblestoneSlabBlock extends Block {
     @Override
     public final void onNeighborChange(Level level, int x, int y, int z, int side) {
         if (this == COBBLESTONE_SLAB) {
-            ;
         }
     }
 }

@@ -26,8 +26,8 @@ public class NBTTagString extends NBTBase {
      * classes
      */
     @Override
-    void write(DataOutput par1DataOutput) throws IOException {
-        par1DataOutput.writeUTF(this.data);
+    void write(DataOutput output) throws IOException {
+        output.writeUTF(this.data);
     }
 
     /**
@@ -35,8 +35,8 @@ public class NBTTagString extends NBTBase {
      * classes
      */
     @Override
-    void load(DataInput par1DataInput) throws IOException {
-        this.data = par1DataInput.readUTF();
+    void load(DataInput input) throws IOException {
+        this.data = input.readUTF();
     }
 
     /**

@@ -22,8 +22,8 @@ public class NBTTagShort extends NBTBase {
      * classes
      */
     @Override
-    void write(DataOutput par1DataOutput) throws IOException {
-        par1DataOutput.writeShort(this.data);
+    void write(DataOutput output) throws IOException {
+        output.writeShort(this.data);
     }
 
     /**
@@ -31,8 +31,8 @@ public class NBTTagShort extends NBTBase {
      * classes
      */
     @Override
-    void load(DataInput par1DataInput) throws IOException {
-        this.data = par1DataInput.readShort();
+    void load(DataInput input) throws IOException {
+        this.data = input.readShort();
     }
 
     /**

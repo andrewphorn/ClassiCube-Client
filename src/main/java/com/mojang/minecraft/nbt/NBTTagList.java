@@ -30,18 +30,18 @@ public class NBTTagList extends NBTBase {
      * classes
      */
     @Override
-    void write(DataOutput par1DataOutput) throws IOException {
+    void write(DataOutput output) throws IOException {
         if (!this.tagList.isEmpty()) {
             this.tagType = this.tagList.get(0).getId();
         } else {
             this.tagType = 1;
         }
 
-        par1DataOutput.writeByte(this.tagType);
-        par1DataOutput.writeInt(this.tagList.size());
+        output.writeByte(this.tagType);
+        output.writeInt(this.tagList.size());
 
-        for (int i = 0; i < this.tagList.size(); ++i) {
-            this.tagList.get(i).write(par1DataOutput);
+        for (NBTBase aTagList : this.tagList) {
+            aTagList.write(output);
         }
     }
 
@@ -50,14 +50,14 @@ public class NBTTagList extends NBTBase {
      * classes
      */
     @Override
-    void load(DataInput par1DataInput) throws IOException {
-        this.tagType = par1DataInput.readByte();
-        int i = par1DataInput.readInt();
+    void load(DataInput input) throws IOException {
+        this.tagType = input.readByte();
+        int i = input.readInt();
         this.tagList = new ArrayList<>();
 
         for (int j = 0; j < i; ++j) {
-            NBTBase nbtbase = NBTBase.newTag(this.tagType, (String) null);
-            nbtbase.load(par1DataInput);
+            NBTBase nbtbase = NBTBase.newTag(this.tagType, null);
+            nbtbase.load(input);
             this.tagList.add(nbtbase);
         }
     }
@@ -112,10 +112,8 @@ public class NBTTagList extends NBTBase {
     public NBTBase copy() {
         NBTTagList finalTagList = new NBTTagList(this.getName());
         finalTagList.tagType = this.tagType;
-        Iterator<NBTBase> iter = this.tagList.iterator();
 
-        while (iter.hasNext()) {
-            NBTBase nextTag = iter.next();
+        for (NBTBase nextTag : this.tagList) {
             NBTBase nextTagByValue = nextTag.copy();
             finalTagList.tagList.add(nextTagByValue);
         }

@@ -1,9 +1,8 @@
 package com.mojang.minecraft.gui;
 
-import java.io.File;
-
-import javax.swing.JFileChooser;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
 
 final class LevelDialog extends Thread {
 
@@ -23,7 +22,7 @@ final class LevelDialog extends Thread {
             fileChooser = new JFileChooser();
             llScreen.chooser = fileChooser;
             FileNameExtensionFilter filter = new FileNameExtensionFilter("ClassicWorld format (.cw)",
-                    new String[] { "cw" });
+                    "cw");
             screen.chooser.setFileFilter(filter);
             screen.chooser.setMultiSelectionEnabled(false);
             int chosenID;

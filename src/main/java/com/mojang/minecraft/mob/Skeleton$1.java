@@ -14,11 +14,6 @@ final class Skeleton$1 extends BasicAttackAI {
     }
 
     @Override
-    public final void beforeRemove() {
-        Skeleton.shootRandomArrow(parent);
-    }
-
-    @Override
     public final void tick(Level level, Mob mob) {
         super.tick(level, mob);
         if (mob.health > 0 && random.nextInt(30) == 0 && attackTarget != null) {

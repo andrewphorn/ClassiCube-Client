@@ -1,10 +1,19 @@
 package com.mojang.minecraft.render;
 
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
+import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.net.NetworkPlayer;
+import com.mojang.minecraft.render.texture.TextureFX;
+import com.mojang.minecraft.render.texture.TextureFireFX;
+import com.mojang.minecraft.render.texture.TextureLavaFX;
+import com.mojang.minecraft.render.texture.TextureWaterFX;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.*;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,26 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipFile;
 
-import javax.imageio.ImageIO;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.ContextCapabilities;
-import org.lwjgl.opengl.EXTFramebufferObject;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GLContext;
-
-import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.net.NetworkPlayer;
-import com.mojang.minecraft.render.texture.TextureFX;
-import com.mojang.minecraft.render.texture.TextureFireFX;
-import com.mojang.minecraft.render.texture.TextureLavaFX;
-import com.mojang.minecraft.render.texture.TextureWaterFX;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 
 public class TextureManager {
 
@@ -46,8 +37,8 @@ public class TextureManager {
         // " - " + x + " - " + y);
         BufferedImage clipping = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);// src.getType());
         Graphics2D area = (Graphics2D) clipping.getGraphics().create();
-        area.drawImage(src, 0, 0, clipping.getWidth(), clipping.getHeight(), x, y,
-                x + clipping.getWidth(), y + clipping.getHeight(), null);
+        area.drawImage(src, 0, 0, clipping.getWidth(), clipping.getHeight(), x, y, x + clipping.getWidth(),
+                y + clipping.getHeight(), null);
         area.dispose();
 
         return clipping;
@@ -577,17 +568,14 @@ public class TextureManager {
 
                 if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1, rainName.length())
                         : rainName) != null) {
-                    BufferedImage image = loadImageFast(zip
-                            .getInputStream(zip.getEntry(rainName.startsWith("/") ? rainName
-                                    .substring(1, rainName.length()) : rainName)));
-                    customRainPng = image;
+                    customRainPng = loadImageFast(zip.getInputStream(zip.getEntry(rainName.startsWith("/")
+                            ? rainName.substring(1, rainName.length()) : rainName)));
                 }
 
                 if (zip.getEntry(guiName.startsWith("/") ? guiName.substring(1, guiName.length())
                         : guiName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(guiName
-                            .startsWith("/") ? guiName.substring(1, guiName.length()) : guiName)));
-                    customGUI = image;
+                    customGUI = loadImageFast(zip.getInputStream(zip.getEntry(guiName.startsWith("/")
+                            ? guiName.substring(1, guiName.length()) : guiName)));
                 }
 
                 if (zip.getEntry(iconsName.startsWith("/") ? iconsName.substring(1,

@@ -1,16 +1,15 @@
 package com.mojang.minecraft.render;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
+import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
 import org.lwjgl.opengl.ARBBufferObject;
 import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 public class ShapeRenderer {
     private static boolean convertQuadsToTriangles;

@@ -3,13 +3,7 @@ package com.mojang.minecraft.level;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.ProgressBarDisplay;
 import com.mojang.minecraft.level.liquid.LiquidType;
-import com.mojang.minecraft.mob.Creeper;
-import com.mojang.minecraft.mob.Mob;
-import com.mojang.minecraft.mob.Pig;
-import com.mojang.minecraft.mob.Sheep;
-import com.mojang.minecraft.mob.Skeleton;
-import com.mojang.minecraft.mob.Spider;
-import com.mojang.minecraft.mob.Zombie;
+import com.mojang.minecraft.mob.*;
 
 public final class MobSpawner {
 

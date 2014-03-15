@@ -1,8 +1,8 @@
 package com.mojang.minecraft.render;
 
-import java.util.Comparator;
-
 import com.mojang.minecraft.player.Player;
+
+import java.util.Comparator;
 
 public class ChunkDirtyDistanceComparator implements Comparator<Chunk> {
     private Player player;

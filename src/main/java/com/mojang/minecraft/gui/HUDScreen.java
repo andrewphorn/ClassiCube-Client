@@ -1,12 +1,5 @@
 package com.mojang.minecraft.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.minecraft.ChatLine;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.PlayerListNameData;
@@ -16,6 +9,12 @@ import com.mojang.minecraft.player.Inventory;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public final class HUDScreen extends Screen {
     public List<ChatLine> chat = new ArrayList<>();
@@ -66,8 +65,7 @@ public final class HUDScreen extends Screen {
         for (int k = rangeA; k < rangeB; k++) {
             namesToPrint.add(playerListNames.get(k));
         }
-        for (int i = 0; i < namesToPrint.size(); ++i) {
-            PlayerListNameData pi = namesToPrint.get(i);
+        for (PlayerListNameData pi : namesToPrint) {
             if (!lastGroupName.equals(pi.groupName)) {
                 lastGroupName = pi.groupName;
                 groupChanges++;
@@ -194,7 +192,7 @@ public final class HUDScreen extends Screen {
         if (mc.settings.showDebug) {
             GL11.glPushMatrix();
             GL11.glScalef(0.7F, 0.7F, 1F);
-            fontRenderer.render("ClassiCube", 2, 2, 16777215); // lol fuck that.
+            fontRenderer.render("ClassiCube", 2, 2, 16777215);
             fontRenderer.render(mc.debug, 2, 12, 16777215);
             fontRenderer.render("Position: (" + (int) mc.player.x + ", " + (int) mc.player.y + ", "
                     + (int) mc.player.z + ")", 2, 22, 16777215);

@@ -1,8 +1,8 @@
 package com.mojang.minecraft.level.tile;
 
-import java.util.Random;
-
 import com.mojang.minecraft.level.Level;
+
+import java.util.Random;
 
 public final class RopeBlock extends FlowerBlock {
 

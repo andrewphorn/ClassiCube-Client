@@ -23,9 +23,9 @@ public class NBTTagByteArray extends NBTBase {
      * classes
      */
     @Override
-    void write(DataOutput par1DataOutput) throws IOException {
-        par1DataOutput.writeInt(this.byteArray.length);
-        par1DataOutput.write(this.byteArray);
+    void write(DataOutput output) throws IOException {
+        output.writeInt(this.byteArray.length);
+        output.write(this.byteArray);
     }
 
     /**
@@ -33,10 +33,10 @@ public class NBTTagByteArray extends NBTBase {
      * classes
      */
     @Override
-    void load(DataInput par1DataInput) throws IOException {
-        int i = par1DataInput.readInt();
+    void load(DataInput input) throws IOException {
+        int i = input.readInt();
         this.byteArray = new byte[i];
-        par1DataInput.readFully(this.byteArray);
+        input.readFully(this.byteArray);
     }
 
     /**
@@ -64,8 +64,8 @@ public class NBTTagByteArray extends NBTBase {
 
     @Override
     public boolean equals(Object other) {
-        return super.equals(other) ? Arrays.equals(this.byteArray,
-                ((NBTTagByteArray) other).byteArray) : false;
+        return super.equals(other) && Arrays.equals(this.byteArray,
+                ((NBTTagByteArray) other).byteArray);
     }
 
     @Override

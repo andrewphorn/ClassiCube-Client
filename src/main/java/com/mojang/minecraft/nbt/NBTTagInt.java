@@ -22,8 +22,8 @@ public class NBTTagInt extends NBTBase {
      * classes
      */
     @Override
-    void write(DataOutput par1DataOutput) throws IOException {
-        par1DataOutput.writeInt(this.data);
+    void write(DataOutput output) throws IOException {
+        output.writeInt(this.data);
     }
 
     /**
@@ -31,8 +31,8 @@ public class NBTTagInt extends NBTBase {
      * classes
      */
     @Override
-    void load(DataInput par1DataInput) throws IOException {
-        this.data = par1DataInput.readInt();
+    void load(DataInput output) throws IOException {
+        this.data = output.readInt();
     }
 
     /**

@@ -1,23 +1,22 @@
 package com.mojang.minecraft.gui;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gamemode.CreativeGameMode;
 import com.mojang.minecraft.gamemode.GameMode;
 import com.mojang.minecraft.gamemode.SurvivalGameMode;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.LevelLoader;
+import org.lwjgl.opengl.GL11;
 
-public final class GamemodeScreen extends GuiScreen {
+import java.io.File;
+import java.io.IOException;
+
+public final class GameModeScreen extends GuiScreen {
 
     @Override
     protected final void onButtonClick(Button button) {
         if (button.id == 0) {
+            // TODO?
         }
 
         if (button.id == 1) {
@@ -26,8 +25,6 @@ public final class GamemodeScreen extends GuiScreen {
         Level level = null;
         try {
             level = loadLevelFromLoader(minecraft.gamemode);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,20 +42,13 @@ public final class GamemodeScreen extends GuiScreen {
         minecraft.setCurrentScreen(null);
     }
 
-    public Level loadLevelFromLoader(GameMode gamemode) throws FileNotFoundException, IOException {
-        Level var11 = null;
-        if (gamemode instanceof CreativeGameMode) {
-            if ((var11 = new LevelLoader().load(new File(Minecraft.mcDir, "levelc.cw"),
-                    minecraft.player)) != null) {
-                minecraft.progressBar.setText("Loading saved map..");
-                minecraft.setLevel(var11);
-                Minecraft.isSinglePlayer = true;
-            }
-        } else if (gamemode instanceof SurvivalGameMode) {
-            if ((var11 = new LevelLoader().load(new File(Minecraft.mcDir, "levels.cw"),
-                    minecraft.player)) != null) {
-                minecraft.setLevel(var11);
-            }
+    // Removed CreativeMode and SurvivalMode distinguish code because it seems unnecessary
+    public Level loadLevelFromLoader(GameMode gamemode) throws IOException {
+        Level var11 = new LevelLoader().load(new File(Minecraft.mcDir, "levelc.cw"), minecraft.player);
+        if (var11 != null) {
+            minecraft.progressBar.setText("Loading saved map..");
+            minecraft.setLevel(var11);
+            Minecraft.isSinglePlayer = true;
         }
         return var11;
     }

@@ -90,7 +90,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
             }
             root = (currentByte & (1 << (bitIndex++))) != 0 ? root.o1 : root.o0;
         }
-        return root.value.intValue();
+        return root.value;
     }
 
     public int getInt(int bits) throws IOException {

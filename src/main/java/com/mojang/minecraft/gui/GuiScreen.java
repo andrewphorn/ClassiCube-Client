@@ -1,13 +1,12 @@
 package com.mojang.minecraft.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.mojang.minecraft.Minecraft;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.minecraft.Minecraft;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiScreen extends Screen {
 
@@ -50,7 +49,7 @@ public class GuiScreen extends Screen {
 
     protected void onKeyPress(char var1, int var2) {
         if (var2 == 1) {
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
             minecraft.grabMouse();
         }
         if (Keyboard.getEventKey() == Keyboard.KEY_F2) {

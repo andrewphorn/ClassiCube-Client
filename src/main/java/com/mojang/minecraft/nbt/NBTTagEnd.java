@@ -14,7 +14,7 @@ public class NBTTagEnd extends NBTBase {
      * classes
      */
     @Override
-    void load(DataInput par1DataInput) throws IOException {
+    void load(DataInput input) throws IOException {
     }
 
     /**
@@ -22,7 +22,7 @@ public class NBTTagEnd extends NBTBase {
      * classes
      */
     @Override
-    void write(DataOutput par1DataOutput) throws IOException {
+    void write(DataOutput output) throws IOException {
     }
 
     /**

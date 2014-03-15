@@ -22,8 +22,8 @@ public class NBTTagFloat extends NBTBase {
      * classes
      */
     @Override
-    void write(DataOutput par1DataOutput) throws IOException {
-        par1DataOutput.writeFloat(this.data);
+    void write(DataOutput output) throws IOException {
+        output.writeFloat(this.data);
     }
 
     /**
@@ -31,8 +31,8 @@ public class NBTTagFloat extends NBTBase {
      * classes
      */
     @Override
-    void load(DataInput par1DataInput) throws IOException {
-        this.data = par1DataInput.readFloat();
+    void load(DataInput input) throws IOException {
+        this.data = input.readFloat();
     }
 
     /**

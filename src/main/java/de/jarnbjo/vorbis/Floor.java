@@ -26,9 +26,9 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.IOException;
-
 import de.jarnbjo.util.io.BitInputStream;
+
+import java.io.IOException;
 
 public abstract class Floor {
 
@@ -83,7 +83,7 @@ public abstract class Floor {
             0.72993007f, 0.77736504f, 0.82788260f, 0.88168307f, 0.9389798f, 1F };
 
     static Floor createInstance(BitInputStream source, SetupHeader header)
-            throws VorbisFormatException, IOException {
+            throws IOException {
 
         int type = source.getInt(16);
         switch (type) {
@@ -99,7 +99,7 @@ public abstract class Floor {
     abstract void computeFloor(float[] vector);
 
     abstract Floor decodeFloor(VorbisStream vorbis, BitInputStream source)
-            throws VorbisFormatException, IOException;
+            throws IOException;
 
     abstract int getType();
 }

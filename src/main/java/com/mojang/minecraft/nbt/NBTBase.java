@@ -5,8 +5,9 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 public abstract class NBTBase {
-    public static final String[] NBTTypes = new String[] { "END", "BYTE", "SHORT", "INT", "LONG",
-            "FLOAT", "DOUBLE", "BYTE[]", "STRING", "LIST", "COMPOUND", "INT[]" };
+    public static final String[] NBTTypes = new String[] {
+            "END", "BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "BYTE[]", "STRING", "LIST", "COMPOUND", "INT[]"
+    };
 
     /** The UTF string key used to lookup values. */
     private String name;
@@ -15,13 +16,13 @@ public abstract class NBTBase {
      * Write the actual data contents of the tag, implemented in NBT extension
      * classes
      */
-    abstract void write(DataOutput dataoutput) throws IOException;
+    abstract void write(DataOutput output) throws IOException;
 
     /**
      * Read the actual data contents of the tag, implemented in NBT extension
      * classes
      */
-    abstract void load(DataInput datainput) throws IOException;
+    abstract void load(DataInput input) throws IOException;
 
     /**
      * Gets the type byte for the tag.
@@ -38,6 +39,7 @@ public abstract class NBTBase {
 
     /**
      * Sets the name for this tag and returns this for convenience.
+     * @param name The tag name.
      */
     public NBTBase setName(String name) {
         if (name == null) {
@@ -51,6 +53,7 @@ public abstract class NBTBase {
 
     /**
      * Gets the name corresponding to the tag, or an empty string if none set.
+     * @return String The tag's name.
      */
     public String getName() {
         return this.name == null ? "" : this.name;
@@ -60,16 +63,16 @@ public abstract class NBTBase {
      * Reads and returns a tag from the given DataInput, or the End tag if no
      * tag could be read.
      */
-    public static NBTBase readNamedTag(DataInput par0DataInput) throws IOException {
-        byte b0 = par0DataInput.readByte();
+    public static NBTBase readNamedTag(DataInput input) throws IOException {
+        byte b0 = input.readByte();
 
         if (b0 == 0) {
             return new NBTTagEnd();
         } else {
-            String s = par0DataInput.readUTF();
+            String s = input.readUTF();
             NBTBase nbtbase = newTag(b0, s);
 
-            nbtbase.load(par0DataInput);
+            nbtbase.load(input);
             return nbtbase;
         }
     }
@@ -77,14 +80,14 @@ public abstract class NBTBase {
     /**
      * Writes the specified tag to the given DataOutput, writing the type byte,
      * the UTF string key and then calling the tag to write its data.
+     * @param tag The NBT Tag to write.
+     * @param output The data output.
      */
-    public static void writeNamedTag(NBTBase par0NBTBase, DataOutput par1DataOutput)
-            throws IOException {
-        par1DataOutput.writeByte(par0NBTBase.getId());
-
-        if (par0NBTBase.getId() != 0) {
-            par1DataOutput.writeUTF(par0NBTBase.getName());
-            par0NBTBase.write(par1DataOutput);
+    public static void writeNamedTag(NBTBase tag, DataOutput output) throws IOException {
+        output.writeByte(tag.getId());
+        if (tag.getId() != 0) {
+            output.writeUTF(tag.getName());
+            tag.write(output);
         }
     }
 
@@ -168,10 +171,9 @@ public abstract class NBTBase {
             return false;
         } else {
             NBTBase tempOther = (NBTBase) other;
-            return this.getId() != tempOther.getId() ? false
-                    : ((this.name != null || tempOther.name == null)
-                            && (this.name == null || tempOther.name != null) ? this.name == null
-                            || this.name.equals(tempOther.name) : false);
+            return this.getId() == tempOther.getId() && ((this.name != null || tempOther.name == null)
+                    && (this.name == null || tempOther.name != null) && (this.name == null
+                    || this.name.equals(tempOther.name)));
         }
     }
 

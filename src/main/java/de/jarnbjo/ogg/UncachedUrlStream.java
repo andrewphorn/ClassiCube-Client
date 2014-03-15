@@ -22,9 +22,13 @@
 
 package de.jarnbjo.ogg;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Implementation of the <code>PhysicalOggStream</code> interface for reading an
@@ -70,7 +74,7 @@ public class UncachedUrlStream implements PhysicalOggStream {
                             .getStreamSerialNumber());
                     if (los == null) {
                         los = new LogicalOggStreamImpl(UncachedUrlStream.this);
-                        logicalStreams.put(new Integer(op.getStreamSerialNumber()), los);
+                        logicalStreams.put(op.getStreamSerialNumber(), los);
                         los.checkFormat(op);
                     }
 
@@ -94,9 +98,9 @@ public class UncachedUrlStream implements PhysicalOggStream {
     private InputStream sourceStream;
     private Object drainLock = new Object();
 
-    private LinkedList<OggPage> pageCache = new LinkedList<OggPage>();
+    private LinkedList<OggPage> pageCache = new LinkedList<>();
 
-    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
+    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<>();
 
     private LoaderThread loaderThread;
 
@@ -107,7 +111,7 @@ public class UncachedUrlStream implements PhysicalOggStream {
      * suitable for reading an Ogg stream from a URL.
      */
 
-    public UncachedUrlStream(URL source) throws OggFormatException, IOException {
+    public UncachedUrlStream(URL source) throws IOException {
 
         this.source = source.openConnection();
         this.sourceStream = this.source.getInputStream();
@@ -131,7 +135,7 @@ public class UncachedUrlStream implements PhysicalOggStream {
     }
 
     private LogicalOggStream getLogicalStream(int serialNumber) {
-        return (LogicalOggStream) logicalStreams.get(new Integer(serialNumber));
+        return logicalStreams.get(new Integer(serialNumber));
     }
 
     /*
@@ -162,7 +166,7 @@ public class UncachedUrlStream implements PhysicalOggStream {
             // OggPage page=(OggPage)pageCache.getFirst();
             // pageCache.removeFirst();
             // return page;
-            return (OggPage) pageCache.removeFirst();
+            return pageCache.removeFirst();
         }
     }
 

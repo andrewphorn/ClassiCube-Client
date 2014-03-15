@@ -22,8 +22,8 @@ public class NBTTagDouble extends NBTBase {
      * classes
      */
     @Override
-    void write(DataOutput par1DataOutput) throws IOException {
-        par1DataOutput.writeDouble(this.data);
+    void write(DataOutput output) throws IOException {
+        output.writeDouble(this.data);
     }
 
     /**
@@ -31,8 +31,8 @@ public class NBTTagDouble extends NBTBase {
      * classes
      */
     @Override
-    void load(DataInput par1DataInput) throws IOException {
-        this.data = par1DataInput.readDouble();
+    void load(DataInput input) throws IOException {
+        this.data = input.readDouble();
     }
 
     /**

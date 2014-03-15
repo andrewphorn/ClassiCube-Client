@@ -1,16 +1,15 @@
 package com.mojang.minecraft.mob;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.level.tile.FlowerBlock;
 import com.mojang.minecraft.level.tile.FireBlock;
+import com.mojang.minecraft.level.tile.FlowerBlock;
 import com.mojang.minecraft.model.AnimalModel;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
+import org.lwjgl.opengl.GL11;
 
 public class HumanoidMob extends Mob {
 
@@ -38,7 +37,7 @@ public class HumanoidMob extends Mob {
     @Override
     public void renderModel(TextureManager textureManager, float var2, float var3, float var4, float var5,
             float var6, float var7) {
-        if (modelName == "sheep") {
+        if (modelName.equals("sheep")) {
             renderSheep(textureManager, var2, var3, var4, var5, var6, var7);
             return;
         } else if (isInteger(modelName)) {

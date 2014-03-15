@@ -1,15 +1,14 @@
 package com.mojang.minecraft.net;
 
-import java.awt.image.BufferedImage;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.mob.HumanoidMob;
 import com.mojang.minecraft.render.TextureManager;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.List;
 
 public class NetworkPlayer extends HumanoidMob {
 

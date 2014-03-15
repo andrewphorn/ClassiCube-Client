@@ -84,7 +84,7 @@ public interface LogicalOggStream {
      *             if some other IO error occurs
      */
 
-    public byte[] getNextOggPacket() throws OggFormatException, IOException;
+    public byte[] getNextOggPacket() throws IOException;
 
     /**
      * <i>Note:</i> To read from the stream, you must use either this method or
@@ -101,7 +101,7 @@ public interface LogicalOggStream {
      *             if some other IO error occurs
      */
 
-    public OggPage getNextOggPage() throws OggFormatException, IOException;
+    public OggPage getNextOggPage() throws IOException;
 
     /**
      * @return the last parsed granule position of this stream
@@ -128,7 +128,7 @@ public interface LogicalOggStream {
      *             if some other IO error occurs
      */
 
-    public void reset() throws OggFormatException, IOException;
+    public void reset() throws IOException;
 
     /**
      * This method is invoked on all logical streams when calling the same

@@ -1,10 +1,10 @@
 package com.mojang.minecraft.player;
 
-import java.io.Serializable;
-
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.SessionData;
 import com.mojang.minecraft.level.tile.Block;
+
+import java.io.Serializable;
 
 public class Inventory implements Serializable {
 
@@ -109,8 +109,9 @@ public class Inventory implements Serializable {
                 var1 = -1;
             }
 
-            for (selected -= var1; selected < 0; selected += slots.length) {
-                ;
+            selected -= var1;
+            while (selected < 0) {
+                selected += slots.length;
             }
 
             while (selected >= slots.length) {
