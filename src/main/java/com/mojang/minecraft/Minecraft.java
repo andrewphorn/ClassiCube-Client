@@ -2780,7 +2780,7 @@ public final class Minecraft implements Runnable {
 										}
 									} else if (packetType == PacketType.CLICK_DISTANCE) {
 										short Distance = (Short) packetParams[0];
-										gamemode.reachDistance = Distance / 32;
+										//gamemode.reachDistance = Distance / 32;
 									} else if (packetType == PacketType.HOLDTHIS) {
 										byte BlockToHold = ((Byte) packetParams[0])
 												.byteValue();
