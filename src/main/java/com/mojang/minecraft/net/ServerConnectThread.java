@@ -37,7 +37,7 @@ public class ServerConnectThread extends Thread {
     public void run() {
         try {
             tryConnect();
-        } catch (ConnectException var3) {
+        } catch (ConnectException e) {
             minecraft.setCurrentScreen(new ErrorScreen("Failed to connect",
                     "You failed to connect to the server. It\'s probably down!"));
             minecraft.isOnline = false;

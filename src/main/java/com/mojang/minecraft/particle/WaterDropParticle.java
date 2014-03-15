@@ -7,8 +7,8 @@ public class WaterDropParticle extends Particle {
 
     private static final long serialVersionUID = 1L;
 
-    public WaterDropParticle(Level level, float var2, float var3, float var4) {
-        super(level, var2, var3, var4, 0F, 0F, 0F);
+    public WaterDropParticle(Level level, float x, float y, float z) {
+        super(level, x, y, z, 0F, 0F, 0F);
         xd *= 0.3F;
         yd = (float) Math.random() * 0.2F + 0.1F;
         zd *= 0.3F;

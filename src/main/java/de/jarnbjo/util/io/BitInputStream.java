@@ -84,7 +84,7 @@ public interface BitInputStream {
      *             if the method is not supported by the implementation
      */
 
-    public boolean getBit() throws IOException;
+    public boolean getBit();
 
     /**
      * reads a huffman codeword based on the <code>root</code> parameter and
@@ -100,7 +100,7 @@ public interface BitInputStream {
      *             if the method is not supported by the implementation
      */
 
-    public int getInt(HuffmanNode root) throws IOException;
+    public int getInt(HuffmanNode root);
 
     /**
      * reads <code>bits</code> number of bits from the input stream
@@ -154,7 +154,7 @@ public interface BitInputStream {
      *             if the method is not supported by the implementation
      */
 
-    public int readSignedRice(int order) throws IOException;
+    public int readSignedRice(int order);
 
     /**
      * fills the array from <code>offset</code> with <code>len</code> integers
@@ -173,7 +173,7 @@ public interface BitInputStream {
      *             if the method is not supported by the implementation
      */
 
-    public void readSignedRice(int order, int[] buffer, int offset, int len) throws IOException;
+    public void readSignedRice(int order, int[] buffer, int offset, int len);
 
     /**
      * changes the endian mode used when reading bit-wise from the stream,

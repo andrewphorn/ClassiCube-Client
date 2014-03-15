@@ -34,8 +34,8 @@ public final class MobSpawner {
 
             int var6 = this.level.random.nextInt(7);
             int var7 = this.level.random.nextInt(this.level.width);
-            int var8 = (int) (Math
-                    .min(this.level.random.nextFloat(), this.level.random.nextFloat()) * this.level.height);
+            int var8 = (int) (Math.min(this.level.random.nextFloat(),
+                    this.level.random.nextFloat()) * this.level.height);
             int var9 = this.level.random.nextInt(this.level.length);
             if (!this.level.isSolidTile(var7, var8, var9)
                     && this.level.getLiquid(var7, var8, var9) == LiquidType.notLiquid

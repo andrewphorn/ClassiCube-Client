@@ -256,10 +256,9 @@ public class BlockMap implements Serializable {
 
                             boolean var21 = var10000;
 
-                            for (int var23 = 0; var23 < entitySlotInGrid.size(); ++var23) {
-                                Entity var22;
-                                if ((var22 = (Entity) entitySlotInGrid.get(var23))
-                                        .shouldRender(var1)) {
+                            for (Object anEntitySlotInGrid : entitySlotInGrid) {
+                                Entity var22 = (Entity) anEntitySlotInGrid;
+                                if (var22.shouldRender(var1)) {
                                     if (!var21) {
                                         AABB var24 = var22.boundingBox;
                                         if (!frustum.isBoxInFrustum(var24.maxX, var24.maxY, var24.maxZ,

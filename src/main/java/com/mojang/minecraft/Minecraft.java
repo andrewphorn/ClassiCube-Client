@@ -2335,7 +2335,7 @@ public final class Minecraft implements Runnable {
                                                 var47 = (short) (var47 - 22);
                                                 var33 = new NetworkPlayer(networkManager.minecraft,
                                                         var34, var36, var47, var10005,
-                                                        var9 * 360 / 256F, var58 * 360 / 256F);
+                                                        var58 * 360 / 256F, var9 * 360 / 256F);
                                                 networkManager.players.put(var5, var33);
                                                 networkManager.minecraft.level.addEntity(var33);
                                             } else {
@@ -2371,8 +2371,8 @@ public final class Minecraft implements Runnable {
                                                     if ((networkPlayer = networkManager.players
                                                             .get(Byte.valueOf(var5))) != null) {
                                                         networkPlayer.teleport(var66, var36, var47,
-                                                                var53 * 360 / 256F,
-                                                                var9 * 360 / 256F);
+                                                                var9 * 360 / 256F, var53 * 360 / 256F
+                                                        );
                                                     }
                                                 }
                                             } else {
@@ -2398,8 +2398,8 @@ public final class Minecraft implements Runnable {
                                                         if ((networkPlayer = networkManager.players
                                                                 .get(Byte.valueOf(playerID))) != null) {
                                                             networkPlayer.queue(var37, var44,
-                                                                    var49, var53 * 360 / 256F,
-                                                                    var9 * 360 / 256F);
+                                                                    var49, var9 * 360 / 256F, var53 * 360 / 256F
+                                                            );
                                                         }
                                                     }
                                                 } else if (packetType == PacketType.ROTATION_UPDATE) {
@@ -2413,8 +2413,8 @@ public final class Minecraft implements Runnable {
                                                         NetworkPlayer var54;
                                                         if ((var54 = networkManager.players
                                                                 .get(Byte.valueOf(var5))) != null) {
-                                                            var54.queue(var37 * 360 / 256F,
-                                                                    var44 * 360 / 256F);
+                                                            var54.queue(var44 * 360 / 256F, var37 * 360 / 256F
+                                                            );
                                                         }
                                                     }
                                                 } else if (packetType == PacketType.POSITION_UPDATE) {

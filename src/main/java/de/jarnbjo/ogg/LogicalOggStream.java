@@ -48,7 +48,7 @@ public interface LogicalOggStream {
      *             if an IO error occurs
      */
 
-    public void close() throws IOException;
+    public void close();
 
     /**
      * @return the content type of this stream
@@ -128,7 +128,7 @@ public interface LogicalOggStream {
      *             if some other IO error occurs
      */
 
-    public void reset() throws IOException;
+    public void reset();
 
     /**
      * This method is invoked on all logical streams when calling the same

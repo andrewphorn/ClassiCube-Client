@@ -12,8 +12,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class ShapeRenderer {
-    private static boolean convertQuadsToTriangles;
-    public static boolean tryVBO;
+    private static boolean convertQuadsToTriangles; // TODO Never assigned
+    public static boolean tryVBO; // TODO Never used
     private ByteBuffer byteBuffer;
     private IntBuffer intBuffer;
     private FloatBuffer floatBuffer;

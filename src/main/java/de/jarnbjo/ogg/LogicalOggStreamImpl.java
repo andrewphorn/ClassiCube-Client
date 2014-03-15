@@ -77,7 +77,7 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
         }
     }
 
-    public void close() throws IOException {
+    public void close() {
         open = false;
     }
 
@@ -155,7 +155,7 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
         return open;
     }
 
-    public synchronized void reset() throws IOException {
+    public synchronized void reset() {
         currentPage = null;
         currentSegmentIndex = 0;
         pageIndex = 0;

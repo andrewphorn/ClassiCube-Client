@@ -19,8 +19,8 @@ public class NBTTagIntArray extends NBTBase {
     }
 
     /**
-     * Write the actual data contents of the tag, implemented in NBT extension
-     * classes
+     * Write the actual data contents of the tag, implemented in NBT extension classes.
+     * @param output The output stream to write to.
      */
     @Override
     void write(DataOutput output) throws IOException {
@@ -32,8 +32,8 @@ public class NBTTagIntArray extends NBTBase {
     }
 
     /**
-     * Read the actual data contents of the tag, implemented in NBT extension
-     * classes
+     * Read the actual data contents of the tag, implemented in NBT extension classes.
+     * @param input The input stream to read from.
      */
     @Override
     void load(DataInput input) throws IOException {
@@ -47,6 +47,7 @@ public class NBTTagIntArray extends NBTBase {
 
     /**
      * Gets the type byte for the tag.
+     * @return byte.
      */
     @Override
     public byte getId() {

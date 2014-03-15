@@ -66,7 +66,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
         }
     }
 
-    public boolean getBit() throws IOException {
+    public boolean getBit() {
         if (endian == LITTLE_ENDIAN) {
             if (bitIndex > 7) {
                 bitIndex = 0;
@@ -82,7 +82,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
         }
     }
 
-    public int getInt(HuffmanNode root) throws IOException {
+    public int getInt(HuffmanNode root) {
         while (root.value == null) {
             if (bitIndex > 7) {
                 bitIndex = 0;
@@ -195,7 +195,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
      *             if the method is not supported by the implementation
      */
 
-    public int readSignedRice(int order) throws IOException {
+    public int readSignedRice(int order) {
 
         int msbs = -1, lsbs = 0, res = 0;
 
@@ -267,7 +267,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
      * 
      * @param order
      * @param buffer
-     * @param offset
+     * @param off
      * @param len
      * @return the decoded integer value read from the stream
      * 
@@ -277,7 +277,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
      *             if the method is not supported by the implementation
      */
 
-    public void readSignedRice(int order, int[] buffer, int off, int len) throws IOException {
+    public void readSignedRice(int order, int[] buffer, int off, int len) {
 
         if (endian == LITTLE_ENDIAN) {
             // little endian

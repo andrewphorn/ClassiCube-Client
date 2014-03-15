@@ -8,7 +8,7 @@ public class FadeableAudioInputStream extends AudioInputStream {
     private boolean fading = false;
     private double phi = 0.0;
 
-    public FadeableAudioInputStream(AudioInputStream stream) throws IOException {
+    public FadeableAudioInputStream(AudioInputStream stream) {
         super(stream, stream.getFormat(), -1L);
     }
 
