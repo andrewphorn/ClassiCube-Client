@@ -638,6 +638,7 @@ public final class Minecraft implements Runnable {
         if (currentScreen != null) {
             currentScreen.width = width * 240 / height;
             currentScreen.height = height * 240 / height;
+            currentScreen.clearButtons();
             currentScreen.onOpen();
         }
     }
