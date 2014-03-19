@@ -1,10 +1,19 @@
 package com.mojang.minecraft.render;
 
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
+import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.net.NetworkPlayer;
+import com.mojang.minecraft.render.texture.TextureFX;
+import com.mojang.minecraft.render.texture.TextureFireFX;
+import com.mojang.minecraft.render.texture.TextureLavaFX;
+import com.mojang.minecraft.render.texture.TextureWaterFX;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.*;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,31 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipFile;
 
-import javax.imageio.ImageIO;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.ContextCapabilities;
-import org.lwjgl.opengl.EXTFramebufferObject;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GLContext;
-
-import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.net.NetworkPlayer;
-import com.mojang.minecraft.render.texture.TextureFX;
-import com.mojang.minecraft.render.texture.TextureFireFX;
-import com.mojang.minecraft.render.texture.TextureLavaFX;
-import com.mojang.minecraft.render.texture.TextureWaterFX;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 
 public class TextureManager {
 
     public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y)
-            throws IOException {
+        throws IOException { // TODO: Can it even throw one?
 
         // LogUtil.logInfo("---" + src.getWidth() + " - " + src.getHeight() +
         // " - " + x + " - " + y);
@@ -121,11 +112,11 @@ public class TextureManager {
         instance = this;
     }
 
-    public List<BufferedImage> Atlas2dInto1d(BufferedImage atlas2d, int tiles, int atlassizezlimit) {
+    public List<BufferedImage> Atlas2dInto1d(BufferedImage atlas2d, int tiles, int atlasSizeLimit) {
 
-        int tilesize = atlas2d.getWidth() / tiles;
+        int tileSize = atlas2d.getWidth() / tiles;
 
-        int atlasescount = Math.max(1, tiles * tiles * tilesize / atlassizezlimit);
+        int atlasesCount = Math.max(1, tiles * tiles * tileSize / atlasSizeLimit);
         List<BufferedImage> atlases = new ArrayList<>();
 
         // 256 x 1
@@ -134,16 +125,16 @@ public class TextureManager {
         for (int i = 0; i < tiles * tiles; i++) {
             int x = i % tiles;
             int y = i / tiles;
-            int tilesinatlas = tiles * tiles / atlasescount;
-            if (i % tilesinatlas == 0) {
+            int tilesInAtlas = tiles * tiles / atlasesCount;
+            if (i % tilesInAtlas == 0) {
                 if (atlas1d != null) {
                     atlases.add(atlas1d);
                 }
-                atlas1d = new BufferedImage(tilesize, atlassizezlimit, BufferedImage.TYPE_INT_ARGB);
+                atlas1d = new BufferedImage(tileSize, atlasSizeLimit, BufferedImage.TYPE_INT_ARGB);
             }
             try {
-                atlas1d = crop(atlas2d, tilesize, tilesize, x * tilesize, y * tilesize);
-            } catch (IOException ex) {
+                atlas1d = crop(atlas2d, tileSize, tileSize, x * tileSize, y * tileSize);
+            } catch (IOException ex) { // TODO: Can it even throw one?
                 LogUtil.logWarning("Error extracting texture from an atlas.", ex);
             }
         }
@@ -577,128 +568,111 @@ public class TextureManager {
 
                 if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1, rainName.length())
                         : rainName) != null) {
-                    BufferedImage image = loadImageFast(zip
-                            .getInputStream(zip.getEntry(rainName.startsWith("/") ? rainName
-                                    .substring(1, rainName.length()) : rainName)));
-                    customRainPng = image;
+                    customRainPng = loadImageFast(zip.getInputStream(zip.getEntry(rainName.startsWith("/")
+                            ? rainName.substring(1, rainName.length()) : rainName)));
                 }
 
                 if (zip.getEntry(guiName.startsWith("/") ? guiName.substring(1, guiName.length())
                         : guiName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(guiName
-                            .startsWith("/") ? guiName.substring(1, guiName.length()) : guiName)));
-                    customGUI = image;
+                    customGUI = loadImageFast(zip.getInputStream(zip.getEntry(guiName.startsWith("/")
+                            ? guiName.substring(1, guiName.length()) : guiName)));
                 }
 
                 if (zip.getEntry(iconsName.startsWith("/") ? iconsName.substring(1,
                         iconsName.length()) : iconsName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(iconsName
+                    customIcons = loadImageFast(zip.getInputStream(zip.getEntry(iconsName
                             .startsWith("/") ? iconsName.substring(1, iconsName.length())
                             : iconsName)));
-                    customIcons = image;
                 }
 
                 if (zip.getEntry(snowName.startsWith("/") ? snowName.substring(1, snowName.length())
                         : snowName) != null) {
-                    BufferedImage image = loadImageFast(zip
+                    customSnow = loadImageFast(zip
                             .getInputStream(zip.getEntry(snowName.startsWith("/") ? snowName
                                     .substring(1, snowName.length()) : snowName)));
-                    customSnow = image;
                 }
 
                 if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1, fontName.length())
                         : fontName) != null) {
-                    BufferedImage image = loadImageFast(zip
+                    customFont = loadImageFast(zip
                             .getInputStream(zip.getEntry(fontName.startsWith("/") ? fontName
                                     .substring(1, fontName.length()) : fontName)));
-                    customFont = image;
                 }
 
                 if (zip.getEntry(chickenName.startsWith("/") ? chickenName.substring(1,
                         chickenName.length()) : chickenName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(chickenName
+                    customChicken = loadImageFast(zip.getInputStream(zip.getEntry(chickenName
                             .startsWith("/") ? chickenName.substring(1, chickenName.length())
                             : chickenName)));
-                    customChicken = image;
                 }
 
                 if (zip.getEntry(creeperName.startsWith("/") ? creeperName.substring(1,
                         creeperName.length()) : creeperName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(creeperName
+                    customCreeper = loadImageFast(zip.getInputStream(zip.getEntry(creeperName
                             .startsWith("/") ? creeperName.substring(1, creeperName.length())
                             : creeperName)));
-                    customCreeper = image;
                 }
 
                 if (zip.getEntry(crocName.startsWith("/") ? crocName.substring(1, crocName.length())
                         : crocName) != null) {
-                    BufferedImage image = loadImageFast(zip
+                    customCrocodile = loadImageFast(zip
                             .getInputStream(zip.getEntry(crocName.startsWith("/") ? crocName
                                     .substring(1, crocName.length()) : crocName)));
-                    customCrocodile = image;
                 }
 
                 if (zip.getEntry(humanoidName.startsWith("/") ? humanoidName.substring(1,
                         humanoidName.length()) : humanoidName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip
+                    customHumanoid = loadImageFast(zip.getInputStream(zip
                             .getEntry(humanoidName.startsWith("/") ? humanoidName.substring(1,
                                     humanoidName.length()) : humanoidName)));
-                    customHumanoid = image;
                 }
 
                 if (zip.getEntry(pigName.startsWith("/") ? pigName.substring(1, pigName.length())
                         : pigName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(pigName
+                    customPig = loadImageFast(zip.getInputStream(zip.getEntry(pigName
                             .startsWith("/") ? pigName.substring(1, pigName.length()) : pigName)));
-                    customPig = image;
                 }
 
                 if (zip.getEntry(printerName.startsWith("/") ? printerName.substring(1,
                         printerName.length()) : printerName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(printerName
+                    customPrinter = loadImageFast(zip.getInputStream(zip.getEntry(printerName
                             .startsWith("/") ? printerName.substring(1, printerName.length())
                             : printerName)));
-                    customPrinter = image;
                 }
 
                 if (zip.getEntry(sheepName.startsWith("/") ? sheepName.substring(1,
                         sheepName.length()) : sheepName) != null) {
-                    BufferedImage image = ImageIO.read(zip.getInputStream(zip.getEntry(sheepName
+                    customSheep = ImageIO.read(zip.getInputStream(zip.getEntry(sheepName
                             .startsWith("/") ? sheepName.substring(1, sheepName.length())
                             : sheepName)));
-                    customSheep = image;
                 }
 
                 if (zip.getEntry(skeletonName.startsWith("/") ? skeletonName.substring(1,
                         skeletonName.length()) : skeletonName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip
+                    customSkeleton = loadImageFast(zip.getInputStream(zip
                             .getEntry(skeletonName.startsWith("/") ? skeletonName.substring(1,
                                     skeletonName.length()) : skeletonName)));
-                    customSkeleton = image;
                 }
 
                 if (zip.getEntry(spiderNAme.startsWith("/") ? spiderNAme.substring(1,
                         spiderNAme.length()) : spiderNAme) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(spiderNAme
+                    customSpider = loadImageFast(zip.getInputStream(zip.getEntry(spiderNAme
                             .startsWith("/") ? spiderNAme.substring(1, spiderNAme.length())
                             : spiderNAme)));
-                    customSpider = image;
                 }
 
                 if (zip.getEntry(zombieName.startsWith("/") ? zombieName.substring(1,
                         zombieName.length()) : zombieName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(zombieName
+                    customZombie = loadImageFast(zip.getInputStream(zip.getEntry(zombieName
                             .startsWith("/") ? zombieName.substring(1, zombieName.length())
                             : zombieName)));
-                    customZombie = image;
                 }
 
                 if (zip.getEntry(cloudName.startsWith("/") ? cloudName.substring(1,
                         cloudName.length()) : cloudName) != null) {
-                    BufferedImage image = loadImageFast(zip.getInputStream(zip.getEntry(cloudName
+                    customClouds = loadImageFast(zip.getInputStream(zip.getEntry(cloudName
                             .startsWith("/") ? cloudName.substring(1, cloudName.length())
                             : cloudName)));
-                    customClouds = image;
                 }
             }
         }

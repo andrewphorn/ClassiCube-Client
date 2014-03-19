@@ -1,10 +1,10 @@
 package com.mojang.minecraft.physics;
 
-import java.io.Serializable;
-
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.util.IntersectionHelper;
 import com.mojang.util.Vec3D;
+
+import java.io.Serializable;
 
 public class AABB implements Serializable {
 
@@ -162,8 +162,8 @@ public class AABB implements Serializable {
 
     /**
      * Checks if the AABB contains the vector.
-     * @param vector
-     * @return
+     * @param vector The vector to check against.
+     * @return boolean
      */
     public boolean contains(Vec3D vector) {
         return ((vector.x > maxX && vector.x < minX)

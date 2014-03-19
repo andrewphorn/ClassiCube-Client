@@ -1,14 +1,14 @@
 package de.jarnbjo.util.audio;
 
-import java.io.*;
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioInputStream;
+import java.io.IOException;
 
 public class FadeableAudioInputStream extends AudioInputStream {
 
     private boolean fading = false;
     private double phi = 0.0;
 
-    public FadeableAudioInputStream(AudioInputStream stream) throws IOException {
+    public FadeableAudioInputStream(AudioInputStream stream) {
         super(stream, stream.getFormat(), -1L);
     }
 

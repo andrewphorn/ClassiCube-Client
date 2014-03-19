@@ -26,11 +26,11 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.*;
+import de.jarnbjo.util.io.BitInputStream;
+import de.jarnbjo.util.io.HuffmanNode;
 
-import java.util.*;
-
-import de.jarnbjo.util.io.*;
+import java.io.IOException;
+import java.util.Arrays;
 
 class CodeBook {
 
@@ -40,7 +40,7 @@ class CodeBook {
     private int[] entryLengths;
     private float[][] valueVector;
 
-    protected CodeBook(BitInputStream source) throws VorbisFormatException, IOException {
+    protected CodeBook(BitInputStream source) throws IOException {
 
         // check sync
         if (source.getInt(24) != 0x564342) {
@@ -184,7 +184,7 @@ class CodeBook {
     }
 
     protected void readVvAdd(float[][] a, BitInputStream source, int offset, int length)
-            throws VorbisFormatException, IOException {
+            throws IOException {
 
         int i, j;// k;//entry;
         int chptr = 0;

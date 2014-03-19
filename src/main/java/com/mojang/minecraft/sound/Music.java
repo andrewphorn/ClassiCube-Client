@@ -1,12 +1,12 @@
 package com.mojang.minecraft.sound;
 
 import com.mojang.minecraft.LogUtil;
-import java.net.URL;
-import java.nio.ByteBuffer;
-
 import de.jarnbjo.ogg.LogicalOggStreamImpl;
 import de.jarnbjo.ogg.OnDemandUrlStream;
 import de.jarnbjo.vorbis.VorbisStream;
+
+import java.net.URL;
+import java.nio.ByteBuffer;
 
 // TODO.
 public final class Music implements Audio {

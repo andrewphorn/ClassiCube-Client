@@ -1,20 +1,19 @@
 package com.mojang.minecraft.render;
 
+import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
+import org.lwjgl.opengl.ARBBufferObject;
+import org.lwjgl.opengl.ARBVertexBufferObject;
+import org.lwjgl.opengl.GL11;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import org.lwjgl.opengl.ARBBufferObject;
-import org.lwjgl.opengl.ARBVertexBufferObject;
-import org.lwjgl.opengl.GL11;
-
-import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
-
 public class ShapeRenderer {
-    private static boolean convertQuadsToTriangles;
-    public static boolean tryVBO;
+    private static boolean convertQuadsToTriangles; // TODO Never assigned
+    public static boolean tryVBO; // TODO Never used
     private ByteBuffer byteBuffer;
     private IntBuffer intBuffer;
     private FloatBuffer floatBuffer;

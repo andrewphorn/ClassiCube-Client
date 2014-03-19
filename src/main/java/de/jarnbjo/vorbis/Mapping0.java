@@ -23,16 +23,16 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.IOException;
-
 import de.jarnbjo.util.io.BitInputStream;
+
+import java.io.IOException;
 
 class Mapping0 extends Mapping {
 
     private int[] magnitudes, angles, mux, submapFloors, submapResidues;
 
     protected Mapping0(VorbisStream vorbis, BitInputStream source, SetupHeader header)
-            throws VorbisFormatException, IOException {
+            throws IOException {
 
         int submaps = 1;
 

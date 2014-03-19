@@ -28,15 +28,16 @@
 
 package de.jarnbjo.ogg;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class LogicalOggStreamImpl implements LogicalOggStream {
 
     private PhysicalOggStream source;
 
-    private ArrayList<Integer> pageNumberMapping = new ArrayList<Integer>();
-    private ArrayList<Long> granulePositions = new ArrayList<Long>();
+    private ArrayList<Integer> pageNumberMapping = new ArrayList<>();
+    private ArrayList<Long> granulePositions = new ArrayList<>();
 
     private int pageIndex = 0;
     private OggPage currentPage;
@@ -51,11 +52,11 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
     }
 
     public void addGranulePosition(long granulePosition) {
-        granulePositions.add(new Long(granulePosition));
+        granulePositions.add(granulePosition);
     }
 
     public void addPageNumberMapping(int physicalPageNumber) {
-        pageNumberMapping.add(new Integer(physicalPageNumber));
+        pageNumberMapping.add(physicalPageNumber);
     }
 
     public void checkFormat(OggPage page) {
@@ -76,7 +77,7 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
         }
     }
 
-    public void close() throws IOException {
+    public void close() {
         open = false;
     }
 
@@ -85,12 +86,11 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
     }
 
     public long getMaximumGranulePosition() {
-        Long mgp = (Long) granulePositions.get(granulePositions.size() - 1);
-        return mgp.longValue();
+        return granulePositions.get(granulePositions.size() - 1);
     }
 
-    public synchronized byte[] getNextOggPacket() throws EndOfOggStreamException,
-            OggFormatException, IOException {
+    public synchronized byte[] getNextOggPacket() throws
+            IOException {
         ByteArrayOutputStream res = new ByteArrayOutputStream();
         int segmentLength = 0;
 
@@ -120,8 +120,7 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
                                 done = true;
                             }
                             if (currentSegmentIndex > currentPage.getSegmentTable().length) {
-                                currentPage = source.getOggPage(((Integer) pageNumberMapping
-                                        .get(pageIndex++)).intValue());
+                                currentPage = source.getOggPage(pageNumberMapping.get(pageIndex++));
                             }
                         }
                     }
@@ -138,11 +137,10 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
         return res.toByteArray();
     }
 
-    public synchronized OggPage getNextOggPage() throws EndOfOggStreamException,
-            OggFormatException, IOException {
+    public synchronized OggPage getNextOggPage() throws
+            IOException {
         if (source.isSeekable()) {
-            currentPage = source.getOggPage(((Integer) pageNumberMapping.get(pageIndex++))
-                    .intValue());
+            currentPage = source.getOggPage(pageNumberMapping.get(pageIndex++));
         } else {
             currentPage = source.getOggPage(-1);
         }
@@ -157,7 +155,7 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
         return open;
     }
 
-    public synchronized void reset() throws OggFormatException, IOException {
+    public synchronized void reset() {
         currentPage = null;
         currentSegmentIndex = 0;
         pageIndex = 0;
@@ -167,14 +165,13 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
 
         int page = 0;
         for (page = 0; page < granulePositions.size(); page++) {
-            Long gp = (Long) granulePositions.get(page);
-            if (gp.longValue() > granulePosition) {
+            if (granulePositions.get(page) > granulePosition) {
                 break;
             }
         }
 
         pageIndex = page;
-        currentPage = source.getOggPage(((Integer) pageNumberMapping.get(pageIndex++)).intValue());
+        currentPage = source.getOggPage(pageNumberMapping.get(pageIndex++));
         currentSegmentIndex = 0;
         int segmentLength = 0;
         do {
@@ -183,8 +180,7 @@ public class LogicalOggStreamImpl implements LogicalOggStream {
                 if (pageIndex >= pageNumberMapping.size()) {
                     throw new EndOfOggStreamException();
                 }
-                currentPage = source.getOggPage(((Integer) pageNumberMapping.get(pageIndex++))
-                        .intValue());
+                currentPage = source.getOggPage(pageNumberMapping.get(pageIndex++));
             }
             segmentLength = currentPage.getSegmentLengths()[currentSegmentIndex];
             currentSegmentIndex++;

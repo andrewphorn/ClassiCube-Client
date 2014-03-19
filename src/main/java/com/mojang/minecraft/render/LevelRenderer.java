@@ -1,16 +1,15 @@
 package com.mojang.minecraft.render;
 
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.level.Level;
+import com.mojang.minecraft.player.Player;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.player.Player;
 
 public final class LevelRenderer {
 
@@ -91,8 +90,8 @@ public final class LevelRenderer {
 
     public final void refresh() {
         if (chunkCache != null) {
-            for (int i = 0; i < chunkCache.length; ++i) {
-                chunkCache[i].dispose();
+            for (Chunk aChunkCache : chunkCache) {
+                aChunkCache.dispose();
             }
         }
         if (listsCount > -1) {
@@ -126,8 +125,8 @@ public final class LevelRenderer {
             }
         }
 
-        for (int i = 0; i < chunks.size(); ++i) {
-            chunks.get(i).loaded = false;
+        for (Chunk chunk : chunks) {
+            chunk.loaded = false;
         }
 
         chunks.clear();
@@ -243,8 +242,8 @@ public final class LevelRenderer {
         }
 
         int count = 0;
-        for (int i = 0; i < loadQueue.length; ++i) {
-            count = loadQueue[i].appendLists(chunkDataCache, count, renderPass);
+        for (Chunk aLoadQueue : loadQueue) {
+            count = aLoadQueue.appendLists(chunkDataCache, count, renderPass);
         }
 
         buffer.clear();

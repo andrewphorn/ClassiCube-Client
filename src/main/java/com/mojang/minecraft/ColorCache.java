@@ -1,6 +1,6 @@
 package com.mojang.minecraft;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.Serializable;
 
 /**

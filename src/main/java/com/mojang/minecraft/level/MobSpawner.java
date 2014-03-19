@@ -3,13 +3,7 @@ package com.mojang.minecraft.level;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.ProgressBarDisplay;
 import com.mojang.minecraft.level.liquid.LiquidType;
-import com.mojang.minecraft.mob.Creeper;
-import com.mojang.minecraft.mob.Mob;
-import com.mojang.minecraft.mob.Pig;
-import com.mojang.minecraft.mob.Sheep;
-import com.mojang.minecraft.mob.Skeleton;
-import com.mojang.minecraft.mob.Spider;
-import com.mojang.minecraft.mob.Zombie;
+import com.mojang.minecraft.mob.*;
 
 public final class MobSpawner {
 
@@ -40,8 +34,8 @@ public final class MobSpawner {
 
             int var6 = this.level.random.nextInt(7);
             int var7 = this.level.random.nextInt(this.level.width);
-            int var8 = (int) (Math
-                    .min(this.level.random.nextFloat(), this.level.random.nextFloat()) * this.level.height);
+            int var8 = (int) (Math.min(this.level.random.nextFloat(),
+                    this.level.random.nextFloat()) * this.level.height);
             int var9 = this.level.random.nextInt(this.level.length);
             if (!this.level.isSolidTile(var7, var8, var9)
                     && this.level.getLiquid(var7, var8, var9) == LiquidType.notLiquid

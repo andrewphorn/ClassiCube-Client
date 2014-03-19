@@ -1,5 +1,7 @@
 package com.mojang.minecraft.render;
 
+import org.lwjgl.opengl.GL11;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -9,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.lwjgl.opengl.GL11;
 
 public class GLAllocation {
     private static final Map<Integer, Integer> displayLists = new HashMap<>();
@@ -41,8 +41,8 @@ public class GLAllocation {
 }
 
     public static synchronized void deleteTexturesAndDisplayLists() {
-        for (Entry<Integer, Integer> i:  displayLists.entrySet()) {
-            Entry<Integer, Integer> entity = (Entry<Integer, Integer>) i;
+        for (Entry<Integer, Integer> i: displayLists.entrySet()) {
+            Entry<Integer, Integer> entity = i;
             GL11.glDeleteLists(entity.getKey(), entity.getValue());
         }
 

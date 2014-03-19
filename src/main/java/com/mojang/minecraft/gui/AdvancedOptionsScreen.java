@@ -1,15 +1,11 @@
 package com.mojang.minecraft.gui;
 
-import java.awt.Color;
-
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Setting;
-import com.mojang.minecraft.gui.inputscreens.FogColorInputScreen;
-import com.mojang.minecraft.gui.inputscreens.LightColorInputScreen;
-import com.mojang.minecraft.gui.inputscreens.ShadowColorInputScreen;
-import com.mojang.minecraft.gui.inputscreens.SkyColorInputScreen;
-import com.mojang.minecraft.gui.inputscreens.WaterLevelInputScreen;
+import com.mojang.minecraft.gui.inputscreens.*;
+
+import java.awt.*;
 
 public final class AdvancedOptionsScreen extends GuiScreen {
 

@@ -1,9 +1,5 @@
 package com.mojang.minecraft.item;
 
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
@@ -13,6 +9,9 @@ import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Random;
 
 public class PrimedTnt extends Entity {
     public static final long serialVersionUID = 0L;

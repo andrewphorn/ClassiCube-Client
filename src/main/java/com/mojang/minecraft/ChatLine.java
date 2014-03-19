@@ -1,12 +1,12 @@
 package com.mojang.minecraft;
 
+import com.mojang.minecraft.gui.FontRenderer;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import com.mojang.minecraft.gui.FontRenderer;
 
 public class ChatLine {
 
@@ -16,7 +16,7 @@ public class ChatLine {
     public static String eol = System.getProperty("line.separator");
 
     /**
-     * Constructs a new chatline, logs to the userdata aswell
+     * Constructs a new chatline, logs to the userdata as well
      * 
      * @param message
      *            The chatline

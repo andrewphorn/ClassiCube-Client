@@ -3,11 +3,7 @@ package com.mojang.minecraft;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.ThreadMXBean;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MonitoringThread extends Thread {
 
@@ -62,7 +58,7 @@ public class MonitoringThread extends Thread {
         start();
     }
 
-    public double getAvarageUsagePerCPU() {
+    public double getAverageUsagePerCPU() {
         return getTotalUsage() / opBean.getAvailableProcessors();
     }
 

@@ -23,9 +23,9 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.IOException;
+import de.jarnbjo.util.io.BitInputStream;
 
-import de.jarnbjo.util.io.*;
+import java.io.IOException;
 
 class AudioPacket {
 
@@ -47,7 +47,7 @@ class AudioPacket {
     private final static float[][] windows = new float[8][];
 
     protected AudioPacket(final VorbisStream vorbis, final BitInputStream source)
-            throws VorbisFormatException, IOException {
+            throws IOException {
 
         final SetupHeader sHeader = vorbis.getSetupHeader();
         final IdentificationHeader iHeader = vorbis.getIdentificationHeader();
@@ -201,10 +201,12 @@ class AudioPacket {
                 w[i + leftWindowStart] = x;
             }
 
-            for (int i = leftWindowEnd; i < rightWindowStart; w[i++] = 1F)
-                ;
+            int i = leftWindowEnd;
+            while (i < rightWindowStart) {
+                w[i++] = 1F;
+            }
 
-            for (int i = 0; i < rightN; i++) {
+            for (i = 0; i < rightN; i++) {
                 float x = (float) ((rightN - i - .5) / rightN * Math.PI / 2.);
                 x = (float) Math.sin(x);
                 x *= x;

@@ -1,62 +1,8 @@
 package com.mojang.minecraft;
 
-import java.awt.AWTException;
-import java.awt.Canvas;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.Robot;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.security.MessageDigest;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-
-import com.mojang.minecraft.physics.CustomAABB;
-import com.mojang.minecraft.render.*;
-import com.oyasunadev.mcraft.client.util.Constants;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.Sys;
-import org.lwjgl.input.Cursor;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
-
 import com.mojang.minecraft.gamemode.CreativeGameMode;
 import com.mojang.minecraft.gamemode.GameMode;
-import com.mojang.minecraft.gui.BlockSelectScreen;
-import com.mojang.minecraft.gui.ChatInputScreen;
-import com.mojang.minecraft.gui.ErrorScreen;
-import com.mojang.minecraft.gui.FontRenderer;
-import com.mojang.minecraft.gui.GameOverScreen;
-import com.mojang.minecraft.gui.GuiScreen;
-import com.mojang.minecraft.gui.HUDScreen;
-import com.mojang.minecraft.gui.PauseScreen;
+import com.mojang.minecraft.gui.*;
 import com.mojang.minecraft.item.Arrow;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;
@@ -76,17 +22,48 @@ import com.mojang.minecraft.particle.Particle;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.WaterDropParticle;
 import com.mojang.minecraft.physics.AABB;
+import com.mojang.minecraft.physics.CustomAABB;
 import com.mojang.minecraft.player.InputHandlerImpl;
 import com.mojang.minecraft.player.Player;
-import com.mojang.minecraft.render.FrustumImpl;
+import com.mojang.minecraft.render.*;
+import com.mojang.minecraft.render.Renderer;
 import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
 import com.mojang.net.NetworkHandler;
 import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
-
+import com.oyasunadev.mcraft.client.util.Constants;
 import com.oyasunadev.mcraft.client.util.ExtData;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
+import org.lwjgl.input.Cursor;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
+
+import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.color.ColorSpace;
+import java.awt.image.*;
+import java.io.*;
+import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 public final class Minecraft implements Runnable {
 
@@ -134,7 +111,7 @@ public final class Minecraft implements Runnable {
      */
     public String skinServer = "http://www.classicube.net/static/skins/";
     /**
-     * The current Gamemode.
+     * The current GameMode.
      */
     public GameMode gamemode = new CreativeGameMode(this);
     /**
@@ -348,7 +325,7 @@ public final class Minecraft implements Runnable {
 
     float cameraDistance = -0.1F;
 
-    int recievedExtensionLength;
+    int receivedExtensionLength;
 
     boolean isShuttingDown = false;
 
@@ -471,7 +448,7 @@ public final class Minecraft implements Runnable {
             } else {
                 Mouse.setGrabbed(true);
             }
-            setCurrentScreen((GuiScreen) null);
+            setCurrentScreen(null);
             lastClick = ticks + 10000;
         }
     }
@@ -1719,7 +1696,7 @@ public final class Minecraft implements Runnable {
                     hasMouse = false;
                     if (isLevelLoaded) {
                         try {
-                            Mouse.setNativeCursor((Cursor) null);
+                            Mouse.setNativeCursor(null);
                         } catch (LWJGLException ex) {
                             LogUtil.logError("Error showing the mouse cursor.", ex);
                         }
@@ -1772,10 +1749,8 @@ public final class Minecraft implements Runnable {
             } else if (player != null) { // if online
                 player.resetPos();
                 gamemode.preparePlayer(player);
-                if (theLevel != null) {
-                    theLevel.player = player;
-                    theLevel.addEntity(player);
-                }
+                theLevel.player = player;
+                theLevel.addEntity(player);
             }
         }
 
@@ -1861,38 +1836,33 @@ public final class Minecraft implements Runnable {
 
     public void takeAndSaveScreenshot(int width, int height) {
         try {
-            int i = width;
-            int j = height;
-            int size = i * j * 3;
+            int size = width * height * 3;
 
             GL11.glReadBuffer(GL11.GL_FRONT);
             ByteBuffer buffer = ByteBuffer.allocateDirect(size);
-            GL11.glReadPixels(0, 0, i, j, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
+            GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
 
             byte[] pixels = new byte[size];
             buffer.get(pixels);
-            pixels = flipPixels(pixels, i, height);
+            pixels = flipPixels(pixels, width, height);
 
             ColorSpace colorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
             int[] a = { 8, 8, 8 };
             int[] b = { 0, 1, 2 };
 
-            ComponentColorModel colorComp = new ComponentColorModel(colorSpace, a, false, false, 3,
-                    0);
+            ComponentColorModel colorComp = new ComponentColorModel(colorSpace, a, false, false, 3, 0);
 
-            WritableRaster raster = Raster.createInterleavedRaster(new DataBufferByte(pixels,
-                    pixels.length), width, height, i * 3, 3, b, null);
+            WritableRaster raster = Raster.createInterleavedRaster(new DataBufferByte(pixels, pixels.length),
+                    width, height, width * 3, 3, b, null);
 
             BufferedImage image = new BufferedImage(colorComp, raster, false, null);
 
-            String str = String.format("screenshot_%1$tY%1$tm%1$td%1$tH%1$tM%1$tS.png",
-                    new Object[] { Calendar.getInstance() });
+            String str = String.format("screenshot_%1$tY%1$tm%1$td%1$tH%1$tM%1$tS.png", Calendar.getInstance());
             Calendar cal = Calendar.getInstance();
             String month = new SimpleDateFormat("MMM").format(cal.getTime());
             String serverName = ProgressBarDisplay.title.toLowerCase().contains("connecting..") ? ""
                     : ProgressBarDisplay.title;
-            if ("Loading level".equals(serverName) || "Connecting..".equals(serverName)
-                    || "".equals(serverName)) {
+            if ("Loading level".equals(serverName) || "Connecting..".equals(serverName) || "".equals(serverName)) {
                 serverName = "Singleplayer";
             }
             serverName = FontRenderer.stripColor(serverName);
@@ -1919,21 +1889,20 @@ public final class Minecraft implements Runnable {
         }
 
         gamemode.spawnMob();
-        HUDScreen var17 = hud;
-        int var16;
+        int i;
         if (canRenderGUI) {
-            ++hud.ticks;
+            ++this.hud.ticks;
 
-            for (var16 = 0; var16 < var17.chat.size(); ++var16) {
-                ++var17.chat.get(var16).time;
+            for (i = 0; i < this.hud.chat.size(); ++i) {
+                ++this.hud.chat.get(i).time;
             }
         }
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
         TextureManager texManager = textureManager;
 
-        for (var16 = 0; var16 < texManager.animations.size(); ++var16) {
-            TextureFX texFX = texManager.animations.get(var16);
+        for (i = 0; i < texManager.animations.size(); ++i) {
+            TextureFX texFX = texManager.animations.get(i);
             texFX.animate();
             if (texManager.textureBuffer.capacity() != texFX.textureData.length) {
                 texManager.textureBuffer = BufferUtils.createByteBuffer(texFX.textureData.length);
@@ -1947,7 +1916,6 @@ public final class Minecraft implements Runnable {
         }
 
         int var4;
-        int i;
         int var40;
         int var46;
         int var45;
@@ -1990,10 +1958,10 @@ public final class Minecraft implements Runnable {
                                         short ExtensionCount = (Short) packetParams[1];
                                         LogUtil.logInfo("Connecting to AppName: " + AppName
                                                 + " with extension count: " + ExtensionCount);
-                                        recievedExtensionLength = ExtensionCount;
+                                        receivedExtensionLength = ExtensionCount;
                                     } else if (packetType == PacketType.EXT_ENTRY) {
                                         String ExtName = (String) packetParams[0];
-                                        Integer Version = ((Integer) packetParams[1]).intValue();
+                                        Integer Version = (Integer) packetParams[1];
                                         Constants.SERVER_SUPPORTED_EXTENSIONS.add(new ExtData(
                                                 ExtName, Version));
 
@@ -2004,13 +1972,13 @@ public final class Minecraft implements Runnable {
                                             serverSupportsMessages = true;
                                         }
 
-                                        if (recievedExtensionLength == Constants.SERVER_SUPPORTED_EXTENSIONS
+                                        if (receivedExtensionLength == Constants.SERVER_SUPPORTED_EXTENSIONS
                                                 .size()) {
-                                            LogUtil.logInfo("Sending client's supported Exts");
+                                            LogUtil.logInfo("Sending client's supported Extensions");
                                             List<ExtData> temp = new ArrayList<>();
                                             for (int j = 0; j < PacketType.packets.length - 1; j++) {
                                                 if (PacketType.packets[j] != null
-                                                        && PacketType.packets[j].extName != "") {
+                                                        && !PacketType.packets[j].extName.equals("")) {
                                                     temp.add(new ExtData(
                                                             PacketType.packets[j].extName,
                                                             PacketType.packets[j].Version));
@@ -2019,19 +1987,18 @@ public final class Minecraft implements Runnable {
                                             String AppName = "ClassiCube Client";
                                             Object[] toSendParams = new Object[] { AppName,
                                                     (short) temp.size() };
-                                            networkManager.netHandler.send(PacketType.EXT_INFO,
-                                                    toSendParams);
-                                            for (int k = 0; k < temp.size(); k++) {
-                                                LogUtil.logInfo("Sending ext: " + temp.get(k).Name
-                                                        + " with version: " + temp.get(k).Version);
-                                                toSendParams = new Object[] { temp.get(k).Name,
-                                                        temp.get(k).Version };
+                                            networkManager.netHandler.send(PacketType.EXT_INFO, toSendParams);
+                                            for (ExtData aTemp : temp) {
+                                                LogUtil.logInfo("Sending ext: " + aTemp.Name
+                                                        + " with version: " + aTemp.Version);
+                                                toSendParams = new Object[]{aTemp.Name,
+                                                        aTemp.Version};
                                                 networkManager.netHandler.send(
                                                         PacketType.EXT_ENTRY, toSendParams);
                                             }
                                         }
                                     } else if (packetType == PacketType.SELECTION_CUBOID) {
-                                        byte ID = ((Byte) packetParams[0]).byteValue();
+                                        byte ID = (Byte) packetParams[0];
                                         String Name = (String) packetParams[1];
                                         Short X1 = (Short) packetParams[2];
                                         Short Y1 = (Short) packetParams[3];
@@ -2039,10 +2006,10 @@ public final class Minecraft implements Runnable {
                                         Short X2 = (Short) packetParams[5];
                                         Short Y2 = (Short) packetParams[6];
                                         Short Z2 = (Short) packetParams[7];
-                                        Short r = ((Short) packetParams[8]).shortValue();
-                                        Short g = ((Short) packetParams[9]).shortValue();
-                                        Short b = ((Short) packetParams[10]).shortValue();
-                                        Short a = ((Short) packetParams[11]).shortValue();
+                                        Short r = (Short) packetParams[8];
+                                        Short g = (Short) packetParams[9];
+                                        Short b = (Short) packetParams[10];
+                                        Short a = (Short) packetParams[11];
 
                                         // LogUtil.logInfo(ID + " " + Name +
                                         // " " + X1 + " " + Y1
@@ -2054,7 +2021,7 @@ public final class Minecraft implements Runnable {
                                                         Y2, Z2));
                                         selectionBoxes.add(data);
                                     } else if (packetType == PacketType.REMOVE_SELECTION_CUBOID) {
-                                        byte ID = ((Byte) packetParams[0]).byteValue();
+                                        byte ID = (Byte) packetParams[0];
                                         List<SelectionBoxData> cache = selectionBoxes;
                                         for (int q = 0; q < selectionBoxes.size(); q++) {
                                             if (selectionBoxes.get(q).id == ID) {
@@ -2063,10 +2030,10 @@ public final class Minecraft implements Runnable {
                                         }
                                         selectionBoxes = cache;
                                     } else if (packetType == PacketType.ENV_SET_COLOR) {
-                                        byte Variable = ((Byte) packetParams[0]).byteValue();
-                                        Short r = ((Short) packetParams[1]).shortValue();
-                                        Short g = ((Short) packetParams[2]).shortValue();
-                                        Short b = ((Short) packetParams[3]).shortValue();
+                                        byte Variable = (Byte) packetParams[0];
+                                        Short r = (Short) packetParams[1];
+                                        Short g = (Short) packetParams[2];
+                                        Short b = (Short) packetParams[3];
                                         int dec = (r & 0x0ff) << 16 | (g & 0x0ff) << 8 | b & 0x0ff;
                                         switch (Variable) {
                                         case 0: // sky
@@ -2091,9 +2058,9 @@ public final class Minecraft implements Runnable {
                                         }
                                     } else if (packetType == PacketType.ENV_SET_MAP_APPEARANCE) {
                                         String textureUrl = (String) packetParams[0];
-                                        byte sideBlock = ((Byte) packetParams[1]).byteValue();
-                                        byte edgeBlock = ((Byte) packetParams[2]).byteValue();
-                                        short sideLevel = ((Short) packetParams[3]).byteValue();
+                                        byte sideBlock = (Byte) packetParams[1];
+                                        byte edgeBlock = (Byte) packetParams[2];
+                                        short sideLevel = (Short) packetParams[3];
 
                                         if (settings.canServerChangeTextures) {
                                             if (sideBlock == -1) {
@@ -2151,25 +2118,25 @@ public final class Minecraft implements Runnable {
                                         short Distance = (Short) packetParams[0];
                                         gamemode.reachDistance = Distance / 32;
                                     } else if (packetType == PacketType.HOLDTHIS) {
-                                        byte BlockToHold = ((Byte) packetParams[0]).byteValue();
-                                        byte PreventChange = ((Byte) packetParams[1]).byteValue();
-                                        boolean CanPreventChange = PreventChange > 0;
+                                        byte blockToHold = (Byte) packetParams[0];
+                                        byte preventChange = (Byte) packetParams[1];
+                                        boolean canPreventChange = preventChange > 0;
 
-                                        if (CanPreventChange == true) {
+                                        if (canPreventChange) {
                                             GameSettings.CanReplaceSlot = false;
                                         }
 
                                         player.inventory.selected = 0;
-                                        player.inventory.replaceSlot(Block.blocks[BlockToHold]);
+                                        player.inventory.replaceSlot(Block.blocks[blockToHold]);
 
-                                        if (CanPreventChange == false) {
+                                        if (!canPreventChange) {
                                             GameSettings.CanReplaceSlot = true;
                                         }
                                     } else if (packetType == PacketType.SET_TEXT_HOTKEY) {
                                         String Label = (String) packetParams[0];
                                         String Action = (String) packetParams[1];
                                         int keyCode = (Integer) packetParams[2];
-                                        byte KeyMods = ((Byte) packetParams[3]).byteValue();
+                                        byte KeyMods = (Byte) packetParams[3];
                                         HotKeyData data = new HotKeyData(Label, Action, keyCode,
                                                 KeyMods);
                                         hotKeys.add(data);
@@ -2179,7 +2146,7 @@ public final class Minecraft implements Runnable {
                                         String playerName = (String) packetParams[1];
                                         String listName = (String) packetParams[2];
                                         String groupName = (String) packetParams[3];
-                                        byte unusedRank = ((Byte) packetParams[4]).byteValue();
+                                        byte unusedRank = (Byte) packetParams[4];
 
                                         int playerIndex = -1;
 
@@ -2204,7 +2171,7 @@ public final class Minecraft implements Runnable {
                                         Collections.sort(playerListNameData,
                                                 new PlayerListComparator());
                                     } else if (packetType == PacketType.EXT_ADD_ENTITY) {
-                                        byte playerID = ((Byte) packetParams[0]).byteValue();
+                                        byte playerID = (Byte) packetParams[0];
                                         String skinName = (String) packetParams[2];
 
                                         NetworkPlayer player = networkManager.players.get(playerID);
@@ -2222,16 +2189,16 @@ public final class Minecraft implements Runnable {
                                         }
                                         playerListNameData = cache;
                                     } else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-                                        LogUtil.logInfo("Custom blocks packet recieved");
-                                        byte SupportLevel = ((Byte) packetParams[0]).byteValue();
+                                        LogUtil.logInfo("Custom blocks packet received");
+                                        byte SupportLevel = (Byte) packetParams[0];
                                         networkManager.netHandler.send(
                                                 PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
                                                 Constants.CUSTOM_BLOCK_SUPPORT_LEVEL);
                                         SessionData.setAllowedBlocks(SupportLevel);
                                     } else if (packetType == PacketType.SET_BLOCK_PERMISSIONS) {
-                                        byte BlockType = ((Byte) packetParams[0]).byteValue();
-                                        byte AllowPlacement = ((Byte) packetParams[1]).byteValue();
-                                        byte AllowDeletion = ((Byte) packetParams[2]).byteValue();
+                                        byte BlockType = (Byte) packetParams[0];
+                                        byte AllowPlacement = (Byte) packetParams[1];
+                                        byte AllowDeletion = (Byte) packetParams[2];
                                         Block block = Block.blocks[BlockType];
                                         if (block == null) {
                                             return;
@@ -2261,7 +2228,7 @@ public final class Minecraft implements Runnable {
                                             }
                                         }
                                     } else if (packetType == PacketType.CHANGE_MODEL) {
-                                        byte PlayerID = ((Byte) packetParams[0]).byteValue();
+                                        byte PlayerID = (Byte) packetParams[0];
                                         String ModelName = (String) packetParams[1];
                                         if (PlayerID >= 0) {
                                             NetworkPlayer netPlayer;
@@ -2286,7 +2253,7 @@ public final class Minecraft implements Runnable {
                                             thisPlayer.bindTexture(textureManager);
                                         }
                                     } else if (packetType == PacketType.ENV_SET_WEATHER_TYPE) {
-                                        byte Weather = ((Byte) packetParams[0]).byteValue();
+                                        byte Weather = (Byte) packetParams[0];
                                         if (Weather == 0) {
                                             isRaining = false;
                                             isSnowing = false;
@@ -2298,21 +2265,17 @@ public final class Minecraft implements Runnable {
                                             isRaining = false;
                                         }
                                     } else if (packetType == PacketType.IDENTIFICATION) {
-                                        networkManager.minecraft.progressBar
-                                                .setTitle(packetParams[1].toString());
-                                        networkManager.minecraft.player.userType = ((Byte) packetParams[3])
-                                                .byteValue();
-                                        networkManager.minecraft.progressBar
-                                                .setText(packetParams[2].toString());
+                                        networkManager.minecraft.progressBar.setTitle(packetParams[1].toString());
+                                        networkManager.minecraft.player.userType = (Byte) packetParams[3];
+                                        networkManager.minecraft.progressBar.setText(packetParams[2].toString());
                                     } else if (packetType == PacketType.LEVEL_INIT) {
-                                        networkManager.minecraft.setLevel((Level) null);
+                                        networkManager.minecraft.setLevel(null);
                                         networkManager.levelData = new ByteArrayOutputStream();
                                     } else if (packetType == PacketType.LEVEL_DATA) {
-                                        short chunkLength = ((Short) packetParams[0]).shortValue();
+                                        short chunkLength = (Short) packetParams[0];
                                         byte[] chunkData = (byte[]) packetParams[1];
-                                        byte percentComplete = ((Byte) packetParams[2]).byteValue();
-                                        networkManager.minecraft.progressBar
-                                                .setProgress(percentComplete);
+                                        byte percentComplete = (Byte) packetParams[2];
+                                        networkManager.minecraft.progressBar.setProgress(percentComplete);
                                         isLoadingMap = false;
                                         networkManager.levelData.write(chunkData, 0, chunkLength);
                                     } else if (packetType == PacketType.LEVEL_FINALIZE) {
@@ -2326,9 +2289,9 @@ public final class Minecraft implements Runnable {
                                                 .decompress(new ByteArrayInputStream(
                                                         networkManager.levelData.toByteArray()));
                                         networkManager.levelData = null;
-                                        short xSize = ((Short) packetParams[0]).shortValue();
-                                        short ySize = ((Short) packetParams[1]).shortValue();
-                                        short zSize = ((Short) packetParams[2]).shortValue();
+                                        short xSize = (Short) packetParams[0];
+                                        short ySize = (Short) packetParams[1];
+                                        short zSize = (Short) packetParams[2];
                                         Level level = new Level();
                                         level.setNetworkMode(true);
                                         level.setData(xSize, ySize, zSize, decompressedStream);
@@ -2340,10 +2303,10 @@ public final class Minecraft implements Runnable {
                                     } else if (packetType == PacketType.BLOCK_CHANGE) {
                                         if (networkManager.minecraft.level != null) {
                                             networkManager.minecraft.level.netSetTile(
-                                                    ((Short) packetParams[0]).shortValue(),
-                                                    ((Short) packetParams[1]).shortValue(),
-                                                    ((Short) packetParams[2]).shortValue(),
-                                                    ((Byte) packetParams[3]).byteValue());
+                                                    (Short) packetParams[0],
+                                                    (Short) packetParams[1],
+                                                    (Short) packetParams[2],
+                                                    (Byte) packetParams[3]);
                                         }
                                     } else {
                                         byte var9;
@@ -2355,15 +2318,14 @@ public final class Minecraft implements Runnable {
                                         short var47;
                                         short var10003;
                                         if (packetType == PacketType.SPAWN_PLAYER) {
-                                            var10001 = ((Byte) packetParams[0]).byteValue();
+                                            var10001 = (Byte) packetParams[0];
                                             String var10002 = (String) packetParams[1];
-                                            var10003 = ((Short) packetParams[2]).shortValue();
-                                            var10004 = ((Short) packetParams[3]).shortValue();
-                                            short var10005 = ((Short) packetParams[4]).shortValue();
-                                            byte var10006 = ((Byte) packetParams[5]).byteValue();
-                                            byte var58 = ((Byte) packetParams[6]).byteValue();
+                                            var10003 = (Short) packetParams[2];
+                                            var10004 = (Short) packetParams[3];
+                                            short var10005 = (Short) packetParams[4];
+                                            byte var10006 = (Byte) packetParams[5];
+                                            byte var58 = (Byte) packetParams[6];
                                             var9 = var10006;
-                                            short var10 = var10005;
                                             var47 = var10004;
                                             var36 = var10003;
                                             var34 = var10002;
@@ -2372,17 +2334,16 @@ public final class Minecraft implements Runnable {
                                                 var9 = (byte) (var9 + 128);
                                                 var47 = (short) (var47 - 22);
                                                 var33 = new NetworkPlayer(networkManager.minecraft,
-                                                        var34, var36, var47, var10,
-                                                        var9 * 360 / 256F, var58 * 360 / 256F);
-                                                networkManager.players.put(Byte.valueOf(var5),
-                                                        var33);
+                                                        var34, var36, var47, var10005,
+                                                        var58 * 360 / 256F, var9 * 360 / 256F);
+                                                networkManager.players.put(var5, var33);
                                                 networkManager.minecraft.level.addEntity(var33);
                                             } else {
                                                 networkManager.minecraft.level.setSpawnPos(
-                                                        var36 / 32, var47 / 32, var10 / 32,
+                                                        var36 / 32, var47 / 32, var10005 / 32,
                                                         var9 * 320 / 256);
                                                 networkManager.minecraft.player.moveTo(var36 / 32F,
-                                                        var47 / 32F, var10 / 32F,
+                                                        var47 / 32F, var10005 / 32F,
                                                         var9 * 360 / 256F, var58 * 360 / 256F);
                                             }
                                         } else {
@@ -2390,30 +2351,28 @@ public final class Minecraft implements Runnable {
                                             NetworkPlayer networkPlayer;
                                             byte var69;
                                             if (packetType == PacketType.POSITION_ROTATION) {
-                                                var10001 = ((Byte) packetParams[0]).byteValue();
-                                                short var66 = ((Short) packetParams[1])
-                                                        .shortValue();
-                                                var10003 = ((Short) packetParams[2]).shortValue();
-                                                var10004 = ((Short) packetParams[3]).shortValue();
-                                                var69 = ((Byte) packetParams[4]).byteValue();
-                                                var9 = ((Byte) packetParams[5]).byteValue();
+                                                var10001 = (Byte) packetParams[0];
+                                                short var66 = (Short) packetParams[1];
+                                                var10003 = (Short) packetParams[2];
+                                                var10004 = (Short) packetParams[3];
+                                                var69 = (Byte) packetParams[4];
+                                                var9 = (Byte) packetParams[5];
                                                 var53 = var69;
                                                 var47 = var10004;
                                                 var36 = var10003;
-                                                short var38 = var66;
                                                 byte var5 = var10001;
                                                 if (var5 < 0) {
                                                     networkManager.minecraft.player.moveTo(
-                                                            var38 / 32F, var36 / 32F, var47 / 32F,
+                                                            var66 / 32F, var36 / 32F, var47 / 32F,
                                                             var53 * 360 / 256F, var9 * 360 / 256F);
                                                 } else {
                                                     var53 = (byte) (var53 + 128);
                                                     var36 = (short) (var36 - 22);
                                                     if ((networkPlayer = networkManager.players
                                                             .get(Byte.valueOf(var5))) != null) {
-                                                        networkPlayer.teleport(var38, var36, var47,
-                                                                var53 * 360 / 256F,
-                                                                var9 * 360 / 256F);
+                                                        networkPlayer.teleport(var66, var36, var47,
+                                                                var9 * 360 / 256F, var53 * 360 / 256F
+                                                        );
                                                     }
                                                 }
                                             } else {
@@ -2423,13 +2382,12 @@ public final class Minecraft implements Runnable {
                                                 byte var65;
                                                 byte var67;
                                                 if (packetType == PacketType.POSITION_ROTATION_UPDATE) {
-                                                    var10001 = ((Byte) packetParams[0]).byteValue();
-                                                    var67 = ((Byte) packetParams[1]).byteValue();
-                                                    var65 = ((Byte) packetParams[2]).byteValue();
-                                                    byte var64 = ((Byte) packetParams[3])
-                                                            .byteValue();
-                                                    var69 = ((Byte) packetParams[4]).byteValue();
-                                                    var9 = ((Byte) packetParams[5]).byteValue();
+                                                    var10001 = (Byte) packetParams[0];
+                                                    var67 = (Byte) packetParams[1];
+                                                    var65 = (Byte) packetParams[2];
+                                                    byte var64 = (Byte) packetParams[3];
+                                                    var69 = (Byte) packetParams[4];
+                                                    var9 = (Byte) packetParams[5];
                                                     var53 = var69;
                                                     var49 = var64;
                                                     var44 = var65;
@@ -2440,14 +2398,14 @@ public final class Minecraft implements Runnable {
                                                         if ((networkPlayer = networkManager.players
                                                                 .get(Byte.valueOf(playerID))) != null) {
                                                             networkPlayer.queue(var37, var44,
-                                                                    var49, var53 * 360 / 256F,
-                                                                    var9 * 360 / 256F);
+                                                                    var49, var9 * 360 / 256F, var53 * 360 / 256F
+                                                            );
                                                         }
                                                     }
                                                 } else if (packetType == PacketType.ROTATION_UPDATE) {
-                                                    var10001 = ((Byte) packetParams[0]).byteValue();
-                                                    var67 = ((Byte) packetParams[1]).byteValue();
-                                                    var44 = ((Byte) packetParams[2]).byteValue();
+                                                    var10001 = (Byte) packetParams[0];
+                                                    var67 = (Byte) packetParams[1];
+                                                    var44 = (Byte) packetParams[2];
                                                     var37 = var67;
                                                     byte var5 = var10001;
                                                     if (var5 >= 0) {
@@ -2455,15 +2413,15 @@ public final class Minecraft implements Runnable {
                                                         NetworkPlayer var54;
                                                         if ((var54 = networkManager.players
                                                                 .get(Byte.valueOf(var5))) != null) {
-                                                            var54.queue(var37 * 360 / 256F,
-                                                                    var44 * 360 / 256F);
+                                                            var54.queue(var44 * 360 / 256F, var37 * 360 / 256F
+                                                            );
                                                         }
                                                     }
                                                 } else if (packetType == PacketType.POSITION_UPDATE) {
-                                                    var10001 = ((Byte) packetParams[0]).byteValue();
-                                                    var67 = ((Byte) packetParams[1]).byteValue();
-                                                    var65 = ((Byte) packetParams[2]).byteValue();
-                                                    var49 = ((Byte) packetParams[3]).byteValue();
+                                                    var10001 = (Byte) packetParams[0];
+                                                    var67 = (Byte) packetParams[1];
+                                                    var65 = (Byte) packetParams[2];
+                                                    var49 = (Byte) packetParams[3];
                                                     var44 = var65;
                                                     var37 = var67;
                                                     byte var5 = var10001;
@@ -2474,69 +2432,58 @@ public final class Minecraft implements Runnable {
                                                         var59.queue(var37, var44, var49);
                                                     }
                                                 } else if (packetType == PacketType.DESPAWN_PLAYER) {
-                                                    byte var5 = ((Byte) packetParams[0])
-                                                            .byteValue();
-                                                    if (var5 >= 0
-                                                            && (var33 = networkManager.players
-                                                                    .remove(Byte.valueOf(var5))) != null) {
+                                                    byte var5 = (Byte) packetParams[0];
+                                                    var33 = networkManager.players.remove(Byte.valueOf(var5));
+                                                    if (var5 >= 0 && var33 != null) {
                                                         var33.clear();
-                                                        networkManager.minecraft.level
-                                                                .removeEntity(var33);
+                                                        networkManager.minecraft.level.removeEntity(var33);
                                                     }
                                                 } else if (packetType == PacketType.CHAT_MESSAGE) {
-                                                    byte messageType = ((Byte) packetParams[0])
-                                                            .byteValue();
-                                                    var34 = (String) packetParams[1];
+                                                    byte messageType = (Byte) packetParams[0];
+                                                    String message = (String) packetParams[1];
                                                     if (messageType < 0) {
-                                                        networkManager.minecraft.hud.addChat("&e"
-                                                                + var34);
-                                                    } else if (messageType > 0
-                                                            && serverSupportsMessages) {
+                                                        networkManager.minecraft.hud.addChat("&e" + message);
+                                                    } else if (messageType > 0 && serverSupportsMessages) {
                                                         switch (messageType) {
                                                         case 1:
-                                                            HUDScreen.ServerName = var34;
+                                                            HUDScreen.ServerName = message;
                                                             break;
                                                         case 2:
-                                                            HUDScreen.Compass = var34;
+                                                            HUDScreen.Compass = message;
                                                             break;
                                                         case 3:
-                                                            HUDScreen.UserDetail = var34;
+                                                            HUDScreen.UserDetail = message;
                                                             break;
                                                         case 11:
-                                                            HUDScreen.BottomRight1 = var34;
+                                                            HUDScreen.BottomRight1 = message;
                                                             break;
                                                         case 12:
-                                                            HUDScreen.BottomRight2 = var34;
+                                                            HUDScreen.BottomRight2 = message;
                                                             break;
                                                         case 13:
-                                                            HUDScreen.BottomRight3 = var34;
+                                                            HUDScreen.BottomRight3 = message;
                                                             break;
                                                         case 21:
                                                             break;
                                                         case 100:
-                                                            HUDScreen.Announcement = var34;
+                                                            HUDScreen.Announcement = message;
                                                             break;
                                                         default:
-                                                            networkManager.players.get(Byte
-                                                                    .valueOf(messageType));
-                                                            networkManager.minecraft.hud
-                                                                    .addChat(var34);
+                                                            networkManager.players.get(messageType);
+                                                            networkManager.minecraft.hud.addChat(message);
                                                             break;
                                                         }
                                                     } else {
-                                                        networkManager.players.get(Byte
-                                                                .valueOf(messageType));
-                                                        networkManager.minecraft.hud.addChat(var34);
+                                                        networkManager.players.get(messageType);
+                                                        networkManager.minecraft.hud.addChat(message);
                                                     }
                                                 } else if (packetType == PacketType.DISCONNECT) {
                                                     networkManager.netHandler.close();
-                                                    networkManager.minecraft
-                                                            .setCurrentScreen(new ErrorScreen(
-                                                                    "Connection lost",
-                                                                    (String) packetParams[0]));
+                                                    networkManager.minecraft.setCurrentScreen(new ErrorScreen(
+                                                            "Connection lost",
+                                                            (String) packetParams[0]));
                                                 } else if (packetType == PacketType.UPDATE_PLAYER_TYPE) {
-                                                    networkManager.minecraft.player.userType = ((Byte) packetParams[0])
-                                                            .byteValue();
+                                                    networkManager.minecraft.player.userType = (Byte) packetParams[0];
                                                 }
                                             }
                                         }
@@ -2576,11 +2523,9 @@ public final class Minecraft implements Runnable {
                     var45 = (int) (player.xRot * 256F / 360F) & 255;
                     var20.netHandler.send(
                             PacketType.POSITION_ROTATION,
-                            new Object[] {
-                                    canSendHeldBlock ? player.inventory.getSelected() : Integer
-                                            .valueOf(-1), Integer.valueOf(var24),
-                                    Integer.valueOf(var4), Integer.valueOf(var40),
-                                    Integer.valueOf(var46), Integer.valueOf(var45) });
+                            canSendHeldBlock ? player.inventory.getSelected() : -1, var24,
+                            var4, var40,
+                            var46, var45);
                 }
             }
         }
@@ -2597,7 +2542,7 @@ public final class Minecraft implements Runnable {
         }
 
         if (currentScreen == null && player != null && player.health <= 0) {
-            setCurrentScreen((GuiScreen) null);
+            setCurrentScreen(null);
         }
 
         handleInput();

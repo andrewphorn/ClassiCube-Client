@@ -1,18 +1,12 @@
 package com.mojang.minecraft;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import com.mojang.minecraft.render.TextureManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
-import com.mojang.minecraft.render.TextureManager;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class GameSettings {
 
@@ -21,8 +15,8 @@ public final class GameSettings {
 
     public static boolean CanReplaceSlot = true;
 
-    public static List<String> typinglog = new ArrayList<>();
-    public static int typinglogpos = 0;
+    public static List<String> typingLog = new ArrayList<>();
+    public static int typingLogPos = 0;
 
     public boolean showClouds = true;
     public byte thirdPersonMode = 0;

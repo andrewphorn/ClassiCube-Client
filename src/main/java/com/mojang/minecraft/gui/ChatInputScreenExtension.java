@@ -1,7 +1,14 @@
 package com.mojang.minecraft.gui;
 
-import java.awt.Desktop;
-import java.awt.Toolkit;
+import com.mojang.minecraft.ChatClickData;
+import com.mojang.minecraft.ChatClickData.LinkData;
+import com.mojang.minecraft.LogUtil;
+import com.mojang.minecraft.net.NetworkManager;
+import com.mojang.minecraft.net.PacketType;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -9,15 +16,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Vector;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
-import com.mojang.minecraft.ChatClickData;
-import com.mojang.minecraft.ChatClickData.LinkData;
-import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.net.NetworkManager;
-import com.mojang.minecraft.net.PacketType;
 
 public class ChatInputScreenExtension extends GuiScreen {
 
@@ -36,8 +34,7 @@ public class ChatInputScreenExtension extends GuiScreen {
             if (clipboard != null && clipboard.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                 return (String) clipboard.getTransferData(DataFlavor.stringFlavor);
             }
-        } catch (UnsupportedFlavorException ex) {
-        } catch (IOException e) {
+        } catch (UnsupportedFlavorException | IOException ex) {
         }
         return null;
     }
@@ -86,11 +83,11 @@ public class ChatInputScreenExtension extends GuiScreen {
     @Override
     protected final void onKeyPress(char paramChar, int paramInt) {
         if (paramInt == Keyboard.KEY_ESCAPE) {
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
             return;
         }
         if (paramInt == Keyboard.KEY_F2) {
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
             minecraft.takeAndSaveScreenshot(minecraft.width, minecraft.height);
             minecraft.setCurrentScreen(this);
         }
@@ -154,16 +151,13 @@ public class ChatInputScreenExtension extends GuiScreen {
             } else if (minecraft.session == null) {
                 minecraft.hud.addChat("&f" + str1);
             } else if (str1.length() > 0) {
-                NetworkManager var10000 = minecraft.networkManager;
-                NetworkManager var3 = var10000;
                 if ((str1 = str1.trim()).length() > 0) {
-                    var3.netHandler.send(PacketType.CHAT_MESSAGE,
-                            new Object[] { Integer.valueOf(-1), str1 });
+                    minecraft.networkManager.netHandler.send(PacketType.CHAT_MESSAGE, -1, str1);
                 }
 
             }
             history.add(str1);
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
             return;
         }
 
@@ -262,7 +256,7 @@ public class ChatInputScreenExtension extends GuiScreen {
                             && y < data.bounds.minY) {
                         ChatClickData chatClickData = new ChatClickData(fontRenderer,
                                 minecraft.hud.chat.get(i));
-                        if (data.string == chatClickData.message) {
+                        if (data.string.equals(chatClickData.message)) {
                             for (LinkData ld : chatClickData.getClickedUrls()) {
                                 if (ld != null) {
                                     if (x > ld.x0 && x < ld.x1 && y > data.bounds.maxY
@@ -346,7 +340,7 @@ public class ChatInputScreenExtension extends GuiScreen {
                         && y < data.bounds.minY) {
                     ChatClickData chatClickData = new ChatClickData(fontRenderer,
                             minecraft.hud.chat.get(i));
-                    if (data.string == chatClickData.message) {
+                    if (data.string.equals(chatClickData.message)) {
                         for (LinkData ld : chatClickData.getClickedUrls()) {
                             if (ld != null) {
                                 if (x > ld.x0 && x < ld.x1 && y > data.bounds.maxY

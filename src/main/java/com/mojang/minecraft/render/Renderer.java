@@ -1,19 +1,18 @@
 package com.mojang.minecraft.render;
 
-import java.nio.FloatBuffer;
-import java.util.Random;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.util.Vec3D;
 import com.mojang.minecraft.player.Player;
 import com.mojang.util.MathHelper;
+import com.mojang.util.Vec3D;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+
+import java.nio.FloatBuffer;
+import java.util.Random;
 
 public final class Renderer {
 

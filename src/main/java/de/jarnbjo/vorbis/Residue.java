@@ -26,10 +26,10 @@
 
 package de.jarnbjo.vorbis;
 
+import de.jarnbjo.util.io.BitInputStream;
+
 import java.io.IOException;
 import java.util.HashMap;
-
-import de.jarnbjo.util.io.*;
 
 abstract class Residue {
 
@@ -133,7 +133,7 @@ abstract class Residue {
     }
 
     protected static Residue createInstance(BitInputStream source, SetupHeader header)
-            throws VorbisFormatException, IOException {
+            throws IOException {
 
         int type = source.getInt(16);
         switch (type) {
@@ -159,12 +159,12 @@ abstract class Residue {
 
     protected int[][] books;
 
-    protected HashMap<Mode, Look> looks = new HashMap<Mode, Look>();
+    protected HashMap<Mode, Look> looks = new HashMap<>();
 
     protected Residue() {
     }
 
-    protected Residue(BitInputStream source, SetupHeader header) throws VorbisFormatException,
+    protected Residue(BitInputStream source, SetupHeader header) throws
             IOException {
         begin = source.getInt(24);
         end = source.getInt(24);
@@ -199,7 +199,7 @@ abstract class Residue {
     }
 
     protected abstract void decodeResidue(VorbisStream vorbis, BitInputStream source, Mode mode,
-            int ch, boolean[] doNotDecodeFlags, float[][] vectors) throws VorbisFormatException,
+            int ch, boolean[] doNotDecodeFlags, float[][] vectors) throws
             IOException;
 
     // public abstract double[][] getDecodedVectors();
@@ -240,7 +240,7 @@ abstract class Residue {
 
     protected Look getLook(VorbisStream source, Mode key) {
         // return new Look(source, key);
-        Look look = (Look) looks.get(key);
+        Look look = looks.get(key);
         if (look == null) {
             look = new Look(source, key);
             looks.put(key, look);

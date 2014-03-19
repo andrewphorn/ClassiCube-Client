@@ -23,15 +23,15 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.IOException;
-
 import de.jarnbjo.util.io.BitInputStream;
+
+import java.io.IOException;
 
 class Floor0 extends Floor {
 
     private int bookList[];
 
-    protected Floor0(BitInputStream source, SetupHeader header) throws VorbisFormatException,
+    protected Floor0(BitInputStream source, SetupHeader header) throws
             IOException {
 
         int bookCount = source.getInt(4) + 1;
@@ -52,7 +52,7 @@ class Floor0 extends Floor {
     }
 
     protected Floor decodeFloor(VorbisStream vorbis, BitInputStream source)
-            throws VorbisFormatException, IOException {
+            throws IOException {
         /** @todo implement */
         throw new UnsupportedOperationException();
     }

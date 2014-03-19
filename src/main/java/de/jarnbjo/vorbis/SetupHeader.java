@@ -23,9 +23,9 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.*;
+import de.jarnbjo.util.io.BitInputStream;
 
-import de.jarnbjo.util.io.*;
+import java.io.IOException;
 
 class SetupHeader {
 
@@ -37,7 +37,7 @@ class SetupHeader {
     private Mapping[] mappings;
     private Mode[] modes;
 
-    public SetupHeader(VorbisStream vorbis, BitInputStream source) throws VorbisFormatException,
+    public SetupHeader(VorbisStream vorbis, BitInputStream source) throws
             IOException {
 
         if (source.getLong(48) != HEADER) {

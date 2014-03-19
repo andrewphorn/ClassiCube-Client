@@ -1,13 +1,12 @@
 package com.mojang.minecraft.sound;
 
+import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.LogUtil;
+
+import javax.sound.sampled.SourceDataLine;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.sound.sampled.SourceDataLine;
-
-import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
 
 // TODO.
 public final class SoundPlayer implements Runnable {

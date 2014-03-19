@@ -1,10 +1,5 @@
 package com.mojang.minecraft.player;
 
-import java.awt.image.BufferedImage;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.GameSettings;
@@ -16,10 +11,15 @@ import com.mojang.minecraft.level.tile.FlowerBlock;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
-import static com.mojang.minecraft.net.NetworkPlayer.isInteger;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.image.BufferedImage;
+import java.util.List;
+
+import static com.mojang.minecraft.net.NetworkPlayer.isInteger;
 
 public class Player extends Mob {
     private int flyTrig = 0;
@@ -108,8 +108,8 @@ public class Player extends Mob {
             List<?> var3;
             if (health > 0
                     && (var3 = level.findEntities(this, boundingBox.grow(1F, 0F, 1F))) != null) {
-                for (int var4 = 0; var4 < var3.size(); ++var4) {
-                    ((Entity) var3.get(var4)).playerTouch(this);
+                for (Object aVar3 : var3) {
+                    ((Entity) aVar3).playerTouch(this);
                 }
             }
         } else {
