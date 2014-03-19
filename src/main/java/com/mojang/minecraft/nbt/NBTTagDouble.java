@@ -18,25 +18,26 @@ public class NBTTagDouble extends NBTBase {
     }
 
     /**
-     * Write the actual data contents of the tag, implemented in NBT extension
-     * classes
+     * Write the actual data contents of the tag, implemented in NBT extension classes.
+     * @param output The output stream to write to.
      */
     @Override
-    void write(DataOutput par1DataOutput) throws IOException {
-        par1DataOutput.writeDouble(this.data);
+    void write(DataOutput output) throws IOException {
+        output.writeDouble(this.data);
     }
 
     /**
-     * Read the actual data contents of the tag, implemented in NBT extension
-     * classes
+     * Read the actual data contents of the tag, implemented in NBT extension classes.
+     * @param input The input stream to read from.
      */
     @Override
-    void load(DataInput par1DataInput) throws IOException {
-        this.data = par1DataInput.readDouble();
+    void load(DataInput input) throws IOException {
+        this.data = input.readDouble();
     }
 
     /**
      * Gets the type byte for the tag.
+     * @return byte
      */
     @Override
     public byte getId() {
