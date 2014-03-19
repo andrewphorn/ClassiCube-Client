@@ -183,13 +183,13 @@ public abstract class Entity implements Serializable {
 
     public boolean isFree(float x, float y, float z) {
         AABB bounds = boundingBox.cloneMove(x, y, z);
-        return level.getCubes(bounds).size() > 0 ? false : !level.containsAnyLiquid(bounds);
+        return level.getCubes(bounds).size() <= 0 && !level.containsAnyLiquid(bounds);
     }
 
     // TODO - growAmount may not be an accurate interpretation
     public boolean isFree(float x, float y, float z, float growAmount) {
         AABB bounds = boundingBox.grow(growAmount, growAmount, growAmount).cloneMove(x, y, z);
-        return level.getCubes(bounds).size() > 0 ? false : !level.containsAnyLiquid(bounds);
+        return level.getCubes(bounds).size() <= 0 && !level.containsAnyLiquid(bounds);
     }
 
     public boolean isInLava() {
@@ -225,8 +225,8 @@ public abstract class Entity implements Serializable {
 
     public boolean isUnderWater() {
         int textureID;
-        return (textureID = level.getTile((int) x, (int) (y + 0.12F), (int) z)) != 0 ? Block.blocks[textureID]
-                .getLiquidType().equals(LiquidType.water) : false;
+        return (textureID = level.getTile((int) x, (int) (y + 0.12F), (int) z)) != 0 && Block.blocks[textureID]
+                .getLiquidType().equals(LiquidType.water);
     }
 
     public void move(float xMove, float yMove, float zMove) {
@@ -244,8 +244,8 @@ public abstract class Entity implements Serializable {
             AABB bbCopy = boundingBox.copy();
             ArrayList<AABB> cubes = level.getCubes(boundingBox.expand(xMove, yMove, zMove));
 
-            for (int i = 0; i < cubes.size(); ++i) {
-                yMove = cubes.get(i).clipYCollide(boundingBox, yMove);
+            for (AABB cube5 : cubes) {
+                yMove = cube5.clipYCollide(boundingBox, yMove);
             }
 
             boundingBox.move(0F, yMove, 0F);
@@ -257,8 +257,8 @@ public abstract class Entity implements Serializable {
 
             boolean var16 = onGround || var7 != yMove && var7 < 0F;
 
-            for (int i = 0; i < cubes.size(); ++i) {
-                xMove = cubes.get(i).clipXCollide(boundingBox, xMove);
+            for (AABB cube4 : cubes) {
+                xMove = cube4.clipXCollide(boundingBox, xMove);
             }
 
             boundingBox.move(xMove, 0F, 0F);
@@ -268,8 +268,8 @@ public abstract class Entity implements Serializable {
                 xMove = 0F;
             }
 
-            for (int i = 0; i < cubes.size(); ++i) {
-                zMove = cubes.get(i).clipZCollide(boundingBox, zMove);
+            for (AABB cube3 : cubes) {
+                zMove = cube3.clipZCollide(boundingBox, zMove);
             }
 
             boundingBox.move(0F, 0F, zMove);
@@ -292,8 +292,8 @@ public abstract class Entity implements Serializable {
                 boundingBox = bbCopy.copy();
                 cubes = level.getCubes(boundingBox.expand(var6, yMove, var8));
 
-                for (int i = 0; i < cubes.size(); ++i) {
-                    yMove = cubes.get(i).clipYCollide(boundingBox, yMove);
+                for (AABB cube2 : cubes) {
+                    yMove = cube2.clipYCollide(boundingBox, yMove);
                 }
 
                 boundingBox.move(0F, yMove, 0F);
@@ -303,8 +303,8 @@ public abstract class Entity implements Serializable {
                     xMove = 0F;
                 }
 
-                for (int i = 0; i < cubes.size(); ++i) {
-                    xMove = cubes.get(i).clipXCollide(boundingBox, xMove);
+                for (AABB cube1 : cubes) {
+                    xMove = cube1.clipXCollide(boundingBox, xMove);
                 }
 
                 boundingBox.move(xMove, 0F, 0F);
@@ -314,8 +314,8 @@ public abstract class Entity implements Serializable {
                     xMove = 0F;
                 }
 
-                for (int i = 0; i < cubes.size(); ++i) {
-                    zMove = cubes.get(i).clipZCollide(boundingBox, zMove);
+                for (AABB cube : cubes) {
+                    zMove = cube.clipZCollide(boundingBox, zMove);
                 }
 
                 boundingBox.move(0F, 0F, zMove);
@@ -427,8 +427,7 @@ public abstract class Entity implements Serializable {
     }
 
     public void playSound(String file, float volume, float pitch) {
-        boolean footstep = false;
-        level.playSound(file, this, volume, pitch, footstep);
+        level.playSound(file, this, volume, pitch, false);
     }
 
     protected void playStepSound(int tile) {

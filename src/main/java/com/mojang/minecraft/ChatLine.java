@@ -16,7 +16,7 @@ public class ChatLine {
     public static String eol = System.getProperty("line.separator");
 
     /**
-     * Constructs a new chatline, logs to the userdata aswell
+     * Constructs a new chatline, logs to the userdata as well
      * 
      * @param message
      *            The chatline

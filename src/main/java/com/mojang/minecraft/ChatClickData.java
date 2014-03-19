@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import com.mojang.minecraft.gui.FontRenderer;
 
 /**
- * Class used to store data for clicking URLs in the chat sceen
+ * Class used to store data for clicking URLs in the chat screen
  * 
  * @author Jon
  * 

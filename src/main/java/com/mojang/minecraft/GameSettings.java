@@ -20,8 +20,8 @@ public final class GameSettings {
 
     public static boolean CanReplaceSlot = true;
 
-    public static List<String> typinglog = new ArrayList<>();
-    public static int typinglogpos = 0;
+    public static List<String> typingLog = new ArrayList<>();
+    public static int typingLogPos = 0;
 
     public boolean showClouds = true;
     public byte thirdPersonMode = 0;

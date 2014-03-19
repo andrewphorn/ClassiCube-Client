@@ -220,8 +220,7 @@ public final class ProgressBarDisplay {
                 return;
             }
 
-            String joinedString = new StringBuilder().append(title).append(" ").append(text)
-                    .toString().toLowerCase();
+            String joinedString = (title + " " + text).toLowerCase();
 
             if (joinedString.contains("-hax")) {
                 HackState.setAllDisabled();
