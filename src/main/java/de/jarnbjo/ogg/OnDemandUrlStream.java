@@ -47,7 +47,7 @@ public class OnDemandUrlStream implements PhysicalOggStream {
     private int contentLength = 0;
     private int position = 0;
 
-    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
+    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<>();
     private OggPage firstPage;
 
     int pageNumber = 2;
@@ -61,7 +61,7 @@ public class OnDemandUrlStream implements PhysicalOggStream {
         firstPage = OggPage.create(sourceStream);
         position += firstPage.getTotalLength();
         LogicalOggStreamImpl los = new LogicalOggStreamImpl(this);
-        logicalStreams.put(new Integer(firstPage.getStreamSerialNumber()), los);
+        logicalStreams.put(firstPage.getStreamSerialNumber(), los);
         los.checkFormat(firstPage);
     }
 

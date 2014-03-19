@@ -113,8 +113,8 @@ public class VorbisAudioFileReader extends AudioFileReader {
                         "Only Ogg files with one logical Vorbis stream are supported.");
             }
 
-            LogicalOggStream los = (LogicalOggStream) streams.iterator().next();
-            if (los.getFormat() != LogicalOggStream.FORMAT_VORBIS) {
+            LogicalOggStream los = streams.iterator().next();
+            if (!los.getFormat().equals(LogicalOggStream.FORMAT_VORBIS)) {
                 throw new UnsupportedAudioFileException(
                         "Only Ogg files with one logical Vorbis stream are supported.");
             }
@@ -126,7 +126,7 @@ public class VorbisAudioFileReader extends AudioFileReader {
 
             return new AudioFileFormat(VorbisFormatType.getInstance(), audioFormat,
                     AudioSystem.NOT_SPECIFIED);
-        } catch (OggFormatException e) {
+        } catch (OggFormatException | VorbisFormatException e) {
             throw new UnsupportedAudioFileException(e.getMessage());
         } catch (VorbisFormatException e) {
             throw new UnsupportedAudioFileException(e.getMessage());
@@ -169,8 +169,8 @@ public class VorbisAudioFileReader extends AudioFileReader {
                         "Only Ogg files with one logical Vorbis stream are supported.");
             }
 
-            LogicalOggStream los = (LogicalOggStream) streams.iterator().next();
-            if (los.getFormat() != LogicalOggStream.FORMAT_VORBIS) {
+            LogicalOggStream los = streams.iterator().next();
+            if (!los.getFormat().equals(LogicalOggStream.FORMAT_VORBIS)) {
                 throw new UnsupportedAudioFileException(
                         "Only Ogg files with one logical Vorbis stream are supported.");
             }
@@ -181,7 +181,7 @@ public class VorbisAudioFileReader extends AudioFileReader {
                     .getSampleRate(), 16, vs.getIdentificationHeader().getChannels(), true, true);
 
             return new AudioInputStream(new VorbisInputStream(vs), audioFormat, -1);
-        } catch (OggFormatException e) {
+        } catch (OggFormatException | VorbisFormatException e) {
             throw new UnsupportedAudioFileException(e.getMessage());
         } catch (VorbisFormatException e) {
             throw new UnsupportedAudioFileException(e.getMessage());

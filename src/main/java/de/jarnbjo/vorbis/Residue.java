@@ -159,7 +159,7 @@ abstract class Residue {
 
     protected int[][] books;
 
-    protected HashMap<Mode, Look> looks = new HashMap<Mode, Look>();
+    protected HashMap<Mode, Look> looks = new HashMap<>();
 
     protected Residue() {
     }
@@ -240,7 +240,7 @@ abstract class Residue {
 
     protected Look getLook(VorbisStream source, Mode key) {
         // return new Look(source, key);
-        Look look = (Look) looks.get(key);
+        Look look = looks.get(key);
         if (look == null) {
             look = new Look(source, key);
             looks.put(key, look);

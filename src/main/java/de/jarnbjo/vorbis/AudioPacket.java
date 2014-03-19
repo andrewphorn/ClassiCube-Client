@@ -201,10 +201,12 @@ class AudioPacket {
                 w[i + leftWindowStart] = x;
             }
 
-            for (int i = leftWindowEnd; i < rightWindowStart; w[i++] = 1F)
-                ;
+            int i = leftWindowEnd;
+            while (i < rightWindowStart) {
+                w[i++] = 1F;
+            }
 
-            for (int i = 0; i < rightN; i++) {
+            for (i = 0; i < rightN; i++) {
                 float x = (float) ((rightN - i - .5) / rightN * Math.PI / 2.);
                 x = (float) Math.sin(x);
                 x *= x;

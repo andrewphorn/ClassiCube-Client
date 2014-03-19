@@ -66,7 +66,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
         }
     }
 
-    public boolean getBit() throws IOException {
+    public boolean getBit() {
         if (endian == LITTLE_ENDIAN) {
             if (bitIndex > 7) {
                 bitIndex = 0;
@@ -82,7 +82,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
         }
     }
 
-    public int getInt(HuffmanNode root) throws IOException {
+    public int getInt(HuffmanNode root) {
         while (root.value == null) {
             if (bitIndex > 7) {
                 bitIndex = 0;
@@ -90,7 +90,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
             }
             root = (currentByte & (1 << (bitIndex++))) != 0 ? root.o1 : root.o0;
         }
-        return root.value.intValue();
+        return root.value;
     }
 
     public int getInt(int bits) throws IOException {
@@ -195,7 +195,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
      *             if the method is not supported by the implementation
      */
 
-    public int readSignedRice(int order) throws IOException {
+    public int readSignedRice(int order) throws IOException, UnsupportedOperationException {
 
         int msbs = -1, lsbs = 0, res = 0;
 
@@ -277,7 +277,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
      *             if the method is not supported by the implementation
      */
 
-    public void readSignedRice(int order, int[] buffer, int off, int len) throws IOException {
+    public void readSignedRice(int order, int[] buffer, int offset, int len) throws IOException, UnsupportedOperationException {
 
         if (endian == LITTLE_ENDIAN) {
             // little endian
@@ -285,7 +285,7 @@ public class ByteArrayBitInputStream implements BitInputStream {
                     "ByteArrayBitInputStream.readSignedRice() is only supported in big endian mode");
         } else {
             // big endian
-            for (int i = off; i < off + len; i++) {
+            for (int i = offset; i < offset + len; i++) {
 
                 int msbs = -1, lsbs = 0;
 

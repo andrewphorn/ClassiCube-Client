@@ -32,7 +32,7 @@ import de.jarnbjo.util.io.BitInputStream;
 
 class Floor1 extends Floor implements Cloneable {
 
-    private final static void sort(int x[], int y[], boolean b[]) {
+    private static void sort(int x[], int y[], boolean b[]) {
         int off = 0;
         int len = x.length;
         int lim = len + off;
@@ -119,17 +119,17 @@ class Floor1 extends Floor implements Cloneable {
 
         // System.out.println("xListLength: "+xListLength);
 
-        ArrayList<Integer> alXList = new ArrayList<Integer>();
+        ArrayList<Integer> alXList = new ArrayList<>();
 
-        alXList.add(new Integer(0));
-        alXList.add(new Integer(1 << rangeBits));
+        alXList.add(0);
+        alXList.add(1 << rangeBits);
 
         // System.out.println("partitions: "+partitions);
         // System.out.println("classDimensions.length: "+classDimensions.length);
 
         for (int i = 0; i < partitions; i++) {
             for (int j = 0; j < classDimensions[partitionClassList[i]]; j++) {
-                alXList.add(new Integer(source.getInt(rangeBits)));
+                alXList.add(source.getInt(rangeBits));
             }
         }
 
@@ -139,7 +139,7 @@ class Floor1 extends Floor implements Cloneable {
 
         Iterator<Integer> iter = alXList.iterator();
         for (int i = 0; i < xList.length; i++) {
-            xList[i] = ((Integer) iter.next()).intValue();
+            xList[i] = iter.next();
         }
 
         for (int i = 0; i < xList.length; i++) {
@@ -226,8 +226,9 @@ class Floor1 extends Floor implements Cloneable {
         }
 
         final float r = DB_STATIC_TABLE[hy];
-        for (; hx < n / 2; vector[hx++] = r)
-            ;
+        while (hx < n / 2) {
+            vector[hx++] = r;
+        }
     }
 
     protected Floor decodeFloor(VorbisStream vorbis, BitInputStream source)
@@ -250,8 +251,7 @@ class Floor1 extends Floor implements Cloneable {
 
         int offset = 2;
 
-        for (int i = 0; i < partitionClassList.length; i++) {
-            int cls = partitionClassList[i];
+        for (int cls : partitionClassList) {
             int cdim = classDimensions[cls];
             int cbits = classSubclasses[cls];
             int csub = (1 << cbits) - 1;
