@@ -91,8 +91,8 @@ public final class LevelRenderer {
 
     public final void refresh() {
         if (chunkCache != null) {
-            for (int i = 0; i < chunkCache.length; ++i) {
-                chunkCache[i].dispose();
+            for (Chunk aChunkCache : chunkCache) {
+                aChunkCache.dispose();
             }
         }
         if (listsCount > -1) {
@@ -126,8 +126,8 @@ public final class LevelRenderer {
             }
         }
 
-        for (int i = 0; i < chunks.size(); ++i) {
-            chunks.get(i).loaded = false;
+        for (Chunk chunk : chunks) {
+            chunk.loaded = false;
         }
 
         chunks.clear();
@@ -243,8 +243,8 @@ public final class LevelRenderer {
         }
 
         int count = 0;
-        for (int i = 0; i < loadQueue.length; ++i) {
-            count = loadQueue[i].appendLists(chunkDataCache, count, renderPass);
+        for (Chunk aLoadQueue : loadQueue) {
+            count = aLoadQueue.appendLists(chunkDataCache, count, renderPass);
         }
 
         buffer.clear();

@@ -41,8 +41,8 @@ public class GLAllocation {
 }
 
     public static synchronized void deleteTexturesAndDisplayLists() {
-        for (Entry<Integer, Integer> i:  displayLists.entrySet()) {
-            Entry<Integer, Integer> entity = (Entry<Integer, Integer>) i;
+        for (Entry<Integer, Integer> i: displayLists.entrySet()) {
+            Entry<Integer, Integer> entity = i;
             GL11.glDeleteLists(entity.getKey(), entity.getValue());
         }
 
