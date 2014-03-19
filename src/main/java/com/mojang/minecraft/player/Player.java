@@ -106,11 +106,10 @@ public class Player extends Mob {
             }
             bob += (var1 - bob) * 0.4F;
             tilt += (var2 - tilt) * 0.8F;
-            List<?> var3;
-            if (health > 0
-                    && (var3 = level.findEntities(this, boundingBox.grow(1F, 0F, 1F))) != null) {
-                for (int var4 = 0; var4 < var3.size(); ++var4) {
-                    ((Entity) var3.get(var4)).playerTouch(this);
+            List<?> neighbourEntities = level.findEntities(this, boundingBox.grow(1F, 0F, 1F));
+            if (health > 0 && neighbourEntities != null) {
+                for (Object neighbour : neighbourEntities) {
+                    ((Entity) neighbour).playerTouch(this);
                 }
             }
         } else {

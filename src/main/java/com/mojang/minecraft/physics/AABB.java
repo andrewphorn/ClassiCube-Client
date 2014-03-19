@@ -162,8 +162,8 @@ public class AABB implements Serializable {
 
     /**
      * Checks if the AABB contains the vector.
-     * @param vector
-     * @return
+     * @param vector The vector to check against.
+     * @return boolean
      */
     public boolean contains(Vec3D vector) {
         return ((vector.x > maxX && vector.x < minX)
