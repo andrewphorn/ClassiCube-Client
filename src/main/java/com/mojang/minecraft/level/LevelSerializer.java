@@ -37,6 +37,7 @@ public class LevelSerializer {
     void save(File fullFilePath) throws FileNotFoundException, IOException, Exception {
         LogUtil.logInfo("Saving level " + fullFilePath.getAbsolutePath());
         if (level == null) {
+            // TODO Don't throw generic exception
             throw new Exception("level");
         }
 

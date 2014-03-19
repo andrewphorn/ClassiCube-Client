@@ -71,6 +71,7 @@ public class LiquidBlock extends Block {
 
             if (level.setTile(x, y, z, movingId)) {
                 level.addToTickNextTick(x, y, z, movingId);
+                // TODO Actually return true here?
             }
         }
 

@@ -58,10 +58,10 @@ public final class SlabBlock extends Block {
 
     }
 
+    // TODO
     @Override
     public final void onNeighborChange(Level level, int x, int y, int z, int side) {
         if (this == SLAB) {
-            ;
         }
     }
 }

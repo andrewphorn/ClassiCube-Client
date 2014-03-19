@@ -15,22 +15,6 @@ import com.mojang.minecraft.player.Player;
 
 public class LevelLoader {
 
-    // Used for recieved map streams from servers
-    public static byte[] decompress(InputStream var0) {
-        try {
-            DataInputStream var3;
-            byte[] var1 = new byte[(var3 = new DataInputStream(new GZIPInputStream(var0)))
-                    .readInt()];
-            var3.readFully(var1);
-            var3.close();
-            return var1;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    Level level;
-
     public LevelLoader() {
     }
 
@@ -74,5 +58,18 @@ public class LevelLoader {
             LogUtil.logInfo("blocks=byte[" + blocks.length + "]");
         }
         return newLevel;
+    }
+
+    // Used for received map streams from servers
+    public static byte[] decompress(InputStream input) {
+        try {
+            DataInputStream stream = new DataInputStream(new GZIPInputStream(input));
+            byte[] blockArray = new byte[stream.readInt()];
+            stream.readFully(blockArray);
+            stream.close();
+            return blockArray;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

@@ -124,17 +124,11 @@ public class BlockModelRenderer {
     }
 
     public AABB getCollisionBox(int x, int y, int z) {
-        AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
-        ;
-
-        return aabb;
+        return new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
     }
 
     public AABB getSelectionBox(int x, int y, int z) {
-        AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
-        ;
-
-        return aabb;
+        return new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
     }
 
     protected int getTextureId(int texture) {
