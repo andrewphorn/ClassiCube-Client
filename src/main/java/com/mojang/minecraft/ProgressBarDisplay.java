@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
-import com.oyasunadev.mcraft.client.util.Constants;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.gui.HUDScreen;
 import com.mojang.minecraft.render.ShapeRenderer;
+import com.oyasunadev.mcraft.client.util.Constants;
 
 public final class ProgressBarDisplay {
 

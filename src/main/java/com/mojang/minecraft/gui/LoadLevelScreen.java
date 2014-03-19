@@ -1,13 +1,12 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.LogUtil;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
-import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.LevelLoader;
 

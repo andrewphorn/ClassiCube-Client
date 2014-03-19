@@ -1,11 +1,11 @@
 package com.mojang.net;
 
-import com.mojang.minecraft.LogUtil;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.minecraft.net.NetworkManager;

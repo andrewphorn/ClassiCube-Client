@@ -1,9 +1,8 @@
 package com.mojang.minecraft.gui.inputscreens;
 
-import com.mojang.minecraft.LogUtil;
-
 import org.lwjgl.input.Keyboard;
 
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.gui.Button;
 import com.mojang.minecraft.gui.GuiScreen;
 import com.mojang.minecraft.level.LevelSerializer;

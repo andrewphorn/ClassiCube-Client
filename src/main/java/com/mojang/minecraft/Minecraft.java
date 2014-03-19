@@ -34,9 +34,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
-import com.mojang.minecraft.physics.CustomAABB;
-import com.mojang.minecraft.render.*;
-import com.oyasunadev.mcraft.client.util.Constants;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -77,16 +74,25 @@ import com.mojang.minecraft.particle.Particle;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.WaterDropParticle;
 import com.mojang.minecraft.physics.AABB;
+import com.mojang.minecraft.physics.CustomAABB;
 import com.mojang.minecraft.player.InputHandlerImpl;
 import com.mojang.minecraft.player.Player;
+import com.mojang.minecraft.render.Chunk;
+import com.mojang.minecraft.render.ChunkDirtyDistanceComparator;
+import com.mojang.minecraft.render.Frustum;
 import com.mojang.minecraft.render.FrustumImpl;
+import com.mojang.minecraft.render.HeldBlock;
+import com.mojang.minecraft.render.LevelRenderer;
+import com.mojang.minecraft.render.Renderer;
+import com.mojang.minecraft.render.ShapeRenderer;
+import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
 import com.mojang.net.NetworkHandler;
 import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
-
+import com.oyasunadev.mcraft.client.util.Constants;
 import com.oyasunadev.mcraft.client.util.ExtData;
 
 public final class Minecraft implements Runnable {
@@ -1076,7 +1082,7 @@ public final class Minecraft implements Runnable {
 
                         renderer.hurtEffect(delta);
                         renderer.applyBobbing(delta, renderer.minecraft.settings.viewBobbing);
-                        
+
                         float cameraDistance = -5.1F;
                         if (renderer.minecraft.selected != null && settings.thirdPersonMode == 2) {
                             cameraDistance = -(renderer.minecraft.selected.vec.distance(renderer
@@ -1106,7 +1112,7 @@ public final class Minecraft implements Runnable {
                         var33 = player.zo + (player.z - player.zo) * delta;
                         GL11.glTranslatef(-var69, -var74, -var33);
                         Frustum frustum = FrustumImpl.getInstance();
-                        
+
                         for (i = 0; i < levelRenderer.chunkCache.length; ++i) {
                             levelRenderer.chunkCache[i].clip(frustum);
                         }
@@ -1228,7 +1234,7 @@ public final class Minecraft implements Runnable {
                         if (level.cloudLevel < 0) {
                             level.cloudLevel = levelRenderer.level.height + 2;
                         }
-                        int cloudLevel = level.cloudLevel;                        
+                        int cloudLevel = level.cloudLevel;
 
                         float unknownCloud = 1F / 2048F;
                         float cloudTickOffset = (levelRenderer.ticks + delta) * unknownCloud * 0.03F;
@@ -1670,7 +1676,7 @@ public final class Minecraft implements Runnable {
                         GL11.glPopMatrix();
                         heldBlock.minecraft.renderer.setLighting(false);
 
-                        
+
                         renderer.minecraft.hud.render(timer.delta,
                                 renderer.minecraft.currentScreen != null, mouseX, mouseY);
                     } else {
@@ -1864,7 +1870,7 @@ public final class Minecraft implements Runnable {
     public void takeAndSaveScreenshot(int width, int height) {
         try {
             int size = width * height * 3;
-            
+
             int packAlignment = GL11.glGetInteger(GL11.GL_PACK_ALIGNMENT);
             int unpackAlignment = GL11.glGetInteger(GL11.GL_UNPACK_ALIGNMENT);
             GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1); // Byte alignment.
@@ -1873,10 +1879,10 @@ public final class Minecraft implements Runnable {
             GL11.glReadBuffer(GL11.GL_FRONT);
             ByteBuffer buffer = ByteBuffer.allocateDirect(size);
             GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
-            
+
             GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, packAlignment);
             GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, unpackAlignment);
-            
+
             byte[] pixels = new byte[size];
             buffer.get(pixels);
             pixels = flipPixels(pixels, width, height);
@@ -1885,17 +1891,17 @@ public final class Minecraft implements Runnable {
             int[] bitsPerPixel = { 8, 8, 8 };
             int[] colOffsets = { 0, 1, 2 };
 
-            ComponentColorModel colorComp = new ComponentColorModel(colorSpace, bitsPerPixel, 
+            ComponentColorModel colorComp = new ComponentColorModel(colorSpace, bitsPerPixel,
                     false, false, 3, DataBuffer.TYPE_BYTE);
 
-            WritableRaster raster = Raster.createInterleavedRaster(new DataBufferByte(pixels, 
+            WritableRaster raster = Raster.createInterleavedRaster(new DataBufferByte(pixels,
                     pixels.length), width, height, width * 3, 3, colOffsets, null);
 
             BufferedImage image = new BufferedImage(colorComp, raster, false, null);
 
             Calendar cal = Calendar.getInstance();
             String str = String.format("screenshot_%1$tY%1$tm%1$td%1$tH%1$tM%1$tS.png", cal);
-           
+
             String month = new SimpleDateFormat("MMM").format(cal.getTime());
             String serverName = ProgressBarDisplay.title.toLowerCase().contains("connecting..") ? ""
                     : ProgressBarDisplay.title;

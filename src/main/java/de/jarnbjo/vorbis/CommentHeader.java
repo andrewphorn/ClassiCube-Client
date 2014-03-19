@@ -23,9 +23,9 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.*;
-
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.jarnbjo.util.io.BitInputStream;
 

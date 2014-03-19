@@ -7,13 +7,13 @@ import com.mojang.minecraft.level.BlockMap;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.util.Vec3D;
 import com.mojang.minecraft.net.PositionUpdate;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.sound.StepSound;
 import com.mojang.util.MathHelper;
+import com.mojang.util.Vec3D;
 
 public abstract class Entity implements Serializable {
 

@@ -23,8 +23,12 @@
 
 package de.jarnbjo.ogg;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Implementation of the <code>PhysicalOggStream</code> interface for accessing
@@ -43,10 +47,10 @@ public class FileStream implements PhysicalOggStream {
      * Creates access to the specified file through the
      * <code>PhysicalOggStream</code> interface. The specified source file must
      * have been opened for reading.
-     * 
+     *
      * @param source
      *            the file to read from
-     * 
+     *
      * @throws OggFormatException
      *             if the stream format is incorrect
      * @throws IOException

@@ -1,6 +1,5 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.LogUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.Minecraft;
 
 public class TextureSelectionScreen extends GuiScreen implements Runnable {

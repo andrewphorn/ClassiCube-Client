@@ -1,12 +1,13 @@
 package com.mojang.minecraft.sound;
 
-import com.mojang.minecraft.LogUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import com.mojang.minecraft.LogUtil;
 
 // TODO.
 public final class SoundManager {

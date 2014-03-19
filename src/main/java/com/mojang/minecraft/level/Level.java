@@ -12,7 +12,6 @@ import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.util.Vec3D;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.LevelRenderer;
@@ -20,6 +19,7 @@ import com.mojang.minecraft.sound.AudioInfo;
 import com.mojang.minecraft.sound.EntitySoundPos;
 import com.mojang.minecraft.sound.LevelSoundPos;
 import com.mojang.util.MathHelper;
+import com.mojang.util.Vec3D;
 
 public class Level implements Serializable {
 

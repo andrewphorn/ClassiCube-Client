@@ -23,9 +23,15 @@
 
 package de.jarnbjo.ogg;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Implementation of the <code>PhysicalOggStream</code> interface for reading
@@ -195,7 +201,7 @@ public class CachedUrlStream implements PhysicalOggStream {
     /*
      * private OggPage getNextPage() throws EndOfOggStreamException,
      * IOException, OggFormatException { return getNextPage(false); }
-     * 
+     *
      * private OggPage getNextPage(boolean skipData) throws
      * EndOfOggStreamException, IOException, OggFormatException { return
      * OggPage.create(sourceStream, skipData); }

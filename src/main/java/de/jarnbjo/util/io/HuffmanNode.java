@@ -23,7 +23,6 @@
 package de.jarnbjo.util.io;
 
 import java.io.IOException;
-import de.jarnbjo.util.io.BitInputStream;
 
 /**
  * Representation of a node in a Huffman tree, used to read Huffman compressed
@@ -96,7 +95,7 @@ final public class HuffmanNode {
     /**
      * creates a new tree node at the first free location at the given depth,
      * and assigns the value to it
-     * 
+     *
      * @param depth
      *            the tree depth of the new node (codeword length in bits)
      * @param value

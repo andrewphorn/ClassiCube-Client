@@ -1,11 +1,11 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.LogUtil;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.mojang.minecraft.LogUtil;
 import com.mojang.minecraft.Minecraft;
 
 final class TextureDialog extends Thread {

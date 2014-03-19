@@ -28,8 +28,9 @@
 
 package de.jarnbjo.ogg;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class LogicalOggStreamImpl implements LogicalOggStream {
 

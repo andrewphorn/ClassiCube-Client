@@ -1,8 +1,9 @@
 package com.mojang.minecraft.model;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.util.Vec3D;
 import com.mojang.util.Vertex;
-import org.lwjgl.opengl.GL11;
 
 public final class ModelPart {
 

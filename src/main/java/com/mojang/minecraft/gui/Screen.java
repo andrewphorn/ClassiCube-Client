@@ -11,7 +11,7 @@ public class Screen {
 
     /**
      * Draws a box to the screen
-     * 
+     *
      * @param x1
      *            X coordinate of the first point of the box.
      * @param y1
@@ -49,7 +49,7 @@ public class Screen {
 
     /**
      * Draws a box to the screen
-     * 
+     *
      * @param x1
      *            X coordinate of the first point of the box.
      * @param y1
@@ -67,7 +67,7 @@ public class Screen {
 
     /**
      * Draws a string that is centered.
-     * 
+     *
      * @param renderer
      *            {@FontRenderer} used to render the used font.
      * @param text
@@ -88,7 +88,7 @@ public class Screen {
 
     /**
      * Draws a given string
-     * 
+     *
      * @param renderer
      *            {@FontRenderer} used to render the used font.
      * @param text

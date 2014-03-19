@@ -1,5 +1,7 @@
 package com.mojang.minecraft.player;
 
+import static com.mojang.minecraft.net.NetworkPlayer.isInteger;
+
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -16,7 +18,6 @@ import com.mojang.minecraft.level.tile.FlowerBlock;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
-import static com.mojang.minecraft.net.NetworkPlayer.isInteger;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;

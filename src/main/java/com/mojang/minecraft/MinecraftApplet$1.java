@@ -1,7 +1,5 @@
 package com.mojang.minecraft;
 
-import com.oyasunadev.mcraft.client.util.Constants;
-
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
@@ -19,6 +17,8 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import javax.imageio.ImageIO;
+
+import com.oyasunadev.mcraft.client.util.Constants;
 
 // MinecraftCanvas
 public class MinecraftApplet$1 extends Canvas {

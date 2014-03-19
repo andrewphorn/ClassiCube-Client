@@ -17,7 +17,7 @@ public class GuiScreen extends Screen {
     protected List<Button> buttons = new ArrayList<>();
     public boolean grabsMouse = false;
     protected FontRenderer fontRenderer;
-    
+
     public final void clearButtons() {
         buttons.clear();
     }

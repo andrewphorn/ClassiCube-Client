@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
@@ -62,7 +61,7 @@ public final class GameSettings {
     public static final int SMOOTHING_OFF = 0,
             SMOOTHING_AUTO = 1,
             SMOOTHING_UNIVERSAL = 2;
-    
+
     public static final float SCALE_MIN = 0.6f,
             SCALE_MAX = 1.2f;
 

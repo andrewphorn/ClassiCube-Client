@@ -7,8 +7,6 @@ import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
-import com.mojang.util.IntersectionHelper;
-import com.mojang.util.Vec3D;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.TerrainParticle;
 import com.mojang.minecraft.physics.AABB;
@@ -16,6 +14,8 @@ import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.sound.StepSound;
 import com.mojang.minecraft.sound.StepSoundSand;
 import com.mojang.minecraft.sound.StepSoundStone;
+import com.mojang.util.IntersectionHelper;
+import com.mojang.util.Vec3D;
 
 public class Block {
     protected static Random random = new Random();
