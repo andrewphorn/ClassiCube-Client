@@ -14,7 +14,7 @@ public final class GenerateLevelScreen extends GuiScreen {
             minecraft.setCurrentScreen(parent);
         } else {
             minecraft.generateLevel(button.id);
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
             minecraft.grabMouse();
         }
     }

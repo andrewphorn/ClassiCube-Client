@@ -54,7 +54,7 @@ public class GuiScreen extends Screen {
 
     protected void onKeyPress(char var1, int var2) {
         if (var2 == 1) {
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
             minecraft.grabMouse();
         }
         if (Keyboard.getEventKey() == Keyboard.KEY_F2) {

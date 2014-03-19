@@ -48,7 +48,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
                 minecraft.textureManager.resetAllMods();
                 minecraft.textureManager.load("/terrain.png");
                 minecraft.textureManager.initAtlas();
-                minecraft.setCurrentScreen((GuiScreen) null);
+                minecraft.setCurrentScreen(null);
                 minecraft.grabMouse();
                 minecraft.textureManager.textures.clear();
                 try {
@@ -98,7 +98,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
         } catch (IOException ex) {
             LogUtil.logError("Error loading texture pack from " + file, ex);
         }
-        minecraft.setCurrentScreen((GuiScreen) null);
+        minecraft.setCurrentScreen(null);
         minecraft.grabMouse();
     }
 
@@ -168,7 +168,6 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
     protected void setTextures(ArrayList<TexturePackData> texturePacks) {
         for (int i = 0; i < Math.min(texturePacks.size(), 5); ++i) {
-
             buttons.get(i).active = !texturePacks.get(i).equals("-");
             buttons.get(i).text = texturePacks.get(i).name;
             buttons.get(i).visible = true;

@@ -5,8 +5,6 @@ import com.mojang.minecraft.gui.AdvancedOptionsScreen;
 import com.mojang.minecraft.gui.Button;
 import com.mojang.minecraft.gui.GuiScreen;
 
-;
-
 public class FogColorInputScreen extends InputValueScreen {
 
     String defaultHex = "ffffff";
@@ -16,20 +14,18 @@ public class FogColorInputScreen extends InputValueScreen {
     }
 
     @Override
-    protected final void onButtonClick(Button var1) {
-        if (var1.active) {
-            if (var1.id == 0 && name.length() > 0) {
-                Minecraft var10000 = minecraft;
-                String var2 = name;
-                Minecraft var4 = var10000;
-                var4.level.fogColor = Integer.parseInt(var2, 16);
+    protected final void onButtonClick(Button button) {
+        if (button.active) {
+            if (button.id == 0 && name.length() > 0) {
+                String color = name;
+                minecraft.level.fogColor = Integer.parseInt(color, 16);
                 minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
             }
 
-            if (var1.id == 1) {
+            if (button.id == 1) {
                 minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
             }
-            if (var1.id == 800) {
+            if (button.id == 800) {
                 minecraft.level.fogColor = Integer.parseInt(defaultHex, 16);
                 minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
             }

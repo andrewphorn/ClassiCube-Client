@@ -62,7 +62,7 @@ public class MonitoringThread extends Thread {
         start();
     }
 
-    public double getAvarageUsagePerCPU() {
+    public double getAverageUsagePerCPU() {
         return getTotalUsage() / opBean.getAvailableProcessors();
     }
 

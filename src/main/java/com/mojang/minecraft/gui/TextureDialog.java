@@ -25,7 +25,7 @@ final class TextureDialog extends Thread {
         } catch (IOException ex) {
             LogUtil.logError("Error loading texture pack from " + file, ex);
         }
-        mc.setCurrentScreen((GuiScreen) null);
+        mc.setCurrentScreen(null);
         mc.grabMouse();
     }
 
@@ -36,7 +36,7 @@ final class TextureDialog extends Thread {
             fileChooser = new JFileChooser();
             screen.chooser = fileChooser;
             FileNameExtensionFilter var3 = new FileNameExtensionFilter(".Zip Texture Packs",
-                    new String[] { "zip" });
+                    "zip");
             screen.chooser.setFileFilter(var3);
             screen.chooser.setMultiSelectionEnabled(false);
             int var7;

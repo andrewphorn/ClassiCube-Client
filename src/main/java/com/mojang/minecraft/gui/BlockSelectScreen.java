@@ -19,7 +19,7 @@ public final class BlockSelectScreen extends GuiScreen {
 
     private final Timer timer = new Timer();
 
-    private final int miliseconds = 30;
+    private final int milliseconds = 30;
     public TimerTask timertask;
 
     float lastRotation = 0;
@@ -73,7 +73,7 @@ public final class BlockSelectScreen extends GuiScreen {
     protected final void onMouseClick(int x, int y, int clickType) {
         if (clickType == 0) {
             minecraft.player.inventory.replaceSlot(getBlockOnScreen(x, y));
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
         }
     }
 
@@ -137,6 +137,6 @@ public final class BlockSelectScreen extends GuiScreen {
             public void run() {
                 rotate();
             }
-        }, miliseconds, miliseconds);
+        }, milliseconds, milliseconds);
     }
 }

@@ -30,7 +30,7 @@ public final class PauseScreen extends GuiScreen {
                 minecraft.setCurrentScreen(new TextureSelectionScreen(this));
             }
             if (button.id == 3) {
-                minecraft.setCurrentScreen((GuiScreen) null);
+                minecraft.setCurrentScreen(null);
                 minecraft.grabMouse();
             }
             if (button.id == 4) {
@@ -70,7 +70,7 @@ public final class PauseScreen extends GuiScreen {
                 minecraft.setCurrentScreen(new TextureSelectionScreen(this));
             }
             if (button.id == 5) {
-                minecraft.setCurrentScreen((GuiScreen) null);
+                minecraft.setCurrentScreen(null);
                 minecraft.grabMouse();
             }
             if (button.id == 6) {
@@ -136,7 +136,7 @@ public final class PauseScreen extends GuiScreen {
         drawString(fontRenderer, "ClassiCube " + VersionString,
                 width - fontRenderer.getWidth("ClassiCube " + VersionString) - 15, 13, 14474460);
 
-        double cpuUsage = minecraft.monitoringThread.getAvarageUsagePerCPU();
+        double cpuUsage = minecraft.monitoringThread.getAverageUsagePerCPU();
         double roundedCpuUsage = Math.round(cpuUsage * 100.0) / 100.0;
 
         int colorToUse = greenColor;

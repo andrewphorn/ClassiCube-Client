@@ -78,10 +78,9 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
     }
 
     protected void openLevel(File file) {
-        Level level;
         try {
-            if ((level = new LevelLoader().load(file, this.minecraft.player)) == null) {
-            } else {
+            Level level = new LevelLoader().load(file, this.minecraft.player);
+            if (level != null) {
             	minecraft.setLevel(level);
             }
         } catch (IOException ex) {
@@ -95,7 +94,7 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
     protected void openLevel(int var1) {
         // this.minecraft.loadOnlineLevel(this.minecraft.session.username,
         // var1);
-        minecraft.setCurrentScreen((GuiScreen) null);
+        minecraft.setCurrentScreen(null);
         minecraft.grabMouse();
     }
 
