@@ -2107,7 +2107,7 @@ public final class Minecraft implements Runnable {
                                         String textureUrl = (String) packetParams[0];
                                         byte sideBlock = ((Byte) packetParams[1]).byteValue();
                                         byte edgeBlock = ((Byte) packetParams[2]).byteValue();
-                                        short sideLevel = ((Short) packetParams[3]).byteValue();
+                                        short sideLevel = (Short) packetParams[3];
 
                                         if (settings.canServerChangeTextures) {
                                             if (sideBlock == -1) {
