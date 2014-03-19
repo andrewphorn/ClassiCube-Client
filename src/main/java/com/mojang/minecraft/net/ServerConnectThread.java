@@ -37,7 +37,7 @@ public class ServerConnectThread extends Thread {
     public void run() {
         try {
             tryConnect();
-        } catch (ConnectException var3) {
+        } catch (ConnectException e) {
             minecraft.setCurrentScreen(new ErrorScreen("Failed to connect",
                     "You failed to connect to the server. It\'s probably down!"));
             minecraft.isOnline = false;
@@ -53,8 +53,8 @@ public class ServerConnectThread extends Thread {
 
         netManager.netHandler.send(
                 PacketType.IDENTIFICATION,
-                new Object[] { Byte.valueOf(Constants.PROTOCOL_VERSION), username, key,
-                        Integer.valueOf(Constants.CLIENT_TYPE) });
+                Constants.PROTOCOL_VERSION, username, key,
+                (int) Constants.CLIENT_TYPE);
 
         netManager.successful = true;
     }
