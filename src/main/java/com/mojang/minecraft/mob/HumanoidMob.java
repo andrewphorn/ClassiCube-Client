@@ -38,7 +38,7 @@ public class HumanoidMob extends Mob {
     @Override
     public void renderModel(TextureManager textureManager, float var2, float var3, float var4, float var5,
             float var6, float var7) {
-        if (modelName == "sheep") {
+        if (modelName.equals("sheep")) {
             renderSheep(textureManager, var2, var3, var4, var5, var6, var7);
             return;
         } else if (isInteger(modelName)) {

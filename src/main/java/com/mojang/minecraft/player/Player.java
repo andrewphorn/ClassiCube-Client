@@ -405,9 +405,9 @@ public class Player extends Mob {
     }
 
     @Override
-    public void hurt(Entity entity, int hurtBy) {
+    public void hurt(Entity entity, int amount) {
         if (!level.creativeMode) {
-            super.hurt(entity, hurtBy);
+            super.hurt(entity, amount);
         }
 
     }

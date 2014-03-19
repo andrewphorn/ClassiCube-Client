@@ -66,14 +66,14 @@ public class BasicAttackAI extends BasicAI {
     }
 
     @Override
-    public void hurt(Entity var1, int var2) {
-        super.hurt(var1, var2);
-        if (var1 instanceof Arrow) {
-            var1 = ((Arrow) var1).getOwner();
+    public void hurt(Entity other, int amount) {
+        super.hurt(other, amount);
+        if (other instanceof Arrow) {
+            other = ((Arrow) other).getOwner();
         }
 
-        if (var1 != null && !var1.getClass().equals(mob.getClass())) {
-            attackTarget = var1;
+        if (other != null && !other.getClass().equals(mob.getClass())) {
+            attackTarget = other;
         }
 
     }

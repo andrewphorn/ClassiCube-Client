@@ -78,9 +78,9 @@ public class Mob extends Entity {
     @Override
     protected void causeFallDamage(float height) {
         if (!level.creativeMode) {
-            int var2;
-            if ((var2 = (int) Math.ceil(height - 3F)) > 0) {
-                hurt((Entity) null, var2);
+            int fallHeight = (int) Math.ceil(height - 3F); // Allow short falls
+            if (fallHeight > 0) {
+                hurt(null, fallHeight);
             }
 
         }
@@ -108,22 +108,22 @@ public class Mob extends Entity {
     }
 
     @Override
-    public void hurt(Entity entity, int hurtBy) {
+    public void hurt(Entity entity, int amount) {
         if (!level.creativeMode) {
             if (health > 0) {
                 if (ai != null) {
-                    ai.hurt(entity, hurtBy);
+                    ai.hurt(entity, amount);
                 }
                 if (invulnerableTime > invulnerableDuration / 2F) {
-                    if (lastHealth - hurtBy >= health) {
+                    if (lastHealth - amount >= health) {
                         return;
                     }
 
-                    health = lastHealth - hurtBy;
+                    health = lastHealth - amount;
                 } else {
                     lastHealth = health;
                     invulnerableTime = invulnerableDuration;
-                    health -= hurtBy;
+                    health -= amount;
                     hurtTime = hurtDuration = 10;
                 }
 
@@ -132,7 +132,7 @@ public class Mob extends Entity {
                     float distanceX = entity.x - x;
                     float distanceY = entity.z - z;
                     hurtDir = (float) (Math.atan2(distanceY, distanceX) * 180D / Math.PI) - yRot;
-                    knockback(entity, hurtBy, distanceX, distanceY);
+                    knockback(entity, amount, distanceX, distanceY);
                 } else {
                     hurtDir = (int) (Math.random() * 2D) * 180;
                 }
@@ -161,7 +161,7 @@ public class Mob extends Entity {
     }
 
     // TODO First two variable never used
-    public void knockback(Entity var1, int var2, float var3, float var4) {
+    public void knockback(Entity entity, int var2, float var3, float var4) {
         float var5 = MathHelper.sqrt(var3 * var3 + var4 * var4);
         float var6 = 0.4F;
         xd /= 2F;
@@ -316,7 +316,7 @@ public class Mob extends Entity {
             if (airSupply > 0) {
                 --airSupply;
             } else {
-                hurt((Entity) null, 2);
+                hurt(null, 2);
             }
         } else {
             airSupply = 300;
@@ -327,7 +327,7 @@ public class Mob extends Entity {
         }
 
         if (isInLava()) {
-            hurt((Entity) null, 10);
+            hurt(null, 10);
         }
 
         animStepO = animStep;
@@ -429,7 +429,7 @@ public class Mob extends Entity {
                 } else {
                     multiply = 1F; // 1x
                 }
-            } else if (flyingMode && ai.running) {
+            } else if (ai.running) {
                 multiply = 90F; // 6x
             } else {
                 multiply = 15F; // 1x

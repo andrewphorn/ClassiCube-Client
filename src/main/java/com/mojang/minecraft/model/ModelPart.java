@@ -33,8 +33,7 @@ public final class ModelPart {
         GL11.glNewList(list, GL11.GL_COMPILE);
         GL11.glBegin(GL11.GL_QUADS);
 
-        for (int var2 = 0; var2 < quads.length; ++var2) {
-            TexturedQuad var4 = quads[var2];
+        for (TexturedQuad var4 : quads) {
             Vec3D var5 = var4.vertices[1].vector.subtract(var4.vertices[0].vector).normalize();
             Vec3D var6 = var4.vertices[1].vector.subtract(var4.vertices[2].vector).normalize();
             // TODO ???
@@ -147,9 +146,9 @@ public final class ModelPart {
         quads[5] = new TexturedQuad(new Vertex[] { var13, var15, var21, var14 }, u + var6 + var4
                 + var6, v + var6, u + var6 + var4 + var6 + var4, v + var6 + var5);
         if (mirror) {
-            for (int var16 = 0; var16 < quads.length; ++var16) {
+            for (TexturedQuad quad : quads) {
                 TexturedQuad var17;
-                Vertex[] var19 = new Vertex[(var17 = quads[var16]).vertices.length];
+                Vertex[] var19 = new Vertex[(var17 = quad).vertices.length];
 
                 for (var4 = 0; var4 < var17.vertices.length; ++var4) {
                     var19[var4] = var17.vertices[var17.vertices.length - var4 - 1];

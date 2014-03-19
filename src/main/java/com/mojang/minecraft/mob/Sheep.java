@@ -65,17 +65,17 @@ public class Sheep extends QuadrupedMob {
     }
 
     @Override
-    public void hurt(Entity entity, int hurtBy) {
+    public void hurt(Entity entity, int amount) {
         if (hasFur && entity instanceof Player) {
             hasFur = false;
             int var3 = (int) (Math.random() * 3D + 1D);
 
-            for (hurtBy = 0; hurtBy < var3; ++hurtBy) {
+            for (amount = 0; amount < var3; ++amount) {
                 level.addEntity(new Item(level, x, y, z, Block.WHITE_WOOL.id));
             }
 
         } else {
-            super.hurt(entity, hurtBy);
+            super.hurt(entity, amount);
         }
     }
 
