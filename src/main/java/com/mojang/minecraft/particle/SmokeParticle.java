@@ -7,14 +7,20 @@ public class SmokeParticle extends Particle {
 
     private static final long serialVersionUID = 1L;
 
-    public SmokeParticle(Level level, float x, float y, float z) {
-        super(level, x, y, z, 0F, 0F, 0F);
+    public SmokeParticle(Level level, float var2, float var3, float var4) {
+        super(level, var2, var3, var4, 0F, 0F, 0F);
         xd *= 0.1F;
         yd *= 0.1F;
         zd *= 0.1F;
         rCol = gCol = bCol = (float) (Math.random() * 0.30000001192092896D);
         lifetime = (int) (8D / (Math.random() * 0.8D + 0.2D));
         noPhysics = true;
+    }
+
+    @Override
+    public void render(ShapeRenderer shapeRenderer, float var2, float var3, float var4, float var5,
+            float var6, float var7) {
+        super.render(shapeRenderer, var2, var3, var4, var5, var6, var7);
     }
 
     @Override

@@ -1,7 +1,11 @@
 package com.mojang.minecraft;
 
 import java.applet.Applet;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Container;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.net.MalformedURLException;
 import java.net.URL;
 

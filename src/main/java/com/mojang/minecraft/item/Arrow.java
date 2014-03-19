@@ -1,5 +1,7 @@
 package com.mojang.minecraft.item;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.physics.AABB;
@@ -7,7 +9,6 @@ import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
-import org.lwjgl.opengl.GL11;
 
 public class Arrow extends Entity {
     public static final long serialVersionUID = 0L;
@@ -237,11 +238,13 @@ public class Arrow extends Entity {
             if (!hasHit) {
                 float unknown6 = MathHelper.sqrt(xd * xd + zd * zd);
 
-                xRot = (float) (Math.atan2(yd, unknown6) * 180D / Math.PI);
                 yRot = (float) (Math.atan2(xd, zd) * 180D / Math.PI);
 
-                while (xRot - xRotO < -180F) {
-                     xRotO -= 360F;
+                for (xRot = (float) (Math.atan2(yd, unknown6) * 180D / Math.PI);
+                     xRot - xRotO < -180F;
+                     xRotO -= 360F) {
+                    //System.out.println("test");
+                    // TODO: ?.
                 }
 
                 while (xRot - xRotO >= 180F) {

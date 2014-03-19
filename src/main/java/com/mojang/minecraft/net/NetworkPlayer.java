@@ -1,14 +1,15 @@
 package com.mojang.minecraft.net;
 
+import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.mob.HumanoidMob;
 import com.mojang.minecraft.render.TextureManager;
-import org.lwjgl.opengl.GL11;
-
-import java.awt.image.BufferedImage;
-import java.util.LinkedList;
-import java.util.List;
 
 public class NetworkPlayer extends HumanoidMob {
 
@@ -37,32 +38,32 @@ public class NetworkPlayer extends HumanoidMob {
 
     public String SkinName = null;
 
-    public NetworkPlayer(Minecraft minecraft, String displayName, int x, int y, int z,
-                         float xRot, float yRot) {
-        super(minecraft.level, x, y, z);
-        this.minecraft = minecraft;
-        this.displayName = displayName;
-        displayName = FontRenderer.stripColor(displayName);
-        name = displayName;
-        xp = x;
-        yp = y;
-        zp = z;
+    public NetworkPlayer(Minecraft var1, String var3, int var4, int var5, int var6, float var7,
+            float var8) {
+        super(var1.level, var4, var5, var6);
+        minecraft = var1;
+        displayName = var3;
+        var3 = FontRenderer.stripColor(var3);
+        name = var3;
+        xp = var4;
+        yp = var5;
+        zp = var6;
         heightOffset = 0F;
         pushthrough = 0.8F;
-        this.setPos(x / 32F, y / 32F, z / 32F);
-        this.xRot = xRot;
-        this.yRot = yRot;
+        this.setPos(var4 / 32F, var5 / 32F, var6 / 32F);
+        xRot = var8;
+        yRot = var7;
         armor = helmet = false;
         renderOffset = 0.6875F;
         allowAlpha = false;
-        /*if (name.equalsIgnoreCase("Jonty800") || name.equalsIgnoreCase("Jonty800+")
+        if (name.equalsIgnoreCase("Jonty800") || name.equalsIgnoreCase("Jonty800+")
                 || name.equalsIgnoreCase("Jonty800@")) {
             modelName = "sheep";
-        }*/
+        }
         if (modelName.equals("humanoid")) {
             downloadSkin();
         } else if (isInteger(modelName)) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.textureManager.load("/terrain.png"));
         }
     }
 
@@ -71,6 +72,7 @@ public class NetworkPlayer extends HumanoidMob {
         int var1 = 5;
         if (moveQueue != null) {
             do {
+
                 if (moveQueue.size() > 0) {
                     this.setPos(moveQueue.remove(0));
                 }
@@ -150,9 +152,9 @@ public class NetworkPlayer extends HumanoidMob {
         moveQueue.add(new PositionUpdate(xp / 32F, yp / 32F, zp / 32F));
     }
 
-    public void queue(byte x, byte y, byte z, float xRot, float yRot) {
-        float var6 = yRot - this.yRot;
-        float var7 = xRot - this.xRot;
+    public void queue(byte var1, byte var2, byte var3, float var4, float var5) {
+        float var6 = var4 - yRot;
+        float var7 = var5 - xRot;
 
         while (var6 >= 180F) {
             var6 -= 360F;
@@ -170,19 +172,19 @@ public class NetworkPlayer extends HumanoidMob {
             var7 += 360F;
         }
 
-        var6 = this.yRot + var6 * 0.5F;
-        var7 = this.xRot + var7 * 0.5F;
-        moveQueue.add(new PositionUpdate((xp + x / 2F) / 32F, (yp + y / 2F) / 32F,
-                (zp + z / 2F) / 32F, var6, var7));
-        xp += x;
-        yp += y;
-        zp += z;
-        moveQueue.add(new PositionUpdate(xp / 32F, yp / 32F, zp / 32F, yRot, xRot));
+        var6 = yRot + var6 * 0.5F;
+        var7 = xRot + var7 * 0.5F;
+        moveQueue.add(new PositionUpdate((xp + var1 / 2F) / 32F, (yp + var2 / 2F) / 32F,
+                (zp + var3 / 2F) / 32F, var6, var7));
+        xp += var1;
+        yp += var2;
+        zp += var3;
+        moveQueue.add(new PositionUpdate(xp / 32F, yp / 32F, zp / 32F, var4, var5));
     }
 
-    public void queue(float xRot, float yRot) {
-        float var3 = yRot - this.yRot;
-        float var4 = xRot - this.xRot;
+    public void queue(float var1, float var2) {
+        float var3 = var1 - yRot;
+        float var4 = var2 - xRot;
 
         while (var3 >= 180F) {
             var3 -= 360F;
@@ -200,10 +202,10 @@ public class NetworkPlayer extends HumanoidMob {
             var4 += 360F;
         }
 
-        var3 = this.yRot + var3 * 0.5F;
-        var4 = this.xRot + var4 * 0.5F;
+        var3 = yRot + var3 * 0.5F;
+        var4 = xRot + var4 * 0.5F;
         moveQueue.add(new PositionUpdate(var3, var4));
-        moveQueue.add(new PositionUpdate(yRot, xRot));
+        moveQueue.add(new PositionUpdate(var1, var2));
     }
 
     @Override
@@ -243,9 +245,9 @@ public class NetworkPlayer extends HumanoidMob {
         GL11.glPopMatrix();
     }
 
-    public void teleport(short x, short y, short z, float xRot, float yRot) {
-        float var6 = yRot - this.yRot;
-        float var7 = xRot - this.xRot;
+    public void teleport(short var1, short var2, short var3, float var4, float var5) {
+        float var6 = var4 - yRot;
+        float var7 = var5 - xRot;
 
         // Normalize values?
         while (var6 >= 180F) {
@@ -264,13 +266,13 @@ public class NetworkPlayer extends HumanoidMob {
             var7 += 360F;
         }
 
-        var6 = this.yRot + var6 * 0.5F;
-        var7 = this.xRot + var7 * 0.5F;
-        moveQueue.add(new PositionUpdate((xp + x) / 64F, (yp + y) / 64F, (zp + z) / 64F,
+        var6 = yRot + var6 * 0.5F;
+        var7 = xRot + var7 * 0.5F;
+        moveQueue.add(new PositionUpdate((xp + var1) / 64F, (yp + var2) / 64F, (zp + var3) / 64F,
                 var6, var7));
-        xp = x;
-        yp = y;
-        zp = z;
-        moveQueue.add(new PositionUpdate(xp / 32F, yp / 32F, zp / 32F, yRot, xRot));
+        xp = var1;
+        yp = var2;
+        zp = var3;
+        moveQueue.add(new PositionUpdate(xp / 32F, yp / 32F, zp / 32F, var4, var5));
     }
 }

@@ -1,12 +1,12 @@
 package com.mojang.minecraft.level.tile;
 
+import java.util.Random;
+
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
-
-import java.util.Random;
 
 public class LiquidBlock extends Block {
 
@@ -71,7 +71,6 @@ public class LiquidBlock extends Block {
 
             if (level.setTile(x, y, z, movingId)) {
                 level.addToTickNextTick(x, y, z, movingId);
-                // TODO Actually return true here?
             }
         }
 

@@ -1,9 +1,12 @@
 package com.mojang.minecraft.sound;
 
 import com.mojang.minecraft.LogUtil;
-
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 // TODO.
 public final class SoundManager {
@@ -51,13 +54,14 @@ public final class SoundManager {
     @SuppressWarnings("unchecked")
     public final void registerMusic(String var1, File var2) {
         synchronized (music) {
-            var1 = var1.substring(0, var1.length() - 4).replaceAll("/", ".");
-            while (Character.isDigit(var1.charAt(var1.length() - 1))) {
-                var1 = var1.substring(0, var1.length() - 1);
+            for (var1 = var1.substring(0, var1.length() - 4).replaceAll("/", "."); Character
+                    .isDigit(var1.charAt(var1.length() - 1)); var1 = var1.substring(0,
+                    var1.length() - 1)) {
+                ;
             }
 
-            Object var4 = music.get(var1);
-            if (var4 == null) {
+            Object var4;
+            if ((var4 = music.get(var1)) == null) {
                 var4 = new ArrayList<>();
                 music.put(var1, var4);
             }
@@ -69,9 +73,10 @@ public final class SoundManager {
     @SuppressWarnings("unchecked")
     public void registerSound(File var1, String var2) {
         try {
-            var2 = var2.substring(0, var2.length() - 4).replaceAll("/", ".");
-            while (Character.isDigit(var2.charAt(var2.length() - 1))) {
-                var2 = var2.substring(0, var2.length() - 1);
+            for (var2 = var2.substring(0, var2.length() - 4).replaceAll("/", "."); Character
+                    .isDigit(var2.charAt(var2.length() - 1)); var2 = var2.substring(0,
+                    var2.length() - 1)) {
+                ;
             }
 
             SoundData var7 = SoundReader.read(var1.toURI().toURL());

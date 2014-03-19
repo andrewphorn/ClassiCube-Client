@@ -1,5 +1,7 @@
 package com.mojang.minecraft.mob;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
@@ -10,7 +12,6 @@ import com.mojang.minecraft.model.ModelManager;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
-import org.lwjgl.opengl.GL11;
 
 public class Mob extends Entity {
 
@@ -79,7 +80,7 @@ public class Mob extends Entity {
         if (!level.creativeMode) {
             int var2;
             if ((var2 = (int) Math.ceil(height - 3F)) > 0) {
-                hurt(null, var2);
+                hurt((Entity) null, var2);
             }
 
         }
@@ -315,7 +316,7 @@ public class Mob extends Entity {
             if (airSupply > 0) {
                 --airSupply;
             } else {
-                hurt(null, 2);
+                hurt((Entity) null, 2);
             }
         } else {
             airSupply = 300;
@@ -326,7 +327,7 @@ public class Mob extends Entity {
         }
 
         if (isInLava()) {
-            hurt(null, 10);
+            hurt((Entity) null, 10);
         }
 
         animStepO = animStep;
@@ -428,7 +429,7 @@ public class Mob extends Entity {
                 } else {
                     multiply = 1F; // 1x
                 }
-            } else if (ai.running) {
+            } else if (flyingMode && ai.running) {
                 multiply = 90F; // 6x
             } else {
                 multiply = 15F; // 1x

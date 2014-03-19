@@ -25,12 +25,9 @@
 
 package de.jarnbjo.ogg;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Collection;
-import java.util.HashMap;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 /**
  * Implementation of the <code>PhysicalOggStream</code> interface for reading an
@@ -47,12 +44,12 @@ public class OnDemandUrlStream implements PhysicalOggStream {
     private int contentLength = 0;
     private int position = 0;
 
-    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<>();
+    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
     private OggPage firstPage;
 
     int pageNumber = 2;
 
-    public OnDemandUrlStream(URL source) throws IOException {
+    public OnDemandUrlStream(URL source) throws OggFormatException, IOException {
         this.source = source.openConnection();
         this.sourceStream = this.source.getInputStream();
 
@@ -61,7 +58,7 @@ public class OnDemandUrlStream implements PhysicalOggStream {
         firstPage = OggPage.create(sourceStream);
         position += firstPage.getTotalLength();
         LogicalOggStreamImpl los = new LogicalOggStreamImpl(this);
-        logicalStreams.put(firstPage.getStreamSerialNumber(), los);
+        logicalStreams.put(new Integer(firstPage.getStreamSerialNumber()), los);
         los.checkFormat(firstPage);
     }
 

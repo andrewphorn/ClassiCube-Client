@@ -1,11 +1,11 @@
 package com.mojang.minecraft.particle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.render.TextureManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class ParticleManager {
 

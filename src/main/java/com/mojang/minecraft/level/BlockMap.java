@@ -1,14 +1,14 @@
 package com.mojang.minecraft.level;
 
-import com.mojang.minecraft.Entity;
-import com.mojang.minecraft.physics.AABB;
-import com.mojang.minecraft.render.Frustum;
-import com.mojang.minecraft.render.TextureManager;
-import com.mojang.util.Vec3D;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mojang.minecraft.Entity;
+import com.mojang.util.Vec3D;
+import com.mojang.minecraft.physics.AABB;
+import com.mojang.minecraft.render.Frustum;
+import com.mojang.minecraft.render.TextureManager;
 
 public class BlockMap implements Serializable {
 
@@ -256,9 +256,10 @@ public class BlockMap implements Serializable {
 
                             boolean var21 = var10000;
 
-                            for (Object anEntitySlotInGrid : entitySlotInGrid) {
-                                Entity var22 = (Entity) anEntitySlotInGrid;
-                                if (var22.shouldRender(var1)) {
+                            for (int var23 = 0; var23 < entitySlotInGrid.size(); ++var23) {
+                                Entity var22;
+                                if ((var22 = (Entity) entitySlotInGrid.get(var23))
+                                        .shouldRender(var1)) {
                                     if (!var21) {
                                         AABB var24 = var22.boundingBox;
                                         if (!frustum.isBoxInFrustum(var24.maxX, var24.maxY, var24.maxZ,

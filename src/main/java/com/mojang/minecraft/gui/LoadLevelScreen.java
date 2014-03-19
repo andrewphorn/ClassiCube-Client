@@ -1,12 +1,15 @@
 package com.mojang.minecraft.gui;
 
 import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.level.LevelLoader;
-
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.level.Level;
+import com.mojang.minecraft.level.LevelLoader;
 
 public class LoadLevelScreen extends GuiScreen implements Runnable {
 
@@ -76,9 +79,10 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
     }
 
     protected void openLevel(File file) {
+        Level level;
         try {
-            Level level = new LevelLoader().load(file, this.minecraft.player);
-            if (level != null) {
+            if ((level = new LevelLoader().load(file, this.minecraft.player)) == null) {
+            } else {
             	minecraft.setLevel(level);
             }
         } catch (IOException ex) {
@@ -92,7 +96,7 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
     protected void openLevel(int var1) {
         // this.minecraft.loadOnlineLevel(this.minecraft.session.username,
         // var1);
-        minecraft.setCurrentScreen(null);
+        minecraft.setCurrentScreen((GuiScreen) null);
         minecraft.grabMouse();
     }
 

@@ -1,9 +1,10 @@
 package com.mojang.minecraft.render;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.player.Player;
-import org.lwjgl.opengl.GL11;
 
 public final class Chunk {
 

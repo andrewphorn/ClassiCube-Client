@@ -18,26 +18,25 @@ public class NBTTagLong extends NBTBase {
     }
 
     /**
-     * Write the actual data contents of the tag, implemented in NBT extension classes.
-     * @param output The output stream to write to.
+     * Write the actual data contents of the tag, implemented in NBT extension
+     * classes
      */
     @Override
-    void write(DataOutput output) throws IOException {
-        output.writeLong(this.data);
+    void write(DataOutput par1DataOutput) throws IOException {
+        par1DataOutput.writeLong(this.data);
     }
 
     /**
-     * Read the actual data contents of the tag, implemented in NBT extension classes.
-     * @param input The input stream to read from.
+     * Read the actual data contents of the tag, implemented in NBT extension
+     * classes
      */
     @Override
-    void load(DataInput input) throws IOException {
-        this.data = input.readLong();
+    void load(DataInput par1DataInput) throws IOException {
+        this.data = par1DataInput.readLong();
     }
 
     /**
      * Gets the type byte for the tag.
-     * @return byte.
      */
     @Override
     public byte getId() {

@@ -13,18 +13,18 @@ public class ShadowColorInputScreen extends InputValueScreen {
     }
 
     @Override
-    protected final void onButtonClick(Button button) {
-        if (button.active) {
-            if (button.id == 0 && name.length() > 0) {
+    protected final void onButtonClick(Button var1) {
+        if (var1.active) {
+            if (var1.id == 0 && name.length() > 0) {
                 minecraft.level.customShadowColour = ColorCache.parseHex(name);
                 minecraft.levelRenderer.refresh();
                 minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
             }
 
-            if (button.id == 1) {
+            if (var1.id == 1) {
                 minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
             }
-            if (button.id == 800) {
+            if (var1.id == 800) {
                 minecraft.level.customShadowColour = new ColorCache(0.6f, 0.6f, 0.6f);
                 minecraft.levelRenderer.refresh();
                 minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));

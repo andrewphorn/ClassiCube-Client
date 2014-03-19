@@ -20,20 +20,21 @@ public class Particle extends Entity {
     protected float gCol;
     protected float bCol;
 
-    public Particle(Level level, float x, float y, float z, float destX, float destY, float destZ) {
+    public Particle(Level level, float var2, float var3, float var4, float var5, float var6,
+            float var7) {
         super(level);
         setSize(0.2F, 0.2F);
         heightOffset = bbHeight / 2F;
-        this.setPos(x, y, z);
+        this.setPos(var2, var3, var4);
         rCol = gCol = bCol = 1F;
-        xd = destX + (float) (Math.random() * 2D - 1D) * 0.4F;
-        yd = destY + (float) (Math.random() * 2D - 1D) * 0.4F;
-        zd = destZ + (float) (Math.random() * 2D - 1D) * 0.4F;
+        xd = var5 + (float) (Math.random() * 2D - 1D) * 0.4F;
+        yd = var6 + (float) (Math.random() * 2D - 1D) * 0.4F;
+        zd = var7 + (float) (Math.random() * 2D - 1D) * 0.4F;
         float var8 = (float) (Math.random() + Math.random() + 1D) * 0.15F;
-        x = MathHelper.sqrt(xd * xd + yd * yd + zd * zd);
-        xd = xd / x * var8 * 0.4F;
-        yd = yd / x * var8 * 0.4F + 0.1F;
-        zd = zd / x * var8 * 0.4F;
+        var2 = MathHelper.sqrt(xd * xd + yd * yd + zd * zd);
+        xd = xd / var2 * var8 * 0.4F;
+        yd = yd / var2 * var8 * 0.4F + 0.1F;
+        zd = zd / var2 * var8 * 0.4F;
         uo = (float) Math.random() * 3F;
         vo = (float) Math.random() * 3F;
         size = (float) (Math.random() * 0.5D + 0.5D);

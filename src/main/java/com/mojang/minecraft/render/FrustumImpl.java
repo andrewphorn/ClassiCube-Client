@@ -1,9 +1,10 @@
 package com.mojang.minecraft.render;
 
-import com.mojang.util.MathHelper;
+import java.nio.FloatBuffer;
+
 import org.lwjgl.opengl.GL11;
 
-import java.nio.FloatBuffer;
+import com.mojang.util.MathHelper;
 
 public final class FrustumImpl extends Frustum {
 

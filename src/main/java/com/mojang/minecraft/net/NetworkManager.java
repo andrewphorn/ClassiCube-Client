@@ -1,14 +1,14 @@
 package com.mojang.minecraft.net;
 
-import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.gui.ErrorScreen;
-import com.mojang.net.NetworkHandler;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.mojang.minecraft.LogUtil;
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.gui.ErrorScreen;
+import com.mojang.net.NetworkHandler;
 
 public class NetworkManager {
     public ByteArrayOutputStream levelData;
@@ -50,6 +50,6 @@ public class NetworkManager {
     }
 
     public void sendBlockChange(int x, int y, int z, int mode, int block) {
-        netHandler.send(PacketType.PLAYER_SET_BLOCK, x, y, z, mode, block);
+        netHandler.send(PacketType.PLAYER_SET_BLOCK, new Object[] { x, y, z, mode, block });
     }
 }

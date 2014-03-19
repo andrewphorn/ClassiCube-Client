@@ -23,16 +23,16 @@
 
 package de.jarnbjo.vorbis;
 
-import de.jarnbjo.util.io.BitInputStream;
+import java.io.*;
 
-import java.io.IOException;
+import de.jarnbjo.util.io.*;
 
 class Mode {
 
     private boolean blockFlag;
     private int windowType, transformType, mapping;
 
-    protected Mode(BitInputStream source, SetupHeader header) throws
+    protected Mode(BitInputStream source, SetupHeader header) throws VorbisFormatException,
             IOException {
         blockFlag = source.getBit();
         windowType = source.getInt(16);

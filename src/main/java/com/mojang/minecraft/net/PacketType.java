@@ -3,8 +3,8 @@ package com.mojang.minecraft.net;
 public class PacketType {
     public static final PacketType[] packets = new PacketType[256];
 
-    public static final PacketType IDENTIFICATION = new PacketType(Byte.TYPE,
-            String.class, String.class, Byte.TYPE);
+    public static final PacketType IDENTIFICATION = new PacketType(new Class[] { Byte.TYPE,
+            String.class, String.class, Byte.TYPE });
 
     public static final PacketType LEVEL_INIT;
     public static final PacketType LEVEL_DATA;
@@ -47,51 +47,51 @@ public class PacketType {
     public String extName = "";
     public int Version = 1;
     static {
-        new PacketType();
+        new PacketType(new Class[0]);
 
-        LEVEL_INIT = new PacketType();
-        LEVEL_DATA = new PacketType(Short.TYPE, byte[].class, Byte.TYPE);
-        LEVEL_FINALIZE = new PacketType(Short.TYPE, Short.TYPE, Short.TYPE);
-        PLAYER_SET_BLOCK = new PacketType(Short.TYPE, Short.TYPE, Short.TYPE,
-                Byte.TYPE, Byte.TYPE);
-        BLOCK_CHANGE = new PacketType(Short.TYPE, Short.TYPE, Short.TYPE, Byte.TYPE);
-        SPAWN_PLAYER = new PacketType(Byte.TYPE, String.class, Short.TYPE,
-                Short.TYPE, Short.TYPE, Byte.TYPE, Byte.TYPE);
-        POSITION_ROTATION = new PacketType(Byte.TYPE, Short.TYPE, Short.TYPE,
-                Short.TYPE, Byte.TYPE, Byte.TYPE);
-        POSITION_ROTATION_UPDATE = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE,
-                Byte.TYPE, Byte.TYPE, Byte.TYPE);
-        POSITION_UPDATE = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE);
-        ROTATION_UPDATE = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE);
-        DESPAWN_PLAYER = new PacketType(Byte.TYPE);
-        CHAT_MESSAGE = new PacketType(Byte.TYPE, String.class);
-        DISCONNECT = new PacketType(String.class);
-        UPDATE_PLAYER_TYPE = new PacketType(Byte.TYPE);
+        LEVEL_INIT = new PacketType(new Class[0]);
+        LEVEL_DATA = new PacketType(new Class[] { Short.TYPE, byte[].class, Byte.TYPE });
+        LEVEL_FINALIZE = new PacketType(new Class[] { Short.TYPE, Short.TYPE, Short.TYPE });
+        PLAYER_SET_BLOCK = new PacketType(new Class[] { Short.TYPE, Short.TYPE, Short.TYPE,
+                Byte.TYPE, Byte.TYPE });
+        BLOCK_CHANGE = new PacketType(new Class[] { Short.TYPE, Short.TYPE, Short.TYPE, Byte.TYPE });
+        SPAWN_PLAYER = new PacketType(new Class[] { Byte.TYPE, String.class, Short.TYPE,
+                Short.TYPE, Short.TYPE, Byte.TYPE, Byte.TYPE });
+        POSITION_ROTATION = new PacketType(new Class[] { Byte.TYPE, Short.TYPE, Short.TYPE,
+                Short.TYPE, Byte.TYPE, Byte.TYPE });
+        POSITION_ROTATION_UPDATE = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE, Byte.TYPE,
+                Byte.TYPE, Byte.TYPE, Byte.TYPE });
+        POSITION_UPDATE = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE });
+        ROTATION_UPDATE = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE, Byte.TYPE });
+        DESPAWN_PLAYER = new PacketType(new Class[] { Byte.TYPE });
+        CHAT_MESSAGE = new PacketType(new Class[] { Byte.TYPE, String.class });
+        DISCONNECT = new PacketType(new Class[] { String.class });
+        UPDATE_PLAYER_TYPE = new PacketType(new Class[] { Byte.TYPE });
 
         // --------------------------------------------------------------
-        EXT_INFO = new PacketType(String.class, Short.TYPE);
-        EXT_ENTRY = new PacketType(String.class, Integer.TYPE);
-        CLICK_DISTANCE = new PacketType(Short.TYPE);
-        CUSTOM_BLOCK_SUPPORT_LEVEL = new PacketType(Byte.TYPE);
-        HOLDTHIS = new PacketType(Byte.TYPE, Byte.TYPE);
-        SET_TEXT_HOTKEY = new PacketType(String.class, String.class, Integer.TYPE,
-                Byte.TYPE);
-        EXT_ADD_PLAYER_NAME = new PacketType(Short.TYPE, String.class, String.class,
-                String.class, Byte.TYPE);
-        EXT_ADD_ENTITY = new PacketType(Byte.TYPE, String.class, String.class);
-        EXT_REMOVE_PLAYER_NAME = new PacketType(Short.TYPE);
+        EXT_INFO = new PacketType(new Class[] { String.class, Short.TYPE });
+        EXT_ENTRY = new PacketType(new Class[] { String.class, Integer.TYPE });
+        CLICK_DISTANCE = new PacketType(new Class[] { Short.TYPE });
+        CUSTOM_BLOCK_SUPPORT_LEVEL = new PacketType(new Class[] { Byte.TYPE });
+        HOLDTHIS = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE });
+        SET_TEXT_HOTKEY = new PacketType(new Class[] { String.class, String.class, Integer.TYPE,
+                Byte.TYPE });
+        EXT_ADD_PLAYER_NAME = new PacketType(new Class[] { Short.TYPE, String.class, String.class,
+                String.class, Byte.TYPE });
+        EXT_ADD_ENTITY = new PacketType(new Class[] { Byte.TYPE, String.class, String.class });
+        EXT_REMOVE_PLAYER_NAME = new PacketType(new Class[] { Short.TYPE });
         ENV_SET_COLOR = new PacketType(
-                Byte.TYPE, Short.TYPE, Short.TYPE, Short.TYPE);
-        SELECTION_CUBOID = new PacketType(Byte.TYPE, String.class, Short.TYPE,
+                new Class[] { Byte.TYPE, Short.TYPE, Short.TYPE, Short.TYPE });
+        SELECTION_CUBOID = new PacketType(new Class[] { Byte.TYPE, String.class, Short.TYPE,
                 Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE,
-                Short.TYPE, Short.TYPE);
-        REMOVE_SELECTION_CUBOID = new PacketType(Byte.TYPE);
-        SET_BLOCK_PERMISSIONS = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE);
-        CHANGE_MODEL = new PacketType(Byte.TYPE, String.class);
-        ENV_SET_MAP_APPEARANCE = new PacketType(String.class, Byte.TYPE, Byte.TYPE,
-                Short.TYPE);
-        ENV_SET_WEATHER_TYPE = new PacketType(Byte.TYPE);
-        MESSAGE_TYPES = new PacketType(Byte.TYPE);
+                Short.TYPE, Short.TYPE });
+        REMOVE_SELECTION_CUBOID = new PacketType(new Class[] { Byte.TYPE });
+        SET_BLOCK_PERMISSIONS = new PacketType(new Class[] { Byte.TYPE, Byte.TYPE, Byte.TYPE });
+        CHANGE_MODEL = new PacketType(new Class[] { Byte.TYPE, String.class });
+        ENV_SET_MAP_APPEARANCE = new PacketType(new Class[] { String.class, Byte.TYPE, Byte.TYPE,
+                Short.TYPE });
+        ENV_SET_WEATHER_TYPE = new PacketType(new Class[] { Byte.TYPE });
+        MESSAGE_TYPES = new PacketType(new Class[] { Byte.TYPE });
 
         // set names
         EXT_INFO.extName = "ExtInfo";

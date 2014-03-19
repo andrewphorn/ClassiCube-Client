@@ -1,12 +1,14 @@
 package com.mojang.minecraft.gui;
 
 import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.Minecraft;
-
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+
+import com.mojang.minecraft.Minecraft;
 
 public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
@@ -46,7 +48,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
                 minecraft.textureManager.resetAllMods();
                 minecraft.textureManager.load("/terrain.png");
                 minecraft.textureManager.initAtlas();
-                minecraft.setCurrentScreen(null);
+                minecraft.setCurrentScreen((GuiScreen) null);
                 minecraft.grabMouse();
                 minecraft.textureManager.textures.clear();
                 try {
@@ -96,7 +98,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
         } catch (IOException ex) {
             LogUtil.logError("Error loading texture pack from " + file, ex);
         }
-        minecraft.setCurrentScreen(null);
+        minecraft.setCurrentScreen((GuiScreen) null);
         minecraft.grabMouse();
     }
 
@@ -166,6 +168,7 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
     protected void setTextures(ArrayList<TexturePackData> texturePacks) {
         for (int i = 0; i < Math.min(texturePacks.size(), 5); ++i) {
+
             buttons.get(i).active = !texturePacks.get(i).equals("-");
             buttons.get(i).text = texturePacks.get(i).name;
             buttons.get(i).visible = true;

@@ -20,10 +20,8 @@
 
 package de.jarnbjo.ogg;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
 
 /**
  * Implementation of the <code>PhysicalOggStream</code> interface for reading an
@@ -38,16 +36,16 @@ public class BasicStream implements PhysicalOggStream {
     private InputStream sourceStream;
     private int position = 0;
 
-    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<>();
+    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
     private OggPage firstPage;
 
     int pageNumber = 2;
 
-    public BasicStream(InputStream sourceStream) throws IOException {
+    public BasicStream(InputStream sourceStream) throws OggFormatException, IOException {
         firstPage = OggPage.create(sourceStream);
         position += firstPage.getTotalLength();
         LogicalOggStreamImpl los = new LogicalOggStreamImpl(this);
-        logicalStreams.put(firstPage.getStreamSerialNumber(), los);
+        logicalStreams.put(new Integer(firstPage.getStreamSerialNumber()), los);
         los.checkFormat(firstPage);
     }
 

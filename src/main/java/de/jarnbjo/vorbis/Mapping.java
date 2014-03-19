@@ -23,14 +23,14 @@
 
 package de.jarnbjo.vorbis;
 
-import de.jarnbjo.util.io.BitInputStream;
-
 import java.io.IOException;
+
+import de.jarnbjo.util.io.BitInputStream;
 
 abstract class Mapping {
 
     protected static Mapping createInstance(VorbisStream vorbis, BitInputStream source,
-            SetupHeader header) throws IOException {
+            SetupHeader header) throws VorbisFormatException, IOException {
 
         int type = source.getInt(16);
         switch (type) {
