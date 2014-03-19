@@ -1,13 +1,13 @@
 package com.mojang.minecraft.mob.ai;
 
+import java.util.List;
+import java.util.Random;
+
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.HackState;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.player.Player;
-
-import java.util.List;
-import java.util.Random;
 
 public class BasicAI extends AI {
 
@@ -31,6 +31,10 @@ public class BasicAI extends AI {
     public boolean flyingUp = false;
 
     public boolean flyingDown = false;
+
+    @Override
+    public void beforeRemove() {
+    }
 
     @Override
     public void hurt(Entity var1, int var2) {
@@ -171,7 +175,9 @@ public class BasicAI extends AI {
             }
         }
 
-        boolean isInWater = var2.isInWater();
+        boolean var7 = var2.isInWater();
+        boolean isInWater = var7; // Unsure if other files use "var7" - will fix
+                                  // later?
         boolean isInLava = var2.isInLava();
         boolean isInOrOnRope = var2.isInOrOnRope();
         if (jumping) {
@@ -207,9 +213,9 @@ public class BasicAI extends AI {
         List<Entity> var11;
         if ((var11 = var1.findEntities(var2, var2.boundingBox.grow(0.2F, 0F, 0.2F))) != null
                 && var11.size() > 0) {
-            for (Entity aVar11 : var11) {
+            for (int var8 = 0; var8 < var11.size(); ++var8) {
                 Entity var10;
-                if ((var10 = aVar11).isPushable()) {
+                if ((var10 = var11.get(var8)).isPushable()) {
                     var10.push(var2);
                 }
             }

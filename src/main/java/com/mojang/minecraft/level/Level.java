@@ -1,11 +1,18 @@
 package com.mojang.minecraft.level;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
+import com.mojang.util.Vec3D;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.LevelRenderer;
@@ -13,13 +20,6 @@ import com.mojang.minecraft.sound.AudioInfo;
 import com.mojang.minecraft.sound.EntitySoundPos;
 import com.mojang.minecraft.sound.LevelSoundPos;
 import com.mojang.util.MathHelper;
-import com.mojang.util.Vec3D;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 public class Level implements Serializable {
 
@@ -98,9 +98,9 @@ public class Level implements Serializable {
             for (int var6 = var2; var6 < var2 + var4; ++var6) {
                 int var7 = blockers[var5 + var6 * width];
 
-                int var8 = height - 1;
-                while (var8 > 0 && !isLightBlocker(var5, var8, var6)) {
-                    --var8;
+                int var8;
+                for (var8 = height - 1; var8 > 0 && !isLightBlocker(var5, var8, var6); --var8) {
+                    ;
                 }
 
                 blockers[var5 + var6 * width] = var8;
@@ -631,14 +631,15 @@ public class Level implements Serializable {
                 if (isInBounds(var9, var14, var10) && !isSolidTile(var9, var14, var10)) {
                     float var11 = var9 + 0.5F - var1;
 
-                    float var12 = var10 + 0.5F - var3;
-                    float var13 = (float) (Math.atan2(var12, var11) - var4 * (float) Math.PI / 180F + (float) (Math.PI / 2F)); // 1.5707963705062866D, I suspect it meant pi / 2
-                    while (var13 < -(float) Math.PI) {
-                        var13 += (float) Math.PI * 2D;
+                    float var12;
+                    float var13;
+                    for (var13 = (float) (Math.atan2(var12 = var10 + 0.5F - var3, var11) - var4
+                            * (float) Math.PI / 180F + 1.5707963705062866D); var13 < -(float) Math.PI; var13 += 6.2831855F) {
+                        ;
                     }
 
                     while (var13 >= (float) Math.PI) {
-                        var13 -= (float) Math.PI * 2D;
+                        var13 -= 6.2831855F;
                     }
 
                     if (var13 < 0F) {
@@ -718,9 +719,10 @@ public class Level implements Serializable {
     }
 
     public int getHighestTile(int var1, int var2) {
-        int var3 = height;
-        while ((getTile(var1, var3 - 1, var2) == 0 || Block.blocks[getTile(var1, var3 - 1, var2)].getLiquidType() != LiquidType.notLiquid) && var3 > 0) {
-            --var3;
+        int var3;
+        for (var3 = height; (getTile(var1, var3 - 1, var2) == 0 || Block.blocks[getTile(var1,
+                var3 - 1, var2)].getLiquidType() != LiquidType.notLiquid) && var3 > 0; --var3) {
+            ;
         }
 
         return var3;
@@ -785,7 +787,7 @@ public class Level implements Serializable {
     }
 
     public boolean isFree(AABB var1) {
-        return blockMap.getEntities(null, var1).size() == 0;
+        return blockMap.getEntities((Entity) null, var1).size() == 0;
     }
 
     public boolean isInBounds(int var1, int var2, int var3) {
@@ -795,34 +797,33 @@ public class Level implements Serializable {
 
     public boolean isLightBlocker(int var1, int var2, int var3) {
         Block var4;
-        return (var4 = Block.blocks[getTile(var1, var2, var3)]) != null && var4.isOpaque();
+        return (var4 = Block.blocks[getTile(var1, var2, var3)]) == null ? false : var4.isOpaque();
     }
 
     public boolean isLit(int var1, int var2, int var3) {
-        return !(var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height
-                && var3 < length) || var2 >= blockers[var1 + var3 * width];
+        return var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height
+                && var3 < length ? var2 >= blockers[var1 + var3 * width] : true;
     }
 
-    private boolean isSolid(float x, float y, float z) {
-        int var4 = getTile((int) x, (int) y, (int) z);
-        return var4 > 0 && Block.blocks[var4].isSolid();
+    private boolean isSolid(float var1, float var2, float var3) {
+        int var4;
+        return (var4 = getTile((int) var1, (int) var2, (int) var3)) > 0
+                && Block.blocks[var4].isSolid();
     }
 
-    public boolean isSolid(float x, float y, float z, float side) {
-        // Checks the neighbouring blocks to see if they are solid
-        return this.isSolid(x - side, y - side, z - side)
-                || (this.isSolid(x - side, y - side, z + side)
-                || this.isSolid(x - side, y + side, z - side)
-                || this.isSolid(x - side, y + side, z + side)
-                || this.isSolid(x + side, y - side, z - side)
-                || (this.isSolid(x + side, y - side, z + side)
-                || this.isSolid(x + side, y + side, z - side)
-                || this.isSolid(x + side, y + side, z + side)));
+    public boolean isSolid(float var1, float var2, float var3, float var4) {
+        return this.isSolid(var1 - var4, var2 - var4, var3 - var4) ? true : this.isSolid(var1
+                - var4, var2 - var4, var3 + var4) ? true : this.isSolid(var1 - var4, var2 + var4,
+                var3 - var4) ? true : this.isSolid(var1 - var4, var2 + var4, var3 + var4) ? true
+                : this.isSolid(var1 + var4, var2 - var4, var3 - var4) ? true : this.isSolid(var1
+                        + var4, var2 - var4, var3 + var4) ? true : this.isSolid(var1 + var4, var2
+                        + var4, var3 - var4) ? true : this.isSolid(var1 + var4, var2 + var4, var3
+                        + var4);
     }
 
     public boolean isSolidTile(int var1, int var2, int var3) {
         Block var4;
-        return (var4 = Block.blocks[getTile(var1, var2, var3)]) != null && var4.isSolid();
+        return (var4 = Block.blocks[getTile(var1, var2, var3)]) == null ? false : var4.isSolid();
     }
 
     public boolean isWater(int var1, int var2, int var3) {

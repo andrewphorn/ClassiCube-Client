@@ -81,7 +81,7 @@ public interface PhysicalOggStream {
      *             if some other IO error occurs
      */
 
-    public OggPage getOggPage(int index) throws IOException;
+    public OggPage getOggPage(int index) throws OggFormatException, IOException;
 
     /**
      * Checks if this stream is open for reading.
@@ -121,5 +121,5 @@ public interface PhysicalOggStream {
      *             if some other IO error occurs
      */
 
-    public void setTime(long granulePosition) throws IOException;
+    public void setTime(long granulePosition) throws OggFormatException, IOException;
 }

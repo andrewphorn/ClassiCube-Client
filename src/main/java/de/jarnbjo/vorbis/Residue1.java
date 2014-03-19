@@ -23,19 +23,19 @@
 
 package de.jarnbjo.vorbis;
 
-import de.jarnbjo.util.io.BitInputStream;
-
 import java.io.IOException;
+
+import de.jarnbjo.util.io.BitInputStream;
 
 class Residue1 extends Residue {
 
-    protected Residue1(BitInputStream source, SetupHeader header) throws
+    protected Residue1(BitInputStream source, SetupHeader header) throws VorbisFormatException,
             IOException {
         super(source, header);
     }
 
     protected void decodeResidue(VorbisStream vorbis, BitInputStream source, Mode mode, int ch,
-            boolean[] doNotDecodeFlags, float[][] vectors) throws
+            boolean[] doNotDecodeFlags, float[][] vectors) throws VorbisFormatException,
             IOException {
         /** @todo implement */
         throw new UnsupportedOperationException();

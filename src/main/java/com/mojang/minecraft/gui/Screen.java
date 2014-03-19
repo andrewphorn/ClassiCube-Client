@@ -1,7 +1,8 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.render.ShapeRenderer;
 import org.lwjgl.opengl.GL11;
+
+import com.mojang.minecraft.render.ShapeRenderer;
 
 /**
  * Base class for any kind of screen.

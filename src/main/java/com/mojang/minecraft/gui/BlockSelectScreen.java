@@ -1,14 +1,15 @@
 package com.mojang.minecraft.gui;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.SessionData;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.level.tile.BlockID;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
-import org.lwjgl.opengl.GL11;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public final class BlockSelectScreen extends GuiScreen {
 
@@ -18,7 +19,7 @@ public final class BlockSelectScreen extends GuiScreen {
 
     private final Timer timer = new Timer();
 
-    private final int milliseconds = 30;
+    private final int miliseconds = 30;
     public TimerTask timertask;
 
     float lastRotation = 0;
@@ -72,7 +73,7 @@ public final class BlockSelectScreen extends GuiScreen {
     protected final void onMouseClick(int x, int y, int clickType) {
         if (clickType == 0) {
             minecraft.player.inventory.replaceSlot(getBlockOnScreen(x, y));
-            minecraft.setCurrentScreen(null);
+            minecraft.setCurrentScreen((GuiScreen) null);
         }
     }
 
@@ -136,6 +137,6 @@ public final class BlockSelectScreen extends GuiScreen {
             public void run() {
                 rotate();
             }
-        }, milliseconds, milliseconds);
+        }, miliseconds, miliseconds);
     }
 }

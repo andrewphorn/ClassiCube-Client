@@ -1,5 +1,7 @@
 package com.mojang.minecraft.mob;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;
@@ -7,7 +9,6 @@ import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.model.AnimalModel;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
-import org.lwjgl.opengl.GL11;
 
 public class Sheep extends QuadrupedMob {
 

@@ -37,7 +37,7 @@ public class ResourceDownloadThread extends Thread {
     public static boolean done = false;
     boolean running = false;
 
-    public ResourceDownloadThread(File minecraftFolder, Minecraft minecraft) {
+    public ResourceDownloadThread(File minecraftFolder, Minecraft minecraft) throws IOException {
         this.minecraft = minecraft;
 
         setName("Resource download thread");

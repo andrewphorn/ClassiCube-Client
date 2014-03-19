@@ -19,35 +19,34 @@ public class NBTTagIntArray extends NBTBase {
     }
 
     /**
-     * Write the actual data contents of the tag, implemented in NBT extension classes.
-     * @param output The output stream to write to.
+     * Write the actual data contents of the tag, implemented in NBT extension
+     * classes
      */
     @Override
-    void write(DataOutput output) throws IOException {
-        output.writeInt(this.intArray.length);
+    void write(DataOutput par1DataOutput) throws IOException {
+        par1DataOutput.writeInt(this.intArray.length);
 
-        for (int anIntArray : this.intArray) {
-            output.writeInt(anIntArray);
+        for (int i = 0; i < this.intArray.length; ++i) {
+            par1DataOutput.writeInt(this.intArray[i]);
         }
     }
 
     /**
-     * Read the actual data contents of the tag, implemented in NBT extension classes.
-     * @param input The input stream to read from.
+     * Read the actual data contents of the tag, implemented in NBT extension
+     * classes
      */
     @Override
-    void load(DataInput input) throws IOException {
-        int i = input.readInt();
+    void load(DataInput par1DataInput) throws IOException {
+        int i = par1DataInput.readInt();
         this.intArray = new int[i];
 
         for (int j = 0; j < i; ++j) {
-            this.intArray[j] = input.readInt();
+            this.intArray[j] = par1DataInput.readInt();
         }
     }
 
     /**
      * Gets the type byte for the tag.
-     * @return byte.
      */
     @Override
     public byte getId() {

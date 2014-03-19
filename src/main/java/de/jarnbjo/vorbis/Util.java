@@ -59,19 +59,15 @@ final public class Util {
 
     public static final int ilog(int x) {
         int res = 0;
-        while (x > 0) {
-            x >>= 1;
-            res++;
-        }
+        for (; x > 0; x >>= 1, res++)
+            ;
         return res;
     }
 
     public static final int intPow(int base, int e) {
         int res = 1;
-        while (e > 0) {
-            e--;
-            res *= base;
-        }
+        for (; e > 0; e--, res *= base)
+            ;
         return res;
     }
 

@@ -26,9 +26,9 @@
 
 package de.jarnbjo.vorbis;
 
-import de.jarnbjo.util.io.BitInputStream;
+import java.io.*;
 
-import java.io.IOException;
+import de.jarnbjo.util.io.BitInputStream;
 
 /**
  */
@@ -42,7 +42,7 @@ public class IdentificationHeader {
 
     private static final long HEADER = 0x736962726f76L; // 'vorbis'
 
-    public IdentificationHeader(BitInputStream source) throws IOException {
+    public IdentificationHeader(BitInputStream source) throws VorbisFormatException, IOException {
         // equalizer=new Equalizer();
         // equalizer.pack();
         // equalizer.show();

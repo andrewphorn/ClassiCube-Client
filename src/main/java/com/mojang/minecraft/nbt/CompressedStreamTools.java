@@ -1,13 +1,25 @@
 package com.mojang.minecraft.nbt;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class CompressedStreamTools {
 
     /**
-     * Load the gzipped compound from the InputStream.
+     * Load the gzipped compound from the inputstream.
      */
     public static NBTTagCompound readCompressed(InputStream stream) throws IOException {
         NBTTagCompound nbttagcompound;
@@ -19,7 +31,7 @@ public class CompressedStreamTools {
     }
 
     /**
-     * Write the compound, gzipped, to the OutputStream.
+     * Write the compound, gzipped, to the outputstream.
      */
     public static void writeCompressed(NBTTagCompound tag, OutputStream stream) throws IOException {
         try (DataOutputStream dataoutputstream = new DataOutputStream(new GZIPOutputStream(stream))) {

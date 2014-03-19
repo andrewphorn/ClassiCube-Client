@@ -1,12 +1,14 @@
 package com.mojang.minecraft;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
+
 import com.mojang.minecraft.player.Player;
 import com.oyasunadev.mcraft.client.util.Constants;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class SkinDownloadThread extends Thread {
     String skinServer;

@@ -29,11 +29,10 @@
 
 package de.jarnbjo.vorbis;
 
-import de.jarnbjo.ogg.LogicalOggStream;
-import de.jarnbjo.util.io.BitInputStream;
-import de.jarnbjo.util.io.ByteArrayBitInputStream;
+import java.io.*;
 
-import java.io.IOException;
+import de.jarnbjo.ogg.*;
+import de.jarnbjo.util.io.*;
 
 /**
  */
@@ -65,7 +64,7 @@ public class VorbisStream {
     public VorbisStream() {
     }
 
-    public VorbisStream(LogicalOggStream oggStream) throws IOException {
+    public VorbisStream(LogicalOggStream oggStream) throws VorbisFormatException, IOException {
         this.oggStream = oggStream;
 
         for (int i = 0; i < 3; i++) {
@@ -122,7 +121,7 @@ public class VorbisStream {
         return identificationHeader;
     }
 
-    private AudioPacket getNextAudioPacket() throws IOException {
+    private AudioPacket getNextAudioPacket() throws VorbisFormatException, IOException {
         byte[] data = oggStream.getNextOggPacket();
         AudioPacket res = null;
         while (res == null) {
@@ -146,7 +145,7 @@ public class VorbisStream {
         return oggStream.isOpen();
     }
 
-    public byte[] processPacket(byte[] packet) throws IOException {
+    public byte[] processPacket(byte[] packet) throws VorbisFormatException, IOException {
         if (packet.length == 0) {
             throw new VorbisFormatException("Cannot decode a vorbis packet with length = 0");
         }

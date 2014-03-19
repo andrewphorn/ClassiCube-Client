@@ -1,8 +1,9 @@
 package com.mojang.minecraft.level.tile;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.render.ShapeRenderer;
-import org.lwjgl.opengl.GL11;
 
 public final class IceBlock extends Block {
 

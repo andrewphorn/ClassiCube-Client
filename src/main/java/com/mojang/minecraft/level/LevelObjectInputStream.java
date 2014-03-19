@@ -1,7 +1,6 @@
 package com.mojang.minecraft.level;
 
 import com.mojang.minecraft.LogUtil;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;

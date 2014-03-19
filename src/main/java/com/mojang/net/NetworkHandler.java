@@ -1,15 +1,15 @@
 package com.mojang.net;
 
 import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.gui.ErrorScreen;
-import com.mojang.minecraft.net.NetworkManager;
-import com.mojang.minecraft.net.PacketType;
-
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
+
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.gui.ErrorScreen;
+import com.mojang.minecraft.net.NetworkManager;
+import com.mojang.minecraft.net.PacketType;
 
 public final class NetworkHandler {
 
@@ -75,17 +75,17 @@ public final class NetworkHandler {
         } else {
             try {
                 if (obj == Long.TYPE) {
-                    return in.getLong();
+                    return Long.valueOf(in.getLong());
                 } else if (obj == Integer.TYPE) {
-                    return in.getInt();
+                    return Integer.valueOf(in.getInt());
                 } else if (obj == Short.TYPE) {
-                    return in.getShort();
+                    return Short.valueOf(in.getShort());
                 } else if (obj == Byte.TYPE) {
-                    return in.get();
+                    return Byte.valueOf(in.get());
                 } else if (obj == Double.TYPE) {
-                    return in.getDouble();
+                    return Double.valueOf(in.getDouble());
                 } else if (obj == Float.TYPE) {
-                    return in.getFloat();
+                    return Float.valueOf(in.getFloat());
                 } else if (obj == String.class) {
                     in.get(stringBytes);
                     return new String(stringBytes, "UTF-8").trim();
@@ -114,17 +114,17 @@ public final class NetworkHandler {
                 if (connected) {
                     try {
                         if (packetClass == Long.TYPE) {
-                            out.putLong((Long) packetObject);
+                            out.putLong(((Long) packetObject).longValue());
                         } else if (packetClass == Integer.TYPE) {
-                            out.putInt((Integer) packetObject);
+                            out.putInt(((Number) packetObject).intValue());
                         } else if (packetClass == Short.TYPE) {
                             out.putShort(((Number) packetObject).shortValue());
                         } else if (packetClass == Byte.TYPE) {
                             out.put(((Number) packetObject).byteValue());
                         } else if (packetClass == Double.TYPE) {
-                            out.putDouble((Double) packetObject);
+                            out.putDouble(((Double) packetObject).doubleValue());
                         } else if (packetClass == Float.TYPE) {
-                            out.putFloat((Float) packetObject);
+                            out.putFloat(((Float) packetObject).floatValue());
                         } else {
                             byte[] bytesToSend;
                             if (packetClass != String.class) {

@@ -23,6 +23,7 @@
 package de.jarnbjo.util.io;
 
 import java.io.IOException;
+import de.jarnbjo.util.io.BitInputStream;
 
 /**
  * Representation of a node in a Huffman tree, used to read Huffman compressed
@@ -52,7 +53,7 @@ final public class HuffmanNode {
 
     protected HuffmanNode(HuffmanNode parent, int value) {
         this(parent);
-        this.value = value;
+        this.value = new Integer(value);
         full = true;
     }
 
@@ -73,7 +74,7 @@ final public class HuffmanNode {
     }
 
     private boolean isFull() {
-        return full || (full = o0 != null && o0.isFull() && o1 != null && o1.isFull());
+        return full ? true : (full = o0 != null && o0.isFull() && o1 != null && o1.isFull());
     }
 
     protected int read(BitInputStream bis) throws IOException {
@@ -81,7 +82,7 @@ final public class HuffmanNode {
         while (iter.value == null) {
             iter = bis.getBit() ? iter.o1 : iter.o0;
         }
-        return iter.value;
+        return iter.value.intValue();
     }
 
     private HuffmanNode set0(HuffmanNode value) {
@@ -117,7 +118,7 @@ final public class HuffmanNode {
                 return false;
             }
         } else {
-            return get0().setNewValue(depth - 1, value) || get1().setNewValue(depth - 1,
+            return get0().setNewValue(depth - 1, value) ? true : get1().setNewValue(depth - 1,
                     value);
         }
     }

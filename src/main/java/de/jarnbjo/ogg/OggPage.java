@@ -28,13 +28,9 @@
 
 package de.jarnbjo.ogg;
 
-import de.jarnbjo.util.io.BitInputStream;
-import de.jarnbjo.util.io.ByteArrayBitInputStream;
+import java.io.*;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
+import de.jarnbjo.util.io.*;
 
 /**
  * <p>
@@ -62,7 +58,8 @@ public class OggPage {
      * @see #create(byte[], boolean)
      */
 
-    public static OggPage create(byte[] source) throws IOException {
+    public static OggPage create(byte[] source) throws IOException, EndOfOggStreamException,
+            OggFormatException {
         return create(source, false);
     }
 
@@ -90,7 +87,8 @@ public class OggPage {
      * @see #create(byte[])
      */
 
-    public static OggPage create(byte[] source, boolean skipData) throws IOException {
+    public static OggPage create(byte[] source, boolean skipData) throws IOException,
+            EndOfOggStreamException, OggFormatException {
         return create((Object) source, skipData);
     }
 
@@ -100,7 +98,8 @@ public class OggPage {
      * @see #create(InputStream, boolean)
      */
 
-    public static OggPage create(InputStream source) throws IOException {
+    public static OggPage create(InputStream source) throws IOException, EndOfOggStreamException,
+            OggFormatException {
         return create(source, false);
     }
 
@@ -132,11 +131,13 @@ public class OggPage {
      * @see #create(InputStream)
      */
 
-    public static OggPage create(InputStream source, boolean skipData) throws IOException {
+    public static OggPage create(InputStream source, boolean skipData) throws IOException,
+            EndOfOggStreamException, OggFormatException {
         return create((Object) source, skipData);
     }
 
-    private static OggPage create(Object source, boolean skipData) throws IOException {
+    private static OggPage create(Object source, boolean skipData) throws IOException,
+            EndOfOggStreamException, OggFormatException {
 
         try {
             int sourceOffset = 27;
@@ -151,7 +152,7 @@ public class OggPage {
             } else if (source instanceof InputStream) {
                 readFully((InputStream) source, header);
             } else if (source instanceof byte[]) {
-                System.arraycopy(source, 0, header, 0, 27);
+                System.arraycopy((byte[]) source, 0, header, 0, 27);
             }
 
             BitInputStream bdSource = new ByteArrayBitInputStream(header);
@@ -207,7 +208,7 @@ public class OggPage {
                 if (source instanceof RandomAccessFile) {
                     l = ((int) ((RandomAccessFile) source).readByte() & 0xff);
                 } else if (source instanceof InputStream) {
-                    l = ((InputStream) source).read();
+                    l = (int) ((InputStream) source).read();
                 } else if (source instanceof byte[]) {
                     l = (int) ((byte[]) source)[sourceOffset++];
                     l &= 255;
@@ -249,7 +250,8 @@ public class OggPage {
      * @see #create(RandomAccessFile, boolean)
      */
 
-    public static OggPage create(RandomAccessFile source) throws IOException {
+    public static OggPage create(RandomAccessFile source) throws IOException,
+            EndOfOggStreamException, OggFormatException {
         return create(source, false);
     }
 
@@ -281,7 +283,8 @@ public class OggPage {
      * @see #create(RandomAccessFile)
      */
 
-    public static OggPage create(RandomAccessFile source, boolean skipData) throws IOException {
+    public static OggPage create(RandomAccessFile source, boolean skipData) throws IOException,
+            EndOfOggStreamException, OggFormatException {
         return create((Object) source, skipData);
     }
 

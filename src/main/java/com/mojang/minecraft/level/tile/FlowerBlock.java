@@ -1,12 +1,12 @@
 package com.mojang.minecraft.level.tile;
 
+import java.util.Random;
+
 import com.mojang.minecraft.ColorCache;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.util.MathHelper;
-
-import java.util.Random;
 
 public class FlowerBlock extends Block {
 

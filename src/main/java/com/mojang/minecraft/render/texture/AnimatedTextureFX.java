@@ -1,13 +1,14 @@
 package com.mojang.minecraft.render.texture;
 
 import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.render.TextureManager;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import com.mojang.minecraft.render.TextureManager;
 
 public class AnimatedTextureFX extends TextureFX {
 

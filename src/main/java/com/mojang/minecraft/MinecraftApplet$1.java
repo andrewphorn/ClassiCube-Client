@@ -2,11 +2,23 @@ package com.mojang.minecraft;
 
 import com.oyasunadev.mcraft.client.util.Constants;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.*;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+
+import javax.imageio.ImageIO;
 
 // MinecraftCanvas
 public class MinecraftApplet$1 extends Canvas {

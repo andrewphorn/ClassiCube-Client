@@ -19,29 +19,28 @@ public class NBTTagByteArray extends NBTBase {
     }
 
     /**
-     * Write the actual data contents of the tag, implemented in NBT extension classes.
-     * @param output The output stream to write to.
+     * Write the actual data contents of the tag, implemented in NBT extension
+     * classes
      */
     @Override
-    void write(DataOutput output) throws IOException {
-        output.writeInt(this.byteArray.length);
-        output.write(this.byteArray);
+    void write(DataOutput par1DataOutput) throws IOException {
+        par1DataOutput.writeInt(this.byteArray.length);
+        par1DataOutput.write(this.byteArray);
     }
 
     /**
-     * Read the actual data contents of the tag, implemented in NBT extension classes.
-     * @param input The input stream to read from.
+     * Read the actual data contents of the tag, implemented in NBT extension
+     * classes
      */
     @Override
-    void load(DataInput input) throws IOException {
-        int i = input.readInt();
+    void load(DataInput par1DataInput) throws IOException {
+        int i = par1DataInput.readInt();
         this.byteArray = new byte[i];
-        input.readFully(this.byteArray);
+        par1DataInput.readFully(this.byteArray);
     }
 
     /**
      * Gets the type byte for the tag.
-     * @return byte.
      */
     @Override
     public byte getId() {
@@ -65,8 +64,8 @@ public class NBTTagByteArray extends NBTBase {
 
     @Override
     public boolean equals(Object other) {
-        return super.equals(other) && Arrays.equals(this.byteArray,
-                ((NBTTagByteArray) other).byteArray);
+        return super.equals(other) ? Arrays.equals(this.byteArray,
+                ((NBTTagByteArray) other).byteArray) : false;
     }
 
     @Override

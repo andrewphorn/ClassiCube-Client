@@ -1,17 +1,22 @@
 package com.mojang.minecraft;
 
-import com.mojang.minecraft.gui.HUDScreen;
-import com.mojang.minecraft.render.ShapeRenderer;
-import com.oyasunadev.mcraft.client.util.Constants;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
+
+import com.oyasunadev.mcraft.client.util.Constants;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.minecraft.gui.HUDScreen;
+import com.mojang.minecraft.render.ShapeRenderer;
 
 public final class ProgressBarDisplay {
 
@@ -215,7 +220,8 @@ public final class ProgressBarDisplay {
                 return;
             }
 
-            String joinedString = (title + " " + text).toLowerCase();
+            String joinedString = new StringBuilder().append(title).append(" ").append(text)
+                    .toString().toLowerCase();
 
             if (joinedString.contains("-hax")) {
                 HackState.setAllDisabled();
