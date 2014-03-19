@@ -8,6 +8,7 @@ import java.awt.Robot;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
@@ -638,6 +639,7 @@ public final class Minecraft implements Runnable {
         if (currentScreen != null) {
             currentScreen.width = width * 240 / height;
             currentScreen.height = height * 240 / height;
+            currentScreen.clearButtons();
             currentScreen.onOpen();
         }
     }
@@ -1861,33 +1863,39 @@ public final class Minecraft implements Runnable {
 
     public void takeAndSaveScreenshot(int width, int height) {
         try {
-            int i = width;
-            int j = height;
-            int size = i * j * 3;
+            int size = width * height * 3;
+            
+            int packAlignment = GL11.glGetInteger(GL11.GL_PACK_ALIGNMENT);
+            int unpackAlignment = GL11.glGetInteger(GL11.GL_UNPACK_ALIGNMENT);
+            GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1); // Byte alignment.
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
 
             GL11.glReadBuffer(GL11.GL_FRONT);
             ByteBuffer buffer = ByteBuffer.allocateDirect(size);
-            GL11.glReadPixels(0, 0, i, j, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
-
+            GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
+            
+            GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, packAlignment);
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, unpackAlignment);
+            
             byte[] pixels = new byte[size];
             buffer.get(pixels);
-            pixels = flipPixels(pixels, i, height);
+            pixels = flipPixels(pixels, width, height);
 
             ColorSpace colorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-            int[] a = { 8, 8, 8 };
-            int[] b = { 0, 1, 2 };
+            int[] bitsPerPixel = { 8, 8, 8 };
+            int[] colOffsets = { 0, 1, 2 };
 
-            ComponentColorModel colorComp = new ComponentColorModel(colorSpace, a, false, false, 3,
-                    0);
+            ComponentColorModel colorComp = new ComponentColorModel(colorSpace, bitsPerPixel, 
+                    false, false, 3, DataBuffer.TYPE_BYTE);
 
-            WritableRaster raster = Raster.createInterleavedRaster(new DataBufferByte(pixels,
-                    pixels.length), width, height, i * 3, 3, b, null);
+            WritableRaster raster = Raster.createInterleavedRaster(new DataBufferByte(pixels, 
+                    pixels.length), width, height, width * 3, 3, colOffsets, null);
 
             BufferedImage image = new BufferedImage(colorComp, raster, false, null);
 
-            String str = String.format("screenshot_%1$tY%1$tm%1$td%1$tH%1$tM%1$tS.png",
-                    new Object[] { Calendar.getInstance() });
             Calendar cal = Calendar.getInstance();
+            String str = String.format("screenshot_%1$tY%1$tm%1$td%1$tH%1$tM%1$tS.png", cal);
+           
             String month = new SimpleDateFormat("MMM").format(cal.getTime());
             String serverName = ProgressBarDisplay.title.toLowerCase().contains("connecting..") ? ""
                     : ProgressBarDisplay.title;
