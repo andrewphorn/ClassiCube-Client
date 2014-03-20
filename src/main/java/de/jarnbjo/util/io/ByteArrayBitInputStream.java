@@ -181,14 +181,14 @@ public class ByteArrayBitInputStream implements BitInputStream {
      * reads an integer encoded as "signed rice" as described in the FLAC audio
      * format specification
      * </p>
-     * 
+     *
      * <p>
      * <b>not supported for little endian</b>
      * </p>
-     * 
+     *
      * @param order
      * @return the decoded integer value read from the stream
-     * 
+     *
      * @throws IOException
      *             if an I/O error occurs
      * @throws UnsupportedOperationException
@@ -260,17 +260,17 @@ public class ByteArrayBitInputStream implements BitInputStream {
      * encoded as "signed rice" as described in the FLAC audio format
      * specification
      * </p>
-     * 
+     *
      * <p>
      * <b>not supported for little endian</b>
      * </p>
-     * 
+     *
      * @param order
      * @param buffer
      * @param offset
      * @param len
      * @return the decoded integer value read from the stream
-     * 
+     *
      * @throws IOException
      *             if an I/O error occurs
      * @throws UnsupportedOperationException
@@ -307,9 +307,9 @@ public class ByteArrayBitInputStream implements BitInputStream {
                 }
                 if (bits <= bitIndex + 1) {
                     int ci = ((int) source[byteIndex]) & 0xff;
-                    int offset = 1 + bitIndex - bits;
-                    int mask = ((1 << bits) - 1) << offset;
-                    lsbs = (ci & mask) >> offset;
+                    int bitOffset = 1 + bitIndex - bits;
+                    int mask = ((1 << bits) - 1) << bitOffset;
+                    lsbs = (ci & mask) >> bitOffset;
                     bitIndex -= bits;
                 } else {
                     lsbs = (((int) source[byteIndex]) & 0xff & ((1 << (bitIndex + 1)) - 1)) << (bits

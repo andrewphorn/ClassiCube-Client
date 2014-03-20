@@ -128,8 +128,6 @@ public class VorbisAudioFileReader extends AudioFileReader {
                     AudioSystem.NOT_SPECIFIED);
         } catch (OggFormatException | VorbisFormatException e) {
             throw new UnsupportedAudioFileException(e.getMessage());
-        } catch (VorbisFormatException e) {
-            throw new UnsupportedAudioFileException(e.getMessage());
         }
     }
 
@@ -182,8 +180,6 @@ public class VorbisAudioFileReader extends AudioFileReader {
 
             return new AudioInputStream(new VorbisInputStream(vs), audioFormat, -1);
         } catch (OggFormatException | VorbisFormatException e) {
-            throw new UnsupportedAudioFileException(e.getMessage());
-        } catch (VorbisFormatException e) {
             throw new UnsupportedAudioFileException(e.getMessage());
         }
     }
