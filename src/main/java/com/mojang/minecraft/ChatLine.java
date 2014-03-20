@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.mojang.minecraft.gui.FontRenderer;
+import com.mojang.util.LogUtil;
 
 public class ChatLine {
 

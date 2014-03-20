@@ -24,12 +24,12 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MinecraftApplet;
 import com.mojang.minecraft.ResourceDownloadThread;
 import com.mojang.minecraft.SessionData;
-import com.mojang.minecraft.StreamingUtil;
+import com.mojang.util.StreamingUtil;
 import com.oyasunadev.mcraft.client.util.Constants;
 
 /**

@@ -1,4 +1,4 @@
-package com.mojang.minecraft.nbt;
+package com.mojang.nbt;
 
 import java.io.DataInput;
 import java.io.DataOutput;

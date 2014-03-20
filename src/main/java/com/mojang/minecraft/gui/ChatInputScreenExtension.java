@@ -15,8 +15,7 @@ import org.lwjgl.input.Mouse;
 
 import com.mojang.minecraft.ChatClickData;
 import com.mojang.minecraft.ChatClickData.LinkData;
-import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.net.NetworkManager;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.net.PacketType;
 
 public class ChatInputScreenExtension extends GuiScreen {

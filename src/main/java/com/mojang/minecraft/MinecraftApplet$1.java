@@ -18,6 +18,7 @@ import java.net.URLConnection;
 
 import javax.imageio.ImageIO;
 
+import com.mojang.util.LogUtil;
 import com.oyasunadev.mcraft.client.util.Constants;
 
 // MinecraftCanvas

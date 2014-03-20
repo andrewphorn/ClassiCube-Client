@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import com.mojang.util.LogUtil;
+import com.mojang.util.StreamingUtil;
+
 public class ResourceDownloadThread extends Thread {
 
     private static final String[] resourceFiles = new String[]{"music/calm1.ogg",

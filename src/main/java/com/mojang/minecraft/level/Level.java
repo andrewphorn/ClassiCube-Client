@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import com.mojang.minecraft.ColorCache;
+import com.mojang.util.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MovingObjectPosition;

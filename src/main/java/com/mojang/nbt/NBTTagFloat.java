@@ -1,23 +1,22 @@
-package com.mojang.minecraft.nbt;
+package com.mojang.nbt;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.Arrays;
 
-public class NBTTagByteArray extends NBTBase {
+public class NBTTagFloat extends NBTBase {
     /**
-     * The byte array stored in the tag.
+     * The float value for the tag.
      */
-    public byte[] byteArray;
+    public float data;
 
-    public NBTTagByteArray(String name) {
+    public NBTTagFloat(String name) {
         super(name);
     }
 
-    public NBTTagByteArray(String name, byte[] byteArrayInput) {
+    public NBTTagFloat(String name, float data) {
         super(name);
-        this.byteArray = byteArrayInput;
+        this.data = data;
     }
 
     /**
@@ -27,8 +26,7 @@ public class NBTTagByteArray extends NBTBase {
      */
     @Override
     void write(DataOutput output) throws IOException {
-        output.writeInt(this.byteArray.length);
-        output.write(this.byteArray);
+        output.writeFloat(this.data);
     }
 
     /**
@@ -38,9 +36,7 @@ public class NBTTagByteArray extends NBTBase {
      */
     @Override
     void load(DataInput input) throws IOException {
-        int i = input.readInt();
-        this.byteArray = new byte[i];
-        input.readFully(this.byteArray);
+        this.data = input.readFloat();
     }
 
     /**
@@ -50,12 +46,12 @@ public class NBTTagByteArray extends NBTBase {
      */
     @Override
     public byte getId() {
-        return (byte) 7;
+        return (byte) 5;
     }
 
     @Override
     public String toString() {
-        return "[" + this.byteArray.length + " bytes]";
+        return "" + this.data;
     }
 
     /**
@@ -63,19 +59,21 @@ public class NBTTagByteArray extends NBTBase {
      */
     @Override
     public NBTBase copy() {
-        byte[] abyte = new byte[this.byteArray.length];
-        System.arraycopy(this.byteArray, 0, abyte, 0, this.byteArray.length);
-        return new NBTTagByteArray(this.getName(), abyte);
+        return new NBTTagFloat(this.getName(), this.data);
     }
 
     @Override
     public boolean equals(Object other) {
-        return super.equals(other) && Arrays.equals(this.byteArray,
-                ((NBTTagByteArray) other).byteArray);
+        if (super.equals(other)) {
+            NBTTagFloat tempOther = (NBTTagFloat) other;
+            return this.data == tempOther.data;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode() ^ Arrays.hashCode(this.byteArray);
+        return super.hashCode() ^ Float.floatToIntBits(this.data);
     }
 }

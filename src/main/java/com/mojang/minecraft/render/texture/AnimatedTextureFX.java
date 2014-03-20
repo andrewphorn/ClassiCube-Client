@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.render.TextureManager;
 
 public class AnimatedTextureFX extends TextureFX {

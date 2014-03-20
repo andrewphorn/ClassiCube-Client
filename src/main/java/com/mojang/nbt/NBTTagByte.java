@@ -1,20 +1,20 @@
-package com.mojang.minecraft.nbt;
+package com.mojang.nbt;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class NBTTagLong extends NBTBase {
+public class NBTTagByte extends NBTBase {
     /**
-     * The long value for the tag.
+     * The byte value for the tag.
      */
-    public long data;
+    public byte data;
 
-    public NBTTagLong(String name) {
+    public NBTTagByte(String name) {
         super(name);
     }
 
-    public NBTTagLong(String name, long data) {
+    public NBTTagByte(String name, byte data) {
         super(name);
         this.data = data;
     }
@@ -26,7 +26,7 @@ public class NBTTagLong extends NBTBase {
      */
     @Override
     void write(DataOutput output) throws IOException {
-        output.writeLong(this.data);
+        output.writeByte(this.data);
     }
 
     /**
@@ -36,7 +36,7 @@ public class NBTTagLong extends NBTBase {
      */
     @Override
     void load(DataInput input) throws IOException {
-        this.data = input.readLong();
+        this.data = input.readByte();
     }
 
     /**
@@ -46,7 +46,7 @@ public class NBTTagLong extends NBTBase {
      */
     @Override
     public byte getId() {
-        return (byte) 4;
+        return (byte) 1;
     }
 
     @Override
@@ -59,13 +59,13 @@ public class NBTTagLong extends NBTBase {
      */
     @Override
     public NBTBase copy() {
-        return new NBTTagLong(this.getName(), this.data);
+        return new NBTTagByte(this.getName(), this.data);
     }
 
     @Override
     public boolean equals(Object other) {
         if (super.equals(other)) {
-            NBTTagLong tempOther = (NBTTagLong) other;
+            NBTTagByte tempOther = (NBTTagByte) other;
             return this.data == tempOther.data;
         } else {
             return false;
@@ -74,6 +74,6 @@ public class NBTTagLong extends NBTBase {
 
     @Override
     public int hashCode() {
-        return super.hashCode() ^ (int) (this.data ^ this.data >>> 32);
+        return super.hashCode() ^ this.data;
     }
 }

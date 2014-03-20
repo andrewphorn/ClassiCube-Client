@@ -7,7 +7,7 @@ import java.util.List;
 import javax.sound.sampled.SourceDataLine;
 
 import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 
 // TODO.
 public final class SoundPlayer implements Runnable {

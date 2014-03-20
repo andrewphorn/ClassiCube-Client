@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
 
 public class TextureSelectionScreen extends GuiScreen implements Runnable {

@@ -9,6 +9,8 @@ import java.awt.KeyboardFocusManager;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.mojang.util.LogUtil;
+
 public class MinecraftApplet extends Applet {
     private static final long serialVersionUID = 1L;
 

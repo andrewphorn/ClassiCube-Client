@@ -10,7 +10,7 @@ import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 
 public class ShapeRenderer {
     public static boolean tryVBO; // TODO Never used

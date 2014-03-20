@@ -2,7 +2,7 @@ package com.mojang.minecraft.level.tile;
 
 import java.util.Random;
 
-import com.mojang.minecraft.ColorCache;
+import com.mojang.util.ColorCache;
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;

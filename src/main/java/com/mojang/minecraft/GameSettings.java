@@ -12,6 +12,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.util.LogUtil;
 
 public final class GameSettings {
     // ==== CONSTANTS =============================================================================

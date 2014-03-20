@@ -1,4 +1,4 @@
-package com.mojang.minecraft;
+package com.mojang.util;
 
 import java.awt.Color;
 import java.io.Serializable;

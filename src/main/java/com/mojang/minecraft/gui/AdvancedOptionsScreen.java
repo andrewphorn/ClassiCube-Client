@@ -2,7 +2,7 @@ package com.mojang.minecraft.gui;
 
 import java.awt.Color;
 
-import com.mojang.minecraft.ColorCache;
+import com.mojang.util.ColorCache;
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Setting;
 import com.mojang.minecraft.gui.inputscreens.FogColorInputScreen;

@@ -1,26 +1,22 @@
-package com.mojang.minecraft.nbt;
+package com.mojang.nbt;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class NBTTagString extends NBTBase {
+public class NBTTagShort extends NBTBase {
     /**
-     * The string value for the tag (cannot be empty).
+     * The short value for the tag.
      */
-    public String data;
+    public short data;
 
-    public NBTTagString(String name) {
+    public NBTTagShort(String name) {
         super(name);
     }
 
-    public NBTTagString(String name, String data) {
+    public NBTTagShort(String name, short par2) {
         super(name);
-        if (data == null) {
-            throw new IllegalArgumentException("Empty string not allowed");
-        }
-
-        this.data = data;
+        this.data = par2;
     }
 
     /**
@@ -30,7 +26,7 @@ public class NBTTagString extends NBTBase {
      */
     @Override
     void write(DataOutput output) throws IOException {
-        output.writeUTF(this.data);
+        output.writeShort(this.data);
     }
 
     /**
@@ -40,7 +36,7 @@ public class NBTTagString extends NBTBase {
      */
     @Override
     void load(DataInput input) throws IOException {
-        this.data = input.readUTF();
+        this.data = input.readShort();
     }
 
     /**
@@ -50,7 +46,7 @@ public class NBTTagString extends NBTBase {
      */
     @Override
     public byte getId() {
-        return (byte) 8;
+        return (byte) 2;
     }
 
     @Override
@@ -63,22 +59,21 @@ public class NBTTagString extends NBTBase {
      */
     @Override
     public NBTBase copy() {
-        return new NBTTagString(this.getName(), this.data);
+        return new NBTTagShort(this.getName(), this.data);
     }
 
     @Override
     public boolean equals(Object other) {
-        if (!super.equals(other)) {
-            return false;
+        if (super.equals(other)) {
+            NBTTagShort tempOther = (NBTTagShort) other;
+            return this.data == tempOther.data;
         } else {
-            NBTTagString tempOther = (NBTTagString) other;
-            return this.data == null && tempOther.data == null || this.data != null
-                    && this.data.equals(tempOther.data);
+            return false;
         }
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode() ^ this.data.hashCode();
+        return super.hashCode() ^ this.data;
     }
 }

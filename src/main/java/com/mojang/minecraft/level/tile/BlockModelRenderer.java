@@ -2,7 +2,7 @@ package com.mojang.minecraft.level.tile;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.minecraft.ColorCache;
+import com.mojang.util.ColorCache;
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;

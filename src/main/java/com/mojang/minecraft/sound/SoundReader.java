@@ -2,7 +2,7 @@ package com.mojang.minecraft.sound;
 
 import java.net.URL;
 
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import de.jarnbjo.ogg.LogicalOggStreamImpl;
 import de.jarnbjo.ogg.OnDemandUrlStream;
 import de.jarnbjo.vorbis.IdentificationHeader;

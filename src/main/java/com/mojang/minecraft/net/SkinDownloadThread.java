@@ -6,7 +6,7 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import com.oyasunadev.mcraft.client.util.Constants;
 
 public class SkinDownloadThread extends Thread {

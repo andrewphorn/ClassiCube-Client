@@ -2,6 +2,7 @@ package com.mojang.minecraft;
 
 import com.mojang.minecraft.physics.CustomAABB;
 import com.mojang.minecraft.player.Player;
+import com.mojang.util.ColorCache;
 
 public class SelectionBoxData {
     public byte id;

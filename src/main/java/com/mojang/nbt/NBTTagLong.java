@@ -1,20 +1,20 @@
-package com.mojang.minecraft.nbt;
+package com.mojang.nbt;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class NBTTagByte extends NBTBase {
+public class NBTTagLong extends NBTBase {
     /**
-     * The byte value for the tag.
+     * The long value for the tag.
      */
-    public byte data;
+    public long data;
 
-    public NBTTagByte(String name) {
+    public NBTTagLong(String name) {
         super(name);
     }
 
-    public NBTTagByte(String name, byte data) {
+    public NBTTagLong(String name, long data) {
         super(name);
         this.data = data;
     }
@@ -26,7 +26,7 @@ public class NBTTagByte extends NBTBase {
      */
     @Override
     void write(DataOutput output) throws IOException {
-        output.writeByte(this.data);
+        output.writeLong(this.data);
     }
 
     /**
@@ -36,7 +36,7 @@ public class NBTTagByte extends NBTBase {
      */
     @Override
     void load(DataInput input) throws IOException {
-        this.data = input.readByte();
+        this.data = input.readLong();
     }
 
     /**
@@ -46,7 +46,7 @@ public class NBTTagByte extends NBTBase {
      */
     @Override
     public byte getId() {
-        return (byte) 1;
+        return (byte) 4;
     }
 
     @Override
@@ -59,13 +59,13 @@ public class NBTTagByte extends NBTBase {
      */
     @Override
     public NBTBase copy() {
-        return new NBTTagByte(this.getName(), this.data);
+        return new NBTTagLong(this.getName(), this.data);
     }
 
     @Override
     public boolean equals(Object other) {
         if (super.equals(other)) {
-            NBTTagByte tempOther = (NBTTagByte) other;
+            NBTTagLong tempOther = (NBTTagLong) other;
             return this.data == tempOther.data;
         } else {
             return false;
@@ -74,6 +74,6 @@ public class NBTTagByte extends NBTBase {
 
     @Override
     public int hashCode() {
-        return super.hashCode() ^ this.data;
+        return super.hashCode() ^ (int) (this.data ^ this.data >>> 32);
     }
 }

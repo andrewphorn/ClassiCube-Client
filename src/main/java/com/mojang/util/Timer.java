@@ -1,4 +1,4 @@
-package com.mojang.minecraft;
+package com.mojang.util;
 
 public class Timer {
     public float tps;

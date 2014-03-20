@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.net.NetworkHandler;

@@ -1,4 +1,4 @@
-package com.mojang.minecraft.nbt;
+package com.mojang.nbt;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;

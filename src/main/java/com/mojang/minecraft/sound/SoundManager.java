@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 
 // TODO.
 public final class SoundManager {

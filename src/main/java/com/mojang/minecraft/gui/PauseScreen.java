@@ -4,7 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.ProgressBarDisplay;
 

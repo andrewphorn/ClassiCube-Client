@@ -1,4 +1,4 @@
-package com.mojang.minecraft;
+package com.mojang.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,8 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
+import com.mojang.minecraft.Minecraft;
 
 /**
  * Global logging class (to make life easier)

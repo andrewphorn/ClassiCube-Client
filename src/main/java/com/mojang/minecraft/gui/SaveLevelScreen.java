@@ -2,7 +2,7 @@ package com.mojang.minecraft.gui;
 
 import java.io.File;
 
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.inputscreens.InputValueScreen;
 import com.mojang.minecraft.level.LevelSerializer;

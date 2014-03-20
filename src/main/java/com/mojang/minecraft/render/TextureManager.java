@@ -28,7 +28,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
 import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.net.NetworkPlayer;

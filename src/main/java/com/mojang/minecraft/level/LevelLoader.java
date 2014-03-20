@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.nbt.CompressedStreamTools;
-import com.mojang.minecraft.nbt.NBTTagCompound;
+import com.mojang.util.LogUtil;
+import com.mojang.nbt.CompressedStreamTools;
+import com.mojang.nbt.NBTTagCompound;
 import com.mojang.minecraft.player.Player;
 
 public class LevelLoader {

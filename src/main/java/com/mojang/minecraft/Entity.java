@@ -12,6 +12,7 @@ import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.sound.StepSound;
+import com.mojang.util.ColorCache;
 import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
 

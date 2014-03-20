@@ -7,7 +7,7 @@ import java.io.ObjectStreamClass;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 
 public final class LevelObjectInputStream extends ObjectInputStream {
 
