@@ -6,12 +6,20 @@ import com.mojang.minecraft.gui.inputscreens.CloudLevelInputScreen;
 
 public final class CloudOptionsScreen extends GuiScreen {
 
+    private GuiScreen parent;
+    private String title = "Cloud Options";
+    private GameSettings settings;
+    public CloudOptionsScreen(GuiScreen guiScreen, GameSettings settings) {
+        parent = guiScreen;
+        this.settings = settings;
+    }
+
     public static String decToHex(int dec) {
         int sizeOfIntInHalfBytes = 8;
         int numberOfBitsInAHalfByte = 4;
         int halfByte = 0x0F;
-        char[] hexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
-                'E', 'F' };
+        char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
+                'E', 'F'};
         StringBuilder hexBuilder = new StringBuilder(sizeOfIntInHalfBytes);
         hexBuilder.setLength(sizeOfIntInHalfBytes);
         for (int i = sizeOfIntInHalfBytes - 1; i >= 0; --i) {
@@ -20,15 +28,6 @@ public final class CloudOptionsScreen extends GuiScreen {
             dec >>= numberOfBitsInAHalfByte;
         }
         return hexBuilder.toString();
-    }
-
-    private GuiScreen parent;
-    private String title = "Cloud Options";
-    private GameSettings settings;
-
-    public CloudOptionsScreen(GuiScreen guiScreen, GameSettings settings) {
-        parent = guiScreen;
-        this.settings = settings;
     }
 
     @Override
@@ -43,7 +42,8 @@ public final class CloudOptionsScreen extends GuiScreen {
             if (button.id == 2) {
                 CloudColorInputScreen screen = new CloudColorInputScreen(parent, ""
                         + Integer.toHexString(minecraft.level.cloudColor), height,
-                        "Enter new value for cloud color...");
+                        "Enter new value for cloud color..."
+                );
                 screen.allowedChars = "ABCDEFabcdef1234567890";
                 screen.stringLimit = 6;
                 minecraft.setCurrentScreen(screen);

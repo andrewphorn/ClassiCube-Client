@@ -13,9 +13,9 @@ import com.mojang.minecraft.LogUtil;
 public final class SoundManager {
 
     public Map<String, Object> sounds = new HashMap<>();
-    private Map<String, Object> music = new HashMap<>();
     public Random random = new Random();
     public long lastMusic = System.currentTimeMillis() + 60000L;
+    private Map<String, Object> music = new HashMap<>();
 
     public final AudioInfo getAudioInfo(String var1, float var2, float var3) {
         List<?> var4 = null;

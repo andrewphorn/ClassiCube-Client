@@ -15,22 +15,18 @@ public class BasicAI extends AI {
     public Random random = new Random();
     public float xxa;
     public float yya;
-    protected float yRotA;
     public Level level;
     public Mob mob;
     public boolean jumping = false;
-    protected int attackDelay = 0;
     public float runSpeed = 0.7F;
-    protected int noActionTime = 0;
     public Entity attackTarget = null;
-
     public boolean running = false;
-
     public boolean flying = false;
-
     public boolean flyingUp = false;
-
     public boolean flyingDown = false;
+    protected float yRotA;
+    protected int attackDelay = 0;
+    protected int noActionTime = 0;
 
     @Override
     public void beforeRemove() {
@@ -118,9 +114,7 @@ public class BasicAI extends AI {
                         this.mob.yd = 0.06F;
                     }
                 }
-            }
-
-            else if (this.mob.noPhysics && !this.mob.flyingMode) {
+            } else if (this.mob.noPhysics && !this.mob.flyingMode) {
                 if (flyingUp) {
                     if (running) {
                         this.mob.yd = 0.48F;
@@ -141,9 +135,7 @@ public class BasicAI extends AI {
                         this.mob.yd = 0.26F;
                     }
                 }
-            }
-
-            else if (this.mob.noPhysics && this.mob.flyingMode) {
+            } else if (this.mob.noPhysics && this.mob.flyingMode) {
                 if (flyingUp) {
                     // LogUtil.logInfo("flying up");
                     if (running) {
@@ -192,9 +184,7 @@ public class BasicAI extends AI {
                 } else {
                     mob.yd += 0.15F;
                 }
-            }
-
-            else if (mob.onGround) { // if on the ground
+            } else if (mob.onGround) { // if on the ground
                 jumpFromGround();
             }
         }

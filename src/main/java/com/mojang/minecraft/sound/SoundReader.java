@@ -26,7 +26,8 @@ public final class SoundReader {
         short[] var5 = new short[4096];
         int var6 = 0;
 
-        label51: while (var3 >= 0) {
+        label51:
+        while (var3 >= 0) {
             int var15 = 0;
 
             while (true) {

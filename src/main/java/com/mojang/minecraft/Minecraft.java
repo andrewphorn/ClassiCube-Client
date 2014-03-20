@@ -99,16 +99,6 @@ public final class Minecraft implements Runnable {
 
     // mouse button index constants
     private static final int MB_LEFT = 0, MB_RIGHT = 1, MB_MIDDLE = 2;
-
-    /**
-     * True if the application is waiting for something.
-     */
-    public volatile boolean isWaiting = false;
-    /**
-     * Is the game running?
-     */
-    public volatile boolean isRunning;
-
     /**
      * True if the player is running, false if otherwise.
      */
@@ -118,24 +108,21 @@ public final class Minecraft implements Runnable {
      */
     public static File mcDir;
     /**
-     * True if we are in full screen mode, false if otherwise.
-     */
-    public boolean isFullScreen = false;
-    /**
-     * This timer determines how much time will pass between block
-     * modifications. It is used to prevent really fast block spamming.
-     */
-    private Timer timer = new Timer(20F);
-    private ResourceDownloadThread resourceThread;
-    private int ticks;
-    private int punchingCooldown; // survival
-    private int lastClick;
-    private Cursor cursor;
-
-    /**
      * Are we playing single player mode?
      */
     public static boolean isSinglePlayer = false;
+    /**
+     * True if the application is waiting for something.
+     */
+    public volatile boolean isWaiting = false;
+    /**
+     * Is the game running?
+     */
+    public volatile boolean isRunning;
+    /**
+     * True if we are in full screen mode, false if otherwise.
+     */
+    public boolean isFullScreen = false;
     /**
      * The url of the skin server where the skins are located.
      */
@@ -277,114 +264,49 @@ public final class Minecraft implements Runnable {
      * The applet of this game.
      */
     public MinecraftApplet applet;
-
     public List<SelectionBoxData> selectionBoxes = new ArrayList<>();
     public List<HotKeyData> hotKeys = new ArrayList<>();
-    public HackState hackState;
+    public HackState hackState; // TODO Never used
     public List<PlayerListNameData> playerListNameData = new ArrayList<>();
-
     public List<Block> disallowedPlacementBlocks = new ArrayList<>();
     public List<Block> DisallowedBreakingBlocks = new ArrayList<>();
     public MonitoringThread monitoringThread;
     public int tempDisplayWidth;
     public int tempDisplayHeight;
     public boolean canRenderGUI = true;
-
-    private static void checkGLError(String context) {
-        int error;
-        if ((error = GL11.glGetError()) != 0) {
-            String errorString = GLU.gluErrorString(error);
-            LogUtil.logError("########## GL ERROR ##########");
-            LogUtil.logError("@ " + context);
-            LogUtil.logError(error + ": " + errorString);
-            System.exit(1);
-        }
-    }
-
-    public static boolean doesUrlExistAndIsImage(URL url) {
-        try {
-            HttpURLConnection.setFollowRedirects(false);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("HEAD");
-            boolean result = (con.getResponseCode() == HttpURLConnection.HTTP_OK)
-                    && con.getContentType().contains("image");
-            con.disconnect();
-            return result;
-        } catch (Exception ex) {
-            LogUtil.logWarning("Failed to check for an image at " + url, ex);
-            return false;
-        }
-    }
-
-    public static File getMinecraftDirectory() {
-        if (mcDir != null) {
-            return mcDir;
-        }
-        String folder = ".net.classicube.client";
-        String home = System.getProperty("user.home");
-        File minecraftFolder;
-        OperatingSystem os = OperatingSystem.detect();
-        switch (os) {
-        case LINUX:
-        case SOLARIS:
-            minecraftFolder = new File(home, folder + '/');
-            break;
-        case WINDOWS:
-            String appData = System.getenv("APPDATA");
-
-            if (appData != null) {
-                minecraftFolder = new File(appData, folder + '/');
-            } else {
-                minecraftFolder = new File(home, folder + '/');
-            }
-            break;
-        case MAC_OS_X:
-            minecraftFolder = new File(home, "Library/Application Support/" + folder);
-            break;
-        default:
-            minecraftFolder = new File(home, folder + '/');
-        }
-
-        if (!minecraftFolder.exists() && !minecraftFolder.mkdirs()) {
-            throw new RuntimeException("The working directory could not be created: "
-                    + minecraftFolder);
-        }
-
-        return minecraftFolder;
-    }
-
-    float cameraDistance = -0.1F;
-
+    float cameraDistance = -0.1F; // TODO Never used
     int receivedExtensionLength;
-
     boolean isShuttingDown = false;
-
     boolean canSendHeldBlock = false;
-
     boolean serverSupportsMessages = false;
-
     int[] inventoryCache;
-
     boolean isLoadingMap = false;
+    /**
+     * This timer determines how much time will pass between block
+     * modifications. It is used to prevent really fast block spamming.
+     */
+    private Timer timer = new Timer(20F);
+    private ResourceDownloadThread resourceThread;
+    private int ticks;
+    private int punchingCooldown; // survival
+    private int lastClick;
+    /**
+     * The cursor instance.
+     */
+    private Cursor cursor;
 
     /**
      * Creates a new Minecraft instance.
      *
-     * @param canvas
-     *            Canvas to use for drawing.
-     * @param applet
-     *            Applet of this instance
-     * @param width
-     *            Width of the window
-     * @param height
-     *            Height of the window
-     * @param fullscreen
-     *            True if game should be in fullscreen
-     * @param isApplet
-     *            True if the game is running as an applet
+     * @param canvas     Canvas to use for drawing.
+     * @param applet     Applet of this instance
+     * @param width      Width of the window
+     * @param height     Height of the window
+     * @param fullscreen True if game should be in fullscreen
+     * @param isApplet   True if the game is running as an applet
      */
     public Minecraft(Canvas canvas, MinecraftApplet applet, int width, int height,
-            boolean fullscreen, boolean isApplet) {
+                     boolean fullscreen, boolean isApplet) {
         this.applet = applet;
         this.canvas = canvas;
         this.width = width;
@@ -422,6 +344,69 @@ public final class Minecraft implements Runnable {
 
     }
 
+    private static void checkGLError(String context) {
+        int error;
+        if ((error = GL11.glGetError()) != 0) {
+            String errorString = GLU.gluErrorString(error);
+            LogUtil.logError("########## GL ERROR ##########");
+            LogUtil.logError("@ " + context);
+            LogUtil.logError(error + ": " + errorString);
+            System.exit(1);
+        }
+    }
+
+    public static boolean doesUrlExistAndIsImage(URL url) {
+        try {
+            HttpURLConnection.setFollowRedirects(false);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("HEAD");
+            boolean result = (con.getResponseCode() == HttpURLConnection.HTTP_OK)
+                    && con.getContentType().contains("image");
+            con.disconnect();
+            return result;
+        } catch (Exception ex) {
+            LogUtil.logWarning("Failed to check for an image at " + url, ex);
+            return false;
+        }
+    }
+
+    public static File getMinecraftDirectory() {
+        if (mcDir != null) {
+            return mcDir;
+        }
+        String folder = ".net.classicube.client";
+        String home = System.getProperty("user.home");
+        File minecraftFolder;
+        OperatingSystem os = OperatingSystem.detect();
+        switch (os) {
+            case LINUX:
+            case SOLARIS:
+                minecraftFolder = new File(home, folder + '/');
+                break;
+            case WINDOWS:
+                String appData = System.getenv("APPDATA");
+
+                if (appData != null) {
+                    minecraftFolder = new File(appData, folder + '/');
+                } else {
+                    minecraftFolder = new File(home, folder + '/');
+                }
+                break;
+            case MAC_OS_X:
+                minecraftFolder = new File(home, "Library/Application Support/" + folder);
+                break;
+            default:
+                minecraftFolder = new File(home, folder + '/');
+        }
+
+        if (!minecraftFolder.exists() && !minecraftFolder.mkdirs()) {
+            throw new RuntimeException("The working directory could not be created: "
+                    + minecraftFolder);
+        }
+
+        return minecraftFolder;
+    }
+
     void downloadImage(URL url, File dest) {
         try {
             if (!doesUrlExistAndIsImage(url)) {
@@ -439,8 +424,7 @@ public final class Minecraft implements Runnable {
         byte[] flippedBuffer = null;
         int stride = width * 3;
         if (originalBuffer != null) {
-            flippedBuffer = new byte[originalBuffer.length];// There are 3 bytes
-                                                            // per cell
+            flippedBuffer = new byte[originalBuffer.length];// There are 3 bytes per cell
             for (int y = 0; y < height; y++) {
                 System.arraycopy(originalBuffer, y * stride, flippedBuffer, (height - y - 1)
                         * stride, stride);
@@ -696,7 +680,8 @@ public final class Minecraft implements Runnable {
             LogUtil.logError("Failed to create the OpenGL context.", ex);
             try {
                 Thread.sleep(1000L);
-            } catch (InterruptedException ex2) {}
+            } catch (InterruptedException ex2) {
+            }
             Display.create();
         }
 
@@ -1001,7 +986,8 @@ public final class Minecraft implements Runnable {
                         List<Entity> var37 = renderer.minecraft.level.blockMap.getEntities(
                                 player,
                                 player.boundingBox.expand(var34 * reachDistance,
-                                        var33 * reachDistance, var87 * reachDistance));
+                                        var33 * reachDistance, var87 * reachDistance)
+                        );
                         float var35 = 0F;
 
                         for (i = 0; i < var37.size(); ++i) {
@@ -1081,7 +1067,7 @@ public final class Minecraft implements Runnable {
 
                         renderer.hurtEffect(delta);
                         renderer.applyBobbing(delta, renderer.minecraft.settings.viewBobbing);
-                        
+
                         float cameraDistance = -5.1F;
                         if (renderer.minecraft.selected != null && settings.thirdPersonMode == 2) {
                             cameraDistance = -(renderer.minecraft.selected.vec.distance(renderer
@@ -1111,7 +1097,7 @@ public final class Minecraft implements Runnable {
                         var33 = player.zo + (player.z - player.zo) * delta;
                         GL11.glTranslatef(-var69, -var74, -var33);
                         Frustum frustum = FrustumImpl.getInstance();
-                        
+
                         for (i = 0; i < levelRenderer.chunkCache.length; ++i) {
                             levelRenderer.chunkCache[i].clip(frustum);
                         }
@@ -1233,7 +1219,7 @@ public final class Minecraft implements Runnable {
                         if (level.cloudLevel < 0) {
                             level.cloudLevel = levelRenderer.level.height + 2;
                         }
-                        int cloudLevel = level.cloudLevel;                        
+                        int cloudLevel = level.cloudLevel;
 
                         float unknownCloud = 1F / 2048F;
                         float cloudTickOffset = (levelRenderer.ticks + delta) * unknownCloud * 0.03F;
@@ -1245,28 +1231,34 @@ public final class Minecraft implements Runnable {
                                 for (y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
                                     shapeRenderer.vertexUV(x, cloudLevel, y + 512,
                                             x * unknownCloud + cloudTickOffset,
-                                            (y + 512) * unknownCloud);
+                                            (y + 512) * unknownCloud
+                                    );
                                     shapeRenderer.vertexUV(x + 512, cloudLevel, y + 512,
                                             (x + 512) * unknownCloud + cloudTickOffset,
-                                            (y + 512) * unknownCloud);
+                                            (y + 512) * unknownCloud
+                                    );
                                     shapeRenderer.vertexUV(x + 512, cloudLevel, y,
                                             (x + 512) * unknownCloud + cloudTickOffset,
-                                            y * unknownCloud);
+                                            y * unknownCloud
+                                    );
                                     shapeRenderer.vertexUV(x, cloudLevel, y,
-                                            x * unknownCloud
-                                            + cloudTickOffset, y * unknownCloud);
+                                            x * unknownCloud + cloudTickOffset, y * unknownCloud
+                                    );
                                     shapeRenderer.vertexUV(x, cloudLevel, y,
-                                            x * unknownCloud
-                                            + cloudTickOffset, y * unknownCloud);
+                                            x * unknownCloud + cloudTickOffset, y * unknownCloud
+                                    );
                                     shapeRenderer.vertexUV(x + 512, cloudLevel, y,
                                             (x + 512) * unknownCloud + cloudTickOffset,
-                                            y * unknownCloud);
+                                            y * unknownCloud
+                                    );
                                     shapeRenderer.vertexUV(x + 512, cloudLevel, y + 512,
                                             (x + 512) * unknownCloud + cloudTickOffset,
-                                            (y + 512) * unknownCloud);
-                                    shapeRenderer.vertexUV(x, cloudLevel, y + 512, x
-                                            * unknownCloud + cloudTickOffset,
-                                            (y + 512) * unknownCloud);
+                                            (y + 512) * unknownCloud
+                                    );
+                                    shapeRenderer.vertexUV(x, cloudLevel, y + 512,
+                                            x * unknownCloud + cloudTickOffset,
+                                            (y + 512) * unknownCloud
+                                    );
                                 }
                             }
 
@@ -1278,7 +1270,7 @@ public final class Minecraft implements Runnable {
                         shapeRenderer.color(skyColorRed, skyColorBlue, skyColorGreen);
                         int levelHeight = levelRenderer.level.height + 10;
                         if (player.y > levelRenderer.level.height) {
-                            levelHeight = (int)(player.y + 10);
+                            levelHeight = (int) (player.y + 10);
                         }
 
                         for (x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
@@ -1675,7 +1667,6 @@ public final class Minecraft implements Runnable {
                         GL11.glPopMatrix();
                         heldBlock.minecraft.renderer.setLighting(false);
 
-                        
                         renderer.minecraft.hud.render(timer.delta,
                                 renderer.minecraft.currentScreen != null, mouseX, mouseY);
                     } else {
@@ -1877,8 +1868,8 @@ public final class Minecraft implements Runnable {
             pixels = flipPixels(pixels, width, height);
 
             ColorSpace colorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-            int[] a = { 8, 8, 8 };
-            int[] b = { 0, 1, 2 };
+            int[] a = {8, 8, 8};
+            int[] b = {0, 1, 2};
 
             ComponentColorModel colorComp = new ComponentColorModel(colorSpace, a, false, false, 3, 0);
 
@@ -2015,8 +2006,8 @@ public final class Minecraft implements Runnable {
                                                 }
                                             }
                                             String AppName = "ClassiCube Client";
-                                            Object[] toSendParams = new Object[] { AppName,
-                                                    (short) temp.size() };
+                                            Object[] toSendParams = new Object[]{AppName,
+                                                    (short) temp.size()};
                                             networkManager.netHandler.send(PacketType.EXT_INFO, toSendParams);
                                             for (ExtData aTemp : temp) {
                                                 LogUtil.logInfo("Sending ext: " + aTemp.Name
@@ -2046,9 +2037,9 @@ public final class Minecraft implements Runnable {
                                         // + " " + Z1 + " " + X2 + " " + Y2 +
                                         // " " + Z2);
                                         SelectionBoxData data = new SelectionBoxData(ID, Name,
-                                                new ColorCache(r / 255F, g / 255F, b / 255F,
-                                                        a / 255F), new CustomAABB(X1, Y1, Z1, X2,
-                                                        Y2, Z2));
+                                                new ColorCache(r / 255F, g / 255F, b / 255F, a / 255F),
+                                                new CustomAABB(X1, Y1, Z1, X2, Y2, Z2)
+                                        );
                                         selectionBoxes.add(data);
                                     } else if (packetType == PacketType.REMOVE_SELECTION_CUBOID) {
                                         byte ID = (Byte) packetParams[0];
@@ -2066,25 +2057,25 @@ public final class Minecraft implements Runnable {
                                         Short b = (Short) packetParams[3];
                                         int dec = (r & 0x0ff) << 16 | (g & 0x0ff) << 8 | b & 0x0ff;
                                         switch (Variable) {
-                                        case 0: // sky
-                                            level.skyColor = dec;
-                                            break;
-                                        case 1: // cloud
-                                            level.cloudColor = dec;
-                                            break;
-                                        case 2: // fog
-                                            level.fogColor = dec;
-                                            break;
-                                        case 3: // ambient light
-                                            level.customShadowColour = new ColorCache(r / 255F,
-                                                    g / 255F, b / 255F);
-                                            levelRenderer.refresh();
-                                            break;
-                                        case 4: // diffuse color
-                                            level.customLightColour = new ColorCache(r / 255F,
-                                                    g / 255F, b / 255F);
-                                            levelRenderer.refresh();
-                                            break;
+                                            case 0: // sky
+                                                level.skyColor = dec;
+                                                break;
+                                            case 1: // cloud
+                                                level.cloudColor = dec;
+                                                break;
+                                            case 2: // fog
+                                                level.fogColor = dec;
+                                                break;
+                                            case 3: // ambient light
+                                                level.customShadowColour = new ColorCache(r / 255F,
+                                                        g / 255F, b / 255F);
+                                                levelRenderer.refresh();
+                                                break;
+                                            case 4: // diffuse color
+                                                level.customLightColour = new ColorCache(r / 255F,
+                                                        g / 255F, b / 255F);
+                                                levelRenderer.refresh();
+                                                break;
                                         }
                                     } else if (packetType == PacketType.ENV_SET_MAP_APPEARANCE) {
                                         String textureUrl = (String) packetParams[0];
@@ -2195,7 +2186,8 @@ public final class Minecraft implements Runnable {
                                         } else {
                                             playerListNameData.set(playerIndex,
                                                     new PlayerListNameData(NameId, playerName,
-                                                            listName, groupName, unusedRank));
+                                                            listName, groupName, unusedRank)
+                                            );
                                         }
 
                                         Collections.sort(playerListNameData,
@@ -2412,59 +2404,43 @@ public final class Minecraft implements Runnable {
                                                 byte var65;
                                                 byte var67;
                                                 if (packetType == PacketType.POSITION_ROTATION_UPDATE) {
-                                                    var10001 = (Byte) packetParams[0];
-                                                    var67 = (Byte) packetParams[1];
-                                                    var65 = (Byte) packetParams[2];
-                                                    byte var64 = (Byte) packetParams[3];
-                                                    var69 = (Byte) packetParams[4];
+                                                    byte playerID = (Byte) packetParams[0];
+                                                    var37 = (Byte) packetParams[1];
+                                                    var44 = (Byte) packetParams[2];
+                                                    var49 = (Byte) packetParams[3];
+                                                    var53 = (Byte) packetParams[4];
                                                     var9 = (Byte) packetParams[5];
-                                                    var53 = var69;
-                                                    var49 = var64;
-                                                    var44 = var65;
-                                                    var37 = var67;
-                                                    byte playerID = var10001;
                                                     if (playerID >= 0) {
                                                         var53 = (byte) (var53 + 128);
-                                                        if ((networkPlayer = networkManager.players
-                                                                .get(Byte.valueOf(playerID))) != null) {
-                                                            networkPlayer.queue(var37, var44,
+                                                        NetworkPlayer networkPlayerInstance = networkManager.players.get(Byte.valueOf(playerID));
+                                                        if (networkPlayerInstance != null) {
+                                                            networkPlayerInstance.queue(var37, var44,
                                                                     var49, var9 * 360 / 256F, var53 * 360 / 256F
                                                             );
                                                         }
                                                     }
                                                 } else if (packetType == PacketType.ROTATION_UPDATE) {
-                                                    var10001 = (Byte) packetParams[0];
-                                                    var67 = (Byte) packetParams[1];
+                                                    byte playerID = (Byte) packetParams[0];
+                                                    var37 = (Byte) packetParams[1];
                                                     var44 = (Byte) packetParams[2];
-                                                    var37 = var67;
-                                                    byte var5 = var10001;
-                                                    if (var5 >= 0) {
+                                                    if (playerID >= 0) {
                                                         var37 = (byte) (var37 + 128);
-                                                        NetworkPlayer var54;
-                                                        if ((var54 = networkManager.players
-                                                                .get(Byte.valueOf(var5))) != null) {
-                                                            var54.queue(var44 * 360 / 256F, var37 * 360 / 256F
+                                                        NetworkPlayer networkPlayerInstance = networkManager.players.get(Byte.valueOf(playerID));
+                                                        if (networkPlayerInstance != null) {
+                                                            networkPlayerInstance.queue(var44 * 360 / 256F, var37 * 360 / 256F
                                                             );
                                                         }
                                                     }
                                                 } else if (packetType == PacketType.POSITION_UPDATE) {
-                                                    var10001 = (Byte) packetParams[0];
-                                                    var67 = (Byte) packetParams[1];
-                                                    var65 = (Byte) packetParams[2];
-                                                    var49 = (Byte) packetParams[3];
-                                                    var44 = var65;
-                                                    var37 = var67;
-                                                    byte var5 = var10001;
-                                                    NetworkPlayer var59;
-                                                    if (var5 >= 0
-                                                            && (var59 = networkManager.players
-                                                                    .get(Byte.valueOf(var5))) != null) {
-                                                        var59.queue(var37, var44, var49);
+                                                    byte playerID = (Byte) packetParams[0];
+                                                    NetworkPlayer networkPlayerInstance = networkManager.players.get(Byte.valueOf(playerID));
+                                                    if (playerID >= 0 && networkPlayerInstance != null) {
+                                                        networkPlayerInstance.queue((Byte) packetParams[1], (Byte) packetParams[2], (Byte) packetParams[3]);
                                                     }
                                                 } else if (packetType == PacketType.DESPAWN_PLAYER) {
-                                                    byte var5 = (Byte) packetParams[0];
-                                                    var33 = networkManager.players.remove(Byte.valueOf(var5));
-                                                    if (var5 >= 0 && var33 != null) {
+                                                    byte playerID = (Byte) packetParams[0];
+                                                    var33 = networkManager.players.remove(Byte.valueOf(playerID));
+                                                    if (playerID >= 0 && var33 != null) {
                                                         var33.clear();
                                                         networkManager.minecraft.level.removeEntity(var33);
                                                     }
@@ -2475,33 +2451,33 @@ public final class Minecraft implements Runnable {
                                                         networkManager.minecraft.hud.addChat("&e" + message);
                                                     } else if (messageType > 0 && serverSupportsMessages) {
                                                         switch (messageType) {
-                                                        case 1:
-                                                            HUDScreen.ServerName = message;
-                                                            break;
-                                                        case 2:
-                                                            HUDScreen.Compass = message;
-                                                            break;
-                                                        case 3:
-                                                            HUDScreen.UserDetail = message;
-                                                            break;
-                                                        case 11:
-                                                            HUDScreen.BottomRight1 = message;
-                                                            break;
-                                                        case 12:
-                                                            HUDScreen.BottomRight2 = message;
-                                                            break;
-                                                        case 13:
-                                                            HUDScreen.BottomRight3 = message;
-                                                            break;
-                                                        case 21:
-                                                            break;
-                                                        case 100:
-                                                            HUDScreen.Announcement = message;
-                                                            break;
-                                                        default:
-                                                            networkManager.players.get(messageType);
-                                                            networkManager.minecraft.hud.addChat(message);
-                                                            break;
+                                                            case 1:
+                                                                HUDScreen.ServerName = message;
+                                                                break;
+                                                            case 2:
+                                                                HUDScreen.Compass = message;
+                                                                break;
+                                                            case 3:
+                                                                HUDScreen.UserDetail = message;
+                                                                break;
+                                                            case 11:
+                                                                HUDScreen.BottomRight1 = message;
+                                                                break;
+                                                            case 12:
+                                                                HUDScreen.BottomRight2 = message;
+                                                                break;
+                                                            case 13:
+                                                                HUDScreen.BottomRight3 = message;
+                                                                break;
+                                                            case 21:
+                                                                break;
+                                                            case 100:
+                                                                HUDScreen.Announcement = message;
+                                                                break;
+                                                            default:
+                                                                networkManager.players.get(messageType);
+                                                                networkManager.minecraft.hud.addChat(message);
+                                                                break;
                                                         }
                                                     } else {
                                                         networkManager.players.get(messageType);
@@ -2732,48 +2708,48 @@ public final class Minecraft implements Runnable {
 
                         // Handle hardcoded keys (including F-keys)
                         switch (Keyboard.getEventKey()) {
-                        case Keyboard.KEY_F1:
-                            canRenderGUI = !canRenderGUI;
-                            break;
+                            case Keyboard.KEY_F1:
+                                canRenderGUI = !canRenderGUI;
+                                break;
 
-                        case Keyboard.KEY_F2:
-                            takeAndSaveScreenshot(width, height);
-                            break;
+                            case Keyboard.KEY_F2:
+                                takeAndSaveScreenshot(width, height);
+                                break;
 
-                        case Keyboard.KEY_F3:
-                            settings.showDebug = !settings.showDebug;
-                            break;
+                            case Keyboard.KEY_F3:
+                                settings.showDebug = !settings.showDebug;
+                                break;
 
-                        case Keyboard.KEY_F4:
-                            isSnowing = !isSnowing;
-                            isRaining = false;
-                            break;
+                            case Keyboard.KEY_F4:
+                                isSnowing = !isSnowing;
+                                isRaining = false;
+                                break;
 
-                        case Keyboard.KEY_F5:
-                            isRaining = !isRaining;
-                            isSnowing = false;
-                            break;
+                            case Keyboard.KEY_F5:
+                                isRaining = !isRaining;
+                                isSnowing = false;
+                                break;
 
-                        case Keyboard.KEY_F6:
-                            if (HackState.noclip) {
-                                ++settings.thirdPersonMode;
-                                if (settings.thirdPersonMode > 2) {
-                                    settings.thirdPersonMode = 0;
+                            case Keyboard.KEY_F6:
+                                if (HackState.noclip) {
+                                    ++settings.thirdPersonMode;
+                                    if (settings.thirdPersonMode > 2) {
+                                        settings.thirdPersonMode = 0;
+                                    }
                                 }
-                            }
-                            break;
+                                break;
 
-                        case Keyboard.KEY_F11:
-                            toggleFullscreen();
-                            break;
+                            case Keyboard.KEY_F11:
+                                toggleFullscreen();
+                                break;
 
-                        case Keyboard.KEY_SLASH:
-                            player.releaseAllKeys();
-                            ChatInputScreen s = new ChatInputScreen();
-                            setCurrentScreen(s);
-                            s.inputLine = "/";
-                            s.caretPos++;
-                            break;
+                            case Keyboard.KEY_SLASH:
+                                player.releaseAllKeys();
+                                ChatInputScreen s = new ChatInputScreen();
+                                setCurrentScreen(s);
+                                s.inputLine = "/";
+                                s.caretPos++;
+                                break;
                         }
 
                         if (settings.HacksEnabled) {

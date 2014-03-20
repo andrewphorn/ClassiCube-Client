@@ -9,19 +9,16 @@ import com.mojang.minecraft.render.ShapeRenderer;
  */
 public class Screen {
 
+    protected float imgZ = 0;
+
     /**
      * Draws a box to the screen
      *
-     * @param x1
-     *            X coordinate of the first point of the box.
-     * @param y1
-     *            Y coordinate of the first point of the box.
-     * @param x2
-     *            X coordinate of the second point of the box.
-     * @param y2
-     *            Y coordinate of the second point of the box.
-     * @param colorRGB
-     *            The color of the box. See {@Color}
+     * @param x1       X coordinate of the first point of the box.
+     * @param y1       Y coordinate of the first point of the box.
+     * @param x2       X coordinate of the second point of the box.
+     * @param y2       Y coordinate of the second point of the box.
+     * @param colorRGB The color of the box. See {@Color}
      */
     protected static void drawBox(float x1, float y1, float x2, float y2, int colorRGB) {
 
@@ -50,16 +47,11 @@ public class Screen {
     /**
      * Draws a box to the screen
      *
-     * @param x1
-     *            X coordinate of the first point of the box.
-     * @param y1
-     *            Y coordinate of the first point of the box.
-     * @param x2
-     *            X coordinate of the second point of the box.
-     * @param y2
-     *            Y coordinate of the second point of the box.
-     * @param colorRGB
-     *            The color of the box. See {@Color}
+     * @param x1       X coordinate of the first point of the box.
+     * @param y1       Y coordinate of the first point of the box.
+     * @param x2       X coordinate of the second point of the box.
+     * @param y2       Y coordinate of the second point of the box.
+     * @param colorRGB The color of the box. See {@Color}
      */
     protected static void drawBox(int x1, int y1, int x2, int y2, int colorRGB) {
         drawBox((float) x1, (float) y1, (float) x2, (float) y2, colorRGB);
@@ -68,19 +60,14 @@ public class Screen {
     /**
      * Draws a string that is centered.
      *
-     * @param renderer
-     *            {@FontRenderer} used to render the used font.
-     * @param text
-     *            Text to draw and center
-     * @param x
-     *            X-Coordinate of position to draw.
-     * @param y
-     *            Y-Coordinate of position to draw.
-     * @param colorRGB
-     *            The color of the box. See {@Color}
+     * @param renderer {@FontRenderer} used to render the used font.
+     * @param text     Text to draw and center
+     * @param x        X-Coordinate of position to draw.
+     * @param y        Y-Coordinate of position to draw.
+     * @param colorRGB The color of the box. See {@Color}
      */
     public static void drawCenteredString(FontRenderer renderer, String text, int x, int y,
-            int colorRGB) {
+                                          int colorRGB) {
         // Measure the length of the text with the current font and then divide
         // it by two
         drawString(renderer, text, x - renderer.getWidth(text) / 2, y, colorRGB);
@@ -89,16 +76,11 @@ public class Screen {
     /**
      * Draws a given string
      *
-     * @param renderer
-     *            {@FontRenderer} used to render the used font.
-     * @param text
-     *            Text to draw
-     * @param x
-     *            X-Coordinate of position to draw.
-     * @param y
-     *            Y-Coordinate of position to draw.
-     * @param colorRGB
-     *            The color of the box. See {@Color}
+     * @param renderer {@FontRenderer} used to render the used font.
+     * @param text     Text to draw
+     * @param x        X-Coordinate of position to draw.
+     * @param y        Y-Coordinate of position to draw.
+     * @param colorRGB The color of the box. See {@Color}
      */
     public static void drawString(FontRenderer renderer, String text, int x, int y, int colorRGB) {
         renderer.render(text, x, y, colorRGB);
@@ -129,8 +111,6 @@ public class Screen {
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.5F);
     }
-
-    protected float imgZ = 0;
 
     public final void drawImage(int screenX, int screenY, int u, int v, int width, int height) {
         float offset = 1F / 256F;

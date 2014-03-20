@@ -8,7 +8,7 @@ public class PlayerListNameData {
     public Byte groupRank;
 
     public PlayerListNameData(short NameID, String PlayerName, String ListName, String GroupName,
-            Byte GroupRank) {
+                              Byte GroupRank) {
         nameID = NameID;
         playerName = PlayerName;
         listName = ListName;

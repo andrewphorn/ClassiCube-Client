@@ -18,8 +18,8 @@ public final class NetworkHandler {
     public ByteBuffer in = ByteBuffer.allocate(1048576);
     public ByteBuffer out = ByteBuffer.allocate(1048576);
     public NetworkManager netManager;
-    private byte[] stringBytes = new byte[64];
     protected int soTrafficClass = 0x04 | 0x08 | 0x010;
+    private byte[] stringBytes = new byte[64];
 
     public NetworkHandler(String ip, int port, Minecraft minecraft) {
         try {
@@ -57,13 +57,15 @@ public final class NetworkHandler {
                 channel.write(out);
                 out.compact();
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         connected = false;
 
         try {
             channel.close();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         channel = null;
     }

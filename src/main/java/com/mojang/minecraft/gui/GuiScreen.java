@@ -11,11 +11,11 @@ import com.mojang.minecraft.Minecraft;
 
 public class GuiScreen extends Screen {
 
-    protected Minecraft minecraft;
     public int width;
     public int height;
-    protected List<Button> buttons = new ArrayList<>();
     public boolean grabsMouse = false;
+    protected Minecraft minecraft;
+    protected List<Button> buttons = new ArrayList<>();
     protected FontRenderer fontRenderer;
 
     public final void clearButtons() {

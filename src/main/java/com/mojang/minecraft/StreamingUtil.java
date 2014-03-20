@@ -17,11 +17,9 @@ public class StreamingUtil {
 
     /**
      * Reads given stream to the end, and writes its contents to a file
-     * 
-     * @param inStream
-     *            The input buffer stream.
-     * @param file
-     *            The file to write to.
+     *
+     * @param inStream The input buffer stream.
+     * @param file     The file to write to.
      * @throws IOException
      */
     public static void copyStreamToFile(InputStream inStream, File file) throws IOException {

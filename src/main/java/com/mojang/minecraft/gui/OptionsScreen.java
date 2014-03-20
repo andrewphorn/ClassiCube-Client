@@ -5,16 +5,27 @@ import com.mojang.minecraft.Setting;
 
 public final class OptionsScreen extends GuiScreen {
 
-    private final static Setting[] settingsOrder = new Setting[] { Setting.MUSIC, Setting.SOUND,
+    private final static Setting[] settingsOrder = new Setting[]{Setting.MUSIC, Setting.SOUND,
             Setting.INVERT_MOUSE, Setting.VIEW_BOBBING, Setting.RENDER_DISTANCE,
             Setting.LIMIT_FRAMERATE, Setting.SMOOTHING, Setting.ANISOTROPIC, Setting.FONT_SCALE,
-            Setting.SHOW_NAMES };
+            Setting.SHOW_NAMES};
 
     private final String title = "Options";
     private final GameSettings settings;
 
     public OptionsScreen(GameSettings settings) {
         this.settings = settings;
+    }
+
+    // TODO To util?
+    private static <T> int indexOf(T needle, T[] haystack) {
+        for (int i = 0; i < haystack.length; i++) {
+            if (haystack[i] != null && haystack[i].equals(needle) || needle == null
+                    && haystack[i] == null) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -70,15 +81,5 @@ public final class OptionsScreen extends GuiScreen {
         // [Anisotropic] should only ne enabled if smoothing is on
         boolean smoothingOn = (minecraft.settings.smoothing > 0);
         buttons.get(indexOf(Setting.ANISOTROPIC, settingsOrder)).active = smoothingOn;
-    }
-
-    private static <T> int indexOf(T needle, T[] haystack) {
-        for (int i = 0; i < haystack.length; i++) {
-            if (haystack[i] != null && haystack[i].equals(needle) || needle == null
-                    && haystack[i] == null) {
-                return i;
-            }
-        }
-        return -1;
     }
 }

@@ -29,6 +29,7 @@ public final class ParticleManager {
 
     /**
      * Spawn a particle.
+     *
      * @param entity The entity spawning the particle.
      */
     @SuppressWarnings("unchecked")

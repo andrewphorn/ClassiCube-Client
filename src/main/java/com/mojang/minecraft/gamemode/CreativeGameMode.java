@@ -28,8 +28,8 @@ public class CreativeGameMode extends GameMode {
     @Override
     public void apply(Player player) {
         // default starting blocks
-        Block[] blocks = new Block[] { Block.STONE, Block.COBLESTONE, Block.BRICK, Block.DIRT,
-                Block.WOOD, Block.LOG, Block.LEAVES, Block.GRASS, Block.SLAB };
+        Block[] blocks = new Block[]{Block.STONE, Block.COBLESTONE, Block.BRICK, Block.DIRT,
+                Block.WOOD, Block.LOG, Block.LEAVES, Block.GRASS, Block.SLAB};
 
         boolean CanProceed = true;
         for (Block block : blocks) {
@@ -40,7 +40,7 @@ public class CreativeGameMode extends GameMode {
 
         // if one of them is banned, instead pick 9 blocks from allowed blocks
         if (!CanProceed) {
-            blocks = new Block[] {};
+            blocks = new Block[]{};
             for (int i = 0; i < blocks.length; i++) {
                 blocks[i] = SessionData.allowedBlocks.get(i);
             }

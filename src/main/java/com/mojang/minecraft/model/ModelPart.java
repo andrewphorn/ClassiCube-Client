@@ -9,8 +9,6 @@ public final class ModelPart {
 
     public Vertex[] vertices;
     public TexturedQuad[] quads;
-    private int u;
-    private int v;
     public float x;
     public float y;
     public float z;
@@ -22,6 +20,8 @@ public final class ModelPart {
     public int list = 0;
     public boolean mirror = false;
     public boolean render = true;
+    private int u;
+    private int v;
 
     public ModelPart(int var1, int var2) {
         u = var1;
@@ -38,8 +38,9 @@ public final class ModelPart {
             Vec3D var6 = var4.vertices[1].vector.subtract(var4.vertices[2].vector).normalize();
             // TODO ???
             GL11.glNormal3f((var5 = new Vec3D(var5.y * var6.z - var5.z * var6.y, var5.z * var6.x
-                    - var5.x * var6.z, var5.x * var6.y - var5.y * var6.x).normalize()).x, var5.y,
-                    var5.z);
+                            - var5.x * var6.z, var5.x * var6.y - var5.y * var6.x).normalize()).x, var5.y,
+                    var5.z
+            );
 
             for (int var7 = 0; var7 < 4; ++var7) {
                 Vertex var8;
@@ -99,7 +100,7 @@ public final class ModelPart {
     }
 
     public final void setBounds(float var1, float var2, float var3, int var4, int var5, int var6,
-            float var7) {
+                                float var7) {
         vertices = new Vertex[8];
         quads = new TexturedQuad[6];
         float var8 = var1 + var4;
@@ -133,17 +134,17 @@ public final class ModelPart {
         vertices[5] = var15;
         vertices[6] = var21;
         vertices[7] = var14;
-        quads[0] = new TexturedQuad(new Vertex[] { var15, var11, var12, var21 }, u + var6 + var4, v
+        quads[0] = new TexturedQuad(new Vertex[]{var15, var11, var12, var21}, u + var6 + var4, v
                 + var6, u + var6 + var4 + var6, v + var6 + var5);
-        quads[1] = new TexturedQuad(new Vertex[] { var20, var13, var14, var18 }, u, v + var6, u
+        quads[1] = new TexturedQuad(new Vertex[]{var20, var13, var14, var18}, u, v + var6, u
                 + var6, v + var6 + var5);
-        quads[2] = new TexturedQuad(new Vertex[] { var15, var13, var20, var11 }, u + var6, v, u
+        quads[2] = new TexturedQuad(new Vertex[]{var15, var13, var20, var11}, u + var6, v, u
                 + var6 + var4, v + var6);
-        quads[3] = new TexturedQuad(new Vertex[] { var12, var18, var14, var21 }, u + var6 + var4,
+        quads[3] = new TexturedQuad(new Vertex[]{var12, var18, var14, var21}, u + var6 + var4,
                 v, u + var6 + var4 + var4, v + var6);
-        quads[4] = new TexturedQuad(new Vertex[] { var11, var20, var18, var12 }, u + var6,
+        quads[4] = new TexturedQuad(new Vertex[]{var11, var20, var18, var12}, u + var6,
                 v + var6, u + var6 + var4, v + var6 + var5);
-        quads[5] = new TexturedQuad(new Vertex[] { var13, var15, var21, var14 }, u + var6 + var4
+        quads[5] = new TexturedQuad(new Vertex[]{var13, var15, var21, var14}, u + var6 + var4
                 + var6, v + var6, u + var6 + var4 + var6 + var4, v + var6 + var5);
         if (mirror) {
             for (TexturedQuad quad : quads) {

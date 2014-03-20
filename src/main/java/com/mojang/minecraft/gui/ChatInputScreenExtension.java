@@ -21,14 +21,16 @@ import com.mojang.minecraft.net.PacketType;
 
 public class ChatInputScreenExtension extends GuiScreen {
 
-    public String inputLine = "";
-    private int tickCount = 0;
-    public int caretPos = 0;
-    private int historyPos = 0;
-
     public static Vector<String> history = new Vector<>();
-
+    /**
+     * The background color of the chat.
+     */
+    public static int ChatRGB = new java.awt.Color(0, 0, 0, 130).getRGB();
+    public String inputLine = "";
+    public int caretPos = 0;
     int j;
+    private int tickCount = 0;
+    private int historyPos = 0;
 
     private String getClipboard() {
         Transferable clipboard = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
@@ -39,6 +41,11 @@ public class ChatInputScreenExtension extends GuiScreen {
         } catch (UnsupportedFlavorException | IOException ex) {
         }
         return null;
+    }
+
+    private void setClipboard(String paramString) {
+        StringSelection localStringSelection = new StringSelection(paramString);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(localStringSelection, null);
     }
 
     private void insertTextAtCaret(String paramString) {
@@ -294,11 +301,6 @@ public class ChatInputScreenExtension extends GuiScreen {
         }
     }
 
-    /**
-     * The background color of the chat.
-     */
-    public static int ChatRGB = new java.awt.Color(0, 0, 0, 130).getRGB();
-
     @Override
     public void render(int paramInt1, int paramInt2) {
         // super.drawBox(2, height - 14, width - 2, height - 2, -2147483648);
@@ -356,11 +358,6 @@ public class ChatInputScreenExtension extends GuiScreen {
                 }
             }
         }
-    }
-
-    private void setClipboard(String paramString) {
-        StringSelection localStringSelection = new StringSelection(paramString);
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(localStringSelection, null);
     }
 
     @Override

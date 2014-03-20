@@ -15,6 +15,14 @@ import com.mojang.minecraft.render.TextureManager;
 public class HumanoidMob extends Mob {
 
     public static final long serialVersionUID = 0L;
+    public boolean helmet = Math.random() < 0.20000000298023224D;
+    public boolean armor = Math.random() < 0.20000000298023224D;
+
+    public HumanoidMob(Level level, float posX, float posY, float posZ) {
+        super(level);
+        modelName = "humanoid";
+        this.setPos(posX, posY, posZ);
+    }
 
     public static boolean isInteger(String s) {
         try {
@@ -25,38 +33,28 @@ public class HumanoidMob extends Mob {
         return true;
     }
 
-    public boolean helmet = Math.random() < 0.20000000298023224D;
-
-    public boolean armor = Math.random() < 0.20000000298023224D;
-
-    public HumanoidMob(Level level, float posX, float posY, float posZ) {
-        super(level);
-        modelName = "humanoid";
-        this.setPos(posX, posY, posZ);
-    }
-
     @Override
     public void renderModel(TextureManager textureManager, float var2, float var3, float var4, float var5,
-            float var6, float var7) {
+                            float var6, float var7) {
         if (modelName.equals("sheep")) {
             renderSheep(textureManager, var2, var3, var4, var5, var6, var7);
             return;
         } else if (isInteger(modelName)) {
             try {
-            	GL11.glEnable(GL11.GL_ALPHA_TEST);
-            	GL11.glEnable(GL11.GL_BLEND);
+                GL11.glEnable(GL11.GL_ALPHA_TEST);
+                GL11.glEnable(GL11.GL_BLEND);
                 GL11.glPushMatrix();
 
                 // These are here to revert the scalef calls in Mob.java.
-            	// While those calls are useful for entity models, they cause the
-            	// block models to be rendered upside down.
+                // While those calls are useful for entity models, they cause the
+                // block models to be rendered upside down.
                 GL11.glScalef(-1F, 1F, 1F);
-            	GL11.glScalef(1F, -1F, 1F);
+                GL11.glScalef(1F, -1F, 1F);
                 Block block = Block.blocks[Integer.parseInt(modelName)];
                 // TODO: Implement proper detection of which blocks need translation.
                 float yTranslation = -1.4F;
                 if (block instanceof FlowerBlock || block instanceof FireBlock) {
-                	yTranslation = -1.8F;
+                    yTranslation = -1.8F;
                 }
                 GL11.glTranslatef(-0.5F, yTranslation, -0.2F);
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
@@ -117,7 +115,7 @@ public class HumanoidMob extends Mob {
     }
 
     public void renderSheep(TextureManager textureManager, float var2, float var3, float var4, float var5,
-            float var6, float var7) {
+                            float var6, float var7) {
         AnimalModel model;
         float var9 = (model = (AnimalModel) modelCache.getModel("sheep")).head.y;
         float var10 = model.head.z;

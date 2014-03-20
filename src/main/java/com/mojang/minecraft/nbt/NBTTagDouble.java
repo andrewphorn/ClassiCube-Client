@@ -5,7 +5,9 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 public class NBTTagDouble extends NBTBase {
-    /** The double value for the tag. */
+    /**
+     * The double value for the tag.
+     */
     public double data;
 
     public NBTTagDouble(String name) {
@@ -19,6 +21,7 @@ public class NBTTagDouble extends NBTBase {
 
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes.
+     *
      * @param output The output stream to write to.
      */
     @Override
@@ -28,6 +31,7 @@ public class NBTTagDouble extends NBTBase {
 
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes.
+     *
      * @param input The input stream to read from.
      */
     @Override
@@ -37,6 +41,7 @@ public class NBTTagDouble extends NBTBase {
 
     /**
      * Gets the type byte for the tag.
+     *
      * @return byte
      */
     @Override

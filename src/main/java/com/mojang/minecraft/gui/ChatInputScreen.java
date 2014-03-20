@@ -21,14 +21,16 @@ import com.mojang.minecraft.net.PacketType;
 
 public class ChatInputScreen extends GuiScreen {
 
-    public String inputLine = "";
-    private int tickCount = 0;
-    public int caretPos = 0;
-    private int historyPos = 0;
-
     public static Vector<String> history = new Vector<>();
-
-    int j;
+    /**
+     * The background color of the chat.
+     */
+    public static int ChatRGB = new java.awt.Color(0, 0, 0, 130).getRGB();
+    public String inputLine = "";
+    public int caretPos = 0;
+    int j; // TODO What is this?
+    private int tickCount = 0;
+    private int historyPos = 0;
 
     private String getClipboard() {
         Transferable clipboard = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
@@ -36,8 +38,14 @@ public class ChatInputScreen extends GuiScreen {
             if (clipboard != null && clipboard.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                 return (String) clipboard.getTransferData(DataFlavor.stringFlavor);
             }
-        } catch (UnsupportedFlavorException | IOException ex) {}
+        } catch (UnsupportedFlavorException | IOException ex) {
+        }
         return null;
+    }
+
+    private void setClipboard(String paramString) {
+        StringSelection localStringSelection = new StringSelection(paramString);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(localStringSelection, null);
     }
 
     private void insertTextAtCaret(String paramString) {
@@ -278,11 +286,6 @@ public class ChatInputScreen extends GuiScreen {
         }
     }
 
-    /**
-     * The background color of the chat.
-     */
-    public static int ChatRGB = new java.awt.Color(0, 0, 0, 130).getRGB();
-
     @Override
     public void render(int paramInt1, int paramInt2) {
         // super.drawBox(2, height - 14, width - 2, height - 2, -2147483648);
@@ -334,11 +337,6 @@ public class ChatInputScreen extends GuiScreen {
                 }
             }
         }
-    }
-
-    private void setClipboard(String paramString) {
-        StringSelection localStringSelection = new StringSelection(paramString);
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(localStringSelection, null);
     }
 
     @Override

@@ -10,6 +10,18 @@ import com.oyasunadev.mcraft.client.util.Constants;
 public final class SessionData {
 
     public static List<Block> allowedBlocks;
+    public String username;
+    public String sessionId;
+    public String mppass;
+    public boolean haspaid;
+    static {
+        addStandardMinecraftBlocks(); // init
+    }
+
+    public SessionData(String username, String sessionID) {
+        this.username = username;
+        sessionId = sessionID;
+    }
 
     public static void addStandardMinecraftBlocks() {
         ArrayList<Block> ab = new ArrayList<>();
@@ -29,9 +41,7 @@ public final class SessionData {
                 ab.remove(Block.BEDROCK);
             }
             allowedBlocks = ab;
-        }
-
-        else if (supportLevel == 1) { // level 1
+        } else if (supportLevel == 1) { // level 1
             ArrayList<Block> ab = new ArrayList<>();
             ab.addAll(Arrays.asList(Block.blocks).subList(1, 65));
             if (Minecraft.isSinglePlayer) {
@@ -41,21 +51,5 @@ public final class SessionData {
         } else if (supportLevel <= 0) { // minecraft
             addStandardMinecraftBlocks();
         }
-    }
-
-    public String username;
-    public String sessionId;
-
-    public String mppass;
-
-    public boolean haspaid;
-
-    static {
-        addStandardMinecraftBlocks(); // init
-    }
-
-    public SessionData(String username, String sessionID) {
-        this.username = username;
-        sessionId = sessionID;
     }
 }

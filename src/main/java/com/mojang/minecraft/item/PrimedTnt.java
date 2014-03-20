@@ -16,15 +16,10 @@ import com.mojang.util.MathHelper;
 
 public class PrimedTnt extends Entity {
     public static final long serialVersionUID = 0L;
-
-    private float xd;
-
-    private float yd;
-
-    private float zd;
-
     public int life = 0;
-
+    private float xd;
+    private float yd;
+    private float zd;
     private boolean defused;
 
     public PrimedTnt(Level level, float x, float y, float z) {

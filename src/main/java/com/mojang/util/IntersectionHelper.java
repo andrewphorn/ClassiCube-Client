@@ -9,6 +9,7 @@ package com.mojang.util;
 public class IntersectionHelper {
     /**
      * Returns whether the given YZ plane intersects the vector.
+     *
      * @param vec
      * @param y0
      * @param z0
@@ -22,6 +23,7 @@ public class IntersectionHelper {
 
     /**
      * Returns whether the given XZ plane intersects the vector.
+     *
      * @param vec
      * @param x0
      * @param z0
@@ -35,6 +37,7 @@ public class IntersectionHelper {
 
     /**
      * Returns whether the given XZ plane intersects the vector.
+     *
      * @param vec
      * @param x0
      * @param y0

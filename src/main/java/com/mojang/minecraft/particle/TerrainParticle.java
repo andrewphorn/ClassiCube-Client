@@ -10,7 +10,7 @@ public class TerrainParticle extends Particle {
     private static final long serialVersionUID = 1L;
 
     public TerrainParticle(Level level, float x, float y, float z, float destX, float destY,
-            float destZ, Block block) {
+                           float destZ, Block block) {
         super(level, x, y, z, destX, destY, destZ);
         tex = block.textureId;
         gravity = block.particleGravity;
@@ -24,7 +24,7 @@ public class TerrainParticle extends Particle {
 
     @Override
     public void render(ShapeRenderer shapeRenderer, float x, float y, float z, float var5,
-            float var6, float var7) {
+                       float var6, float var7) {
         float var8;
         float var9 = (var8 = (tex % 16 + uo / 4F) / 16F) + 0.015609375F;
         float var10;

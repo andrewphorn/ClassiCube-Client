@@ -48,7 +48,6 @@ public abstract class Entity implements Serializable {
     public float walkDist = 0F;
     public boolean makeStepSound = true;
     public float fallDistance = 0F;
-    private int nextStep = 1;
     public BlockMap blockMap;
     public float xOld;
     public float yOld;
@@ -60,11 +59,11 @@ public abstract class Entity implements Serializable {
     public float pushthrough = 0F;
     public boolean hovered = false;
     public boolean flyingMode = false;
-
-    private int nextStepDistance;
     public float prevDistanceWalkedModified;
     public float distanceWalkedModified;
     public float distanceWalkedOnStepModified;
+    private int nextStep = 1;
+    private int nextStepDistance;
 
     public Entity(Level entityLevel) {
         level = entityLevel;
@@ -80,8 +79,7 @@ public abstract class Entity implements Serializable {
     /**
      * Calculates the distance from this entity to the specified entity.
      *
-     * @param otherEntity
-     *            Entity to calculate the distance to.
+     * @param otherEntity Entity to calculate the distance to.
      * @return The distance between the two entities.
      */
     public float distanceTo(Entity otherEntity) {
@@ -91,12 +89,9 @@ public abstract class Entity implements Serializable {
     /**
      * Calculates the distance from this entity to the specified position.
      *
-     * @param posX
-     *            X-Coordinate of the position to calculate the distance to.
-     * @param posY
-     *            Y-Coordinate of the position to calculate the distance to.
-     * @param posZ
-     *            Z-Coordinate of the position to calculate the distance to.
+     * @param posX X-Coordinate of the position to calculate the distance to.
+     * @param posY Y-Coordinate of the position to calculate the distance to.
+     * @param posZ Z-Coordinate of the position to calculate the distance to.
      * @return The distance between the entity and the position.
      */
     public float distanceTo(float posX, float posY, float posZ) {
@@ -112,8 +107,7 @@ public abstract class Entity implements Serializable {
      * This is basically calculating distance without using the expensive
      * Math.sqrt function. Should only be used for relative distance.
      *
-     * @param otherEntity
-     *            Entity to calculate the distance to.
+     * @param otherEntity Entity to calculate the distance to.
      * @return The distance between the two entities squared.
      */
     public float distanceToSqr(Entity otherEntity) {

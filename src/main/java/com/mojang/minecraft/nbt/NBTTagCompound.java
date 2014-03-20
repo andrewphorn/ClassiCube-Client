@@ -23,7 +23,18 @@ public class NBTTagCompound extends NBTBase {
     }
 
     /**
+     * Return the tag map for this compound.
+     *
+     * @param compound The compound.
+     * @return Map The tag map.
+     */
+    static Map<String, NBTBase> getTagMap(NBTTagCompound compound) {
+        return compound.tagMap;
+    }
+
+    /**
      * Write the actual data contents of the tag, implemented in NBT extension classes.
+     *
      * @param output The output stream to write to.
      */
     @Override
@@ -37,6 +48,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes. classes.
+     *
      * @param input The data input.
      */
     @Override
@@ -51,6 +63,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Returns all the values in the tagMap HashMap.
+     *
      * @return Collection
      */
     public Collection<NBTBase> getTags() {
@@ -59,6 +72,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Gets the type byte for the tag.
+     *
      * @return byte
      */
     @Override
@@ -69,8 +83,9 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Stores the given tag into the map with the given string key. This is mostly used to store
      * tag lists.
+     *
      * @param name The tag name.
-     * @param tag The tag to be set.
+     * @param tag  The tag to be set.
      */
     public void setTag(String name, NBTBase tag) {
         this.tagMap.put(name, tag.setName(name));
@@ -78,7 +93,8 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Stores a new NBTTagByte with the given byte value into the map with the given string key.
-     * @param name The tag name.
+     *
+     * @param name    The tag name.
      * @param theByte The byte value to be set.
      */
     public void setByte(String name, byte theByte) {
@@ -87,7 +103,8 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Stores a new NBTTagShort with the given short value into the map with the given string key.
-     * @param name The tag name.
+     *
+     * @param name     The tag name.
      * @param theShort The short value to be set.
      */
     public void setShort(String name, short theShort) {
@@ -96,7 +113,8 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Stores a new NBTTagInt with the given integer value into the map with the given string key.
-     * @param name The tag name.
+     *
+     * @param name   The tag name.
      * @param theInt The int value to be set.
      */
     public void setInteger(String name, int theInt) {
@@ -105,7 +123,8 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Stores a new NBTTagLong with the given long value into the map with the given string key.
-     * @param name The tag name.
+     *
+     * @param name    The tag name.
      * @param theLong The long value to be set.
      */
     public void setLong(String name, long theLong) {
@@ -114,7 +133,8 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Stores a new NBTTagFloat with the given float value into the map with the given string key.
-     * @param name The tag name.
+     *
+     * @param name     The tag name.
      * @param theFloat The float value to be set.
      */
     public void setFloat(String name, float theFloat) {
@@ -123,7 +143,8 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Stores a new NBTTagDouble with the given double value into the map with the given string key.
-     * @param name The tag name.
+     *
+     * @param name      The tag name.
      * @param theDouble The double value to be set.
      */
     public void setDouble(String name, double theDouble) {
@@ -132,7 +153,8 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Stores a new NBTTagString with the given string value into the map with the given string key.
-     * @param name The tag name.
+     *
+     * @param name      The tag name.
      * @param theString The string value to be set.
      */
     public void setString(String name, String theString) {
@@ -142,7 +164,8 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Stores a new NBTTagByteArray with the given array as data into the map with the given
      * string key.
-     * @param name The tag name.
+     *
+     * @param name         The tag name.
      * @param theByteArray The ByteArray value to be set.
      */
     public void setByteArray(String name, byte[] theByteArray) {
@@ -152,7 +175,8 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Stores a new NBTTagIntArray with the given array as data into the map with the given
      * string key.
-     * @param name The tag name.
+     *
+     * @param name        The tag name.
      * @param theIntArray The IntArray value to be set.
      */
     public void setIntArray(String name, int[] theIntArray) {
@@ -161,7 +185,8 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Stores the given NBTTagCompound into the map with the given string key.
-     * @param name The tag name.
+     *
+     * @param name        The tag name.
      * @param theCompound The compound value to be set.
      */
     public void setCompoundTag(String name, NBTTagCompound theCompound) {
@@ -171,7 +196,8 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Stores the given boolean value as a NBTTagByte, storing 1 for true and 0 for false,
      * using the given string key.
-     * @param name The tag name.
+     *
+     * @param name    The tag name.
      * @param theBool The boolean value to be set.
      */
     public void setBoolean(String name, boolean theBool) {
@@ -180,6 +206,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Gets a generic tag with the specified name.
+     *
      * @param name The tag name.
      * @return NBTBase The NBT Tag.
      */
@@ -189,6 +216,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Returns whether the given string has been previously stored as a key in the map.
+     *
      * @param name The tag name.
      * @return boolean
      */
@@ -198,6 +226,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Retrieves a byte value using the specified key, or 0 if no such key was stored.
+     *
      * @param name The tag name.
      * @return byte The byte stored.
      */
@@ -207,6 +236,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Retrieves a short value using the specified key, or 0 if no such key was stored.
+     *
      * @param name The tag name.
      * @return short The short stored.
      */
@@ -216,6 +246,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Retrieves an integer value using the specified key, or 0 if no such key was stored.
+     *
      * @param name The tag name.
      * @return int The integer stored.
      */
@@ -225,6 +256,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Retrieves a long value using the specified key, or 0 if no such key was stored.
+     *
      * @param name The tag name.
      * @return long The long value.
      */
@@ -234,6 +266,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Retrieves a float value using the specified key, or 0 if no such key was stored.
+     *
      * @param name The tag name.
      * @return float The float stored.
      */
@@ -243,6 +276,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Retrieves a double value using the specified key, or 0 if no such key was stored.
+     *
      * @param name The tag name.
      * @return double The double stored.
      */
@@ -253,6 +287,7 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Retrieves a string value using the specified key, or an empty string if no such key
      * was stored.
+     *
      * @param name The tag name.
      * @return String The string stored.
      */
@@ -263,6 +298,7 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Retrieves a byte array using the specified key, or a zero-length array if no such key
      * was stored.
+     *
      * @param name The tag name.
      * @return byte The byte array stored.
      */
@@ -273,6 +309,7 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Retrieves an int array using the specified key, or a zero-length array if no such key
      * was stored.
+     *
      * @param name The tag name.
      * @return int[] The int array stored.
      */
@@ -283,6 +320,7 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Retrieves a NBTTagCompound subtag matching the specified key, or a new empty NBTTagCompound
      * if no such key was stored.
+     *
      * @param name The tag name.
      * @return NBTTagCompound The compound stored.
      */
@@ -293,6 +331,7 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Retrieves a NBTTagList subtag matching the specified key, or a new empty NBTTagList if
      * no such key was stored.
+     *
      * @param name The tag name.
      * @return NBTTagList The tag list stored.
      */
@@ -303,6 +342,7 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Retrieves a boolean value using the specified key, or false if no such key was stored.
      * This uses the getByte method.
+     *
      * @param name The tag name.
      * @return boolean The boolean stored.
      */
@@ -312,19 +352,11 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Remove the specified tag.
+     *
      * @param name The tag name to be removed.
      */
     public void removeTag(String name) {
         this.tagMap.remove(name);
-    }
-
-    /**
-     * Return the tag map for this compound.
-     * @param compound The compound.
-     * @return Map The tag map.
-     */
-    static Map<String, NBTBase> getTagMap(NBTTagCompound compound) {
-        return compound.tagMap;
     }
 
     @Override
@@ -342,6 +374,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Return whether this compound has no tags.
+     *
      * @return boolean
      */
     public boolean hasNoTags() {
@@ -350,6 +383,7 @@ public class NBTTagCompound extends NBTBase {
 
     /**
      * Creates a clone of the tag.
+     *
      * @return NBTTagCompound The clone.
      */
     @Override

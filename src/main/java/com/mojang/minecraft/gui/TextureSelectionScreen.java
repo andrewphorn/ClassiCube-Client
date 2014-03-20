@@ -13,15 +13,15 @@ import com.mojang.minecraft.Minecraft;
 public class TextureSelectionScreen extends GuiScreen implements Runnable {
 
     protected GuiScreen parent;
+    protected String title = "Load texture";
+    protected boolean saving = false;
+    protected File selectedFile;
+    boolean frozen = false;
+    JFileChooser chooser;
     private boolean finished = false;
     private boolean loaded = false;
     private ArrayList<TexturePackData> textures = new ArrayList<>();
     private String status = "";
-    protected String title = "Load texture";
-    boolean frozen = false;
-    JFileChooser chooser;
-    protected boolean saving = false;
-    protected File selectedFile;
 
     public TextureSelectionScreen(GuiScreen var1) {
         parent = var1;

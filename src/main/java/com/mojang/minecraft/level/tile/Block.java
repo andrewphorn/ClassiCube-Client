@@ -18,15 +18,9 @@ import com.mojang.util.IntersectionHelper;
 import com.mojang.util.Vec3D;
 
 public class Block {
-    protected static Random random = new Random();
-
     public static final Block[] blocks = new Block[256];
-
     public static final boolean[] physics = new boolean[256];
     public static final boolean[] liquid = new boolean[256];
-
-    public StepSound stepSound;
-
     public static final StepSound soundNone = new StepSound("-", 0F, 0F);
     public static final StepSound soundPowderFootstep = new StepSound("stone", 1F, 1F);
     public static final StepSound soundWoodFootstep = new StepSound("wood", 1F, 1F);
@@ -39,21 +33,6 @@ public class Block {
     public static final StepSound soundSandFootstep = new StepSound("sand", 1F, 1F);
     public static final StepSound soundSnowFootstep = new StepSound("snow", 1F, 1F);
     public static final StepSound soundLadderFootstep = new StepSoundSand("ladder", 1F, 1F);
-
-    public int textureId;
-    public final int id;
-
-    private int hardness;
-    private boolean explodes;
-    public float maxX;
-    public float maxY;
-    public float maxZ;
-    public float minX;
-    public float minY;
-    public float minZ;
-    public float particleGravity;
-    public boolean isLiquid;
-
     public static final Block STONE = new StoneBlock(1).setTextureId(1)
             .setStepSound(soundStoneFootstep).setParticleGravity(1F).setHardness(1F);
     public static final Block GRASS = new GrassBlock(2).setStepSound(soundGrassFootstep)
@@ -64,7 +43,7 @@ public class Block {
             .setTextureId(16).setParticleGravity(1F).setHardness(1.5F);
     public static final Block WOOD = new Block(5).setStepSound(soundWoodFootstep).setTextureId(4)
             .setParticleGravity(1F).setHardness(1.5F); // Used to be known as
-                                                       // 'WOOD'
+    // 'WOOD'
     public static final Block SAPLING = new FlowerBlock(6).setStepSound(soundGrassFootstep)
             .setTextureId(15).setParticleGravity(1F).setHardness(0F);
     public static final Block BEDROCK = new Block(7).setStepSound(soundStoneFootstep)
@@ -93,7 +72,6 @@ public class Block {
             .setTextureId(22).setParticleGravity(0.4F).setHardness(0.2F);
     public static final Block SPONGE = new SpongeBlock(19).setStepSound(soundGrassFootstep)
             .setTextureId(48).setParticleGravity(0.9F).setHardness(0.6F);
-
     public static final Block GLASS = new GlassBlock(20).setStepSound(soundGlassFootstep)
             .setTextureId(49).setParticleGravity(1F).setHardness(0.3F);
     public static final Block RED_WOOL = new Block(21).setStepSound(soundClothFootstep)
@@ -158,7 +136,6 @@ public class Block {
     public static final Block COBBLESTONE_SLAB = new CobblestoneSlabBlock(50, false)
             .setStepSound(soundStoneFootstep).setTextureId(6).setParticleGravity(1F)
             .setHardness(1F);
-
     public static final Block ROPE = new RopeBlock(51).setStepSound(soundClothFootstep)
             .setTextureId(11).setParticleGravity(1F).setHardness(0F);
     public static final Block SANDSTONE = new SandStoneBlock(52).setStepSound(soundStoneFootstep)
@@ -179,7 +156,6 @@ public class Block {
             .setTextureId(84).setParticleGravity(1F).setHardness(0.8F);
     public static final Block ICE = new IceBlock(60).setStepSound(soundGlassFootstep)
             .setTextureId(51).setParticleGravity(1F).setHardness(0.8F);
-
     public static final Block CERAMIC_TOLE = new Block(61).setStepSound(soundStoneFootstep)
             .setTextureId(54).setParticleGravity(1F).setHardness(0.8F);
     public static final Block MAGMA = new MagmaBlock(62).setStepSound(soundStoneFootstep)
@@ -190,6 +166,20 @@ public class Block {
             .setTextureId(53).setParticleGravity(1F).setHardness(0.8F);
     public static final Block STONEBRICK = new Block(65).setStepSound(soundStoneFootstep)
             .setTextureId(52).setParticleGravity(1F).setHardness(0.8F);
+    protected static Random random = new Random();
+    public final int id;
+    public StepSound stepSound;
+    public int textureId;
+    public float maxX;
+    public float maxY;
+    public float maxZ;
+    public float minX;
+    public float minY;
+    public float minZ;
+    public float particleGravity;
+    public boolean isLiquid;
+    private int hardness;
+    private boolean explodes;
 
     public Block(int id) {
         explodes = true;
@@ -323,7 +313,8 @@ public class Block {
         }
     }
 
-    public void explode(Level level, int x, int y, int z) {}
+    public void explode(Level level, int x, int y, int z) {
+    }
 
     protected ColorCache getBrightness(Level level, int x, int y, int z) {
         return level.getBrightnessColor(x, y, z);
@@ -345,6 +336,11 @@ public class Block {
         return hardness;
     }
 
+    protected Block setHardness(float hardnessFactor) {
+        hardness = (int) (hardnessFactor * 20F);
+        return this;
+    }
+
     public LiquidType getLiquidType() {
         return LiquidType.notLiquid;
     }
@@ -360,8 +356,7 @@ public class Block {
     /**
      * Gets the texture ID of a block depending on the side you want to use.
      *
-     * @param texture
-     *            Side of the block to render.
+     * @param texture Side of the block to render.
      * @return ID of the texture side requested.
      */
     public int getTextureId(int texture) {
@@ -371,8 +366,7 @@ public class Block {
     /**
      * Gets the texture ID of a block depending on the side you want to use.
      *
-     * @param side
-     *            Side of the block to render.
+     * @param side Side of the block to render.
      * @return ID of the texture side requested.
      */
     public int getTextureId(TextureSide side) {
@@ -391,6 +385,11 @@ public class Block {
         return isLiquid;
     }
 
+    protected Block setLiquid(boolean isLiquid) {
+        this.isLiquid = isLiquid;
+        return this;
+    }
+
     public boolean isOpaque() {
         return true;
     }
@@ -399,16 +398,22 @@ public class Block {
         return true;
     }
 
-    public void onAdded(Level level, int x, int y, int z) {}
+    public void onAdded(Level level, int x, int y, int z) {
+    }
 
     public void onBreak(Level level, int x, int y, int z) {
         dropItems(level, x, y, z, 1F);
     }
 
     // TODO.
-    public void onNeighborChange(Level level, int x, int y, int z, int side) {}
-    public void onPlace(Level level, int x, int y, int z) {}
-    public void onRemoved(Level level, int x, int y, int z) {}
+    public void onNeighborChange(Level level, int x, int y, int z, int side) {
+    }
+
+    public void onPlace(Level level, int x, int y, int z) {
+    }
+
+    public void onRemoved(Level level, int x, int y, int z) {
+    }
 
     public boolean render(Level level, int x, int y, int z, ShapeRenderer shapeRenderer) {
         boolean rendered = false;
@@ -485,6 +490,10 @@ public class Block {
         renderInside(shapeRenderer, -2, 0, 0, 5);
     }
 
+    // TODO past here.
+
+    // TODO.
+
     public void renderInside(ShapeRenderer shapeRenderer, int x, int y, int z, int side) {
         int textureID1 = getTextureId(side);
 
@@ -525,19 +534,14 @@ public class Block {
         shapeRenderer.end();
     }
 
-    // TODO past here.
-
-    // TODO.
     /**
      * Renders a side of this block.
      *
-     * @param renderer
-     *            Shape renderer that will render this.
+     * @param renderer Shape renderer that will render this.
      * @param x
      * @param y
      * @param z
-     * @param side
-     *            Side of the block to render. See @{TextureSide}
+     * @param side     Side of the block to render. See @{TextureSide}
      */
     public void renderSide(ShapeRenderer renderer, int x, int y, int z, int side) {
         int sideID = getTextureId(side);
@@ -651,16 +655,6 @@ public class Block {
         this.minZ = minZ;
     }
 
-    protected Block setHardness(float hardnessFactor) {
-        hardness = (int) (hardnessFactor * 20F);
-        return this;
-    }
-
-    protected Block setLiquid(boolean isLiquid) {
-        this.isLiquid = isLiquid;
-        return this;
-    }
-
     protected Block setParticleGravity(float particleGravity) {
         this.particleGravity = particleGravity;
         return this;
@@ -682,7 +676,7 @@ public class Block {
 
     // TODO.
     public final void spawnBlockParticles(Level level, int x, int y, int z, int side,
-            ParticleManager particleManager) {
+                                          ParticleManager particleManager) {
         float offset = 0.1F;
         float var8 = x + random.nextFloat() * (minX - maxX - offset * 2F) + offset + maxX;
         float var9 = y + random.nextFloat() * (minY - maxY - offset * 2F) + offset + maxY;
@@ -717,7 +711,7 @@ public class Block {
 
     // TODO.
     public void spawnBreakParticles(Level level, int x, int y, int z,
-            ParticleManager particleManager) {
+                                    ParticleManager particleManager) {
         for (int var6 = 0; var6 < 4; ++var6) {
             for (int var7 = 0; var7 < 4; ++var7) {
                 for (int var8 = 0; var8 < 4; ++var8) {
@@ -733,7 +727,8 @@ public class Block {
 
     }
 
-    public void update(Level level, int x, int y, int z, Random rand) {}
+    public void update(Level level, int x, int y, int z, Random rand) {
+    }
 
     private boolean xIntersects(Vec3D vec) {
         return IntersectionHelper.xIntersects(vec, maxY, maxZ, minY, minZ);

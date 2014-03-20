@@ -24,20 +24,10 @@ public class Mob extends Entity {
     public float timeOffs;
     public float speed;
     public float rotA = (float) (Math.random() + 1D) * 0.01F; // Unused?
-    protected float yBodyRot = 0F;
-    protected float yBodyRotO = 0F;
-    protected float oRun;
-    protected float run;
-    protected float animStep;
-    protected float animStepO;
-    protected int tickCount = 0;
     public boolean hasHair = true;
-    protected String textureName = "/char.png";
     public boolean allowAlpha = true;
     public float rotOffs = 0F;
     public String modelName = null;
-    protected float bobStrength = 1F;
-    protected int deathScore = 0;
     public float renderOffset = 0F;
     public int health = 20;
     public int lastHealth;
@@ -50,8 +40,18 @@ public class Mob extends Entity {
     public int attackTime = 0;
     public float oTilt;
     public float tilt;
-    protected boolean dead = false;
     public AI ai;
+    protected float yBodyRot = 0F;
+    protected float yBodyRotO = 0F;
+    protected float oRun;
+    protected float run;
+    protected float animStep;
+    protected float animStepO;
+    protected int tickCount = 0;
+    protected String textureName = "/char.png";
+    protected float bobStrength = 1F;
+    protected int deathScore = 0;
+    protected boolean dead = false;
 
     public Mob(Level level) {
         super(level);
@@ -281,7 +281,7 @@ public class Mob extends Entity {
     }
 
     public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
-            float var6, float var7) {
+                            float var6, float var7) {
         modelCache.getModel(modelName).render(var2, var4, tickCount + var3, var5, var6, var7);
     }
 

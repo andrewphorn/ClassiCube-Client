@@ -81,7 +81,7 @@ public class Sheep extends QuadrupedMob {
 
     @Override
     public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
-            float var6, float var7) {
+                            float var6, float var7) {
         AnimalModel var8;
         float var9 = (var8 = (AnimalModel) modelCache.getModel("sheep")).head.y;
         float var10 = var8.head.z;

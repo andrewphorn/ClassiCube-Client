@@ -13,15 +13,12 @@ import com.mojang.minecraft.render.TextureManager;
 
 public final class BlockSelectScreen extends GuiScreen {
 
+    private final Timer timer = new Timer();
+    private final int milliseconds = 30;
+    public TimerTask timertask;
     boolean defaultSizeBlocks = SessionData.allowedBlocks.size() <= 50;
     int blocksPerRow = 13;
     int spacing = 20;
-
-    private final Timer timer = new Timer();
-
-    private final int milliseconds = 30;
-    public TimerTask timertask;
-
     float lastRotation = 0;
 
     public BlockSelectScreen() {

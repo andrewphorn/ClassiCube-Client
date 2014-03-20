@@ -10,42 +10,27 @@ import com.mojang.minecraft.gui.FontRenderer;
 
 /**
  * Class used to store data for clicking URLs in the chat screen
- * 
+ *
  * @author Jon
- * 
  */
 public class ChatClickData {
-    public class LinkData {
-        public String link;
-        public int x0;
-        public int x1;
-
-        public LinkData(String textualLink, int x0, int x1) {
-            link = textualLink;
-            this.x0 = x0;
-            this.x1 = x1;
-        }
-    }
-
+    private static final Pattern patternControlCode = Pattern.compile("(?i)\\u00A7[0-9A-FK-OR]");
+    public final String message;
     /**
      * The idea is to work with urls http, fpt, sftp, gopher, telnet and file
      * (tee hee)
      */
     private final String urlPattern = "((https?|ftp|sftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
     private final Pattern compiledPattern = Pattern.compile(urlPattern, Pattern.CASE_INSENSITIVE);
-    public final String message;
-
     private final ArrayList<LinkData> clickedUrls;
-
-    private static final Pattern patternControlCode = Pattern.compile("(?i)\\u00A7[0-9A-FK-OR]");
-
-    public static String stripControlCodes(String string) {
-        return patternControlCode.matcher(string).replaceAll("");
-    }
 
     public ChatClickData(FontRenderer fontRenderer, ChatLine chatLine) {
         message = chatLine.message;
         clickedUrls = pullLinks(message, fontRenderer);
+    }
+
+    public static String stripControlCodes(String string) {
+        return patternControlCode.matcher(string).replaceAll("");
     }
 
     public ArrayList<LinkData> getClickedUrls() {
@@ -74,11 +59,9 @@ public class ChatClickData {
 
     /**
      * Strips any URLs from the the line where the user clicked
-     * 
-     * @param text
-     *            The text in question
-     * @param fr
-     *            The font renderer instance
+     *
+     * @param text The text in question
+     * @param fr   The font renderer instance
      * @return ArrayList of LinkData
      */
     private ArrayList<LinkData> pullLinks(String text, FontRenderer fr) {
@@ -93,5 +76,17 @@ public class ChatClickData {
                     .getWidth(text.substring(0, m.end()))));
         }
         return links;
+    }
+
+    public class LinkData {
+        public String link;
+        public int x0;
+        public int x1;
+
+        public LinkData(String textualLink, int x0, int x1) {
+            link = textualLink;
+            this.x0 = x0;
+            this.x1 = x1;
+        }
     }
 }

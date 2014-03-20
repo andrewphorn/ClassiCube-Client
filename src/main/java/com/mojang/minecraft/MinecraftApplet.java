@@ -66,7 +66,8 @@ public class MinecraftApplet extends Applet {
             // You have to remove it twice, otherwise the problem isn't fixed
             kfm.removeKeyEventDispatcher(ked);
             kfm.removeKeyEventDispatcher(ked);
-        } catch (ClassCastException e) {}
+        } catch (ClassCastException e) {
+        }
 
         canvas = new MinecraftApplet$1(this);
 

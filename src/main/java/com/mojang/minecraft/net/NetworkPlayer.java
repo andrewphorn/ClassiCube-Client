@@ -14,29 +14,18 @@ import com.mojang.minecraft.render.TextureManager;
 public class NetworkPlayer extends HumanoidMob {
 
     public static final long serialVersionUID = 77479605454997290L;
-
-    public static boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
-
     public transient List<PositionUpdate> moveQueue = new LinkedList<>();
+    public transient BufferedImage newTexture = null;
+    public String name;
+    public String displayName;
+    public String SkinName = null;
+    int tickCount = 0;
     private transient Minecraft minecraft;
     private int xp;
     private int yp;
     private int zp;
     private transient int a = -1;
-    public transient BufferedImage newTexture = null;
-    public String name;
-    public String displayName;
-    int tickCount = 0;
     private transient TextureManager textures;
-
-    public String SkinName = null;
 
     public NetworkPlayer(Minecraft minecraft, String displayName, int x, int y, int z,
                          float xRot, float yRot) {
@@ -65,6 +54,15 @@ public class NetworkPlayer extends HumanoidMob {
         } else if (isInteger(modelName)) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load("/terrain.png"));
         }
+    }
+
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override

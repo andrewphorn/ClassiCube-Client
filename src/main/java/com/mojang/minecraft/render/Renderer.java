@@ -25,10 +25,10 @@ public final class Renderer {
     public int levelTicks;
     public Entity entity = null;
     public Random random = new Random();
-    private FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
     public float fogRed;
     public float fogBlue;
     public float fogGreen;
+    private FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 
     public Renderer(Minecraft minecraft) {
         this.minecraft = minecraft;

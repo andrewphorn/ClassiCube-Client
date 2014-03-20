@@ -13,12 +13,12 @@ public final class Music implements Audio {
 
     ByteBuffer playing = ByteBuffer.allocate(176400);
     ByteBuffer current = ByteBuffer.allocate(176400);
-    private ByteBuffer processing = null;
     ByteBuffer previous = null;
     VorbisStream stream;
     SoundPlayer player;
     boolean finished = false;
     boolean stopped = false;
+    private ByteBuffer processing = null;
 
     public Music(SoundPlayer var1, URL var2) {
         player = var1;

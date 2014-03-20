@@ -3,16 +3,10 @@ package com.mojang.minecraft.gui;
 import com.mojang.minecraft.GameSettings;
 
 public class ScaledResolution {
-    public static int ceiling_double_int(double par0) {
-        int var2 = (int) par0;
-        return par0 > var2 ? var2 + 1 : var2;
-    }
-
     private int scaledWidth;
     private int scaledHeight;
     private double scaledWidthD;
     private double scaledHeightD;
-
     private int scaleFactor;
 
     public ScaledResolution(GameSettings par1GameSettings, int par2, int par3) {
@@ -34,6 +28,11 @@ public class ScaledResolution {
         scaledHeightD = (double) scaledHeight / (double) scaleFactor;
         scaledWidth = ceiling_double_int(scaledWidthD);
         scaledHeight = ceiling_double_int(scaledHeightD);
+    }
+
+    public static int ceiling_double_int(double par0) {
+        int var2 = (int) par0;
+        return par0 > var2 ? var2 + 1 : var2;
     }
 
     public int getScaledHeight() {

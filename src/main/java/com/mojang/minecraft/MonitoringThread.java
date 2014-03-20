@@ -11,37 +11,7 @@ import java.util.Set;
 
 public class MonitoringThread extends Thread {
 
-    static class ThreadTime {
-
-        private long id;
-        private long last;
-        private long current;
-
-        public ThreadTime(long id) {
-            this.id = id;
-        }
-
-        public long getCurrent() {
-            return current;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public long getLast() {
-            return last;
-        }
-
-        public void setCurrent(long current) {
-            this.current = current;
-        }
-
-        public void setLast(long last) {
-            this.last = last;
-        }
-    }
-
+    public long maxMemory, totalMemory, freeMemory;
     private long refreshInterval;
 
     private boolean stopped;
@@ -50,8 +20,6 @@ public class MonitoringThread extends Thread {
 
     private OperatingSystemMXBean opBean = ManagementFactory.getOperatingSystemMXBean();
     private Runtime runtime;
-
-    public long maxMemory, totalMemory, freeMemory;
 
     public MonitoringThread(long refreshInterval) {
         this.refreshInterval = refreshInterval;
@@ -107,7 +75,8 @@ public class MonitoringThread extends Thread {
     }
 
     private void removeDeadThreads(Set<Long> mappedIds, long[] allThreadIds) {
-        outer: for (long id1 : mappedIds) {
+        outer:
+        for (long id1 : mappedIds) {
             for (long id2 : allThreadIds) {
                 if (id1 == id2) {
                     continue outer;
@@ -167,5 +136,36 @@ public class MonitoringThread extends Thread {
 
     public void stopMonitor() {
         stopped = true;
+    }
+
+    static class ThreadTime {
+
+        private long id;
+        private long last;
+        private long current;
+
+        public ThreadTime(long id) {
+            this.id = id;
+        }
+
+        public long getCurrent() {
+            return current;
+        }
+
+        public void setCurrent(long current) {
+            this.current = current;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public long getLast() {
+            return last;
+        }
+
+        public void setLast(long last) {
+            this.last = last;
+        }
     }
 }

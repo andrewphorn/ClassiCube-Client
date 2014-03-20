@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class NBTTagByteArray extends NBTBase {
-    /** The byte array stored in the tag. */
+    /**
+     * The byte array stored in the tag.
+     */
     public byte[] byteArray;
 
     public NBTTagByteArray(String name) {
@@ -20,6 +22,7 @@ public class NBTTagByteArray extends NBTBase {
 
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes.
+     *
      * @param output The output stream to write to.
      */
     @Override
@@ -30,6 +33,7 @@ public class NBTTagByteArray extends NBTBase {
 
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes.
+     *
      * @param input The input stream to read from.
      */
     @Override
@@ -41,6 +45,7 @@ public class NBTTagByteArray extends NBTBase {
 
     /**
      * Gets the type byte for the tag.
+     *
      * @return byte
      */
     @Override

@@ -18,13 +18,6 @@ import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 
 public final class HUDScreen extends Screen {
-    public List<ChatLine> chat = new ArrayList<>();
-    private Random random = new Random();
-    private Minecraft mc;
-    public int width;
-    public int height;
-    public String hoveredPlayer = null;
-    public int ticks = 0;
     public static String Compass = "";
     public static String ServerName = "";
     public static String UserDetail = "";
@@ -32,14 +25,20 @@ public final class HUDScreen extends Screen {
     public static String BottomRight2 = "";
     public static String BottomRight3 = "";
     public static String Announcement = "";
+    public List<ChatLine> chat = new ArrayList<>();
+    public int width;
+    public int height;
+    public String hoveredPlayer = null;
+    public int ticks = 0;
     public List<ChatScreenData> chatsOnScreen = new ArrayList<>();
+    int page = 0;
+    private Random random = new Random();
+    private Minecraft minecraft;
 
-    int Page = 0;
-
-    public HUDScreen(Minecraft minecraft, int var2, int var3) {
-        mc = minecraft;
-        width = var2 * 240 / var3;
-        height = var3 * 240 / var3;
+    public HUDScreen(Minecraft minecraft, int width, int height) {
+        this.minecraft = minecraft;
+        this.width = width * 240 / height;
+        this.height = height * 240 / height;
     }
 
     public final void addChat(String text) {
@@ -76,33 +75,33 @@ public final class HUDScreen extends Screen {
     }
 
     public final void render(float var1, boolean var2, int var3, int var4) {
-        FontRenderer fontRenderer = mc.fontRenderer;
-        mc.renderer.enableGuiMode();
-        if(!mc.canRenderGUI) return;
-        TextureManager var6 = mc.textureManager;
-        GL11.glBindTexture(3553, mc.textureManager.load("/gui/gui.png"));
+        FontRenderer fontRenderer = minecraft.fontRenderer;
+        minecraft.renderer.enableGuiMode();
+        if (!minecraft.canRenderGUI) return;
+        TextureManager var6 = minecraft.textureManager;
+        GL11.glBindTexture(3553, minecraft.textureManager.load("/gui/gui.png"));
         ShapeRenderer var7 = ShapeRenderer.instance;
         GL11.glColor4f(1F, 1F, 1F, 1F);
         GL11.glEnable(3042);
-        Inventory var8 = mc.player.inventory;
+        Inventory var8 = minecraft.player.inventory;
         imgZ = -90F;
         drawImage(width / 2 - 91, height - 22, 0, 0, 182, 22);
         drawImage(width / 2 - 91 - 1 + var8.selected * 20, height - 22 - 1, 0, 22, 24, 22);
-        GL11.glBindTexture(3553, mc.textureManager.load("/gui/icons.png"));
+        GL11.glBindTexture(3553, minecraft.textureManager.load("/gui/icons.png"));
         drawImage(width / 2 - 7, height / 2 - 7, 0, 0, 16, 16);
-        boolean var9 = (mc.player.invulnerableTime / 3 & 1) == 1;
-        if (mc.player.invulnerableTime < 10) {
+        boolean var9 = (minecraft.player.invulnerableTime / 3 & 1) == 1;
+        if (minecraft.player.invulnerableTime < 10) {
             var9 = false;
         }
 
-        int health = mc.player.health;
-        int lastHealth = mc.player.lastHealth;
+        int health = minecraft.player.health;
+        int lastHealth = minecraft.player.lastHealth;
         random.setSeed(ticks * 312871);
         int var12;
         int i;
         int var15;
         int var26;
-        if (mc.gamemode.isSurvival()) {
+        if (minecraft.gamemode.isSurvival()) {
             for (var12 = 0; var12 < 10; ++var12) {
                 byte var13 = 0;
                 if (var9) {
@@ -135,9 +134,9 @@ public final class HUDScreen extends Screen {
                 }
             }
 
-            if (mc.player.isUnderWater()) {
-                var12 = (int) Math.ceil((mc.player.airSupply - 2) * 10D / 300D);
-                var26 = (int) Math.ceil(mc.player.airSupply * 10D / 300D) - var12;
+            if (minecraft.player.isUnderWater()) {
+                var12 = (int) Math.ceil((minecraft.player.airSupply - 2) * 10D / 300D);
+                var26 = (int) Math.ceil(minecraft.player.airSupply * 10D / 300D) - var12;
 
                 for (i = 0; i < var12 + var26; ++i) {
                     if (i < var12) {
@@ -190,13 +189,13 @@ public final class HUDScreen extends Screen {
         }
         // if (Minecraft.isSinglePlayer)
         // var5.render("Development Build", 2, 32, 16777215);
-        if (mc.settings.showDebug) {
+        if (minecraft.settings.showDebug) {
             GL11.glPushMatrix();
             GL11.glScalef(0.7F, 0.7F, 1F);
             fontRenderer.render("ClassiCube", 2, 2, 16777215);
-            fontRenderer.render(mc.debug, 2, 12, 16777215);
-            fontRenderer.render("Position: (" + (int) mc.player.x + ", " + (int) mc.player.y + ", "
-                    + (int) mc.player.z + ")", 2, 22, 16777215);
+            fontRenderer.render(minecraft.debug, 2, 12, 16777215);
+            fontRenderer.render("Position: (" + (int) minecraft.player.x + ", " + (int) minecraft.player.y + ", "
+                    + (int) minecraft.player.z + ")", 2, 22, 16777215);
             GL11.glPopMatrix();
         }
         fontRenderer.render(Compass, width - (fontRenderer.getWidth(Compass) + 2), 12, 16777215);
@@ -221,29 +220,29 @@ public final class HUDScreen extends Screen {
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glScalef(0.7F, 0.7F, 1F);
-        if (mc.player.flyingMode && !mc.player.noPhysics) {
+        if (minecraft.player.flyingMode && !minecraft.player.noPhysics) {
             fontRenderer.render("Fly: ON.", 2, 32, 16777215);
-        } else if (!mc.player.flyingMode && mc.player.noPhysics) {
+        } else if (!minecraft.player.flyingMode && minecraft.player.noPhysics) {
             fontRenderer.render("NoClip: ON.", 2, 32, 16777215);
-        } else if (mc.player.flyingMode && mc.player.noPhysics) {
+        } else if (minecraft.player.flyingMode && minecraft.player.noPhysics) {
             fontRenderer.render("Fly: ON. NoClip: ON", 2, 32, 16777215);
         }
         GL11.glPopMatrix();
-        if (mc.gamemode instanceof SurvivalGameMode) {
-            String var24 = "Score: &e" + mc.player.getScore();
+        if (minecraft.gamemode instanceof SurvivalGameMode) {
+            String var24 = "Score: &e" + minecraft.player.getScore();
             fontRenderer.render(var24, width - fontRenderer.getWidth(var24) - 2, 2, 16777215);
             fontRenderer
-                    .render("Arrows: " + mc.player.arrows, width / 2 + 8, height - 33, 16777215);
+                    .render("Arrows: " + minecraft.player.arrows, width / 2 + 8, height - 33, 16777215);
         }
 
         byte chatLinesInScreen = 10; // chats per screen
         boolean isLargeChatScreen = false;
-        if (mc.currentScreen instanceof ChatInputScreen) {
+        if (minecraft.currentScreen instanceof ChatInputScreen) {
             chatLinesInScreen = 20;
             isLargeChatScreen = true;
         }
         chatLinesInScreen = (byte) (chatLinesInScreen
-                + (chatLinesInScreen - chatLinesInScreen * mc.settings.scale) - 1);
+                + (chatLinesInScreen - chatLinesInScreen * minecraft.settings.scale) - 1);
 
         if (isLargeChatScreen) {
             int chatX = 2;
@@ -281,14 +280,14 @@ public final class HUDScreen extends Screen {
         var15 = height / 2;
         hoveredPlayer = null;
         if (Keyboard.isCreated()) {
-            if (Keyboard.isKeyDown(15) && mc.networkManager != null
-                    && mc.networkManager.isConnected()) {
+            if (Keyboard.isKeyDown(15) && minecraft.networkManager != null
+                    && minecraft.networkManager.isConnected()) {
                 for (int l = 2; l < 11; l++) {
                     if (Keyboard.isKeyDown(l)) {
-                        Page = l - 2;
+                        page = l - 2;
                     }
                 }
-                List<String> playersOnWorld = mc.networkManager.getPlayers();
+                List<String> playersOnWorld = minecraft.networkManager.getPlayers();
                 GL11.glEnable(3042);
                 GL11.glDisable(3553);
                 GL11.glBlendFunc(770, 771);
@@ -303,14 +302,14 @@ public final class HUDScreen extends Screen {
                 GL11.glDisable(3042);
                 GL11.glEnable(3553);
                 boolean drawDefault = false;
-                List<PlayerListNameData> playerListNames = mc.playerListNameData;
+                List<PlayerListNameData> playerListNames = minecraft.playerListNameData;
                 if (playerListNames.isEmpty()) {
                     drawDefault = true;
                 }
                 int maxStringsPerColumn = 14;
                 int maxStringsPerScreen = 28;
 
-                var23 = !drawDefault ? "Players online: (Page " + (Page + 1) + ")"
+                var23 = !drawDefault ? "Players online: (page " + (page + 1) + ")"
                         : "Players online:";
                 fontRenderer.render(var23, i - fontRenderer.getWidth(var23) / 2, var15 - 64 - 12,
                         25855);
@@ -337,12 +336,12 @@ public final class HUDScreen extends Screen {
 
                     List<PlayerListNameData> namesToPrint = new ArrayList<>();
 
-                    for (int m = 0; m < Page; m++) {
+                    for (int m = 0; m < page; m++) {
                         groupChanges += findGroupChanges(m, playerListNames);
                     }
-                    int rangeA = maxStringsPerScreen * Page - groupChanges;
+                    int rangeA = maxStringsPerScreen * page - groupChanges;
                     int rangeB = rangeA + maxStringsPerScreen
-                            - findGroupChanges(Page, playerListNames);
+                            - findGroupChanges(page, playerListNames);
                     rangeB = Math.min(rangeB, playerListNames.size());
                     for (int k = rangeA; k < rangeB; k++) {
                         namesToPrint.add(playerListNames.get(k));

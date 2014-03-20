@@ -11,6 +11,7 @@ public class NBTTagEnd extends NBTBase {
 
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes.
+     *
      * @param input The input stream to read from.
      */
     @Override
@@ -19,6 +20,7 @@ public class NBTTagEnd extends NBTBase {
 
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes.
+     *
      * @param output The output stream to write to.
      */
     @Override
@@ -27,6 +29,7 @@ public class NBTTagEnd extends NBTBase {
 
     /**
      * Gets the type byte for the tag.
+     *
      * @return byte
      */
     @Override

@@ -9,13 +9,13 @@ import com.mojang.util.Vec3D;
 public class AABB implements Serializable {
 
     public static final long serialVersionUID = 0L;
-    private float epsilon = 0F;
     public float maxX;
     public float maxY;
     public float maxZ;
     public float minX;
     public float minY;
     public float minZ;
+    private float epsilon = 0F;
 
     public AABB(float maxX, float maxY, float maxZ, float minX, float minY, float minZ) {
         this.maxX = maxX;
@@ -162,6 +162,7 @@ public class AABB implements Serializable {
 
     /**
      * Checks if the AABB contains the vector.
+     *
      * @param vector The vector to check against.
      * @return boolean
      */
@@ -177,6 +178,7 @@ public class AABB implements Serializable {
 
     /**
      * Expands the AABB by the dimensions specified.
+     *
      * @param x
      * @param y
      * @param z
@@ -218,6 +220,7 @@ public class AABB implements Serializable {
 
     /**
      * Gets the size of the AABB.
+     *
      * @return The size of the AABB.
      */
     public float getSize() {
@@ -226,6 +229,7 @@ public class AABB implements Serializable {
 
     /**
      * Grows the AABB by the dimensions specified.
+     *
      * @param x
      * @param y
      * @param z
@@ -243,6 +247,7 @@ public class AABB implements Serializable {
 
     /**
      * Returns whether the given bounding box intersects with this one.
+     *
      * @param aabb
      * @return
      */
@@ -254,6 +259,7 @@ public class AABB implements Serializable {
 
     /**
      * Returns whether the given bounding box intersects with this one.
+     *
      * @param x0
      * @param y0
      * @param z0
@@ -270,6 +276,7 @@ public class AABB implements Serializable {
 
     /**
      * Returns if the supplied AABB is completely inside the bounding box
+     *
      * @param aabb
      * @return
      */
@@ -281,6 +288,7 @@ public class AABB implements Serializable {
 
     /**
      * Shifts the AABB by the dimensions specified.
+     *
      * @param x
      * @param y
      * @param z
@@ -296,6 +304,7 @@ public class AABB implements Serializable {
 
     /**
      * Shrinks the AABB by the dimensions specified.
+     *
      * @param x
      * @param y
      * @param z

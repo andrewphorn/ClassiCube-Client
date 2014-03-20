@@ -140,10 +140,11 @@ public final class LevelGenerator {
 
     /**
      * Generates a level
+     *
      * @param creator
      * @param width
      * @param depth
-     * @param height Seems to be unused.
+     * @param height  Seems to be unused.
      * @return
      */
     public final Level generate(String creator, int width, int depth, int height) {

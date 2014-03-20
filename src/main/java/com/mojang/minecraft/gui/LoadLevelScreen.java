@@ -13,15 +13,15 @@ import com.mojang.minecraft.level.LevelLoader;
 public class LoadLevelScreen extends GuiScreen implements Runnable {
 
     protected GuiScreen parent;
+    protected String title = "Load level";
+    protected boolean saving = false;
+    protected File selectedFile;
+    boolean frozen = false;
+    JFileChooser chooser;
     private boolean finished = false;
     private boolean loaded = false;
     private String[] levels = null;
     private String status = "";
-    protected String title = "Load level";
-    boolean frozen = false;
-    JFileChooser chooser;
-    protected boolean saving = false;
-    protected File selectedFile;
 
     public LoadLevelScreen(GuiScreen parent) {
         this.parent = parent;
@@ -81,7 +81,7 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
         try {
             Level level = new LevelLoader().load(file, this.minecraft.player);
             if (level != null) {
-            	minecraft.setLevel(level);
+                minecraft.setLevel(level);
             }
         } catch (IOException ex) {
             // TODO Auto-generated catch block
@@ -130,7 +130,7 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
                     LogUtil.logError("Error waiting to run LoadLevelScreen.", ex);
                 }
             }
-            levels = new String[] { "" };
+            levels = new String[]{""};
             if (levels.length >= 5) {
                 setLevels(levels);
                 loaded = true;

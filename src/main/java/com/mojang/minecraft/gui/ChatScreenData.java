@@ -13,7 +13,7 @@ public class ChatScreenData {
     public FontRenderer renderer;
 
     public ChatScreenData(float width, float height, float x, float y, String message,
-            FontRenderer f) {
+                          FontRenderer f) {
         this.width = width;
         this.height = height;
         this.x = x;

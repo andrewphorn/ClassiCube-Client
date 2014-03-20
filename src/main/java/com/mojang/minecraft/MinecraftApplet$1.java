@@ -22,11 +22,9 @@ import com.oyasunadev.mcraft.client.util.Constants;
 
 // MinecraftCanvas
 public class MinecraftApplet$1 extends Canvas {
+    private static final long serialVersionUID = 1L;
     private Image image;
     private Image image2;
-
-    private static final long serialVersionUID = 1L;
-
     private MinecraftApplet applet;
 
     public MinecraftApplet$1(MinecraftApplet minecraftApplet) {
@@ -78,7 +76,8 @@ public class MinecraftApplet$1 extends Canvas {
                 if (out != null) {
                     out.close();
                 }
-            } catch (IOException ioe) {}
+            } catch (IOException ioe) {
+            }
         }
     }
 

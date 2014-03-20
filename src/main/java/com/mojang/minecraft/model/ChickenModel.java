@@ -63,7 +63,7 @@ public class ChickenModel extends Model {
      * how "far" arms and legs can swing at most.
      */
     public void setRotationAngles(float par1, float par2, float par3, float par4, float par5,
-            float par6) {
+                                  float par6) {
         head.pitch = par5 / (180F / (float) Math.PI);
         head.yaw = par4 / (180F / (float) Math.PI);
         bill.pitch = head.pitch;

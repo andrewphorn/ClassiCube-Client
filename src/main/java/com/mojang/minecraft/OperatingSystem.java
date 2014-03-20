@@ -4,11 +4,10 @@ public enum OperatingSystem {
     LINUX("linux", 0), SOLARIS("solaris", 1), WINDOWS("windows", 2), MAC_OS_X("macos", 3), UNKNOWN(
             "unknown", 4);
 
+    public static final OperatingSystem[] values = new OperatingSystem[]{LINUX, SOLARIS, WINDOWS,
+            MAC_OS_X, UNKNOWN};
     public final String folderName;
     public final int id;
-
-    public static final OperatingSystem[] values = new OperatingSystem[] { LINUX, SOLARIS, WINDOWS,
-            MAC_OS_X, UNKNOWN };
 
     private OperatingSystem(String folderName, int id) {
         this.folderName = folderName;

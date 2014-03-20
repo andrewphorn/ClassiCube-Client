@@ -47,7 +47,7 @@ public class Particle extends Entity {
     }
 
     public void render(ShapeRenderer shapeRenderer, float var2, float var3, float var4, float var5,
-            float var6, float var7) {
+                       float var6, float var7) {
         float var8;
         float var9 = (var8 = tex % 16 / 16F) + 0.0624375F;
         float var10;

@@ -39,6 +39,53 @@ import com.mojang.minecraft.render.texture.TextureWaterFX;
 
 public class TextureManager {
 
+    public boolean Applet;
+    public HashMap<String, Integer> textures = new HashMap<>();
+    public HashMap<Integer, BufferedImage> textureImages = new HashMap<>();
+    public IntBuffer idBuffer = BufferUtils.createIntBuffer(1);
+    public ByteBuffer textureBuffer = BufferUtils.createByteBuffer(262144);
+    public List<TextureFX> animations = new ArrayList<>();
+    public GameSettings settings;
+    public List<BufferedImage> textureAtlas = new ArrayList<>();
+    public BufferedImage currentTerrainPng = null;
+    public BufferedImage customSideBlock = null;
+    public BufferedImage customEdgeBlock = null;
+    public BufferedImage customDirtPng = null;
+    public BufferedImage customRainPng = null;
+    public BufferedImage customGUI = null;
+    public BufferedImage customIcons = null;
+    public BufferedImage customFont = null;
+    public BufferedImage customClouds = null;
+    public BufferedImage customSnow = null;
+    public BufferedImage customChicken = null;
+    public BufferedImage customCreeper = null;
+    public BufferedImage customCrocodile = null;
+    public BufferedImage customHumanoid = null;
+    public BufferedImage customPig = null;
+    public BufferedImage customPrinter = null;
+    public BufferedImage customSheep = null;
+    public BufferedImage customSkeleton = null;
+    public BufferedImage customSpider = null;
+    public BufferedImage customZombie = null;
+    public File minecraftFolder;
+    public File texturesFolder;
+    public int previousMipmapMode;
+    TextureManager instance;
+
+    public TextureManager(GameSettings settings, boolean Applet) {
+        this.Applet = Applet;
+        this.settings = settings;
+
+        minecraftFolder = Minecraft.mcDir;
+        texturesFolder = new File(minecraftFolder, "texturepacks");
+
+        if (!texturesFolder.exists()) {
+            texturesFolder.mkdir();
+        }
+        ImageIO.setUseCache(false);
+        instance = this;
+    }
+
     public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y)
             throws IOException {
 
@@ -68,57 +115,9 @@ public class TextureManager {
         return image1;
     }
 
-    public boolean Applet;
-    public HashMap<String, Integer> textures = new HashMap<>();
-    public HashMap<Integer, BufferedImage> textureImages = new HashMap<>();
-    public IntBuffer idBuffer = BufferUtils.createIntBuffer(1);
-    public ByteBuffer textureBuffer = BufferUtils.createByteBuffer(262144);
-    public List<TextureFX> animations = new ArrayList<>();
-    public GameSettings settings;
-
-    public List<BufferedImage> textureAtlas = new ArrayList<>();
-    public BufferedImage currentTerrainPng = null;
-    public BufferedImage customSideBlock = null;
-    public BufferedImage customEdgeBlock = null;
-    public BufferedImage customDirtPng = null;
-    public BufferedImage customRainPng = null;
-    public BufferedImage customGUI = null;
-    public BufferedImage customIcons = null;
-    public BufferedImage customFont = null;
-    public BufferedImage customClouds = null;
-
-    public BufferedImage customSnow = null;
-    public BufferedImage customChicken = null;
-    public BufferedImage customCreeper = null;
-    public BufferedImage customCrocodile = null;
-    public BufferedImage customHumanoid = null;
-    public BufferedImage customPig = null;
-    public BufferedImage customPrinter = null;
-    public BufferedImage customSheep = null;
-    public BufferedImage customSkeleton = null;
-    public BufferedImage customSpider = null;
-
-    public BufferedImage customZombie = null;
-    public File minecraftFolder;
-
-    public File texturesFolder;
-
-    public int previousMipmapMode;
-
-    TextureManager instance;
-
-    public TextureManager(GameSettings settings, boolean Applet) {
-        this.Applet = Applet;
-        this.settings = settings;
-
-        minecraftFolder = Minecraft.mcDir;
-        texturesFolder = new File(minecraftFolder, "texturepacks");
-
-        if (!texturesFolder.exists()) {
-            texturesFolder.mkdir();
-        }
-        ImageIO.setUseCache(false);
-        instance = this;
+    public static int getMaxAnisotropySetting() {
+        float maxLevel = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+        return (int) Math.round(Math.log(maxLevel) / Math.log(2));
     }
 
     public List<BufferedImage> Atlas2dInto1d(BufferedImage atlas2d, int tiles, int atlasSizeLimit) {
@@ -330,11 +329,6 @@ public class TextureManager {
         }
 
         previousMipmapMode = settings.smoothing;
-    }
-
-    public static int getMaxAnisotropySetting() {
-        float maxLevel = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-        return (int) Math.round(Math.log(maxLevel) / Math.log(2));
     }
 
     public int load(String file) {

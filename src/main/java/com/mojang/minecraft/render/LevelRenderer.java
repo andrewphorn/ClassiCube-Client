@@ -19,25 +19,33 @@ public final class LevelRenderer {
     public int listId;
     public IntBuffer buffer = BufferUtils.createIntBuffer(65536);
     public List<Chunk> chunks = new ArrayList<>();
-    private Chunk[] loadQueue;
     public Chunk[] chunkCache;
+    public Minecraft minecraft;
+    public int ticks = 0;
+    public float cracks;
+    private Chunk[] loadQueue;
     private int xChunks;
     private int yChunks;
     private int zChunks;
     private int baseListId;
     private int listsCount = -1;
-    public Minecraft minecraft;
     private int[] chunkDataCache = new int['\uc350'];
-    public int ticks = 0;
     private float lastLoadX = -9999F;
     private float lastLoadY = -9999F;
     private float lastLoadZ = -9999F;
-    public float cracks;
 
     public LevelRenderer(Minecraft minecraft, TextureManager textureManager) {
         this.minecraft = minecraft;
         this.textureManager = textureManager;
         listId = GL11.glGenLists(2);
+    }
+
+    static int nextMultipleOf16(int value) {
+        int remainder = value % 16;
+        if (remainder != 0) {
+            return value + (16 - remainder);
+        }
+        return value;
     }
 
     public final void queueChunks(int x1, int y1, int z1, int x2, int y2, int z2) {
@@ -79,14 +87,6 @@ public final class LevelRenderer {
                 }
             }
         }
-    }
-
-    static int nextMultipleOf16(int value) {
-        int remainder = value % 16;
-        if (remainder != 0) {
-            return value + (16 - remainder);
-        }
-        return value;
     }
 
     public final void refresh() {

@@ -2,14 +2,14 @@ package com.mojang.minecraft.gui;
 
 public class Button extends Screen {
 
-    int width;
-    int height;
     public int x;
     public int y;
     public String text;
     public int id;
     public boolean active;
     public boolean visible;
+    int width;
+    int height;
 
     public Button(int buttonID, int buttonX, int buttonY, int buttonWidth, String buttonText) {
         width = 200;

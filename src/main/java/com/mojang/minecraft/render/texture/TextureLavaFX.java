@@ -41,9 +41,9 @@ public final class TextureLavaFX extends TextureFX {
                 green[var1 + (var2 << 4)] = var3
                         / 10F
                         + (blue[(var1 & 15) + ((var2 & 15) << 4)]
-                                + blue[(var1 + 1 & 15) + ((var2 & 15) << 4)]
-                                + blue[(var1 + 1 & 15) + ((var2 + 1 & 15) << 4)] + blue[(var1 & 15)
-                                + ((var2 + 1 & 15) << 4)]) / 4F * 0.8F;
+                        + blue[(var1 + 1 & 15) + ((var2 & 15) << 4)]
+                        + blue[(var1 + 1 & 15) + ((var2 + 1 & 15) << 4)] + blue[(var1 & 15)
+                        + ((var2 + 1 & 15) << 4)]) / 4F * 0.8F;
                 blue[var1 + (var2 << 4)] += alpha[var1 + (var2 << 4)] * 0.01F;
                 if (blue[var1 + (var2 << 4)] < 0F) {
                     blue[var1 + (var2 << 4)] = 0F;

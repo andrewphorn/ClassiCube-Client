@@ -7,6 +7,15 @@ import com.mojang.minecraft.Entity;
 class BlockMap$Slot implements Serializable {
 
     public static final long serialVersionUID = 0L;
+    // $FF: synthetic field
+    final BlockMap blockMap;
+    private int xSlot;
+    private int ySlot;
+    private int zSlot;
+
+    public BlockMap$Slot(BlockMap blockMap) {
+        this.blockMap = blockMap;
+    }
 
     // $FF: synthetic method
     static int getXSlot(BlockMap$Slot slot) {
@@ -21,19 +30,6 @@ class BlockMap$Slot implements Serializable {
     // $FF: synthetic method
     static int getZSlot(BlockMap$Slot slot) {
         return slot.zSlot;
-    }
-
-    private int xSlot;
-
-    private int ySlot;
-
-    private int zSlot;
-
-    // $FF: synthetic field
-    final BlockMap blockMap;
-
-    public BlockMap$Slot(BlockMap blockMap) {
-        this.blockMap = blockMap;
     }
 
     public BlockMap$Slot init(float x, float y, float z) {
@@ -69,6 +65,7 @@ class BlockMap$Slot implements Serializable {
 
     /**
      * Adds an entity to the BlockMap slot.
+     *
      * @param entity
      */
     public void add(Entity entity) {
@@ -81,6 +78,7 @@ class BlockMap$Slot implements Serializable {
 
     /**
      * Removes an entity from the BlockMap slot.
+     *
      * @param entity
      */
     public void remove(Entity entity) {

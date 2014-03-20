@@ -5,10 +5,8 @@ import com.mojang.minecraft.HackState;
 import com.mojang.minecraft.Minecraft;
 
 public class InputHandlerImpl extends InputHandler {
-    private boolean[] keylist = new boolean[10];
-
     public static final long serialVersionUID = 0L;
-
+    private boolean[] keylist = new boolean[10];
     private boolean[] keyStates = new boolean[100];
 
     private transient GameSettings settings;

@@ -32,7 +32,7 @@ public final class TNTBlock extends Block {
 
     @Override
     public final void spawnBreakParticles(Level level, int x, int y, int z,
-            ParticleManager particleManager) {
+                                          ParticleManager particleManager) {
         if (!level.creativeMode) {
             level.addEntity(new PrimedTnt(level, x + 0.5F, y + 0.5F, z + 0.5F));
         } else {

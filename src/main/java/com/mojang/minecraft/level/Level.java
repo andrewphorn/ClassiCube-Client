@@ -35,13 +35,8 @@ public class Level implements Serializable {
     public int ySpawn;
     public int zSpawn;
     public float rotSpawn;
-    private transient ArrayList<LevelRenderer> listeners = new ArrayList<>();
-    private transient int[] blockers;
     public transient Random random = new Random();
-    private transient int randId;
-    private transient ArrayList<NextTickListEntry> tickList;
     public BlockMap blockMap;
-    private boolean networkMode;
     public transient Minecraft rendererContext$5cd64a7f;
     public boolean creativeMode;
     public int cloudLevel = -1;
@@ -49,8 +44,6 @@ public class Level implements Serializable {
     public int skyColor;
     public int fogColor;
     public int cloudColor;
-    int unprocessed;
-    private int tickCount;
     public Entity player;
     public transient ParticleManager particleEngine;
     public transient Object font;
@@ -58,6 +51,13 @@ public class Level implements Serializable {
     public ColorCache customShadowColour;
     public ColorCache customLightColour;
     public short[] desiredSpawn;
+    int unprocessed;
+    private transient ArrayList<LevelRenderer> listeners = new ArrayList<>();
+    private transient int[] blockers;
+    private transient int randId;
+    private transient ArrayList<NextTickListEntry> tickList;
+    private boolean networkMode;
+    private int tickCount;
 
     public Level() {
         randId = random.nextInt();
@@ -70,6 +70,7 @@ public class Level implements Serializable {
 
     /**
      * Adds an entity to the level.
+     *
      * @param entity
      */
     public void addEntity(Entity entity) {
@@ -977,6 +978,7 @@ public class Level implements Serializable {
 
     /**
      * Removes an entity from the level.
+     *
      * @param entity
      */
     public void removeEntity(Entity entity) {
@@ -985,6 +987,7 @@ public class Level implements Serializable {
 
     /**
      * Removes a listener.
+     *
      * @param levelRenderer
      */
     public void removeListener(LevelRenderer levelRenderer) {

@@ -36,7 +36,7 @@ public final class Vec3D {
         float zDiff = other.z - z;
         return xDiff * xDiff < 1.0E-7F ? null
                 : (xAxis = (xAxis - x) / xDiff) >= 0F && xAxis <= 1F ? new Vec3D(x + xDiff * xAxis,
-                        y + yDiff * xAxis, z + zDiff * xAxis) : null;
+                y + yDiff * xAxis, z + zDiff * xAxis) : null;
     }
 
     public final Vec3D getYIntersection(Vec3D other, float yAxis) {
@@ -45,7 +45,7 @@ public final class Vec3D {
         float zDiff = other.z - z;
         return yDiff * yDiff < 1.0E-7F ? null
                 : (yAxis = (yAxis - y) / yDiff) >= 0F && yAxis <= 1F ? new Vec3D(x + xDiff * yAxis,
-                        y + yDiff * yAxis, z + zDiff * yAxis) : null;
+                y + yDiff * yAxis, z + zDiff * yAxis) : null;
     }
 
     public final Vec3D getZIntersection(Vec3D other, float zAxis) {
@@ -54,7 +54,7 @@ public final class Vec3D {
         float zDiff = other.z - z;
         return zDiff * zDiff < 1.0E-7F ? null
                 : (zAxis = (zAxis - z) / zDiff) >= 0F && zAxis <= 1F ? new Vec3D(x + xDiff * zAxis,
-                        y + yDiff * zAxis, z + zDiff * zAxis) : null;
+                y + yDiff * zAxis, z + zDiff * zAxis) : null;
     }
 
     public final Vec3D normalize() {

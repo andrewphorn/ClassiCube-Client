@@ -38,14 +38,14 @@ public class PacketType {
     public static final PacketType ENV_SET_MAP_APPEARANCE; // 30
     public static final PacketType ENV_SET_WEATHER_TYPE; // 31
     public static final PacketType MESSAGE_TYPES; // [Placeholder]
-    public int length;
-
     private static int nextOpcode;
+    public int length;
     public byte opcode;
     @SuppressWarnings("rawtypes")
     public Class[] params;
     public String extName = "";
     public int Version = 1;
+
     static {
         new PacketType();
 

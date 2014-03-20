@@ -11,9 +11,12 @@ public abstract class AI implements Serializable {
     public static final long serialVersionUID = 0L;
     public int defaultLookAngle = 0;
 
-    public void beforeRemove() {}
+    public void beforeRemove() {
+    }
 
-    public void hurt(Entity other, int amount) {}
+    public void hurt(Entity other, int amount) {
+    }
 
-    public void tick(Level level, Mob mob) {}
+    public void tick(Level level, Mob mob) {
+    }
 }

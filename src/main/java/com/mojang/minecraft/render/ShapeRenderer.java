@@ -13,8 +13,9 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.LogUtil;
 
 public class ShapeRenderer {
-    private static boolean convertQuadsToTriangles; // TODO Never assigned
     public static boolean tryVBO; // TODO Never used
+    public static ShapeRenderer instance;
+    private static boolean convertQuadsToTriangles; // TODO Never assigned
     private ByteBuffer byteBuffer;
     private IntBuffer intBuffer;
     private FloatBuffer floatBuffer;
@@ -34,7 +35,6 @@ public class ShapeRenderer {
     private double yOffset;
     private double zOffset;
     private int normal;
-    public static ShapeRenderer instance;
     private boolean isDrawing;
     private boolean useVBO;
     private IntBuffer vertexBuffers;

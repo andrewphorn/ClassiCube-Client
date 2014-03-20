@@ -14,11 +14,9 @@ import com.mojang.minecraft.render.TextureManager;
 public final class FontRenderer {
     public int charHeight;
     public int charWidth;
-
-    private int fontId = 0;
-
-    private GameSettings settings;
     public int[] font = new int[256];
+    private int fontId = 0;
+    private GameSettings settings;
 
     public FontRenderer(GameSettings settings, String fontImage, TextureManager textures)
             throws IOException {
@@ -60,6 +58,25 @@ public final class FontRenderer {
             this.font[character] = (int) chWidth;
         }
         fontId = textures.load(fontImage);
+    }
+
+    public static String stripColor(String message) {
+        if (message == null) {
+            return null;
+        }
+        int start = message.indexOf('&');
+        if (start == -1) {
+            return message;
+        }
+        int lastInsert = 0;
+        StringBuilder output = new StringBuilder(message.length());
+        while (start != -1) {
+            output.append(message, lastInsert, start);
+            lastInsert = Math.min(start + 2, message.length());
+            start = message.indexOf('&', lastInsert);
+        }
+        output.append(message, lastInsert, message.length());
+        return output.toString();
     }
 
     public float getScale() {
@@ -156,24 +173,5 @@ public final class FontRenderer {
 
     public final void renderNoShadow(String text, int x, int y, int color) {
         this.render(text, x, y, color, false);
-    }
-
-    public static String stripColor(String message) {
-        if (message == null) {
-            return null;
-        }
-        int start = message.indexOf('&');
-        if (start == -1) {
-            return message;
-        }
-        int lastInsert = 0;
-        StringBuilder output = new StringBuilder(message.length());
-        while (start != -1) {
-            output.append(message, lastInsert, start);
-            lastInsert = Math.min(start + 2, message.length());
-            start = message.indexOf('&', lastInsert);
-        }
-        output.append(message, lastInsert, message.length());
-        return output.toString();
     }
 }

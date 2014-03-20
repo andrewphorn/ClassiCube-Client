@@ -9,19 +9,17 @@ import com.mojang.util.MathHelper;
 public final class FrustumImpl extends Frustum {
 
     private static FrustumImpl instance = new FrustumImpl();
-
-    public static FrustumImpl getInstance() {
-        instance.init();
-        return instance;
-    }
-
     private FloatBuffer projectionMatrixBuffer;
-
     private FloatBuffer modelViewMatrixBuffer;
 
     public FrustumImpl() {
         projectionMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
         modelViewMatrixBuffer = GLAllocation.createDirectFloatBuffer(16);
+    }
+
+    public static FrustumImpl getInstance() {
+        instance.init();
+        return instance;
     }
 
     private void init() {

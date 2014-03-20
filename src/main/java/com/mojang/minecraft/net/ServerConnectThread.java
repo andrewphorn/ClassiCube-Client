@@ -19,7 +19,7 @@ public class ServerConnectThread extends Thread {
     private NetworkManager netManager;
 
     public ServerConnectThread(NetworkManager networkManager, String server, int port,
-            String username, String key, Minecraft minecraft) {
+                               String username, String key, Minecraft minecraft) {
         super();
 
         netManager = networkManager;
