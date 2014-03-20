@@ -1,9 +1,8 @@
 package com.mojang.minecraft.gui.inputscreens;
 
-import com.mojang.minecraft.LogUtil;
-
 import org.lwjgl.input.Keyboard;
 
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.gui.Button;
 import com.mojang.minecraft.gui.GuiScreen;
 import com.mojang.minecraft.level.LevelSerializer;
@@ -19,11 +18,11 @@ public class InputValueScreen extends GuiScreen {
     public String allowedChars = null;
     public int stringLimit = 64;
 
-    public InputValueScreen(GuiScreen var1, String var2, int var3, String Title) {
-        parent = var1;
-        id = var3;
-        name = var2;
-        title = Title;
+    public InputValueScreen(GuiScreen guiScreen, String value, int id, String title) {
+        parent = guiScreen;
+        this.id = id;
+        name = value;
+        this.title = title;
         if (name.equals("-")) {
             name = "";
         }
@@ -31,19 +30,19 @@ public class InputValueScreen extends GuiScreen {
     }
 
     @Override
-    protected void onButtonClick(Button var1) {
-        if (var1.active) {
-            if (var1.id == 0 && name.trim().length() > 1) {
+    protected void onButtonClick(Button button) {
+        if (button.active) {
+            if (button.id == 0 && name.trim().length() > 1) {
                 try {
                     new LevelSerializer(minecraft.level).saveMap("test");
                 } catch (Exception ex) {
                     LogUtil.logError("Error saving map to test", ex);
                 }
-                minecraft.setCurrentScreen((GuiScreen) null);
+                minecraft.setCurrentScreen(null);
                 minecraft.grabMouse();
             }
 
-            if (var1.id == 1) {
+            if (button.id == 1) {
                 minecraft.setCurrentScreen(parent);
             }
 

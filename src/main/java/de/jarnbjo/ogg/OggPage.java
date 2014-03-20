@@ -28,9 +28,13 @@
 
 package de.jarnbjo.ogg;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
 
-import de.jarnbjo.util.io.*;
+import de.jarnbjo.util.io.BitInputStream;
+import de.jarnbjo.util.io.ByteArrayBitInputStream;
 
 /**
  * <p>
@@ -40,7 +44,7 @@ import de.jarnbjo.util.io.*;
  * <code>RandomAccessFile</code> which is positioned at the beginning of an Ogg
  * page.
  * </p>
- * 
+ *
  * <p>
  * Furtheron, the class provides methods for accessing the raw page data, as
  * well as data attributes like segmenting information, sequence number, stream
@@ -54,7 +58,7 @@ public class OggPage {
 
     /**
      * this method equals to create(byte[] source, false)
-     * 
+     *
      * @see #create(byte[], boolean)
      */
 
@@ -66,7 +70,7 @@ public class OggPage {
     /**
      * This method is called to create a new OggPage instance based on the
      * specified byte array.
-     * 
+     *
      * @param source
      *            the source from which the ogg page is generated
      * @param skipData
@@ -83,7 +87,7 @@ public class OggPage {
      * @throws IOException
      *             if some other I/O error is detected when reading from the
      *             source
-     * 
+     *
      * @see #create(byte[])
      */
 
@@ -94,7 +98,7 @@ public class OggPage {
 
     /**
      * this method equals to create(InputStream source, false)
-     * 
+     *
      * @see #create(InputStream, boolean)
      */
 
@@ -110,7 +114,7 @@ public class OggPage {
      * the actual page segments (page data) is skipped and not read into memory.
      * This mode is useful when scanning through an ogg file to build a seek
      * table.
-     * 
+     *
      * @param source
      *            the source from which the ogg page is generated
      * @param skipData
@@ -127,7 +131,7 @@ public class OggPage {
      * @throws IOException
      *             if some other I/O error is detected when reading from the
      *             source
-     * 
+     *
      * @see #create(InputStream)
      */
 
@@ -152,7 +156,7 @@ public class OggPage {
             } else if (source instanceof InputStream) {
                 readFully((InputStream) source, header);
             } else if (source instanceof byte[]) {
-                System.arraycopy((byte[]) source, 0, header, 0, 27);
+                System.arraycopy(source, 0, header, 0, 27);
             }
 
             BitInputStream bdSource = new ByteArrayBitInputStream(header);
@@ -208,7 +212,7 @@ public class OggPage {
                 if (source instanceof RandomAccessFile) {
                     l = ((int) ((RandomAccessFile) source).readByte() & 0xff);
                 } else if (source instanceof InputStream) {
-                    l = (int) ((InputStream) source).read();
+                    l = ((InputStream) source).read();
                 } else if (source instanceof byte[]) {
                     l = (int) ((byte[]) source)[sourceOffset++];
                     l &= 255;
@@ -246,7 +250,7 @@ public class OggPage {
 
     /**
      * this method equals to create(RandomAccessFile source, false)
-     * 
+     *
      * @see #create(RandomAccessFile, boolean)
      */
 
@@ -262,7 +266,7 @@ public class OggPage {
      * <code>true</code>, the actual page segments (page data) is skipped and
      * not read into memory. This mode is useful when scanning through an ogg
      * file to build a seek table.
-     * 
+     *
      * @param source
      *            the source from which the ogg page is generated
      * @param skipData
@@ -279,7 +283,7 @@ public class OggPage {
      * @throws IOException
      *             if some other I/O error is detected when reading from the
      *             source
-     * 
+     *
      * @see #create(RandomAccessFile)
      */
 
@@ -345,7 +349,7 @@ public class OggPage {
      * which is not completed on this page. For pages containing Vorbis data,
      * this value is the sample index within the Vorbis stream. The Vorbis
      * stream does not necessarily start with sample index 0.
-     * 
+     *
      * @return the absolute granule position of the last packet completed on
      *         this page
      */
@@ -368,7 +372,7 @@ public class OggPage {
 
     /**
      * Return the check sum of this ogg page.
-     * 
+     *
      * @return this page's check sum
      */
 
@@ -378,7 +382,7 @@ public class OggPage {
 
     /**
      * Return the sequnce number of this ogg page.
-     * 
+     *
      * @return this page's sequence number
      */
 
@@ -400,7 +404,7 @@ public class OggPage {
 
     /**
      * Returns the stream serial number of this ogg page.
-     * 
+     *
      * @return this page's serial number
      */
 

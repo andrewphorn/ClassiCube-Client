@@ -4,22 +4,6 @@ import java.util.Random;
 
 public class PerlinNoise extends Noise {
 
-    private static double fade(double a) {
-        return a * a * a * (a * (a * 6D - 15D) + 10D);
-    }
-
-    private static double grad(int hash, double x, double y) {
-        hash &= 15;
-        double u = hash < 8 ? x : y;
-        double v = hash < 4 ? y : (hash != 12 && hash != 14 ? 0 : x);
-
-        return ((hash & 1) == 0 ? u : -u) + ((hash & 2) == 0 ? v : -v);
-    }
-
-    private static double lerp(double t, double a, double b) {
-        return a + t * (b - a);
-    }
-
     private int[] noise;
 
     public PerlinNoise() {
@@ -43,6 +27,22 @@ public class PerlinNoise extends Noise {
             noise[count + 256] = noise[count];
         }
 
+    }
+
+    private static double fade(double a) {
+        return a * a * a * (a * (a * 6D - 15D) + 10D);
+    }
+
+    private static double grad(int hash, double x, double y) {
+        hash &= 15;
+        double u = hash < 8 ? x : y;
+        double v = hash < 4 ? y : (hash != 12 && hash != 14 ? 0 : x);
+
+        return ((hash & 1) == 0 ? u : -u) + ((hash & 2) == 0 ? v : -v);
+    }
+
+    private static double lerp(double t, double a, double b) {
+        return a + t * (b - a);
     }
 
     @Override

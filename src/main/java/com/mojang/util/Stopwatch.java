@@ -7,66 +7,30 @@ import java.util.List;
 public class Stopwatch {
 
     /**
-     * Inner class to hold data about one task executed within the stop watch.
-     */
-    public static final class TaskInfo {
-
-        private final String taskName;
-
-        private final long timeMillis;
-
-        TaskInfo(String taskName, long timeMillis) {
-            this.taskName = taskName;
-            this.timeMillis = timeMillis;
-        }
-
-        /**
-         * Return the name of this task.
-         */
-        public String getTaskName() {
-            return taskName;
-        }
-
-        /**
-         * Return the time in milliseconds this task took.
-         */
-        public long getTimeMillis() {
-            return timeMillis;
-        }
-
-        /**
-         * Return the time in seconds this task took.
-         */
-        public double getTimeSeconds() {
-            return timeMillis / 1000.0;
-        }
-    }
-
-    /**
      * Identifier of this stop watch. Handy when we have output from multiple
      * stop watches and need to distinguish between them in log or console
      * output.
      */
     private final String id;
-
-    private boolean keepTaskList = true;
-
     private final List<TaskInfo> taskList = new LinkedList<>();
-
-    /** Start time of the current task */
+    private boolean keepTaskList = true;
+    /**
+     * Start time of the current task
+     */
     private long startTimeMillis;
-
-    /** Is the stop watch currently running? */
+    /**
+     * Is the stop watch currently running?
+     */
     private boolean running;
-
-    /** Name of the current task */
+    /**
+     * Name of the current task
+     */
     private String currentTaskName;
-
     private TaskInfo lastTaskInfo;
-
     private int taskCount;
-
-    /** Total running time */
+    /**
+     * Total running time
+     */
     private long totalTimeMillis;
 
     /**
@@ -78,10 +42,9 @@ public class Stopwatch {
 
     /**
      * Construct a new stop watch with the given id. Does not start any task.
-     * 
-     * @param id
-     *            identifier for this stop watch. Handy when we have output from
-     *            multiple stop watches and need to distinguish between them.
+     *
+     * @param id identifier for this stop watch. Handy when we have output from
+     *           multiple stop watches and need to distinguish between them.
      */
     public Stopwatch(String id) {
         this.id = id;
@@ -202,7 +165,7 @@ public class Stopwatch {
     /**
      * Start an unnamed task. The results are undefined if {@link #stop()} or
      * timing methods are called without invoking this method.
-     * 
+     *
      * @see #stop()
      */
     public void start() throws IllegalStateException {
@@ -212,9 +175,8 @@ public class Stopwatch {
     /**
      * Start a named task. The results are undefined if {@link #stop()} or
      * timing methods are called without invoking this method.
-     * 
-     * @param taskName
-     *            the name of the task to start
+     *
+     * @param taskName the name of the task to start
      * @see #stop()
      */
     public void start(String taskName) throws IllegalStateException {
@@ -230,7 +192,7 @@ public class Stopwatch {
      * Stop the current task. The results are undefined if timing methods are
      * called without invoking at least one pair {@link #start()} /
      * {@link #stop()} methods.
-     * 
+     *
      * @see #start()
      */
     public void stop() throws IllegalStateException {
@@ -266,6 +228,42 @@ public class Stopwatch {
             sb.append("; no task info kept");
         }
         return sb.toString();
+    }
+
+    /**
+     * Inner class to hold data about one task executed within the stop watch.
+     */
+    public static final class TaskInfo {
+
+        private final String taskName;
+
+        private final long timeMillis;
+
+        TaskInfo(String taskName, long timeMillis) {
+            this.taskName = taskName;
+            this.timeMillis = timeMillis;
+        }
+
+        /**
+         * Return the name of this task.
+         */
+        public String getTaskName() {
+            return taskName;
+        }
+
+        /**
+         * Return the time in milliseconds this task took.
+         */
+        public long getTimeMillis() {
+            return timeMillis;
+        }
+
+        /**
+         * Return the time in seconds this task took.
+         */
+        public double getTimeSeconds() {
+            return timeMillis / 1000.0;
+        }
     }
 
 }

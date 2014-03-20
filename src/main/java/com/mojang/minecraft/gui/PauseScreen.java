@@ -1,13 +1,12 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.LogUtil;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.ProgressBarDisplay;
-import com.oyasunadev.mcraft.client.core.ClassiCubeStandalone;
 
 public final class PauseScreen extends GuiScreen {
 
@@ -31,7 +30,7 @@ public final class PauseScreen extends GuiScreen {
                 minecraft.setCurrentScreen(new TextureSelectionScreen(this));
             }
             if (button.id == 3) {
-                minecraft.setCurrentScreen((GuiScreen) null);
+                minecraft.setCurrentScreen(null);
                 minecraft.grabMouse();
             }
             if (button.id == 4) {
@@ -71,7 +70,7 @@ public final class PauseScreen extends GuiScreen {
                 minecraft.setCurrentScreen(new TextureSelectionScreen(this));
             }
             if (button.id == 5) {
-                minecraft.setCurrentScreen((GuiScreen) null);
+                minecraft.setCurrentScreen(null);
                 minecraft.grabMouse();
             }
             if (button.id == 6) {
@@ -137,7 +136,7 @@ public final class PauseScreen extends GuiScreen {
         drawString(fontRenderer, "ClassiCube " + VersionString,
                 width - fontRenderer.getWidth("ClassiCube " + VersionString) - 15, 13, 14474460);
 
-        double cpuUsage = minecraft.monitoringThread.getAvarageUsagePerCPU();
+        double cpuUsage = minecraft.monitoringThread.getAverageUsagePerCPU();
         double roundedCpuUsage = Math.round(cpuUsage * 100.0) / 100.0;
 
         int colorToUse = greenColor;

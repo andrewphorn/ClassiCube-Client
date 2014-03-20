@@ -24,8 +24,7 @@ public final class ModelManager {
      * Gets a model from its name. You can also get block models by providing
      * their ID.
      *
-     * @param modelName
-     *            String representing the name of the model
+     * @param modelName String representing the name of the model
      * @return The Model with the name that was requested or null if not found.
      */
     // TODO Use an enum
@@ -38,15 +37,15 @@ public final class ModelManager {
         }
         return modelName.equals("humanoid") ? human
                 : modelName.equals("humanoid.armor") ? armoredHuman
-                        : modelName.equals("creeper") ? creeper
-                                : modelName.equals("chicken") ? chicken : modelName
-                                        .equals("skeleton") ? skeleton : modelName
-                                        .equals("printer") ? printer
-                                        : modelName.equals("croc") ? croc : modelName
-                                                .equals("zombie") ? zombie : modelName
-                                                .equals("pig") ? pig
-                                                : modelName.equals("sheep") ? sheep : modelName
-                                                        .equals("spider") ? spider : modelName
-                                                        .equals("sheep.fur") ? sheepFur : null;
+                : modelName.equals("creeper") ? creeper
+                : modelName.equals("chicken") ? chicken : modelName
+                .equals("skeleton") ? skeleton : modelName
+                .equals("printer") ? printer
+                : modelName.equals("croc") ? croc : modelName
+                .equals("zombie") ? zombie : modelName
+                .equals("pig") ? pig
+                : modelName.equals("sheep") ? sheep : modelName
+                .equals("spider") ? spider : modelName
+                .equals("sheep.fur") ? sheepFur : null;
     }
 }

@@ -7,13 +7,14 @@ import com.mojang.minecraft.level.BlockMap;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.util.Vec3D;
 import com.mojang.minecraft.net.PositionUpdate;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.sound.StepSound;
+import com.mojang.util.ColorCache;
 import com.mojang.util.MathHelper;
+import com.mojang.util.Vec3D;
 
 public abstract class Entity implements Serializable {
 
@@ -48,7 +49,6 @@ public abstract class Entity implements Serializable {
     public float walkDist = 0F;
     public boolean makeStepSound = true;
     public float fallDistance = 0F;
-    private int nextStep = 1;
     public BlockMap blockMap;
     public float xOld;
     public float yOld;
@@ -60,11 +60,11 @@ public abstract class Entity implements Serializable {
     public float pushthrough = 0F;
     public boolean hovered = false;
     public boolean flyingMode = false;
-
-    private int nextStepDistance;
     public float prevDistanceWalkedModified;
     public float distanceWalkedModified;
     public float distanceWalkedOnStepModified;
+    private int nextStep = 1;
+    private int nextStepDistance;
 
     public Entity(Level entityLevel) {
         level = entityLevel;
@@ -80,8 +80,7 @@ public abstract class Entity implements Serializable {
     /**
      * Calculates the distance from this entity to the specified entity.
      *
-     * @param otherEntity
-     *            Entity to calculate the distance to.
+     * @param otherEntity Entity to calculate the distance to.
      * @return The distance between the two entities.
      */
     public float distanceTo(Entity otherEntity) {
@@ -91,12 +90,9 @@ public abstract class Entity implements Serializable {
     /**
      * Calculates the distance from this entity to the specified position.
      *
-     * @param posX
-     *            X-Coordinate of the position to calculate the distance to.
-     * @param posY
-     *            Y-Coordinate of the position to calculate the distance to.
-     * @param posZ
-     *            Z-Coordinate of the position to calculate the distance to.
+     * @param posX X-Coordinate of the position to calculate the distance to.
+     * @param posY Y-Coordinate of the position to calculate the distance to.
+     * @param posZ Z-Coordinate of the position to calculate the distance to.
      * @return The distance between the entity and the position.
      */
     public float distanceTo(float posX, float posY, float posZ) {
@@ -112,8 +108,7 @@ public abstract class Entity implements Serializable {
      * This is basically calculating distance without using the expensive
      * Math.sqrt function. Should only be used for relative distance.
      *
-     * @param otherEntity
-     *            Entity to calculate the distance to.
+     * @param otherEntity Entity to calculate the distance to.
      * @return The distance between the two entities squared.
      */
     public float distanceToSqr(Entity otherEntity) {
@@ -183,13 +178,13 @@ public abstract class Entity implements Serializable {
 
     public boolean isFree(float x, float y, float z) {
         AABB bounds = boundingBox.cloneMove(x, y, z);
-        return level.getCubes(bounds).size() > 0 ? false : !level.containsAnyLiquid(bounds);
+        return level.getCubes(bounds).size() <= 0 && !level.containsAnyLiquid(bounds);
     }
 
     // TODO - growAmount may not be an accurate interpretation
     public boolean isFree(float x, float y, float z, float growAmount) {
         AABB bounds = boundingBox.grow(growAmount, growAmount, growAmount).cloneMove(x, y, z);
-        return level.getCubes(bounds).size() > 0 ? false : !level.containsAnyLiquid(bounds);
+        return level.getCubes(bounds).size() <= 0 && !level.containsAnyLiquid(bounds);
     }
 
     public boolean isInLava() {
@@ -225,8 +220,8 @@ public abstract class Entity implements Serializable {
 
     public boolean isUnderWater() {
         int textureID;
-        return (textureID = level.getTile((int) x, (int) (y + 0.12F), (int) z)) != 0 ? Block.blocks[textureID]
-                .getLiquidType().equals(LiquidType.water) : false;
+        return (textureID = level.getTile((int) x, (int) (y + 0.12F), (int) z)) != 0 && Block.blocks[textureID]
+                .getLiquidType().equals(LiquidType.water);
     }
 
     public void move(float xMove, float yMove, float zMove) {
@@ -244,8 +239,8 @@ public abstract class Entity implements Serializable {
             AABB bbCopy = boundingBox.copy();
             ArrayList<AABB> cubes = level.getCubes(boundingBox.expand(xMove, yMove, zMove));
 
-            for (int i = 0; i < cubes.size(); ++i) {
-                yMove = cubes.get(i).clipYCollide(boundingBox, yMove);
+            for (AABB cube5 : cubes) {
+                yMove = cube5.clipYCollide(boundingBox, yMove);
             }
 
             boundingBox.move(0F, yMove, 0F);
@@ -257,8 +252,8 @@ public abstract class Entity implements Serializable {
 
             boolean var16 = onGround || var7 != yMove && var7 < 0F;
 
-            for (int i = 0; i < cubes.size(); ++i) {
-                xMove = cubes.get(i).clipXCollide(boundingBox, xMove);
+            for (AABB cube4 : cubes) {
+                xMove = cube4.clipXCollide(boundingBox, xMove);
             }
 
             boundingBox.move(xMove, 0F, 0F);
@@ -268,8 +263,8 @@ public abstract class Entity implements Serializable {
                 xMove = 0F;
             }
 
-            for (int i = 0; i < cubes.size(); ++i) {
-                zMove = cubes.get(i).clipZCollide(boundingBox, zMove);
+            for (AABB cube3 : cubes) {
+                zMove = cube3.clipZCollide(boundingBox, zMove);
             }
 
             boundingBox.move(0F, 0F, zMove);
@@ -292,8 +287,8 @@ public abstract class Entity implements Serializable {
                 boundingBox = bbCopy.copy();
                 cubes = level.getCubes(boundingBox.expand(var6, yMove, var8));
 
-                for (int i = 0; i < cubes.size(); ++i) {
-                    yMove = cubes.get(i).clipYCollide(boundingBox, yMove);
+                for (AABB cube2 : cubes) {
+                    yMove = cube2.clipYCollide(boundingBox, yMove);
                 }
 
                 boundingBox.move(0F, yMove, 0F);
@@ -303,8 +298,8 @@ public abstract class Entity implements Serializable {
                     xMove = 0F;
                 }
 
-                for (int i = 0; i < cubes.size(); ++i) {
-                    xMove = cubes.get(i).clipXCollide(boundingBox, xMove);
+                for (AABB cube1 : cubes) {
+                    xMove = cube1.clipXCollide(boundingBox, xMove);
                 }
 
                 boundingBox.move(xMove, 0F, 0F);
@@ -314,8 +309,8 @@ public abstract class Entity implements Serializable {
                     xMove = 0F;
                 }
 
-                for (int i = 0; i < cubes.size(); ++i) {
-                    zMove = cubes.get(i).clipZCollide(boundingBox, zMove);
+                for (AABB cube : cubes) {
+                    zMove = cube.clipZCollide(boundingBox, zMove);
                 }
 
                 boundingBox.move(0F, 0F, zMove);
@@ -427,8 +422,7 @@ public abstract class Entity implements Serializable {
     }
 
     public void playSound(String file, float volume, float pitch) {
-        boolean footstep = false;
-        level.playSound(file, this, volume, pitch, footstep);
+        level.playSound(file, this, volume, pitch, false);
     }
 
     protected void playStepSound(int tile) {

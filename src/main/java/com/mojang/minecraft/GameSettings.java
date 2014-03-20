@@ -6,68 +6,59 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.util.LogUtil;
 
 public final class GameSettings {
-
-    public static String StatusString = "";
-    public static String PercentString = "";
-
-    public static boolean CanReplaceSlot = true;
-
-    public static List<String> typinglog = new ArrayList<>();
-    public static int typinglogpos = 0;
-
-    public boolean showClouds = true;
-    public byte thirdPersonMode = 0;
-    public boolean CanSpeed = true;
-
-    public transient Minecraft minecraft;
-    private final File settingsFile;
-    public int settingCount;
-
     // ==== CONSTANTS =============================================================================
     public static String[] smoothingOptions = new String[]{"OFF", "Automatic", "Universal"};
-    public static String[] showNamesOptions
-            = new String[]{"Hover", "Hover (No Scaling)", "Always", "Always (No Scaling)"};
-    private static final String[] viewDistanceOptions
-            = new String[]{"FAR", "NORMAL", "SHORT", "TINY"};
-
+    public static String[] showNamesOptions = new String[]{
+            "Hover", "Hover (No Scaling)", "Always", "Always (No Scaling)"
+    };
     // showNames values
     public static final int SHOWNAMES_HOVER = 0,
             SHOWNAMES_HOVER_UNSCALED = 1,
             SHOWNAMES_ALWAYS = 2,
             SHOWNAMES_ALWAYS_UNSCALED = 3;
-
     // thirdPersonMode values
     public static final int FIRST_PERSON = 0,
             THIRD_PERSON_BACK = 1,
             THIRD_PERSON_FRONT = 2;
-
     // hackType values
     public static final int HACKTYPE_NORMAL = 0,
             HACKTYPE_ADVANCED = 1;
-
+    private static final String[] viewDistanceOptions = new String[]{
+            "FAR", "NORMAL", "SHORT", "TINY"
+    };
     // valid range of values for viewDistance
     public static final int VIEWDISTANCE_MIN = 0,
             VIEWDISTANCE_MAX = viewDistanceOptions.length - 1;
-
     // smoothing values
     public static final int SMOOTHING_OFF = 0,
             SMOOTHING_AUTO = 1,
             SMOOTHING_UNIVERSAL = 2;
-    
     public static final float SCALE_MIN = 0.6f,
             SCALE_MAX = 1.2f;
-
     // min valid value for anisotropy. Max is set by TextureManager.
     public static final int ANISOTROPY_OFF = 0;
+    public static String StatusString = "";
+    public static String PercentString = "";
+    public static boolean CanReplaceSlot = true;
+    // TODO Below two never used
+    public static List<String> typingLog = new ArrayList<>();
+    public static int typingLogPos = 0;
+
+    private final File settingsFile;
+    public boolean showClouds = true;
+    public byte thirdPersonMode = 0;
+    public boolean CanSpeed = true;
+    public transient Minecraft minecraft;
+    public int settingCount; // TODO Never used
 
     // ==== BINDINGS ==============================================================================
     public KeyBinding forwardKey = new KeyBinding("Forward", Keyboard.KEY_W);
@@ -111,8 +102,8 @@ public final class GameSettings {
 
     public GameSettings(Minecraft minecraft, File minecraftFolder) {
         bindings = new KeyBinding[]{
-            forwardKey, leftKey, backKey, rightKey, jumpKey, inventoryKey,
-            chatKey, toggleFogKey, saveLocationKey, loadLocationKey};
+                forwardKey, leftKey, backKey, rightKey, jumpKey, inventoryKey,
+                chatKey, toggleFogKey, saveLocationKey, loadLocationKey};
         bindingsmore = new KeyBinding[]{runKey, flyKey, flyUp, flyDown, noClip};
 
         this.minecraft = minecraft;
@@ -121,16 +112,16 @@ public final class GameSettings {
         load();
     }
 
+    private static String toOnOff(boolean value) {
+        return (value ? "ON" : "OFF");
+    }
+
     public String getBinding(int key) {
         return bindings[key].name + ": " + Keyboard.getKeyName(bindings[key].key);
     }
 
     public String getBindingMore(int key) {
         return bindingsmore[key].name + ": " + Keyboard.getKeyName(bindingsmore[key].key);
-    }
-
-    private static String toOnOff(boolean value) {
-        return (value ? "ON" : "OFF");
     }
 
     public String getSetting(Setting id) {
@@ -172,7 +163,7 @@ public final class GameSettings {
         try {
             if (settingsFile.exists()) {
                 try (FileReader fileReader = new FileReader(settingsFile);
-                        BufferedReader reader = new BufferedReader(fileReader)) {
+                     BufferedReader reader = new BufferedReader(fileReader)) {
                     // Read the raw settings keys/values
                     String line;
                     while ((line = reader.readLine()) != null) {
@@ -264,7 +255,7 @@ public final class GameSettings {
     public void save() {
         try {
             try (FileWriter fileWriter = new FileWriter(settingsFile);
-                    PrintWriter writer = new PrintWriter(fileWriter)) {
+                 PrintWriter writer = new PrintWriter(fileWriter)) {
                 writer.println("music:" + music);
                 writer.println("sound:" + sound);
                 writer.println("invertYMouse:" + invertMouse);
@@ -317,7 +308,7 @@ public final class GameSettings {
                 int newViewDist = viewDistance + fogValue;
                 if (newViewDist < VIEWDISTANCE_MIN) {
                     newViewDist = VIEWDISTANCE_MAX;
-                } else if(newViewDist > VIEWDISTANCE_MAX){
+                } else if (newViewDist > VIEWDISTANCE_MAX) {
                     newViewDist = VIEWDISTANCE_MIN;
                 }
                 viewDistance = newViewDist;
@@ -333,14 +324,14 @@ public final class GameSettings {
                 break;
             case SMOOTHING:
                 smoothing++;
-                if(smoothing > SMOOTHING_UNIVERSAL){
+                if (smoothing > SMOOTHING_UNIVERSAL) {
                     smoothing = SMOOTHING_OFF;
                 }
                 minecraft.textureManager.textures.clear();
                 break;
             case ANISOTROPIC:
                 anisotropy++;
-                if(anisotropy > TextureManager.getMaxAnisotropySetting()){
+                if (anisotropy > TextureManager.getMaxAnisotropySetting()) {
                     anisotropy = ANISOTROPY_OFF;
                 }
                 minecraft.textureManager.textures.clear();

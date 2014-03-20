@@ -2,7 +2,7 @@ package com.mojang.minecraft.level.tile;
 
 import java.util.Random;
 
-import com.mojang.minecraft.ColorCache;
+import com.mojang.util.ColorCache;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.physics.AABB;
@@ -52,16 +52,17 @@ public class LiquidBlock extends Block {
         return
                 // Is there space to spread?
                 x >= 0 && y >= 0 && z >= 0 && x < level.width && z < level.length
-                // Can we move?
-                && (var6 != movingId && var6 != stillId &&
-                // Is there air around us?
-                (side == 1 && (level.getTile(x - 1, y, z) == 0 || level.getTile(x + 1, y, z) == 0
-                        || level.getTile(x, y, z - 1) == 0 || level.getTile(x, y, z + 1) == 0)
-                        || super.canRenderSide(level, x, y, z, side)));
+                        // Can we move?
+                        && (var6 != movingId && var6 != stillId &&
+                        // Is there air around us?
+                        (side == 1 && (level.getTile(x - 1, y, z) == 0 || level.getTile(x + 1, y, z) == 0
+                                || level.getTile(x, y, z - 1) == 0 || level.getTile(x, y, z + 1) == 0)
+                                || super.canRenderSide(level, x, y, z, side)));
     }
 
     @Override
-    public final void dropItems(Level level, int x, int y, int z, float dropProbability) {}
+    public final void dropItems(Level level, int x, int y, int z, float dropProbability) {
+    }
 
     private boolean flow(Level level, int x, int y, int z) {
         if (level.getTile(x, y, z) == 0) {
@@ -71,6 +72,7 @@ public class LiquidBlock extends Block {
 
             if (level.setTile(x, y, z, movingId)) {
                 level.addToTickNextTick(x, y, z, movingId);
+                // TODO Actually return true here?
             }
         }
 
@@ -131,7 +133,8 @@ public class LiquidBlock extends Block {
     }
 
     @Override
-    public final void onBreak(Level level, int x, int y, int z) {}
+    public final void onBreak(Level level, int x, int y, int z) {
+    }
 
     @Override
     public void onNeighborChange(Level level, int x, int y, int z, int side) {

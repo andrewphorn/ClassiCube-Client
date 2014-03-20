@@ -8,17 +8,17 @@ import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.player.Player;
 
 public final class SurvivalGameMode extends GameMode {
-    public SurvivalGameMode(Minecraft minecraft) {
-        super(minecraft);
-        this.minecraft = minecraft;
-    }
-
     private int hitX;
     private int hitY;
     private int hitZ;
     private int hits;
     private int hardness;
     private int hitDelay;
+
+    public SurvivalGameMode(Minecraft minecraft) {
+        super(minecraft);
+        this.minecraft = minecraft;
+    }
 
     @Override
     public void apply(Level level) {

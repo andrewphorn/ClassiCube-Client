@@ -13,26 +13,12 @@ public class Item extends Entity {
     public static final long serialVersionUID = 0L;
 
     private static ItemModel[] models = new ItemModel[256];
-
-    public static void initModels() {
-        for (int validBlocks = 0; validBlocks < 256; validBlocks++) {
-            Block block = Block.blocks[validBlocks];
-
-            if (block != null) {
-                models[validBlocks] = new ItemModel(block.textureId);
-            }
-        }
-
-    }
-
     private float xd;
     private float yd;
     private float zd;
-
     private float rot;
     private int resource;
     private int tickCount;
-
     private int age = 0;
 
     public Item(Level level, float x, float y, float z, int block) {
@@ -53,6 +39,17 @@ public class Item extends Entity {
         zd = (float) (Math.random() * 0.20000000298023224D - 0.10000000149011612D);
 
         makeStepSound = false;
+    }
+
+    public static void initModels() {
+        for (int validBlocks = 0; validBlocks < 256; validBlocks++) {
+            Block block = Block.blocks[validBlocks];
+
+            if (block != null) {
+                models[validBlocks] = new ItemModel(block.textureId);
+            }
+        }
+
     }
 
     @Override

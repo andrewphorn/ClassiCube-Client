@@ -6,10 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.nbt.CompressedStreamTools;
-import com.mojang.minecraft.nbt.NBTTagCompound;
+import com.mojang.nbt.CompressedStreamTools;
+import com.mojang.nbt.NBTTagCompound;
 
 public class LevelSerializer {
 
@@ -37,6 +37,7 @@ public class LevelSerializer {
     void save(File fullFilePath) throws FileNotFoundException, IOException, Exception {
         LogUtil.logInfo("Saving level " + fullFilePath.getAbsolutePath());
         if (level == null) {
+            // TODO Don't throw generic exception
             throw new Exception("level");
         }
 

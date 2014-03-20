@@ -2,9 +2,8 @@ package com.mojang.minecraft;
 
 /**
  * Class used to store data for the Hotkey CPE extension
- * 
+ *
  * @author Jon
- * 
  */
 public class HotKeyData {
     public String label;

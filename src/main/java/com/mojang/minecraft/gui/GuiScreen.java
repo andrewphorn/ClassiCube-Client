@@ -11,13 +11,13 @@ import com.mojang.minecraft.Minecraft;
 
 public class GuiScreen extends Screen {
 
-    protected Minecraft minecraft;
     public int width;
     public int height;
-    protected List<Button> buttons = new ArrayList<>();
     public boolean grabsMouse = false;
+    protected Minecraft minecraft;
+    protected List<Button> buttons = new ArrayList<>();
     protected FontRenderer fontRenderer;
-    
+
     public final void clearButtons() {
         buttons.clear();
     }
@@ -54,7 +54,7 @@ public class GuiScreen extends Screen {
 
     protected void onKeyPress(char var1, int var2) {
         if (var2 == 1) {
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
             minecraft.grabMouse();
         }
         if (Keyboard.getEventKey() == Keyboard.KEY_F2) {

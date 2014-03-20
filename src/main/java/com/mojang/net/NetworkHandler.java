@@ -1,11 +1,11 @@
 package com.mojang.net;
 
-import com.mojang.minecraft.LogUtil;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.minecraft.net.NetworkManager;
@@ -18,8 +18,8 @@ public final class NetworkHandler {
     public ByteBuffer in = ByteBuffer.allocate(1048576);
     public ByteBuffer out = ByteBuffer.allocate(1048576);
     public NetworkManager netManager;
-    private byte[] stringBytes = new byte[64];
     protected int soTrafficClass = 0x04 | 0x08 | 0x010;
+    private byte[] stringBytes = new byte[64];
 
     public NetworkHandler(String ip, int port, Minecraft minecraft) {
         try {
@@ -57,13 +57,15 @@ public final class NetworkHandler {
                 channel.write(out);
                 out.compact();
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         connected = false;
 
         try {
             channel.close();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         channel = null;
     }
@@ -75,17 +77,17 @@ public final class NetworkHandler {
         } else {
             try {
                 if (obj == Long.TYPE) {
-                    return Long.valueOf(in.getLong());
+                    return in.getLong();
                 } else if (obj == Integer.TYPE) {
-                    return Integer.valueOf(in.getInt());
+                    return in.getInt();
                 } else if (obj == Short.TYPE) {
-                    return Short.valueOf(in.getShort());
+                    return in.getShort();
                 } else if (obj == Byte.TYPE) {
-                    return Byte.valueOf(in.get());
+                    return in.get();
                 } else if (obj == Double.TYPE) {
-                    return Double.valueOf(in.getDouble());
+                    return in.getDouble();
                 } else if (obj == Float.TYPE) {
-                    return Float.valueOf(in.getFloat());
+                    return in.getFloat();
                 } else if (obj == String.class) {
                     in.get(stringBytes);
                     return new String(stringBytes, "UTF-8").trim();
@@ -114,17 +116,17 @@ public final class NetworkHandler {
                 if (connected) {
                     try {
                         if (packetClass == Long.TYPE) {
-                            out.putLong(((Long) packetObject).longValue());
+                            out.putLong((Long) packetObject);
                         } else if (packetClass == Integer.TYPE) {
-                            out.putInt(((Number) packetObject).intValue());
+                            out.putInt((Integer) packetObject);
                         } else if (packetClass == Short.TYPE) {
                             out.putShort(((Number) packetObject).shortValue());
                         } else if (packetClass == Byte.TYPE) {
                             out.put(((Number) packetObject).byteValue());
                         } else if (packetClass == Double.TYPE) {
-                            out.putDouble(((Double) packetObject).doubleValue());
+                            out.putDouble((Double) packetObject);
                         } else if (packetClass == Float.TYPE) {
-                            out.putFloat(((Float) packetObject).floatValue());
+                            out.putFloat((Float) packetObject);
                         } else {
                             byte[] bytesToSend;
                             if (packetClass != String.class) {

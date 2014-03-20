@@ -14,9 +14,9 @@ public abstract class AI implements Serializable {
     public void beforeRemove() {
     }
 
-    public void hurt(Entity var1, int var2) {
+    public void hurt(Entity other, int amount) {
     }
 
-    public void tick(Level var1, Mob var2) {
+    public void tick(Level level, Mob mob) {
     }
 }

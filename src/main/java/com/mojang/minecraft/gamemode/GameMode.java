@@ -7,15 +7,16 @@ import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.player.Player;
 
 public class GameMode {
+    public Minecraft minecraft;
+    public boolean instantBreak;
+    public float reachDistance = 5F;
+    public MobSpawner spawner;
+
     public GameMode(Minecraft minecraft) {
         this.minecraft = minecraft;
 
         instantBreak = false;
     }
-
-    public Minecraft minecraft;
-
-    public boolean instantBreak;
 
     public void apply(Level level) {
         level.creativeMode = false;
@@ -64,8 +65,6 @@ public class GameMode {
     public void applyCracks(float time) {
     }
 
-    public float reachDistance = 5F;
-
     public float getReachDistance() {
         return reachDistance;
     }
@@ -82,8 +81,6 @@ public class GameMode {
 
     public void prepareLevel(Level level) {
     }
-
-    public MobSpawner spawner;
 
     public boolean isSurvival() {
         return true;

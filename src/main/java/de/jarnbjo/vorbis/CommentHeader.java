@@ -23,9 +23,9 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.*;
-
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.jarnbjo.util.io.BitInputStream;
 
@@ -51,7 +51,7 @@ public class CommentHeader {
     public static final String ISRC = "ISRC";
 
     private String vendor;
-    private HashMap<String, ArrayList<String>> comments = new HashMap<String, ArrayList<String>>();
+    private HashMap<String, ArrayList<String>> comments = new HashMap<>();
 
     private static final long HEADER = 0x736962726f76L; // 'vorbis'
 
@@ -77,7 +77,7 @@ public class CommentHeader {
     private void addComment(String key, String value) {
         ArrayList<String> al = comments.get(key);
         if (al == null) {
-            al = new ArrayList<String>();
+            al = new ArrayList<>();
             comments.put(key, al);
         }
         al.add(value);
@@ -101,12 +101,12 @@ public class CommentHeader {
 
     public String getComment(String key) {
         ArrayList<String> al = comments.get(key);
-        return al == null ? (String) null : (String) al.get(0);
+        return al == null ? null : al.get(0);
     }
 
     public String[] getComments(String key) {
         ArrayList<String> al = comments.get(key);
-        return al == null ? new String[0] : (String[]) al.toArray(new String[al.size()]);
+        return al == null ? new String[0] : al.toArray(new String[al.size()]);
     }
 
     public String getContact() {

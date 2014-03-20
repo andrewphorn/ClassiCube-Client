@@ -1,4 +1,4 @@
-package com.mojang.minecraft;
+package com.mojang.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,11 +13,12 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import com.mojang.minecraft.Minecraft;
+
 /**
  * Global logging class (to make life easier)
- * 
+ *
  * @author fragmer
- * 
  */
 public final class LogUtil {
     private static final String LOG_FILE_NAME = "client.log";
@@ -66,6 +67,9 @@ public final class LogUtil {
         logger.log(Level.INFO, "Log starts on {0}", DATE_FORMAT.format(new Date()));
     }
 
+    private LogUtil() {
+    }
+
     public static void logInfo(String message) {
         logger.log(Level.INFO, message);
     }
@@ -88,9 +92,6 @@ public final class LogUtil {
 
     public static void logError(String message, Throwable exception) {
         logger.log(Level.SEVERE, message, exception);
-    }
-
-    private LogUtil() {
     }
 
     final static class CustomFormatter extends Formatter {

@@ -7,15 +7,15 @@ import java.util.List;
 import javax.sound.sampled.SourceDataLine;
 
 import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 
 // TODO.
 public final class SoundPlayer implements Runnable {
 
     public boolean running = false;
     public SourceDataLine dataLine;
-    private List<Audio> audioQueue = new ArrayList<>();
     public GameSettings settings;
+    private List<Audio> audioQueue = new ArrayList<>();
 
     public SoundPlayer(GameSettings var1) {
         settings = var1;

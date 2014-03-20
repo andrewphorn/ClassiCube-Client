@@ -29,10 +29,11 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.*;
+import java.io.IOException;
 
-import de.jarnbjo.ogg.*;
-import de.jarnbjo.util.io.*;
+import de.jarnbjo.ogg.LogicalOggStream;
+import de.jarnbjo.util.io.BitInputStream;
+import de.jarnbjo.util.io.ByteArrayBitInputStream;
 
 /**
  */

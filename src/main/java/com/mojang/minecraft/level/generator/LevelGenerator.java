@@ -1,9 +1,9 @@
 package com.mojang.minecraft.level.generator;
 
-import com.mojang.minecraft.LogUtil;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.ProgressBarDisplay;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.generator.noise.CombinedNoise;
@@ -140,10 +140,11 @@ public final class LevelGenerator {
 
     /**
      * Generates a level
+     *
      * @param creator
      * @param width
      * @param depth
-     * @param height Seems to be unused.
+     * @param height  Seems to be unused.
      * @return
      */
     public final Level generate(String creator, int width, int depth, int height) {

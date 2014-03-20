@@ -11,12 +11,9 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -27,12 +24,12 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MinecraftApplet;
 import com.mojang.minecraft.ResourceDownloadThread;
 import com.mojang.minecraft.SessionData;
-import com.mojang.minecraft.StreamingUtil;
+import com.mojang.util.StreamingUtil;
 import com.oyasunadev.mcraft.client.util.Constants;
 
 /**

@@ -2,8 +2,7 @@ package com.mojang.minecraft.sound;
 
 import java.net.URL;
 
-import com.mojang.minecraft.LogUtil;
-
+import com.mojang.util.LogUtil;
 import de.jarnbjo.ogg.LogicalOggStreamImpl;
 import de.jarnbjo.ogg.OnDemandUrlStream;
 import de.jarnbjo.vorbis.IdentificationHeader;
@@ -27,7 +26,8 @@ public final class SoundReader {
         short[] var5 = new short[4096];
         int var6 = 0;
 
-        label51: while (var3 >= 0) {
+        label51:
+        while (var3 >= 0) {
             int var15 = 0;
 
             while (true) {

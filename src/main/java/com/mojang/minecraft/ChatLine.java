@@ -7,19 +7,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.mojang.minecraft.gui.FontRenderer;
+import com.mojang.util.LogUtil;
 
 public class ChatLine {
 
+    public static String eol = System.getProperty("line.separator");
     public String message;
     public int time;
 
-    public static String eol = System.getProperty("line.separator");
-
     /**
-     * Constructs a new chatline, logs to the userdata aswell
-     * 
-     * @param message
-     *            The chatline
+     * Constructs a new chatline, logs to the userdata as well
+     *
+     * @param message The chatline
      */
     public ChatLine(String message) {
         this.message = message;

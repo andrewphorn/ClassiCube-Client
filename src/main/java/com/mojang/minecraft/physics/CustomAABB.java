@@ -5,7 +5,6 @@ package com.mojang.minecraft.physics;
  * SelectionBoxes
  *
  * @author Jon
- *
  */
 public class CustomAABB {
 

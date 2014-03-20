@@ -1,28 +1,27 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.LogUtil;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
-import com.mojang.minecraft.Minecraft;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.LevelLoader;
 
 public class LoadLevelScreen extends GuiScreen implements Runnable {
 
     protected GuiScreen parent;
+    protected String title = "Load level";
+    protected boolean saving = false;
+    protected File selectedFile;
+    boolean frozen = false;
+    JFileChooser chooser;
     private boolean finished = false;
     private boolean loaded = false;
     private String[] levels = null;
     private String status = "";
-    protected String title = "Load level";
-    boolean frozen = false;
-    JFileChooser chooser;
-    protected boolean saving = false;
-    protected File selectedFile;
 
     public LoadLevelScreen(GuiScreen parent) {
         this.parent = parent;
@@ -79,11 +78,10 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
     }
 
     protected void openLevel(File file) {
-        Level level;
         try {
-            if ((level = new LevelLoader().load(file, this.minecraft.player)) == null) {
-            } else {
-            	minecraft.setLevel(level);
+            Level level = new LevelLoader().load(file, this.minecraft.player);
+            if (level != null) {
+                minecraft.setLevel(level);
             }
         } catch (IOException ex) {
             // TODO Auto-generated catch block
@@ -96,7 +94,7 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
     protected void openLevel(int var1) {
         // this.minecraft.loadOnlineLevel(this.minecraft.session.username,
         // var1);
-        minecraft.setCurrentScreen((GuiScreen) null);
+        minecraft.setCurrentScreen(null);
         minecraft.grabMouse();
     }
 
@@ -132,7 +130,7 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
                     LogUtil.logError("Error waiting to run LoadLevelScreen.", ex);
                 }
             }
-            levels = new String[] { "" };
+            levels = new String[]{""};
             if (levels.length >= 5) {
                 setLevels(levels);
                 loaded = true;

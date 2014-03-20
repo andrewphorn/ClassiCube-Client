@@ -15,20 +15,21 @@ import org.lwjgl.input.Mouse;
 
 import com.mojang.minecraft.ChatClickData;
 import com.mojang.minecraft.ChatClickData.LinkData;
-import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.net.NetworkManager;
+import com.mojang.util.LogUtil;
 import com.mojang.minecraft.net.PacketType;
 
 public class ChatInputScreenExtension extends GuiScreen {
 
-    public String inputLine = "";
-    private int tickCount = 0;
-    public int caretPos = 0;
-    private int historyPos = 0;
-
     public static Vector<String> history = new Vector<>();
-
+    /**
+     * The background color of the chat.
+     */
+    public static int ChatRGB = new java.awt.Color(0, 0, 0, 130).getRGB();
+    public String inputLine = "";
+    public int caretPos = 0;
     int j;
+    private int tickCount = 0;
+    private int historyPos = 0;
 
     private String getClipboard() {
         Transferable clipboard = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
@@ -36,10 +37,14 @@ public class ChatInputScreenExtension extends GuiScreen {
             if (clipboard != null && clipboard.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                 return (String) clipboard.getTransferData(DataFlavor.stringFlavor);
             }
-        } catch (UnsupportedFlavorException ex) {
-        } catch (IOException e) {
+        } catch (UnsupportedFlavorException | IOException ex) {
         }
         return null;
+    }
+
+    private void setClipboard(String paramString) {
+        StringSelection localStringSelection = new StringSelection(paramString);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(localStringSelection, null);
     }
 
     private void insertTextAtCaret(String paramString) {
@@ -86,11 +91,11 @@ public class ChatInputScreenExtension extends GuiScreen {
     @Override
     protected final void onKeyPress(char paramChar, int paramInt) {
         if (paramInt == Keyboard.KEY_ESCAPE) {
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
             return;
         }
         if (paramInt == Keyboard.KEY_F2) {
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
             minecraft.takeAndSaveScreenshot(minecraft.width, minecraft.height);
             minecraft.setCurrentScreen(this);
         }
@@ -154,16 +159,13 @@ public class ChatInputScreenExtension extends GuiScreen {
             } else if (minecraft.session == null) {
                 minecraft.hud.addChat("&f" + str1);
             } else if (str1.length() > 0) {
-                NetworkManager var10000 = minecraft.networkManager;
-                NetworkManager var3 = var10000;
                 if ((str1 = str1.trim()).length() > 0) {
-                    var3.netHandler.send(PacketType.CHAT_MESSAGE,
-                            new Object[] { Integer.valueOf(-1), str1 });
+                    minecraft.networkManager.netHandler.send(PacketType.CHAT_MESSAGE, -1, str1);
                 }
 
             }
             history.add(str1);
-            minecraft.setCurrentScreen((GuiScreen) null);
+            minecraft.setCurrentScreen(null);
             return;
         }
 
@@ -262,7 +264,7 @@ public class ChatInputScreenExtension extends GuiScreen {
                             && y < data.bounds.minY) {
                         ChatClickData chatClickData = new ChatClickData(fontRenderer,
                                 minecraft.hud.chat.get(i));
-                        if (data.string == chatClickData.message) {
+                        if (data.string.equals(chatClickData.message)) {
                             for (LinkData ld : chatClickData.getClickedUrls()) {
                                 if (ld != null) {
                                     if (x > ld.x0 && x < ld.x1 && y > data.bounds.maxY
@@ -297,11 +299,6 @@ public class ChatInputScreenExtension extends GuiScreen {
             }
         }
     }
-
-    /**
-     * The background color of the chat.
-     */
-    public static int ChatRGB = new java.awt.Color(0, 0, 0, 130).getRGB();
 
     @Override
     public void render(int paramInt1, int paramInt2) {
@@ -346,7 +343,7 @@ public class ChatInputScreenExtension extends GuiScreen {
                         && y < data.bounds.minY) {
                     ChatClickData chatClickData = new ChatClickData(fontRenderer,
                             minecraft.hud.chat.get(i));
-                    if (data.string == chatClickData.message) {
+                    if (data.string.equals(chatClickData.message)) {
                         for (LinkData ld : chatClickData.getClickedUrls()) {
                             if (ld != null) {
                                 if (x > ld.x0 && x < ld.x1 && y > data.bounds.maxY
@@ -360,11 +357,6 @@ public class ChatInputScreenExtension extends GuiScreen {
                 }
             }
         }
-    }
-
-    private void setClipboard(String paramString) {
-        StringSelection localStringSelection = new StringSelection(paramString);
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(localStringSelection, null);
     }
 
     @Override

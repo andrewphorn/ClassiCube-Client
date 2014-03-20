@@ -8,30 +8,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import com.mojang.minecraft.LogUtil;
-import com.mojang.minecraft.nbt.CompressedStreamTools;
-import com.mojang.minecraft.nbt.NBTTagCompound;
+import com.mojang.util.LogUtil;
+import com.mojang.nbt.CompressedStreamTools;
+import com.mojang.nbt.NBTTagCompound;
 import com.mojang.minecraft.player.Player;
 
 public class LevelLoader {
 
-    // Used for recieved map streams from servers
-    public static byte[] decompress(InputStream var0) {
+    public LevelLoader() {
+    }
+
+    // Used for received map streams from servers
+    public static byte[] decompress(InputStream input) {
         try {
-            DataInputStream var3;
-            byte[] var1 = new byte[(var3 = new DataInputStream(new GZIPInputStream(var0)))
-                    .readInt()];
-            var3.readFully(var1);
-            var3.close();
-            return var1;
+            DataInputStream stream = new DataInputStream(new GZIPInputStream(input));
+            byte[] blockArray = new byte[stream.readInt()];
+            stream.readFully(blockArray);
+            stream.close();
+            return blockArray;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    Level level;
-
-    public LevelLoader() {
     }
 
     public Level load(File fullFilePath, Player player) throws FileNotFoundException, IOException {
@@ -61,7 +58,7 @@ public class LevelLoader {
         short z = spawn.getShort("Z");
         short r = spawn.getByte("H");
         short l = spawn.getByte("P");
-        newLevel.desiredSpawn = new short[] { x, y, z, r, l };
+        newLevel.desiredSpawn = new short[]{x, y, z, r, l};
 
         boolean debug = false;
         if (debug) {

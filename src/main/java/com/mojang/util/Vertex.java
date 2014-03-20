@@ -8,7 +8,7 @@ public final class Vertex {
 
     /**
      * Build a Vertex object with the vector coordinates and UV.
-     * 
+     *
      * @param x
      * @param y
      * @param z
@@ -21,7 +21,7 @@ public final class Vertex {
 
     /**
      * Build a Vertex object with a prebuilt Vector3D object and UV.
-     * 
+     *
      * @param vector
      * @param u
      * @param v
@@ -34,7 +34,7 @@ public final class Vertex {
 
     /**
      * Build a Vertex object with another Vertex object and UV.
-     * 
+     *
      * @param vertex
      * @param u
      * @param v
@@ -47,7 +47,7 @@ public final class Vertex {
 
     /**
      * Build a Vertex object without specifying a coordinate set.
-     * 
+     *
      * @param u
      * @param v
      * @return Vertex

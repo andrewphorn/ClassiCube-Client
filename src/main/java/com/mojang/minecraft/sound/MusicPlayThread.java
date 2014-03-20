@@ -1,7 +1,8 @@
 package com.mojang.minecraft.sound;
 
-import com.mojang.minecraft.LogUtil;
 import java.nio.ByteBuffer;
+
+import com.mojang.util.LogUtil;
 
 // TODO.
 final class MusicPlayThread extends Thread {

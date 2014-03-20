@@ -26,11 +26,11 @@
 
 package de.jarnbjo.vorbis;
 
-import java.io.*;
+import java.io.IOException;
+import java.util.Arrays;
 
-import java.util.*;
-
-import de.jarnbjo.util.io.*;
+import de.jarnbjo.util.io.BitInputStream;
+import de.jarnbjo.util.io.HuffmanNode;
 
 class CodeBook {
 
@@ -211,9 +211,9 @@ class CodeBook {
     /*
      * public void readVAdd(double[] a, ReadableBitChannel source, int offset,
      * int length) throws FormatException, IOException {
-     * 
+     *
      * int i,j,entry; int t;
-     * 
+     *
      * if(dimensions>8){ for(i=0;i<length;){ entry = readInt(source);
      * //if(entry==-1)return(-1); //t=entry*dimensions; for(j=0;j<dimensions;){
      * a[offset+(i++)]+=valueVector[entry][j++];//valuelist[t+(j++)]; } } }

@@ -2,7 +2,7 @@ package com.mojang.minecraft.mob;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.minecraft.ColorCache;
+import com.mojang.util.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
@@ -24,20 +24,10 @@ public class Mob extends Entity {
     public float timeOffs;
     public float speed;
     public float rotA = (float) (Math.random() + 1D) * 0.01F; // Unused?
-    protected float yBodyRot = 0F;
-    protected float yBodyRotO = 0F;
-    protected float oRun;
-    protected float run;
-    protected float animStep;
-    protected float animStepO;
-    protected int tickCount = 0;
     public boolean hasHair = true;
-    protected String textureName = "/char.png";
     public boolean allowAlpha = true;
     public float rotOffs = 0F;
     public String modelName = null;
-    protected float bobStrength = 1F;
-    protected int deathScore = 0;
     public float renderOffset = 0F;
     public int health = 20;
     public int lastHealth;
@@ -50,8 +40,18 @@ public class Mob extends Entity {
     public int attackTime = 0;
     public float oTilt;
     public float tilt;
-    protected boolean dead = false;
     public AI ai;
+    protected float yBodyRot = 0F;
+    protected float yBodyRotO = 0F;
+    protected float oRun;
+    protected float run;
+    protected float animStep;
+    protected float animStepO;
+    protected int tickCount = 0;
+    protected String textureName = "/char.png";
+    protected float bobStrength = 1F;
+    protected int deathScore = 0;
+    protected boolean dead = false;
 
     public Mob(Level level) {
         super(level);
@@ -78,9 +78,9 @@ public class Mob extends Entity {
     @Override
     protected void causeFallDamage(float height) {
         if (!level.creativeMode) {
-            int var2;
-            if ((var2 = (int) Math.ceil(height - 3F)) > 0) {
-                hurt((Entity) null, var2);
+            int fallHeight = (int) Math.ceil(height - 3F); // Allow short falls
+            if (fallHeight > 0) {
+                hurt(null, fallHeight);
             }
 
         }
@@ -108,22 +108,22 @@ public class Mob extends Entity {
     }
 
     @Override
-    public void hurt(Entity entity, int hurtBy) {
+    public void hurt(Entity entity, int amount) {
         if (!level.creativeMode) {
             if (health > 0) {
                 if (ai != null) {
-                    ai.hurt(entity, hurtBy);
+                    ai.hurt(entity, amount);
                 }
                 if (invulnerableTime > invulnerableDuration / 2F) {
-                    if (lastHealth - hurtBy >= health) {
+                    if (lastHealth - amount >= health) {
                         return;
                     }
 
-                    health = lastHealth - hurtBy;
+                    health = lastHealth - amount;
                 } else {
                     lastHealth = health;
                     invulnerableTime = invulnerableDuration;
-                    health -= hurtBy;
+                    health -= amount;
                     hurtTime = hurtDuration = 10;
                 }
 
@@ -132,7 +132,7 @@ public class Mob extends Entity {
                     float distanceX = entity.x - x;
                     float distanceY = entity.z - z;
                     hurtDir = (float) (Math.atan2(distanceY, distanceX) * 180D / Math.PI) - yRot;
-                    knockback(entity, hurtBy, distanceX, distanceY);
+                    knockback(entity, amount, distanceX, distanceY);
                 } else {
                     hurtDir = (int) (Math.random() * 2D) * 180;
                 }
@@ -161,7 +161,7 @@ public class Mob extends Entity {
     }
 
     // TODO First two variable never used
-    public void knockback(Entity var1, int var2, float var3, float var4) {
+    public void knockback(Entity entity, int var2, float var3, float var4) {
         float var5 = MathHelper.sqrt(var3 * var3 + var4 * var4);
         float var6 = 0.4F;
         xd /= 2F;
@@ -281,7 +281,7 @@ public class Mob extends Entity {
     }
 
     public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
-            float var6, float var7) {
+                            float var6, float var7) {
         modelCache.getModel(modelName).render(var2, var4, tickCount + var3, var5, var6, var7);
     }
 
@@ -316,7 +316,7 @@ public class Mob extends Entity {
             if (airSupply > 0) {
                 --airSupply;
             } else {
-                hurt((Entity) null, 2);
+                hurt(null, 2);
             }
         } else {
             airSupply = 300;
@@ -327,7 +327,7 @@ public class Mob extends Entity {
         }
 
         if (isInLava()) {
-            hurt((Entity) null, 10);
+            hurt(null, 10);
         }
 
         animStepO = animStep;
@@ -429,7 +429,7 @@ public class Mob extends Entity {
                 } else {
                     multiply = 1F; // 1x
                 }
-            } else if (flyingMode && ai.running) {
+            } else if (ai.running) {
                 multiply = 90F; // 6x
             } else {
                 multiply = 15F; // 1x

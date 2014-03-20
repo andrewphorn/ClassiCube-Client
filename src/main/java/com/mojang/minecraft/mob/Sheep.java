@@ -65,23 +65,23 @@ public class Sheep extends QuadrupedMob {
     }
 
     @Override
-    public void hurt(Entity entity, int hurtBy) {
+    public void hurt(Entity entity, int amount) {
         if (hasFur && entity instanceof Player) {
             hasFur = false;
             int var3 = (int) (Math.random() * 3D + 1D);
 
-            for (hurtBy = 0; hurtBy < var3; ++hurtBy) {
+            for (amount = 0; amount < var3; ++amount) {
                 level.addEntity(new Item(level, x, y, z, Block.WHITE_WOOL.id));
             }
 
         } else {
-            super.hurt(entity, hurtBy);
+            super.hurt(entity, amount);
         }
     }
 
     @Override
     public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
-            float var6, float var7) {
+                            float var6, float var7) {
         AnimalModel var8;
         float var9 = (var8 = (AnimalModel) modelCache.getModel("sheep")).head.y;
         float var10 = var8.head.z;

@@ -1,13 +1,13 @@
 package com.mojang.minecraft.level.tile;
 
-import com.mojang.util.IntersectionHelper;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.minecraft.ColorCache;
+import com.mojang.util.ColorCache;
 import com.mojang.minecraft.MovingObjectPosition;
-import com.mojang.util.Vec3D;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
+import com.mojang.util.IntersectionHelper;
+import com.mojang.util.Vec3D;
 
 public class BlockModelRenderer {
     public int textureId;
@@ -124,17 +124,11 @@ public class BlockModelRenderer {
     }
 
     public AABB getCollisionBox(int x, int y, int z) {
-        AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
-        ;
-
-        return aabb;
+        return new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
     }
 
     public AABB getSelectionBox(int x, int y, int z) {
-        AABB aabb = new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
-        ;
-
-        return aabb;
+        return new AABB(x + x1, y + y1, z + z1, x + x2, y + y2, z + z2);
     }
 
     protected int getTextureId(int texture) {

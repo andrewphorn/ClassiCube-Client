@@ -23,9 +23,14 @@
 
 package de.jarnbjo.ogg;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * Implementation of the <code>PhysicalOggStream</code> interface for reading
@@ -64,9 +69,7 @@ public class CachedUrlStream implements PhysicalOggStream {
                     synchronized (drainLock) {
                         int listSize = pageOffsets.size();
 
-                        long pos = listSize > 0 ? ((Long) pageOffsets.get(listSize - 1))
-                                .longValue() + ((Long) pageLengths.get(listSize - 1)).longValue()
-                                : 0;
+                        long pos = listSize > 0 ? pageOffsets.get(listSize - 1) + pageLengths.get(listSize - 1) : 0;
 
                         byte[] arr1 = op.getHeader();
                         byte[] arr2 = op.getSegmentTable();
@@ -85,8 +88,8 @@ public class CachedUrlStream implements PhysicalOggStream {
                                     + arr2.length, arr3.length);
                         }
 
-                        pageOffsets.add(new Long(pos));
-                        pageLengths.add(new Long(arr1.length + arr2.length + arr3.length));
+                        pageOffsets.add(pos);
+                        pageLengths.add((long) arr1.length + arr2.length + arr3.length);
                     }
 
                     if (!op.isBos()) {
@@ -101,7 +104,7 @@ public class CachedUrlStream implements PhysicalOggStream {
                             .getStreamSerialNumber());
                     if (los == null) {
                         los = new LogicalOggStreamImpl(CachedUrlStream.this);
-                        logicalStreams.put(new Integer(op.getStreamSerialNumber()), los);
+                        logicalStreams.put(op.getStreamSerialNumber(), los);
                         los.checkFormat(op);
                     }
 
@@ -126,12 +129,12 @@ public class CachedUrlStream implements PhysicalOggStream {
     private Object drainLock = new Object();
     private RandomAccessFile drain;
     private byte[] memoryCache;
-    private ArrayList<Long> pageOffsets = new ArrayList<Long>();
-    private ArrayList<Long> pageLengths = new ArrayList<Long>();
+    private ArrayList<Long> pageOffsets = new ArrayList<>();
+    private ArrayList<Long> pageLengths = new ArrayList<>();
 
     private long cacheLength;
 
-    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
+    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<>();
 
     private LoaderThread loaderThread;
 
@@ -139,7 +142,7 @@ public class CachedUrlStream implements PhysicalOggStream {
      * Creates an instance of this class, using a memory cache.
      */
 
-    public CachedUrlStream(URL source) throws OggFormatException, IOException {
+    public CachedUrlStream(URL source) throws IOException {
         this(source, null);
     }
 
@@ -172,8 +175,7 @@ public class CachedUrlStream implements PhysicalOggStream {
             // System.out.print("pageOffsets.size(): "+pageOffsets.size()+"\r");
             try {
                 Thread.sleep(200);
-            } catch (InterruptedException ex) {
-            }
+            } catch (InterruptedException ex) {}
         }
         // System.out.println();
         // System.out.println("caching "+pageOffsets.size()+"/20 pages\r");
@@ -189,13 +191,13 @@ public class CachedUrlStream implements PhysicalOggStream {
     }
 
     private LogicalOggStream getLogicalStream(int serialNumber) {
-        return (LogicalOggStream) logicalStreams.get(new Integer(serialNumber));
+        return logicalStreams.get(new Integer(serialNumber));
     }
 
     /*
      * private OggPage getNextPage() throws EndOfOggStreamException,
      * IOException, OggFormatException { return getNextPage(false); }
-     * 
+     *
      * private OggPage getNextPage(boolean skipData) throws
      * EndOfOggStreamException, IOException, OggFormatException { return
      * OggPage.create(sourceStream, skipData); }
@@ -207,11 +209,11 @@ public class CachedUrlStream implements PhysicalOggStream {
 
     public OggPage getOggPage(int index) throws IOException {
         synchronized (drainLock) {
-            Long offset = (Long) pageOffsets.get(index);
-            Long length = (Long) pageLengths.get(index);
+            Long offset = pageOffsets.get(index);
+            Long length = pageLengths.get(index);
             if (offset != null) {
                 if (drain != null) {
-                    drain.seek(offset.longValue());
+                    drain.seek(offset);
                     return OggPage.create(drain);
                 } else {
                     byte[] tmpArray = new byte[length.intValue()];
@@ -233,9 +235,7 @@ public class CachedUrlStream implements PhysicalOggStream {
     }
 
     public void setTime(long granulePosition) throws IOException {
-        for (Iterator<LogicalOggStreamImpl> iter = logicalStreams.values().iterator(); iter
-                .hasNext();) {
-            LogicalOggStream los = (LogicalOggStream) iter.next();
+        for (LogicalOggStream los : logicalStreams.values()) {
             los.setTime(granulePosition);
         }
     }

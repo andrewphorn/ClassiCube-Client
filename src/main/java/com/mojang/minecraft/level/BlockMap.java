@@ -5,40 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.minecraft.Entity;
-import com.mojang.util.Vec3D;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.Frustum;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.util.Vec3D;
 
 public class BlockMap implements Serializable {
 
     public static final long serialVersionUID = 0L;
-
-    // $FF: synthetic method
-    static int getDepth(BlockMap blockMap) {
-        return blockMap.depth;
-    }
-
-    // $FF: synthetic method
-    static int getHeight(BlockMap blockMap) {
-        return blockMap.height;
-    }
-
-    // $FF: synthetic method
-    static int getWidth(BlockMap blockMap) {
-        return blockMap.width;
-    }
-
+    public List<Entity>[] entityGrid;
+    public List<Entity> all = new ArrayList<>();
     private int width;
     private int depth;
     private int height;
     private BlockMap$Slot slot = new BlockMap$Slot(this);
     private BlockMap$Slot slot2 = new BlockMap$Slot(this);
-
-    public List<Entity>[] entityGrid;
-
-    public List<Entity> all = new ArrayList<>();
-
     private List<Entity> tmp = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
@@ -70,6 +51,21 @@ public class BlockMap implements Serializable {
 
     }
 
+    // $FF: synthetic method
+    static int getDepth(BlockMap blockMap) {
+        return blockMap.depth;
+    }
+
+    // $FF: synthetic method
+    static int getHeight(BlockMap blockMap) {
+        return blockMap.height;
+    }
+
+    // $FF: synthetic method
+    static int getWidth(BlockMap blockMap) {
+        return blockMap.width;
+    }
+
     public void clear() {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < depth; ++y) {
@@ -91,13 +87,13 @@ public class BlockMap implements Serializable {
     }
 
     public List<Entity> getEntities(Entity entity, float x1, float y1, float z1, float x2,
-            float y2, float z2) {
+                                    float y2, float z2) {
         tmp.clear();
         return this.getEntities(entity, x1, y1, z1, x2, y2, z2, tmp);
     }
 
     public List<Entity> getEntities(Entity entity, float x1, float y1, float z1, float x2,
-            float y2, float z2, List<Entity> entityListToChange) {
+                                    float y2, float z2, List<Entity> entityListToChange) {
         BlockMap$Slot thisSlot = slot.init(x1, y1, z1);
         BlockMap$Slot otherSlot = slot2.init(x2, y2, z2);
 
@@ -256,10 +252,9 @@ public class BlockMap implements Serializable {
 
                             boolean var21 = var10000;
 
-                            for (int var23 = 0; var23 < entitySlotInGrid.size(); ++var23) {
-                                Entity var22;
-                                if ((var22 = (Entity) entitySlotInGrid.get(var23))
-                                        .shouldRender(var1)) {
+                            for (Object anEntitySlotInGrid : entitySlotInGrid) {
+                                Entity var22 = (Entity) anEntitySlotInGrid;
+                                if (var22.shouldRender(var1)) {
                                     if (!var21) {
                                         AABB var24 = var22.boundingBox;
                                         if (!frustum.isBoxInFrustum(var24.maxX, var24.maxY, var24.maxZ,

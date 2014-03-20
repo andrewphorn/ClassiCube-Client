@@ -35,5 +35,6 @@ public final class StillLiquidBlock extends LiquidBlock {
     }
 
     @Override
-    public final void update(Level level, int x, int y, int z, Random rand) {}
+    public final void update(Level level, int x, int y, int z, Random rand) {
+    }
 }

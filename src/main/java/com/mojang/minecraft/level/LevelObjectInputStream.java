@@ -1,12 +1,13 @@
 package com.mojang.minecraft.level;
 
-import com.mojang.minecraft.LogUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.mojang.util.LogUtil;
 
 public final class LevelObjectInputStream extends ObjectInputStream {
 

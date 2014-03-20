@@ -11,25 +11,28 @@ import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
-import com.oyasunadev.mcraft.client.util.Constants;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.gui.HUDScreen;
 import com.mojang.minecraft.render.ShapeRenderer;
+import com.mojang.util.LogUtil;
+import com.oyasunadev.mcraft.client.util.Constants;
 
 public final class ProgressBarDisplay {
 
     public static String text = "";
-    private Minecraft minecraft;
     public static String title = "";
-    private long start = System.currentTimeMillis();
-
     public static String terrainId = "";
     public static String sideId = "";
     public static String edgeId = "";
-
     public static HashMap<String, String> serverConfig = new HashMap<>();
+    private Minecraft minecraft;
+    private long start = System.currentTimeMillis();
+
+    public ProgressBarDisplay(Minecraft minecraft) {
+        this.minecraft = minecraft;
+    }
 
     public static HashMap<String, String> fetchConfig(String location) {
         HashMap<String, String> localHashMap = new HashMap<>();
@@ -111,10 +114,6 @@ public final class ProgressBarDisplay {
 
         localURLConnection.connect();
         return localURLConnection;
-    }
-
-    public ProgressBarDisplay(Minecraft minecraft) {
-        this.minecraft = minecraft;
     }
 
     public boolean passServerCommand(String lineText) {
@@ -220,8 +219,7 @@ public final class ProgressBarDisplay {
                 return;
             }
 
-            String joinedString = new StringBuilder().append(title).append(" ").append(text)
-                    .toString().toLowerCase();
+            String joinedString = (title + " " + text).toLowerCase();
 
             if (joinedString.contains("-hax")) {
                 HackState.setAllDisabled();

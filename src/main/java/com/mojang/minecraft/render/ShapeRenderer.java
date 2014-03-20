@@ -10,11 +10,12 @@ import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.GameSettings;
-import com.mojang.minecraft.LogUtil;
+import com.mojang.util.LogUtil;
 
 public class ShapeRenderer {
-    private static boolean convertQuadsToTriangles;
-    public static boolean tryVBO;
+    public static boolean tryVBO; // TODO Never used
+    public static ShapeRenderer instance;
+    private static boolean convertQuadsToTriangles; // TODO Never assigned
     private ByteBuffer byteBuffer;
     private IntBuffer intBuffer;
     private FloatBuffer floatBuffer;
@@ -34,7 +35,6 @@ public class ShapeRenderer {
     private double yOffset;
     private double zOffset;
     private int normal;
-    public static ShapeRenderer instance;
     private boolean isDrawing;
     private boolean useVBO;
     private IntBuffer vertexBuffers;

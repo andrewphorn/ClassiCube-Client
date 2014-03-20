@@ -34,7 +34,7 @@ public class Arrow extends Entity {
     private int damage;
 
     public Arrow(Level level, Entity owner, float x, float y, float z, float unknown0,
-            float unknown1, float unknown2) {
+                 float unknown1, float unknown2) {
         super(level);
 
         this.owner = owner;
@@ -238,13 +238,11 @@ public class Arrow extends Entity {
             if (!hasHit) {
                 float unknown6 = MathHelper.sqrt(xd * xd + zd * zd);
 
+                xRot = (float) (Math.atan2(yd, unknown6) * 180D / Math.PI);
                 yRot = (float) (Math.atan2(xd, zd) * 180D / Math.PI);
 
-                for (xRot = (float) (Math.atan2(yd, unknown6) * 180D / Math.PI);
-                     xRot - xRotO < -180F;
-                     xRotO -= 360F) {
-                    //System.out.println("test");
-                    // TODO: ?.
+                while (xRot - xRotO < -180F) {
+                    xRotO -= 360F;
                 }
 
                 while (xRot - xRotO >= 180F) {

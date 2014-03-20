@@ -1,4 +1,4 @@
-package com.mojang.minecraft;
+package com.mojang.util;
 
 import java.awt.Color;
 import java.io.Serializable;
@@ -6,9 +6,8 @@ import java.io.Serializable;
 /**
  * Custom class used to store data compatible with GL11.Color3f Each color (R G
  * B A) is fixed to become a maximum of 1f
- * 
+ *
  * @author Jon
- * 
  */
 public class ColorCache implements Serializable {
 
@@ -32,7 +31,15 @@ public class ColorCache implements Serializable {
         A = a;
     }
 
-    float FixColor(float color) {
+    public static ColorCache parseHex(String hex) {
+        Color col = Color.decode("#" + hex);
+        float r = col.getRed() / 255f;
+        float g = col.getGreen() / 255f;
+        float b = col.getBlue() / 255f;
+        return new ColorCache(r, g, b);
+    }
+
+    private float FixColor(float color) {
         if (color > 1f) {
             return 1f;
         }
@@ -40,13 +47,5 @@ public class ColorCache implements Serializable {
             return 0f;
         }
         return color;
-    }
-
-    public static ColorCache parseHex(String hex) {
-        Color col = Color.decode("#" + hex);
-        float r = col.getRed() / 255f;
-        float g = col.getGreen() / 255f;
-        float b = col.getBlue() / 255f;
-        return new ColorCache(r, g, b);
     }
 }

@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import com.mojang.util.LogUtil;
+import com.mojang.util.StreamingUtil;
+
 public class ResourceDownloadThread extends Thread {
 
-    private static final String[] resourceFiles = new String[] { "music/calm1.ogg",
+    private static final String[] resourceFiles = new String[]{"music/calm1.ogg",
             "music/calm2.ogg", "music/calm3.ogg", "newmusic/hal1.ogg", "newmusic/hal2.ogg",
             "newmusic/hal3.ogg", "newmusic/hal4.ogg", "newsound/step/grass1.ogg",
             "newsound/step/grass2.ogg", "newsound/step/grass3.ogg", "newsound/step/grass4.ogg",
@@ -29,13 +32,12 @@ public class ResourceDownloadThread extends Thread {
             "sound3/dig/sand2.ogg", "sound3/dig/sand3.ogg", "sound3/dig/sand4.ogg",
             "sound3/dig/snow1.ogg", "sound3/dig/snow2.ogg", "sound3/dig/snow3.ogg",
             "sound3/dig/snow4.ogg", "sound3/random/glass1.ogg", "sound3/random/glass2.ogg",
-            "sound3/random/glass3.ogg" };
-
+            "sound3/random/glass3.ogg"};
+    public static boolean done = false;
     private final File dir;
     private final Minecraft minecraft;
-    private boolean finished = false;
-    public static boolean done = false;
     boolean running = false;
+    private boolean finished = false;
 
     public ResourceDownloadThread(File minecraftFolder, Minecraft minecraft) throws IOException {
         this.minecraft = minecraft;

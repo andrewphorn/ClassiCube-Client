@@ -33,16 +33,16 @@ public class GLAllocation {
     }
 
     public static synchronized void deleteTextures() {
-    for (int i : textures) {
-        GL11.glDeleteTextures(i);
+        for (int i : textures) {
+            GL11.glDeleteTextures(i);
+        }
+
+        textures.clear();
     }
 
-    textures.clear();
-}
-
     public static synchronized void deleteTexturesAndDisplayLists() {
-        for (Entry<Integer, Integer> i:  displayLists.entrySet()) {
-            Entry<Integer, Integer> entity = (Entry<Integer, Integer>) i;
+        for (Entry<Integer, Integer> i : displayLists.entrySet()) {
+            Entry<Integer, Integer> entity = i;
             GL11.glDeleteLists(entity.getKey(), entity.getValue());
         }
 

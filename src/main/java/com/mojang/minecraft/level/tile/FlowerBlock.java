@@ -2,7 +2,7 @@ package com.mojang.minecraft.level.tile;
 
 import java.util.Random;
 
-import com.mojang.minecraft.ColorCache;
+import com.mojang.util.ColorCache;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;

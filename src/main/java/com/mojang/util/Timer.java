@@ -1,16 +1,16 @@
-package com.mojang.minecraft;
+package com.mojang.util;
 
 public class Timer {
-    float tps;
+    public float tps;
 
-    double lastHR;
+    public double lastHR;
     public int elapsedTicks;
     public float delta;
     public float speed = 1F;
     public float elapsedDelta = 0F;
-    long lastSysClock;
-    long lastHRClock;
-    double adjustment = 1D;
+    public long lastSysClock;
+    public long lastHRClock;
+    public double adjustment = 1D;
 
     public Timer(float tps) {
         this.tps = tps;
