@@ -2650,7 +2650,11 @@ public final class Minecraft implements Runnable {
                         break;
                     }
                 }
-                currentScreen.keyboardEvent();
+                // If the player presses lots of keys and presses the left mouse button,
+                // sometimes the screen is closed even though there are still keys left to process.
+                if (currentScreen != null) {
+                    currentScreen.keyboardEvent();
+                }
             }
         } else if (currentScreen == null) {
             while (Mouse.next()) {
