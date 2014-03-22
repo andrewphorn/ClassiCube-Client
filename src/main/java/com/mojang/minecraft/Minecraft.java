@@ -1704,40 +1704,38 @@ public final class Minecraft implements Runnable {
         }
     }
 
-    public final void setCurrentScreen(GuiScreen newScreen) {
-        if (!(currentScreen instanceof ErrorScreen)) {
-            if (currentScreen != null) {
-                currentScreen.onClose();
-            }
-
-            if (newScreen == null && player.health <= 0) {
-                newScreen = new GameOverScreen();
-            }
-
-            currentScreen = newScreen;
-            if (newScreen != null) {
-                if (hasMouse) {
-                    player.releaseAllKeys();
-                    hasMouse = false;
-                    if (isLevelLoaded) {
-                        try {
-                            Mouse.setNativeCursor(null);
-                        } catch (LWJGLException ex) {
-                            LogUtil.logError("Error showing the mouse cursor.", ex);
-                        }
-                    } else {
-                        Mouse.setGrabbed(false);
-                    }
-                }
-
-                int var2 = width * 240 / height;
-                int var3 = height * 240 / height;
-                newScreen.open(this, var2, var3);
-                isOnline = false;
-                return;
-            }
-            grabMouse();
+    public final void setCurrentScreen(GuiScreen newScreen) {        
+        if (currentScreen != null) {
+            currentScreen.onClose();
         }
+
+        if (newScreen == null && player.health <= 0) {
+            newScreen = new GameOverScreen();
+        }
+
+        currentScreen = newScreen;
+        if (newScreen != null) {
+            if (hasMouse) {
+                player.releaseAllKeys();
+                hasMouse = false;
+                if (isLevelLoaded) {
+                    try {
+                        Mouse.setNativeCursor(null);
+                    } catch (LWJGLException ex) {
+                        LogUtil.logError("Error showing the mouse cursor.", ex);
+                    }
+                } else {
+                    Mouse.setGrabbed(false);
+                }
+            }
+
+            int var2 = width * 240 / height;
+            int var3 = height * 240 / height;
+            newScreen.open(this, var2, var3);
+            isOnline = false;
+            return;
+        }
+        grabMouse();
     }
 
     private void setDisplayMode() throws LWJGLException {
@@ -1995,6 +1993,7 @@ public final class Minecraft implements Runnable {
                                         LogUtil.logInfo("Connecting to AppName: " + AppName
                                                 + " with extension count: " + ExtensionCount);
                                         receivedExtensionLength = ExtensionCount;
+                                        Constants.SERVER_SUPPORTED_EXTENSIONS.clear();
                                     } else if (packetType == PacketType.EXT_ENTRY) {
                                         String ExtName = (String) packetParams[0];
                                         Integer Version = (Integer) packetParams[1];
