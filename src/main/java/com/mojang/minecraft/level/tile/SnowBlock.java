@@ -9,6 +9,7 @@ public final class SnowBlock extends Block {
 
     public SnowBlock(int id) {
         super(id);
+        this.id = id;
         setBounds(0F, 0F, 0F, 1F, 0.20F, 1F);
     }
 
