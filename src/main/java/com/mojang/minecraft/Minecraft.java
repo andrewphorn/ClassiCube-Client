@@ -2305,6 +2305,7 @@ public final class Minecraft implements Runnable {
                                         networkManager.minecraft.player.userType = (Byte) packetParams[3];
                                         networkManager.minecraft.progressBar.setText(packetParams[2].toString());
                                     } else if (packetType == PacketType.LEVEL_INIT) {
+									    selectionBoxes.clear();
                                         networkManager.minecraft.setLevel(null);
                                         networkManager.levelData = new ByteArrayOutputStream();
                                     } else if (packetType == PacketType.LEVEL_DATA) {
