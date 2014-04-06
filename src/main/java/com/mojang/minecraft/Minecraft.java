@@ -2490,8 +2490,9 @@ public final class Minecraft implements Runnable {
                                                             case 13:
                                                                 HUDScreen.BottomRight3 = message;
                                                                 break;
-                                                            case 21:
-                                                                break;
+                                                //Removed because it is in the same location as Debug messages
+                                                     /*       case 21:
+                                                                break;*/
                                                             case 100:
                                                                 HUDScreen.Announcement = message;
                                                                 break;
