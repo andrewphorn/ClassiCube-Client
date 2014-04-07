@@ -2133,19 +2133,7 @@ public final class Minecraft implements Runnable {
                                                         textureManager.currentTerrainPng = image;
                                                     }
                                                 }
-                                            } else {
-                                                textureManager.animations.clear();
-                                                try {
-                                                    textureManager.currentTerrainPng = ImageIO
-                                                            .read(TextureManager.class
-                                                                    .getResourceAsStream("/terrain.png"));
-                                                } catch (IOException ex2) {
-                                                    LogUtil.logError(
-                                                            "Error reading default terrain texture.",
-                                                            ex2);
-                                                }
-                                            }
-                                            textureManager.textures.clear();
+                                            } 
                                             level.waterLevel = sideLevel;
                                             levelRenderer.refresh();
                                         }
