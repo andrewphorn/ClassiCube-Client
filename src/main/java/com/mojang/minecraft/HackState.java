@@ -1,14 +1,13 @@
 package com.mojang.minecraft;
 
 public class HackState {
-    public static boolean noclip, speed, fly, respawn, thirdPerson, opHacks = true;
+    public static boolean noclip, speed, fly, respawn, opHacks = true;
 
     public static void setAllDisabled() {
         noclip = false;
         speed = false;
         fly = false;
         opHacks = false;
-        thirdPerson = false;
     }
 
     public static void setAllEnabled() {
@@ -17,6 +16,5 @@ public class HackState {
         fly = true;
         respawn = true;
         opHacks = true;
-        thirdPerson = true;
     }
 }
