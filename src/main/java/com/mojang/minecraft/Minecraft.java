@@ -2134,7 +2134,6 @@ public final class Minecraft implements Runnable {
                                                     }
                                                 }
                                             } else {
-                                                textureManager.animations.clear();
                                                 try {
                                                     textureManager.currentTerrainPng = ImageIO
                                                             .read(TextureManager.class
@@ -2145,7 +2144,6 @@ public final class Minecraft implements Runnable {
                                                             ex2);
                                                 }
                                             }
-                                            textureManager.textures.clear();
                                             level.waterLevel = sideLevel;
                                             levelRenderer.refresh();
                                         }
