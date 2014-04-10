@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.minecraft.Entity;
-import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.render.TextureManager;
 
 public final class ParticleManager {
@@ -14,13 +13,8 @@ public final class ParticleManager {
     public TextureManager textureManager;
 
     @SuppressWarnings("rawtypes")
-    public ParticleManager(Level level, TextureManager textureManager) {
-        if (level != null) {
-            level.particleEngine = this;
-        }
-
+    public ParticleManager(TextureManager textureManager) {
         this.textureManager = textureManager;
-
         for (int i = 0; i < 2; ++i) {
             particles[i] = new ArrayList();
         }
