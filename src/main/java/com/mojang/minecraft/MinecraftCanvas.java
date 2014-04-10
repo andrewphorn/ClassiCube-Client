@@ -22,13 +22,13 @@ import com.mojang.util.LogUtil;
 import com.oyasunadev.mcraft.client.util.Constants;
 
 // MinecraftCanvas
-public class MinecraftApplet$1 extends Canvas {
+public class MinecraftCanvas extends Canvas {
     private static final long serialVersionUID = 1L;
     private Image image;
     private Image image2;
     private MinecraftApplet applet;
 
-    public MinecraftApplet$1(MinecraftApplet minecraftApplet) {
+    public MinecraftCanvas(MinecraftApplet minecraftApplet) {
         applet = minecraftApplet;
     }
 
