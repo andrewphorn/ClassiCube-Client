@@ -37,7 +37,7 @@ public class Level implements Serializable {
     public float rotSpawn;
     public transient Random random = new Random();
     public BlockMap blockMap;
-    public transient Minecraft rendererContext$5cd64a7f;
+    public transient Minecraft rendererContext;
     public boolean creativeMode;
     public int cloudLevel = -1;
     public int waterLevel;
@@ -942,9 +942,9 @@ public class Level implements Serializable {
     }
 
     public void playSound(String var1, Entity var2, float var3, float var4, boolean footStep) {
-        if (rendererContext$5cd64a7f != null) {
+        if (rendererContext != null) {
             Minecraft var5;
-            if ((var5 = rendererContext$5cd64a7f).soundPlayer == null || !var5.settings.sound) {
+            if ((var5 = rendererContext).soundPlayer == null || !var5.settings.sound) {
                 return;
             }
 
@@ -958,9 +958,9 @@ public class Level implements Serializable {
     }
 
     public void playSound(String var1, float var2, float var3, float var4, float var5, float var6) {
-        if (rendererContext$5cd64a7f != null) {
+        if (rendererContext != null) {
             Minecraft var7;
-            if ((var7 = rendererContext$5cd64a7f).soundPlayer == null || !var7.settings.sound) {
+            if ((var7 = rendererContext).soundPlayer == null || !var7.settings.sound) {
                 return;
             }
 

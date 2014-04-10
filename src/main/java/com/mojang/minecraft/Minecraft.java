@@ -768,7 +768,7 @@ public final class Minecraft implements Runnable {
             }
         }
 
-        particleManager = new ParticleManager(level, textureManager);
+        particleManager = new ParticleManager(textureManager);
         if (isLevelLoaded) {
             try {
                 cursor = new Cursor(16, 16, 0, 0, 1, BufferUtils.createIntBuffer(256), null);
@@ -1764,7 +1764,7 @@ public final class Minecraft implements Runnable {
             theLevel.initTransient();
             gamemode.apply(theLevel);
             theLevel.font = fontRenderer;
-            theLevel.rendererContext$5cd64a7f = this;
+            theLevel.rendererContext = this;
             if (!isOnline()) { // if not online (singleplayer)
                 player = (Player) theLevel.findSubclassOf(Player.class);
                 if (player == null) {

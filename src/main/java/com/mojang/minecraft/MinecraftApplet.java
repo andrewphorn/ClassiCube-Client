@@ -71,7 +71,7 @@ public class MinecraftApplet extends Applet {
         } catch (ClassCastException e) {
         }
 
-        canvas = new MinecraftApplet$1(this);
+        canvas = new MinecraftCanvas(this);
 
         boolean fullscreen = false;
 
