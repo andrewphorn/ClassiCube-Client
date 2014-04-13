@@ -27,7 +27,6 @@ public class Player extends Mob {
     public static final int MAX_HEALTH = 20;
     public static final int MAX_ARROWS = 99;
     public static boolean noPush = false;
-    public static BufferedImage newTexture;
     private static int newTextureId = -1;
     public transient GameSettings settings;
     public transient InputHandler input;
