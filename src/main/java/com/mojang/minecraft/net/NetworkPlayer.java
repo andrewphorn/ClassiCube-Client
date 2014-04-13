@@ -15,7 +15,6 @@ public class NetworkPlayer extends HumanoidMob {
 
     public static final long serialVersionUID = 77479605454997290L;
     public transient List<PositionUpdate> moveQueue = new LinkedList<>();
-    public transient BufferedImage newTexture = null;
     public String name;
     public String displayName;
     public String SkinName = null;
@@ -28,7 +27,7 @@ public class NetworkPlayer extends HumanoidMob {
     private transient TextureManager textures;
 
     public NetworkPlayer(Minecraft minecraft, String displayName, int x, int y, int z,
-                         float xRot, float yRot) {
+            float xRot, float yRot) {
         super(minecraft.level, x, y, z);
         this.minecraft = minecraft;
         this.displayName = displayName;
@@ -46,9 +45,9 @@ public class NetworkPlayer extends HumanoidMob {
         renderOffset = 0.6875F;
         allowAlpha = false;
         /*if (name.equalsIgnoreCase("Jonty800") || name.equalsIgnoreCase("Jonty800+")
-                || name.equalsIgnoreCase("Jonty800@")) {
-            modelName = "sheep";
-        }*/
+         || name.equalsIgnoreCase("Jonty800@")) {
+         modelName = "sheep";
+         }*/
         if (modelName.equals("humanoid")) {
             downloadSkin();
         } else if (isInteger(modelName)) {
@@ -137,7 +136,8 @@ public class NetworkPlayer extends HumanoidMob {
     }
 
     public void downloadSkin() {
-        new SkinDownloadThread(this, minecraft.skinServer).start();
+        String skinToDownload = (SkinName == null ? name : SkinName);
+        new SkinDownloadThread(this, skinToDownload, minecraft.skinServer).start();
     }
 
     public void queue(byte x, byte y, byte z) {
@@ -217,7 +217,9 @@ public class NetworkPlayer extends HumanoidMob {
         if (minecraft.settings.ShowNames == 1 || minecraft.settings.ShowNames == 3
                 && minecraft.player.userType >= 100) {
             GL11.glScalef(var1, -var1, var1);
-        } else GL11.glScalef(0.05F, -0.05F, 0.05F);
+        } else {
+            GL11.glScalef(0.05F, -0.05F, 0.05F);
+        }
 
         GL11.glTranslatef(-fontRenderer.getWidth(displayName) / 2F, 0F, 0F);
         GL11.glNormal3f(1F, -1F, 1F);

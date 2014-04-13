@@ -70,6 +70,7 @@ import com.mojang.minecraft.model.ModelPart;
 import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.NetworkPlayer;
 import com.mojang.minecraft.net.PacketType;
+import com.mojang.minecraft.net.SkinDownloadThread;
 import com.mojang.minecraft.particle.Particle;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.WaterDropParticle;
@@ -796,10 +797,12 @@ public final class Minecraft implements Runnable {
 
         checkGLError("Post startup");
         hud = new HUDScreen(this, width, height);
-        new SkinDownloadThread(this, skinServer).start();
+        if(session != null){
+            new SkinDownloadThread(player, session.username, skinServer).start();
+        }
         if (server != null && session != null) {
-            networkManager = new NetworkManager(this, server, port, session.username,
-                    session.mppass);
+            networkManager = new NetworkManager(
+                    this, server, port, session.username, session.mppass);
         }
     }
 
