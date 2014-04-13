@@ -231,7 +231,7 @@ public final class LevelRenderer {
         GL11.glEndList();
     }
 
-    public final int sortChunks(Player player, int renderPass) {
+    public final void sortChunks(Player player, int renderPass) {
         float distX = player.x - lastLoadX;
         float distY = player.y - lastLoadY;
         float distZ = player.z - lastLoadZ;
@@ -243,8 +243,8 @@ public final class LevelRenderer {
         }
 
         int count = 0;
-        for (Chunk aLoadQueue : loadQueue) {
-            count = aLoadQueue.appendLists(chunkDataCache, count, renderPass);
+        for (Chunk chunk : loadQueue) {
+            count = chunk.appendLists(chunkDataCache, count, renderPass);
         }
 
         buffer.clear();
@@ -254,7 +254,5 @@ public final class LevelRenderer {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
             GL11.glCallLists(buffer);
         }
-
-        return buffer.remaining();
     }
 }
