@@ -11,160 +11,161 @@ import java.util.Set;
 
 public class MonitoringThread extends Thread {
 
-	static class ThreadTime {
+    public long maxMemory, totalMemory, freeMemory;
+    private long refreshInterval;
 
-		private long id;
-		private long last;
-		private long current;
+    private boolean stopped;
+    private Map<Long, ThreadTime> threadTimeMap = new HashMap<>();
+    private ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 
-		public ThreadTime(long id) {
-			this.id = id;
-		}
+    private OperatingSystemMXBean opBean = ManagementFactory.getOperatingSystemMXBean();
+    private Runtime runtime;
 
-		public long getCurrent() {
-			return current;
-		}
+    public MonitoringThread(long refreshInterval) {
+        this.refreshInterval = refreshInterval;
 
-		public long getId() {
-			return id;
-		}
+        setName("MonitoringThread");
 
-		public long getLast() {
-			return last;
-		}
+        runtime = Runtime.getRuntime();
+        start();
+    }
 
-		public void setCurrent(long current) {
-			this.current = current;
-		}
+    public double getAverageUsagePerCPU() {
+        return getTotalUsage() / opBean.getAvailableProcessors();
+    }
 
-		public void setLast(long last) {
-			this.last = last;
-		}
-	}
+    public double getTotalUsage() {
+        Collection<ThreadTime> values;
+        synchronized (threadTimeMap) {
+            values = new HashSet<>(threadTimeMap.values());
+        }
 
-	private long refreshInterval;
+        double usage = 0D;
+        for (ThreadTime threadTime : values) {
+            synchronized (threadTime) {
+                usage += (threadTime.getCurrent() - threadTime.getLast()) / (refreshInterval * 10000);
+            }
+        }
+        return usage;
+    }
 
-	private boolean stopped;
-	private Map<Long, ThreadTime> threadTimeMap = new HashMap<Long, ThreadTime>();
-	private ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+    public double getUsageByThread(Thread t) {
+        ThreadTime info;
+        synchronized (threadTimeMap) {
+            info = threadTimeMap.get(t.getId());
+        }
 
-	private OperatingSystemMXBean opBean = ManagementFactory.getOperatingSystemMXBean();
-	private Runtime runtime;
+        double usage = 0D;
+        if (info != null) {
+            synchronized (info) {
+                usage = (info.getCurrent() - info.getLast()) / (refreshInterval * 10000);
+            }
+        }
+        return usage;
+    }
 
-	public long maxMemory, totalMemory, freeMemory;
+    private void mapNewThreads(long[] allThreadIds) {
+        for (long id : allThreadIds) {
+            synchronized (threadTimeMap) {
+                if (!threadTimeMap.containsKey(id)) {
+                    threadTimeMap.put(id, new ThreadTime(id));
+                }
+            }
+        }
+    }
 
-	public MonitoringThread(long refreshInterval) {
-		this.refreshInterval = refreshInterval;
+    private void removeDeadThreads(Set<Long> mappedIds, long[] allThreadIds) {
+        outer:
+        for (long id1 : mappedIds) {
+            for (long id2 : allThreadIds) {
+                if (id1 == id2) {
+                    continue outer;
+                }
+            }
+            synchronized (threadTimeMap) {
+                threadTimeMap.remove(id1);
+            }
+        }
+    }
 
-		setName("MonitoringThread");
+    @Override
+    public void run() {
+        while (!stopped) {
+            Set<Long> mappedIds;
+            synchronized (threadTimeMap) {
+                mappedIds = new HashSet<>(threadTimeMap.keySet());
+            }
 
-		runtime = Runtime.getRuntime();
-		start();
-	}
+            long[] allThreadIds = threadBean.getAllThreadIds();
 
-	public double getAvarageUsagePerCPU() {
-		return getTotalUsage() / opBean.getAvailableProcessors();
-	}
+            if (mappedIds != null) {
+                removeDeadThreads(mappedIds, allThreadIds);
+            }
 
-	public double getTotalUsage() {
-		Collection<ThreadTime> values;
-		synchronized (threadTimeMap) {
-			values = new HashSet<ThreadTime>(threadTimeMap.values());
-		}
+            if (allThreadIds != null) {
+                mapNewThreads(allThreadIds);
+            }
 
-		double usage = 0D;
-		for (ThreadTime threadTime : values) {
-			synchronized (threadTime) {
-				usage += (threadTime.getCurrent() - threadTime.getLast())
-						/ (refreshInterval * 10000);
-			}
-		}
-		return usage;
-	}
+            Collection<ThreadTime> values;
+            synchronized (threadTimeMap) {
+                values = new HashSet<>(threadTimeMap.values());
+            }
 
-	public double getUsageByThread(Thread t) {
-		ThreadTime info;
-		synchronized (threadTimeMap) {
-			info = threadTimeMap.get(t.getId());
-		}
+            for (ThreadTime threadTime : values) {
+                synchronized (threadTime) {
+                    threadTime.setCurrent(threadBean.getThreadCpuTime(threadTime.getId()));
+                }
+            }
+            maxMemory = runtime.maxMemory();
+            totalMemory = runtime.totalMemory();
+            freeMemory = runtime.freeMemory();
 
-		double usage = 0D;
-		if (info != null) {
-			synchronized (info) {
-				usage = (info.getCurrent() - info.getLast()) / (refreshInterval * 10000);
-			}
-		}
-		return usage;
-	}
+            try {
+                Thread.sleep(refreshInterval);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
-	private void mapNewThreads(long[] allThreadIds) {
-		for (long id : allThreadIds) {
-			synchronized (threadTimeMap) {
-				if (!threadTimeMap.containsKey(id)) {
-					threadTimeMap.put(id, new ThreadTime(id));
-				}
-			}
-		}
-	}
+            for (ThreadTime threadTime : values) {
+                synchronized (threadTime) {
+                    threadTime.setLast(threadTime.getCurrent());
+                }
+            }
+        }
+    }
 
-	private void removeDeadThreads(Set<Long> mappedIds, long[] allThreadIds) {
-		outer: for (long id1 : mappedIds) {
-			for (long id2 : allThreadIds) {
-				if (id1 == id2) {
-					continue outer;
-				}
-			}
-			synchronized (threadTimeMap) {
-				threadTimeMap.remove(id1);
-			}
-		}
-	}
+    public void stopMonitor() {
+        stopped = true;
+    }
 
-	@Override
-	public void run() {
-		while (!stopped) {
-			Set<Long> mappedIds;
-			synchronized (threadTimeMap) {
-				mappedIds = new HashSet<Long>(threadTimeMap.keySet());
-			}
+    static class ThreadTime {
 
-			long[] allThreadIds = threadBean.getAllThreadIds();
+        private long id;
+        private long last;
+        private long current;
 
-			if (mappedIds != null)
-				removeDeadThreads(mappedIds, allThreadIds);
+        public ThreadTime(long id) {
+            this.id = id;
+        }
 
-			if (allThreadIds != null)
-				mapNewThreads(allThreadIds);
+        public long getCurrent() {
+            return current;
+        }
 
-			Collection<ThreadTime> values;
-			synchronized (threadTimeMap) {
-				values = new HashSet<ThreadTime>(threadTimeMap.values());
-			}
+        public void setCurrent(long current) {
+            this.current = current;
+        }
 
-			for (ThreadTime threadTime : values) {
-				synchronized (threadTime) {
-					threadTime.setCurrent(threadBean.getThreadCpuTime(threadTime.getId()));
-				}
-			}
-			maxMemory = runtime.maxMemory();
-			totalMemory = runtime.totalMemory();
-			freeMemory = runtime.freeMemory();
+        public long getId() {
+            return id;
+        }
 
-			try {
-				Thread.sleep(refreshInterval);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
+        public long getLast() {
+            return last;
+        }
 
-			for (ThreadTime threadTime : values) {
-				synchronized (threadTime) {
-					threadTime.setLast(threadTime.getCurrent());
-				}
-			}
-		}
-	}
-
-	public void stopMonitor() {
-		stopped = true;
-	}
+        public void setLast(long last) {
+            this.last = last;
+        }
+    }
 }

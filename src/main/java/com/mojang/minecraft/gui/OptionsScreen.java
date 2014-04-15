@@ -1,59 +1,85 @@
 package com.mojang.minecraft.gui;
 
 import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.Setting;
 
 public final class OptionsScreen extends GuiScreen {
 
-	private String title = "Options";
-	private GameSettings settings;
+    private final static Setting[] settingsOrder = new Setting[]{Setting.MUSIC, Setting.SOUND,
+            Setting.INVERT_MOUSE, Setting.VIEW_BOBBING, Setting.RENDER_DISTANCE,
+            Setting.LIMIT_FRAMERATE, Setting.SMOOTHING, Setting.ANISOTROPIC, Setting.FONT_SCALE,
+            Setting.SHOW_NAMES};
 
-	public OptionsScreen(GuiScreen var1, GameSettings var2) {
-		settings = var2;
-	}
+    private final String title = "Options";
+    private final GameSettings settings;
 
-	@Override
-	protected final void onButtonClick(Button var1) {
-		if (var1.active) {
-			if (var1.id < 100) {
-				settings.toggleSetting(var1.id, 1);
-				var1.text = settings.getSetting(var1.id);
-			}
-			buttons.get(9).active = minecraft.settings.smoothing > 0;
+    public OptionsScreen(GameSettings settings) {
+        this.settings = settings;
+    }
 
-			if (var1.id == 100) {
-				minecraft.setCurrentScreen(new AdvancedOptionsScreen(this, settings));
-			}
+    // TODO To util?
+    private static <T> int indexOf(T needle, T[] haystack) {
+        for (int i = 0; i < haystack.length; i++) {
+            if (haystack[i] != null && haystack[i].equals(needle) || needle == null
+                    && haystack[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
-			if (var1.id == 200) {
-				minecraft.setCurrentScreen(new ControlsScreen(this, settings));
-			}
+    @Override
+    protected final void onButtonClick(Button clickedButton) {
+        if (clickedButton.active) {
+            if (clickedButton.id < 100) {
+                // A settings button was clicked
+                Setting affectedSetting = settingsOrder[clickedButton.id];
+                settings.toggleSetting(affectedSetting, 1);
+                clickedButton.text = settings.getSetting(affectedSetting);
+                checkSettingsConsistency();
 
-			if (var1.id == 300) {
-				minecraft.setCurrentScreen(new PauseScreen());
-			}
+            } else if (clickedButton.id == 100) {
+                // [Advanced Options] was clicked
+                minecraft.setCurrentScreen(new AdvancedOptionsScreen(this, settings));
 
-		}
-	}
+            } else if (clickedButton.id == 200) {
+                // [Controls] was clicked
+                minecraft.setCurrentScreen(new ControlsScreen(settings));
 
-	@Override
-	public final void onOpen() {
-		for (int var1 = 0; var1 < 10; ++var1) {
-			buttons.add(new OptionButton(var1, width / 2 - 155 + var1 % 2 * 160, height / 6 + 24
-					* (var1 >> 1), settings.getSetting(var1)));
-		}
+            } else if (clickedButton.id == 300) {
+                // [Done] was clicked
+                minecraft.setCurrentScreen(new PauseScreen());
+            }
+        }
+    }
 
-		buttons.add(new Button(100, width / 2 - 100, height / 6 + 90 + 32, "Advanced Options..."));
+    @Override
+    public final void onOpen() {
+        for (int i = 0; i < settingsOrder.length; ++i) {
+            buttons.add(new OptionButton(i, width / 2 - 155 + (i % 2) * 160, height / 6 + 24
+                    * (i / 2), settings.getSetting(settingsOrder[i])));
+        }
+        checkSettingsConsistency();
 
-		buttons.add(new Button(200, width / 2 - 100, height / 6 + 120 + 26, "Controls..."));
-		buttons.add(new Button(300, width / 2 - 100, height / 6 + 168, "Done"));
+        buttons.add(new Button(100, width / 2 - 100, height / 6 + 90 + 32, "Advanced Options..."));
 
-		buttons.get(9).active = minecraft.settings.smoothing > 0;
-	}
+        buttons.add(new Button(200, width / 2 - 100, height / 6 + 120 + 26, "Controls..."));
+        buttons.add(new Button(300, width / 2 - 100, height / 6 + 168, "Done"));
 
-	@Override
-	public final void render(int var1, int var2) {
-		drawFadingBox(0, 0, width, height, 1610941696, -1607454624);
-		drawCenteredString(fontRenderer, title, width / 2, 20, 16777215);
-		super.render(var1, var2);
-	}
+        // [Show Names] requires "OP"
+        buttons.get(9).active = minecraft.player.userType >= 100;
+    }
+
+    @Override
+    public final void render(int mouseX, int mouseY) {
+        drawFadingBox(0, 0, width, height, 1610941696, -1607454624);
+        drawCenteredString(fontRenderer, title, width / 2, 20, 16777215);
+        super.render(mouseX, mouseY);
+    }
+
+    private void checkSettingsConsistency() {
+        // [Anisotropic] should only ne enabled if smoothing is on
+        boolean smoothingOn = (minecraft.settings.smoothing > 0);
+        buttons.get(indexOf(Setting.ANISOTROPIC, settingsOrder)).active = smoothingOn;
+    }
 }

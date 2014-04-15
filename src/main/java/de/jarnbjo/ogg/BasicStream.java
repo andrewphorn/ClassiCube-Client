@@ -20,8 +20,10 @@
 
 package de.jarnbjo.ogg;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * Implementation of the <code>PhysicalOggStream</code> interface for reading an
@@ -32,66 +34,66 @@ import java.util.*;
 
 public class BasicStream implements PhysicalOggStream {
 
-	private boolean closed = false;
-	private InputStream sourceStream;
-	private int position = 0;
+    private boolean closed = false;
+    private InputStream sourceStream;
+    private int position = 0;
 
-	private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<Integer, LogicalOggStreamImpl>();
-	private OggPage firstPage;
+    private HashMap<Integer, LogicalOggStreamImpl> logicalStreams = new HashMap<>();
+    private OggPage firstPage;
 
-	int pageNumber = 2;
+    int pageNumber = 2;
 
-	public BasicStream(InputStream sourceStream) throws OggFormatException, IOException {
-		firstPage = OggPage.create(sourceStream);
-		position += firstPage.getTotalLength();
-		LogicalOggStreamImpl los = new LogicalOggStreamImpl(this);
-		logicalStreams.put(new Integer(firstPage.getStreamSerialNumber()), los);
-		los.checkFormat(firstPage);
-	}
+    public BasicStream(InputStream sourceStream) throws OggFormatException, IOException {
+        firstPage = OggPage.create(sourceStream);
+        position += firstPage.getTotalLength();
+        LogicalOggStreamImpl los = new LogicalOggStreamImpl(this);
+        logicalStreams.put(firstPage.getStreamSerialNumber(), los);
+        los.checkFormat(firstPage);
+    }
 
-	public void close() throws IOException {
-		closed = true;
-		sourceStream.close();
-	}
+    public void close() throws IOException {
+        closed = true;
+        sourceStream.close();
+    }
 
-	public int getContentLength() {
-		return -1;
-	}
+    public int getContentLength() {
+        return -1;
+    }
 
-	public Collection<LogicalOggStreamImpl> getLogicalStreams() {
-		return logicalStreams.values();
-	}
+    public Collection<LogicalOggStreamImpl> getLogicalStreams() {
+        return logicalStreams.values();
+    }
 
-	public OggPage getOggPage(int index) throws IOException {
-		if (firstPage != null) {
-			OggPage tmp = firstPage;
-			firstPage = null;
-			return tmp;
-		} else {
-			OggPage page = OggPage.create(sourceStream);
-			position += page.getTotalLength();
-			return page;
-		}
-	}
+    public OggPage getOggPage(int index) throws IOException {
+        if (firstPage != null) {
+            OggPage tmp = firstPage;
+            firstPage = null;
+            return tmp;
+        } else {
+            OggPage page = OggPage.create(sourceStream);
+            position += page.getTotalLength();
+            return page;
+        }
+    }
 
-	public int getPosition() {
-		return position;
-	}
+    public int getPosition() {
+        return position;
+    }
 
-	public boolean isOpen() {
-		return !closed;
-	}
+    public boolean isOpen() {
+        return !closed;
+    }
 
-	/**
-	 * @return always <code>false</code>
-	 */
+    /**
+     * @return always <code>false</code>
+     */
 
-	public boolean isSeekable() {
-		return false;
-	}
+    public boolean isSeekable() {
+        return false;
+    }
 
-	public void setTime(long granulePosition) throws IOException {
-		throw new UnsupportedOperationException("Method not supported by this class");
-	}
+    public void setTime(long granulePosition) throws IOException {
+        throw new UnsupportedOperationException("Method not supported by this class");
+    }
 
 }

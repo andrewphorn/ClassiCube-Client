@@ -6,48 +6,46 @@ import com.mojang.minecraft.level.liquid.LiquidType;
 
 public final class SandBlock extends Block {
 
-	public SandBlock(int var1) {
-		super(var1);
-	}
+    public SandBlock(int id) {
+        super(id);
+    }
 
-	private void fall(Level var1, int var2, int var3, int var4) {
-		if (!Minecraft.isSinglePlayer) {
-			return;
-		}
-		int var11 = var2;
-		int var5 = var3;
-		int var6 = var4;
+    private void fall(Level level, int x, int y, int z) {
+        if (!Minecraft.isSinglePlayer) {
+            return;
+        }
+        int yOffset = y;
 
-		while (true) {
-			int var8 = var5 - 1;
-			int var10;
-			LiquidType var12;
-			if (!((var10 = var1.getTile(var11, var8, var6)) == 0 ? true : (var12 = blocks[var10]
-					.getLiquidType()) == LiquidType.water ? true : var12 == LiquidType.lava)
-					|| var5 <= 0) {
-				if (var5 != var3) {
-					if ((var10 = var1.getTile(var11, var5, var6)) > 0
-							&& blocks[var10].getLiquidType() != LiquidType.notLiquid) {
-						var1.setTileNoUpdate(var11, var5, var6, 0);
-					}
+        while (true) {
+            int yCheckPos = yOffset - 1;
+            int nextTile;
+            LiquidType liquidType;
+            if (!((nextTile = level.getTile(x, yCheckPos, z)) == 0 ? true : (liquidType = blocks[nextTile]
+                    .getLiquidType()) == LiquidType.water ? true : liquidType == LiquidType.lava)
+                    || yOffset <= 0) {
+                if (yOffset != y) {
+                    if ((nextTile = level.getTile(x, yOffset, z)) > 0
+                            && blocks[nextTile].getLiquidType() != LiquidType.notLiquid) {
+                        level.setTileNoUpdate(x, yOffset, z, 0);
+                    }
 
-					var1.swap(var2, var3, var4, var11, var5, var6);
-				}
+                    level.swap(x, y, z, x, yOffset, z);
+                }
 
-				return;
-			}
+                return;
+            }
 
-			--var5;
-		}
-	}
+            --yOffset;
+        }
+    }
 
-	@Override
-	public final void onNeighborChange(Level var1, int var2, int var3, int var4, int var5) {
-		fall(var1, var2, var3, var4);
-	}
+    @Override
+    public final void onNeighborChange(Level level, int x, int y, int z, int unused) {
+        fall(level, x, y, z);
+    }
 
-	@Override
-	public final void onPlace(Level level, int x, int y, int z) {
-		fall(level, x, y, z);
-	}
+    @Override
+    public final void onPlace(Level level, int x, int y, int z) {
+        fall(level, x, y, z);
+    }
 }

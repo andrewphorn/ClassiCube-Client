@@ -6,80 +6,86 @@ import com.mojang.minecraft.Entity;
 
 class BlockMap$Slot implements Serializable {
 
-	public static final long serialVersionUID = 0L;
+    public static final long serialVersionUID = 0L;
+    // $FF: synthetic field
+    final BlockMap blockMap;
+    private int xSlot;
+    private int ySlot;
+    private int zSlot;
 
-	// $FF: synthetic method
-	static int getXSlot(BlockMap$Slot var0) {
-		return var0.xSlot;
-	}
+    public BlockMap$Slot(BlockMap blockMap) {
+        this.blockMap = blockMap;
+    }
 
-	// $FF: synthetic method
-	static int getYSlot(BlockMap$Slot var0) {
-		return var0.ySlot;
-	}
+    // $FF: synthetic method
+    static int getXSlot(BlockMap$Slot slot) {
+        return slot.xSlot;
+    }
 
-	// $FF: synthetic method
-	static int getZSlot(BlockMap$Slot var0) {
-		return var0.zSlot;
-	}
+    // $FF: synthetic method
+    static int getYSlot(BlockMap$Slot slot) {
+        return slot.ySlot;
+    }
 
-	private int xSlot;
+    // $FF: synthetic method
+    static int getZSlot(BlockMap$Slot slot) {
+        return slot.zSlot;
+    }
 
-	private int ySlot;
+    public BlockMap$Slot init(float x, float y, float z) {
+        xSlot = (int) (x / 16F);
+        ySlot = (int) (y / 16F);
+        zSlot = (int) (z / 16F);
+        if (xSlot < 0) {
+            xSlot = 0;
+        }
 
-	private int zSlot;
+        if (ySlot < 0) {
+            ySlot = 0;
+        }
 
-	// $FF: synthetic field
-	final BlockMap blockMap;
+        if (zSlot < 0) {
+            zSlot = 0;
+        }
 
-	public BlockMap$Slot(BlockMap var1) {
-		blockMap = var1;
-	}
+        if (xSlot >= BlockMap.getWidth(blockMap)) {
+            xSlot = BlockMap.getWidth(blockMap) - 1;
+        }
 
-	public void add(Entity var1) {
-		if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
-			blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
-					* BlockMap.getWidth(blockMap) + xSlot].add(var1);
-		}
+        if (ySlot >= BlockMap.getDepth(blockMap)) {
+            ySlot = BlockMap.getDepth(blockMap) - 1;
+        }
 
-	}
+        if (zSlot >= BlockMap.getHeight(blockMap)) {
+            zSlot = BlockMap.getHeight(blockMap) - 1;
+        }
 
-	public BlockMap$Slot init(float var1, float var2, float var3) {
-		xSlot = (int) (var1 / 16.0F);
-		ySlot = (int) (var2 / 16.0F);
-		zSlot = (int) (var3 / 16.0F);
-		if (xSlot < 0) {
-			xSlot = 0;
-		}
+        return this;
+    }
 
-		if (ySlot < 0) {
-			ySlot = 0;
-		}
+    /**
+     * Adds an entity to the BlockMap slot.
+     *
+     * @param entity
+     */
+    public void add(Entity entity) {
+        if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
+            blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
+                    * BlockMap.getWidth(blockMap) + xSlot].add(entity);
+        }
 
-		if (zSlot < 0) {
-			zSlot = 0;
-		}
+    }
 
-		if (xSlot >= BlockMap.getWidth(blockMap)) {
-			xSlot = BlockMap.getWidth(blockMap) - 1;
-		}
+    /**
+     * Removes an entity from the BlockMap slot.
+     *
+     * @param entity
+     */
+    public void remove(Entity entity) {
+        if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
+            blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
+                    * BlockMap.getWidth(blockMap) + xSlot].remove(entity);
+        }
 
-		if (ySlot >= BlockMap.getDepth(blockMap)) {
-			ySlot = BlockMap.getDepth(blockMap) - 1;
-		}
-
-		if (zSlot >= BlockMap.getHeight(blockMap)) {
-			zSlot = BlockMap.getHeight(blockMap) - 1;
-		}
-
-		return this;
-	}
-
-	public void remove(Entity var1) {
-		if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
-			blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
-					* BlockMap.getWidth(blockMap) + xSlot].remove(var1);
-		}
-
-	}
+    }
 }

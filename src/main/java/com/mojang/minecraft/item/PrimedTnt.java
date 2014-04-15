@@ -15,172 +15,159 @@ import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 
 public class PrimedTnt extends Entity {
-	public static final long serialVersionUID = 0L;
+    public static final long serialVersionUID = 0L;
+    public int life = 0;
+    private float xd;
+    private float yd;
+    private float zd;
+    private boolean defused;
 
-	private float xd;
+    public PrimedTnt(Level level, float x, float y, float z) {
+        super(level);
 
-	private float yd;
+        setSize(0.98F, 0.98F);
 
-	private float zd;
+        heightOffset = bbHeight / 2F;
 
-	public int life = 0;
+        setPos(x, y, z);
 
-	private boolean defused;
+        float unknown0 = (float) (Math.random() * Math.PI * 2D);
 
-	public PrimedTnt(Level level1, float x, float y, float z) {
-		super(level1);
+        xd = -MathHelper.sin(unknown0 * (float) Math.PI / 180F) * 0.02F;
+        yd = 0.2F;
+        zd = -MathHelper.cos(unknown0 * (float) Math.PI / 180F) * 0.02F;
 
-		setSize(0.98F, 0.98F);
+        makeStepSound = false;
 
-		heightOffset = bbHeight / 2.0F;
+        life = 40;
 
-		setPos(x, y, z);
+        xo = x;
+        yo = y;
+        zo = z;
+    }
 
-		float unknown0 = (float) (Math.random() * 3.1415927410125732D * 2.0D);
+    @Override
+    public void hurt(Entity entity, int damage) {
+        if (!removed) {
+            super.hurt(entity, damage);
 
-		xd = -MathHelper.sin(unknown0 * 3.1415927F / 180.0F) * 0.02F;
-		yd = 0.2F;
-		zd = -MathHelper.cos(unknown0 * 3.1415927F / 180.0F) * 0.02F;
+            if (entity instanceof Player) {
+                remove();
+                Item item = new Item(level, x, y, z, Block.TNT.id);
+                level.addEntity(item);
+            }
 
-		makeStepSound = false;
+        }
+    }
 
-		life = 40;
+    @Override
+    public boolean isPickable() {
+        return !removed;
+    }
 
-		xo = x;
-		yo = y;
-		zo = z;
-	}
+    @Override
+    public void playerTouch(Entity entity) {
+        if (defused) {
+            Player player = (Player) entity;
+            if (player.addResource(Block.TNT.id)) {
+                TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this, player);
+                level.addEntity(takeEntityAnim);
+                remove();
+            }
 
-	@Override
-	public void hurt(Entity entity, int damage) {
-		if (!removed) {
-			super.hurt(entity, damage);
+        }
+    }
 
-			if (entity instanceof Player) {
-				remove();
+    @Override
+    public void render(TextureManager textureManager, float unknown0) {
+        int textureID = textureManager.load("/terrain.png");
 
-				Item item = new Item(level, x, y, z, Block.TNT.id);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
 
-				level.addEntity(item);
-			}
+        float brightness = level.getBrightness((int) x, (int) y, (int) z);
 
-		}
-	}
+        GL11.glPushMatrix();
+        GL11.glColor4f(brightness, brightness, brightness, 1F);
+        GL11.glTranslatef(xo + (x - xo) * unknown0 - 0.5F,
+                yo + (y - yo) * unknown0 - 0.5F,
+                zo + (z - zo) * unknown0 - 0.5F);
+        GL11.glPushMatrix();
 
-	@Override
-	public boolean isPickable() {
-		return !removed;
-	}
+        ShapeRenderer shapeRenderer = ShapeRenderer.instance;
 
-	@Override
-	public void playerTouch(Entity entity) {
-		if (defused) {
-			Player player = (Player) entity;
+        Block.TNT.renderPreview(shapeRenderer);
 
-			if (player.addResource(Block.TNT.id)) {
-				TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this, player);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glColor4f(1F, 1F, 1F, (life / 4 + 1) % 2 * 0.4F);
 
-				level.addEntity(takeEntityAnim);
+        if (life <= 16) {
+            GL11.glColor4f(1F, 1F, 1F, (life + 1) % 2 * 0.6F);
+        }
 
-				remove();
-			}
+        if (life <= 2) {
+            GL11.glColor4f(1F, 1F, 1F, 0.9F);
+        }
 
-		}
-	}
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, 1);
 
-	@Override
-	public void render(TextureManager textureManager, float unknown0) {
-		int textureID = textureManager.load("/terrain.png");
+        Block.TNT.renderPreview(shapeRenderer);
 
-		GL11.glBindTexture(3553, textureID);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glPopMatrix();
+        GL11.glPopMatrix();
+    }
 
-		float brightness = level.getBrightness((int) x, (int) y, (int) z);
+    @Override
+    public void tick() {
+        xo = x;
+        yo = y;
+        zo = z;
 
-		GL11.glPushMatrix();
-		GL11.glColor4f(brightness, brightness, brightness, 1.0F);
-		GL11.glTranslatef(xo + (x - xo) * unknown0 - 0.5F, yo + (y - yo) * unknown0 - 0.5F, zo
-				+ (z - zo) * unknown0 - 0.5F);
-		GL11.glPushMatrix();
+        yd -= 0.04F;
 
-		ShapeRenderer shapeRenderer = ShapeRenderer.instance;
+        move(xd, yd, zd);
 
-		Block.TNT.renderPreview(shapeRenderer);
+        xd *= 0.98F;
+        yd *= 0.98F;
+        zd *= 0.98F;
 
-		GL11.glDisable(3553);
-		GL11.glDisable(2896);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, (life / 4 + 1) % 2 * 0.4F);
+        if (onGround) {
+            xd *= 0.7F;
+            zd *= 0.7F;
+            yd *= -0.5F;
+        }
 
-		if (life <= 16) {
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, (life + 1) % 2 * 0.6F);
-		}
+        if (!defused) {
+            if (life-- > 0) {
+                SmokeParticle smokeParticle = new SmokeParticle(level, x, y + 0.6F, z);
+                level.particleEngine.spawnParticle(smokeParticle);
+            } else {
+                remove();
 
-		if (life <= 2) {
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
-		}
+                Random random = new Random();
+                float radius = 4F;
+                level.explode(null, x, y, z, radius);
 
-		GL11.glEnable(3042);
-		GL11.glBlendFunc(770, 1);
+                for (int i = 0; i < 100; i++) {
+                    float unknown0 = (float) random.nextGaussian() * radius / 4F;
+                    float unknown1 = (float) random.nextGaussian() * radius / 4F;
+                    float unknown2 = (float) random.nextGaussian() * radius / 4F;
+                    float unknown3 = MathHelper.sqrt(unknown0 * unknown0
+                            + unknown1 * unknown1 + unknown2 * unknown2);
+                    float unknown4 = unknown0 / unknown3 / unknown3;
+                    float unknown5 = unknown1 / unknown3 / unknown3;
 
-		Block.TNT.renderPreview(shapeRenderer);
+                    unknown3 = unknown2 / unknown3 / unknown3;
 
-		GL11.glDisable(3042);
-		GL11.glEnable(3553);
-		GL11.glEnable(2896);
-		GL11.glPopMatrix();
-		GL11.glPopMatrix();
-	}
-
-	@Override
-	public void tick() {
-		xo = x;
-		yo = y;
-		zo = z;
-
-		yd -= 0.04F;
-
-		move(xd, yd, zd);
-
-		xd *= 0.98F;
-		yd *= 0.98F;
-		zd *= 0.98F;
-
-		if (onGround) {
-			xd *= 0.7F;
-			zd *= 0.7F;
-			yd *= -0.5F;
-		}
-
-		if (!defused) {
-			if (life-- > 0) {
-				SmokeParticle smokeParticle = new SmokeParticle(level, x, y + 0.6F, z);
-
-				level.particleEngine.spawnParticle(smokeParticle);
-			} else {
-				remove();
-
-				Random random = new Random();
-				float radius = 4.0F;
-
-				level.explode(null, x, y, z, radius);
-
-				for (int i = 0; i < 100; i++) {
-					float unknown0 = (float) random.nextGaussian() * radius / 4.0F;
-					float unknown1 = (float) random.nextGaussian() * radius / 4.0F;
-					float unknown2 = (float) random.nextGaussian() * radius / 4.0F;
-					float unknown3 = MathHelper.sqrt(unknown0 * unknown0 + unknown1 * unknown1
-							+ unknown2 * unknown2);
-					float unknown4 = unknown0 / unknown3 / unknown3;
-					float unknown5 = unknown1 / unknown3 / unknown3;
-
-					unknown3 = unknown2 / unknown3 / unknown3;
-
-					TerrainParticle terrainParticle = new TerrainParticle(level, x + unknown0, y
-							+ unknown1, z + unknown2, unknown4, unknown5, unknown3, Block.TNT);
-
-					level.particleEngine.spawnParticle(terrainParticle);
-				}
-
-			}
-		}
-	}
+                    TerrainParticle terrainParticle = new TerrainParticle(level, x + unknown0, y
+                            + unknown1, z + unknown2, unknown4, unknown5, unknown3, Block.TNT);
+                    level.particleEngine.spawnParticle(terrainParticle);
+                }
+            }
+        }
+    }
 }

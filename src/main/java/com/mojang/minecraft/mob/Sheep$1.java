@@ -6,45 +6,43 @@ import com.mojang.util.MathHelper;
 
 final class Sheep$1 extends BasicAI {
 
-	private static final long serialVersionUID = 1L;
-	// $FF: synthetic field
-	final Sheep sheep;
+    private static final long serialVersionUID = 1L;
+    // $FF: synthetic field
+    final Sheep sheep;
 
-	Sheep$1(Sheep var1) {
-		sheep = var1;
-	}
+    Sheep$1(Sheep sheep) {
+        this.sheep = sheep;
+    }
 
-	@Override
-	protected final void update() {
-		float var1 = MathHelper.sin(sheep.yRot * 3.1415927F / 180.0F);
-		float var2 = MathHelper.cos(sheep.yRot * 3.1415927F / 180.0F);
-		var1 = -0.7F * var1;
-		var2 = 0.7F * var2;
-		int var4 = (int) (mob.x + var1);
-		int var3 = (int) (mob.y - 2.0F);
-		int var5 = (int) (mob.z + var2);
-		if (sheep.grazing) {
-			if (level.getTile(var4, var3, var5) != Block.GRASS.id) {
-				sheep.grazing = false;
-			} else {
-				if (++sheep.grazingTime == 60) {
-					level.setTile(var4, var3, var5, Block.DIRT.id);
-					if (random.nextInt(5) == 0) {
-						sheep.hasFur = true;
-					}
-				}
+    @Override
+    protected final void update() {
+        float rotation = sheep.yRot * (float) Math.PI / 180F;
+        // Calculate which tile the sheep is on
+        int x = (int) (mob.x + -0.7F * MathHelper.sin(rotation));
+        int y = (int) (mob.y - 2F);
+        int z = (int) (mob.z + 0.7F * MathHelper.cos(rotation));
+        if (sheep.grazing) {
+            if (level.getTile(x, y, z) != Block.GRASS.id) {
+                sheep.grazing = false;
+            } else {
+                if (++sheep.grazingTime == 60) {
+                    level.setTile(x, y, z, Block.DIRT.id);
+                    if (random.nextInt(5) == 0) {
+                        sheep.hasFur = true;
+                    }
+                }
 
-				xxa = 0.0F;
-				yya = 0.0F;
-				mob.xRot = 40 + sheep.grazingTime / 2 % 2 * 10;
-			}
-		} else {
-			if (level.getTile(var4, var3, var5) == Block.GRASS.id) {
-				sheep.grazing = true;
-				sheep.grazingTime = 0;
-			}
+                xxa = 0F;
+                yya = 0F;
+                mob.xRot = 40 + sheep.grazingTime / 2 % 2 * 10;
+            }
+        } else {
+            if (level.getTile(x, y, z) == Block.GRASS.id) {
+                sheep.grazing = true;
+                sheep.grazingTime = 0;
+            }
 
-			super.update();
-		}
-	}
+            super.update();
+        }
+    }
 }

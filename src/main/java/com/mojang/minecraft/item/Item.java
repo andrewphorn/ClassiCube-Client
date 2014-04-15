@@ -10,132 +10,125 @@ import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 
 public class Item extends Entity {
-	public static final long serialVersionUID = 0L;
+    public static final long serialVersionUID = 0L;
 
-	private static ItemModel[] models = new ItemModel[256];
+    private static ItemModel[] models = new ItemModel[256];
+    private float xd;
+    private float yd;
+    private float zd;
+    private float rot;
+    private int resource;
+    private int tickCount;
+    private int age = 0;
 
-	public static void initModels() {
-		for (int unknown0 = 0; unknown0 < 256; unknown0++) {
-			Block var1 = Block.blocks[unknown0];
+    public Item(Level level, float x, float y, float z, int block) {
+        super(level);
 
-			if (var1 != null) {
-				models[unknown0] = new ItemModel(var1.textureId);
-			}
-		}
+        setSize(0.25F, 0.25F);
 
-	}
+        heightOffset = bbHeight / 2F;
 
-	private float xd;
+        setPos(x, y, z);
 
-	private float yd;
+        resource = block;
 
-	private float zd;
+        rot = (float) (Math.random() * 360D);
 
-	private float rot;
-	private int resource;
-	private int tickCount;
+        xd = (float) (Math.random() * 0.20000000298023224D - 0.10000000149011612D);
+        yd = 0.2F;
+        zd = (float) (Math.random() * 0.20000000298023224D - 0.10000000149011612D);
 
-	private int age = 0;
+        makeStepSound = false;
+    }
 
-	public Item(Level level1, float x, float y, float z, int block) {
-		super(level1);
+    public static void initModels() {
+        for (int validBlocks = 0; validBlocks < 256; validBlocks++) {
+            Block block = Block.blocks[validBlocks];
 
-		setSize(0.25F, 0.25F);
+            if (block != null) {
+                models[validBlocks] = new ItemModel(block.textureId);
+            }
+        }
 
-		heightOffset = bbHeight / 2.0F;
+    }
 
-		setPos(x, y, z);
+    @Override
+    public void playerTouch(Entity entity) {
+        Player player = (Player) entity;
 
-		resource = block;
+        if (player.addResource(resource)) {
+            TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this, player);
+            level.addEntity(takeEntityAnim);
+            remove();
+        }
 
-		rot = (float) (Math.random() * 360.0D);
+    }
 
-		xd = (float) (Math.random() * 0.20000000298023224D - 0.10000000149011612D);
-		yd = 0.2F;
-		zd = (float) (Math.random() * 0.20000000298023224D - 0.10000000149011612D);
+    @Override
+    public void render(TextureManager textureManager, float unknown0) {
+        textureId = textureManager.load("/terrain.png");
 
-		makeStepSound = false;
-	}
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
 
-	@Override
-	public void playerTouch(Entity entity) {
-		Player player = (Player) entity;
+        float brightness = level.getBrightness((int) x, (int) y, (int) z);
+        float unknown1 = rot + (tickCount + unknown0) * 3F;
 
-		if (player.addResource(resource)) {
-			TakeEntityAnim takeEntityAnim = new TakeEntityAnim(level, this, player);
+        GL11.glPushMatrix();
+        GL11.glColor4f(brightness, brightness, brightness, 1F);
 
-			level.addEntity(takeEntityAnim);
+        float unknown2 = (brightness = MathHelper.sin(unknown1 / 10F)) * 0.1F + 0.1F;
 
-			remove();
-		}
+        GL11.glTranslatef(xo + (x - xo) * unknown0, yo + (y - yo) * unknown0 + unknown2, zo
+                + (z - zo) * unknown0);
+        GL11.glRotatef(unknown1, 0F, 1F, 0F);
 
-	}
+        models[resource].generateList();
 
-	@Override
-	public void render(TextureManager textureManager, float unknown0) {
-		textureId = textureManager.load("/terrain.png");
+        brightness = (brightness = (brightness = brightness * 0.5F + 0.5F) * brightness)
+                * brightness;
 
-		GL11.glBindTexture(3553, textureId);
+        GL11.glColor4f(1F, 1F, 1F, brightness * 0.4F);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, 1);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
 
-		float brightness = level.getBrightness((int) x, (int) y, (int) z);
-		float unknown1 = rot + (tickCount + unknown0) * 3.0F;
+        models[resource].generateList();
 
-		GL11.glPushMatrix();
-		GL11.glColor4f(brightness, brightness, brightness, 1.0F);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, 771);
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GL11.glPopMatrix();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+    }
 
-		float unknown2 = (brightness = MathHelper.sin(unknown1 / 10.0F)) * 0.1F + 0.1F;
+    @Override
+    public void tick() {
+        xo = x;
+        yo = y;
+        zo = z;
 
-		GL11.glTranslatef(xo + (x - xo) * unknown0, yo + (y - yo) * unknown0 + unknown2, zo
-				+ (z - zo) * unknown0);
-		GL11.glRotatef(unknown1, 0.0F, 1.0F, 0.0F);
+        yd -= 0.04F;
 
-		models[resource].generateList();
+        move(xd, yd, zd);
 
-		brightness = (brightness = (brightness = brightness * 0.5F + 0.5F) * brightness)
-				* brightness;
+        xd *= 0.98F;
+        yd *= 0.98F;
+        zd *= 0.98F;
 
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, brightness * 0.4F);
-		GL11.glDisable(3553);
-		GL11.glEnable(3042);
-		GL11.glBlendFunc(770, 1);
-		GL11.glDisable(3008);
+        if (onGround) {
+            xd *= 0.7F;
+            zd *= 0.7F;
+            yd *= -0.5F;
+        }
 
-		models[resource].generateList();
+        tickCount++;
 
-		GL11.glEnable(3008);
-		GL11.glDisable(3042);
-		GL11.glBlendFunc(770, 771);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glPopMatrix();
-		GL11.glEnable(3553);
-	}
+        age++;
 
-	@Override
-	public void tick() {
-		xo = x;
-		yo = y;
-		zo = z;
-
-		yd -= 0.04F;
-
-		move(xd, yd, zd);
-
-		xd *= 0.98F;
-		yd *= 0.98F;
-		zd *= 0.98F;
-
-		if (onGround) {
-			xd *= 0.7F;
-			zd *= 0.7F;
-			yd *= -0.5F;
-		}
-
-		tickCount++;
-
-		age++;
-
-		if (age >= 6000) {
-			remove();
-		}
-	}
+        if (age >= 6000) {
+            remove();
+        }
+    }
 }
