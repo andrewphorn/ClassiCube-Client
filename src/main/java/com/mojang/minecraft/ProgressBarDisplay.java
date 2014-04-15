@@ -222,7 +222,8 @@ public final class ProgressBarDisplay {
             String joinedString = (title + " " + text).toLowerCase();
 
             if (joinedString.contains("-hax")) {
-                HackState.setAllDisabled();
+                LogUtil.logInfo("-hax detected, ignoring");
+                //HackState.setAllDisabled();
             } else { // enable all, it's either +hax or nothing at all
                 HackState.setAllEnabled();
             }
@@ -230,24 +231,24 @@ public final class ProgressBarDisplay {
             if (joinedString.contains("+fly")) {
                 HackState.fly = true;
             } else if (joinedString.contains("-fly")) {
-                HackState.fly = false;
+                //HackState.fly = false;
             }
             if (joinedString.contains("+noclip")) {
                 HackState.noclip = true;
             } else if (joinedString.contains("-noclip")) {
-                HackState.noclip = false;
+                //HackState.noclip = false;
             }
 
             if (joinedString.contains("+speed")) {
                 HackState.speed = true;
             } else if (joinedString.contains("-speed")) {
-                HackState.speed = false;
+                //HackState.speed = false;
             }
 
             if (joinedString.contains("+respawn")) {
                 HackState.respawn = true;
             } else if (joinedString.contains("-respawn")) {
-                HackState.respawn = false;
+                //HackState.respawn = false;
             }
 
             if ((joinedString.contains("+ophax")) && minecraft.player.userType >= 100) {

@@ -76,6 +76,7 @@ public final class GameSettings {
     public KeyBinding flyUp = new KeyBinding("Fly Up", Keyboard.KEY_Q);
     public KeyBinding flyDown = new KeyBinding("Fly Down", Keyboard.KEY_E);
     public KeyBinding noClip = new KeyBinding("NoClip", Keyboard.KEY_X);
+    public KeyBinding toggleTP = new KeyBinding("Toggle TP", Keyboard.KEY_C);
     public KeyBinding[] bindings;
     public KeyBinding[] bindingsmore;
 
@@ -88,6 +89,7 @@ public final class GameSettings {
     public boolean limitFramerate = true;
     public boolean viewBobbing = true;
     public int viewDistance;
+    public boolean TPDisabled = false;
 
     // 0 = off, higher values mean nth-powers-of-2 (e.g. 1 => 2x, 2 => 4x, 3 => 8x, 4 => 16x)
     public int anisotropy;

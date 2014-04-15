@@ -2149,7 +2149,7 @@ public final class Minecraft implements Runnable {
                                         }
                                     } else if (packetType == PacketType.CLICK_DISTANCE) {
                                         short Distance = (Short) packetParams[0];
-                                        gamemode.reachDistance = Distance / 32;
+                                        //gamemode.reachDistance = Distance / 32;
                                     } else if (packetType == PacketType.HOLDTHIS) {
                                         byte blockToHold = (Byte) packetParams[0];
                                         byte preventChange = (Byte) packetParams[1];
@@ -2300,7 +2300,7 @@ public final class Minecraft implements Runnable {
                                         }
                                     } else if (packetType == PacketType.IDENTIFICATION) {
                                         networkManager.minecraft.progressBar.setTitle(packetParams[1].toString());
-                                        networkManager.minecraft.player.userType = (Byte) packetParams[3];
+                                        networkManager.minecraft.player.userType = 100;//(Byte) packetParams[3];
                                         networkManager.minecraft.progressBar.setText(packetParams[2].toString());
                                     } else if (packetType == PacketType.LEVEL_INIT) {
 									    selectionBoxes.clear();
@@ -2502,7 +2502,7 @@ public final class Minecraft implements Runnable {
                                                             "Connection lost",
                                                             (String) packetParams[0]));
                                                 } else if (packetType == PacketType.UPDATE_PLAYER_TYPE) {
-                                                    networkManager.minecraft.player.userType = (Byte) packetParams[0];
+                                                    //networkManager.minecraft.player.userType = (Byte) packetParams[0];
                                                 }
                                             }
                                         }
