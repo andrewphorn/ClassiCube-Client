@@ -9,7 +9,7 @@ import com.mojang.minecraft.player.Player;
 public class GameMode {
     public Minecraft minecraft;
     public boolean instantBreak;
-    public float reachDistance = 5F;
+    public float reachDistance = 50;
     public MobSpawner spawner;
 
     public GameMode(Minecraft minecraft) {

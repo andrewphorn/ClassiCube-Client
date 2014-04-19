@@ -2385,7 +2385,7 @@ public final class Minecraft implements Runnable {
                                             byte var53;
                                             NetworkPlayer networkPlayer;
                                             byte var69;
-                                            if (packetType == PacketType.POSITION_ROTATION) {
+                                            if (packetType == PacketType.POSITION_ROTATION && !settings.TPDisabled) {
                                                 var10001 = (Byte) packetParams[0];
                                                 short var66 = (Short) packetParams[1];
                                                 var10003 = (Short) packetParams[2];
@@ -2416,7 +2416,7 @@ public final class Minecraft implements Runnable {
                                                 byte var49;
                                                 byte var65;
                                                 byte var67;
-                                                if (packetType == PacketType.POSITION_ROTATION_UPDATE) {
+                                                if (packetType == PacketType.POSITION_ROTATION_UPDATE && !settings.TPDisabled) {
                                                     byte playerID = (Byte) packetParams[0];
                                                     var37 = (Byte) packetParams[1];
                                                     var44 = (Byte) packetParams[2];
@@ -2432,7 +2432,7 @@ public final class Minecraft implements Runnable {
                                                             );
                                                         }
                                                     }
-                                                } else if (packetType == PacketType.ROTATION_UPDATE) {
+                                                } else if (packetType == PacketType.ROTATION_UPDATE && !settings.TPDisabled) {
                                                     byte playerID = (Byte) packetParams[0];
                                                     var37 = (Byte) packetParams[1];
                                                     var44 = (Byte) packetParams[2];
@@ -2444,7 +2444,7 @@ public final class Minecraft implements Runnable {
                                                             );
                                                         }
                                                     }
-                                                } else if (packetType == PacketType.POSITION_UPDATE) {
+                                                } else if (packetType == PacketType.POSITION_UPDATE && !settings.TPDisabled) {
                                                     byte playerID = (Byte) packetParams[0];
                                                     NetworkPlayer networkPlayerInstance = networkManager.players.get(Byte.valueOf(playerID));
                                                     if (playerID >= 0 && networkPlayerInstance != null) {
