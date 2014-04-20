@@ -2823,6 +2823,12 @@ public final class Minecraft implements Runnable {
                                 || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
                         settings.toggleSetting(Setting.RENDER_DISTANCE, shiftDown ? -1 : 1);
                     }
+                    if (Keyboard.getEventKey() == settings.toggleTP.key) {
+                        settings.TPDisabled = !settings.TPDisabled;
+                    }
+                    if (Keyboard.getEventKey() == settings.toggleReachDistance.key) {
+                        gamemode.reachDistance = gamemode.reachDistance==5?500:5;
+                    }
                 }
             }
             if (currentScreen == null) {

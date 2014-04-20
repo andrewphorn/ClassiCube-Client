@@ -56,6 +56,9 @@ public class InputHandlerImpl extends InputHandler {
             if (key == settings.flyDown.key) {
                 index = 7;
             }
+            if (key == settings.toggleTP.key) {
+                index = 8;
+            }
             if (index >= 0) {
                 keyStates[index] = state;
             }

@@ -77,6 +77,7 @@ public final class GameSettings {
     public KeyBinding flyDown = new KeyBinding("Fly Down", Keyboard.KEY_E);
     public KeyBinding noClip = new KeyBinding("NoClip", Keyboard.KEY_X);
     public KeyBinding toggleTP = new KeyBinding("Toggle TP", Keyboard.KEY_C);
+    public KeyBinding toggleReachDistance = new KeyBinding("Toggle 500 reach distance", Keyboard.KEY_G);
     public KeyBinding[] bindings;
     public KeyBinding[] bindingsmore;
 
