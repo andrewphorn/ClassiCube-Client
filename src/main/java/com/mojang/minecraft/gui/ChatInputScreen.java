@@ -113,11 +113,18 @@ public class ChatInputScreen extends GuiScreen {
                             + (minecraft.settings.showDebug ? "On" : "Off"));
                 }
                 else if (message.startsWith("/client distance")) 
-                        {  
-                            float distancevalue = Float.parseFloat(message.split(" ")[2]);
-                            minecraft.gamemode.reachDistance = distancevalue;
-                            minecraft.hud.addChat("Distance set to:&b " + distancevalue);
-                        }
+                {   
+                    try
+                    {
+                        float distancevalue = Float.parseFloat(message.split(" ")[2]);
+                        minecraft.gamemode.reachDistance = distancevalue;
+                        minecraft.hud.addChat("&eDistance set to:&b " + distancevalue);
+                    }
+                    catch(java.lang.NumberFormatException e)
+                    {
+                        minecraft.hud.addChat("&eNot a valid distance");
+                    }
+                }
                 else if (message.equalsIgnoreCase("/client gui")) {
                     minecraft.canRenderGUI = !minecraft.canRenderGUI;
                     minecraft.hud.addChat("&eGUI: &a" + (!minecraft.canRenderGUI ? "On" : "Off") + " -> "
@@ -137,7 +144,7 @@ public class ChatInputScreen extends GuiScreen {
                             + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
                 } else if (message.equalsIgnoreCase("/client help")) {
                     minecraft.hud.addChat("&a/Client GUI &e- Toggles the GUI");
-                    minecraft.hud.addChat("&a/Client distance (value) &e- Sets each distance to (value)");
+                    minecraft.hud.addChat("&a/Client Distance <value> &e- Sets reach distance to <value>");
                     minecraft.hud.addChat("&a/Client Debug &e- Toggles the showing of the debug information");
                     minecraft.hud.addChat("&a/Client Hacks &e- Toggles being able to use hacks");
                     minecraft.hud.addChat("&a/Client SpeedHack &e- Switches between normal and advanced speedhack");
