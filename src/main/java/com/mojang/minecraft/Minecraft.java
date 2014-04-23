@@ -2825,10 +2825,15 @@ public final class Minecraft implements Runnable {
                     }
                     if (Keyboard.getEventKey() == settings.toggleTP.key) {
                         settings.TPDisabled = !settings.TPDisabled;
+                        if (!settings.TPDisabled)
+                        hud.addChat("TP: &aEnabled.");
+                        else if (settings.TPDisabled)
+                        hud.addChat("TP: &cDisabled.");
                     }
-                    if (Keyboard.getEventKey() == settings.toggleReachDistance.key) {
-                        gamemode.reachDistance = gamemode.reachDistance==5?500:5;
-                    }
+                    //if (Keyboard.getEventKey() == settings.toggleReachDistance.key) 
+                    //{
+                        //Moved to ChatInputScreen.java
+                    //}
                 }
             }
             if (currentScreen == null) {
