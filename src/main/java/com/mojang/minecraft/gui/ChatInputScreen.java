@@ -111,7 +111,21 @@ public class ChatInputScreen extends GuiScreen {
                     minecraft.settings.showDebug = !minecraft.settings.showDebug;
                     minecraft.hud.addChat("&eDebug: &a" + (!minecraft.settings.showDebug ? "On" : "Off") + " -> "
                             + (minecraft.settings.showDebug ? "On" : "Off"));
-                } else if (message.equalsIgnoreCase("/client gui")) {
+                }
+                else if (message.startsWith("/client distance")) 
+                {   
+                    try
+                    {
+                        float distancevalue = Float.parseFloat(message.split(" ")[2]);
+                        minecraft.gamemode.reachDistance = distancevalue;
+                        minecraft.hud.addChat("&eDistance set to:&b " + distancevalue);
+                    }
+                    catch(java.lang.NumberFormatException e)
+                    {
+                        minecraft.hud.addChat("&eNot a valid distance");
+                    }
+                }
+                else if (message.equalsIgnoreCase("/client gui")) {
                     minecraft.canRenderGUI = !minecraft.canRenderGUI;
                     minecraft.hud.addChat("&eGUI: &a" + (!minecraft.canRenderGUI ? "On" : "Off") + " -> "
                             + (minecraft.canRenderGUI ? "On" : "Off"));
@@ -128,8 +142,14 @@ public class ChatInputScreen extends GuiScreen {
                     minecraft.hud.addChat("&eSpeedHack: &a"
                             + (!(minecraft.settings.HackType == 0) ? "Normal" : "Advanced") + " -> "
                             + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
+                } else if (message.equalsIgnoreCase("/client tp")) {
+                    minecraft.settings.TPDisabled = !minecraft.settings.TPDisabled;
+                    minecraft.hud.addChat("&eTP: &a" + (!minecraft.settings.TPDisabled ? "Disabled" : "Enabled")
+                            + " -> " + (minecraft.settings.TPDisabled ? "Disabled" : "Enabled"));
                 } else if (message.equalsIgnoreCase("/client help")) {
                     minecraft.hud.addChat("&a/Client GUI &e- Toggles the GUI");
+                    minecraft.hud.addChat("&a/Client Distance <value> &e- Sets reach distance to <value>");
+                    minecraft.hud.addChat("&a/Client TP &e- Toggles ignoring position/orientation packets");
                     minecraft.hud.addChat("&a/Client Debug &e- Toggles the showing of the debug information");
                     minecraft.hud.addChat("&a/Client Hacks &e- Toggles being able to use hacks");
                     minecraft.hud.addChat("&a/Client SpeedHack &e- Switches between normal and advanced speedhack");
@@ -138,6 +158,8 @@ public class ChatInputScreen extends GuiScreen {
                     minecraft.hud.addChat("&eTell us what you want as a command!");
                 } else if (message.equalsIgnoreCase("/client status")) {
                     minecraft.hud.addChat("&eCurrent client command settings:");
+                    minecraft.hud.addChat("  &eReach Distance: &a" + (minecraft.gamemode.reachDistance));
+                    minecraft.hud.addChat("  &eTP: &a" + (minecraft.settings.TPDisabled ? "Enabled" : "Disabled"));
                     minecraft.hud.addChat("  &eGUI: &a" + (minecraft.canRenderGUI ? "On" : "Off"));
                     minecraft.hud.addChat("  &eDebug: &a" + (minecraft.settings.showDebug ? "On" : "Off"));
                     minecraft.hud.addChat("  &eHacks: &a" + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));

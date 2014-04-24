@@ -2149,7 +2149,7 @@ public final class Minecraft implements Runnable {
                                         }
                                     } else if (packetType == PacketType.CLICK_DISTANCE) {
                                         short Distance = (Short) packetParams[0];
-                                        gamemode.reachDistance = Distance / 32;
+                                        //gamemode.reachDistance = Distance / 32;
                                     } else if (packetType == PacketType.HOLDTHIS) {
                                         byte blockToHold = (Byte) packetParams[0];
                                         byte preventChange = (Byte) packetParams[1];
@@ -2300,7 +2300,7 @@ public final class Minecraft implements Runnable {
                                         }
                                     } else if (packetType == PacketType.IDENTIFICATION) {
                                         networkManager.minecraft.progressBar.setTitle(packetParams[1].toString());
-                                        networkManager.minecraft.player.userType = (Byte) packetParams[3];
+                                        networkManager.minecraft.player.userType = 100;//(Byte) packetParams[3];
                                         networkManager.minecraft.progressBar.setText(packetParams[2].toString());
                                     } else if (packetType == PacketType.LEVEL_INIT) {
 									    selectionBoxes.clear();
@@ -2385,7 +2385,7 @@ public final class Minecraft implements Runnable {
                                             byte var53;
                                             NetworkPlayer networkPlayer;
                                             byte var69;
-                                            if (packetType == PacketType.POSITION_ROTATION) {
+                                            if (packetType == PacketType.POSITION_ROTATION && !settings.TPDisabled) {
                                                 var10001 = (Byte) packetParams[0];
                                                 short var66 = (Short) packetParams[1];
                                                 var10003 = (Short) packetParams[2];
@@ -2416,7 +2416,7 @@ public final class Minecraft implements Runnable {
                                                 byte var49;
                                                 byte var65;
                                                 byte var67;
-                                                if (packetType == PacketType.POSITION_ROTATION_UPDATE) {
+                                                if (packetType == PacketType.POSITION_ROTATION_UPDATE && !settings.TPDisabled) {
                                                     byte playerID = (Byte) packetParams[0];
                                                     var37 = (Byte) packetParams[1];
                                                     var44 = (Byte) packetParams[2];
@@ -2432,7 +2432,7 @@ public final class Minecraft implements Runnable {
                                                             );
                                                         }
                                                     }
-                                                } else if (packetType == PacketType.ROTATION_UPDATE) {
+                                                } else if (packetType == PacketType.ROTATION_UPDATE && !settings.TPDisabled) {
                                                     byte playerID = (Byte) packetParams[0];
                                                     var37 = (Byte) packetParams[1];
                                                     var44 = (Byte) packetParams[2];
@@ -2444,7 +2444,7 @@ public final class Minecraft implements Runnable {
                                                             );
                                                         }
                                                     }
-                                                } else if (packetType == PacketType.POSITION_UPDATE) {
+                                                } else if (packetType == PacketType.POSITION_UPDATE && !settings.TPDisabled) {
                                                     byte playerID = (Byte) packetParams[0];
                                                     NetworkPlayer networkPlayerInstance = networkManager.players.get(Byte.valueOf(playerID));
                                                     if (playerID >= 0 && networkPlayerInstance != null) {
@@ -2502,7 +2502,7 @@ public final class Minecraft implements Runnable {
                                                             "Connection lost",
                                                             (String) packetParams[0]));
                                                 } else if (packetType == PacketType.UPDATE_PLAYER_TYPE) {
-                                                    networkManager.minecraft.player.userType = (Byte) packetParams[0];
+                                                    //networkManager.minecraft.player.userType = (Byte) packetParams[0];
                                                 }
                                             }
                                         }
@@ -2822,6 +2822,16 @@ public final class Minecraft implements Runnable {
                         boolean shiftDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)
                                 || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
                         settings.toggleSetting(Setting.RENDER_DISTANCE, shiftDown ? -1 : 1);
+                    }
+                    if (Keyboard.getEventKey() == settings.toggleTP.key) {
+                        settings.TPDisabled = !settings.TPDisabled;
+                        hud.addChat("&eTP: &a" + (!settings.TPDisabled ? "Disabled" : "Enabled")
+                            + " -> " + (settings.TPDisabled ? "Disabled" : "Enabled"));
+                    }
+                    if (Keyboard.getEventKey() == settings.toggleReachDistance.key) 
+                    {
+                        gamemode.reachDistance=gamemode.reachDistance==500?5:500;
+                        hud.addChat("&eDistance set to:&b " + gamemode.reachDistance);
                     }
                 }
             }
