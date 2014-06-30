@@ -881,27 +881,10 @@ public final class Minecraft implements Runnable {
         }
 
         try {
-            long clockNow = System.currentTimeMillis(); // system's clock time
-            long actualNow = System.nanoTime() / 1000000L; // JRE's internal counter
-            long clockTimeSinceLastFrame = clockNow - timer.lastSysClock;
-            if (clockTimeSinceLastFrame > 1000L) {
-                // Over 1 second has elapsed since last frame.
-                long clockError = actualNow - timer.lastHRClock;
-                double clockAdjustmentRatio = clockTimeSinceLastFrame / (double) clockError;
-                timer.adjustment += (clockAdjustmentRatio - timer.adjustment) * 0.20000000298023224D;
-                timer.lastSysClock = clockNow;
-                timer.lastHRClock = actualNow;
-            }
-
-            if (clockTimeSinceLastFrame < 0L) {
-                // Negative time elapsed! System clock probably changed.
-                timer.lastSysClock = clockNow;
-                timer.lastHRClock = actualNow;
-            }
-
-            double actualNowSeconds = actualNow / 1000D;
-            double secondsPassed = (actualNowSeconds - timer.lastHR) * timer.adjustment;
-            timer.lastHR = actualNowSeconds;
+            // Get current time in seconds 
+            double now = System.nanoTime() / 1000000000D;
+            double secondsPassed = (now - timer.lastHR);
+            timer.lastHR = now;
 
             // Cap seconds-passed to range [0,1]
             if (secondsPassed < 0D) {
