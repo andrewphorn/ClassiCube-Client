@@ -350,8 +350,8 @@ public final class Minecraft implements Runnable {
     }
 
     private static void checkGLError(String context) {
-        int error;
-        if ((error = GL11.glGetError()) != 0) {
+        int error = GL11.glGetError();
+        if (error != GL11.GL_NO_ERROR) {
             String errorString = GLU.gluErrorString(error);
             LogUtil.logError("########## GL ERROR ##########");
             LogUtil.logError("@ " + context);
@@ -650,6 +650,8 @@ public final class Minecraft implements Runnable {
             System.setProperty("org.lwjgl.librarypath", mcDir + "/natives");
             System.setProperty("net.java.games.input.librarypath", mcDir + "/natives");
         }
+        
+        LogUtil.logInfo("LWJGL version: " + Sys.getVersion());
 
         if (session == null) {
             isSinglePlayer = true;
@@ -675,8 +677,7 @@ public final class Minecraft implements Runnable {
         } else {
             Display.setDisplayMode(new DisplayMode(width, height));
         }
-
-        LogUtil.logInfo("Using LWJGL Version: " + Sys.getVersion());
+        
         Display.setResizable(true);
         Display.setTitle("ClassiCube");
 
@@ -690,6 +691,8 @@ public final class Minecraft implements Runnable {
             }
             Display.create();
         }
+        
+        logSystemInfo();
 
         Keyboard.create();
         Mouse.create();
@@ -804,6 +807,14 @@ public final class Minecraft implements Runnable {
             networkManager = new NetworkManager(
                     this, server, port, session.username, session.mppass);
         }
+    }
+
+    private void logSystemInfo() {
+        LogUtil.logInfo(String.format(
+                "GPU Vendor: %s | Renderer: %s | OpenGL version: %s",
+                GL11.glGetString(GL11.GL_VENDOR),
+                GL11.glGetString(GL11.GL_RENDERER),
+                GL11.glGetString(GL11.GL_VERSION)));
     }
 
     @Override
