@@ -64,7 +64,7 @@ public class LevelSerializer {
         master.setCompoundTag("Spawn", spawn);
         
         // Metadata tag is required by ClassicWorld specs, even if empty.
-        master.setCompoundTag("Metadata", new NBTTagCompound("Metadata");
+        master.setCompoundTag("Metadata", new NBTTagCompound("Metadata"));
 
         String fileName = fullFilePath
                 + (fullFilePath.getAbsolutePath().endsWith(EXT) ? "" : EXT);
