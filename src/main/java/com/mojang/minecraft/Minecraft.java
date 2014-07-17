@@ -860,8 +860,6 @@ public final class Minecraft implements Runnable {
     // Called by run() every frame. Handles timing and rendering. Calls tick().
     private void onFrame() {
         // For all your looping needs
-        int x;
-        int y;
         if (canvas == null && Display.isCloseRequested()) {
             isRunning = false;
         }
@@ -1124,22 +1122,17 @@ public final class Minecraft implements Runnable {
                         GL11.glEnable(GL11.GL_FOG);
                         levelRenderer.sortChunks(player, 0);
                         int var83;
-                        int var110;
                         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
-                        int var125;
-                        int var122;
                         int var120;
                         if (level.isSolid(player.x, player.y, player.z, 0.1F)) {
-                            var120 = (int) player.x;
-                            var83 = (int) player.y;
-                            var110 = (int) player.z;
+                            int playerX = (int) player.x;
+                            int playerY = (int) player.y;
+                            int playerZ = (int) player.z;
 
-                            for (var122 = var120 - 1; var122 <= var120 + 1; ++var122) {
-                                for (var125 = var83 - 1; var125 <= var83 + 1; ++var125) {
-                                    for (int var38 = var110 - 1; var38 <= var110 + 1; ++var38) {
-                                        var105 = var38;
-                                        var98 = var125;
-                                        int var104 = levelRenderer.level.getTile(var122, var125, var38);
+                            for (int x = playerX - 1; x <= playerX + 1; ++x) {
+                                for (int y = playerY - 1; y <= playerY + 1; ++y) {
+                                    for (int z = playerZ - 1; z <= playerZ + 1; ++z) {
+                                        int var104 = levelRenderer.level.getTile(x, y, z);
                                         if (var104 != 0 && Block.blocks[var104].isSolid()) {
                                             GL11.glColor4f(0.2F, 0.2F, 0.2F, 1F);
                                             GL11.glDepthFunc(513);
@@ -1148,7 +1141,7 @@ public final class Minecraft implements Runnable {
 
                                             for (int side = 0; side < 6; ++side) {
                                                 Block.blocks[var104].renderInside(shapeRenderer,
-                                                        var122, var98, var105, side);
+                                                        x, y, z, side);
                                             }
 
                                             shapeRenderer.end();
@@ -1157,7 +1150,7 @@ public final class Minecraft implements Runnable {
 
                                             for (int side = 0; side < 6; ++side) {
                                                 Block.blocks[var104].renderInside(shapeRenderer,
-                                                        var122, var98, var105, side);
+                                                        x, y, z, side);
                                             }
 
                                             shapeRenderer.end();
@@ -1182,16 +1175,16 @@ public final class Minecraft implements Runnable {
 
                         for (var83 = 0; var83 < 2; ++var83) {
                             if (!particleManager.particles[var83].isEmpty()) {
-                                var110 = 0;
+                                int textureId = 0;
                                 if (var83 == 0) {
-                                    var110 = particleManager.textureManager.load("/particles.png");
+                                    textureId = particleManager.textureManager.load("/particles.png");
                                 }
 
                                 if (var83 == 1) {
-                                    var110 = particleManager.textureManager.load("/terrain.png");
+                                    textureId = particleManager.textureManager.load("/terrain.png");
                                 }
 
-                                GL11.glBindTexture(GL11.GL_TEXTURE_2D, var110);
+                                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
                                 shapeRenderer.begin();
 
                                 for (int i = 0; i < particleManager.particles[var83].size(); ++i) {
@@ -1229,8 +1222,8 @@ public final class Minecraft implements Runnable {
                             shapeRenderer.begin();
                             shapeRenderer.color(cloudColorRed, cloudColorBlue, cloudColorGreen);
                             //shapeRenderer.color(0, 0, 0);
-                            for (x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
-                                for (y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
+                            for (int x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
+                                for (int y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
                                     shapeRenderer.vertexUV(x, cloudLevel, y + 512,
                                             x * unknownCloud + cloudTickOffset,
                                             (y + 512) * unknownCloud
@@ -1275,8 +1268,8 @@ public final class Minecraft implements Runnable {
                             levelHeight = (int) (player.y + 10);
                         }
 
-                        for (x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
-                            for (y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
+                        for (int x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
+                            for (int y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
                                 shapeRenderer.vertex(x, levelHeight, y);
                                 shapeRenderer.vertex(x + 512, levelHeight, y);
                                 shapeRenderer.vertex(x + 512, levelHeight, y + 512);
@@ -1527,44 +1520,44 @@ public final class Minecraft implements Runnable {
                                 speed = 0.2F;
                             }
 
-                            for (var110 = playerX - 5; var110 <= playerX + 5; ++var110) {
-                                for (var122 = playerZ - 5; var122 <= playerZ + 5; ++var122) {
-                                    var120 = level.getHighestTile(var110, var122);
+                            for (int x = playerX - 5; x <= playerX + 5; ++x) {
+                                for (int z = playerZ - 5; z <= playerZ + 5; ++z) {
+                                    var120 = level.getHighestTile(x, z);
                                     var86 = playerY - 5;
-                                    var125 = playerY + 5;
+                                    int abovePlayerY = playerY + 5;
                                     if (var86 < var120) {
                                         var86 = var120;
                                     }
 
-                                    if (var125 < var120) {
-                                        var125 = var120;
+                                    if (abovePlayerY < var120) {
+                                        abovePlayerY = var120;
                                     }
 
-                                    if (var86 != var125) {
-                                        var74 = ((renderer.levelTicks + var110 * 3121 + var122 * 418711) % 32 + delta)
+                                    if (var86 != abovePlayerY) {
+                                        var74 = ((renderer.levelTicks + x * 3121 + z * 418711) % 32 + delta)
                                                 / 32F * speed;
-                                        float var124 = var110 + 0.5F - this.player.x;
-                                        var35 = var122 + 0.5F - this.player.z;
+                                        float var124 = x + 0.5F - this.player.x;
+                                        var35 = z + 0.5F - this.player.z;
                                         float var92 = MathHelper.sqrt(var124 * var124 + var35
                                                 * var35) / 5;
                                         GL11.glColor4f(1F, 1F, 1F, (1F - var92 * var92) * 0.7F);
                                         shapeRenderer.begin();
-                                        shapeRenderer.vertexUV(var110, var86, var122, 0F, var86
+                                        shapeRenderer.vertexUV(x, var86, z, 0F, var86
                                                 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110 + 1, var86, var122 + 1, 2F,
+                                        shapeRenderer.vertexUV(x + 1, var86, z + 1, 2F,
                                                 var86 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110 + 1, var125, var122 + 1, 2F,
-                                                var125 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110, var125, var122, 0F, var125
+                                        shapeRenderer.vertexUV(x + 1, abovePlayerY, z + 1, 2F,
+                                                abovePlayerY * 2F / 8F + var74 * 2F);
+                                        shapeRenderer.vertexUV(x, abovePlayerY, z, 0F, abovePlayerY
                                                 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110, var86, var122 + 1, 0F, var86
+                                        shapeRenderer.vertexUV(x, var86, z + 1, 0F, var86
                                                 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110 + 1, var86, var122, 2F, var86
+                                        shapeRenderer.vertexUV(x + 1, var86, z, 2F, var86
                                                 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110 + 1, var125, var122, 2F,
-                                                var125 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110, var125, var122 + 1, 0F,
-                                                var125 * 2F / 8F + var74 * 2F);
+                                        shapeRenderer.vertexUV(x + 1, abovePlayerY, z, 2F,
+                                                abovePlayerY * 2F / 8F + var74 * 2F);
+                                        shapeRenderer.vertexUV(x, abovePlayerY, z + 1, 0F,
+                                                abovePlayerY * 2F / 8F + var74 * 2F);
                                         shapeRenderer.end();
                                     }
                                 }
@@ -1943,10 +1936,6 @@ public final class Minecraft implements Runnable {
                     texFX.textureId / 16 << 4, 16, 16, 6408, 5121, texManager.textureBuffer);
         }
 
-        int var4;
-        int var40;
-        int var46;
-        int var45;
         if (networkManager != null && !(currentScreen instanceof ErrorScreen)) {
             if (!networkManager.isConnected()) {
                 progressBar.setTitle("Connecting..");
@@ -1959,8 +1948,9 @@ public final class Minecraft implements Runnable {
                         try {
                             NetworkHandler networkHandler = var20.netHandler;
                             var20.netHandler.channel.read(networkHandler.in);
-                            var4 = 0;
-                            while (networkHandler.in.position() > 0 && var4++ != 100) {
+                            for( int packetsReceived = 0;
+                                    networkHandler.in.position() > 0 && packetsReceived < 100;
+                                    packetsReceived++ ){
                                 networkHandler.in.flip();
                                 byte id = networkHandler.in.get(0);
                                 PacketType packetType;
@@ -2526,19 +2516,18 @@ public final class Minecraft implements Runnable {
                     }
                 }
 
-                Player player = this.player;
                 var20 = networkManager;
                 if (networkManager.levelLoaded) {
-                    int var24 = (int) (player.x * 32F);
-                    var4 = (int) (player.y * 32F);
-                    var40 = (int) (player.z * 32F);
-                    var46 = (int) (player.yRot * 256F / 360F) & 255;
-                    var45 = (int) (player.xRot * 256F / 360F) & 255;
+                    int playerXUnits = (int) (player.x * 32F);
+                    int playerYUnits = (int) (player.y * 32F);
+                    int playerZUnits = (int) (player.z * 32F);
+                    int playerYRotation = (int) (player.yRot * 256F / 360F) & 255;
+                    int playerXRotation = (int) (player.xRot * 256F / 360F) & 255;
                     var20.netHandler.send(
                             PacketType.POSITION_ROTATION,
-                            canSendHeldBlock ? player.inventory.getSelected() : -1, var24,
-                            var4, var40,
-                            var46, var45);
+                            canSendHeldBlock ? player.inventory.getSelected() : -1, playerXUnits,
+                            playerYUnits, playerZUnits,
+                            playerYRotation, playerXRotation);
                 }
             }
         }
@@ -2572,15 +2561,15 @@ public final class Minecraft implements Runnable {
                 }
             }
 
-            var4 = var41.minecraft.player.inventory.getSelected(); // TODO WTF?
-            Block var43 = null;
-            if (var4 > 0) {
-                var43 = Block.blocks[var4];
+            int heldBlockId = player.inventory.getSelected(); // TODO WTF?
+            Block heldBlock = null;
+            if (heldBlockId > 0) {
+                heldBlock = Block.blocks[heldBlockId];
             }
 
             float var48 = 0.4F;
-            float var50;
-            if ((var50 = (var43 == var41.block ? 1F : 0F) - var41.pos) < -var48) {
+            float var50 = (heldBlock == var41.block ? 1F : 0F) - var41.pos;
+            if (var50 < -var48) {
                 var50 = -var48;
             }
 
@@ -2590,25 +2579,24 @@ public final class Minecraft implements Runnable {
 
             var41.pos += var50;
             if (var41.pos < 0.1F) {
-                var41.block = var43;
+                var41.block = heldBlock;
             }
 
+            // Render rainfall
             if (renderer.minecraft.isRaining) {
-                Player var27 = renderer.minecraft.player;
-                Level var32 = renderer.minecraft.level;
-                var40 = (int) var27.x;
-                var46 = (int) var27.y;
-                var45 = (int) var27.z;
+                int playerX = (int) player.x;
+                int playerY = (int) player.y;
+                int playerZ = (int) player.z;
 
                 for (i = 0; i < 50; ++i) {
-                    int var60 = var40 + renderer.random.nextInt(9) - 4;
-                    int var52 = var45 + renderer.random.nextInt(9) - 4;
-                    int var57 = var32.getHighestTile(var60, var52);
-                    if (var57 <= var46 + 4 && var57 >= var46 - 4) {
-                        float var56 = renderer.random.nextFloat();
-                        float var62 = renderer.random.nextFloat();
-                        renderer.minecraft.particleManager.spawnParticle(new WaterDropParticle(
-                                var32, var60 + var56, var57 + 0.1F, var52 + var62));
+                    int var60 = playerX + renderer.random.nextInt(9) - 4;
+                    int var52 = playerZ + renderer.random.nextInt(9) - 4;
+                    int var57 = level.getHighestTile(var60, var52);
+                    if (var57 <= playerY + 4 && var57 >= playerY - 4) {
+                        float offsetX = renderer.random.nextFloat();
+                        float offsetZ = renderer.random.nextFloat();
+                        particleManager.spawnParticle(new WaterDropParticle(
+                                level, var60 + offsetX, var57 + 0.1F, var52 + offsetZ));
                     }
                 }
             }
