@@ -911,27 +911,26 @@ public final class Minecraft implements Runnable {
             if (!isOnline) {
                 gamemode.applyCracks(timer.delta);
                 if (renderer.displayActive && !Display.isActive()) {
-                    renderer.minecraft.pause();
+                    pause();
                 }
 
                 renderer.displayActive = Display.isActive();
                 int var86;
                 int var81;
-                if (renderer.minecraft.hasMouse) {
+                if (hasMouse) {
                     var81 = 0;
                     var86 = 0;
-                    if (renderer.minecraft.isLevelLoaded) {
-                        if (renderer.minecraft.canvas != null) {
-                            Point mouseLocation = renderer.minecraft.canvas.getLocationOnScreen();
-                            int mouseX = mouseLocation.x + renderer.minecraft.width / 2;
-                            int mouseY = mouseLocation.y + renderer.minecraft.height / 2;
+                    if (isLevelLoaded) {
+                        if (canvas != null) {
+                            Point mouseLocation = canvas.getLocationOnScreen();
+                            int mouseX = mouseLocation.x + width / 2;
+                            int mouseY = mouseLocation.y + height / 2;
                             Point var75 = MouseInfo.getPointerInfo().getLocation();
                             var81 = var75.x - mouseX;
                             var86 = -(var75.y - mouseY);
-                            renderer.minecraft.robot.mouseMove(mouseX, mouseY);
+                            robot.mouseMove(mouseX, mouseY);
                         } else {
-                            Mouse.setCursorPosition(renderer.minecraft.width / 2,
-                                    renderer.minecraft.height / 2);
+                            Mouse.setCursorPosition(width / 2, height / 2);
                         }
                     } else {
                         var81 = Mouse.getDX();
@@ -939,19 +938,19 @@ public final class Minecraft implements Runnable {
                     }
 
                     byte mouseDirection = 1;
-                    if (renderer.minecraft.settings.invertMouse) {
+                    if (settings.invertMouse) {
                         mouseDirection = -1;
                     }
 
-                    renderer.minecraft.player.turn(var81, var86 * mouseDirection);
+                    player.turn(var81, var86 * mouseDirection);
                 }
 
-                if (!renderer.minecraft.isOnline) {
-                    var81 = renderer.minecraft.width * 240 / renderer.minecraft.height;
-                    var86 = renderer.minecraft.height * 240 / renderer.minecraft.height;
-                    int mouseX = Mouse.getX() * var81 / renderer.minecraft.width;
-                    int mouseY = var86 - Mouse.getY() * var86 / renderer.minecraft.height - 1;
-                    if (renderer.minecraft.level != null && player != null) {
+                if (!isOnline) {
+                    var81 = width * 240 / height;
+                    var86 = height * 240 / height;
+                    int mouseX = Mouse.getX() * var81 / width;
+                    int mouseY = var86 - Mouse.getY() * var86 / height - 1;
+                    if (level != null && player != null) {
                         float delta = timer.delta;
                         float var29 = player.xRotO + (player.xRot - player.xRotO) * timer.delta;
                         float var30 = player.yRotO + (player.yRot - player.yRotO) * timer.delta;
@@ -962,13 +961,13 @@ public final class Minecraft implements Runnable {
                         float var33 = MathHelper.sin(-var29 * (float) (Math.PI / 180D));
                         float var34 = var69 * var74;
                         float var87 = var32 * var74;
-                        float reachDistance = renderer.minecraft.gamemode.getReachDistance();
+                        float reachDistance = gamemode.getReachDistance();
                         Vec3D vec3D = var31.add(var34 * reachDistance, var33 * reachDistance,
                                 var87 * reachDistance);
-                        renderer.minecraft.selected = renderer.minecraft.level.clip(var31, vec3D);
+                        selected = level.clip(var31, vec3D);
                         var74 = reachDistance;
-                        if (renderer.minecraft.selected != null) {
-                            var74 = renderer.minecraft.selected.vec.distance(
+                        if (selected != null) {
+                            var74 = selected.vec.distance(
                                     renderer.getPlayerVector(timer.delta));
                         }
 
@@ -982,7 +981,7 @@ public final class Minecraft implements Runnable {
                         vec3D = var31.add(var34 * reachDistance, var33 * reachDistance,
                                 var87 * reachDistance);
                         renderer.entity = null;
-                        List<Entity> var37 = renderer.minecraft.level.blockMap.getEntities(
+                        List<Entity> var37 = level.blockMap.getEntities(
                                 player,
                                 player.boundingBox.expand(var34 * reachDistance,
                                         var33 * reachDistance, var87 * reachDistance)
@@ -1006,17 +1005,12 @@ public final class Minecraft implements Runnable {
                         }
 
                         if (renderer.entity != null && isSurvival()) {
-                            renderer.minecraft.selected = new MovingObjectPosition(renderer.entity);
+                            selected = new MovingObjectPosition(renderer.entity);
                         }
 
-                        Player player = renderer.minecraft.player;
-                        Level level = renderer.minecraft.level;
-                        LevelRenderer levelRenderer = renderer.minecraft.levelRenderer;
-                        ParticleManager particleManager = renderer.minecraft.particleManager;
-
-                        GL11.glViewport(0, 0, renderer.minecraft.width, renderer.minecraft.height);
+                        GL11.glViewport(0, 0, width, height);
                         float viewDistanceFactor = 1F - (float) (Math.pow(
-                                (1F / (4 - renderer.minecraft.settings.viewDistance)), 0.25D));
+                                (1F / (4 - settings.viewDistance)), 0.25D));
                         float skyColorRed = (level.skyColor >> 16 & 255) / 255F;
                         float skyColorBlue = (level.skyColor >> 8 & 255) / 255F;
                         float skyColorGreen = (level.skyColor & 255) / 255F;
@@ -1048,7 +1042,7 @@ public final class Minecraft implements Runnable {
                         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                         renderer.fogColorMultiplier = 1F;
                         GL11.glEnable(GL11.GL_CULL_FACE);
-                        renderer.fogEnd = 512 >> (renderer.minecraft.settings.viewDistance << 1);
+                        renderer.fogEnd = 512 >> (settings.viewDistance << 1);
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
                         GL11.glLoadIdentity();
                         var29 = 0.07F;
@@ -1059,18 +1053,16 @@ public final class Minecraft implements Runnable {
                             var69 /= (1F - 500F / (var74 + 500F)) * 2F + 1F;
                         }
 
-                        GLU.gluPerspective(var69, (float) renderer.minecraft.width
-                                / (float) renderer.minecraft.height, 0.05F, renderer.fogEnd);
+                        GLU.gluPerspective(var69, (float) width / (float) height, 0.05F, renderer.fogEnd);
                         GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glLoadIdentity();
 
                         renderer.hurtEffect(delta);
-                        renderer.applyBobbing(delta, renderer.minecraft.settings.viewBobbing);
+                        renderer.applyBobbing(delta, settings.viewBobbing);
 
                         float cameraDistance = -5.1F;
-                        if (renderer.minecraft.selected != null && settings.thirdPersonMode == 2) {
-                            cameraDistance = -(renderer.minecraft.selected.vec.distance(renderer
-                                    .getPlayerVector(timer.delta)) - 0.51F);
+                        if (selected != null && settings.thirdPersonMode == 2) {
+                            cameraDistance = -(selected.vec.distance(renderer.getPlayerVector(timer.delta)) - 0.51F);
                             if (cameraDistance < -5.1F) {
                                 cameraDistance = -5.1F;
                             }
@@ -1103,8 +1095,7 @@ public final class Minecraft implements Runnable {
                             levelRenderer.chunkCache[i].clip(frustum);
                         }
 
-                        levelRenderer = renderer.minecraft.levelRenderer;
-                        Collections.sort(renderer.minecraft.levelRenderer.chunks,
+                        Collections.sort(levelRenderer.chunks,
                                 new ChunkDirtyDistanceComparator(player));
                         int var98 = levelRenderer.chunks.size() - 1;
                         int var105 = levelRenderer.chunks.size();
@@ -1280,10 +1271,10 @@ public final class Minecraft implements Runnable {
                         shapeRenderer.end();
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
                         renderer.updateFog();
-                        if (renderer.minecraft.selected != null) {
+                        if (selected != null) {
                             GL11.glDisable(GL11.GL_ALPHA_TEST);
                             var105 = player.inventory.getSelected();
-                            MovingObjectPosition var102 = renderer.minecraft.selected;
+                            MovingObjectPosition var102 = selected;
 
                             GL11.glEnable(GL11.GL_BLEND);
                             GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -1323,7 +1314,6 @@ public final class Minecraft implements Runnable {
                             GL11.glDisable(GL11.GL_BLEND);
                             GL11.glDisable(GL11.GL_ALPHA_TEST);
                             // TODO ???
-                            MovingObjectPosition selectedBlock = renderer.minecraft.selected;
                             player.inventory.getSelected();
                             GL11.glEnable(GL11.GL_BLEND);
                             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -1331,10 +1321,10 @@ public final class Minecraft implements Runnable {
                             GL11.glLineWidth(2F);
                             GL11.glDisable(GL11.GL_TEXTURE_2D);
                             GL11.glDepthMask(false);
-                            int var104 = levelRenderer.level.getTile(selectedBlock.x, selectedBlock.y, selectedBlock.z);
+                            int var104 = levelRenderer.level.getTile(selected.x, selected.y, selected.z);
                             if (var104 > 0) {
                                 AABB aabb = Block.blocks[var104].getSelectionBox(
-                                        selectedBlock.x, selectedBlock.y, selectedBlock.z).grow(
+                                        selected.x, selected.y, selected.z).grow(
                                                 0.002F, 0.002F, 0.002F);
                                 GL11.glBegin(GL11.GL_LINE_STRIP);
                                 GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.maxZ);
@@ -1502,7 +1492,7 @@ public final class Minecraft implements Runnable {
                             // ------------------
                         }
 
-                        if (renderer.minecraft.isRaining || renderer.minecraft.isSnowing) {
+                        if (isRaining || isSnowing) {
                             float speed = 1F;
                             int playerX = (int) this.player.x;
                             int playerY = (int) this.player.y;
@@ -1511,12 +1501,12 @@ public final class Minecraft implements Runnable {
                             GL11.glNormal3f(0F, 1F, 0F);
                             GL11.glEnable(GL11.GL_BLEND);
                             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                            if (renderer.minecraft.isRaining) {
+                            if (isRaining) {
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                        renderer.minecraft.textureManager.load("/rain.png"));
-                            } else if (renderer.minecraft.isSnowing) {
+                                        textureManager.load("/rain.png"));
+                            } else if (isSnowing) {
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                        renderer.minecraft.textureManager.load("/snow.png"));
+                                        textureManager.load("/snow.png"));
                                 speed = 0.2F;
                             }
 
@@ -1575,12 +1565,12 @@ public final class Minecraft implements Runnable {
                                     NetworkPlayer np = (NetworkPlayer) networkManager.players
                                             .values().toArray()[n];
                                     if (np != null) {
-                                        np.renderHover(renderer.minecraft.textureManager);
+                                        np.renderHover(textureManager);
                                     }
                                 }
                             } else {
                                 if (renderer.entity != null) {
-                                    renderer.entity.renderHover(renderer.minecraft.textureManager);
+                                    renderer.entity.renderHover(textureManager);
                                 }
                             }
                         }
@@ -1589,7 +1579,7 @@ public final class Minecraft implements Runnable {
                         GL11.glLoadIdentity();
 
                         renderer.hurtEffect(delta);
-                        renderer.applyBobbing(delta, renderer.minecraft.settings.viewBobbing);
+                        renderer.applyBobbing(delta, settings.viewBobbing);
 
                         HeldBlock heldBlock = renderer.heldBlock;
                         var117 = renderer.heldBlock.lastPos + (heldBlock.pos - heldBlock.lastPos)
@@ -1655,10 +1645,10 @@ public final class Minecraft implements Runnable {
                         GL11.glPopMatrix();
                         heldBlock.minecraft.renderer.setLighting(false);
 
-                        renderer.minecraft.hud.render(timer.delta,
-                                renderer.minecraft.currentScreen != null, mouseX, mouseY);
+                        hud.render(timer.delta,
+                                currentScreen != null, mouseX, mouseY);
                     } else {
-                        GL11.glViewport(0, 0, renderer.minecraft.width, renderer.minecraft.height);
+                        GL11.glViewport(0, 0, width, renderer.minecraft.height);
                         GL11.glClearColor(0F, 0F, 0F, 0F);
                         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
