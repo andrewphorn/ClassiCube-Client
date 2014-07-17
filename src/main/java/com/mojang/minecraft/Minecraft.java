@@ -862,7 +862,6 @@ public final class Minecraft implements Runnable {
         // For all your looping needs
         int x;
         int y;
-        int i;
         if (canvas == null && Display.isCloseRequested()) {
             isRunning = false;
         }
@@ -992,7 +991,7 @@ public final class Minecraft implements Runnable {
                         );
                         float var35 = 0F;
 
-                        for (i = 0; i < var37.size(); ++i) {
+                        for (int i = 0; i < var37.size(); ++i) {
                             Entity var88 = var37.get(i);
                             if (var88.isPickable()) {
                                 var74 = 0.1F;
@@ -1102,7 +1101,7 @@ public final class Minecraft implements Runnable {
                         GL11.glTranslatef(-var69, -var74, -var33);
                         Frustum frustum = FrustumImpl.getInstance();
 
-                        for (i = 0; i < levelRenderer.chunkCache.length; ++i) {
+                        for (int i = 0; i < levelRenderer.chunkCache.length; ++i) {
                             levelRenderer.chunkCache[i].clip(frustum);
                         }
 
@@ -1115,7 +1114,7 @@ public final class Minecraft implements Runnable {
                             var105 = 4;
                         }
 
-                        for (i = 0; i < var105; ++i) {
+                        for (int i = 0; i < var105; ++i) {
                             Chunk chunkToUpdate = levelRenderer.chunks.remove(var98 - i);
                             chunkToUpdate.update();
                             chunkToUpdate.loaded = false;
@@ -1127,7 +1126,6 @@ public final class Minecraft implements Runnable {
                         int var83;
                         int var110;
                         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
-                        int var114;
                         int var125;
                         int var122;
                         int var120;
@@ -1148,18 +1146,18 @@ public final class Minecraft implements Runnable {
 
                                             shapeRenderer.begin();
 
-                                            for (var114 = 0; var114 < 6; ++var114) {
+                                            for (int side = 0; side < 6; ++side) {
                                                 Block.blocks[var104].renderInside(shapeRenderer,
-                                                        var122, var98, var105, var114);
+                                                        var122, var98, var105, side);
                                             }
 
                                             shapeRenderer.end();
                                             GL11.glCullFace(1028);
                                             shapeRenderer.begin();
 
-                                            for (var114 = 0; var114 < 6; ++var114) {
+                                            for (int side = 0; side < 6; ++side) {
                                                 Block.blocks[var104].renderInside(shapeRenderer,
-                                                        var122, var98, var105, var114);
+                                                        var122, var98, var105, side);
                                             }
 
                                             shapeRenderer.end();
@@ -1196,7 +1194,7 @@ public final class Minecraft implements Runnable {
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, var110);
                                 shapeRenderer.begin();
 
-                                for (i = 0; i < particleManager.particles[var83].size(); ++i) {
+                                for (int i = 0; i < particleManager.particles[var83].size(); ++i) {
                                     ((Particle) particleManager.particles[var83].get(i)).render(
                                             shapeRenderer, delta, var29, var69, var30, var117,
                                             var32);
@@ -1304,7 +1302,9 @@ public final class Minecraft implements Runnable {
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, levelRenderer.textureManager.load("/terrain.png"));
                                 GL11.glColor4f(1F, 1F, 1F, 0.5F);
                                 GL11.glPushMatrix();
-                                block = (var114 = levelRenderer.level.getTile(var102.x, var102.y, var102.z)) > 0 ? Block.blocks[var114] : null;
+                                
+                                int blockId = levelRenderer.level.getTile(var102.x, var102.y, var102.z);
+                                block = (blockId > 0 ? Block.blocks[blockId] : null);
                                 float blockXAverage = (block.maxX + block.minX) / 2F;
                                 float blockYAverage = (block.maxY + block.minY) / 2F;
                                 float blockZAverage = (block.maxZ + block.minZ) / 2F;
@@ -1317,9 +1317,9 @@ public final class Minecraft implements Runnable {
                                 shapeRenderer.noColor();
                                 GL11.glDepthMask(false);
                                 // Do the sides
-                                for (i = 0; i < 6; ++i) {
+                                for (int side = 0; side < 6; ++side) {
                                     block.renderSide(shapeRenderer, var102.x, var102.y, var102.z,
-                                            i, 240 + (int) (levelRenderer.cracks * 10F));
+                                            side, 240 + (int) (levelRenderer.cracks * 10F));
                                 }
 
                                 shapeRenderer.end();
@@ -1393,7 +1393,7 @@ public final class Minecraft implements Runnable {
                         // -------------------
 
                         Collections.sort(selectionBoxes, new SelectionBoxDistanceComparator(this.player));
-                        for (i = 0; i < selectionBoxes.size(); i++) {
+                        for (int i = 0; i < selectionBoxes.size(); i++) {
                             CustomAABB bounds = selectionBoxes.get(i).bounds;
                             ColorCache color = selectionBoxes.get(i).color;
                             GL11.glLineWidth(2);
@@ -1511,9 +1511,9 @@ public final class Minecraft implements Runnable {
 
                         if (renderer.minecraft.isRaining || renderer.minecraft.isSnowing) {
                             float speed = 1F;
-                            int var104 = (int) this.player.x;
-                            int var108 = (int) this.player.y;
-                            var114 = (int) this.player.z;
+                            int playerX = (int) this.player.x;
+                            int playerY = (int) this.player.y;
+                            int playerZ = (int) this.player.z;
                             GL11.glDisable(GL11.GL_CULL_FACE);
                             GL11.glNormal3f(0F, 1F, 0F);
                             GL11.glEnable(GL11.GL_BLEND);
@@ -1527,11 +1527,11 @@ public final class Minecraft implements Runnable {
                                 speed = 0.2F;
                             }
 
-                            for (var110 = var104 - 5; var110 <= var104 + 5; ++var110) {
-                                for (var122 = var114 - 5; var122 <= var114 + 5; ++var122) {
+                            for (var110 = playerX - 5; var110 <= playerX + 5; ++var110) {
+                                for (var122 = playerZ - 5; var122 <= playerZ + 5; ++var122) {
                                     var120 = level.getHighestTile(var110, var122);
-                                    var86 = var108 - 5;
-                                    var125 = var108 + 5;
+                                    var86 = playerY - 5;
+                                    var125 = playerY + 5;
                                     if (var86 < var120) {
                                         var86 = var120;
                                     }
