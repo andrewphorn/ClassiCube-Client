@@ -22,6 +22,9 @@ import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
 
 public class Level implements Serializable {
+    public static final int DEFAULT_CLOUD_COLOR = 16777215,
+            DEFAULT_FOG_COLOR = 16777215,
+            DEFAULT_SKY_COLOR = 10079487;
 
     public static final long serialVersionUID = 0L;
     public int width;
@@ -68,11 +71,6 @@ public class Level implements Serializable {
         growTrees = false;
     }
 
-    /**
-     * Adds an entity to the level.
-     *
-     * @param entity
-     */
     public void addEntity(Entity entity) {
         blockMap.insert(entity);
         entity.setLevel(this);
@@ -763,15 +761,15 @@ public class Level implements Serializable {
             }
 
             if (skyColor == 0) {
-                skyColor = 10079487;
+                skyColor = DEFAULT_SKY_COLOR;
             }
 
             if (fogColor == 0) {
-                fogColor = 16777215;
+                fogColor = DEFAULT_FOG_COLOR;
             }
 
             if (cloudColor == 0) {
-                cloudColor = 16777215;
+                cloudColor = DEFAULT_CLOUD_COLOR;
             }
 
             if (xSpawn == 0 && ySpawn == 0 && zSpawn == 0) {
