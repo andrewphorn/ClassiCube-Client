@@ -12,10 +12,7 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
@@ -28,6 +25,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -65,12 +63,12 @@ import com.mojang.minecraft.level.LevelSerializer;
 import com.mojang.minecraft.level.generator.LevelGenerator;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.level.tile.TextureSide;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.ModelManager;
 import com.mojang.minecraft.model.ModelPart;
 import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.NetworkPlayer;
+import com.mojang.minecraft.net.PacketHandler;
 import com.mojang.minecraft.net.PacketType;
 import com.mojang.minecraft.net.SkinDownloadThread;
 import com.mojang.minecraft.particle.Particle;
@@ -99,13 +97,9 @@ import com.mojang.util.MathHelper;
 import com.mojang.util.StreamingUtil;
 import com.mojang.util.Timer;
 import com.mojang.util.Vec3D;
-import com.oyasunadev.mcraft.client.util.Constants;
-import com.oyasunadev.mcraft.client.util.ExtData;
 
 public final class Minecraft implements Runnable {
-
     // mouse button index constants
-
     private static final int MB_LEFT = 0, MB_RIGHT = 1, MB_MIDDLE = 2;
     /**
      * True if the player is running, false if otherwise.
@@ -227,6 +221,12 @@ public final class Minecraft implements Runnable {
      * Manages networking.
      */
     public NetworkManager networkManager;
+    
+    /**
+     * Reads and writes packets (via the network manager).
+     */
+    PacketHandler packetHandler = new PacketHandler(this);
+
     /**
      * Plays sounds.
      */
@@ -276,19 +276,16 @@ public final class Minecraft implements Runnable {
     public List<HotKeyData> hotKeys = new ArrayList<>();
     public HackState hackState; // TODO Never used
     public List<PlayerListNameData> playerListNameData = new ArrayList<>();
-    public List<Block> disallowedPlacementBlocks = new ArrayList<>();
-    public List<Block> disallowedBreakingBlocks = new ArrayList<>();
+    public HashSet<Block> disallowedPlacementBlocks = new HashSet<>();
+    public HashSet<Block> disallowedBreakingBlocks = new HashSet<>();
     public MonitoringThread monitoringThread;
     public int tempDisplayWidth;
     public int tempDisplayHeight;
     public boolean canRenderGUI = true;
     float cameraDistance = -0.1F; // TODO Never used
-    int receivedExtensionLength;
     boolean isShuttingDown = false;
-    boolean canSendHeldBlock = false;
-    boolean serverSupportsMessages = false;
     int[] inventoryCache;
-    boolean isLoadingMap = false;
+    public boolean isLoadingMap = false;
     /**
      * This timer determines how much time will pass between block modifications. It is used to
      * prevent really fast block spamming.
@@ -415,7 +412,7 @@ public final class Minecraft implements Runnable {
         return minecraftFolder;
     }
 
-    void downloadImage(URL url, File dest) {
+    public void downloadImage(URL url, File dest) {
         try {
             if (!doesUrlExistAndIsImage(url)) {
                 return;
@@ -1945,7 +1942,7 @@ public final class Minecraft implements Runnable {
                             for (int packetsReceived = 0;
                                     packetsReceived < NetworkManager.MAX_PACKETS_PER_TICK && networkHandler.in.position() > 0;
                                     packetsReceived++) {
-                                if (!handlePacket(networkHandler)) {
+                                if (!packetHandler.handlePacket(networkHandler)) {
                                     break;
                                 }
                             }
@@ -1974,7 +1971,7 @@ public final class Minecraft implements Runnable {
                     int playerXRotation = (int) (player.xRot * 256F / 360F) & 255;
                     networkManager.netHandler.send(
                             PacketType.POSITION_ROTATION,
-                            canSendHeldBlock ? player.inventory.getSelected() : -1, playerXUnits,
+                            packetHandler.canSendHeldBlock ? player.inventory.getSelected() : -1, playerXUnits,
                             playerYUnits, playerZUnits,
                             playerYRotation, playerXRotation);
                 }
@@ -2329,555 +2326,5 @@ public final class Minecraft implements Runnable {
         } catch (Exception ex) {
             LogUtil.logWarning("Error toggling fullscreen " + (isFullScreen ? "ON" : "OFF"), ex);
         }
-    }
-
-    // return true if keep going; return false is break;
-    private boolean handlePacket(NetworkHandler networkHandler) throws IOException, Exception {
-        networkHandler.in.flip();
-        byte packetId = networkHandler.in.get(0);
-        PacketType packetType = PacketType.packets[packetId];
-        if (packetType == null) {
-            throw new IOException("Unknown packet ID received: " + packetId);
-        }
-        if (networkHandler.in.remaining() < packetType.length + 1) {
-            networkHandler.in.compact();
-            return false;
-        }
-        networkHandler.in.get();
-        Object[] packetParams = new Object[packetType.params.length];
-
-        for (int i = 0; i < packetParams.length; ++i) {
-            packetParams[i] = networkHandler
-                    .readObject(packetType.params[i]);
-        }
-
-        NetworkManager networkManager = networkHandler.netManager;
-        if (networkHandler.netManager.successful) {
-            if (packetType == PacketType.EXT_INFO) {
-                String appName = (String) packetParams[0];
-                short extensionCount = (Short) packetParams[1];
-                LogUtil.logInfo(String.format("Connecting to AppName \"%s\" with ExtensionCount %s",
-                        appName, extensionCount));
-                receivedExtensionLength = extensionCount;
-                Constants.SERVER_SUPPORTED_EXTENSIONS.clear();
-
-            } else if (packetType == PacketType.EXT_ENTRY) {
-                String extName = (String) packetParams[0];
-                Integer version = (Integer) packetParams[1];
-                Constants.SERVER_SUPPORTED_EXTENSIONS.add(new ExtData(extName, version));
-
-                if (extName.toLowerCase().contains("heldblock")) {
-                    canSendHeldBlock = true;
-                }
-                if (extName.toLowerCase().contains("messagetypes")) {
-                    serverSupportsMessages = true;
-                }
-
-                if (receivedExtensionLength == Constants.SERVER_SUPPORTED_EXTENSIONS.size()) {
-                    LogUtil.logInfo("Sending client's supported Extensions");
-                    List<ExtData> mutuallySupportedExts = new ArrayList<>();
-                    for (int j = 0; j < PacketType.packets.length - 1; j++) {
-                        if (PacketType.packets[j] != null
-                                && !PacketType.packets[j].extName.equals("")) {
-                            mutuallySupportedExts.add(new ExtData(
-                                    PacketType.packets[j].extName,
-                                    PacketType.packets[j].Version));
-                        }
-                    }
-                    Object[] toSendParams = new Object[]{
-                        Constants.CLIENT_NAME, (short) mutuallySupportedExts.size()};
-                    networkManager.netHandler.send(PacketType.EXT_INFO, toSendParams);
-                    for (ExtData ext : mutuallySupportedExts) {
-                        LogUtil.logInfo(String.format("Sending ext: %s with version: %s",
-                                ext.Name, ext.Version));
-                        toSendParams = new Object[]{ext.Name, ext.Version};
-                        networkManager.netHandler.send(PacketType.EXT_ENTRY, toSendParams);
-                    }
-                }
-
-            } else if (packetType == PacketType.SELECTION_CUBOID) {
-                byte selectionId = (byte) packetParams[0];
-                String selectionName = (String) packetParams[1];
-                // Selection coordinates must be clamped to map boundaries.
-                int x1 = MathHelper.clamp((short) packetParams[2], 0, level.width);
-                int y1 = MathHelper.clamp((short) packetParams[3], 0, level.height);
-                int z1 = MathHelper.clamp((short) packetParams[4], 0, level.length);
-                // Max values for coordinates may not exceed map dimensions.
-                // They also cannot be lower than min values.
-                int x2 = MathHelper.clamp((short) packetParams[5], x1, level.width);
-                int y2 = MathHelper.clamp((short) packetParams[6], y1, level.height);
-                int z2 = MathHelper.clamp((short) packetParams[7], z1, level.length);
-                // Color components must be clamped to valid range (0-255)
-                int r = MathHelper.clamp((short) packetParams[8], 0, 255);
-                int g = MathHelper.clamp((short) packetParams[9], 0, 255);
-                int b = MathHelper.clamp((short) packetParams[10], 0, 255);
-                int a = MathHelper.clamp((short) packetParams[11], 0, 255);
-
-                SelectionBoxData data = new SelectionBoxData(selectionId, selectionName,
-                        new ColorCache(r / 255F, g / 255F, b / 255F, a / 255F),
-                        new CustomAABB(x1, y1, z1, x2, y2, z2)
-                );
-                // If a cuboid with the same ID already exists, it will be replaced.
-                selectionBoxes.put(selectionId, data);
-
-            } else if (packetType == PacketType.REMOVE_SELECTION_CUBOID) {
-                byte selectionId = (Byte) packetParams[0];
-                if (selectionBoxes.remove(selectionId) == null) {
-                    LogUtil.logWarning("Attempting to remove selection with unknown id " + selectionId);
-                }
-
-            } else if (packetType == PacketType.ENV_SET_COLOR) {
-                byte envVariable = (Byte) packetParams[0];
-                int r = (Short) packetParams[1];
-                int g = (Short) packetParams[2];
-                int b = (Short) packetParams[3];
-                // If R, G, or B is out-of-range, we should reset the color to default.
-                boolean doReset = (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255);
-                int dec = (r & 0x0ff) << 16 | (g & 0x0ff) << 8 | b & 0x0ff;
-                switch (envVariable) {
-                    case 0: // sky
-                        if (doReset) {
-                            level.skyColor = Level.DEFAULT_SKY_COLOR;
-                        } else {
-                            level.skyColor = dec;
-                        }
-                        break;
-                    case 1: // cloud
-                        if (doReset) {
-                            level.cloudColor = Level.DEFAULT_CLOUD_COLOR;
-                        } else {
-                            level.cloudColor = dec;
-                        }
-                        break;
-                    case 2: // fog
-                        if (doReset) {
-                            level.fogColor = Level.DEFAULT_FOG_COLOR;
-                        } else {
-                            level.fogColor = dec;
-                        }
-                        break;
-                    case 3: // ambient light
-                        if (doReset) {
-                            level.customShadowColour = null;
-                        } else {
-                            level.customShadowColour = new ColorCache(r / 255F, g / 255F, b / 255F);
-                        }
-                        levelRenderer.refresh();
-                        break;
-                    case 4: // diffuse color
-                        if (doReset) {
-                            level.customLightColour = null;
-                        } else {
-                            level.customLightColour = new ColorCache(r / 255F, g / 255F, b / 255F);
-                        }
-                        levelRenderer.refresh();
-                        break;
-                }
-
-            } else if (packetType == PacketType.ENV_SET_MAP_APPEARANCE) {
-                String textureUrl = (String) packetParams[0];
-                byte sideBlock = (Byte) packetParams[1];
-                byte edgeBlock = (Byte) packetParams[2];
-                short sideLevel = (Short) packetParams[3];
-
-                if (settings.canServerChangeTextures) {
-                    if (sideBlock == -1) {
-                        textureManager.customSideBlock = null;
-                    } else if (sideBlock < Block.blocks.length) {
-                        int ID = Block.blocks[sideBlock].textureId;
-                        textureManager.customSideBlock = textureManager.textureAtlas.get(ID);
-                    }
-                    if (edgeBlock == -1) {
-                        textureManager.customEdgeBlock = null;
-                    } else if (edgeBlock < Block.blocks.length) {
-                        Block block = Block.blocks[edgeBlock];
-                        int ID = block.getTextureId(TextureSide.Top);
-                        textureManager.customEdgeBlock = textureManager.textureAtlas.get(ID);
-                    }
-                    if (textureUrl.length() > 0) {
-                        File path = new File(getMinecraftDirectory(), "/skins/terrain");
-                        if (!path.exists()) {
-                            path.mkdirs();
-                        }
-                        String hash = getHash(textureUrl);
-                        if (hash != null) {
-                            File file = new File(path, hash + ".png");
-                            BufferedImage image;
-                            if (!file.exists()) {
-                                downloadImage(new URL(textureUrl), file);
-                            }
-                            image = ImageIO.read(file);
-                            if (image.getWidth() % 16 == 0 && image.getHeight() % 16 == 0) {
-                                textureManager.animations.clear();
-                                textureManager.currentTerrainPng = image;
-                            }
-                        }
-                    } else {
-                        try {
-                            textureManager.currentTerrainPng
-                                    = ImageIO
-                                    .read(TextureManager.class
-                                            .getResourceAsStream("/terrain.png"));
-                        } catch (IOException ex2) {
-                            LogUtil.logError("Error reading default terrain texture.", ex2);
-                        }
-                    }
-                    level.waterLevel = sideLevel;
-                    levelRenderer.refresh();
-                }
-
-            } else if (packetType == PacketType.CLICK_DISTANCE) {
-                short clickDistance = (Short) packetParams[0];
-                gamemode.reachDistance = clickDistance / 32;
-
-            } else if (packetType == PacketType.HOLDTHIS) {
-                byte blockToHold = (Byte) packetParams[0];
-                byte preventChange = (Byte) packetParams[1];
-                boolean canPreventChange = preventChange > 0;
-
-                if (canPreventChange) {
-                    GameSettings.CanReplaceSlot = false;
-                }
-
-                player.inventory.selected = 0;
-                player.inventory.replaceSlot(Block.blocks[blockToHold]);
-
-                if (!canPreventChange) {
-                    GameSettings.CanReplaceSlot = true;
-                }
-
-            } else if (packetType == PacketType.SET_TEXT_HOTKEY) {
-                String label = (String) packetParams[0];
-                String action = (String) packetParams[1];
-                int keyCode = (Integer) packetParams[2];
-                byte keyMods = (Byte) packetParams[3];
-                HotKeyData data = new HotKeyData(label, action, keyCode, keyMods);
-                hotKeys.add(data);
-
-            } else if (packetType == PacketType.EXT_ADD_PLAYER_NAME) {
-                short nameId = (short) packetParams[0];
-                String playerName = (String) packetParams[1];
-                String listName = (String) packetParams[2];
-                String groupName = (String) packetParams[3];
-                byte unusedRank = (Byte) packetParams[4];
-
-                int playerIndex = -1;
-
-                for (PlayerListNameData b : playerListNameData) {
-                    if (b.nameID == nameId) {
-                        // Already exists, update the entry.
-                        playerIndex = playerListNameData.indexOf(b);
-                        break;
-                    }
-                }
-
-                if (playerIndex == -1) {
-                    playerListNameData.add(new PlayerListNameData(nameId,
-                            playerName, listName, groupName, unusedRank));
-                } else {
-                    playerListNameData.set(playerIndex,
-                            new PlayerListNameData(nameId, playerName,
-                                    listName, groupName, unusedRank));
-                }
-
-                Collections.sort(playerListNameData,
-                        new PlayerListComparator());
-
-            } else if (packetType == PacketType.EXT_ADD_ENTITY) {
-                byte playerID = (byte) packetParams[0];
-                String skinName = (String) packetParams[2];
-
-                NetworkPlayer targetPlayer = networkManager.players.get(playerID);
-                if (targetPlayer != null) {
-                    targetPlayer.SkinName = skinName;
-                    targetPlayer.downloadSkin();
-                }
-
-            } else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
-                short nameID = (short) packetParams[0];
-                List<PlayerListNameData> cache = playerListNameData;
-                for (int q = 0; q < playerListNameData.size(); q++) {
-                    if (playerListNameData.get(q).nameID == nameID) {
-                        cache.remove(q);
-                    }
-                }
-                playerListNameData = cache;
-
-            } else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-                byte supportLevel = (Byte) packetParams[0];
-                LogUtil.logInfo("Using CustomBlocks level " + supportLevel);
-                networkManager.netHandler.send(
-                        PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
-                        Constants.CUSTOM_BLOCK_SUPPORT_LEVEL);
-                SessionData.setAllowedBlocks(supportLevel);
-
-            } else if (packetType == PacketType.SET_BLOCK_PERMISSIONS) {
-                byte blockType = (byte) packetParams[0];
-                byte allowPlacement = (byte) packetParams[1];
-                byte allowDeletion = (byte) packetParams[2];
-                Block block = Block.blocks[blockType];
-                if (block == null) {
-                    LogUtil.logWarning("Unknown block ID given for SetBlockPermission packet: " + blockType);
-                    return true;
-                }
-                if (allowPlacement == 0) {
-                    if (!disallowedPlacementBlocks.contains(block)) {
-                        disallowedPlacementBlocks.add(block);
-                        LogUtil.logInfo("DisallowingPlacement block: " + block);
-                    }
-                } else {
-                    if (disallowedPlacementBlocks.contains(block)) {
-                        disallowedPlacementBlocks.remove(block);
-                        LogUtil.logInfo("AllowingPlacement block: " + block);
-                    }
-                }
-                if (allowDeletion == 0) {
-                    if (!disallowedBreakingBlocks.contains(block)) {
-                        disallowedBreakingBlocks.add(block);
-                        LogUtil.logInfo("DisallowingDeletion block: " + block);
-                    }
-                } else {
-                    if (disallowedBreakingBlocks.contains(block)) {
-                        disallowedBreakingBlocks.remove(block);
-                        LogUtil.logInfo("AllowingDeletion block: " + block);
-                    }
-                }
-
-            } else if (packetType == PacketType.CHANGE_MODEL) {
-                byte playerId = (byte) packetParams[0];
-                String modelName = ((String) packetParams[1]).toLowerCase();
-                if (playerId >= 0) {
-                    // Set another player's model
-                    NetworkPlayer netPlayer = networkManager.players.get(playerId);
-                    if (netPlayer != null) {
-                        ModelManager m = new ModelManager();
-                        if (m.getModel(modelName) == null) {
-                            netPlayer.modelName = "humanoid";
-                        } else {
-                            netPlayer.modelName = modelName;
-                        }
-                        netPlayer.bindTexture(textureManager);
-                    }
-                } else if (playerId == -1) {
-                    // Set own model
-                    ModelManager modelManager = new ModelManager();
-                    if (modelManager.getModel(modelName) == null) {
-                        player.modelName = "humanoid";
-                    } else {
-                        player.modelName = modelName;
-                    }
-                    player.bindTexture(textureManager);
-                }
-
-            } else if (packetType == PacketType.ENV_SET_WEATHER_TYPE) {
-                byte weatherType = (byte) packetParams[0];
-                if (weatherType == 0) {
-                    isRaining = false;
-                    isSnowing = false;
-                } else if (weatherType == 1) {
-                    isRaining = !isRaining;
-                    isSnowing = false;
-                } else if (weatherType == 2) {
-                    isSnowing = !isSnowing;
-                    isRaining = false;
-                }
-
-            } else if (packetType == PacketType.IDENTIFICATION) {
-                progressBar.setTitle(packetParams[1].toString());
-                progressBar.setText(packetParams[2].toString());
-                player.userType = (Byte) packetParams[3];
-
-            } else if (packetType == PacketType.LEVEL_INIT) {
-                selectionBoxes.clear();
-                setLevel(null);
-                networkManager.levelData = new ByteArrayOutputStream();
-
-            } else if (packetType == PacketType.LEVEL_DATA) {
-                short chunkLength = (short) packetParams[0];
-                byte[] chunkData = (byte[]) packetParams[1];
-                byte percentComplete = (byte) packetParams[2];
-                networkManager.minecraft.progressBar.setProgress(percentComplete);
-                isLoadingMap = false;
-                networkManager.levelData.write(chunkData, 0, chunkLength);
-
-            } else if (packetType == PacketType.LEVEL_FINALIZE) {
-                try {
-                    networkManager.levelData.close();
-                } catch (IOException ex) {
-                    LogUtil.logError("Error receiving level data.");
-                    throw ex; // We are in an inconsistent state; abort!
-                }
-
-                byte[] decompressedStream = LevelLoader.decompress(
-                        new ByteArrayInputStream(networkManager.levelData.toByteArray()));
-                networkManager.levelData = null;
-                short xSize = (short) packetParams[0];
-                short ySize = (short) packetParams[1];
-                short zSize = (short) packetParams[2];
-                Level newLevel = new Level();
-                newLevel.setNetworkMode(true);
-                newLevel.setData(xSize, ySize, zSize, decompressedStream);
-                networkManager.minecraft.setLevel(newLevel);
-                networkManager.minecraft.isOnline = false;
-                networkManager.levelLoaded = true;
-                // ProgressBarDisplay.InitEnv(this);
-                // this.levelRenderer.refresh();
-
-            } else if (packetType == PacketType.BLOCK_CHANGE) {
-                if (networkManager.minecraft.level != null) {
-                    networkManager.minecraft.level.netSetTile(
-                            (short) packetParams[0], (short) packetParams[1],
-                            (short) packetParams[2], (byte) packetParams[3]);
-                } // else: no level is loaded, ignore block change
-
-            } else if (packetType == PacketType.SPAWN_PLAYER) {
-                byte newPlayerId = (Byte) packetParams[0];
-                String newPlayerName = (String) packetParams[1];
-                short newPlayerX = (Short) packetParams[2];
-                short newPlayerY = (Short) packetParams[3];
-                short newPlayerZ = (Short) packetParams[4];
-                byte newPlayerXRot = (Byte) packetParams[5];
-                byte newPlayerYRot = (Byte) packetParams[6];
-                if (newPlayerId >= 0) {
-                    // Spawn a new player
-                    newPlayerXRot = (byte) (newPlayerXRot + 128);
-                    newPlayerY = (short) (newPlayerY - 22);
-                    NetworkPlayer newPlayer = new NetworkPlayer(networkManager.minecraft,
-                            newPlayerName, newPlayerX, newPlayerY, newPlayerZ,
-                            newPlayerYRot * 360 / 256F, newPlayerXRot * 360 / 256F);
-                    networkManager.players.put(newPlayerId, newPlayer);
-                    level.addEntity(newPlayer);
-                } else {
-                    // Set own spawnpoint
-                    level.setSpawnPos(
-                            newPlayerX / 32, newPlayerY / 32, newPlayerZ / 32,
-                            newPlayerXRot * 320 / 256);
-                    player.moveTo(newPlayerX / 32F,
-                            newPlayerY / 32F, newPlayerZ / 32F,
-                            newPlayerXRot * 360 / 256F, newPlayerYRot * 360 / 256F);
-                }
-
-            } else if (packetType == PacketType.POSITION_ROTATION) {
-                byte playerId = (Byte) packetParams[0];
-                short newX = (Short) packetParams[1];
-                short newY = (Short) packetParams[2];
-                short newZ = (Short) packetParams[3];
-                byte newXRot = (Byte) packetParams[4];
-                byte newYRot = (Byte) packetParams[5];
-                if (playerId < 0) {
-                    // Move self
-                    player.moveTo(newX / 32F, newY / 32F, newZ / 32F,
-                            newXRot * 360 / 256F, newYRot * 360 / 256F);
-                } else {
-                    // Move another player
-                    newXRot = (byte) (newXRot + 128);
-                    newY = (short) (newY - 22);
-                    NetworkPlayer networkPlayer = networkManager.players.get(playerId);
-                    if (networkPlayer != null) {
-                        networkPlayer.teleport(newX, newY, newZ,
-                                newYRot * 360 / 256F, newXRot * 360 / 256F);
-                    } // else: unknown player ID given, ignore it.
-                }
-
-            } else if (packetType == PacketType.POSITION_ROTATION_UPDATE) {
-                byte playerId = (byte) packetParams[0];
-                byte deltaX = (byte) packetParams[1];
-                byte deltaY = (byte) packetParams[2];
-                byte deltaZ = (byte) packetParams[3];
-                byte newXRot = (byte) packetParams[4];
-                byte newYRot = (byte) packetParams[5];
-                if (playerId >= 0) {
-                    newXRot = (byte) (newXRot + 128);
-                    NetworkPlayer networkPlayerInstance = networkManager.players.get(playerId);
-                    if (networkPlayerInstance != null) {
-                        networkPlayerInstance.queue(deltaX, deltaY,
-                                deltaZ, newYRot * 360 / 256F, newXRot * 360 / 256F);
-                    }
-                } // else: This packet cannot be applied to self, and is ignored if playerId<0
-
-            } else if (packetType == PacketType.ROTATION_UPDATE) {
-                byte playerID = (Byte) packetParams[0];
-                byte newXRot = (Byte) packetParams[1];
-                byte newYRot = (Byte) packetParams[2];
-                if (playerID >= 0) {
-                    newXRot = (byte) (newXRot + 128);
-                    NetworkPlayer networkPlayerInstance = networkManager.players.get(playerID);
-                    if (networkPlayerInstance != null) {
-                        networkPlayerInstance.queue(newYRot * 360 / 256F, newXRot * 360 / 256F);
-                    }
-                } // else: This packet cannot be applied to self, and is ignored if playerId<0
-
-            } else if (packetType == PacketType.POSITION_UPDATE) {
-                byte playerID = (Byte) packetParams[0];
-                NetworkPlayer networkPlayerInstance = networkManager.players.get(playerID);
-                if (playerID >= 0 && networkPlayerInstance != null) {
-                    networkPlayerInstance.queue((Byte) packetParams[1],
-                            (Byte) packetParams[2], (Byte) packetParams[3]);
-                } // else: This packet cannot be applied to self, and is ignored if playerId<0
-
-            } else if (packetType == PacketType.DESPAWN_PLAYER) {
-                byte playerID = (Byte) packetParams[0];
-                NetworkPlayer targetPlayer = networkManager.players.remove(playerID);
-                if (playerID >= 0 && targetPlayer != null) {
-                    targetPlayer.clear();
-                    level.removeEntity(targetPlayer);
-                } // else: This packet cannot be applied to self, and is ignored if playerId<0
-
-            } else if (packetType == PacketType.CHAT_MESSAGE) {
-                byte messageType = (Byte) packetParams[0];
-                String message = (String) packetParams[1];
-                if (messageType > 0 && serverSupportsMessages) {
-                    // MessageTypes CPE
-                    switch (messageType) {
-                        case 1:
-                            HUDScreen.ServerName = message;
-                            break;
-                        case 2:
-                            HUDScreen.Compass = message;
-                            break;
-                        case 3:
-                            HUDScreen.UserDetail = message;
-                            break;
-                        case 11:
-                            HUDScreen.BottomRight1 = message;
-                            break;
-                        case 12:
-                            HUDScreen.BottomRight2 = message;
-                            break;
-                        case 13:
-                            HUDScreen.BottomRight3 = message;
-                            break;
-                        case 100:
-                            HUDScreen.Announcement = message;
-                            break;
-                        default:
-                            // unknown MessageType: stick it into regular chat box
-                            hud.addChat(message);
-                            break;
-                    }
-                } else if (messageType < 0 && !serverSupportsMessages) {
-                    // For compatibility with vanilla Minecraft: negative ID colors a message yellow
-                    hud.addChat("&e" + message);
-                } else {
-                    // Regular chat
-                    hud.addChat(message);
-                }
-
-            } else if (packetType == PacketType.DISCONNECT) {
-                networkManager.netHandler.close();
-                setCurrentScreen(new ErrorScreen("Connection lost", (String) packetParams[0]));
-
-            } else if (packetType == PacketType.UPDATE_PLAYER_TYPE) {
-                player.userType = (Byte) packetParams[0];
-            }
-        }
-
-        if (!networkHandler.connected) {
-            return false;
-        }
-
-        networkHandler.in.compact();
-
-        return true;
     }
 }

@@ -35,7 +35,4 @@ public class Constants {
             + MINECRAFT_VERSION + "; Protocol " + PROTOCOL_VERSION + ")";
 
     public static final byte CUSTOM_BLOCK_SUPPORT_LEVEL = 1;
-
-    // TODO move out of constants and into something more appropriate
-    public static List<ExtData> SERVER_SUPPORTED_EXTENSIONS = new ArrayList<>();
 }
