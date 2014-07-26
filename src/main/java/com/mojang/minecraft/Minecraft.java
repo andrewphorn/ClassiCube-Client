@@ -221,7 +221,7 @@ public final class Minecraft implements Runnable {
      * Manages networking.
      */
     public NetworkManager networkManager;
-    
+
     /**
      * Reads and writes packets (via the network manager).
      */
@@ -741,8 +741,7 @@ public final class Minecraft implements Runnable {
         GL11.glViewport(0, 0, width, height);
         if (server != null && session != null) {
             // We're in multiplayer, connecting to a server!
-            // Create a tiny temporary empty level while we wait for map to be
-            // sent
+            // Create a tiny temporary empty level while we wait for map to be sent
             Level defaultLevel = new Level();
             defaultLevel.setData(8, 8, 8, new byte[512]);
             setLevel(defaultLevel);
@@ -1112,9 +1111,7 @@ public final class Minecraft implements Runnable {
                         renderer.updateFog();
                         GL11.glEnable(GL11.GL_FOG);
                         levelRenderer.sortChunks(player, 0);
-                        int var83;
                         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
-                        int var120;
                         if (level.isSolid(player.x, player.y, player.z, 0.1F)) {
                             int playerX = (int) player.x;
                             int playerY = (int) player.y;
@@ -1164,22 +1161,20 @@ public final class Minecraft implements Runnable {
                         var32 = var29 * MathHelper.sin(player.xRot * (float) Math.PI / 180F);
                         var69 = MathHelper.cos(player.xRot * (float) Math.PI / 180F);
 
-                        for (var83 = 0; var83 < 2; ++var83) {
-                            if (!particleManager.particles[var83].isEmpty()) {
+                        for (int pass = 0; pass < 2; ++pass) {
+                            if (!particleManager.particles[pass].isEmpty()) {
                                 int textureId = 0;
-                                if (var83 == 0) {
+                                if (pass == 0) {
                                     textureId = particleManager.textureManager.load("/particles.png");
-                                }
-
-                                if (var83 == 1) {
+                                } else if (pass == 1) {
                                     textureId = particleManager.textureManager.load("/terrain.png");
                                 }
 
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
                                 shapeRenderer.begin();
 
-                                for (int i = 0; i < particleManager.particles[var83].size(); ++i) {
-                                    ((Particle) particleManager.particles[var83].get(i)).render(
+                                for (int i = 0; i < particleManager.particles[pass].size(); ++i) {
+                                    ((Particle) particleManager.particles[pass].get(i)).render(
                                             shapeRenderer, delta, var29, var69, var30, var117,
                                             var32);
                                 }
@@ -1212,7 +1207,6 @@ public final class Minecraft implements Runnable {
                         if (settings.showClouds) {
                             shapeRenderer.begin();
                             shapeRenderer.color(cloudColorRed, cloudColorBlue, cloudColorGreen);
-                            //shapeRenderer.color(0, 0, 0);
                             for (int x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
                                 for (int y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
                                     shapeRenderer.vertexUV(x, cloudLevel, y + 512,
@@ -1375,123 +1369,32 @@ public final class Minecraft implements Runnable {
                         GL11.glDisable(GL11.GL_FOG);
                         // -------------------
 
-                        SelectionBoxData[] boxes = new SelectionBoxData[selectionBoxes.size()];
-                        boxes = selectionBoxes.values().toArray(boxes);
-                        Arrays.sort(boxes, new SelectionBoxDistanceComparator(this.player));
-                        for (int i = 0; i < boxes.length; i++) {
-                            CustomAABB bounds = boxes[i].bounds;
-                            ColorCache color = boxes[i].color;
-                            GL11.glLineWidth(2);
+                        if (!selectionBoxes.isEmpty()) {
+                            SelectionBoxData[] boxes = new SelectionBoxData[selectionBoxes.size()];
+                            boxes = selectionBoxes.values().toArray(boxes);
+                            Arrays.sort(boxes, new SelectionBoxDistanceComparator(this.player));
 
-                            GL11.glDisable(GL11.GL_BLEND);
+                            // Set up OpenGL state for drawing selection boxes
+                            GL11.glLineWidth(2);
                             GL11.glDisable(GL11.GL_ALPHA_TEST);
                             GL11.glEnable(GL11.GL_BLEND);
                             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                            GL11.glColor4f(color.R, color.G, color.B, color.A);
                             GL11.glDisable(GL11.GL_TEXTURE_2D);
                             GL11.glDepthMask(false);
                             GL11.glDisable(GL11.GL_CULL_FACE);
-                            // GL11.glBegin(GL11.GL_QUADS);
 
-                            // Front Face
-                            // Bottom Left
-                            shapeRenderer.begin();
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
-                            // Bottom Right
-                            shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
-                            // Top Right
-                            shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
-                            // Top Left
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+                            for (int i = 0; i < boxes.length; i++) {
+                                drawSelectionCuboid(boxes[i], shapeRenderer);
+                            }
 
-                            // Back Face
-                            // Bottom Right
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-                            // Top Right
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-                            // Top Left
-                            shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
-                            // Bottom Left
-                            shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
-
-                            // Top Face
-                            // Top Left
-                            // Bottom Left
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
-                            // Bottom Right
-                            shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
-                            // Top Right
-                            shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
-
-                            // Bottom Face
-                            // Top Right
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-                            // Top Left
-                            shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
-                            // Bottom Left
-                            shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
-                            // Bottom Right
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
-
-                            // Right face
-                            // Bottom Right
-                            shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
-                            // Top Right
-                            shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
-                            // Top Left
-                            shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
-                            // Bottom Left
-                            shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
-
-                            // Left Face
-                            // Bottom Left
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-                            // Bottom Right
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
-                            // Top Right
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
-                            // Top Left
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-                            shapeRenderer.end();
-
-                            GL11.glColor4f(color.R, color.G, color.B, color.A + 0.2F);
-
-                            shapeRenderer.startDrawing(3);
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-                            shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
-                            shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-                            shapeRenderer.end();
-
-                            shapeRenderer.startDrawing(3);
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-                            shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
-                            shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-                            shapeRenderer.end();
-
-                            shapeRenderer.startDrawing(1);
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-                            shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
-                            shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
-                            shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
-                            shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
-                            shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
-                            shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
-                            shapeRenderer.end();
-
+                            // Restore OpenGL state
+                            GL11.glEnable(GL11.GL_CULL_FACE);
                             GL11.glDepthMask(true);
                             GL11.glEnable(GL11.GL_TEXTURE_2D);
+                            // TODO: restore blend func?
                             GL11.glDisable(GL11.GL_BLEND);
                             GL11.glEnable(GL11.GL_ALPHA_TEST);
-
-                            GL11.glEnable(GL11.GL_CULL_FACE);
-
-                            // ------------------
+                            GL11.glLineWidth(1);
                         }
 
                         if (isRaining || isSnowing) {
@@ -1514,7 +1417,7 @@ public final class Minecraft implements Runnable {
 
                             for (int x = playerX - 5; x <= playerX + 5; ++x) {
                                 for (int z = playerZ - 5; z <= playerZ + 5; ++z) {
-                                    var120 = level.getHighestTile(x, z);
+                                    int var120 = level.getHighestTile(x, z);
                                     var86 = playerY - 5;
                                     int abovePlayerY = playerY + 5;
                                     if (var86 < var120) {
@@ -1678,6 +1581,103 @@ public final class Minecraft implements Runnable {
             LogUtil.logError("Fatal error in main loop (onFrame)", ex);
             setCurrentScreen(new ErrorScreen("Client error", "The game broke! [" + ex + "]"));
         }
+    }
+
+    private void drawSelectionCuboid(SelectionBoxData box, ShapeRenderer shapeRenderer) {
+        CustomAABB bounds = box.bounds;
+        ColorCache color = box.color;
+        GL11.glColor4f(color.R, color.G, color.B, color.A);
+
+        // Front Face
+        // Bottom Left
+        shapeRenderer.begin();
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
+        // Bottom Right
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
+        // Top Right
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
+        // Top Left
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+
+        // Back Face
+        // Bottom Right
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        // Top Right
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        // Top Left
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
+        // Bottom Left
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
+
+        // Top Face
+        // Top Left
+        // Bottom Left
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+        // Bottom Right
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
+        // Top Right
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
+
+        // Bottom Face
+        // Top Right
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        // Top Left
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
+        // Bottom Left
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
+        // Bottom Right
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
+
+        // Right face
+        // Bottom Right
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
+        // Top Right
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
+        // Top Left
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
+        // Bottom Left
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
+
+        // Left Face
+        // Bottom Left
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        // Bottom Right
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
+        // Top Right
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+        // Top Left
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        shapeRenderer.end();
+
+        GL11.glColor4f(color.R, color.G, color.B, color.A + 0.2F);
+
+        shapeRenderer.startDrawing(3);
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        shapeRenderer.end();
+
+        shapeRenderer.startDrawing(3);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        shapeRenderer.end();
+
+        shapeRenderer.startDrawing(1);
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+        shapeRenderer.end();
     }
 
     public final void setCurrentScreen(GuiScreen newScreen) {
