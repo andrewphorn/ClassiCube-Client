@@ -914,39 +914,37 @@ public final class Minecraft implements Runnable {
                 }
 
                 renderer.displayActive = Display.isActive();
-                int var86;
-                int var81;
                 if (hasMouse) {
-                    var81 = 0;
-                    var86 = 0;
+                    int mouseDX = 0;
+                    int mouseDY = 0;
                     if (isLevelLoaded) {
                         if (canvas != null) {
                             Point mouseLocation = canvas.getLocationOnScreen();
                             int mouseX = mouseLocation.x + width / 2;
                             int mouseY = mouseLocation.y + height / 2;
-                            Point var75 = MouseInfo.getPointerInfo().getLocation();
-                            var81 = var75.x - mouseX;
-                            var86 = -(var75.y - mouseY);
+                            Point pointerLocation = MouseInfo.getPointerInfo().getLocation();
+                            mouseDX = pointerLocation.x - mouseX;
+                            mouseDY = -(pointerLocation.y - mouseY);
                             robot.mouseMove(mouseX, mouseY);
                         } else {
                             Mouse.setCursorPosition(width / 2, height / 2);
                         }
                     } else {
-                        var81 = Mouse.getDX();
-                        var86 = Mouse.getDY();
+                        mouseDX = Mouse.getDX();
+                        mouseDY = Mouse.getDY();
                     }
 
-                    byte mouseDirection = 1;
+                    int mouseDirection = 1;
                     if (settings.invertMouse) {
                         mouseDirection = -1;
                     }
 
-                    player.turn(var81, var86 * mouseDirection);
+                    player.turn(mouseDX, mouseDY * mouseDirection);
                 }
 
                 if (!isOnline) {
-                    var81 = width * 240 / height;
-                    var86 = height * 240 / height;
+                    int var81 = width * 240 / height;
+                    int var86 = height * 240 / height;
                     int mouseX = Mouse.getX() * var81 / width;
                     int mouseY = var86 - Mouse.getY() * var86 / height - 1;
                     if (level != null && player != null) {
@@ -979,35 +977,40 @@ public final class Minecraft implements Runnable {
 
                         vec3D = var31.add(var34 * reachDistance, var33 * reachDistance,
                                 var87 * reachDistance);
+                        
                         renderer.entity = null;
-                        List<Entity> var37 = level.blockMap.getEntities(
+                        List<Entity> nearbyEntities = level.blockMap.getEntities(
                                 player,
                                 player.boundingBox.expand(var34 * reachDistance,
                                         var33 * reachDistance, var87 * reachDistance)
                         );
                         float var35 = 0F;
 
-                        for (int i = 0; i < var37.size(); ++i) {
-                            Entity var88 = var37.get(i);
-                            if (var88.isPickable()) {
+                        // SURVIVAL: find a nearby entity to pick up
+                        for (Entity entity : nearbyEntities) {
+                            if (entity.isPickable()) {
                                 var74 = 0.1F;
-                                MovingObjectPosition var78 = var88.boundingBox.grow(var74, var74,
-                                        var74).clip(var31, vec3D);
+                                MovingObjectPosition var78 = entity.boundingBox
+                                        .grow(var74, var74, var74)
+                                        .clip(var31, vec3D);
                                 if (var78 != null) {
                                     var74 = var31.distance(var78.vec);
                                     if (var74 < var35 || var35 == 0F) {
-                                        renderer.entity = var88;
+                                        renderer.entity = entity;
                                         var35 = var74;
                                     }
                                 }
                             }
                         }
 
+                        // SURVIVAL: place picked-up object into hand
                         if (renderer.entity != null && isSurvival()) {
                             selected = new MovingObjectPosition(renderer.entity);
                         }
 
                         GL11.glViewport(0, 0, width, height);
+                        
+                        // Set view distance, sky color, and fog color
                         float viewDistanceFactor = 1F - (float) (Math.pow(
                                 (1F / (4 - settings.viewDistance)), 0.25D));
                         float skyColorRed = (level.skyColor >> 16 & 255) / 255F;
@@ -1022,6 +1025,8 @@ public final class Minecraft implements Runnable {
                         renderer.fogRed *= renderer.fogColorMultiplier;
                         renderer.fogBlue *= renderer.fogColorMultiplier;
                         renderer.fogGreen *= renderer.fogColorMultiplier;
+                        
+                        // Adjust fog color if underwater or in lava
                         Block block = Block.blocks[level.getTile((int) this.player.x,
                                 (int) (this.player.y + 0.12F), (int) this.player.z)];
                         if (block != null && block.getLiquidType() != LiquidType.notLiquid) {
@@ -1037,59 +1042,37 @@ public final class Minecraft implements Runnable {
                             }
                         }
 
+                        // Draw the sky
                         GL11.glClearColor(renderer.fogRed, renderer.fogBlue, renderer.fogGreen, 0F);
                         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                         renderer.fogColorMultiplier = 1F;
                         GL11.glEnable(GL11.GL_CULL_FACE);
                         renderer.fogEnd = 512 >> (settings.viewDistance << 1);
+                        
+                        // Set up the perspective
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
                         GL11.glLoadIdentity();
                         var29 = 0.07F;
-
-                        var69 = 70F;
+                        
+                        // SURVIVAL: adjust FoV for dead players
+                        float fovy = 70F;
                         if (player.health <= 0) {
                             var74 = player.deathTime + delta;
-                            var69 /= (1F - 500F / (var74 + 500F)) * 2F + 1F;
+                            fovy /= (1F - 500F / (var74 + 500F)) * 2F + 1F;
                         }
-
-                        GLU.gluPerspective(var69, (float) width / (float) height, 0.05F, renderer.fogEnd);
+                        // TODO: adjustable FoV
+                        GLU.gluPerspective(fovy, (float) width / (float) height, 0.05F, renderer.fogEnd);
+                        
                         GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glLoadIdentity();
 
+                        // SURVIVAL: hurt effect
                         renderer.hurtEffect(delta);
-                        renderer.applyBobbing(delta, settings.viewBobbing);
-
-                        float cameraDistance = -5.1F;
-                        if (selected != null && settings.thirdPersonMode == 2) {
-                            cameraDistance = -(selected.vec.distance(renderer.getPlayerVector(timer.delta)) - 0.51F);
-                            if (cameraDistance < -5.1F) {
-                                cameraDistance = -5.1F;
-                            }
-                        }
-
-                        if (settings.thirdPersonMode == 0) {
-                            GL11.glTranslatef(0F, 0F, -0.1F);
-                        } else {
-                            GL11.glTranslatef(0F, 0F, cameraDistance);
-                        }
-                        if (settings.thirdPersonMode == 2) {
-                            GL11.glRotatef(-player.xRotO + (player.xRot - player.xRotO) * delta,
-                                    1F, 0F, 0F);
-                            GL11.glRotatef(
-                                    (player.yRotO + (player.yRot - player.yRotO) * delta) + 180,
-                                    0F, 1F, 0F);
-                        } else {
-                            GL11.glRotatef(player.xRotO + (player.xRot - player.xRotO) * delta, 1F,
-                                    0F, 0F);
-                            GL11.glRotatef(player.yRotO + (player.yRot - player.yRotO) * delta, 0F,
-                                    1F, 0F);
-                        }
-                        var69 = player.xo + (player.x - player.xo) * delta;
-                        var74 = player.yo + (player.y - player.yo) * delta;
-                        var33 = player.zo + (player.z - player.zo) * delta;
-                        GL11.glTranslatef(-var69, -var74, -var33);
+                        
+                        renderer.setCamera(delta, selected);
+                        
                         Frustum frustum = FrustumImpl.getInstance();
-
+                        // Check visibility of chunks
                         for (int i = 0; i < levelRenderer.chunkCache.length; ++i) {
                             levelRenderer.chunkCache[i].clip(frustum);
                         }
@@ -1123,7 +1106,7 @@ public final class Minecraft implements Runnable {
                                         int var104 = levelRenderer.level.getTile(x, y, z);
                                         if (var104 != 0 && Block.blocks[var104].isSolid()) {
                                             GL11.glColor4f(0.2F, 0.2F, 0.2F, 1F);
-                                            GL11.glDepthFunc(513);
+                                            GL11.glDepthFunc(GL11.GL_LESS);
 
                                             shapeRenderer.begin();
 
@@ -1133,7 +1116,7 @@ public final class Minecraft implements Runnable {
                                             }
 
                                             shapeRenderer.end();
-                                            GL11.glCullFace(1028);
+                                            GL11.glCullFace(GL11.GL_FRONT);
                                             shapeRenderer.begin();
 
                                             for (int side = 0; side < 6; ++side) {
@@ -1142,8 +1125,8 @@ public final class Minecraft implements Runnable {
                                             }
 
                                             shapeRenderer.end();
-                                            GL11.glCullFace(1029);
-                                            GL11.glDepthFunc(515);
+                                            GL11.glCullFace(GL11.GL_BACK);
+                                            GL11.glDepthFunc(GL11.GL_LEQUAL);
                                         }
                                     }
                                 }
@@ -1151,8 +1134,8 @@ public final class Minecraft implements Runnable {
                         }
 
                         renderer.setLighting(true);
-                        Vec3D var103 = renderer.getPlayerVector(delta);
-                        levelRenderer.level.blockMap.render(var103, frustum, levelRenderer.textureManager, delta);
+                        Vec3D playerVector = renderer.getPlayerVector(delta);
+                        levelRenderer.level.blockMap.render(playerVector, frustum, levelRenderer.textureManager, delta);
                         renderer.setLighting(false);
                         renderer.updateFog();
                         var29 = -MathHelper.cos(player.yRot * (float) Math.PI / 180F);
@@ -1186,8 +1169,7 @@ public final class Minecraft implements Runnable {
                         GL11.glBindTexture(GL11.GL_TEXTURE_2D,
                                 levelRenderer.textureManager.load("/rock.png"));
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
-                        GL11.glCallList(levelRenderer.listId); // rock
-                        // edges
+                        GL11.glCallList(levelRenderer.listId); // rock edges
                         renderer.updateFog();
 
                         GL11.glBindTexture(GL11.GL_TEXTURE_2D,
@@ -1383,8 +1365,8 @@ public final class Minecraft implements Runnable {
                             GL11.glDepthMask(false);
                             GL11.glDisable(GL11.GL_CULL_FACE);
 
-                            for (int i = 0; i < boxes.length; i++) {
-                                drawSelectionCuboid(boxes[i], shapeRenderer);
+                            for (SelectionBoxData box : boxes) {
+                                drawSelectionCuboid(box, shapeRenderer);
                             }
 
                             // Restore OpenGL state
@@ -1398,68 +1380,7 @@ public final class Minecraft implements Runnable {
                         }
 
                         if (isRaining || isSnowing) {
-                            float speed = 1F;
-                            int playerX = (int) this.player.x;
-                            int playerY = (int) this.player.y;
-                            int playerZ = (int) this.player.z;
-                            GL11.glDisable(GL11.GL_CULL_FACE);
-                            GL11.glNormal3f(0F, 1F, 0F);
-                            GL11.glEnable(GL11.GL_BLEND);
-                            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                            if (isRaining) {
-                                GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                        textureManager.load("/rain.png"));
-                            } else if (isSnowing) {
-                                GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                        textureManager.load("/snow.png"));
-                                speed = 0.2F;
-                            }
-
-                            for (int x = playerX - 5; x <= playerX + 5; ++x) {
-                                for (int z = playerZ - 5; z <= playerZ + 5; ++z) {
-                                    int var120 = level.getHighestTile(x, z);
-                                    var86 = playerY - 5;
-                                    int abovePlayerY = playerY + 5;
-                                    if (var86 < var120) {
-                                        var86 = var120;
-                                    }
-
-                                    if (abovePlayerY < var120) {
-                                        abovePlayerY = var120;
-                                    }
-
-                                    if (var86 != abovePlayerY) {
-                                        var74 = ((renderer.levelTicks + x * 3121 + z * 418711) % 32 + delta)
-                                                / 32F * speed;
-                                        float var124 = x + 0.5F - this.player.x;
-                                        var35 = z + 0.5F - this.player.z;
-                                        float var92 = MathHelper.sqrt(var124 * var124 + var35
-                                                * var35) / 5;
-                                        GL11.glColor4f(1F, 1F, 1F, (1F - var92 * var92) * 0.7F);
-                                        shapeRenderer.begin();
-                                        shapeRenderer.vertexUV(x, var86, z, 0F, var86
-                                                * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(x + 1, var86, z + 1, 2F,
-                                                var86 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(x + 1, abovePlayerY, z + 1, 2F,
-                                                abovePlayerY * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(x, abovePlayerY, z, 0F, abovePlayerY
-                                                * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(x, var86, z + 1, 0F, var86
-                                                * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(x + 1, var86, z, 2F, var86
-                                                * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(x + 1, abovePlayerY, z, 2F,
-                                                abovePlayerY * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(x, abovePlayerY, z + 1, 0F,
-                                                abovePlayerY * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.end();
-                                    }
-                                }
-                            }
-
-                            GL11.glEnable(GL11.GL_CULL_FACE);
-                            GL11.glDisable(GL11.GL_BLEND);
+                            renderer.drawWeather(delta, shapeRenderer);
                         }
                         if (!isSinglePlayer && networkManager != null
                                 && networkManager.players != null

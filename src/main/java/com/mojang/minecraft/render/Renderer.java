@@ -1,18 +1,18 @@
 package com.mojang.minecraft.render;
 
-import java.nio.FloatBuffer;
-import java.util.Random;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.minecraft.Entity;
+import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.player.Player;
 import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
+import java.nio.FloatBuffer;
+import java.util.Random;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 public final class Renderer {
 
@@ -151,5 +151,99 @@ public final class Renderer {
 
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT);
+    }
+
+    public void setCamera(float delta, MovingObjectPosition selected) {
+        GameSettings settings = minecraft.settings;
+        Player player = minecraft.player;
+        applyBobbing(delta, settings.viewBobbing);
+
+        float cameraDistance = -5.1F;
+        if (selected != null && settings.thirdPersonMode == 2) {
+            cameraDistance = -(selected.vec.distance(getPlayerVector(delta)) - 0.51F);
+            if (cameraDistance < -5.1F) {
+                cameraDistance = -5.1F;
+            }
+        }
+
+        if (settings.thirdPersonMode == 0) {
+            GL11.glTranslatef(0F, 0F, -0.1F);
+        } else {
+            GL11.glTranslatef(0F, 0F, cameraDistance);
+        }
+        if (settings.thirdPersonMode == 2) {
+            GL11.glRotatef(-player.xRotO + (player.xRot - player.xRotO) * delta, 1F, 0F, 0F);
+            GL11.glRotatef(player.yRotO + (player.yRot - player.yRotO) * delta + 180, 0F, 1F, 0F);
+        } else {
+            GL11.glRotatef(player.xRotO + (player.xRot - player.xRotO) * delta, 1F, 0F, 0F);
+            GL11.glRotatef(player.yRotO + (player.yRot - player.yRotO) * delta, 0F, 1F, 0F);
+        }
+        float cameraX = player.xo + (player.x - player.xo) * delta;
+        float cameraY = player.yo + (player.y - player.yo) * delta;
+        float cameraZ = player.zo + (player.z - player.zo) * delta;
+        GL11.glTranslatef(-cameraX, -cameraY, -cameraZ);
+    }
+
+    public void drawWeather(float delta, ShapeRenderer shapeRenderer) {
+        // set up OpenGL state for drawing weather
+        GL11.glDisable(GL11.GL_CULL_FACE);
+        GL11.glNormal3f(0F, 1F, 0F);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        float speed = 1F;
+        if (minecraft.isRaining) {
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load("/rain.png"));
+        } else if (minecraft.isSnowing) {
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load("/snow.png"));
+            speed = 0.2F;
+        }
+        int playerX = (int) minecraft.player.x;
+        int playerY = (int) minecraft.player.y;
+        int playerZ = (int) minecraft.player.z;
+        for (int x = playerX - 5; x <= playerX + 5; ++x) {
+            for (int z = playerZ - 5; z <= playerZ + 5; ++z) {
+                int var120 = minecraft.level.getHighestTile(x, z);
+                int var86 = playerY - 5;
+                int abovePlayerY = playerY + 5;
+                if (var86 < var120) {
+                    var86 = var120;
+                }
+
+                if (abovePlayerY < var120) {
+                    abovePlayerY = var120;
+                }
+
+                if (var86 != abovePlayerY) {
+                    float var74 = ((levelTicks + x * 3121 + z * 418711) % 32 + delta) / 32F * speed;
+                    float var124 = x + 0.5F - minecraft.player.x;
+                    float var35 = z + 0.5F - minecraft.player.z;
+                    float var92 = MathHelper.sqrt(var124 * var124 + var35 * var35) / 5;
+                    GL11.glColor4f(1F, 1F, 1F, (1F - var92 * var92) * 0.7F);
+                    shapeRenderer.begin();
+                    shapeRenderer.vertexUV(x, var86, z, 0F,
+                            var86 * 2F / 8F + var74 * 2F);
+                    shapeRenderer.vertexUV(x + 1, var86, z + 1,
+                            2F, var86 * 2F / 8F + var74 * 2F);
+                    shapeRenderer.vertexUV(x + 1, abovePlayerY, z + 1,
+                            2F, abovePlayerY * 2F / 8F + var74 * 2F);
+                    shapeRenderer.vertexUV(x, abovePlayerY, z,
+                            0F, abovePlayerY * 2F / 8F + var74 * 2F);
+                    shapeRenderer.vertexUV(x, var86, z + 1,
+                            0F, var86 * 2F / 8F + var74 * 2F);
+                    shapeRenderer.vertexUV(x + 1, var86, z,
+                            2F, var86 * 2F / 8F + var74 * 2F);
+                    shapeRenderer.vertexUV(x + 1, abovePlayerY, z,
+                            2F, abovePlayerY * 2F / 8F + var74 * 2F);
+                    shapeRenderer.vertexUV(x, abovePlayerY, z + 1,
+                            0F, abovePlayerY * 2F / 8F + var74 * 2F);
+                    shapeRenderer.end();
+                }
+            }
+        }
+
+        // Restore OpenGL state after drawing weather
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 }
