@@ -12,10 +12,7 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
@@ -24,8 +21,11 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -63,12 +63,12 @@ import com.mojang.minecraft.level.LevelSerializer;
 import com.mojang.minecraft.level.generator.LevelGenerator;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.level.tile.TextureSide;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.ModelManager;
 import com.mojang.minecraft.model.ModelPart;
 import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.NetworkPlayer;
+import com.mojang.minecraft.net.PacketHandler;
 import com.mojang.minecraft.net.PacketType;
 import com.mojang.minecraft.net.SkinDownloadThread;
 import com.mojang.minecraft.particle.Particle;
@@ -97,11 +97,8 @@ import com.mojang.util.MathHelper;
 import com.mojang.util.StreamingUtil;
 import com.mojang.util.Timer;
 import com.mojang.util.Vec3D;
-import com.oyasunadev.mcraft.client.util.Constants;
-import com.oyasunadev.mcraft.client.util.ExtData;
 
 public final class Minecraft implements Runnable {
-
     // mouse button index constants
     private static final int MB_LEFT = 0, MB_RIGHT = 1, MB_MIDDLE = 2;
     /**
@@ -224,6 +221,12 @@ public final class Minecraft implements Runnable {
      * Manages networking.
      */
     public NetworkManager networkManager;
+    
+    /**
+     * Reads and writes packets (via the network manager).
+     */
+    PacketHandler packetHandler = new PacketHandler(this);
+
     /**
      * Plays sounds.
      */
@@ -269,23 +272,20 @@ public final class Minecraft implements Runnable {
      * The applet of this game.
      */
     public MinecraftApplet applet;
-    public List<SelectionBoxData> selectionBoxes = new ArrayList<>();
+    public HashMap<Byte, SelectionBoxData> selectionBoxes = new HashMap<>();
     public List<HotKeyData> hotKeys = new ArrayList<>();
     public HackState hackState; // TODO Never used
     public List<PlayerListNameData> playerListNameData = new ArrayList<>();
-    public List<Block> disallowedPlacementBlocks = new ArrayList<>();
-    public List<Block> DisallowedBreakingBlocks = new ArrayList<>();
+    public HashSet<Block> disallowedPlacementBlocks = new HashSet<>();
+    public HashSet<Block> disallowedBreakingBlocks = new HashSet<>();
     public MonitoringThread monitoringThread;
     public int tempDisplayWidth;
     public int tempDisplayHeight;
     public boolean canRenderGUI = true;
     float cameraDistance = -0.1F; // TODO Never used
-    int receivedExtensionLength;
     boolean isShuttingDown = false;
-    boolean canSendHeldBlock = false;
-    boolean serverSupportsMessages = false;
     int[] inventoryCache;
-    boolean isLoadingMap = false;
+    public boolean isLoadingMap = false;
     /**
      * This timer determines how much time will pass between block modifications. It is used to
      * prevent really fast block spamming.
@@ -412,7 +412,7 @@ public final class Minecraft implements Runnable {
         return minecraftFolder;
     }
 
-    void downloadImage(URL url, File dest) {
+    public void downloadImage(URL url, File dest) {
         try {
             if (!doesUrlExistAndIsImage(url)) {
                 return;
@@ -555,7 +555,7 @@ public final class Minecraft implements Runnable {
             if (button == MB_LEFT) {
                 // on left-click: delete a block (if allowed)
                 if ((block != Block.BEDROCK || player.userType >= 100)
-                        && !DisallowedBreakingBlocks.contains(block)) {
+                        && !disallowedBreakingBlocks.contains(block)) {
                     gamemode.hitBlock(x, y, z);
                 }
                 return;
@@ -650,7 +650,7 @@ public final class Minecraft implements Runnable {
             System.setProperty("org.lwjgl.librarypath", mcDir + "/natives");
             System.setProperty("net.java.games.input.librarypath", mcDir + "/natives");
         }
-        
+
         LogUtil.logInfo("LWJGL version: " + Sys.getVersion());
 
         if (session == null) {
@@ -677,7 +677,7 @@ public final class Minecraft implements Runnable {
         } else {
             Display.setDisplayMode(new DisplayMode(width, height));
         }
-        
+
         Display.setResizable(true);
         Display.setTitle("ClassiCube");
 
@@ -691,7 +691,7 @@ public final class Minecraft implements Runnable {
             }
             Display.create();
         }
-        
+
         logSystemInfo();
 
         Keyboard.create();
@@ -751,13 +751,13 @@ public final class Minecraft implements Runnable {
             try {
                 if (!isLevelLoaded) {
                     // Try to load a previously-saved level
-                    Level level = new LevelLoader().load(new File(mcDir, "levelc.cw"), player);
-                    if (level != null) {
+                    Level newLevel = new LevelLoader().load(new File(mcDir, "levelc.cw"), player);
+                    if (newLevel != null) {
                         if (isSurvival()) {
-                            setLevel(level);
+                            setLevel(newLevel);
                         } else {
                             progressBar.setText("Loading saved map...");
-                            setLevel(level);
+                            setLevel(newLevel);
                             isSinglePlayer = true;
                         }
                     }
@@ -800,7 +800,7 @@ public final class Minecraft implements Runnable {
 
         checkGLError("Post startup");
         hud = new HUDScreen(this, width, height);
-        if(session != null){
+        if (session != null) {
             new SkinDownloadThread(player, session.username, skinServer).start();
         }
         if (server != null && session != null) {
@@ -860,9 +860,6 @@ public final class Minecraft implements Runnable {
     // Called by run() every frame. Handles timing and rendering. Calls tick().
     private void onFrame() {
         // For all your looping needs
-        int x;
-        int y;
-        int i;
         if (canvas == null && Display.isCloseRequested()) {
             isRunning = false;
         }
@@ -914,27 +911,26 @@ public final class Minecraft implements Runnable {
             if (!isOnline) {
                 gamemode.applyCracks(timer.delta);
                 if (renderer.displayActive && !Display.isActive()) {
-                    renderer.minecraft.pause();
+                    pause();
                 }
 
                 renderer.displayActive = Display.isActive();
                 int var86;
                 int var81;
-                if (renderer.minecraft.hasMouse) {
+                if (hasMouse) {
                     var81 = 0;
                     var86 = 0;
-                    if (renderer.minecraft.isLevelLoaded) {
-                        if (renderer.minecraft.canvas != null) {
-                            Point mouseLocation = renderer.minecraft.canvas.getLocationOnScreen();
-                            int mouseX = mouseLocation.x + renderer.minecraft.width / 2;
-                            int mouseY = mouseLocation.y + renderer.minecraft.height / 2;
+                    if (isLevelLoaded) {
+                        if (canvas != null) {
+                            Point mouseLocation = canvas.getLocationOnScreen();
+                            int mouseX = mouseLocation.x + width / 2;
+                            int mouseY = mouseLocation.y + height / 2;
                             Point var75 = MouseInfo.getPointerInfo().getLocation();
                             var81 = var75.x - mouseX;
                             var86 = -(var75.y - mouseY);
-                            renderer.minecraft.robot.mouseMove(mouseX, mouseY);
+                            robot.mouseMove(mouseX, mouseY);
                         } else {
-                            Mouse.setCursorPosition(renderer.minecraft.width / 2,
-                                    renderer.minecraft.height / 2);
+                            Mouse.setCursorPosition(width / 2, height / 2);
                         }
                     } else {
                         var81 = Mouse.getDX();
@@ -942,19 +938,19 @@ public final class Minecraft implements Runnable {
                     }
 
                     byte mouseDirection = 1;
-                    if (renderer.minecraft.settings.invertMouse) {
+                    if (settings.invertMouse) {
                         mouseDirection = -1;
                     }
 
-                    renderer.minecraft.player.turn(var81, var86 * mouseDirection);
+                    player.turn(var81, var86 * mouseDirection);
                 }
 
-                if (!renderer.minecraft.isOnline) {
-                    var81 = renderer.minecraft.width * 240 / renderer.minecraft.height;
-                    var86 = renderer.minecraft.height * 240 / renderer.minecraft.height;
-                    int mouseX = Mouse.getX() * var81 / renderer.minecraft.width;
-                    int mouseY = var86 - Mouse.getY() * var86 / renderer.minecraft.height - 1;
-                    if (renderer.minecraft.level != null && player != null) {
+                if (!isOnline) {
+                    var81 = width * 240 / height;
+                    var86 = height * 240 / height;
+                    int mouseX = Mouse.getX() * var81 / width;
+                    int mouseY = var86 - Mouse.getY() * var86 / height - 1;
+                    if (level != null && player != null) {
                         float delta = timer.delta;
                         float var29 = player.xRotO + (player.xRot - player.xRotO) * timer.delta;
                         float var30 = player.yRotO + (player.yRot - player.yRotO) * timer.delta;
@@ -965,13 +961,13 @@ public final class Minecraft implements Runnable {
                         float var33 = MathHelper.sin(-var29 * (float) (Math.PI / 180D));
                         float var34 = var69 * var74;
                         float var87 = var32 * var74;
-                        float reachDistance = renderer.minecraft.gamemode.getReachDistance();
+                        float reachDistance = gamemode.getReachDistance();
                         Vec3D vec3D = var31.add(var34 * reachDistance, var33 * reachDistance,
                                 var87 * reachDistance);
-                        renderer.minecraft.selected = renderer.minecraft.level.clip(var31, vec3D);
+                        selected = level.clip(var31, vec3D);
                         var74 = reachDistance;
-                        if (renderer.minecraft.selected != null) {
-                            var74 = renderer.minecraft.selected.vec.distance(
+                        if (selected != null) {
+                            var74 = selected.vec.distance(
                                     renderer.getPlayerVector(timer.delta));
                         }
 
@@ -985,14 +981,14 @@ public final class Minecraft implements Runnable {
                         vec3D = var31.add(var34 * reachDistance, var33 * reachDistance,
                                 var87 * reachDistance);
                         renderer.entity = null;
-                        List<Entity> var37 = renderer.minecraft.level.blockMap.getEntities(
+                        List<Entity> var37 = level.blockMap.getEntities(
                                 player,
                                 player.boundingBox.expand(var34 * reachDistance,
                                         var33 * reachDistance, var87 * reachDistance)
                         );
                         float var35 = 0F;
 
-                        for (i = 0; i < var37.size(); ++i) {
+                        for (int i = 0; i < var37.size(); ++i) {
                             Entity var88 = var37.get(i);
                             if (var88.isPickable()) {
                                 var74 = 0.1F;
@@ -1009,17 +1005,12 @@ public final class Minecraft implements Runnable {
                         }
 
                         if (renderer.entity != null && isSurvival()) {
-                            renderer.minecraft.selected = new MovingObjectPosition(renderer.entity);
+                            selected = new MovingObjectPosition(renderer.entity);
                         }
 
-                        Player player = renderer.minecraft.player;
-                        Level level = renderer.minecraft.level;
-                        LevelRenderer levelRenderer = renderer.minecraft.levelRenderer;
-                        ParticleManager particleManager = renderer.minecraft.particleManager;
-
-                        GL11.glViewport(0, 0, renderer.minecraft.width, renderer.minecraft.height);
+                        GL11.glViewport(0, 0, width, height);
                         float viewDistanceFactor = 1F - (float) (Math.pow(
-                                (1F / (4 - renderer.minecraft.settings.viewDistance)), 0.25D));
+                                (1F / (4 - settings.viewDistance)), 0.25D));
                         float skyColorRed = (level.skyColor >> 16 & 255) / 255F;
                         float skyColorBlue = (level.skyColor >> 8 & 255) / 255F;
                         float skyColorGreen = (level.skyColor & 255) / 255F;
@@ -1051,7 +1042,7 @@ public final class Minecraft implements Runnable {
                         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                         renderer.fogColorMultiplier = 1F;
                         GL11.glEnable(GL11.GL_CULL_FACE);
-                        renderer.fogEnd = 512 >> (renderer.minecraft.settings.viewDistance << 1);
+                        renderer.fogEnd = 512 >> (settings.viewDistance << 1);
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
                         GL11.glLoadIdentity();
                         var29 = 0.07F;
@@ -1062,18 +1053,16 @@ public final class Minecraft implements Runnable {
                             var69 /= (1F - 500F / (var74 + 500F)) * 2F + 1F;
                         }
 
-                        GLU.gluPerspective(var69, (float) renderer.minecraft.width
-                                / (float) renderer.minecraft.height, 0.05F, renderer.fogEnd);
+                        GLU.gluPerspective(var69, (float) width / (float) height, 0.05F, renderer.fogEnd);
                         GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glLoadIdentity();
 
                         renderer.hurtEffect(delta);
-                        renderer.applyBobbing(delta, renderer.minecraft.settings.viewBobbing);
+                        renderer.applyBobbing(delta, settings.viewBobbing);
 
                         float cameraDistance = -5.1F;
-                        if (renderer.minecraft.selected != null && settings.thirdPersonMode == 2) {
-                            cameraDistance = -(renderer.minecraft.selected.vec.distance(renderer
-                                    .getPlayerVector(timer.delta)) - 0.51F);
+                        if (selected != null && settings.thirdPersonMode == 2) {
+                            cameraDistance = -(selected.vec.distance(renderer.getPlayerVector(timer.delta)) - 0.51F);
                             if (cameraDistance < -5.1F) {
                                 cameraDistance = -5.1F;
                             }
@@ -1102,12 +1091,11 @@ public final class Minecraft implements Runnable {
                         GL11.glTranslatef(-var69, -var74, -var33);
                         Frustum frustum = FrustumImpl.getInstance();
 
-                        for (i = 0; i < levelRenderer.chunkCache.length; ++i) {
+                        for (int i = 0; i < levelRenderer.chunkCache.length; ++i) {
                             levelRenderer.chunkCache[i].clip(frustum);
                         }
 
-                        levelRenderer = renderer.minecraft.levelRenderer;
-                        Collections.sort(renderer.minecraft.levelRenderer.chunks,
+                        Collections.sort(levelRenderer.chunks,
                                 new ChunkDirtyDistanceComparator(player));
                         int var98 = levelRenderer.chunks.size() - 1;
                         int var105 = levelRenderer.chunks.size();
@@ -1115,7 +1103,7 @@ public final class Minecraft implements Runnable {
                             var105 = 4;
                         }
 
-                        for (i = 0; i < var105; ++i) {
+                        for (int i = 0; i < var105; ++i) {
                             Chunk chunkToUpdate = levelRenderer.chunks.remove(var98 - i);
                             chunkToUpdate.update();
                             chunkToUpdate.loaded = false;
@@ -1125,41 +1113,35 @@ public final class Minecraft implements Runnable {
                         GL11.glEnable(GL11.GL_FOG);
                         levelRenderer.sortChunks(player, 0);
                         int var83;
-                        int var110;
                         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
-                        int var114;
-                        int var125;
-                        int var122;
                         int var120;
                         if (level.isSolid(player.x, player.y, player.z, 0.1F)) {
-                            var120 = (int) player.x;
-                            var83 = (int) player.y;
-                            var110 = (int) player.z;
+                            int playerX = (int) player.x;
+                            int playerY = (int) player.y;
+                            int playerZ = (int) player.z;
 
-                            for (var122 = var120 - 1; var122 <= var120 + 1; ++var122) {
-                                for (var125 = var83 - 1; var125 <= var83 + 1; ++var125) {
-                                    for (int var38 = var110 - 1; var38 <= var110 + 1; ++var38) {
-                                        var105 = var38;
-                                        var98 = var125;
-                                        int var104 = levelRenderer.level.getTile(var122, var125, var38);
+                            for (int x = playerX - 1; x <= playerX + 1; ++x) {
+                                for (int y = playerY - 1; y <= playerY + 1; ++y) {
+                                    for (int z = playerZ - 1; z <= playerZ + 1; ++z) {
+                                        int var104 = levelRenderer.level.getTile(x, y, z);
                                         if (var104 != 0 && Block.blocks[var104].isSolid()) {
                                             GL11.glColor4f(0.2F, 0.2F, 0.2F, 1F);
                                             GL11.glDepthFunc(513);
 
                                             shapeRenderer.begin();
 
-                                            for (var114 = 0; var114 < 6; ++var114) {
+                                            for (int side = 0; side < 6; ++side) {
                                                 Block.blocks[var104].renderInside(shapeRenderer,
-                                                        var122, var98, var105, var114);
+                                                        x, y, z, side);
                                             }
 
                                             shapeRenderer.end();
                                             GL11.glCullFace(1028);
                                             shapeRenderer.begin();
 
-                                            for (var114 = 0; var114 < 6; ++var114) {
+                                            for (int side = 0; side < 6; ++side) {
                                                 Block.blocks[var104].renderInside(shapeRenderer,
-                                                        var122, var98, var105, var114);
+                                                        x, y, z, side);
                                             }
 
                                             shapeRenderer.end();
@@ -1184,19 +1166,19 @@ public final class Minecraft implements Runnable {
 
                         for (var83 = 0; var83 < 2; ++var83) {
                             if (!particleManager.particles[var83].isEmpty()) {
-                                var110 = 0;
+                                int textureId = 0;
                                 if (var83 == 0) {
-                                    var110 = particleManager.textureManager.load("/particles.png");
+                                    textureId = particleManager.textureManager.load("/particles.png");
                                 }
 
                                 if (var83 == 1) {
-                                    var110 = particleManager.textureManager.load("/terrain.png");
+                                    textureId = particleManager.textureManager.load("/terrain.png");
                                 }
 
-                                GL11.glBindTexture(GL11.GL_TEXTURE_2D, var110);
+                                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
                                 shapeRenderer.begin();
 
-                                for (i = 0; i < particleManager.particles[var83].size(); ++i) {
+                                for (int i = 0; i < particleManager.particles[var83].size(); ++i) {
                                     ((Particle) particleManager.particles[var83].get(i)).render(
                                             shapeRenderer, delta, var29, var69, var30, var117,
                                             var32);
@@ -1231,8 +1213,8 @@ public final class Minecraft implements Runnable {
                             shapeRenderer.begin();
                             shapeRenderer.color(cloudColorRed, cloudColorBlue, cloudColorGreen);
                             //shapeRenderer.color(0, 0, 0);
-                            for (x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
-                                for (y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
+                            for (int x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
+                                for (int y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
                                     shapeRenderer.vertexUV(x, cloudLevel, y + 512,
                                             x * unknownCloud + cloudTickOffset,
                                             (y + 512) * unknownCloud
@@ -1277,8 +1259,8 @@ public final class Minecraft implements Runnable {
                             levelHeight = (int) (player.y + 10);
                         }
 
-                        for (x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
-                            for (y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
+                        for (int x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
+                            for (int y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
                                 shapeRenderer.vertex(x, levelHeight, y);
                                 shapeRenderer.vertex(x + 512, levelHeight, y);
                                 shapeRenderer.vertex(x + 512, levelHeight, y + 512);
@@ -1289,10 +1271,10 @@ public final class Minecraft implements Runnable {
                         shapeRenderer.end();
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
                         renderer.updateFog();
-                        if (renderer.minecraft.selected != null) {
+                        if (selected != null) {
                             GL11.glDisable(GL11.GL_ALPHA_TEST);
                             var105 = player.inventory.getSelected();
-                            MovingObjectPosition var102 = renderer.minecraft.selected;
+                            MovingObjectPosition var102 = selected;
 
                             GL11.glEnable(GL11.GL_BLEND);
                             GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -1304,7 +1286,9 @@ public final class Minecraft implements Runnable {
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, levelRenderer.textureManager.load("/terrain.png"));
                                 GL11.glColor4f(1F, 1F, 1F, 0.5F);
                                 GL11.glPushMatrix();
-                                block = (var114 = levelRenderer.level.getTile(var102.x, var102.y, var102.z)) > 0 ? Block.blocks[var114] : null;
+
+                                int blockId = levelRenderer.level.getTile(var102.x, var102.y, var102.z);
+                                block = (blockId > 0 ? Block.blocks[blockId] : null);
                                 float blockXAverage = (block.maxX + block.minX) / 2F;
                                 float blockYAverage = (block.maxY + block.minY) / 2F;
                                 float blockZAverage = (block.maxZ + block.minZ) / 2F;
@@ -1317,9 +1301,9 @@ public final class Minecraft implements Runnable {
                                 shapeRenderer.noColor();
                                 GL11.glDepthMask(false);
                                 // Do the sides
-                                for (i = 0; i < 6; ++i) {
+                                for (int side = 0; side < 6; ++side) {
                                     block.renderSide(shapeRenderer, var102.x, var102.y, var102.z,
-                                            i, 240 + (int) (levelRenderer.cracks * 10F));
+                                            side, 240 + (int) (levelRenderer.cracks * 10F));
                                 }
 
                                 shapeRenderer.end();
@@ -1330,7 +1314,6 @@ public final class Minecraft implements Runnable {
                             GL11.glDisable(GL11.GL_BLEND);
                             GL11.glDisable(GL11.GL_ALPHA_TEST);
                             // TODO ???
-                            MovingObjectPosition selectedBlock = renderer.minecraft.selected;
                             player.inventory.getSelected();
                             GL11.glEnable(GL11.GL_BLEND);
                             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -1338,10 +1321,10 @@ public final class Minecraft implements Runnable {
                             GL11.glLineWidth(2F);
                             GL11.glDisable(GL11.GL_TEXTURE_2D);
                             GL11.glDepthMask(false);
-                            int var104 = levelRenderer.level.getTile(selectedBlock.x, selectedBlock.y, selectedBlock.z);
+                            int var104 = levelRenderer.level.getTile(selected.x, selected.y, selected.z);
                             if (var104 > 0) {
                                 AABB aabb = Block.blocks[var104].getSelectionBox(
-                                        selectedBlock.x, selectedBlock.y, selectedBlock.z).grow(
+                                        selected.x, selected.y, selected.z).grow(
                                                 0.002F, 0.002F, 0.002F);
                                 GL11.glBegin(GL11.GL_LINE_STRIP);
                                 GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.maxZ);
@@ -1392,10 +1375,12 @@ public final class Minecraft implements Runnable {
                         GL11.glDisable(GL11.GL_FOG);
                         // -------------------
 
-                        Collections.sort(selectionBoxes, new SelectionBoxDistanceComparator(this.player));
-                        for (i = 0; i < selectionBoxes.size(); i++) {
-                            CustomAABB bounds = selectionBoxes.get(i).bounds;
-                            ColorCache color = selectionBoxes.get(i).color;
+                        SelectionBoxData[] boxes = new SelectionBoxData[selectionBoxes.size()];
+                        boxes = selectionBoxes.values().toArray(boxes);
+                        Arrays.sort(boxes, new SelectionBoxDistanceComparator(this.player));
+                        for (int i = 0; i < boxes.length; i++) {
+                            CustomAABB bounds = boxes[i].bounds;
+                            ColorCache color = boxes[i].color;
                             GL11.glLineWidth(2);
 
                             GL11.glDisable(GL11.GL_BLEND);
@@ -1509,62 +1494,62 @@ public final class Minecraft implements Runnable {
                             // ------------------
                         }
 
-                        if (renderer.minecraft.isRaining || renderer.minecraft.isSnowing) {
+                        if (isRaining || isSnowing) {
                             float speed = 1F;
-                            int var104 = (int) this.player.x;
-                            int var108 = (int) this.player.y;
-                            var114 = (int) this.player.z;
+                            int playerX = (int) this.player.x;
+                            int playerY = (int) this.player.y;
+                            int playerZ = (int) this.player.z;
                             GL11.glDisable(GL11.GL_CULL_FACE);
                             GL11.glNormal3f(0F, 1F, 0F);
                             GL11.glEnable(GL11.GL_BLEND);
                             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                            if (renderer.minecraft.isRaining) {
+                            if (isRaining) {
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                        renderer.minecraft.textureManager.load("/rain.png"));
-                            } else if (renderer.minecraft.isSnowing) {
+                                        textureManager.load("/rain.png"));
+                            } else if (isSnowing) {
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                        renderer.minecraft.textureManager.load("/snow.png"));
+                                        textureManager.load("/snow.png"));
                                 speed = 0.2F;
                             }
 
-                            for (var110 = var104 - 5; var110 <= var104 + 5; ++var110) {
-                                for (var122 = var114 - 5; var122 <= var114 + 5; ++var122) {
-                                    var120 = level.getHighestTile(var110, var122);
-                                    var86 = var108 - 5;
-                                    var125 = var108 + 5;
+                            for (int x = playerX - 5; x <= playerX + 5; ++x) {
+                                for (int z = playerZ - 5; z <= playerZ + 5; ++z) {
+                                    var120 = level.getHighestTile(x, z);
+                                    var86 = playerY - 5;
+                                    int abovePlayerY = playerY + 5;
                                     if (var86 < var120) {
                                         var86 = var120;
                                     }
 
-                                    if (var125 < var120) {
-                                        var125 = var120;
+                                    if (abovePlayerY < var120) {
+                                        abovePlayerY = var120;
                                     }
 
-                                    if (var86 != var125) {
-                                        var74 = ((renderer.levelTicks + var110 * 3121 + var122 * 418711) % 32 + delta)
+                                    if (var86 != abovePlayerY) {
+                                        var74 = ((renderer.levelTicks + x * 3121 + z * 418711) % 32 + delta)
                                                 / 32F * speed;
-                                        float var124 = var110 + 0.5F - this.player.x;
-                                        var35 = var122 + 0.5F - this.player.z;
+                                        float var124 = x + 0.5F - this.player.x;
+                                        var35 = z + 0.5F - this.player.z;
                                         float var92 = MathHelper.sqrt(var124 * var124 + var35
                                                 * var35) / 5;
                                         GL11.glColor4f(1F, 1F, 1F, (1F - var92 * var92) * 0.7F);
                                         shapeRenderer.begin();
-                                        shapeRenderer.vertexUV(var110, var86, var122, 0F, var86
+                                        shapeRenderer.vertexUV(x, var86, z, 0F, var86
                                                 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110 + 1, var86, var122 + 1, 2F,
+                                        shapeRenderer.vertexUV(x + 1, var86, z + 1, 2F,
                                                 var86 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110 + 1, var125, var122 + 1, 2F,
-                                                var125 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110, var125, var122, 0F, var125
+                                        shapeRenderer.vertexUV(x + 1, abovePlayerY, z + 1, 2F,
+                                                abovePlayerY * 2F / 8F + var74 * 2F);
+                                        shapeRenderer.vertexUV(x, abovePlayerY, z, 0F, abovePlayerY
                                                 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110, var86, var122 + 1, 0F, var86
+                                        shapeRenderer.vertexUV(x, var86, z + 1, 0F, var86
                                                 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110 + 1, var86, var122, 2F, var86
+                                        shapeRenderer.vertexUV(x + 1, var86, z, 2F, var86
                                                 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110 + 1, var125, var122, 2F,
-                                                var125 * 2F / 8F + var74 * 2F);
-                                        shapeRenderer.vertexUV(var110, var125, var122 + 1, 0F,
-                                                var125 * 2F / 8F + var74 * 2F);
+                                        shapeRenderer.vertexUV(x + 1, abovePlayerY, z, 2F,
+                                                abovePlayerY * 2F / 8F + var74 * 2F);
+                                        shapeRenderer.vertexUV(x, abovePlayerY, z + 1, 0F,
+                                                abovePlayerY * 2F / 8F + var74 * 2F);
                                         shapeRenderer.end();
                                     }
                                 }
@@ -1582,12 +1567,12 @@ public final class Minecraft implements Runnable {
                                     NetworkPlayer np = (NetworkPlayer) networkManager.players
                                             .values().toArray()[n];
                                     if (np != null) {
-                                        np.renderHover(renderer.minecraft.textureManager);
+                                        np.renderHover(textureManager);
                                     }
                                 }
                             } else {
                                 if (renderer.entity != null) {
-                                    renderer.entity.renderHover(renderer.minecraft.textureManager);
+                                    renderer.entity.renderHover(textureManager);
                                 }
                             }
                         }
@@ -1596,7 +1581,7 @@ public final class Minecraft implements Runnable {
                         GL11.glLoadIdentity();
 
                         renderer.hurtEffect(delta);
-                        renderer.applyBobbing(delta, renderer.minecraft.settings.viewBobbing);
+                        renderer.applyBobbing(delta, settings.viewBobbing);
 
                         HeldBlock heldBlock = renderer.heldBlock;
                         var117 = renderer.heldBlock.lastPos + (heldBlock.pos - heldBlock.lastPos)
@@ -1662,10 +1647,10 @@ public final class Minecraft implements Runnable {
                         GL11.glPopMatrix();
                         heldBlock.minecraft.renderer.setLighting(false);
 
-                        renderer.minecraft.hud.render(timer.delta,
-                                renderer.minecraft.currentScreen != null, mouseX, mouseY);
+                        hud.render(timer.delta,
+                                currentScreen != null, mouseX, mouseY);
                     } else {
-                        GL11.glViewport(0, 0, renderer.minecraft.width, renderer.minecraft.height);
+                        GL11.glViewport(0, 0, width, renderer.minecraft.height);
                         GL11.glClearColor(0F, 0F, 0F, 0F);
                         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
@@ -1943,571 +1928,23 @@ public final class Minecraft implements Runnable {
                     texFX.textureId / 16 << 4, 16, 16, 6408, 5121, texManager.textureBuffer);
         }
 
-        int var4;
-        int var40;
-        int var46;
-        int var45;
         if (networkManager != null && !(currentScreen instanceof ErrorScreen)) {
             if (!networkManager.isConnected()) {
                 progressBar.setTitle("Connecting..");
                 progressBar.setProgress(0);
                 isLoadingMap = true;
             } else {
-                NetworkManager var20 = networkManager;
                 if (networkManager.successful) {
-                    if (var20.netHandler.connected) {
+                    if (networkManager.netHandler.connected) {
+                        NetworkHandler networkHandler = networkManager.netHandler;
                         try {
-                            NetworkHandler networkHandler = var20.netHandler;
-                            var20.netHandler.channel.read(networkHandler.in);
-                            var4 = 0;
-                            while (networkHandler.in.position() > 0 && var4++ != 100) {
-                                networkHandler.in.flip();
-                                byte id = networkHandler.in.get(0);
-                                PacketType packetType;
-                                if ((packetType = PacketType.packets[id]) == null) {
-                                    throw new IOException("Bad command: " + id);
-                                }
-                                if (networkHandler.in.remaining() < packetType.length + 1) {
-                                    networkHandler.in.compact();
+                            networkManager.netHandler.channel.read(networkHandler.in);
+                            for (int packetsReceived = 0;
+                                    packetsReceived < NetworkManager.MAX_PACKETS_PER_TICK && networkHandler.in.position() > 0;
+                                    packetsReceived++) {
+                                if (!packetHandler.handlePacket(networkHandler)) {
                                     break;
                                 }
-                                networkHandler.in.get();
-                                Object[] packetParams = new Object[packetType.params.length];
-
-                                for (i = 0; i < packetParams.length; ++i) {
-                                    packetParams[i] = networkHandler
-                                            .readObject(packetType.params[i]);
-                                }
-
-                                NetworkManager networkManager = networkHandler.netManager;
-                                if (networkHandler.netManager.successful) {
-                                    if (packetType == PacketType.EXT_INFO) {
-                                        String AppName = (String) packetParams[0];
-                                        short ExtensionCount = (Short) packetParams[1];
-                                        LogUtil.logInfo("Connecting to AppName: " + AppName
-                                                + " with extension count: " + ExtensionCount);
-                                        receivedExtensionLength = ExtensionCount;
-                                        Constants.SERVER_SUPPORTED_EXTENSIONS.clear();
-                                    } else if (packetType == PacketType.EXT_ENTRY) {
-                                        String ExtName = (String) packetParams[0];
-                                        Integer Version = (Integer) packetParams[1];
-                                        Constants.SERVER_SUPPORTED_EXTENSIONS.add(new ExtData(
-                                                ExtName, Version));
-
-                                        if (ExtName.toLowerCase().contains("heldblock")) {
-                                            canSendHeldBlock = true;
-                                        }
-                                        if (ExtName.toLowerCase().contains("messagetypes")) {
-                                            serverSupportsMessages = true;
-                                        }
-
-                                        if (receivedExtensionLength == Constants.SERVER_SUPPORTED_EXTENSIONS
-                                                .size()) {
-                                            LogUtil.logInfo("Sending client's supported Extensions");
-                                            List<ExtData> temp = new ArrayList<>();
-                                            for (int j = 0; j < PacketType.packets.length - 1; j++) {
-                                                if (PacketType.packets[j] != null
-                                                        && !PacketType.packets[j].extName.equals("")) {
-                                                    temp.add(new ExtData(
-                                                            PacketType.packets[j].extName,
-                                                            PacketType.packets[j].Version));
-                                                }
-                                            }
-                                            String AppName = "ClassiCube Client";
-                                            Object[] toSendParams = new Object[]{AppName,
-                                                (short) temp.size()};
-                                            networkManager.netHandler.send(PacketType.EXT_INFO, toSendParams);
-                                            for (ExtData aTemp : temp) {
-                                                LogUtil.logInfo("Sending ext: " + aTemp.Name
-                                                        + " with version: " + aTemp.Version);
-                                                toSendParams = new Object[]{aTemp.Name,
-                                                    aTemp.Version};
-                                                networkManager.netHandler.send(
-                                                        PacketType.EXT_ENTRY, toSendParams);
-                                            }
-                                        }
-                                    } else if (packetType == PacketType.SELECTION_CUBOID) {
-                                        byte ID = (Byte) packetParams[0];
-                                        String Name = (String) packetParams[1];
-                                        Short X1 = (Short) packetParams[2];
-                                        Short Y1 = (Short) packetParams[3];
-                                        Short Z1 = (Short) packetParams[4];
-                                        Short X2 = (Short) packetParams[5];
-                                        Short Y2 = (Short) packetParams[6];
-                                        Short Z2 = (Short) packetParams[7];
-                                        Short r = (Short) packetParams[8];
-                                        Short g = (Short) packetParams[9];
-                                        Short b = (Short) packetParams[10];
-                                        Short a = (Short) packetParams[11];
-
-                                        // LogUtil.logInfo(ID + " " + Name +
-                                        // " " + X1 + " " + Y1
-                                        // + " " + Z1 + " " + X2 + " " + Y2 +
-                                        // " " + Z2);
-                                        SelectionBoxData data = new SelectionBoxData(ID, Name,
-                                                new ColorCache(r / 255F, g / 255F, b / 255F, a / 255F),
-                                                new CustomAABB(X1, Y1, Z1, X2, Y2, Z2)
-                                        );
-                                        selectionBoxes.add(data);
-                                    } else if (packetType == PacketType.REMOVE_SELECTION_CUBOID) {
-                                        byte ID = (Byte) packetParams[0];
-                                        List<SelectionBoxData> cache = selectionBoxes;
-                                        for (int q = 0; q < selectionBoxes.size(); q++) {
-                                            if (selectionBoxes.get(q).id == ID) {
-                                                cache.remove(q);
-                                            }
-                                        }
-                                        selectionBoxes = cache;
-                                    } else if (packetType == PacketType.ENV_SET_COLOR) {
-                                        byte Variable = (Byte) packetParams[0];
-                                        Short r = (Short) packetParams[1];
-                                        Short g = (Short) packetParams[2];
-                                        Short b = (Short) packetParams[3];
-                                        int dec = (r & 0x0ff) << 16 | (g & 0x0ff) << 8 | b & 0x0ff;
-                                        switch (Variable) {
-                                            case 0: // sky
-                                                level.skyColor = dec;
-                                                break;
-                                            case 1: // cloud
-                                                level.cloudColor = dec;
-                                                break;
-                                            case 2: // fog
-                                                level.fogColor = dec;
-                                                break;
-                                            case 3: // ambient light
-                                                level.customShadowColour = new ColorCache(r / 255F,
-                                                        g / 255F, b / 255F);
-                                                levelRenderer.refresh();
-                                                break;
-                                            case 4: // diffuse color
-                                                level.customLightColour = new ColorCache(r / 255F,
-                                                        g / 255F, b / 255F);
-                                                levelRenderer.refresh();
-                                                break;
-                                        }
-                                    } else if (packetType == PacketType.ENV_SET_MAP_APPEARANCE) {
-                                        String textureUrl = (String) packetParams[0];
-                                        byte sideBlock = (Byte) packetParams[1];
-                                        byte edgeBlock = (Byte) packetParams[2];
-                                        short sideLevel = (Short) packetParams[3];
-
-                                        if (settings.canServerChangeTextures) {
-                                            if (sideBlock == -1) {
-                                                textureManager.customSideBlock = null;
-                                            } else if (sideBlock < Block.blocks.length) {
-                                                int ID = Block.blocks[sideBlock].textureId;
-                                                textureManager.customSideBlock = textureManager.textureAtlas
-                                                        .get(ID);
-                                            }
-                                            if (edgeBlock == -1) {
-                                                textureManager.customEdgeBlock = null;
-                                            } else if (edgeBlock < Block.blocks.length) {
-                                                Block block = Block.blocks[edgeBlock];
-                                                int ID = block.getTextureId(TextureSide.Top);
-                                                textureManager.customEdgeBlock = textureManager.textureAtlas
-                                                        .get(ID);
-                                            }
-                                            if (textureUrl.length() > 0) {
-                                                File path = new File(getMinecraftDirectory(),
-                                                        "/skins/terrain");
-                                                if (!path.exists()) {
-                                                    path.mkdirs();
-                                                }
-                                                String hash = getHash(textureUrl);
-                                                if (hash != null) {
-                                                    File file = new File(path, hash + ".png");
-                                                    BufferedImage image;
-                                                    if (!file.exists()) {
-                                                        downloadImage(new URL(textureUrl), file);
-                                                    }
-                                                    image = ImageIO.read(file);
-                                                    if (image.getWidth() % 16 == 0
-                                                            && image.getHeight() % 16 == 0) {
-                                                        textureManager.animations.clear();
-                                                        textureManager.currentTerrainPng = image;
-                                                    }
-                                                }
-                                            } else {
-                                                try {
-                                                    textureManager.currentTerrainPng = ImageIO
-                                                            .read(TextureManager.class
-                                                                    .getResourceAsStream("/terrain.png"));
-                                                } catch (IOException ex2) {
-                                                    LogUtil.logError(
-                                                            "Error reading default terrain texture.",
-                                                            ex2);
-                                                }
-                                            }
-                                            level.waterLevel = sideLevel;
-                                            levelRenderer.refresh();
-                                        }
-                                    } else if (packetType == PacketType.CLICK_DISTANCE) {
-                                        short Distance = (Short) packetParams[0];
-                                        gamemode.reachDistance = Distance / 32;
-                                    } else if (packetType == PacketType.HOLDTHIS) {
-                                        byte blockToHold = (Byte) packetParams[0];
-                                        byte preventChange = (Byte) packetParams[1];
-                                        boolean canPreventChange = preventChange > 0;
-
-                                        if (canPreventChange) {
-                                            GameSettings.CanReplaceSlot = false;
-                                        }
-
-                                        player.inventory.selected = 0;
-                                        player.inventory.replaceSlot(Block.blocks[blockToHold]);
-
-                                        if (!canPreventChange) {
-                                            GameSettings.CanReplaceSlot = true;
-                                        }
-                                    } else if (packetType == PacketType.SET_TEXT_HOTKEY) {
-                                        String Label = (String) packetParams[0];
-                                        String Action = (String) packetParams[1];
-                                        int keyCode = (Integer) packetParams[2];
-                                        byte KeyMods = (Byte) packetParams[3];
-                                        HotKeyData data = new HotKeyData(Label, Action, keyCode,
-                                                KeyMods);
-                                        hotKeys.add(data);
-
-                                    } else if (packetType == PacketType.EXT_ADD_PLAYER_NAME) {
-                                        Short NameId = (Short) packetParams[0];
-                                        String playerName = (String) packetParams[1];
-                                        String listName = (String) packetParams[2];
-                                        String groupName = (String) packetParams[3];
-                                        byte unusedRank = (Byte) packetParams[4];
-
-                                        int playerIndex = -1;
-
-                                        for (PlayerListNameData b : playerListNameData) {
-                                            if (b.nameID == NameId) { // --
-                                                // Already exists, update the
-                                                // entry.
-                                                playerIndex = playerListNameData.indexOf(b);
-                                                break;
-                                            }
-                                        }
-
-                                        if (playerIndex == -1) {
-                                            playerListNameData.add(new PlayerListNameData(NameId,
-                                                    playerName, listName, groupName, unusedRank));
-                                        } else {
-                                            playerListNameData.set(playerIndex,
-                                                    new PlayerListNameData(NameId, playerName,
-                                                            listName, groupName, unusedRank)
-                                            );
-                                        }
-
-                                        Collections.sort(playerListNameData,
-                                                new PlayerListComparator());
-                                    } else if (packetType == PacketType.EXT_ADD_ENTITY) {
-                                        byte playerID = (Byte) packetParams[0];
-                                        String skinName = (String) packetParams[2];
-
-                                        NetworkPlayer player = networkManager.players.get(playerID);
-                                        if (player != null) {
-                                            player.SkinName = skinName;
-                                            player.downloadSkin();
-                                        }
-                                    } else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
-                                        Short NameId = (Short) packetParams[0];
-                                        List<PlayerListNameData> cache = playerListNameData;
-                                        for (int q = 0; q < playerListNameData.size(); q++) {
-                                            if (playerListNameData.get(q).nameID == NameId) {
-                                                cache.remove(q);
-                                            }
-                                        }
-                                        playerListNameData = cache;
-                                    } else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
-                                        LogUtil.logInfo("Custom blocks packet received");
-                                        byte SupportLevel = (Byte) packetParams[0];
-                                        networkManager.netHandler.send(
-                                                PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
-                                                Constants.CUSTOM_BLOCK_SUPPORT_LEVEL);
-                                        SessionData.setAllowedBlocks(SupportLevel);
-                                    } else if (packetType == PacketType.SET_BLOCK_PERMISSIONS) {
-                                        byte BlockType = (Byte) packetParams[0];
-                                        byte AllowPlacement = (Byte) packetParams[1];
-                                        byte AllowDeletion = (Byte) packetParams[2];
-                                        Block block = Block.blocks[BlockType];
-                                        if (block == null) {
-                                            return;
-                                        }
-                                        if (AllowPlacement == 0) {
-                                            if (!disallowedPlacementBlocks.contains(block)) {
-                                                disallowedPlacementBlocks.add(block);
-                                                LogUtil.logInfo("DisallowingPlacement block: "
-                                                        + block);
-                                            }
-                                        } else {
-                                            if (disallowedPlacementBlocks.contains(block)) {
-                                                disallowedPlacementBlocks.remove(block);
-                                                LogUtil.logInfo("AllowingPlacement block: " + block);
-                                            }
-                                        }
-                                        if (AllowDeletion == 0) {
-                                            if (!DisallowedBreakingBlocks.contains(block)) {
-                                                DisallowedBreakingBlocks.add(block);
-                                                LogUtil.logInfo("DisallowingDeletion block: "
-                                                        + block);
-                                            }
-                                        } else {
-                                            if (DisallowedBreakingBlocks.contains(block)) {
-                                                DisallowedBreakingBlocks.remove(block);
-                                                LogUtil.logInfo("AllowingDeletion block: " + block);
-                                            }
-                                        }
-                                    } else if (packetType == PacketType.CHANGE_MODEL) {
-                                        byte PlayerID = (Byte) packetParams[0];
-                                        String ModelName = (String) packetParams[1];
-                                        if (PlayerID >= 0) {
-                                            NetworkPlayer netPlayer;
-                                            if ((netPlayer = networkManager.players.get(Byte
-                                                    .valueOf(PlayerID))) != null) {
-                                                ModelManager m = new ModelManager();
-                                                if (m.getModel(ModelName.toLowerCase()) == null) {
-                                                    netPlayer.modelName = "humanoid";
-                                                } else {
-                                                    netPlayer.modelName = ModelName.toLowerCase();
-                                                }
-                                                netPlayer.bindTexture(textureManager);
-                                            }
-                                        } else if (PlayerID == -1) {
-                                            Player thisPlayer = player;
-                                            ModelManager m = new ModelManager();
-                                            if (m.getModel(ModelName.toLowerCase()) == null) {
-                                                thisPlayer.modelName = "humanoid";
-                                            } else {
-                                                thisPlayer.modelName = ModelName.toLowerCase();
-                                            }
-                                            thisPlayer.bindTexture(textureManager);
-                                        }
-                                    } else if (packetType == PacketType.ENV_SET_WEATHER_TYPE) {
-                                        byte Weather = (Byte) packetParams[0];
-                                        if (Weather == 0) {
-                                            isRaining = false;
-                                            isSnowing = false;
-                                        } else if (Weather == 1) {
-                                            isRaining = !isRaining;
-                                            isSnowing = false;
-                                        } else if (Weather == 2) {
-                                            isSnowing = !isSnowing;
-                                            isRaining = false;
-                                        }
-                                    } else if (packetType == PacketType.IDENTIFICATION) {
-                                        networkManager.minecraft.progressBar.setTitle(packetParams[1].toString());
-                                        networkManager.minecraft.player.userType = (Byte) packetParams[3];
-                                        networkManager.minecraft.progressBar.setText(packetParams[2].toString());
-                                    } else if (packetType == PacketType.LEVEL_INIT) {
-									    selectionBoxes.clear();
-                                        networkManager.minecraft.setLevel(null);
-                                        networkManager.levelData = new ByteArrayOutputStream();
-                                    } else if (packetType == PacketType.LEVEL_DATA) {
-                                        short chunkLength = (Short) packetParams[0];
-                                        byte[] chunkData = (byte[]) packetParams[1];
-                                        byte percentComplete = (Byte) packetParams[2];
-                                        networkManager.minecraft.progressBar.setProgress(percentComplete);
-                                        isLoadingMap = false;
-                                        networkManager.levelData.write(chunkData, 0, chunkLength);
-                                    } else if (packetType == PacketType.LEVEL_FINALIZE) {
-                                        try {
-                                            networkManager.levelData.close();
-                                        } catch (IOException ex) {
-                                            LogUtil.logError("Error receiving level data.", ex);
-                                        }
-
-                                        byte[] decompressedStream = LevelLoader
-                                                .decompress(new ByteArrayInputStream(
-                                                                networkManager.levelData.toByteArray()));
-                                        networkManager.levelData = null;
-                                        short xSize = (Short) packetParams[0];
-                                        short ySize = (Short) packetParams[1];
-                                        short zSize = (Short) packetParams[2];
-                                        Level level = new Level();
-                                        level.setNetworkMode(true);
-                                        level.setData(xSize, ySize, zSize, decompressedStream);
-                                        networkManager.minecraft.setLevel(level);
-                                        networkManager.minecraft.isOnline = false;
-                                        networkManager.levelLoaded = true;
-                                        // ProgressBarDisplay.InitEnv(this);
-                                        // this.levelRenderer.refresh();
-                                    } else if (packetType == PacketType.BLOCK_CHANGE) {
-                                        if (networkManager.minecraft.level != null) {
-                                            networkManager.minecraft.level.netSetTile(
-                                                    (Short) packetParams[0],
-                                                    (Short) packetParams[1],
-                                                    (Short) packetParams[2],
-                                                    (Byte) packetParams[3]);
-                                        }
-                                    } else {
-                                        byte var9;
-                                        String var34;
-                                        NetworkPlayer var33;
-                                        short var36;
-                                        short var10004;
-                                        byte var10001;
-                                        short var47;
-                                        short var10003;
-                                        if (packetType == PacketType.SPAWN_PLAYER) {
-                                            var10001 = (Byte) packetParams[0];
-                                            String var10002 = (String) packetParams[1];
-                                            var10003 = (Short) packetParams[2];
-                                            var10004 = (Short) packetParams[3];
-                                            short var10005 = (Short) packetParams[4];
-                                            byte var10006 = (Byte) packetParams[5];
-                                            byte var58 = (Byte) packetParams[6];
-                                            var9 = var10006;
-                                            var47 = var10004;
-                                            var36 = var10003;
-                                            var34 = var10002;
-                                            byte var5 = var10001;
-                                            if (var5 >= 0) {
-                                                var9 = (byte) (var9 + 128);
-                                                var47 = (short) (var47 - 22);
-                                                var33 = new NetworkPlayer(networkManager.minecraft,
-                                                        var34, var36, var47, var10005,
-                                                        var58 * 360 / 256F, var9 * 360 / 256F);
-                                                networkManager.players.put(var5, var33);
-                                                networkManager.minecraft.level.addEntity(var33);
-                                            } else {
-                                                networkManager.minecraft.level.setSpawnPos(
-                                                        var36 / 32, var47 / 32, var10005 / 32,
-                                                        var9 * 320 / 256);
-                                                networkManager.minecraft.player.moveTo(var36 / 32F,
-                                                        var47 / 32F, var10005 / 32F,
-                                                        var9 * 360 / 256F, var58 * 360 / 256F);
-                                            }
-                                        } else {
-                                            byte var53;
-                                            NetworkPlayer networkPlayer;
-                                            byte var69;
-                                            if (packetType == PacketType.POSITION_ROTATION) {
-                                                var10001 = (Byte) packetParams[0];
-                                                short var66 = (Short) packetParams[1];
-                                                var10003 = (Short) packetParams[2];
-                                                var10004 = (Short) packetParams[3];
-                                                var69 = (Byte) packetParams[4];
-                                                var9 = (Byte) packetParams[5];
-                                                var53 = var69;
-                                                var47 = var10004;
-                                                var36 = var10003;
-                                                byte var5 = var10001;
-                                                if (var5 < 0) {
-                                                    networkManager.minecraft.player.moveTo(
-                                                            var66 / 32F, var36 / 32F, var47 / 32F,
-                                                            var53 * 360 / 256F, var9 * 360 / 256F);
-                                                } else {
-                                                    var53 = (byte) (var53 + 128);
-                                                    var36 = (short) (var36 - 22);
-                                                    if ((networkPlayer = networkManager.players
-                                                            .get(Byte.valueOf(var5))) != null) {
-                                                        networkPlayer.teleport(var66, var36, var47,
-                                                                var9 * 360 / 256F, var53 * 360 / 256F
-                                                        );
-                                                    }
-                                                }
-                                            } else {
-                                                byte var37;
-                                                byte var44;
-                                                byte var49;
-                                                byte var65;
-                                                byte var67;
-                                                if (packetType == PacketType.POSITION_ROTATION_UPDATE) {
-                                                    byte playerID = (Byte) packetParams[0];
-                                                    var37 = (Byte) packetParams[1];
-                                                    var44 = (Byte) packetParams[2];
-                                                    var49 = (Byte) packetParams[3];
-                                                    var53 = (Byte) packetParams[4];
-                                                    var9 = (Byte) packetParams[5];
-                                                    if (playerID >= 0) {
-                                                        var53 = (byte) (var53 + 128);
-                                                        NetworkPlayer networkPlayerInstance = networkManager.players.get(Byte.valueOf(playerID));
-                                                        if (networkPlayerInstance != null) {
-                                                            networkPlayerInstance.queue(var37, var44,
-                                                                    var49, var9 * 360 / 256F, var53 * 360 / 256F
-                                                            );
-                                                        }
-                                                    }
-                                                } else if (packetType == PacketType.ROTATION_UPDATE) {
-                                                    byte playerID = (Byte) packetParams[0];
-                                                    var37 = (Byte) packetParams[1];
-                                                    var44 = (Byte) packetParams[2];
-                                                    if (playerID >= 0) {
-                                                        var37 = (byte) (var37 + 128);
-                                                        NetworkPlayer networkPlayerInstance = networkManager.players.get(Byte.valueOf(playerID));
-                                                        if (networkPlayerInstance != null) {
-                                                            networkPlayerInstance.queue(var44 * 360 / 256F, var37 * 360 / 256F
-                                                            );
-                                                        }
-                                                    }
-                                                } else if (packetType == PacketType.POSITION_UPDATE) {
-                                                    byte playerID = (Byte) packetParams[0];
-                                                    NetworkPlayer networkPlayerInstance = networkManager.players.get(Byte.valueOf(playerID));
-                                                    if (playerID >= 0 && networkPlayerInstance != null) {
-                                                        networkPlayerInstance.queue((Byte) packetParams[1], (Byte) packetParams[2], (Byte) packetParams[3]);
-                                                    }
-                                                } else if (packetType == PacketType.DESPAWN_PLAYER) {
-                                                    byte playerID = (Byte) packetParams[0];
-                                                    var33 = networkManager.players.remove(Byte.valueOf(playerID));
-                                                    if (playerID >= 0 && var33 != null) {
-                                                        var33.clear();
-                                                        networkManager.minecraft.level.removeEntity(var33);
-                                                    }
-                                                } else if (packetType == PacketType.CHAT_MESSAGE) {
-                                                    byte messageType = (Byte) packetParams[0];
-                                                    String message = (String) packetParams[1];
-                                                    if (messageType < 0) {
-                                                        networkManager.minecraft.hud.addChat("&e" + message);
-                                                    } else if (messageType > 0 && serverSupportsMessages) {
-                                                        switch (messageType) {
-                                                            case 1:
-                                                                HUDScreen.ServerName = message;
-                                                                break;
-                                                            case 2:
-                                                                HUDScreen.Compass = message;
-                                                                break;
-                                                            case 3:
-                                                                HUDScreen.UserDetail = message;
-                                                                break;
-                                                            case 11:
-                                                                HUDScreen.BottomRight1 = message;
-                                                                break;
-                                                            case 12:
-                                                                HUDScreen.BottomRight2 = message;
-                                                                break;
-                                                            case 13:
-                                                                HUDScreen.BottomRight3 = message;
-                                                                break;
-                                                            case 21:
-                                                                break;
-                                                            case 100:
-                                                                HUDScreen.Announcement = message;
-                                                                break;
-                                                            default:
-                                                                networkManager.players.get(messageType);
-                                                                networkManager.minecraft.hud.addChat(message);
-                                                                break;
-                                                        }
-                                                    } else {
-                                                        networkManager.players.get(messageType);
-                                                        networkManager.minecraft.hud.addChat(message);
-                                                    }
-                                                } else if (packetType == PacketType.DISCONNECT) {
-                                                    networkManager.netHandler.close();
-                                                    networkManager.minecraft.setCurrentScreen(new ErrorScreen(
-                                                            "Connection lost",
-                                                            (String) packetParams[0]));
-                                                } else if (packetType == PacketType.UPDATE_PLAYER_TYPE) {
-                                                    networkManager.minecraft.player.userType = (Byte) packetParams[0];
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if (!networkHandler.connected) {
-                                    break;
-                                }
-
-                                networkHandler.in.compact();
                             }
 
                             if (networkHandler.out.position() > 0) {
@@ -2517,28 +1954,26 @@ public final class Minecraft implements Runnable {
                             }
                         } catch (Exception ex) {
                             LogUtil.logWarning("Error in network handling code.", ex);
-                            var20.minecraft.setCurrentScreen(new ErrorScreen("Disconnected!",
+                            setCurrentScreen(new ErrorScreen("Disconnected!",
                                     "You\'ve lost connection to the server"));
-                            var20.minecraft.isOnline = false;
-                            var20.netHandler.close();
-                            var20.minecraft.networkManager = null;
+                            isOnline = false;
+                            networkHandler.close();
+                            networkManager = null;
                         }
                     }
                 }
 
-                Player player = this.player;
-                var20 = networkManager;
                 if (networkManager.levelLoaded) {
-                    int var24 = (int) (player.x * 32F);
-                    var4 = (int) (player.y * 32F);
-                    var40 = (int) (player.z * 32F);
-                    var46 = (int) (player.yRot * 256F / 360F) & 255;
-                    var45 = (int) (player.xRot * 256F / 360F) & 255;
-                    var20.netHandler.send(
+                    int playerXUnits = (int) (player.x * 32F);
+                    int playerYUnits = (int) (player.y * 32F);
+                    int playerZUnits = (int) (player.z * 32F);
+                    int playerYRotation = (int) (player.yRot * 256F / 360F) & 255;
+                    int playerXRotation = (int) (player.xRot * 256F / 360F) & 255;
+                    networkManager.netHandler.send(
                             PacketType.POSITION_ROTATION,
-                            canSendHeldBlock ? player.inventory.getSelected() : -1, var24,
-                            var4, var40,
-                            var46, var45);
+                            packetHandler.canSendHeldBlock ? player.inventory.getSelected() : -1, playerXUnits,
+                            playerYUnits, playerZUnits,
+                            playerYRotation, playerXRotation);
                 }
             }
         }
@@ -2572,15 +2007,15 @@ public final class Minecraft implements Runnable {
                 }
             }
 
-            var4 = var41.minecraft.player.inventory.getSelected(); // TODO WTF?
-            Block var43 = null;
-            if (var4 > 0) {
-                var43 = Block.blocks[var4];
+            int heldBlockId = player.inventory.getSelected(); // TODO WTF?
+            Block heldBlock = null;
+            if (heldBlockId > 0) {
+                heldBlock = Block.blocks[heldBlockId];
             }
 
             float var48 = 0.4F;
-            float var50;
-            if ((var50 = (var43 == var41.block ? 1F : 0F) - var41.pos) < -var48) {
+            float var50 = (heldBlock == var41.block ? 1F : 0F) - var41.pos;
+            if (var50 < -var48) {
                 var50 = -var48;
             }
 
@@ -2590,25 +2025,24 @@ public final class Minecraft implements Runnable {
 
             var41.pos += var50;
             if (var41.pos < 0.1F) {
-                var41.block = var43;
+                var41.block = heldBlock;
             }
 
+            // Render rainfall
             if (renderer.minecraft.isRaining) {
-                Player var27 = renderer.minecraft.player;
-                Level var32 = renderer.minecraft.level;
-                var40 = (int) var27.x;
-                var46 = (int) var27.y;
-                var45 = (int) var27.z;
+                int playerX = (int) player.x;
+                int playerY = (int) player.y;
+                int playerZ = (int) player.z;
 
                 for (i = 0; i < 50; ++i) {
-                    int var60 = var40 + renderer.random.nextInt(9) - 4;
-                    int var52 = var45 + renderer.random.nextInt(9) - 4;
-                    int var57 = var32.getHighestTile(var60, var52);
-                    if (var57 <= var46 + 4 && var57 >= var46 - 4) {
-                        float var56 = renderer.random.nextFloat();
-                        float var62 = renderer.random.nextFloat();
-                        renderer.minecraft.particleManager.spawnParticle(new WaterDropParticle(
-                                var32, var60 + var56, var57 + 0.1F, var52 + var62));
+                    int var60 = playerX + renderer.random.nextInt(9) - 4;
+                    int var52 = playerZ + renderer.random.nextInt(9) - 4;
+                    int var57 = level.getHighestTile(var60, var52);
+                    if (var57 <= playerY + 4 && var57 >= playerY - 4) {
+                        float offsetX = renderer.random.nextFloat();
+                        float offsetZ = renderer.random.nextFloat();
+                        particleManager.spawnParticle(new WaterDropParticle(
+                                level, var60 + offsetX, var57 + 0.1F, var52 + offsetZ));
                     }
                 }
             }

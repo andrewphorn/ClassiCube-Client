@@ -9,10 +9,6 @@ import java.util.List;
 
 public class Constants {
     /**
-     * Just a reference to the MCraft version if needed.
-     */
-    public static final String MCRAFT_VERSION = "1.0";
-    /**
      * Just a reference to the Minecraft version if needed.
      */
     public static final String MINECRAFT_VERSION = "0.30";
@@ -38,7 +34,5 @@ public class Constants {
     public static final String USER_AGENT = "ClassiCube " + CLASSICUBE_VERSION + "(Minecraft "
             + MINECRAFT_VERSION + "; Protocol " + PROTOCOL_VERSION + ")";
 
-    public static final byte CUSTOM_BLOCK_SUPPORT_LEVEL = (byte) 1;
-
-    public static List<ExtData> SERVER_SUPPORTED_EXTENSIONS = new ArrayList<>();
+    public static final byte CUSTOM_BLOCK_SUPPORT_LEVEL = 1;
 }

@@ -2,13 +2,16 @@ package com.mojang.util;
 
 public final class MathHelper {
 
-    private static float[] SIN_TABLE = new float[65536];
+    private static final float[] SIN_TABLE = new float[65536];
 
     static {
         for (int i = 0; i < 65536; ++i) {
             SIN_TABLE[i] = (float) Math.sin(((double) i) * Math.PI * 2D / 65536D);
         }
+    }
 
+    public static int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
     }
 
     public static float cos(float theta) {
