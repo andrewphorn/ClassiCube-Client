@@ -214,9 +214,10 @@ public final class Minecraft implements Runnable {
      */
     public HUDScreen hud;
     /**
-     * True if the player is online.
+     * True if the player is connecting to a server,
+     * from the moment connection is established and until LEVEL_FINALIZE packet is received.
      */
-    public boolean isOnline;
+    public boolean isConnecting;
     /**
      * Manages networking.
      */
@@ -323,7 +324,7 @@ public final class Minecraft implements Runnable {
         punchingCooldown = 0;
         levelName = null;
         levelId = 0;
-        isOnline = false;
+        isConnecting = false;
         selected = null;
         server = null;
         port = 0;
@@ -907,7 +908,7 @@ public final class Minecraft implements Runnable {
             checkGLError("Pre render");
             GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-            if (!isOnline) {
+            if (!isConnecting) {
                 gamemode.applyCracks(timer.delta);
                 if (renderer.displayActive && !Display.isActive()) {
                     pause();
@@ -942,7 +943,7 @@ public final class Minecraft implements Runnable {
                     player.turn(mouseDX, mouseDY * mouseDirection);
                 }
 
-                if (!isOnline) {
+                if (!isConnecting) {
                     int var81 = width * 240 / height;
                     int var86 = height * 240 / height;
                     int mouseX = Mouse.getX() * var81 / width;
@@ -1095,6 +1096,7 @@ public final class Minecraft implements Runnable {
                         GL11.glEnable(GL11.GL_FOG);
                         levelRenderer.sortChunks(player, 0);
                         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
+                        // If player is inside a solid block (noclip?)
                         if (level.isSolid(player.x, player.y, player.z, 0.1F)) {
                             int playerX = (int) player.x;
                             int playerY = (int) player.y;
@@ -1606,6 +1608,7 @@ public final class Minecraft implements Runnable {
             currentScreen.onClose();
         }
 
+        // SURVIVAL: Game over
         if (newScreen == null && player.health <= 0) {
             newScreen = new GameOverScreen();
         }
@@ -1629,7 +1632,7 @@ public final class Minecraft implements Runnable {
             int var2 = width * 240 / height;
             int var3 = height * 240 / height;
             newScreen.open(this, var2, var3);
-            isOnline = false;
+            isConnecting = false;
             return;
         }
         grabMouse();
@@ -1877,7 +1880,7 @@ public final class Minecraft implements Runnable {
                             LogUtil.logWarning("Error in network handling code.", ex);
                             setCurrentScreen(new ErrorScreen("Disconnected!",
                                     "You\'ve lost connection to the server"));
-                            isOnline = false;
+                            isConnecting = false;
                             networkHandler.close();
                             networkManager = null;
                         }
@@ -1910,6 +1913,7 @@ public final class Minecraft implements Runnable {
             return;
         }
 
+        // SURVIVAL: Show game over screen
         if (currentScreen == null && player != null && player.health <= 0) {
             setCurrentScreen(null);
         }

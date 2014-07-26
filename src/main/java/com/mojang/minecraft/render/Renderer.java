@@ -201,44 +201,47 @@ public final class Renderer {
         int playerX = (int) minecraft.player.x;
         int playerY = (int) minecraft.player.y;
         int playerZ = (int) minecraft.player.z;
+        // Go through all tile columns within 5 blocks of the player
         for (int x = playerX - 5; x <= playerX + 5; ++x) {
             for (int z = playerZ - 5; z <= playerZ + 5; ++z) {
-                int var120 = minecraft.level.getHighestTile(x, z);
-                int var86 = playerY - 5;
-                int abovePlayerY = playerY + 5;
-                if (var86 < var120) {
-                    var86 = var120;
+                int groundLevel = minecraft.level.getHighestTile(x, z);
+                int lowestTile = playerY - 5;
+                int highestTile = playerY + 5;
+
+                if (lowestTile < groundLevel) {
+                    lowestTile = groundLevel;
+                }
+                if (highestTile < groundLevel) {
+                    highestTile = groundLevel;
+                }
+                if (lowestTile == highestTile) {
+                    // No weather needs to be drawn for this column
+                    continue;
                 }
 
-                if (abovePlayerY < var120) {
-                    abovePlayerY = var120;
-                }
-
-                if (var86 != abovePlayerY) {
-                    float var74 = ((levelTicks + x * 3121 + z * 418711) % 32 + delta) / 32F * speed;
-                    float var124 = x + 0.5F - minecraft.player.x;
-                    float var35 = z + 0.5F - minecraft.player.z;
-                    float var92 = MathHelper.sqrt(var124 * var124 + var35 * var35) / 5;
-                    GL11.glColor4f(1F, 1F, 1F, (1F - var92 * var92) * 0.7F);
-                    shapeRenderer.begin();
-                    shapeRenderer.vertexUV(x, var86, z, 0F,
-                            var86 * 2F / 8F + var74 * 2F);
-                    shapeRenderer.vertexUV(x + 1, var86, z + 1,
-                            2F, var86 * 2F / 8F + var74 * 2F);
-                    shapeRenderer.vertexUV(x + 1, abovePlayerY, z + 1,
-                            2F, abovePlayerY * 2F / 8F + var74 * 2F);
-                    shapeRenderer.vertexUV(x, abovePlayerY, z,
-                            0F, abovePlayerY * 2F / 8F + var74 * 2F);
-                    shapeRenderer.vertexUV(x, var86, z + 1,
-                            0F, var86 * 2F / 8F + var74 * 2F);
-                    shapeRenderer.vertexUV(x + 1, var86, z,
-                            2F, var86 * 2F / 8F + var74 * 2F);
-                    shapeRenderer.vertexUV(x + 1, abovePlayerY, z,
-                            2F, abovePlayerY * 2F / 8F + var74 * 2F);
-                    shapeRenderer.vertexUV(x, abovePlayerY, z + 1,
-                            0F, abovePlayerY * 2F / 8F + var74 * 2F);
-                    shapeRenderer.end();
-                }
+                float var74 = ((levelTicks + x * 3121 + z * 418711) % 32 + delta) / 32F * speed;
+                float var124 = x + 0.5F - minecraft.player.x;
+                float var35 = z + 0.5F - minecraft.player.z;
+                float var92 = MathHelper.sqrt(var124 * var124 + var35 * var35) / 5;
+                GL11.glColor4f(1F, 1F, 1F, (1F - var92 * var92) * 0.7F);
+                shapeRenderer.begin();
+                shapeRenderer.vertexUV(x, lowestTile, z, 0F,
+                        lowestTile * 2F / 8F + var74 * 2F);
+                shapeRenderer.vertexUV(x + 1, lowestTile, z + 1,
+                        2F, lowestTile * 2F / 8F + var74 * 2F);
+                shapeRenderer.vertexUV(x + 1, highestTile, z + 1,
+                        2F, highestTile * 2F / 8F + var74 * 2F);
+                shapeRenderer.vertexUV(x, highestTile, z,
+                        0F, highestTile * 2F / 8F + var74 * 2F);
+                shapeRenderer.vertexUV(x, lowestTile, z + 1,
+                        0F, lowestTile * 2F / 8F + var74 * 2F);
+                shapeRenderer.vertexUV(x + 1, lowestTile, z,
+                        2F, lowestTile * 2F / 8F + var74 * 2F);
+                shapeRenderer.vertexUV(x + 1, highestTile, z,
+                        2F, highestTile * 2F / 8F + var74 * 2F);
+                shapeRenderer.vertexUV(x, highestTile, z + 1,
+                        0F, highestTile * 2F / 8F + var74 * 2F);
+                shapeRenderer.end();
             }
         }
 

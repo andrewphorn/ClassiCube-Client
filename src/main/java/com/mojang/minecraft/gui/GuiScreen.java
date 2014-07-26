@@ -17,6 +17,7 @@ public class GuiScreen extends Screen {
     protected Minecraft minecraft;
     protected List<Button> buttons = new ArrayList<>();
     protected FontRenderer fontRenderer;
+    public boolean isOpaque = false;
 
     public final void clearButtons() {
         buttons.clear();
