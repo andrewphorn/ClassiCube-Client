@@ -230,7 +230,7 @@ public final class LevelRenderer {
         GL11.glEndList();
     }
 
-    public final void sortChunks(Player player, int renderPass) {
+    public final int sortChunks(Player player, int renderPass) {
         float distX = player.x - lastLoadX;
         float distY = player.y - lastLoadY;
         float distZ = player.z - lastLoadZ;
@@ -249,10 +249,13 @@ public final class LevelRenderer {
         buffer.clear();
         buffer.put(chunkDataCache, 0, count);
         buffer.flip();
+        
         if (buffer.remaining() > 0) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
             GL11.glCallLists(buffer);
         }
+        
+        return buffer.remaining();
     }
     
     public void drawSky(ShapeRenderer shapeRenderer, float playerY,

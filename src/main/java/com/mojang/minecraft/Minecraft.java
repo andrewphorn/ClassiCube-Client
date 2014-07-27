@@ -1239,21 +1239,27 @@ public final class Minecraft implements Runnable {
                             }
                         }
 
+                        // -------------------
                         // Render water (?)
-                        GL11.glCullFace(GL11.GL_BACK);//?
-                        GL11.glEnable(GL11.GL_CULL_FACE);//?
-                        GL11.glDepthMask(true);
                         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                         renderer.updateFog();
-                        
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
                         GL11.glEnable(GL11.GL_BLEND);
                         GL11.glBindTexture(GL11.GL_TEXTURE_2D,
                                 levelRenderer.textureManager.load("/water.png"));
                         GL11.glCallList(levelRenderer.listId + 1);
+                        GL11.glDisable(GL11.GL_BLEND);
                         GL11.glEnable(GL11.GL_BLEND);
-
-                        levelRenderer.sortChunks(player, 1);
+                        GL11.glColorMask(false, false, false, false);
+                        
+                        int chunksRemaining = levelRenderer.sortChunks(player, 1);
+                        GL11.glColorMask(true, true, true, true);
+                        
+                        if (chunksRemaining > 0) {
+                             GL11.glBindTexture(GL11.GL_TEXTURE_2D,
+                                     levelRenderer.textureManager.load("/terrain.png"));
+                             GL11.glCallLists(levelRenderer.buffer);
+                         }
 
                         GL11.glDepthMask(true);
                         GL11.glDisable(GL11.GL_BLEND);
@@ -1379,8 +1385,7 @@ public final class Minecraft implements Runnable {
                         GL11.glPopMatrix();
                         heldBlock.minecraft.renderer.setLighting(false);
 
-                        hud.render(timer.delta,
-                                currentScreen != null, mouseX, mouseY);
+                        hud.render(timer.delta, currentScreen != null, mouseX, mouseY);
                     } else {
                         GL11.glViewport(0, 0, width, renderer.minecraft.height);
                         GL11.glClearColor(0F, 0F, 0F, 0F);
