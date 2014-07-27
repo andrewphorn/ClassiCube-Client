@@ -425,7 +425,7 @@ public class PacketHandler {
                 newLevel.setNetworkMode(true);
                 newLevel.setData(xSize, ySize, zSize, decompressedStream);
                 networkManager.minecraft.setLevel(newLevel);
-                networkManager.minecraft.isOnline = false;
+                networkManager.minecraft.isConnecting = false;
                 networkManager.levelLoaded = true;
                 // ProgressBarDisplay.InitEnv(this);
                 // this.levelRenderer.refresh();

@@ -9,16 +9,14 @@ import com.mojang.minecraft.player.Player;
 public final class Chunk {
 
     public static int chunkUpdates = 0;
-    private static ShapeRenderer shapeRenderer = ShapeRenderer.instance;
+    protected static ShapeRenderer shapeRenderer = ShapeRenderer.instance;
     public boolean visible = false;
     public boolean loaded;
     private Level level;
     private int baseListId = -1;
-    private int x;
-    private int y;
-    private int z;
-    private int chunkSize;
-    private boolean[] dirty = new boolean[2];
+    private final int x, y, z;
+    private final int chunkSize;
+    private final boolean[] dirty = new boolean[2];
 
     public Chunk(Level var1, int x, int y, int z, int listID) {
         level = var1;

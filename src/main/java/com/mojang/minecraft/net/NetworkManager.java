@@ -26,7 +26,7 @@ public class NetworkManager {
     public HashMap<Byte, NetworkPlayer> players = new HashMap<>();
 
     public NetworkManager(Minecraft minecraft, String server, int port, String username, String key) {
-        minecraft.isOnline = true;
+        minecraft.isConnecting = true;
         this.minecraft = minecraft;
 
         new ServerConnectThread(this, server, port, username, key, minecraft).start();

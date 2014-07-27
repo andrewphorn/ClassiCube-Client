@@ -288,10 +288,10 @@ public final class HUDScreen extends Screen {
                     }
                 }
                 List<String> playersOnWorld = minecraft.networkManager.getPlayers();
-                GL11.glEnable(3042);
-                GL11.glDisable(3553);
-                GL11.glBlendFunc(770, 771);
-                GL11.glBegin(7);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GL11.glBegin(GL11.GL_QUADS);
                 GL11.glColor4f(0F, 0F, 0F, 0.7F);
                 GL11.glVertex2f(i + 132, var15 - 72 - 12);
                 GL11.glVertex2f(i - 132, var15 - 72 - 12);
@@ -299,8 +299,8 @@ public final class HUDScreen extends Screen {
                 GL11.glVertex2f(i - 132, var15 + 72);
                 GL11.glVertex2f(i + 132, var15 + 72);
                 GL11.glEnd();
-                GL11.glDisable(3042);
-                GL11.glEnable(3553);
+                GL11.glDisable(GL11.GL_BLEND);
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
                 boolean drawDefault = false;
                 List<PlayerListNameData> playerListNames = minecraft.playerListNameData;
                 if (playerListNames.isEmpty()) {

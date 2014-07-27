@@ -43,7 +43,7 @@ public final class NetworkHandler {
             LogUtil.logWarning("Error initializing network connection to " + ip + ":" + port, ex);
             minecraft.setCurrentScreen(new ErrorScreen("Failed to connect",
                     "You failed to connect to the server. It\'s probably down!"));
-            minecraft.isOnline = false;
+            minecraft.isConnecting = false;
 
             minecraft.networkManager = null;
             netManager.successful = false;
