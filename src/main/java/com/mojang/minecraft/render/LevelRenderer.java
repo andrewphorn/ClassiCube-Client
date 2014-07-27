@@ -254,4 +254,81 @@ public final class LevelRenderer {
             GL11.glCallLists(buffer);
         }
     }
+    
+    public void drawSky(ShapeRenderer shapeRenderer, float playerY,
+            float skyColorRed, float skyColorBlue, float skyColorGreen) {
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        shapeRenderer.begin();
+        shapeRenderer.color(skyColorRed, skyColorBlue, skyColorGreen);
+        int levelHeight = level.height + 10;
+        if (playerY > level.height) {
+            // If player is above the level boundary, move the sky upwards
+            levelHeight = (int) (playerY + 10);
+        }
+        
+        for (int x = -2048; x < level.width + 2048; x += 512) {
+            for (int y = -2048; y < level.length + 2048; y += 512) {
+                shapeRenderer.vertex(x, levelHeight, y);
+                shapeRenderer.vertex(x + 512, levelHeight, y);
+                shapeRenderer.vertex(x + 512, levelHeight, y + 512);
+                shapeRenderer.vertex(x, levelHeight, y + 512);
+            }
+        }
+        shapeRenderer.end();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+    }
+    
+    public void drawClouds(float delta, ShapeRenderer shapeRenderer) {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D,
+                textureManager.load("/clouds.png"));
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        float cloudColorRed = (level.cloudColor >> 16 & 255) / 255F;
+        float cloudColorBlue = (level.cloudColor >> 8 & 255) / 255F;
+        float cloudColorGreen = (level.cloudColor & 255) / 255F;
+        
+        if (level.cloudLevel < 0) {
+            level.cloudLevel = level.height + 2;
+        }
+        int cloudLevel = level.cloudLevel;
+        float unknownCloud = 1F / 2048F;
+        float cloudTickOffset = (ticks + delta) * unknownCloud * 0.03F;
+        shapeRenderer.begin();
+        shapeRenderer.color(cloudColorRed, cloudColorBlue, cloudColorGreen);
+        for (int x = -2048; x < level.width + 2048; x += 512) {
+            for (int y = -2048; y < level.length + 2048; y += 512) {
+                shapeRenderer.vertexUV(x, cloudLevel, y + 512,
+                        x * unknownCloud + cloudTickOffset,
+                        (y + 512) * unknownCloud
+                );
+                shapeRenderer.vertexUV(x + 512, cloudLevel, y + 512,
+                        (x + 512) * unknownCloud + cloudTickOffset,
+                        (y + 512) * unknownCloud
+                );
+                shapeRenderer.vertexUV(x + 512, cloudLevel, y,
+                        (x + 512) * unknownCloud + cloudTickOffset,
+                        y * unknownCloud
+                );
+                shapeRenderer.vertexUV(x, cloudLevel, y,
+                        x * unknownCloud + cloudTickOffset, y * unknownCloud
+                );
+                shapeRenderer.vertexUV(x, cloudLevel, y,
+                        x * unknownCloud + cloudTickOffset, y * unknownCloud
+                );
+                shapeRenderer.vertexUV(x + 512, cloudLevel, y,
+                        (x + 512) * unknownCloud + cloudTickOffset,
+                        y * unknownCloud
+                );
+                shapeRenderer.vertexUV(x + 512, cloudLevel, y + 512,
+                        (x + 512) * unknownCloud + cloudTickOffset,
+                        (y + 512) * unknownCloud
+                );
+                shapeRenderer.vertexUV(x, cloudLevel, y + 512,
+                        x * unknownCloud + cloudTickOffset,
+                        (y + 512) * unknownCloud
+                );
+            }
+        }
+        
+        shapeRenderer.end();
+    }
 }

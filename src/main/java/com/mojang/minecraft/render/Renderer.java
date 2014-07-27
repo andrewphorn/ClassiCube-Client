@@ -4,10 +4,13 @@ import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MovingObjectPosition;
+import com.mojang.minecraft.SelectionBoxData;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.physics.AABB;
+import com.mojang.minecraft.physics.CustomAABB;
 import com.mojang.minecraft.player.Player;
+import com.mojang.util.ColorCache;
 import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
 
@@ -73,12 +76,12 @@ public final class Renderer {
         GL11.glTranslatef(0F, 0F, -200F);
     }
 
-    public Vec3D getPlayerVector(float var1) {
+    public Vec3D getPlayerVector(float delta) {
         Player player = minecraft.player;
-        float var2 = player.xo + (player.x - player.xo) * var1;
-        float var3 = player.yo + (player.y - player.yo) * var1;
-        float var5 = player.zo + (player.z - player.zo) * var1;
-        return new Vec3D(var2, var3, var5);
+        float newX = player.xo + (player.x - player.xo) * delta;
+        float newY = player.yo + (player.y - player.yo) * delta;
+        float newZ = player.zo + (player.z - player.zo) * delta;
+        return new Vec3D(newX, newY, newZ);
     }
 
     public void hurtEffect(float var1) {
@@ -291,5 +294,103 @@ public final class Renderer {
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
+    }
+    
+    
+    public void drawSelectionCuboid(SelectionBoxData box, ShapeRenderer shapeRenderer) {
+        CustomAABB bounds = box.bounds;
+        ColorCache color = box.color;
+        GL11.glColor4f(color.R, color.G, color.B, color.A);
+
+        // Front Face
+        // Bottom Left
+        shapeRenderer.begin();
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
+        // Bottom Right
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
+        // Top Right
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
+        // Top Left
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+
+        // Back Face
+        // Bottom Right
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        // Top Right
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        // Top Left
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
+        // Bottom Left
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
+
+        // Top Face
+        // Top Left
+        // Bottom Left
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+        // Bottom Right
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
+        // Top Right
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
+
+        // Bottom Face
+        // Top Right
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        // Top Left
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
+        // Bottom Left
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
+        // Bottom Right
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
+
+        // Right face
+        // Bottom Right
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
+        // Top Right
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
+        // Top Left
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
+        // Bottom Left
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
+
+        // Left Face
+        // Bottom Left
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        // Bottom Right
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
+        // Top Right
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+        // Top Left
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        shapeRenderer.end();
+
+        GL11.glColor4f(color.R, color.G, color.B, color.A + 0.2F);
+
+        shapeRenderer.startDrawing(3);
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        shapeRenderer.end();
+
+        shapeRenderer.startDrawing(3);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        shapeRenderer.end();
+
+        shapeRenderer.startDrawing(1);
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
+        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
+        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
+        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
+        shapeRenderer.end();
     }
 }

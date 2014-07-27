@@ -954,51 +954,51 @@ public final class Minecraft implements Runnable {
 
                     if (level != null && player != null && guiIsTransparent) {
                         float delta = timer.delta;
-                        float var29 = player.xRotO + (player.xRot - player.xRotO) * timer.delta;
-                        float var30 = player.yRotO + (player.yRot - player.yRotO) * timer.delta;
-                        Vec3D var31 = renderer.getPlayerVector(timer.delta);
-                        float var32 = MathHelper.cos((float) ((double) -var30 * (Math.PI / 180D) - Math.PI));
-                        float var69 = MathHelper.sin((float) ((double) -var30 * (Math.PI / 180D) - Math.PI));
-                        float var74 = MathHelper.cos(-var29 * (float) (Math.PI / 180D));
-                        float var33 = MathHelper.sin(-var29 * (float) (Math.PI / 180D));
-                        float var34 = var69 * var74;
-                        float var87 = var32 * var74;
+                        float newXRot = player.xRotO + (player.xRot - player.xRotO) * delta;
+                        float newYRot = player.yRotO + (player.yRot - player.yRotO) * delta;
+                        Vec3D newPlayerVector = renderer.getPlayerVector(delta);
+                        float var32 = MathHelper.cos((float) ((double) -newYRot * (Math.PI / 180D) - Math.PI));
+                        float var69 = MathHelper.sin((float) ((double) -newYRot * (Math.PI / 180D) - Math.PI));
+                        float var174 = MathHelper.cos(-newXRot * (float) (Math.PI / 180D));
+                        float var33 = MathHelper.sin(-newXRot * (float) (Math.PI / 180D));
+                        float var34 = var69 * var174;
+                        float var87 = var32 * var174;
                         float reachDistance = gamemode.getReachDistance();
-                        Vec3D vec3D = var31.add(var34 * reachDistance, var33 * reachDistance,
+                        Vec3D vec3D = newPlayerVector.add(var34 * reachDistance, var33 * reachDistance,
                                 var87 * reachDistance);
-                        selected = level.clip(var31, vec3D);
-                        var74 = reachDistance;
+                        selected = level.clip(newPlayerVector, vec3D);
+                        float var74 = reachDistance;
                         if (selected != null) {
-                            var74 = selected.vec.distance(renderer.getPlayerVector(timer.delta));
+                            var74 = selected.vec.distance(renderer.getPlayerVector(delta));
                         }
 
-                        var31 = renderer.getPlayerVector(timer.delta);
+                        newPlayerVector = renderer.getPlayerVector(delta);
                         if (isSurvival()) {
                             reachDistance = var74;
                         } else {
                             reachDistance = 32F;
                         }
 
-                        vec3D = var31.add(var34 * reachDistance, var33 * reachDistance,
+                        vec3D = newPlayerVector.add(var34 * reachDistance, var33 * reachDistance,
                                 var87 * reachDistance);
 
+                        // SURVIVAL: find a nearby entity to pick up
                         renderer.entity = null;
                         List<Entity> nearbyEntities = level.blockMap.getEntities(
                                 player,
                                 player.boundingBox.expand(var34 * reachDistance,
                                         var33 * reachDistance, var87 * reachDistance)
                         );
-                        float var35 = 0F;
 
-                        // SURVIVAL: find a nearby entity to pick up
+                        float var35 = 0F;
                         for (Entity entity : nearbyEntities) {
                             if (entity.isPickable()) {
                                 var74 = 0.1F;
                                 MovingObjectPosition var78 = entity.boundingBox
                                         .grow(var74, var74, var74)
-                                        .clip(var31, vec3D);
+                                        .clip(newPlayerVector, vec3D);
                                 if (var78 != null) {
-                                    var74 = var31.distance(var78.vec);
+                                    var74 = newPlayerVector.distance(var78.vec);
                                     if (var74 < var35 || var35 == 0F) {
                                         renderer.entity = entity;
                                         var35 = var74;
@@ -1031,10 +1031,11 @@ public final class Minecraft implements Runnable {
                         renderer.fogGreen *= renderer.fogColorMultiplier;
 
                         // Adjust fog color if underwater or in lava
-                        Block block = Block.blocks[level.getTile((int) this.player.x,
-                                (int) (this.player.y + 0.12F), (int) this.player.z)];
-                        if (block != null && block.getLiquidType() != LiquidType.notLiquid) {
-                            LiquidType liquidType = block.getLiquidType();
+                        int blockTypeAroundHead = level.getTile((int) this.player.x,
+                                (int) (this.player.y + 0.12F), (int) this.player.z);
+                        Block blockAroundHead = Block.blocks[blockTypeAroundHead];
+                        if (blockAroundHead != null && blockAroundHead.getLiquidType() != LiquidType.notLiquid) {
+                            LiquidType liquidType = blockAroundHead.getLiquidType();
                             if (liquidType == LiquidType.water) {
                                 renderer.fogRed = 0.02F;
                                 renderer.fogBlue = 0.02F;
@@ -1056,7 +1057,6 @@ public final class Minecraft implements Runnable {
                         // Set up the perspective
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
                         GL11.glLoadIdentity();
-                        var29 = 0.07F;
 
                         // SURVIVAL: adjust FoV for dead players
                         float fovy = 70F;
@@ -1084,16 +1084,16 @@ public final class Minecraft implements Runnable {
                         Collections.sort(levelRenderer.chunksToUpdate,
                                 new ChunkDirtyDistanceComparator(player));
                         int var98 = levelRenderer.chunksToUpdate.size() - 1;
-                        int var105 = levelRenderer.chunksToUpdate.size();
+                        int chunkUpdates = levelRenderer.chunksToUpdate.size();
 
-                        if (var105 > Renderer.MAX_CHUNK_UPDATES_PER_FRAME) {
-                            var105 = Renderer.MAX_CHUNK_UPDATES_PER_FRAME;
+                        if (chunkUpdates > Renderer.MAX_CHUNK_UPDATES_PER_FRAME) {
+                            chunkUpdates = Renderer.MAX_CHUNK_UPDATES_PER_FRAME;
                         }
 
-                        for (int i = 0; i < var105; ++i) {
-                            Chunk chunkToUpdate = levelRenderer.chunksToUpdate.remove(var98 - i);
-                            chunkToUpdate.update();
-                            chunkToUpdate.loaded = false;
+                        for (int i = 0; i < chunkUpdates; ++i) {
+                            Chunk chunk = levelRenderer.chunksToUpdate.remove(var98 - i);
+                            chunk.update();
+                            chunk.loaded = false;
                         }
 
                         renderer.updateFog();
@@ -1144,10 +1144,10 @@ public final class Minecraft implements Runnable {
                         levelRenderer.level.blockMap.render(playerVector, frustum, levelRenderer.textureManager, delta);
                         renderer.setLighting(false);
                         renderer.updateFog();
-                        var29 = -MathHelper.cos(player.yRot * (float) Math.PI / 180F);
-                        float var117 = -(var30 = -MathHelper.sin(player.yRot * (float) Math.PI / 180F))
+                        float var123 = -MathHelper.cos(player.yRot * (float) Math.PI / 180F);
+                        float var117 = -(newYRot = -MathHelper.sin(player.yRot * (float) Math.PI / 180F))
                                 * MathHelper.sin(player.xRot * (float) Math.PI / 180F);
-                        var32 = var29 * MathHelper.sin(player.xRot * (float) Math.PI / 180F);
+                        var32 = var123 * MathHelper.sin(player.xRot * (float) Math.PI / 180F);
                         var69 = MathHelper.cos(player.xRot * (float) Math.PI / 180F);
 
                         for (int pass = 0; pass < 2; ++pass) {
@@ -1164,7 +1164,7 @@ public final class Minecraft implements Runnable {
 
                                 for (int i = 0; i < particleManager.particles[pass].size(); ++i) {
                                     ((Particle) particleManager.particles[pass].get(i)).render(
-                                            shapeRenderer, delta, var29, var69, var30, var117,
+                                            shapeRenderer, delta, var123, var69, newYRot, var117,
                                             var32);
                                 }
 
@@ -1178,84 +1178,14 @@ public final class Minecraft implements Runnable {
                         GL11.glCallList(levelRenderer.listId); // rock edges
                         renderer.updateFog();
 
-                        GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                levelRenderer.textureManager.load("/clouds.png"));
-                        GL11.glColor4f(1F, 1F, 1F, 1F);
-                        float cloudColorRed = (levelRenderer.level.cloudColor >> 16 & 255) / 255F;
-                        float cloudColorBlue = (levelRenderer.level.cloudColor >> 8 & 255) / 255F;
-                        float cloudColorGreen = (levelRenderer.level.cloudColor & 255) / 255F;
-
-                        if (level.cloudLevel < 0) {
-                            level.cloudLevel = levelRenderer.level.height + 2;
-                        }
-                        int cloudLevel = level.cloudLevel;
-
-                        float unknownCloud = 1F / 2048F;
-                        float cloudTickOffset = (levelRenderer.ticks + delta) * unknownCloud * 0.03F;
                         if (settings.showClouds) {
-                            shapeRenderer.begin();
-                            shapeRenderer.color(cloudColorRed, cloudColorBlue, cloudColorGreen);
-                            for (int x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
-                                for (int y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
-                                    shapeRenderer.vertexUV(x, cloudLevel, y + 512,
-                                            x * unknownCloud + cloudTickOffset,
-                                            (y + 512) * unknownCloud
-                                    );
-                                    shapeRenderer.vertexUV(x + 512, cloudLevel, y + 512,
-                                            (x + 512) * unknownCloud + cloudTickOffset,
-                                            (y + 512) * unknownCloud
-                                    );
-                                    shapeRenderer.vertexUV(x + 512, cloudLevel, y,
-                                            (x + 512) * unknownCloud + cloudTickOffset,
-                                            y * unknownCloud
-                                    );
-                                    shapeRenderer.vertexUV(x, cloudLevel, y,
-                                            x * unknownCloud + cloudTickOffset, y * unknownCloud
-                                    );
-                                    shapeRenderer.vertexUV(x, cloudLevel, y,
-                                            x * unknownCloud + cloudTickOffset, y * unknownCloud
-                                    );
-                                    shapeRenderer.vertexUV(x + 512, cloudLevel, y,
-                                            (x + 512) * unknownCloud + cloudTickOffset,
-                                            y * unknownCloud
-                                    );
-                                    shapeRenderer.vertexUV(x + 512, cloudLevel, y + 512,
-                                            (x + 512) * unknownCloud + cloudTickOffset,
-                                            (y + 512) * unknownCloud
-                                    );
-                                    shapeRenderer.vertexUV(x, cloudLevel, y + 512,
-                                            x * unknownCloud + cloudTickOffset,
-                                            (y + 512) * unknownCloud
-                                    );
-                                }
-                            }
-
-                            shapeRenderer.end();
+                            levelRenderer.drawClouds(delta, shapeRenderer);
                         }
-                        GL11.glDisable(GL11.GL_TEXTURE_2D);
+                        levelRenderer.drawSky(shapeRenderer, player.y, skyColorRed, skyColorBlue, skyColorGreen);
 
-                        shapeRenderer.begin();
-                        shapeRenderer.color(skyColorRed, skyColorBlue, skyColorGreen);
-                        int levelHeight = levelRenderer.level.height + 10;
-                        if (player.y > levelRenderer.level.height) {
-                            levelHeight = (int) (player.y + 10);
-                        }
-
-                        for (int x = -2048; x < levelRenderer.level.width + 2048; x += 512) {
-                            for (int y = -2048; y < levelRenderer.level.length + 2048; y += 512) {
-                                shapeRenderer.vertex(x, levelHeight, y);
-                                shapeRenderer.vertex(x + 512, levelHeight, y);
-                                shapeRenderer.vertex(x + 512, levelHeight, y + 512);
-                                shapeRenderer.vertex(x, levelHeight, y + 512);
-                            }
-                        }
-
-                        shapeRenderer.end();
-                        GL11.glEnable(GL11.GL_TEXTURE_2D);
                         renderer.updateFog();
                         if (selected != null) {
                             GL11.glDisable(GL11.GL_ALPHA_TEST);
-                            var105 = player.inventory.getSelected();
                             MovingObjectPosition var102 = selected;
 
                             GL11.glEnable(GL11.GL_BLEND);
@@ -1271,10 +1201,10 @@ public final class Minecraft implements Runnable {
                                 GL11.glPushMatrix();
 
                                 int blockId = levelRenderer.level.getTile(var102.x, var102.y, var102.z);
-                                block = (blockId > 0 ? Block.blocks[blockId] : null);
-                                float blockXAverage = (block.maxX + block.minX) / 2F;
-                                float blockYAverage = (block.maxY + block.minY) / 2F;
-                                float blockZAverage = (block.maxZ + block.minZ) / 2F;
+                                blockAroundHead = (blockId > 0 ? Block.blocks[blockId] : null);
+                                float blockXAverage = (blockAroundHead.maxX + blockAroundHead.minX) / 2F;
+                                float blockYAverage = (blockAroundHead.maxY + blockAroundHead.minY) / 2F;
+                                float blockZAverage = (blockAroundHead.maxZ + blockAroundHead.minZ) / 2F;
                                 GL11.glTranslatef(var102.x + blockXAverage,
                                         var102.y + blockYAverage, var102.z + blockZAverage);
                                 GL11.glScalef(1F, 1.01F, 1.01F);
@@ -1285,7 +1215,7 @@ public final class Minecraft implements Runnable {
                                 GL11.glDepthMask(false);
                                 // Do the sides
                                 for (int side = 0; side < 6; ++side) {
-                                    block.renderSide(shapeRenderer, var102.x, var102.y, var102.z,
+                                    blockAroundHead.renderSide(shapeRenderer, var102.x, var102.y, var102.z,
                                             side, 240 + (int) (levelRenderer.cracks * 10F));
                                 }
 
@@ -1309,13 +1239,17 @@ public final class Minecraft implements Runnable {
                             }
                         }
 
+                        // Render water (?)
+                        GL11.glCullFace(GL11.GL_BACK);//?
+                        GL11.glEnable(GL11.GL_CULL_FACE);//?
+                        GL11.glDepthMask(true);
                         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                         renderer.updateFog();
+                        
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
                         GL11.glEnable(GL11.GL_BLEND);
                         GL11.glBindTexture(GL11.GL_TEXTURE_2D,
                                 levelRenderer.textureManager.load("/water.png"));
-
                         GL11.glCallList(levelRenderer.listId + 1);
                         GL11.glEnable(GL11.GL_BLEND);
 
@@ -1341,7 +1275,7 @@ public final class Minecraft implements Runnable {
                             GL11.glDisable(GL11.GL_CULL_FACE);
 
                             for (SelectionBoxData box : boxes) {
-                                drawSelectionCuboid(box, shapeRenderer);
+                                renderer.drawSelectionCuboid(box, shapeRenderer);
                             }
 
                             // Restore OpenGL state
@@ -1360,19 +1294,18 @@ public final class Minecraft implements Runnable {
                         if (!isSinglePlayer && networkManager != null
                                 && networkManager.players != null
                                 && networkManager.players.size() > 0) {
+                            // Render other players' names
                             if ((settings.ShowNames == 2 || settings.ShowNames == 3)
                                     && this.player.userType >= 100) {
-                                for (int n = 0; n < networkManager.players.values().size(); n++) {
-                                    NetworkPlayer np = (NetworkPlayer) networkManager.players
-                                            .values().toArray()[n];
+                                NetworkPlayer[] netPlayers
+                                        = (NetworkPlayer[]) networkManager.players.values().toArray();
+                                for (NetworkPlayer np : netPlayers) {
                                     if (np != null) {
                                         np.renderHover(textureManager);
                                     }
                                 }
-                            } else {
-                                if (renderer.entity != null) {
-                                    renderer.entity.renderHover(textureManager);
-                                }
+                            } else if (renderer.entity != null) {
+                                renderer.entity.renderHover(textureManager);
                             }
                         }
 
@@ -1479,103 +1412,6 @@ public final class Minecraft implements Runnable {
         }
     }
 
-    private void drawSelectionCuboid(SelectionBoxData box, ShapeRenderer shapeRenderer) {
-        CustomAABB bounds = box.bounds;
-        ColorCache color = box.color;
-        GL11.glColor4f(color.R, color.G, color.B, color.A);
-
-        // Front Face
-        // Bottom Left
-        shapeRenderer.begin();
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
-        // Bottom Right
-        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
-        // Top Right
-        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
-        // Top Left
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
-
-        // Back Face
-        // Bottom Right
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-        // Top Right
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-        // Top Left
-        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
-        // Bottom Left
-        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
-
-        // Top Face
-        // Top Left
-        // Bottom Left
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
-        // Bottom Right
-        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
-        // Top Right
-        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
-
-        // Bottom Face
-        // Top Right
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-        // Top Left
-        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
-        // Bottom Left
-        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
-        // Bottom Right
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
-
-        // Right face
-        // Bottom Right
-        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
-        // Top Right
-        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
-        // Top Left
-        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
-        // Bottom Left
-        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
-
-        // Left Face
-        // Bottom Left
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-        // Bottom Right
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
-        // Top Right
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
-        // Top Left
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-        shapeRenderer.end();
-
-        GL11.glColor4f(color.R, color.G, color.B, color.A + 0.2F);
-
-        shapeRenderer.startDrawing(3);
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
-        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-        shapeRenderer.end();
-
-        shapeRenderer.startDrawing(3);
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
-        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-        shapeRenderer.end();
-
-        shapeRenderer.startDrawing(1);
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.maxZ);
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.maxZ);
-        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.maxZ);
-        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.maxZ);
-        shapeRenderer.vertex(bounds.minX, bounds.maxY, bounds.minZ);
-        shapeRenderer.vertex(bounds.minX, bounds.minY, bounds.minZ);
-        shapeRenderer.vertex(bounds.maxX, bounds.maxY, bounds.minZ);
-        shapeRenderer.vertex(bounds.maxX, bounds.minY, bounds.minZ);
-        shapeRenderer.end();
-    }
-
     public final void setCurrentScreen(GuiScreen newScreen) {
         if (currentScreen != null) {
             currentScreen.onClose();
@@ -1618,44 +1454,44 @@ public final class Minecraft implements Runnable {
         height = desktopMode.getHeight();
     }
 
-    public final void setLevel(Level theLevel) {
+    public final void setLevel(Level newLevel) {
         if (applet == null || !applet.getDocumentBase().getHost().equalsIgnoreCase("minecraft.net")
                 && !applet.getDocumentBase().getHost().equalsIgnoreCase("www.minecraft.net")
                 || !applet.getCodeBase().getHost().equalsIgnoreCase("minecraft.net")
                 && !applet.getCodeBase().getHost().equalsIgnoreCase("www.minecraft.net")) {
-            theLevel = null;
+            newLevel = null;
         }
 
-        level = theLevel;
+        level = newLevel;
         if (player != null && player.inventory != null) {
             inventoryCache = player.inventory.slots.clone();
         }
-        if (theLevel != null) {
-            theLevel.initTransient();
-            gamemode.apply(theLevel);
-            theLevel.font = fontRenderer;
-            theLevel.rendererContext = this;
+        if (newLevel != null) {
+            newLevel.initTransient();
+            gamemode.apply(newLevel);
+            newLevel.font = fontRenderer;
+            newLevel.rendererContext = this;
             if (!isOnline()) { // if not online (singleplayer)
-                player = (Player) theLevel.findSubclassOf(Player.class);
+                player = (Player) newLevel.findSubclassOf(Player.class);
                 if (player == null) {
-                    player = new Player(theLevel, settings);
+                    player = new Player(newLevel, settings);
                 }
                 player.settings = settings;
                 player.resetPos();
             } else if (player != null) { // if online
                 player.resetPos();
                 gamemode.preparePlayer(player);
-                theLevel.player = player;
-                theLevel.addEntity(player);
+                newLevel.player = player;
+                newLevel.addEntity(player);
             }
         }
 
         if (player == null) {
-            player = new Player(theLevel, settings);
+            player = new Player(newLevel, settings);
             player.resetPos();
             gamemode.preparePlayer(player);
-            if (theLevel != null) {
-                theLevel.player = player;
+            if (newLevel != null) {
+                newLevel.player = player;
             }
         }
 
@@ -1665,26 +1501,24 @@ public final class Minecraft implements Runnable {
         }
 
         if (levelRenderer != null) {
-            LevelRenderer var3 = levelRenderer;
             if (levelRenderer.level != null) {
-                var3.level.removeListener(var3);
+                levelRenderer.level.removeListener(levelRenderer);
             }
 
-            var3.level = theLevel;
-            if (theLevel != null) {
-                theLevel.addListener(var3);
-                var3.refresh();
+            levelRenderer.level = newLevel;
+            if (newLevel != null) {
+                newLevel.addListener(levelRenderer);
+                levelRenderer.refresh();
             }
         }
 
         if (particleManager != null) {
-            ParticleManager var5 = particleManager;
-            if (theLevel != null) {
-                theLevel.particleEngine = var5;
+            if (newLevel != null) {
+                newLevel.particleEngine = particleManager;
             }
 
-            for (int var4 = 0; var4 < 2; ++var4) {
-                var5.particles[var4].clear();
+            for (int pass = 0; pass < 2; ++pass) {
+                particleManager.particles[pass].clear();
             }
         }
 
