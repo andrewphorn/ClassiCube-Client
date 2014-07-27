@@ -110,7 +110,7 @@ public class PrimedTnt extends Entity {
         }
 
         GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, 1);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
         Block.TNT.renderPreview(shapeRenderer);
 

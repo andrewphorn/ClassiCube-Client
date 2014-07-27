@@ -1263,8 +1263,9 @@ public final class Minecraft implements Runnable {
                             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                             GL11.glColor4f(1F, 1F, 1F,
                                     (MathHelper.sin(System.currentTimeMillis() / 100F) * 0.2F + 0.4F) * 0.5F);
+                            // SURVIVAL: draw cracks on sides of the block being broken
                             if (levelRenderer.cracks > 0F) {
-                                GL11.glBlendFunc(774, 768);
+                                GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_SRC_COLOR);
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, levelRenderer.textureManager.load("/terrain.png"));
                                 GL11.glColor4f(1F, 1F, 1F, 0.5F);
                                 GL11.glPushMatrix();
@@ -1297,47 +1298,15 @@ public final class Minecraft implements Runnable {
                             GL11.glDisable(GL11.GL_ALPHA_TEST);
                             // TODO ???
                             player.inventory.getSelected();
-                            GL11.glEnable(GL11.GL_BLEND);
-                            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                            GL11.glColor4f(0F, 0F, 0F, 0.4F);
-                            GL11.glLineWidth(2F);
-                            GL11.glDisable(GL11.GL_TEXTURE_2D);
-                            GL11.glDepthMask(false);
-                            int var104 = levelRenderer.level.getTile(selected.x, selected.y, selected.z);
-                            if (var104 > 0) {
-                                AABB aabb = Block.blocks[var104].getSelectionBox(
-                                        selected.x, selected.y, selected.z).grow(
-                                                0.002F, 0.002F, 0.002F);
-                                GL11.glBegin(GL11.GL_LINE_STRIP);
-                                GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.maxZ);
-                                GL11.glVertex3f(aabb.minX, aabb.maxY, aabb.maxZ);
-                                GL11.glVertex3f(aabb.minX, aabb.maxY, aabb.minZ);
-                                GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.minZ);
-                                GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.maxZ);
-                                GL11.glEnd();
-                                GL11.glBegin(GL11.GL_LINE_STRIP);
-                                GL11.glVertex3f(aabb.maxX, aabb.minY, aabb.maxZ);
-                                GL11.glVertex3f(aabb.minX, aabb.minY, aabb.maxZ);
-                                GL11.glVertex3f(aabb.minX, aabb.minY, aabb.minZ);
-                                GL11.glVertex3f(aabb.maxX, aabb.minY, aabb.minZ);
-                                GL11.glVertex3f(aabb.maxX, aabb.minY, aabb.maxZ);
-                                GL11.glEnd();
-                                GL11.glBegin(GL11.GL_LINES);
-                                GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.maxZ);
-                                GL11.glVertex3f(aabb.maxX, aabb.minY, aabb.maxZ);
-                                GL11.glVertex3f(aabb.minX, aabb.maxY, aabb.maxZ);
-                                GL11.glVertex3f(aabb.minX, aabb.minY, aabb.maxZ);
-                                GL11.glVertex3f(aabb.minX, aabb.maxY, aabb.minZ);
-                                GL11.glVertex3f(aabb.minX, aabb.minY, aabb.minZ);
-                                GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.minZ);
-                                GL11.glVertex3f(aabb.maxX, aabb.minY, aabb.minZ);
-                                GL11.glEnd();
+                            int pointedBlockType = levelRenderer.level.getTile(selected.x, selected.y, selected.z);
+                            // If player is pointing at a block (anything other than air),
+                            // draw a wireframe box around it.
+                            if (pointedBlockType > 0) {
+                                AABB aabb = Block.blocks[pointedBlockType]
+                                        .getSelectionBox(selected.x, selected.y, selected.z)
+                                        .grow(0.002F, 0.002F, 0.002F);
+                                renderer.drawWireframeBox(aabb);
                             }
-
-                            GL11.glDepthMask(true);
-                            GL11.glEnable(GL11.GL_TEXTURE_2D);
-                            GL11.glDisable(GL11.GL_BLEND);
-                            GL11.glEnable(GL11.GL_ALPHA_TEST);
                         }
 
                         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -1509,6 +1478,8 @@ public final class Minecraft implements Runnable {
             setCurrentScreen(new ErrorScreen("Client error", "The game broke! [" + ex + "]"));
         }
     }
+
+
 
     private void drawSelectionCuboid(SelectionBoxData box, ShapeRenderer shapeRenderer) {
         CustomAABB bounds = box.bounds;

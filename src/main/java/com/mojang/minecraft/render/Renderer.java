@@ -6,6 +6,7 @@ import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.player.Player;
 import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
@@ -251,5 +252,44 @@ public final class Renderer {
         // Restore OpenGL state after drawing weather
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glDisable(GL11.GL_BLEND);
+    }
+    
+    public void drawWireframeBox(AABB aabb) {
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glColor4f(0F, 0F, 0F, 0.4F);
+        GL11.glLineWidth(2F);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDepthMask(false);
+        
+        GL11.glBegin(GL11.GL_LINE_STRIP);
+        GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.maxZ);
+        GL11.glVertex3f(aabb.minX, aabb.maxY, aabb.maxZ);
+        GL11.glVertex3f(aabb.minX, aabb.maxY, aabb.minZ);
+        GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.minZ);
+        GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.maxZ);
+        GL11.glEnd();
+        GL11.glBegin(GL11.GL_LINE_STRIP);
+        GL11.glVertex3f(aabb.maxX, aabb.minY, aabb.maxZ);
+        GL11.glVertex3f(aabb.minX, aabb.minY, aabb.maxZ);
+        GL11.glVertex3f(aabb.minX, aabb.minY, aabb.minZ);
+        GL11.glVertex3f(aabb.maxX, aabb.minY, aabb.minZ);
+        GL11.glVertex3f(aabb.maxX, aabb.minY, aabb.maxZ);
+        GL11.glEnd();
+        GL11.glBegin(GL11.GL_LINES);
+        GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.maxZ);
+        GL11.glVertex3f(aabb.maxX, aabb.minY, aabb.maxZ);
+        GL11.glVertex3f(aabb.minX, aabb.maxY, aabb.maxZ);
+        GL11.glVertex3f(aabb.minX, aabb.minY, aabb.maxZ);
+        GL11.glVertex3f(aabb.minX, aabb.maxY, aabb.minZ);
+        GL11.glVertex3f(aabb.minX, aabb.minY, aabb.minZ);
+        GL11.glVertex3f(aabb.maxX, aabb.maxY, aabb.minZ);
+        GL11.glVertex3f(aabb.maxX, aabb.minY, aabb.minZ);
+        GL11.glEnd();
+        
+        GL11.glDepthMask(true);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
     }
 }
