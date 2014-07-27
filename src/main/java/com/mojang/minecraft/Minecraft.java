@@ -99,6 +99,7 @@ import com.mojang.util.Timer;
 import com.mojang.util.Vec3D;
 
 public final class Minecraft implements Runnable {
+
     // mouse button index constants
     private static final int MB_LEFT = 0, MB_RIGHT = 1, MB_MIDDLE = 2;
     /**
@@ -214,8 +215,8 @@ public final class Minecraft implements Runnable {
      */
     public HUDScreen hud;
     /**
-     * True if the player is connecting to a server,
-     * from the moment connection is established and until LEVEL_FINALIZE packet is received.
+     * True if the player is connecting to a server, from the moment connection is established and
+     * until LEVEL_FINALIZE packet is received.
      */
     public boolean isConnecting;
     /**
@@ -283,7 +284,6 @@ public final class Minecraft implements Runnable {
     public int tempDisplayWidth;
     public int tempDisplayHeight;
     public boolean canRenderGUI = true;
-    float cameraDistance = -0.1F; // TODO Never used
     boolean isShuttingDown = false;
     int[] inventoryCache;
     public boolean isLoadingMap = false;
@@ -943,15 +943,15 @@ public final class Minecraft implements Runnable {
                     player.turn(mouseDX, mouseDY * mouseDirection);
                 }
 
-                if (!isConnecting ) {
+                if (!isConnecting) {
                     int var81 = width * 240 / height;
                     int var86 = height * 240 / height;
                     int mouseX = Mouse.getX() * var81 / width;
                     int mouseY = var86 - Mouse.getY() * var86 / height - 1;
-                    
+
                     // Don't render the world while a disconnect or error screen is showing.
-                    boolean guiIsTransparent = (currentScreen==null || !currentScreen.isOpaque);
-                    
+                    boolean guiIsTransparent = (currentScreen == null || !currentScreen.isOpaque);
+
                     if (level != null && player != null && guiIsTransparent) {
                         float delta = timer.delta;
                         float var29 = player.xRotO + (player.xRot - player.xRotO) * timer.delta;
@@ -981,7 +981,7 @@ public final class Minecraft implements Runnable {
 
                         vec3D = var31.add(var34 * reachDistance, var33 * reachDistance,
                                 var87 * reachDistance);
-                        
+
                         renderer.entity = null;
                         List<Entity> nearbyEntities = level.blockMap.getEntities(
                                 player,
@@ -1013,10 +1013,10 @@ public final class Minecraft implements Runnable {
                         }
 
                         GL11.glViewport(0, 0, width, height);
-                        
+
                         // Set view distance, sky color, and fog color
-                        float viewDistanceFactor =
-                                1F - (float) Math.pow(1F / (4 - settings.viewDistance), 0.25D);
+                        float viewDistanceFactor
+                                = 1F - (float) Math.pow(1F / (4 - settings.viewDistance), 0.25D);
                         float skyColorRed = (level.skyColor >> 16 & 255) / 255F;
                         float skyColorBlue = (level.skyColor >> 8 & 255) / 255F;
                         float skyColorGreen = (level.skyColor & 255) / 255F;
@@ -1029,7 +1029,7 @@ public final class Minecraft implements Runnable {
                         renderer.fogRed *= renderer.fogColorMultiplier;
                         renderer.fogBlue *= renderer.fogColorMultiplier;
                         renderer.fogGreen *= renderer.fogColorMultiplier;
-                        
+
                         // Adjust fog color if underwater or in lava
                         Block block = Block.blocks[level.getTile((int) this.player.x,
                                 (int) (this.player.y + 0.12F), (int) this.player.z)];
@@ -1052,12 +1052,12 @@ public final class Minecraft implements Runnable {
                         renderer.fogColorMultiplier = 1F;
                         GL11.glEnable(GL11.GL_CULL_FACE);
                         renderer.fogEnd = 512 >> (settings.viewDistance << 1);
-                        
+
                         // Set up the perspective
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
                         GL11.glLoadIdentity();
                         var29 = 0.07F;
-                        
+
                         // SURVIVAL: adjust FoV for dead players
                         float fovy = 70F;
                         if (player.health <= 0) {
@@ -1066,15 +1066,15 @@ public final class Minecraft implements Runnable {
                         }
                         // TODO: adjustable FoV
                         GLU.gluPerspective(fovy, (float) width / (float) height, 0.05F, renderer.fogEnd);
-                        
+
                         GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glLoadIdentity();
 
                         // SURVIVAL: hurt effect
                         renderer.hurtEffect(delta);
-                        
+
                         renderer.setCamera(delta, selected);
-                        
+
                         Frustum frustum = FrustumImpl.getInstance();
                         // Check visibility of chunks
                         for (int i = 0; i < levelRenderer.chunkCache.length; ++i) {
@@ -1085,7 +1085,7 @@ public final class Minecraft implements Runnable {
                                 new ChunkDirtyDistanceComparator(player));
                         int var98 = levelRenderer.chunksToUpdate.size() - 1;
                         int var105 = levelRenderer.chunksToUpdate.size();
-                        
+
                         if (var105 > Renderer.MAX_CHUNK_UPDATES_PER_FRAME) {
                             var105 = Renderer.MAX_CHUNK_UPDATES_PER_FRAME;
                         }
@@ -1479,8 +1479,6 @@ public final class Minecraft implements Runnable {
         }
     }
 
-
-
     private void drawSelectionCuboid(SelectionBoxData box, ShapeRenderer shapeRenderer) {
         CustomAABB bounds = box.bounds;
         ColorCache color = box.color;
@@ -1801,11 +1799,9 @@ public final class Minecraft implements Runnable {
         }
 
         gamemode.spawnMob();
-        int i;
         if (canRenderGUI) {
             ++this.hud.ticks;
-
-            for (i = 0; i < this.hud.chat.size(); ++i) {
+            for (int i = 0; i < this.hud.chat.size(); ++i) {
                 ++this.hud.chat.get(i).time;
             }
         }
@@ -1813,7 +1809,8 @@ public final class Minecraft implements Runnable {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
         TextureManager texManager = textureManager;
 
-        for (i = 0; i < texManager.animations.size(); ++i) {
+        for (int i = 0; i < texManager.animations.size(); ++i) {
+            // Animate textures, like lava and water
             TextureFX texFX = texManager.animations.get(i);
             texFX.animate();
             if (texManager.textureBuffer.capacity() != texFX.textureData.length) {
@@ -1824,7 +1821,8 @@ public final class Minecraft implements Runnable {
             texManager.textureBuffer.put(texFX.textureData);
             texManager.textureBuffer.position(0).limit(texFX.textureData.length);
             GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, texFX.textureId % 16 << 4,
-                    texFX.textureId / 16 << 4, 16, 16, 6408, 5121, texManager.textureBuffer);
+                    texFX.textureId / 16 << 4, 16, 16,
+                    GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, texManager.textureBuffer);
         }
 
         if (networkManager != null && !(currentScreen instanceof ErrorScreen)) {
@@ -1833,36 +1831,37 @@ public final class Minecraft implements Runnable {
                 progressBar.setProgress(0);
                 isLoadingMap = true;
             } else {
-                if (networkManager.successful) {
-                    if (networkManager.netHandler.connected) {
-                        NetworkHandler networkHandler = networkManager.netHandler;
-                        try {
-                            networkManager.netHandler.channel.read(networkHandler.in);
-                            for (int packetsReceived = 0;
-                                    packetsReceived < NetworkManager.MAX_PACKETS_PER_TICK && networkHandler.in.position() > 0;
-                                    packetsReceived++) {
-                                if (!packetHandler.handlePacket(networkHandler)) {
-                                    break;
-                                }
+                if (networkManager.successful && networkManager.netHandler.connected) {
+                    // Do network communication
+                    NetworkHandler networkHandler = networkManager.netHandler;
+                    try {
+                        networkManager.netHandler.channel.read(networkHandler.in);
+                        for (int packetsReceived = 0;
+                                packetsReceived < NetworkManager.MAX_PACKETS_PER_TICK
+                                && networkHandler.in.position() > 0;
+                                packetsReceived++) {
+                            if (!packetHandler.handlePacket(networkHandler)) {
+                                break;
                             }
-
-                            if (networkHandler.out.position() > 0) {
-                                networkHandler.out.flip();
-                                networkHandler.channel.write(networkHandler.out);
-                                networkHandler.out.compact();
-                            }
-                        } catch (Exception ex) {
-                            LogUtil.logWarning("Error in network handling code.", ex);
-                            setCurrentScreen(new ErrorScreen("Disconnected!",
-                                    "You\'ve lost connection to the server"));
-                            isConnecting = false;
-                            networkHandler.close();
-                            networkManager = null;
                         }
+
+                        if (networkHandler.out.position() > 0) {
+                            networkHandler.out.flip();
+                            networkHandler.channel.write(networkHandler.out);
+                            networkHandler.out.compact();
+                        }
+                    } catch (Exception ex) {
+                        LogUtil.logWarning("Error in network handling code.", ex);
+                        setCurrentScreen(new ErrorScreen("Disconnected!",
+                                "You\'ve lost connection to the server"));
+                        isConnecting = false;
+                        networkHandler.close();
+                        networkManager = null;
                     }
                 }
 
                 if (networkManager.levelLoaded) {
+                    // Send player position to the server
                     int playerXUnits = (int) (player.x * 32F);
                     int playerYUnits = (int) (player.y * 32F);
                     int playerZUnits = (int) (player.z * 32F);
@@ -1870,14 +1869,15 @@ public final class Minecraft implements Runnable {
                     int playerXRotation = (int) (player.xRot * 256F / 360F) & 255;
                     networkManager.netHandler.send(
                             PacketType.POSITION_ROTATION,
-                            packetHandler.canSendHeldBlock ? player.inventory.getSelected() : -1, playerXUnits,
-                            playerYUnits, playerZUnits,
+                            packetHandler.canSendHeldBlock ? player.inventory.getSelected() : -1,
+                            playerXUnits, playerYUnits, playerZUnits,
                             playerYRotation, playerXRotation);
                 }
             }
         }
 
         if (isLoadingMap) {
+            // Ignore all keyboard input while loading map, unless Esc is pressed.
             while (Keyboard.next()) {
                 if (Keyboard.getEventKeyState()) {
                     if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
@@ -1928,21 +1928,22 @@ public final class Minecraft implements Runnable {
                 var41.block = heldBlock;
             }
 
-            // Render rainfall
+            // If it's raining, spawn raindrop particles on ground
             if (renderer.minecraft.isRaining) {
                 int playerX = (int) player.x;
                 int playerY = (int) player.y;
                 int playerZ = (int) player.z;
 
-                for (i = 0; i < 50; ++i) {
-                    int var60 = playerX + renderer.random.nextInt(9) - 4;
-                    int var52 = playerZ + renderer.random.nextInt(9) - 4;
-                    int var57 = level.getHighestTile(var60, var52);
-                    if (var57 <= playerY + 4 && var57 >= playerY - 4) {
+                for (int i = 0; i < 50; ++i) {
+                    int raindropBlockX = playerX + renderer.random.nextInt(9) - 4;
+                    int raindropBlockY = playerZ + renderer.random.nextInt(9) - 4;
+                    int groundLevel = level.getHighestTile(raindropBlockX, raindropBlockY);
+                    if (groundLevel <= playerY + 4 && groundLevel >= playerY - 4) {
                         float offsetX = renderer.random.nextFloat();
                         float offsetZ = renderer.random.nextFloat();
-                        particleManager.spawnParticle(new WaterDropParticle(
-                                level, var60 + offsetX, var57 + 0.1F, var52 + offsetZ));
+                        particleManager.spawnParticle(
+                                new WaterDropParticle(level, raindropBlockX + offsetX,
+                                        groundLevel + 0.1F, raindropBlockY + offsetZ));
                     }
                 }
             }
@@ -2013,15 +2014,14 @@ public final class Minecraft implements Runnable {
                     }
                 }
 
-                // Note sure if needed:
-                // This only triggers if currentScreen is set while handling
-                // mouse input in-game (?)
+                // Not sure if needed:
+                // This only triggers if currentScreen is set while handling mouse input in-game (?)
                 if (currentScreen != null) {
                     currentScreen.mouseEvent();
                 }
             }
             if (punchingCooldown > 0) {
-                // Decrement punching cooldown (survival)
+                // SURVIVAL: Decrement punching cooldown
                 --punchingCooldown;
             }
             while (Keyboard.next()) {
@@ -2121,7 +2121,7 @@ public final class Minecraft implements Runnable {
 
                         if (Keyboard.getEventKey() == Keyboard.KEY_TAB && isSurvival()
                                 && player.arrows > 0) {
-                            // Shoot arrows (survival)
+                            // SURVIVAL: Shoot arrows
                             level.addEntity(new Arrow(level, player, player.x, player.y, player.z,
                                     player.yRot, player.xRot, 1.2F));
                             --player.arrows;
@@ -2165,7 +2165,7 @@ public final class Minecraft implements Runnable {
                 }
             }
             if (!gamemode.instantBreak && punchingCooldown <= 0) {
-                // survival: slow block-breaking
+                // SURVIVAL: slow block-breaking
                 if ((currentScreen == null) && Mouse.isButtonDown(MB_LEFT) && hasMouse
                         && selected != null && !selected.hasEntity) {
                     gamemode.hitBlock(selected.x, selected.y, selected.z, selected.face);
@@ -2185,44 +2185,32 @@ public final class Minecraft implements Runnable {
         }
     }
 
-    /**
-     * Toggles FullScreen on or off.
-     */
     public void toggleFullscreen() {
         try {
             isFullScreen = !isFullScreen;
 
             if (isFullScreen) {
                 setDisplayMode();
-
                 width = Display.getDisplayMode().getWidth();
                 height = Display.getDisplayMode().getHeight();
-                if (width <= 0) {
-                    width = 1;
-                }
-
-                if (height <= 0) {
-                    height = 1;
-                }
             } else {
                 Display.setDisplayMode(new DisplayMode(tempDisplayWidth, tempDisplayHeight));
                 width = tempDisplayWidth;
                 height = tempDisplayHeight;
+            }
 
-                if (width <= 0) {
-                    width = 1;
-                }
-
-                if (height <= 0) {
-                    height = 1;
-                }
+            if (width <= 0) {
+                width = 1;
+            }
+            if (height <= 0) {
+                height = 1;
             }
 
             resize();
-
             Display.setFullscreen(isFullScreen);
             Display.setVSyncEnabled(settings.limitFramerate);
             Display.update();
+
         } catch (Exception ex) {
             LogUtil.logWarning("Error toggling fullscreen " + (isFullScreen ? "ON" : "OFF"), ex);
         }

@@ -28,7 +28,6 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Implementation of the <code>PhysicalOggStream</code> interface for accessing
