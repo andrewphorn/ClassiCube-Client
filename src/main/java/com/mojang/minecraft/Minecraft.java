@@ -1303,9 +1303,7 @@ public final class Minecraft implements Runnable {
                             // Render other players' names
                             if ((settings.ShowNames == 2 || settings.ShowNames == 3)
                                     && this.player.userType >= 100) {
-                                NetworkPlayer[] netPlayers
-                                        = (NetworkPlayer[]) networkManager.players.values().toArray();
-                                for (NetworkPlayer np : netPlayers) {
+                                for (NetworkPlayer np : networkManager.players.values()) {
                                     if (np != null) {
                                         np.renderHover(textureManager);
                                     }
