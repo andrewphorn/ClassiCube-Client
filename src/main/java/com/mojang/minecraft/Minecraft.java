@@ -442,8 +442,8 @@ public final class Minecraft implements Runnable {
     // Scale of 0 is 128x128 level. Incrementing the scale doubles the level size.
     public final void generateLevel(int scale) {
         String username = (session != null ? session.username : "anonymous");
-        Level newLevel = new LevelGenerator(progressBar).generate(username, 128 << scale,
-                128 << scale, 64);
+        Level newLevel = new LevelGenerator(progressBar)
+                .generate(username, 128 << scale, 128 << scale, 64);
         gamemode.prepareLevel(newLevel);
         setLevel(newLevel);
     }
@@ -943,12 +943,16 @@ public final class Minecraft implements Runnable {
                     player.turn(mouseDX, mouseDY * mouseDirection);
                 }
 
-                if (!isConnecting) {
+                if (!isConnecting ) {
                     int var81 = width * 240 / height;
                     int var86 = height * 240 / height;
                     int mouseX = Mouse.getX() * var81 / width;
                     int mouseY = var86 - Mouse.getY() * var86 / height - 1;
-                    if (level != null && player != null) {
+                    
+                    // Don't render the world while a disconnect or error screen is showing.
+                    boolean guiIsTransparent = (currentScreen==null || !currentScreen.isOpaque);
+                    
+                    if (level != null && player != null && guiIsTransparent) {
                         float delta = timer.delta;
                         float var29 = player.xRotO + (player.xRot - player.xRotO) * timer.delta;
                         float var30 = player.yRotO + (player.yRot - player.yRotO) * timer.delta;
@@ -965,8 +969,7 @@ public final class Minecraft implements Runnable {
                         selected = level.clip(var31, vec3D);
                         var74 = reachDistance;
                         if (selected != null) {
-                            var74 = selected.vec.distance(
-                                    renderer.getPlayerVector(timer.delta));
+                            var74 = selected.vec.distance(renderer.getPlayerVector(timer.delta));
                         }
 
                         var31 = renderer.getPlayerVector(timer.delta);
@@ -1012,8 +1015,8 @@ public final class Minecraft implements Runnable {
                         GL11.glViewport(0, 0, width, height);
                         
                         // Set view distance, sky color, and fog color
-                        float viewDistanceFactor = 1F - (float) (Math.pow(
-                                (1F / (4 - settings.viewDistance)), 0.25D));
+                        float viewDistanceFactor =
+                                1F - (float) Math.pow(1F / (4 - settings.viewDistance), 0.25D);
                         float skyColorRed = (level.skyColor >> 16 & 255) / 255F;
                         float skyColorBlue = (level.skyColor >> 8 & 255) / 255F;
                         float skyColorGreen = (level.skyColor & 255) / 255F;
@@ -1078,16 +1081,17 @@ public final class Minecraft implements Runnable {
                             levelRenderer.chunkCache[i].clip(frustum);
                         }
 
-                        Collections.sort(levelRenderer.chunks,
+                        Collections.sort(levelRenderer.chunksToUpdate,
                                 new ChunkDirtyDistanceComparator(player));
-                        int var98 = levelRenderer.chunks.size() - 1;
-                        int var105 = levelRenderer.chunks.size();
-                        if (var105 > 4) {
-                            var105 = 4;
+                        int var98 = levelRenderer.chunksToUpdate.size() - 1;
+                        int var105 = levelRenderer.chunksToUpdate.size();
+                        
+                        if (var105 > Renderer.MAX_CHUNK_UPDATES_PER_FRAME) {
+                            var105 = Renderer.MAX_CHUNK_UPDATES_PER_FRAME;
                         }
 
                         for (int i = 0; i < var105; ++i) {
-                            Chunk chunkToUpdate = levelRenderer.chunks.remove(var98 - i);
+                            Chunk chunkToUpdate = levelRenderer.chunksToUpdate.remove(var98 - i);
                             chunkToUpdate.update();
                             chunkToUpdate.loaded = false;
                         }

@@ -155,7 +155,7 @@ public final class ProgressBarDisplay {
         } else {
             long currentTime = System.currentTimeMillis();
             if (currentTime - start < 0L || currentTime - start >= 20L) {
-                //start = currentTime; //Kinda fixed the flashing loading screen
+                // TODO: fix flicker on rendering
                 int var4 = minecraft.width * 240 / minecraft.height;
                 int var5 = minecraft.height * 240 / minecraft.height;
                 GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);

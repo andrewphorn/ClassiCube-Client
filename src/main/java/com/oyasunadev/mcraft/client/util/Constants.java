@@ -1,12 +1,8 @@
 package com.oyasunadev.mcraft.client.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created with IntelliJ IDEA. User: Oliver Yasuna Date: 9/30/12 Time: 7:57 PM
  */
-
 public class Constants {
     /**
      * Just a reference to the Minecraft version if needed.

@@ -18,7 +18,7 @@ public final class LevelRenderer {
     public TextureManager textureManager;
     public int listId;
     public IntBuffer buffer = BufferUtils.createIntBuffer(65536);
-    public List<Chunk> chunks = new ArrayList<>();
+    public List<Chunk> chunksToUpdate = new ArrayList<>();
     public Chunk[] chunkCache;
     public Minecraft minecraft;
     public int ticks = 0;
@@ -29,7 +29,7 @@ public final class LevelRenderer {
     private int zChunks;
     private int baseListId;
     private int listsCount = -1;
-    private int[] chunkDataCache = new int['\uc350'];
+    private int[] chunkDataCache = new int[50000];
     private float lastLoadX = -9999F;
     private float lastLoadY = -9999F;
     private float lastLoadZ = -9999F;
@@ -82,7 +82,7 @@ public final class LevelRenderer {
                     Chunk chunk = chunkCache[(z * yChunks + y) * xChunks + x];
                     if (!chunk.loaded) {
                         chunk.loaded = true;
-                        chunks.add(chunk);
+                        chunksToUpdate.add(chunk);
                     }
                 }
             }
@@ -98,8 +98,7 @@ public final class LevelRenderer {
         if (listsCount > -1) {
             GL11.glDeleteLists(baseListId, listsCount);
         }
-        // So that worlds that are not multiples of 16 do not have invisible
-        // chunks.
+        // So that worlds that are not multiples of 16 do not have invisible chunks.
         int paddedWidth = nextMultipleOf16(level.width);
         int paddedHeight = nextMultipleOf16(level.height);
         int paddedLength = nextMultipleOf16(level.length);
@@ -126,11 +125,11 @@ public final class LevelRenderer {
             }
         }
 
-        for (Chunk chunk : chunks) {
+        for (Chunk chunk : chunksToUpdate) {
             chunk.loaded = false;
         }
 
-        chunks.clear();
+        chunksToUpdate.clear();
         refreshEnvironment();
         queueChunks(0, 0, 0, paddedWidth, paddedHeight, paddedLength);
     }

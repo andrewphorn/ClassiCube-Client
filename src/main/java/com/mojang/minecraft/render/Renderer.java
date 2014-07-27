@@ -9,12 +9,15 @@ import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.player.Player;
 import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
+
 import java.nio.FloatBuffer;
 import java.util.Random;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 public final class Renderer {
+    // TODO: adaptive chunk update rate, based on framerate
+    public static final int MAX_CHUNK_UPDATES_PER_FRAME = 4;
 
     public Minecraft minecraft;
     public float fogColorMultiplier = 1F;

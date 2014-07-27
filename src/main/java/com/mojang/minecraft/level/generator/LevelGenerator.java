@@ -557,7 +557,7 @@ public final class LevelGenerator {
 
     }
 
-    private void setProgress(int var1) {
-        progressBar.setProgress(var1);
+    private void setProgress(int percentage) {
+        progressBar.setProgress(percentage);
     }
 }
