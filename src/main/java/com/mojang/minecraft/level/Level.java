@@ -905,7 +905,52 @@ public class Level implements Serializable {
             return false;
         }
     }
+    
+     public boolean netSetTile(int var1, int var2, int var3, int var4, boolean forced) {
+       System.out.println(var1 + " " + var2 + " " + var3 + " " + var4);
+         if (netSetTileNoNeighborChange(var1, var2, var3, var4, forced)) {
+            updateNeighborsAt(var1, var2, var3, var4);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    public boolean netSetTileNoNeighborChange(int var1, int var2, int var3, int var4, boolean forced) {
+        if (var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length) {
+            if (var4 == blocks[(var2 * length + var3) * width + var1] && !forced) {
+                return false;
+            } else {
+                if (var4 == 0
+                        && (var1 == 0 || var3 == 0 || var1 == width - 1 || var3 == length - 1)
+                        && var2 >= getGroundLevel() && var2 < getWaterLevel() && !networkMode) {
+                    var4 = Block.WATER.id;
+                }
+
+                byte var5 = blocks[(var2 * length + var3) * width + var1];
+                blocks[(var2 * length + var3) * width + var1] = (byte) var4;
+                if (var5 != 0) {
+                    Block.blocks[var5].onRemoved(this, var1, var2, var3);
+                }
+
+                if (var4 != 0) {
+                    Block.blocks[var4].onAdded(this, var1, var2, var3);
+                }
+
+                calcLightDepths(var1, var3, 1, 1);
+
+                for (var4 = 0; var4 < listeners.size(); ++var4) {
+                    listeners.get(var4).queueChunks(var1 - 1, var2 - 1, var3 - 1, var1 + 1,
+                            var2 + 1, var3 + 1);
+                }
+
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+    
     public boolean netSetTileNoNeighborChange(int var1, int var2, int var3, int var4) {
         if (var1 >= 0 && var2 >= 0 && var3 >= 0 && var1 < width && var2 < height && var3 < length) {
             if (var4 == blocks[(var2 * length + var3) * width + var1]) {

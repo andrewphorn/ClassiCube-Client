@@ -63,6 +63,7 @@ import com.mojang.minecraft.level.LevelSerializer;
 import com.mojang.minecraft.level.generator.LevelGenerator;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
+import static com.mojang.minecraft.level.tile.Block.LEAVES;
 import com.mojang.minecraft.level.tile.TextureSide;
 import com.mojang.minecraft.mob.Mob;
 import com.mojang.minecraft.model.ModelManager;
@@ -881,27 +882,10 @@ public final class Minecraft implements Runnable {
         }
 
         try {
-            long clockNow = System.currentTimeMillis(); // system's clock time
-            long actualNow = System.nanoTime() / 1000000L; // JRE's internal counter
-            long clockTimeSinceLastFrame = clockNow - timer.lastSysClock;
-            if (clockTimeSinceLastFrame > 1000L) {
-                // Over 1 second has elapsed since last frame.
-                long clockError = actualNow - timer.lastHRClock;
-                double clockAdjustmentRatio = clockTimeSinceLastFrame / (double) clockError;
-                timer.adjustment += (clockAdjustmentRatio - timer.adjustment) * 0.20000000298023224D;
-                timer.lastSysClock = clockNow;
-                timer.lastHRClock = actualNow;
-            }
-
-            if (clockTimeSinceLastFrame < 0L) {
-                // Negative time elapsed! System clock probably changed.
-                timer.lastSysClock = clockNow;
-                timer.lastHRClock = actualNow;
-            }
-
-            double actualNowSeconds = actualNow / 1000D;
-            double secondsPassed = (actualNowSeconds - timer.lastHR) * timer.adjustment;
-            timer.lastHR = actualNowSeconds;
+            // Get current time in seconds 
+            double now = System.nanoTime() / 1000000000D;
+            double secondsPassed = (now - timer.lastHR);
+            timer.lastHR = now;
 
             // Cap seconds-passed to range [0,1]
             if (secondsPassed < 0D) {
@@ -1923,7 +1907,25 @@ public final class Minecraft implements Runnable {
             LogUtil.logError("Error taking a screenshot.", ex);
         }
     }
-
+    
+    public int[] IntToPos(int pos) {
+        int x, y, z;
+        y = (int)(pos / level.length / level.width);
+        pos -= y * level.length * level.width;
+        z = (int)(pos / level.length);
+        pos -= z * level.length;
+        x = (int)(pos);
+        return new int[] { x, y, z };
+    }
+    
+    public static boolean fastLeaves = true;
+    public static boolean changed = false;
+    
+        public int PosToInt(int x, int y, int z)
+        {
+            return x + (z * level.width) + (y * level.width * level.height);
+        }
+    
     private void tick() {
         if (soundPlayer != null) {
             SoundPlayer var1 = soundPlayer;
@@ -1932,7 +1934,28 @@ public final class Minecraft implements Runnable {
                 var2.lastMusic = System.currentTimeMillis() + var2.random.nextInt(900000) + 300000L;
             }
         }
-
+        
+        fastLeaves = this.settings.fastLeaves;
+            
+        if(Minecraft.fastLeaves && changed) {
+            LEAVES.changeTextureId(27);
+        }
+        if(!Minecraft.fastLeaves && changed) {
+            LEAVES.changeTextureId(22);
+        }
+        
+        if (changed) {
+            for (int i = 0; i < level.blocks.length; ++i) {
+                if(level.blocks[i] == (byte)(Block.LEAVES.id)) {
+                    level.netSetTile(
+                            (int)IntToPos(i)[0], 
+                            (int)IntToPos(i)[1], 
+                            (int)IntToPos(i)[2], Block.LEAVES.id, true);
+                }
+            }
+        }
+        changed = false;
+        
         gamemode.spawnMob();
         int i;
         if (canRenderGUI) {
