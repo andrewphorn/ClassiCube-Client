@@ -160,20 +160,19 @@ public class BlockMap implements Serializable {
     }
 
     public void render(Vec3D var1, Frustum frustum, TextureManager textureManager, float var4) {
-        for (int var5 = 0; var5 < width; ++var5) {
-            float var6 = (var5 << 4) - 2;
-            float var7 = (var5 + 1 << 4) + 2;
+        for (int x = 0; x < width; ++x) {
+            float var6 = (x << 4) - 2;
+            float var7 = (x + 1 << 4) + 2;
 
-            for (int var8 = 0; var8 < depth; ++var8) {
-                float var9 = (var8 << 4) - 2;
-                float var10 = (var8 + 1 << 4) + 2;
+            for (int y = 0; y < depth; ++y) {
+                float var9 = (y << 4) - 2;
+                float var10 = (y + 1 << 4) + 2;
 
-                for (int var11 = 0; var11 < height; ++var11) {
-                    List<?> entitySlotInGrid;
-                    if ((entitySlotInGrid = entityGrid[(var11 * depth + var8) * width + var5])
-                            .size() != 0) {
-                        float var13 = (var11 << 4) - 2;
-                        float var14 = (var11 + 1 << 4) + 2;
+                for (int z = 0; z < height; ++z) {
+                    List<?> entitySlotInGrid = entityGrid[(z * depth + y) * width + x];
+                    if (!entitySlotInGrid.isEmpty()) {
+                        float var13 = (z << 4) - 2;
+                        float var14 = (z + 1 << 4) + 2;
                         if (frustum.isBoxInFrustum(var6, var9, var13, var7, var10, var14)) {
                             float var16 = var14;
                             float var17 = var10;

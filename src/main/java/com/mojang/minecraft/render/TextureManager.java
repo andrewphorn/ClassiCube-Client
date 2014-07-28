@@ -1,8 +1,14 @@
 package com.mojang.minecraft.render;
 
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
-
+import com.mojang.minecraft.GameSettings;
+import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.net.NetworkPlayer;
+import com.mojang.minecraft.render.texture.TextureFX;
+import com.mojang.minecraft.render.texture.TextureFireFX;
+import com.mojang.minecraft.render.texture.TextureLavaFX;
+import com.mojang.minecraft.render.texture.TextureWaterFX;
+import com.mojang.util.LogUtil;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -15,27 +21,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipFile;
-
+import java.util.zip.ZipEntry;
 import javax.imageio.ImageIO;
-
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.EXTFramebufferObject;
+import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
-
-import com.mojang.minecraft.GameSettings;
-import com.mojang.util.LogUtil;
-import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.net.NetworkPlayer;
-import com.mojang.minecraft.render.texture.TextureFX;
-import com.mojang.minecraft.render.texture.TextureFireFX;
-import com.mojang.minecraft.render.texture.TextureLavaFX;
-import com.mojang.minecraft.render.texture.TextureWaterFX;
 
 public class TextureManager {
 
@@ -116,12 +112,11 @@ public class TextureManager {
     }
 
     public static int getMaxAnisotropySetting() {
-        float maxLevel = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+        float maxLevel = GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
         return (int) Math.round(Math.log(maxLevel) / Math.log(2));
     }
 
     public List<BufferedImage> Atlas2dInto1d(BufferedImage atlas2d, int tiles, int atlasSizeLimit) {
-
         int tileSize = atlas2d.getWidth() / tiles;
 
         int atlasesCount = Math.max(1, tiles * tiles * tileSize / atlasSizeLimit);
@@ -150,7 +145,7 @@ public class TextureManager {
         return atlases;
     }
 
-    private int b(int c1, int c2) {
+    private int blend(int c1, int c2) {
         int a1 = (c1 & 0xFF000000) >> 24 & 0xFF;
         int a2 = (c2 & 0xFF000000) >> 24 & 0xFF;
 
@@ -202,7 +197,7 @@ public class TextureManager {
                     int p3 = mipData.getInt((mipX * 2 + 1 + (mipY * 2 + 1) * parWidth) * 4);
                     int p4 = mipData.getInt((mipX * 2 + 0 + (mipY * 2 + 1) * parWidth) * 4);
 
-                    int pixel = b(b(p1, p2), b(p3, p4));
+                    int pixel = blend(blend(p1, p2), blend(p3, p4));
 
                     mipData1.putInt((mipX + mipY * mipWidth) * 4, pixel);
                 }
@@ -322,9 +317,9 @@ public class TextureManager {
             }
             if (settings.anisotropy > 0) {
                 float desiredLevel = 1 << settings.anisotropy;
-                float maxLevel = GL11.glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+                float maxLevel = GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
                 float actualLevel = Math.min(desiredLevel, maxLevel);
-                GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, actualLevel);
+                GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, actualLevel);
             }
         }
 
@@ -332,7 +327,7 @@ public class TextureManager {
     }
 
     public int load(String file) {
-        if (this.currentTerrainPng == null && animations.size() == 0) {
+        if (this.currentTerrainPng == null && animations.isEmpty()) {
             registerAnimations();
         }
         if (file.startsWith("/dirt") && textures.containsKey("customDirt")) {
@@ -539,144 +534,37 @@ public class TextureManager {
         return ImageIO.read(inputStream);
     }
 
+    private BufferedImage loadImageFromZip(ZipFile zip, String fileName) throws IOException {
+        String properName = fileName.startsWith("/") ? fileName.substring(1, fileName.length()) : fileName;
+        ZipEntry entry = zip.getEntry(properName);
+        if (entry != null) {
+            return loadImageFast(zip.getInputStream(entry));
+        } else {
+            return null;
+        }
+    }
+
     public void loadTexturePack(final String file) throws IOException {
         if (file.endsWith(".zip")) {
             resetAllMods();
             try (ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/" + file))) {
-                String terrainPNG = "terrain.png";
-                String rainName = "rain.png";
-                String guiName = "gui.png";
-                String iconsName = "icons.png";
-                String fontName = "default.png";
-                String chickenName = "chicken.png";
-                String creeperName = "creeper.png";
-                String crocName = "croc.png";
-                String humanoidName = "char.png";
-                String pigName = "pig.png";
-                String printerName = "printer.png";
-                String sheepName = "sheep.png";
-                String skeletonName = "skeleton.png";
-                String spiderNAme = "spider.png";
-                String zombieName = "zombie.png";
-                String cloudName = "clouds.png";
-                String snowName = "snow.png";
-
-                // TODO Factorize this shit
-                if (zip.getEntry(terrainPNG.startsWith("/") ? terrainPNG.substring(1,
-                        terrainPNG.length()) : terrainPNG) != null) {
-                    currentTerrainPng = loadImageFast(zip.getInputStream(zip.getEntry(terrainPNG
-                            .startsWith("/") ? terrainPNG.substring(1, terrainPNG.length())
-                            : terrainPNG)));
-                }
-
-                if (zip.getEntry(rainName.startsWith("/") ? rainName.substring(1, rainName.length())
-                        : rainName) != null) {
-                    customRainPng = loadImageFast(zip.getInputStream(zip.getEntry(rainName.startsWith("/")
-                            ? rainName.substring(1, rainName.length()) : rainName)));
-                }
-
-                if (zip.getEntry(guiName.startsWith("/") ? guiName.substring(1, guiName.length())
-                        : guiName) != null) {
-                    customGUI = loadImageFast(zip.getInputStream(zip.getEntry(guiName.startsWith("/")
-                            ? guiName.substring(1, guiName.length()) : guiName)));
-                }
-
-                if (zip.getEntry(iconsName.startsWith("/") ? iconsName.substring(1,
-                        iconsName.length()) : iconsName) != null) {
-                    customIcons = loadImageFast(zip.getInputStream(zip.getEntry(iconsName
-                            .startsWith("/") ? iconsName.substring(1, iconsName.length())
-                            : iconsName)));
-                }
-
-                if (zip.getEntry(snowName.startsWith("/") ? snowName.substring(1, snowName.length())
-                        : snowName) != null) {
-                    customSnow = loadImageFast(zip
-                            .getInputStream(zip.getEntry(snowName.startsWith("/") ? snowName
-                                    .substring(1, snowName.length()) : snowName)));
-                }
-
-                if (zip.getEntry(fontName.startsWith("/") ? fontName.substring(1, fontName.length())
-                        : fontName) != null) {
-                    customFont = loadImageFast(zip
-                            .getInputStream(zip.getEntry(fontName.startsWith("/") ? fontName
-                                    .substring(1, fontName.length()) : fontName)));
-                }
-
-                if (zip.getEntry(chickenName.startsWith("/") ? chickenName.substring(1,
-                        chickenName.length()) : chickenName) != null) {
-                    customChicken = loadImageFast(zip.getInputStream(zip.getEntry(chickenName
-                            .startsWith("/") ? chickenName.substring(1, chickenName.length())
-                            : chickenName)));
-                }
-
-                if (zip.getEntry(creeperName.startsWith("/") ? creeperName.substring(1,
-                        creeperName.length()) : creeperName) != null) {
-                    customCreeper = loadImageFast(zip.getInputStream(zip.getEntry(creeperName
-                            .startsWith("/") ? creeperName.substring(1, creeperName.length())
-                            : creeperName)));
-                }
-
-                if (zip.getEntry(crocName.startsWith("/") ? crocName.substring(1, crocName.length())
-                        : crocName) != null) {
-                    customCrocodile = loadImageFast(zip
-                            .getInputStream(zip.getEntry(crocName.startsWith("/") ? crocName
-                                    .substring(1, crocName.length()) : crocName)));
-                }
-
-                if (zip.getEntry(humanoidName.startsWith("/") ? humanoidName.substring(1,
-                        humanoidName.length()) : humanoidName) != null) {
-                    customHumanoid = loadImageFast(zip.getInputStream(zip
-                            .getEntry(humanoidName.startsWith("/") ? humanoidName.substring(1,
-                                    humanoidName.length()) : humanoidName)));
-                }
-
-                if (zip.getEntry(pigName.startsWith("/") ? pigName.substring(1, pigName.length())
-                        : pigName) != null) {
-                    customPig = loadImageFast(zip.getInputStream(zip.getEntry(pigName
-                            .startsWith("/") ? pigName.substring(1, pigName.length()) : pigName)));
-                }
-
-                if (zip.getEntry(printerName.startsWith("/") ? printerName.substring(1,
-                        printerName.length()) : printerName) != null) {
-                    customPrinter = loadImageFast(zip.getInputStream(zip.getEntry(printerName
-                            .startsWith("/") ? printerName.substring(1, printerName.length())
-                            : printerName)));
-                }
-
-                if (zip.getEntry(sheepName.startsWith("/") ? sheepName.substring(1,
-                        sheepName.length()) : sheepName) != null) {
-                    customSheep = ImageIO.read(zip.getInputStream(zip.getEntry(sheepName
-                            .startsWith("/") ? sheepName.substring(1, sheepName.length())
-                            : sheepName)));
-                }
-
-                if (zip.getEntry(skeletonName.startsWith("/") ? skeletonName.substring(1,
-                        skeletonName.length()) : skeletonName) != null) {
-                    customSkeleton = loadImageFast(zip.getInputStream(zip
-                            .getEntry(skeletonName.startsWith("/") ? skeletonName.substring(1,
-                                    skeletonName.length()) : skeletonName)));
-                }
-
-                if (zip.getEntry(spiderNAme.startsWith("/") ? spiderNAme.substring(1,
-                        spiderNAme.length()) : spiderNAme) != null) {
-                    customSpider = loadImageFast(zip.getInputStream(zip.getEntry(spiderNAme
-                            .startsWith("/") ? spiderNAme.substring(1, spiderNAme.length())
-                            : spiderNAme)));
-                }
-
-                if (zip.getEntry(zombieName.startsWith("/") ? zombieName.substring(1,
-                        zombieName.length()) : zombieName) != null) {
-                    customZombie = loadImageFast(zip.getInputStream(zip.getEntry(zombieName
-                            .startsWith("/") ? zombieName.substring(1, zombieName.length())
-                            : zombieName)));
-                }
-
-                if (zip.getEntry(cloudName.startsWith("/") ? cloudName.substring(1,
-                        cloudName.length()) : cloudName) != null) {
-                    customClouds = loadImageFast(zip.getInputStream(zip.getEntry(cloudName
-                            .startsWith("/") ? cloudName.substring(1, cloudName.length())
-                            : cloudName)));
-                }
+                currentTerrainPng = loadImageFromZip(zip, "terrain.png");
+                customRainPng = loadImageFromZip(zip, "rain.png");
+                customGUI = loadImageFromZip(zip, "gui.png");
+                customIcons = loadImageFromZip(zip, "icons.png");
+                customFont = loadImageFromZip(zip, "default.png");
+                customSnow = loadImageFromZip(zip, "snow.png");
+                customChicken = loadImageFromZip(zip, "chicken.png");
+                customCreeper = loadImageFromZip(zip, "creeper.png");
+                customCrocodile = loadImageFromZip(zip, "croc.png");
+                customHumanoid = loadImageFromZip(zip, "char.png");
+                customPig = loadImageFromZip(zip, "pig.png");
+                customPrinter = loadImageFromZip(zip, "printer.png");
+                customSheep = loadImageFromZip(zip, "sheep.png");
+                customSkeleton = loadImageFromZip(zip, "skeleton.png");
+                customSpider = loadImageFromZip(zip, "spider.png");
+                customZombie = loadImageFromZip(zip, "zombie.png");
+                customClouds = loadImageFromZip(zip, "clouds.png");
             }
         }
         initAtlas();

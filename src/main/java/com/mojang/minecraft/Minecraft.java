@@ -1141,7 +1141,7 @@ public final class Minecraft implements Runnable {
 
                         renderer.setLighting(true);
                         Vec3D playerVector = renderer.getPlayerVector(delta);
-                        levelRenderer.level.blockMap.render(playerVector, frustum, levelRenderer.textureManager, delta);
+                        level.blockMap.render(playerVector, frustum, levelRenderer.textureManager, delta);
                         renderer.setLighting(false);
                         renderer.updateFog();
                         float var123 = -MathHelper.cos(player.yRot * (float) Math.PI / 180F);
@@ -1172,10 +1172,9 @@ public final class Minecraft implements Runnable {
                             }
                         }
 
-                        GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                levelRenderer.textureManager.load("/rock.png"));
+                        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/rock.png"));
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
-                        GL11.glCallList(levelRenderer.listId); // rock edges
+                        levelRenderer.renderBedrock();
                         renderer.updateFog();
 
                         if (settings.showClouds) {
@@ -1244,22 +1243,19 @@ public final class Minecraft implements Runnable {
                         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                         renderer.updateFog();
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
-                        GL11.glEnable(GL11.GL_BLEND);
                         GL11.glBindTexture(GL11.GL_TEXTURE_2D,
                                 levelRenderer.textureManager.load("/water.png"));
-                        GL11.glCallList(levelRenderer.listId + 1);
-                        GL11.glDisable(GL11.GL_BLEND);
-                        GL11.glEnable(GL11.GL_BLEND);
+                        levelRenderer.renderOutsideWater();
                         GL11.glColorMask(false, false, false, false);
-                        
+
                         int chunksRemaining = levelRenderer.sortChunks(player, 1);
                         GL11.glColorMask(true, true, true, true);
-                        
+
                         if (chunksRemaining > 0) {
-                             GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                     levelRenderer.textureManager.load("/terrain.png"));
-                             GL11.glCallLists(levelRenderer.buffer);
-                         }
+                            GL11.glBindTexture(GL11.GL_TEXTURE_2D,
+                                    levelRenderer.textureManager.load("/terrain.png"));
+                            GL11.glCallLists(levelRenderer.buffer);
+                        }
 
                         GL11.glDepthMask(true);
                         GL11.glDisable(GL11.GL_BLEND);

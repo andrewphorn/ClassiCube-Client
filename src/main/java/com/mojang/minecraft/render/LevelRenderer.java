@@ -16,20 +16,18 @@ public final class LevelRenderer {
 
     public Level level;
     public TextureManager textureManager;
-    public int listId;
     public IntBuffer buffer = BufferUtils.createIntBuffer(65536);
     public List<Chunk> chunksToUpdate = new ArrayList<>();
     public Chunk[] chunkCache;
     public Minecraft minecraft;
     public int ticks = 0;
     public float cracks;
+    private final int bedrockListId, waterListId;
     private Chunk[] loadQueue;
-    private int xChunks;
-    private int yChunks;
-    private int zChunks;
+    private int xChunks, yChunks, zChunks;
     private int baseListId;
     private int listsCount = -1;
-    private int[] chunkDataCache = new int[50000];
+    private final int[] chunkDataCache = new int[50000];
     private float lastLoadX = -9999F;
     private float lastLoadY = -9999F;
     private float lastLoadZ = -9999F;
@@ -37,7 +35,20 @@ public final class LevelRenderer {
     public LevelRenderer(Minecraft minecraft, TextureManager textureManager) {
         this.minecraft = minecraft;
         this.textureManager = textureManager;
-        listId = GL11.glGenLists(2);
+        bedrockListId = GL11.glGenLists(2);
+        waterListId = bedrockListId + 1;
+    }
+    
+    // Requires GL_TEXTURE_2D to be enabled and rock.png to be set as texture.
+    // Sets ambient color (with glColor4f)
+    public void renderBedrock(){
+        GL11.glCallList(bedrockListId); // rock edges
+    }
+    
+    // Requires GL_TEXTURE_2D to be enabled and water.png to be set as texture.
+    // Enables GL_BLEND and changes the BlendFunc.
+    public void renderOutsideWater(){
+        GL11.glCallList(waterListId);
     }
 
     static int nextMultipleOf16(int value) {
@@ -116,10 +127,10 @@ public final class LevelRenderer {
         for (int x = 0; x < xChunks; ++x) {
             for (int y = 0; y < yChunks; ++y) {
                 for (int z = 0; z < zChunks; ++z) {
-                    chunkCache[(z * yChunks + y) * xChunks + x] = new Chunk(level, x << 4, y << 4,
-                            z << 4, baseListId + offset);
-                    loadQueue[(z * yChunks + y) * xChunks + x] = chunkCache[(z * yChunks + y)
-                            * xChunks + x];
+                    chunkCache[(z * yChunks + y) * xChunks + x]
+                            = new Chunk(level, x * 16, y * 16, z * 16, baseListId + offset);
+                    loadQueue[(z * yChunks + y) * xChunks + x]
+                            = chunkCache[(z * yChunks + y) * xChunks + x];
                     offset += 2;
                 }
             }
@@ -135,7 +146,7 @@ public final class LevelRenderer {
     }
 
     public final void refreshEnvironment() {
-        GL11.glNewList(listId, 4864);
+        GL11.glNewList(bedrockListId, GL11.GL_COMPILE);
         if (level.customLightColour != null) {
             GL11.glColor4f(level.customLightColour.R, level.customLightColour.G,
                     level.customLightColour.B, 1F);
@@ -197,12 +208,13 @@ public final class LevelRenderer {
         renderer.end();
         GL11.glEndList();
 
-        GL11.glNewList(listId + 1, 4864);
+        GL11.glNewList(waterListId, GL11.GL_COMPILE);
         if (level.customLightColour != null) {
             GL11.glColor4f(level.customLightColour.R, level.customLightColour.G,
                     level.customLightColour.B, 1F);
         }
         float waterLevel = level.getWaterLevel();
+        GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         renderer.begin();
 
@@ -217,7 +229,7 @@ public final class LevelRenderer {
                     renderer.vertexUV(x, y, z, 0F, 0F);
 
                     // Seems to be rendered twice? Not sure why, possibly used
-                    // for animated textures?
+                    // for animated textures? TODO: investigate
                     renderer.vertexUV(x, y, z, 0F, 0F);
                     renderer.vertexUV(x + size, y, z, size, 0F);
                     renderer.vertexUV(x + size, y, z + size, size, size);
@@ -226,7 +238,6 @@ public final class LevelRenderer {
             }
         }
         renderer.end();
-        GL11.glDisable(GL11.GL_BLEND);
         GL11.glEndList();
     }
 
