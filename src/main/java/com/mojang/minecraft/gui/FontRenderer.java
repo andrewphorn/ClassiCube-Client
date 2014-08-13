@@ -115,6 +115,7 @@ public final class FontRenderer {
             x = x * f2;
             y = y * f2;
             GL11.glBindTexture(3553, fontId);
+
             ShapeRenderer.instance.begin();
             ShapeRenderer.instance.color(color);
             int var7 = 0;

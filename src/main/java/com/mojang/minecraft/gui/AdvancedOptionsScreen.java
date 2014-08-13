@@ -14,7 +14,7 @@ import com.mojang.minecraft.gui.inputscreens.WaterLevelInputScreen;
 public final class AdvancedOptionsScreen extends GuiScreen {
 
     private final static Setting[] settingsOrder = new Setting[]{Setting.ENABLE_HACKS,
-            Setting.SPEEDHACK_TYPE, Setting.ALLOW_SERVER_TEXTURES, Setting.SHOW_DEBUG, Setting.FAST_LEAVES};
+            Setting.SPEEDHACK_TYPE, Setting.ALLOW_SERVER_TEXTURES, Setting.SHOW_DEBUG};
     private final GuiScreen parent;
     private final String title = "Advanced Options";
     private final GameSettings settings;

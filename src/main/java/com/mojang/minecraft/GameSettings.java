@@ -96,7 +96,6 @@ public final class GameSettings {
     public float scale = 1;
     public boolean music = true;
     public boolean sound = true;
-    public boolean fastLeaves = true;
     public boolean invertMouse = false;
     public boolean canServerChangeTextures = true;
     public boolean showDebug = false;
@@ -155,8 +154,6 @@ public final class GameSettings {
                 return "Enable Hacks: " + (HacksEnabled ? "Yes" : "No");
             case SHOW_NAMES:
                 return "Show Names: " + showNamesOptions[ShowNames];
-            case FAST_LEAVES:
-                return "Fast Leaves: " + toOnOff(fastLeaves);
             default:
                 throw new IllegalArgumentException();
         }
@@ -203,9 +200,6 @@ public final class GameSettings {
                 break;
             case "showdebug":
                 showDebug = isTrue;
-                break;
-            case "fastleaves":
-                fastLeaves = isTrue;
                 break;
             case "viewdistance":
                 viewDistance = Math.min(Math.max(Byte.parseByte(value),
@@ -266,7 +260,6 @@ public final class GameSettings {
                 writer.println("sound:" + sound);
                 writer.println("invertYMouse:" + invertMouse);
                 writer.println("showDebug:" + showDebug);
-                writer.println("fastLeaves:" + fastLeaves);
                 writer.println("viewDistance:" + viewDistance);
                 writer.println("bobView:" + viewBobbing);
                 writer.println("limitFramerate:" + limitFramerate);
@@ -310,10 +303,6 @@ public final class GameSettings {
                 break;
             case SHOW_DEBUG:
                 showDebug = !showDebug;
-                break;
-            case FAST_LEAVES:
-                fastLeaves = !fastLeaves;
-                Minecraft.changed = true;
                 break;
             case RENDER_DISTANCE:
                 int newViewDist = viewDistance + fogValue;

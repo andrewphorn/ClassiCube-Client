@@ -1,6 +1,5 @@
 package com.mojang.minecraft.level.tile;
 
-import com.mojang.minecraft.Minecraft;
 import java.util.Random;
 
 import com.mojang.util.ColorCache;
@@ -70,7 +69,7 @@ public class Block {
     public static final Block LOG = new WoodBlock(17).setStepSound(soundWoodFootstep)
             .setParticleGravity(1F).setHardness(2.5F);
     public static final Block LEAVES = new LeavesBlock(18).setStepSound(soundGrassFootstep)
-            .setTextureId(27).setParticleGravity(0.4F).setHardness(0.2F); //ORIGINALLY 22
+            .setTextureId(22).setParticleGravity(0.4F).setHardness(0.2F);
     public static final Block SPONGE = new SpongeBlock(19).setStepSound(soundGrassFootstep)
             .setTextureId(48).setParticleGravity(0.9F).setHardness(0.6F);
     public static final Block GLASS = new GlassBlock(20).setStepSound(soundGlassFootstep)
@@ -592,13 +591,6 @@ public class Block {
 
     // TODO.
     public void renderSide(ShapeRenderer shapeRenderer, int x, int y, int z, int side, int textureID) {
-        if(this.id == Block.LEAVES.id) {
-            if(Minecraft.fastLeaves) {
-                textureID = 27;
-            } else {
-                textureID = 22;
-            }
-        }
         int var7 = textureID % 16 << 4;
         int var8 = textureID / 16 << 4;
         float var9 = var7 / 256F;
@@ -681,10 +673,7 @@ public class Block {
         this.textureId = textureId;
         return this;
     }
-    
-    public void changeTextureId(int textureId) {
-        this.textureId = textureId;
-    }
+
     // TODO.
     public final void spawnBlockParticles(Level level, int x, int y, int z, int side,
                                           ParticleManager particleManager) {
