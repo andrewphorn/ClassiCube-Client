@@ -11,6 +11,9 @@ import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.net.NetworkHandler;
 
 public class NetworkManager {
+    // max number of packets to receive per tick
+    public static final int MAX_PACKETS_PER_TICK = 100;
+    
     public ByteArrayOutputStream levelData;
 
     public NetworkHandler netHandler;
@@ -23,7 +26,7 @@ public class NetworkManager {
     public HashMap<Byte, NetworkPlayer> players = new HashMap<>();
 
     public NetworkManager(Minecraft minecraft, String server, int port, String username, String key) {
-        minecraft.isOnline = true;
+        minecraft.isConnecting = true;
         this.minecraft = minecraft;
 
         new ServerConnectThread(this, server, port, username, key, minecraft).start();

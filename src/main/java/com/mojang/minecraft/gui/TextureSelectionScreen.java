@@ -3,89 +3,78 @@ package com.mojang.minecraft.gui;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.mojang.util.LogUtil;
 import com.mojang.minecraft.Minecraft;
+import com.mojang.util.LogUtil;
 
-public class TextureSelectionScreen extends GuiScreen implements Runnable {
+public final class TextureSelectionScreen extends GuiScreen {
 
-    protected GuiScreen parent;
-    protected String title = "Load texture";
-    protected boolean saving = false;
-    protected File selectedFile;
+    private static final String TITLE = "Texture Packs";
+    private static final int BUTTON_LOAD_FILE = 6, BUTTON_CANCEL = 7, BUTTON_DEFAULT = 8;
+    private static final int MAX_PACKS_TO_SHOW = 5;
+    private static final String ACTIVE_PACK_INDICATOR = "*";
+
+    private final GuiScreen parent;
+    private List<TexturePackData> texturePacks;
     boolean frozen = false;
-    JFileChooser chooser;
-    private boolean finished = false;
-    private boolean loaded = false;
-    private ArrayList<TexturePackData> textures = new ArrayList<>();
     private String status = "";
 
-    public TextureSelectionScreen(GuiScreen var1) {
-        parent = var1;
+    public TextureSelectionScreen(GuiScreen parent) {
+        this.parent = parent;
     }
 
     @Override
     protected final void onButtonClick(Button button) {
         if (!frozen && button.active) {
-            if (loaded && button.id < 5) {
-                this.openTexture(textures.get(button.id));
-            }
-
-            if (loaded && button.id == 6) {
-                frozen = true;
-                TextureDialog dialog;
-                (dialog = new TextureDialog(this, minecraft)).setDaemon(true);
-                SwingUtilities.invokeLater(dialog);
-            }
-
-            if (finished || loaded && button.id == 7) {
-                minecraft.setCurrentScreen(parent);
-            }
-            if (button.id == 8) {
-                minecraft.textureManager.resetAllMods();
-                minecraft.textureManager.load("/terrain.png");
-                minecraft.textureManager.initAtlas();
-                minecraft.setCurrentScreen(null);
-                minecraft.grabMouse();
-                minecraft.textureManager.textures.clear();
-                try {
-                    minecraft.fontRenderer = new FontRenderer(minecraft.settings, "/default.png",
-                            minecraft.textureManager);
-                } catch (IOException ex) {
-                    LogUtil.logError("Error creating default font renderer.", ex);
-                }
-                minecraft.settings.lastUsedTexturePack = null;
-                minecraft.settings.save();
-                minecraft.textureManager.registerAnimations();
+            switch (button.id) {
+                default:
+                    this.openTexture(texturePacks.get(button.id).location);
+                    break;
+                case BUTTON_LOAD_FILE:
+                    frozen = true;
+                    SwingUtilities.invokeLater(new ChooseFileRunnable());
+                    break;
+                case BUTTON_CANCEL:
+                    minecraft.setCurrentScreen(parent);
+                    break;
+                case BUTTON_DEFAULT:
+                    minecraft.textureManager.resetAllMods();
+                    minecraft.textureManager.load("/terrain.png");
+                    minecraft.textureManager.initAtlas();
+                    minecraft.textureManager.textures.clear();
+                    try {
+                        minecraft.fontRenderer = new FontRenderer(minecraft.settings, "/default.png",
+                                minecraft.textureManager);
+                    } catch (IOException ex) {
+                        LogUtil.logError("Error creating default font renderer.", ex);
+                    }
+                    minecraft.settings.lastUsedTexturePack = null;
+                    minecraft.settings.save();
+                    minecraft.textureManager.registerAnimations();
+                    minecraft.setCurrentScreen(parent);
+                    break;
             }
         }
-    }
-
-    @Override
-    public final void onClose() {
-        super.onClose();
-        if (chooser != null) {
-            chooser.cancelSelection();
-        }
-
     }
 
     @Override
     public void onOpen() {
-        new Thread(this).start();
-
-        for (int i = 0; i < 5; ++i) {
-            buttons.add(new Button(i, width / 2 - 100, height / 6 + i * 24, "---"));
-            buttons.get(i).visible = false;
-            buttons.get(i).active = false;
+        // Index available texture packs
+        texturePacks = indexTexturePacks();
+        int packCount = Math.min(texturePacks.size(), MAX_PACKS_TO_SHOW);
+        for (int i = 0; i < packCount; i++) {
+            buttons.add(new Button(i, width / 2 - 100, height / 6 + i * 24, ""));
+            buttons.get(i).text = texturePacks.get(i).name;
         }
 
-        buttons.add(new Button(6, width / 2 - 100, height / 6 + 120 + 12, "Load file..."));
-        buttons.add(new Button(7, width / 2 - 100, height / 6 + 154 + 22, "Cancel"));
-        buttons.add(new Button(8, width / 2 - 100, height / 6 + 154, "Default Texture"));
+        buttons.add(new Button(BUTTON_LOAD_FILE, width / 2 - 100, height / 6 + 120 + 12, "Load file..."));
+        buttons.add(new Button(BUTTON_CANCEL, width / 2 - 100, height / 6 + 154 + 22, "Cancel"));
+        buttons.add(new Button(BUTTON_DEFAULT, width / 2 - 100, height / 6 + 154, "Default Texture"));
     }
 
     protected void openTexture(String file) {
@@ -95,90 +84,101 @@ public class TextureSelectionScreen extends GuiScreen implements Runnable {
                     minecraft.textureManager);
             minecraft.settings.lastUsedTexturePack = file;
             minecraft.settings.save();
+            minecraft.setCurrentScreen(parent);
         } catch (IOException ex) {
+            status = "Texture pack could not be loaded!";
             LogUtil.logError("Error loading texture pack from " + file, ex);
         }
-        minecraft.setCurrentScreen(null);
-        minecraft.grabMouse();
-    }
-
-    protected void openTexture(TexturePackData data) {
-        selectedFile = new File(data.location);
-        openTexture(data.location);
-        minecraft.setCurrentScreen(parent);
     }
 
     @Override
-    public void render(int var1, int var2) {
+    public void render(int mouseX, int mouseY) {
         drawFadingBox(0, 0, width, height, 1610941696, -1607454624);
-        drawCenteredString(fontRenderer, title, width / 2, 20, 16777215);
+        drawCenteredString(fontRenderer, TITLE, width / 2, 20, 16777215);
         if (frozen) {
-            drawCenteredString(fontRenderer, "Selecting file..", width / 2, height / 2 - 4,
-                    16777215);
-
-            try {
-                Thread.sleep(20L);
-            } catch (InterruptedException ex) {
-                LogUtil.logError("Error waiting to render TextureSelectionScreen", ex);
-            }
+            drawCenteredString(fontRenderer, "Selecting file...",
+                    width / 2 - 100, height / 6 + 120 + 12, 16777215);
         } else {
-            if (!loaded) {
+            if (texturePacks != null && texturePacks.size() > MAX_PACKS_TO_SHOW) {
+                // Show hint when all available texture packs can't be shown at once
+                String morePacksText = String.format("First %s packs shown; %s more available.",
+                        MAX_PACKS_TO_SHOW, texturePacks.size() - MAX_PACKS_TO_SHOW);
+                drawCenteredString(fontRenderer, morePacksText, width / 2, height / 6 + 120, 16777215);
+            }
+
+            if (status != null) {
+                // Show an error message if packs could not be indexed
                 drawCenteredString(fontRenderer, status, width / 2, height / 2 - 4, 16777215);
             }
 
-            super.render(var1, var2);
+            // Render buttons
+            super.render(mouseX, mouseY);
+
+            // Show an indicator (asterisk) for the currently-selected texture pack
+            if (minecraft.settings.lastUsedTexturePack != null) {
+                if (texturePacks != null) {
+                    for (int i = 0; i < Math.min(texturePacks.size(), MAX_PACKS_TO_SHOW); ++i) {
+                        if (minecraft.settings.lastUsedTexturePack != null
+                                && minecraft.settings.lastUsedTexturePack.equals(texturePacks.get(i).location)) {
+                            drawString(fontRenderer, ACTIVE_PACK_INDICATOR,
+                                    width / 2 + 100 - fontRenderer.getWidth(ACTIVE_PACK_INDICATOR) - 2,
+                                    height / 6 + i * 24 + 2, 16777215);
+                            break;
+                        }
+                    }
+                }
+            } else {
+                drawString(fontRenderer, ACTIVE_PACK_INDICATOR,
+                        width / 2 + 100 - fontRenderer.getWidth(ACTIVE_PACK_INDICATOR) - 2,
+                        height / 6 + 154 + 2, 16777215);
+            }
         }
     }
 
-    @Override
-    public void run() {
+    // Index available texture packs under "texturepacks" folder.
+    private List<TexturePackData> indexTexturePacks() {
+        List<TexturePackData> loadedPacks = new ArrayList<>();
         try {
-            if (frozen) {
-                try {
-                    Thread.sleep(100L);
-                } catch (InterruptedException ex) {
-                    LogUtil.logError("Error waiting to run TextureSelectionScreen", ex);
-                }
-            }
-
-            status = "Getting texture list..";
             TexturePackData data;
-            for (String file : new File(Minecraft.getMinecraftDirectory() + "/texturepacks").list()) {
-                if (!file.endsWith(".zip")) {
+            String[] files = new File(Minecraft.getMinecraftDirectory() + "/texturepacks").list();
+            for (String fileName : files) {
+                if (!fileName.toLowerCase().endsWith(".zip")) {
                     continue;
                 }
-                data = new TexturePackData(file, file.substring(0, file.indexOf(".")));
-                textures.add(data);
+                try {
+                    data = new TexturePackData(fileName, fileName.substring(0, fileName.indexOf(".")));
+                    loadedPacks.add(data);
+                } catch (Exception ex) {
+                    LogUtil.logError("Error loading texture pack from " + fileName, ex);
+                }
             }
-            if (textures.size() >= 1) {
-                setTextures(textures);
-                loaded = true;
-                return;
-            }
-
-            status = "Finished loading textures";
-            finished = true;
         } catch (Exception ex) {
-            LogUtil.logError("Error running TextureSelectionScreen", ex);
-            status = "Failed to load textures";
-            finished = true;
+            LogUtil.logError("Error loading texture packs", ex);
         }
-
+        return loadedPacks;
     }
 
-    protected void setTextures(ArrayList<TexturePackData> texturePacks) {
-        for (int i = 0; i < Math.min(texturePacks.size(), 5); ++i) {
-            buttons.get(i).active = !texturePacks.get(i).equals("-");
-            buttons.get(i).text = texturePacks.get(i).name;
-            buttons.get(i).visible = true;
-        }
-    }
+    // Method that shows the "load texture pack" dialog.
+    // This needs to be called asynchronously via SwingUtilities.invokeLater to avoid locking up.
+    private final class ChooseFileRunnable implements Runnable {
 
-    @Override
-    public final void tick() {
-        super.tick();
-        if (selectedFile != null) {
-            selectedFile = null;
+        @Override
+        public void run() {
+            try {
+                JFileChooser chooser = new JFileChooser();
+                FileNameExtensionFilter zipFilter
+                        = new FileNameExtensionFilter("Texture Packs (.zip)", "zip");
+                chooser.setFileFilter(zipFilter);
+                chooser.setMultiSelectionEnabled(false);
+                if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    // User has selected a file. Attempt to load it.
+                    openTexture(chooser.getSelectedFile().getAbsolutePath());
+                }
+            } catch (Exception ex) {
+                LogUtil.logError("Error selecting texture pack.", ex);
+            } finally {
+                frozen = false;
+            }
         }
     }
 }

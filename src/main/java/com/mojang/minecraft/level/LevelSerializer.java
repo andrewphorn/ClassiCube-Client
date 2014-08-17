@@ -53,6 +53,7 @@ public class LevelSerializer {
         NBTTagCompound createdBy = new NBTTagCompound("CreatedBy");
         createdBy.setString("Service", "ClassiCube");
         createdBy.setString("Username", "ClassiCube User");
+        master.setCompoundTag("CreatedBy", createdBy);
 
         NBTTagCompound spawn = new NBTTagCompound("Spawn");
         spawn.setShort("X", (short) level.player.x);
@@ -60,9 +61,10 @@ public class LevelSerializer {
         spawn.setShort("Z", (short) level.player.z);
         spawn.setByte("H", (byte) level.player.xRot);
         spawn.setByte("P", (byte) level.player.yRot);
-
-        master.setCompoundTag("CreatedBy", createdBy);
         master.setCompoundTag("Spawn", spawn);
+        
+        // Metadata tag is required by ClassicWorld specs, even if empty.
+        master.setCompoundTag("Metadata", new NBTTagCompound("Metadata"));
 
         String fileName = fullFilePath
                 + (fullFilePath.getAbsolutePath().endsWith(EXT) ? "" : EXT);

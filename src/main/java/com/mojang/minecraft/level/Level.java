@@ -22,6 +22,9 @@ import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
 
 public class Level implements Serializable {
+    public static final int DEFAULT_CLOUD_COLOR = 16777215,
+            DEFAULT_FOG_COLOR = 16777215,
+            DEFAULT_SKY_COLOR = 10079487;
 
     public static final long serialVersionUID = 0L;
     public int width;
@@ -37,7 +40,7 @@ public class Level implements Serializable {
     public float rotSpawn;
     public transient Random random = new Random();
     public BlockMap blockMap;
-    public transient Minecraft rendererContext$5cd64a7f;
+    public transient Minecraft rendererContext;
     public boolean creativeMode;
     public int cloudLevel = -1;
     public int waterLevel;
@@ -68,11 +71,6 @@ public class Level implements Serializable {
         growTrees = false;
     }
 
-    /**
-     * Adds an entity to the level.
-     *
-     * @param entity
-     */
     public void addEntity(Entity entity) {
         blockMap.insert(entity);
         entity.setLevel(this);
@@ -763,15 +761,15 @@ public class Level implements Serializable {
             }
 
             if (skyColor == 0) {
-                skyColor = 10079487;
+                skyColor = DEFAULT_SKY_COLOR;
             }
 
             if (fogColor == 0) {
-                fogColor = 16777215;
+                fogColor = DEFAULT_FOG_COLOR;
             }
 
             if (cloudColor == 0) {
-                cloudColor = 16777215;
+                cloudColor = DEFAULT_CLOUD_COLOR;
             }
 
             if (xSpawn == 0 && ySpawn == 0 && zSpawn == 0) {
@@ -942,9 +940,9 @@ public class Level implements Serializable {
     }
 
     public void playSound(String var1, Entity var2, float var3, float var4, boolean footStep) {
-        if (rendererContext$5cd64a7f != null) {
+        if (rendererContext != null) {
             Minecraft var5;
-            if ((var5 = rendererContext$5cd64a7f).soundPlayer == null || !var5.settings.sound) {
+            if ((var5 = rendererContext).soundPlayer == null || !var5.settings.sound) {
                 return;
             }
 
@@ -958,9 +956,9 @@ public class Level implements Serializable {
     }
 
     public void playSound(String var1, float var2, float var3, float var4, float var5, float var6) {
-        if (rendererContext$5cd64a7f != null) {
+        if (rendererContext != null) {
             Minecraft var7;
-            if ((var7 = rendererContext$5cd64a7f).soundPlayer == null || !var7.settings.sound) {
+            if ((var7 = rendererContext).soundPlayer == null || !var7.settings.sound) {
                 return;
             }
 

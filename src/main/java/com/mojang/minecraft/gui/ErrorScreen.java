@@ -16,6 +16,7 @@ public final class ErrorScreen extends GuiScreen {
     public ErrorScreen(String title, String subtitle) {
         this.title = title;
         text = subtitle;
+        isOpaque = true;
     }
 
     @Override

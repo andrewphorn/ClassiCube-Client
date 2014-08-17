@@ -144,7 +144,7 @@ public final class LevelGenerator {
      * @param creator
      * @param width
      * @param depth
-     * @param height  Seems to be unused.
+     * @param height Seems to be unused.
      * @return
      */
     public final Level generate(String creator, int width, int depth, int height) {
@@ -194,7 +194,9 @@ public final class LevelGenerator {
         int var51;
         int var54;
         for (var51 = 0; var51 < this.width; ++var51) {
-            this.setProgress(var51 * 100 / (this.width - 1));
+            if (var51 % 4 == 0) {
+                this.setProgress(var51 * 100 / (this.width - 1));
+            }
 
             for (var54 = 0; var54 < this.depth; ++var54) {
                 double var21 = noise3.compute(var51 << 1, var54 << 1) / 8D;
@@ -219,7 +221,9 @@ public final class LevelGenerator {
         int var26;
         int var28;
         for (var24 = 0; var24 < var46; ++var24) {
-            this.setProgress(var24 * 100 / (this.width - 1));
+            if (var24 % 4 == 0) {
+                this.setProgress(var24 * 100 / (this.width - 1));
+            }
 
             for (var11 = 0; var11 < var48; ++var11) {
                 var12 = (int) (noise4.compute(var24, var11) / 24D) - 4;
@@ -260,7 +264,9 @@ public final class LevelGenerator {
         var24 = var48 * var51 * var54 / 256 / 64 << 1;
 
         for (var11 = 0; var11 < var24; ++var11) {
-            this.setProgress(var11 * 100 / (var24 - 1) / 4);
+            if (var11 % 4 == 0) {
+                this.setProgress(var11 * 100 / (var24 - 1) / 4);
+            }
             float var55 = this.random.nextFloat() * var48;
             float var59 = this.random.nextFloat() * var54;
             float var56 = this.random.nextFloat() * var51;
@@ -372,7 +378,9 @@ public final class LevelGenerator {
 
         int var63;
         for (var11 = 0; var11 < var46; ++var11) {
-            this.setProgress(var11 * 100 / (this.width - 1));
+            if (var11 % 4 == 0) {
+                this.setProgress(var11 * 100 / (this.width - 1));
+            }
 
             for (var12 = 0; var12 < var48; ++var12) {
                 boolean var60 = noise4.compute(var11, var12) > 8D;
@@ -402,7 +410,9 @@ public final class LevelGenerator {
 
         for (var51 = 0; var51 < var48; ++var51) {
             var54 = this.random.nextInt(2);
-            this.setProgress(var51 * 50 / (var48 - 1));
+            if (var51 % 4 == 0) {
+                this.setProgress(var51 * 50 / (var48 - 1));
+            }
             var24 = this.random.nextInt(this.width);
             var11 = this.random.nextInt(this.depth);
 
@@ -438,7 +448,9 @@ public final class LevelGenerator {
 
         for (var54 = 0; var54 < var51; ++var54) {
             var24 = this.random.nextInt(2);
-            this.setProgress(var54 * 50 / (var51 - 1) + 50);
+            if (var51 % 4 == 0) {
+                this.setProgress(var54 * 50 / (var51 - 1) + 50);
+            }
             var11 = this.random.nextInt(this.width);
             var12 = this.random.nextInt(this.height);
             var23 = this.random.nextInt(this.depth);
@@ -483,7 +495,9 @@ public final class LevelGenerator {
         var51 = this.width * this.depth / 4000;
 
         for (var54 = 0; var54 < var51; ++var54) {
-            this.setProgress(var54 * 50 / (var51 - 1) + 50);
+            if (var51 % 4 == 0) {
+                this.setProgress(var54 * 50 / (var51 - 1) + 50);
+            }
             var24 = this.random.nextInt(this.width);
             var11 = this.random.nextInt(this.depth);
 
@@ -557,7 +571,7 @@ public final class LevelGenerator {
 
     }
 
-    private void setProgress(int var1) {
-        progressBar.setProgress(var1);
+    private void setProgress(int percentage) {
+        progressBar.setProgress(percentage);
     }
 }

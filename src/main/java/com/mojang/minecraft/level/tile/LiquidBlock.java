@@ -25,7 +25,7 @@ public class LiquidBlock extends Block {
         Block.liquid[id] = true;
         movingId = id;
         stillId = id + 1;
-        setBounds(0F, -0.1F, 0F, 1F, 0.9F, 1F);
+        setBounds(0.001F, -0.09F, 0.001F, 1.001F, 0.91F, 1.001F);
         setPhysics(true);
     }
 
