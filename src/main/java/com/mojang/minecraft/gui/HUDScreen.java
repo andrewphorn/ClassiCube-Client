@@ -25,6 +25,7 @@ public final class HUDScreen extends Screen {
     public static String BottomRight2 = "";
     public static String BottomRight3 = "";
     public static String Announcement = "";
+    public static long AnnouncementTimer = 0;
     public List<ChatLine> chat = new ArrayList<>();
     public int width;
     public int height;

@@ -555,6 +555,7 @@ public class PacketHandler {
                             HUDScreen.BottomRight3 = message;
                             break;
                         case 100:
+                            HUDScreen.AnnouncementTimer = System.currentTimeMillis();
                             HUDScreen.Announcement = message;
                             break;
                         default:
