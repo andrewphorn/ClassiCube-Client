@@ -75,7 +75,6 @@ import com.mojang.minecraft.particle.Particle;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.WaterDropParticle;
 import com.mojang.minecraft.physics.AABB;
-import com.mojang.minecraft.physics.CustomAABB;
 import com.mojang.minecraft.player.InputHandlerImpl;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.Chunk;
@@ -1734,13 +1733,13 @@ public final class Minecraft implements Runnable {
 
         if (level != null && player != null) {
             ++renderer.levelTicks;
-            HeldBlock var41 = renderer.heldBlock;
-            renderer.heldBlock.lastPos = var41.pos;
-            if (var41.moving) {
-                ++var41.offset;
-                if (var41.offset == 7) {
-                    var41.offset = 0;
-                    var41.moving = false;
+            HeldBlock hotBar = renderer.heldBlock;
+            renderer.heldBlock.lastPos = hotBar.pos;
+            if (hotBar.moving) {
+                ++hotBar.offset;
+                if (hotBar.offset == 7) {
+                    hotBar.offset = 0;
+                    hotBar.moving = false;
                 }
             }
 
@@ -1750,19 +1749,18 @@ public final class Minecraft implements Runnable {
                 heldBlock = Block.blocks[heldBlockId];
             }
 
-            float var48 = 0.4F;
-            float var50 = (heldBlock == var41.block ? 1F : 0F) - var41.pos;
-            if (var50 < -var48) {
-                var50 = -var48;
+            float var50 = (heldBlock == hotBar.block ? 1F : 0F) - hotBar.pos;
+            if (var50 < -0.4F) {
+                var50 = -0.4F;
             }
 
-            if (var50 > var48) {
-                var50 = var48;
+            if (var50 > 0.4F) {
+                var50 = 0.4F;
             }
 
-            var41.pos += var50;
-            if (var41.pos < 0.1F) {
-                var41.block = heldBlock;
+            hotBar.pos += var50;
+            if (hotBar.pos < 0.1F) {
+                hotBar.block = heldBlock;
             }
 
             // If it's raining, spawn raindrop particles on ground
@@ -1782,6 +1780,13 @@ public final class Minecraft implements Runnable {
                                 new WaterDropParticle(level, raindropBlockX + offsetX,
                                         groundLevel + 0.1F, raindropBlockY + offsetZ));
                     }
+                }
+            }
+
+            if (HUDScreen.AnnouncementTimer != 0) {
+                if ((System.currentTimeMillis() - HUDScreen.AnnouncementTimer) >= 10000) {
+                    HUDScreen.Announcement = "";
+                    HUDScreen.AnnouncementTimer = 0;
                 }
             }
 
