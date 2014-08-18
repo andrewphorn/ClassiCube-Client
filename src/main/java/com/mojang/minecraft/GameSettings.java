@@ -243,7 +243,7 @@ public final class GameSettings {
                 break;
             default:
                 for (KeyBinding binding : bindings) {
-                    if (("key_" + binding.name.toLowerCase()).equals(value)) {
+                    if (("key_" + binding.name.toLowerCase()).equals(key)) {
                         binding.key = Integer.parseInt(value);
                         break;
                     }
