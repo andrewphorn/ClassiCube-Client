@@ -48,11 +48,12 @@ public class NetworkPlayer extends HumanoidMob {
          || name.equalsIgnoreCase("Jonty800@")) {
          modelName = "sheep";
          }*/
-        if (modelName.equals("humanoid")) {
-            downloadSkin();
-        } else if (isInteger(modelName)) {
+        if (isInteger(modelName)) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load("/terrain.png"));
+        } else {
+            downloadSkin();
         }
+
     }
 
     public static boolean isInteger(String s) {
@@ -103,19 +104,19 @@ public class NetworkPlayer extends HumanoidMob {
             }
 
             hasHair = var10001;
-            if (modelName.equals("humanoid")) {
-                a = textureManager.load(newTexture);
-            }
+            //if (modelName.equals("humanoid")) {
+                    a = textureManager.load(newTexture);
+            //}
             newTexture = null;
         }
         if (isInteger(modelName)) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
             return;
-        } else if (!modelName.startsWith("humanoid")) {
+        } /*else if (!modelName.startsWith("humanoid")) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D,
                     textureManager.load("/mob/" + modelName.replace('.', '_') + ".png"));
             return;
-        }
+        }*/
         if (a < 0) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/char.png"));
         } else {
@@ -137,7 +138,13 @@ public class NetworkPlayer extends HumanoidMob {
 
     public void downloadSkin() {
         String skinToDownload = (SkinName == null ? name : SkinName);
-        new SkinDownloadThread(this, skinToDownload, minecraft.skinServer).start();
+        /*new SkinDownloadThread(this, skinToDownload, minecraft.skinServer).start();*/
+        downloadSkin(minecraft.skinServer + skinToDownload + ".png");
+    }
+
+    public void downloadSkin(String URL)
+    {
+        new SkinDownloadThread(this, URL).start();
     }
 
     public void queue(byte x, byte y, byte z) {

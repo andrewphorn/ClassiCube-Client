@@ -36,21 +36,17 @@ public class ServerConnectThread extends Thread {
     @Override
     public void run() {
         try {
-            tryConnect();
-        } catch (ConnectException e) {
+            netManager.netHandler = new NetworkHandler(server, port, minecraft);
+        } catch (Exception e) /*Don't care about what exception, the debugger will be more specific*/ {
             minecraft.setCurrentScreen(new ErrorScreen("Failed to connect",
                     "You failed to connect to the server. It\'s probably down!"));
             minecraft.isOnline = false;
 
             minecraft.networkManager = null;
             netManager.successful = false;
+            return;
         }
-    }
-
-    public void tryConnect() throws ConnectException {
-        netManager.netHandler = new NetworkHandler(server, port, minecraft);
         netManager.netHandler.netManager = netManager;
-
         netManager.netHandler.send(
                 PacketType.IDENTIFICATION,
                 Constants.PROTOCOL_VERSION, username, key,

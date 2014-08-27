@@ -37,7 +37,9 @@ public class PacketType {
     public static final PacketType CHANGE_MODEL; // 29
     public static final PacketType ENV_SET_MAP_APPEARANCE; // 30
     public static final PacketType ENV_SET_WEATHER_TYPE; // 31
+    public static final PacketType EXT_SET_SKIN; // 33 (0x21)
     public static final PacketType MESSAGE_TYPES; // [Placeholder]
+
     private static int nextOpcode;
     public int length;
     public byte opcode;
@@ -93,6 +95,8 @@ public class PacketType {
         ENV_SET_WEATHER_TYPE = new PacketType(Byte.TYPE);
         MESSAGE_TYPES = new PacketType(Byte.TYPE);
 
+        EXT_SET_SKIN = new PacketType(Byte.TYPE, String.class);
+
         // set names
         EXT_INFO.extName = "ExtInfo";
         EXT_ENTRY.extName = "ExtEntry";
@@ -108,6 +112,7 @@ public class PacketType {
         ENV_SET_MAP_APPEARANCE.extName = "EnvMapAppearance";
         ENV_SET_WEATHER_TYPE.extName = "EnvWeatherType";
         MESSAGE_TYPES.extName = "MessageTypes";
+        EXT_SET_SKIN.extName = "CustomWorld";
         nextOpcode = 0;
     }
 

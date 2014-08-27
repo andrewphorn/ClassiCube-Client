@@ -801,7 +801,7 @@ public final class Minecraft implements Runnable {
         checkGLError("Post startup");
         hud = new HUDScreen(this, width, height);
         if(session != null){
-            new SkinDownloadThread(player, session.username, skinServer).start();
+            new SkinDownloadThread(player, skinServer + session.username + ".png").start();
         }
         if (server != null && session != null) {
             networkManager = new NetworkManager(
@@ -2223,6 +2223,16 @@ public final class Minecraft implements Runnable {
                                         if (player != null) {
                                             player.SkinName = skinName;
                                             player.downloadSkin();
+                                        }
+                                    } else if (packetType == PacketType.EXT_SET_SKIN) {
+                                        byte playerID = (Byte) packetParams[0];
+                                        String skinName = (String) packetParams[1];
+
+                                        NetworkPlayer player = networkManager.players.get(playerID);
+                                        if (player != null) {
+                                            player.SkinName = skinName;
+                                            player.downloadSkin(skinName);
+                                            player.bindTexture(textureManager);
                                         }
                                     } else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
                                         Short NameId = (Short) packetParams[0];

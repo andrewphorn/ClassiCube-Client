@@ -12,7 +12,7 @@ import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 
-public class HumanoidMob extends Mob {
+public class  HumanoidMob extends Mob {
 
     public static final long serialVersionUID = 0L;
     public boolean helmet = Math.random() < 0.20000000298023224D;
