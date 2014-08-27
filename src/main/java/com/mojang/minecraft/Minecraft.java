@@ -1094,6 +1094,16 @@ public final class Minecraft implements Runnable {
                             chunk.update();
                             chunk.loaded = false;
                         }
+                        
+                        if (levelRenderer.chunkCache != null) {
+                            for (Chunk aChunkCache : levelRenderer.chunkCache) {
+                                if (Math.sqrt(aChunkCache.distanceSquared(player))-32 > renderer.fogEnd){
+                                    aChunkCache.visible = false;
+                                } else {
+                                    aChunkCache.visible = true;
+                                }
+                            }
+                        }
 
                         renderer.updateFog();
                         GL11.glEnable(GL11.GL_FOG);
