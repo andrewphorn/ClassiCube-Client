@@ -104,7 +104,7 @@ public class NetworkPlayer extends HumanoidMob {
 
             hasHair = var10001;
             //if (modelName.equals("humanoid")) {
-            a = textureManager.load(newTexture);
+            a = defaultTexture ? -1 : textureManager.load(newTexture);
             //}
             newTexture = null;
         }
@@ -241,7 +241,7 @@ public class NetworkPlayer extends HumanoidMob {
         GL11.glDepthMask(true);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
         GL11.glTranslatef(1F, 1F, -0.05F);
-        fontRenderer.renderNoShadow(displayName, 0, 0, 5263440); // #505050
+        fontRenderer.renderNoShadow(displayName.replaceAll("(&[0-9a-g])", ""), 0, 0, 5263440); // #505050
         GL11.glEnable(GL11.GL_LIGHT0);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();

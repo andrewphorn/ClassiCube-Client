@@ -353,7 +353,7 @@ public class Player extends Mob {
         }
         int var2;
         if (newTextureId < 0) {
-            var2 = modelName.equals("humanoid") ? textureManager.load("/char.png") : textureManager.load("/mob/" + modelName.replace('.', '_') + ".png");
+            var2 = modelName.equals("humanoid") || defaultTexture ? textureManager.load("/char.png") : textureManager.load("/mob/" + modelName.replace('.', '_') + ".png");
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, var2);
         } else {
             var2 = newTextureId;
