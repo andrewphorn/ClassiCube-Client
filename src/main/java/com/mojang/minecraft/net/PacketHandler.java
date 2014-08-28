@@ -302,11 +302,14 @@ public class PacketHandler {
                 byte playerID = (Byte) packetParams[0];
                 String InGameName = (String) packetParams[1];
                 String skinName = (String) packetParams[2];
-
                 if(skinName != null) {
                     if (playerID >= 0) {
                         NetworkPlayer tmp = networkManager.players.get(playerID);
                         if (tmp != null) {
+                            tmp.defaultTexture = false;
+                            if(skinName == "default") {
+                                tmp.defaultTexture = true;
+                            }
                             tmp.SkinName = skinName;
                             tmp.downloadSkin(tmp.SkinName);
                             tmp.bindTexture(minecraft.textureManager);
