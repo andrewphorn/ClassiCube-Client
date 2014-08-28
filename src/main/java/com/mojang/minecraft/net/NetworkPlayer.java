@@ -103,21 +103,20 @@ public class NetworkPlayer extends HumanoidMob {
             }
 
             hasHair = var10001;
-            if (modelName.equals("humanoid")) {
-                a = textureManager.load(newTexture);
-            }
+            //if (modelName.equals("humanoid")) {
+            a = defaultTexture ? -1 : textureManager.load(newTexture);
+            //}
             newTexture = null;
         }
         if (isInteger(modelName)) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
             return;
-        } else if (!modelName.startsWith("humanoid")) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                    textureManager.load("/mob/" + modelName.replace('.', '_') + ".png"));
-            return;
         }
         if (a < 0) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/char.png"));
+            if(modelName.equals("humanoid"))
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/char.png"));
+            else
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/mob/" + modelName.replace('.', '_') + ".png"));
         } else {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, a);
         }
@@ -137,7 +136,11 @@ public class NetworkPlayer extends HumanoidMob {
 
     public void downloadSkin() {
         String skinToDownload = (SkinName == null ? name : SkinName);
-        new SkinDownloadThread(this, skinToDownload, minecraft.skinServer).start();
+        downloadSkin(minecraft.skinServer + skinToDownload + ".png");
+    }
+
+    public void downloadSkin(String URL)  {
+        new SkinDownloadThread(this, URL).start();
     }
 
     public void queue(byte x, byte y, byte z) {
@@ -238,7 +241,7 @@ public class NetworkPlayer extends HumanoidMob {
         GL11.glDepthMask(true);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
         GL11.glTranslatef(1F, 1F, -0.05F);
-        fontRenderer.renderNoShadow(name, 0, 0, 5263440); // #505050
+        fontRenderer.renderNoShadow(displayName.replaceAll("(&[0-9a-g])", ""), 0, 0, 5263440); // #505050
         GL11.glEnable(GL11.GL_LIGHT0);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();

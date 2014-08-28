@@ -299,15 +299,30 @@ public class PacketHandler {
                 Collections.sort(minecraft.playerListNameData, new PlayerListComparator());
 
             } else if (packetType == PacketType.EXT_ADD_ENTITY) {
-                byte playerID = (byte) packetParams[0];
+                byte playerID = (Byte) packetParams[0];
+                String InGameName = (String) packetParams[1];
                 String skinName = (String) packetParams[2];
-
-                NetworkPlayer targetPlayer = networkManager.players.get(playerID);
-                if (targetPlayer != null) {
-                    targetPlayer.SkinName = skinName;
-                    targetPlayer.downloadSkin();
+                if(skinName != null) {
+                    if (playerID >= 0) {
+                        NetworkPlayer tmp = networkManager.players.get(playerID);
+                        if (tmp != null) {
+                            tmp.defaultTexture = false;
+                            if(skinName == "default") {
+                                tmp.defaultTexture = true;
+                            }
+                            tmp.SkinName = skinName;
+                            tmp.downloadSkin(tmp.SkinName);
+                            tmp.bindTexture(minecraft.textureManager);
+                            tmp.displayName = InGameName;
+                            tmp.renderHover(minecraft.textureManager);
+                        }
+                    } else if (playerID == -1) {
+                        minecraft.player.textureName = skinName;
+                        new SkinDownloadThread(minecraft.player, skinName).start();
+                        minecraft.player.bindTexture(minecraft.textureManager);
+                        //No need to set the display name for yourself
+                    }
                 }
-
             } else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
                 short nameID = (short) packetParams[0];
                 List<PlayerListNameData> cache = minecraft.playerListNameData;

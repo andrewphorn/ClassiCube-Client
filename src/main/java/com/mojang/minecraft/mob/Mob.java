@@ -49,7 +49,8 @@ public class Mob extends Entity {
     protected float animStep;
     protected float animStepO;
     protected int tickCount = 0;
-    protected String textureName = "/char.png";
+    public String textureName = "/char.png";
+	public boolean defaultTexture = true;
     protected float bobStrength = 1F;
     protected int deathScore = 0;
     protected boolean dead = false;
