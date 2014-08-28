@@ -300,7 +300,8 @@ public class PacketHandler {
 
             } else if (packetType == PacketType.EXT_ADD_ENTITY) {
                 byte playerID = (Byte) packetParams[0];
-                String skinName = (String) packetParams[1];
+                String InGameName = (String) packetParams[1];
+                String skinName = (String) packetParams[2];
 
                 if(skinName != null) {
                     if (playerID >= 0) {
@@ -309,11 +310,13 @@ public class PacketHandler {
                             tmp.SkinName = skinName;
                             tmp.downloadSkin(tmp.SkinName);
                             tmp.bindTexture(minecraft.textureManager);
+                            tmp.displayName = InGameName;
                         }
                     } else if (playerID == -1) {
                         minecraft.player.textureName = skinName;
                         new SkinDownloadThread(minecraft.player, skinName).start();
                         minecraft.player.bindTexture(minecraft.textureManager);
+                        //No need to set the display name for yourself
                     }
                 }
             } else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
