@@ -113,7 +113,10 @@ public class NetworkPlayer extends HumanoidMob {
             return;
         }
         if (a < 0) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/char.png"));
+            if(modelName.equals("humanoid"))
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/char.png"));
+            else
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/mob/" + modelName.replace('.', '_') + ".png"));
         } else {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, a);
         }
@@ -238,7 +241,7 @@ public class NetworkPlayer extends HumanoidMob {
         GL11.glDepthMask(true);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
         GL11.glTranslatef(1F, 1F, -0.05F);
-        fontRenderer.renderNoShadow(name, 0, 0, 5263440); // #505050
+        fontRenderer.renderNoShadow(displayName, 0, 0, 5263440); // #505050
         GL11.glEnable(GL11.GL_LIGHT0);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();

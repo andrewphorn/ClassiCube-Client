@@ -311,6 +311,7 @@ public class PacketHandler {
                             tmp.downloadSkin(tmp.SkinName);
                             tmp.bindTexture(minecraft.textureManager);
                             tmp.displayName = InGameName;
+                            tmp.renderHover(minecraft.textureManager);
                         }
                     } else if (playerID == -1) {
                         minecraft.player.textureName = skinName;
