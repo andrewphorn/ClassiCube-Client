@@ -8,27 +8,26 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import com.mojang.minecraft.mob.Mob;
+import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.LogUtil;
 import com.oyasunadev.mcraft.client.util.Constants;
 
 public class SkinDownloadThread extends Thread {
 
-    private final String skinServer;
-    private final String skinName;
     private final Mob player;
+    private final String URL;
 
-    public SkinDownloadThread(Mob player, String skinName, String skinServer) {
+    public SkinDownloadThread(Mob player, String url) {
         super();
         this.player = player;
-        this.skinName = skinName;
-        this.skinServer = skinServer;
+        this.URL = url;
     }
 
     @Override
     public void run() {
         HttpURLConnection connection = null;
         try {
-            URL skinUrl = new URL(skinServer + skinName + ".png");
+            URL skinUrl = new URL(this.URL);
             connection = (HttpURLConnection) skinUrl.openConnection();
             connection.addRequestProperty("User-Agent", Constants.USER_AGENT);
             connection.setUseCaches(false);
@@ -52,6 +51,11 @@ public class SkinDownloadThread extends Thread {
                 player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
             }
 
+            if (player.modelName.equalsIgnoreCase("printer")) {
+                if (image.getWidth() < 128 || image.getWidth() < 128)
+                    player.newTexture = null;
+            }
+
         } catch (IOException ex) {
             // Log connection errors
             if (connection != null) {
@@ -64,8 +68,8 @@ public class SkinDownloadThread extends Thread {
                     int responseCode = connection.getResponseCode();
                     if (responseCode != HttpURLConnection.HTTP_OK) {
                         String logMsg = String.format(
-                                "Could not download skin for \"%s\". Server at %s returned code %s",
-                                skinName, skinServer, responseCode);
+                                "Could not download skin from \"%s\". Server returned code %s",
+                                URL, responseCode);
                         LogUtil.logWarning(logMsg);
                         return;
                     }
@@ -75,15 +79,15 @@ public class SkinDownloadThread extends Thread {
                 }
             }
             String errorMsg = String.format(
-                    "Network error while downloading skin for \"%s\" from %s: %s",
-                    skinName, skinServer, ex);
+                    "Network error while downloading skin from \"%s\": \"%s\"",
+                    this.URL, ex);
             LogUtil.logWarning(errorMsg);
 
         } catch (Exception ex) {
             // Log unexpected errors
             String errorMsg = String.format(
-                    "Unexpected error while downloading skin for \"%s\" from %s: %s",
-                    skinName, skinServer, ex);
+                    "Unexpected error while downloading skin from \"%s\": \"%s\"",
+                    this.URL, ex);
             LogUtil.logWarning(errorMsg);
 
         } finally {

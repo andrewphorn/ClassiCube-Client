@@ -800,7 +800,7 @@ public final class Minecraft implements Runnable {
         checkGLError("Post startup");
         hud = new HUDScreen(this, width, height);
         if (session != null) {
-            new SkinDownloadThread(player, session.username, skinServer).start();
+            new SkinDownloadThread(player, skinServer + session.username + ".png").start();
         }
         if (server != null && session != null) {
             networkManager = new NetworkManager(

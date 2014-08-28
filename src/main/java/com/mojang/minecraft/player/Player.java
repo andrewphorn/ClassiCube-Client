@@ -342,17 +342,13 @@ public class Player extends Mob {
             }
             hasHair = var10001;
 
-            if (modelName.equals("humanoid")) {
-                newTextureId = textureManager.load(newTexture);
-            }
+            //if (modelName.equals("humanoid")) {
+            newTextureId = textureManager.load(newTexture);
+            //}
             newTexture = null;
         }
         if (isInteger(modelName)) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
-            return;
-        } else if (!modelName.startsWith("humanoid")) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                    textureManager.load("/mob/" + modelName.replace('.', '_') + ".png"));
             return;
         }
         int var2;
