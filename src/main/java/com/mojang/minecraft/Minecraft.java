@@ -648,7 +648,7 @@ public final class Minecraft implements Runnable {
             System.setProperty("net.java.games.input.librarypath", mcDir + "/natives");
         }
 
-        // if LWJGL dependencies are missing, a NoClassDefFoundError will be thrown here
+        // if LWJGL dependencies are missing, NoClassDefFoundError or UnsatisfiedLinkError will be thrown here
         LogUtil.logInfo("LWJGL version: " + Sys.getVersion());
 
         resourceThread = new ResourceDownloadThread(mcDir, this);
@@ -823,7 +823,7 @@ public final class Minecraft implements Runnable {
 
         try {
             initialize();
-        } catch (Exception | NoClassDefFoundError ex) {
+        } catch (Exception | NoClassDefFoundError | UnsatisfiedLinkError ex) {
             LogUtil.logError("Failed to start ClassiCube!", ex);
             JOptionPane.showMessageDialog(null, ex.toString(), "Failed to start ClassiCube",
                     JOptionPane.ERROR_MESSAGE);
