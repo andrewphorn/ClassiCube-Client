@@ -269,31 +269,31 @@ public class ClassiCubeStandalone {
         /**
          * Starts Minecraft Classic
          *
-         * @param Player Player name
-         * @param Server Server address
-         * @param Mppass The player's MPPass
-         * @param Port Server port
+         * @param player Player name
+         * @param server Server address
+         * @param mppass The player's MPPass
+         * @param port Server port
          * @param skinServer The url of the skin server.
          * @param fullscreen True if the game should be in fullScreen.
          */
-        public void startMinecraft(String Player, String Server, String Mppass, int Port,
+        public void startMinecraft(String player, String server, String mppass, int port,
                 String skinServer, boolean fullscreen) {
 
             MCraftApplet applet = new MCraftApplet();
             final MinecraftCanvas canvas = new MinecraftCanvas();
 
-            minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(), fullscreen, true);
+            minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(), fullscreen, false);
 
-            minecraft.session = new SessionData(Player, "noidea");
-            minecraft.session.mppass = Mppass;
+            minecraft.session = new SessionData(player, "noidea");
+            minecraft.session.mppass = mppass;
             minecraft.session.haspaid = true;
-            minecraft.server = Server;
-            minecraft.port = Port;
+            minecraft.server = server;
+            minecraft.port = port;
             if (skinServer != null) {
                 minecraft.skinServer = skinServer;
             }
 
-            if (Player == null && Server == null && Mppass == null) {
+            if (player == null && server == null && mppass == null) {
                 minecraft.session = null;
             }
 

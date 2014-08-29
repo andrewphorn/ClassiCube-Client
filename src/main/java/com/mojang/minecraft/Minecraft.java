@@ -643,15 +643,16 @@ public final class Minecraft implements Runnable {
     private void initialize() throws Exception {
         mcDir = getMinecraftDirectory();
 
-        resourceThread = new ResourceDownloadThread(mcDir, this);
-        resourceThread.run(); // TODO: run asynchronously
-
         if (!isApplet) {
             System.setProperty("org.lwjgl.librarypath", mcDir + "/natives");
             System.setProperty("net.java.games.input.librarypath", mcDir + "/natives");
         }
 
+        // if LWJGL dependencies are missing, a NoClassDefFoundError will be thrown here
         LogUtil.logInfo("LWJGL version: " + Sys.getVersion());
+
+        resourceThread = new ResourceDownloadThread(mcDir, this);
+        resourceThread.run(); // TODO: run asynchronously
 
         if (session == null) {
             isSinglePlayer = true;
@@ -822,10 +823,11 @@ public final class Minecraft implements Runnable {
 
         try {
             initialize();
-        } catch (Exception ex) {
+        } catch (Exception | NoClassDefFoundError ex) {
             LogUtil.logError("Failed to start ClassiCube!", ex);
             JOptionPane.showMessageDialog(null, ex.toString(), "Failed to start ClassiCube",
                     JOptionPane.ERROR_MESSAGE);
+            isRunning = false;
             return;
         }
 
