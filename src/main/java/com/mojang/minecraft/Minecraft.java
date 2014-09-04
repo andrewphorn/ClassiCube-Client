@@ -1426,6 +1426,7 @@ public final class Minecraft implements Runnable {
         if (currentScreen != null) {
             currentScreen.onClose();
         }
+        HUDScreen.chatLocation = 0;
 
         // SURVIVAL: Game over
         if (newScreen == null && player.health <= 0) {
@@ -1832,6 +1833,28 @@ public final class Minecraft implements Runnable {
                 if (currentScreen != null) {
                     currentScreen.keyboardEvent();
                 }
+            }
+        } else if (currentScreen instanceof GuiScreen) {
+            while (Mouse.next()) {
+            int mouseScroll = Mouse.getEventDWheel();
+            if (mouseScroll != 0) {
+                if (mouseScroll > 0) {
+                    if (HUDScreen.chat.size() - HUDScreen.chatLocation < 20){
+                        HUDScreen.chatLocation = HUDScreen.chatLocation;
+                            break;
+                    }
+                mouseScroll = 1;
+                }
+                if (mouseScroll < 0) {
+                    mouseScroll = -1;
+                }
+                HUDScreen.chatLocation += mouseScroll;
+                if (HUDScreen.chatLocation < 0){
+                    HUDScreen.chatLocation = 0;
+                    }
+                break;
+                }
+                currentScreen.mouseEvent();
             }
         } else if (currentScreen == null) {
             while (Mouse.next()) {
