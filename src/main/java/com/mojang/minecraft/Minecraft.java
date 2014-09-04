@@ -1426,6 +1426,7 @@ public final class Minecraft implements Runnable {
         if (currentScreen != null) {
             currentScreen.onClose();
         }
+        HUDScreen.chatLocation = 0;
 
         // SURVIVAL: Game over
         if (newScreen == null && player.health <= 0) {
