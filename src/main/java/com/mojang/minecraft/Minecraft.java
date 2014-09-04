@@ -1837,20 +1837,18 @@ public final class Minecraft implements Runnable {
             while (Mouse.next()) {
                 int mouseScroll = Mouse.getEventDWheel();
                 if (mouseScroll != 0) {
-                    // React to mouse-scrolling while in block selection
-                    int scrollticks = mouseScroll;
-                    if (scrollticks > 0) {
+                    if (mouseScroll > 0) {
                         if (HUDScreen.chat.size() - HUDScreen.chatLocation < 20){
                             HUDScreen.chatLocation = HUDScreen.chatLocation;
                             break;
                         }
-                        scrollticks = 1;
+                       mouseScroll = 1;
                     }
 
-                    if (scrollticks < 0) {
-                        scrollticks = -1;
+                    if (mouseScroll < 0) {
+                        mouseScroll = -1;
                     }
-                    HUDScreen.chatLocation += scrollticks;
+                    HUDScreen.chatLocation += mouseScroll;
                     if (HUDScreen.chatLocation < 0){
                         HUDScreen.chatLocation = 0;
                     }
