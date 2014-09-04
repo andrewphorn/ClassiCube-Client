@@ -1833,6 +1833,31 @@ public final class Minecraft implements Runnable {
                     currentScreen.keyboardEvent();
                 }
             }
+        } else if (currentScreen instanceof GuiScreen) {
+            while (Mouse.next()) {
+                int mouseScroll = Mouse.getEventDWheel();
+                if (mouseScroll != 0) {
+                    // React to mouse-scrolling while in block selection
+                    int var1 = mouseScroll;
+                    if (var1 > 0) {
+                        var1 = 1;
+                    }
+
+                    if (var1 < 0) {
+                        if (HUDScreen.chat.size() - HUDScreen.chatLocation < 20){
+                        HUDScreen.chatLocation = HUDScreen.chatLocation;
+                        break;
+                        }
+                        var1 = -1;
+                    }
+                    HUDScreen.chatLocation -= var1;
+                    if (HUDScreen.chatLocation < 0){
+                        HUDScreen.chatLocation = 0;
+                    }
+                    break;
+                }
+                currentScreen.mouseEvent();
+            }
         } else if (currentScreen == null) {
             while (Mouse.next()) {
                 if (currentScreen == null) {

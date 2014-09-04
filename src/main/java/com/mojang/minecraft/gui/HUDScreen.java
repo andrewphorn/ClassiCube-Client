@@ -26,7 +26,7 @@ public final class HUDScreen extends Screen {
     public static String BottomRight3 = "";
     public static String Announcement = "";
     public static long AnnouncementTimer = 0;
-    public List<ChatLine> chat = new ArrayList<>();
+    public static List<ChatLine> chat = new ArrayList<>();
     public int width;
     public int height;
     public String hoveredPlayer = null;
@@ -35,6 +35,7 @@ public final class HUDScreen extends Screen {
     int page = 0;
     private Random random = new Random();
     private Minecraft minecraft;
+    public static int chatLocation = 0;
 
     public HUDScreen(Minecraft minecraft, int width, int height) {
         this.minecraft = minecraft;
@@ -50,7 +51,7 @@ public final class HUDScreen extends Screen {
 
         chat.add(0, new ChatLine(text));
 
-        while (chat.size() > 50) {
+        while (chat.size() > 1000) {
             chat.remove(chat.size() - 1);
         }
 
@@ -267,12 +268,12 @@ public final class HUDScreen extends Screen {
             drawBox(chatX, chatY, chatWidth, chatHeight, ChatInputScreen.ChatRGB);
         }
         chatsOnScreen.clear();
-        for (i = 0; i < chat.size() && i < chatLinesInScreen; ++i) {
+        for (i = chatLocation; i < chat.size() && i < chatLinesInScreen + chatLocation; ++i) {
             if (chat.get(i).time < 200 || isLargeChatScreen) {
                 String message = chat.get(i).message;
-                fontRenderer.render(message, 4, height - 8 - i * 9 - 27, 16777215);
+                fontRenderer.render(message, 4, height - 8 - (i - chatLocation) * 9 - 27, 16777215);
                 // add click data for urls
-                chatsOnScreen.add(new ChatScreenData(1, 8, 4, height - 8 - i * 9 - 27, message,
+                chatsOnScreen.add(new ChatScreenData(1, 8, 4, height - 8 - (i - chatLocation) * 9 - 27, message,
                         fontRenderer));
             }
         }
