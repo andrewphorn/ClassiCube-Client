@@ -33,11 +33,10 @@ import com.mojang.util.ColorCache;
 import com.mojang.util.LogUtil;
 import com.mojang.util.MathHelper;
 import com.oyasunadev.mcraft.client.util.Constants;
-import com.oyasunadev.mcraft.client.util.ExtData;
 
 public class PacketHandler {
     // TODO move out of constants and into something more appropriate
-    private static final List<ExtData> supportedExtensions = new ArrayList<>();
+    private static final List<ProtocolExtension> supportedExtensions = new ArrayList<>();
     private int receivedExtensionLength;
     
     private final Minecraft minecraft;
@@ -64,8 +63,7 @@ public class PacketHandler {
         Object[] packetParams = new Object[packetType.params.length];
 
         for (int i = 0; i < packetParams.length; ++i) {
-            packetParams[i] = networkHandler
-                    .readObject(packetType.params[i]);
+            packetParams[i] = networkHandler .readObject(packetType.params[i]);
         }
 
         NetworkManager networkManager = networkHandler.netManager;
@@ -81,33 +79,26 @@ public class PacketHandler {
             } else if (packetType == PacketType.EXT_ENTRY) {
                 String extName = (String) packetParams[0];
                 Integer version = (Integer) packetParams[1];
-                supportedExtensions.add(new ExtData(extName, version));
-
-                if (extName.toLowerCase().contains("heldblock")) {
-                    canSendHeldBlock = true;
+                ProtocolExtension serverExt = new ProtocolExtension(extName, version);
+                if(ProtocolExtension.isSupported(serverExt)){
+                    supportedExtensions.add(serverExt);
                 }
-                if (extName.toLowerCase().contains("messagetypes")) {
+
+                if (extName.equalsIgnoreCase(ProtocolExtension.HELD_BLOCK.name)) {
+                    canSendHeldBlock = true;
+                }else if (extName.equalsIgnoreCase(ProtocolExtension.MESSAGE_TYPES.name)) {
                     serverSupportsMessages = true;
                 }
 
                 if (receivedExtensionLength == supportedExtensions.size()) {
-                    LogUtil.logInfo("Sending client's supported Extensions");
-                    List<ExtData> mutuallySupportedExts = new ArrayList<>();
-                    for (int j = 0; j < PacketType.packets.length - 1; j++) {
-                        if (PacketType.packets[j] != null
-                                && !PacketType.packets[j].extName.equals("")) {
-                            mutuallySupportedExts.add(new ExtData(
-                                    PacketType.packets[j].extName,
-                                    PacketType.packets[j].Version));
-                        }
-                    }
+                    LogUtil.logInfo("Sending list of mutually-supported CPE extensions");
                     Object[] toSendParams = new Object[]{
-                        Constants.CLIENT_NAME, (short) mutuallySupportedExts.size()};
+                        Constants.CLIENT_NAME, (short) supportedExtensions.size()};
                     networkManager.netHandler.send(PacketType.EXT_INFO, toSendParams);
-                    for (ExtData ext : mutuallySupportedExts) {
+                    for (ProtocolExtension ext : supportedExtensions) {
                         LogUtil.logInfo(String.format("Sending ext: %s with version: %s",
-                                ext.Name, ext.Version));
-                        toSendParams = new Object[]{ext.Name, ext.Version};
+                                ext.name, ext.version));
+                        toSendParams = new Object[]{ext.name, ext.version};
                         networkManager.netHandler.send(PacketType.EXT_ENTRY, toSendParams);
                     }
                 }
@@ -246,7 +237,7 @@ public class PacketHandler {
                 short clickDistance = (Short) packetParams[0];
                 minecraft.gamemode.reachDistance = clickDistance / 32;
 
-            } else if (packetType == PacketType.HOLDTHIS) {
+            } else if (packetType == PacketType.HOLD_THIS) {
                 byte blockToHold = (Byte) packetParams[0];
                 byte preventChange = (Byte) packetParams[1];
                 boolean canPreventChange = preventChange > 0;
@@ -549,7 +540,7 @@ public class PacketHandler {
                 byte messageType = (Byte) packetParams[0];
                 String message = (String) packetParams[1];
                 if (messageType > 0 && serverSupportsMessages) {
-                    // MessageTypes CPE
+                    // MESSAGE_TYPES CPE
                     switch (messageType) {
                         case 1:
                             HUDScreen.ServerName = message;

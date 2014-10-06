@@ -1,115 +1,124 @@
 package com.mojang.minecraft.net;
 
 public class PacketType {
+
+    // Packet opcodes are assigned in order in which they are defined
+
     public static final PacketType[] packets = new PacketType[256];
-
-    public static final PacketType IDENTIFICATION = new PacketType(Byte.TYPE,
-            String.class, String.class, Byte.TYPE);
-
-    public static final PacketType LEVEL_INIT;
-    public static final PacketType LEVEL_DATA;
-    public static final PacketType LEVEL_FINALIZE;
-    public static final PacketType PLAYER_SET_BLOCK;
-    public static final PacketType BLOCK_CHANGE;
-    public static final PacketType SPAWN_PLAYER;
-    public static final PacketType POSITION_ROTATION;
-    public static final PacketType POSITION_ROTATION_UPDATE;
-    public static final PacketType POSITION_UPDATE;
-    public static final PacketType ROTATION_UPDATE;
-    public static final PacketType DESPAWN_PLAYER;
-    public static final PacketType CHAT_MESSAGE;
-    public static final PacketType DISCONNECT;
-    public static final PacketType UPDATE_PLAYER_TYPE;
-    // ------------------------------------------------
-    public static final PacketType EXT_INFO; // 16
-    public static final PacketType EXT_ENTRY; // 17
-    public static final PacketType CLICK_DISTANCE; // 18
-    public static final PacketType CUSTOM_BLOCK_SUPPORT_LEVEL; // 19
-    public static final PacketType HOLDTHIS; // 20
-    public static final PacketType SET_TEXT_HOTKEY; // 21
-    public static final PacketType EXT_ADD_PLAYER_NAME; // 22
-    public static final PacketType EXT_ADD_ENTITY; // 23
-    public static final PacketType EXT_REMOVE_PLAYER_NAME; // 24
-    public static final PacketType ENV_SET_COLOR; // 25
-    public static final PacketType SELECTION_CUBOID; // 26
-    public static final PacketType REMOVE_SELECTION_CUBOID; // 27
-    public static final PacketType SET_BLOCK_PERMISSIONS; // 28
-    public static final PacketType CHANGE_MODEL; // 29
-    public static final PacketType ENV_SET_MAP_APPEARANCE; // 30
-    public static final PacketType ENV_SET_WEATHER_TYPE; // 31
-    public static final PacketType MESSAGE_TYPES; // [Placeholder]
     private static int nextOpcode;
+
+    // ----  STANDARD PACKETS ----------------------------------------------------------------------
+    public static final PacketType IDENTIFICATION = // 0
+            new PacketType(Byte.TYPE, String.class, String.class, Byte.TYPE);
+
+    public static final PacketType PING // 1 -- unused
+            = new PacketType();
+
+    public static final PacketType LEVEL_INIT // 2
+            = new PacketType();
+
+    public static final PacketType LEVEL_DATA // 3
+            = new PacketType(Short.TYPE, byte[].class, Byte.TYPE);
+
+    public static final PacketType LEVEL_FINALIZE // 4
+            = new PacketType(Short.TYPE, Short.TYPE, Short.TYPE);
+
+    public static final PacketType PLAYER_SET_BLOCK // 5
+            = new PacketType(Short.TYPE, Short.TYPE, Short.TYPE, Byte.TYPE, Byte.TYPE);
+
+    public static final PacketType BLOCK_CHANGE // 6
+            = new PacketType(Short.TYPE, Short.TYPE, Short.TYPE, Byte.TYPE);
+
+    public static final PacketType SPAWN_PLAYER // 7
+            = new PacketType(Byte.TYPE, String.class, Short.TYPE, Short.TYPE,
+                    Short.TYPE, Byte.TYPE, Byte.TYPE);
+
+    public static final PacketType POSITION_ROTATION // 8
+            = new PacketType(Byte.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Byte.TYPE, Byte.TYPE);
+
+    public static final PacketType POSITION_ROTATION_UPDATE // 9
+            = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE);
+
+    public static final PacketType POSITION_UPDATE // 10
+            = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE);
+
+    public static final PacketType ROTATION_UPDATE // 11
+            = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE);
+
+    public static final PacketType DESPAWN_PLAYER // 12
+            = new PacketType(Byte.TYPE);
+
+    public static final PacketType CHAT_MESSAGE // 13
+            = new PacketType(Byte.TYPE, String.class);
+
+    public static final PacketType DISCONNECT // 14
+            = new PacketType(String.class);
+
+    public static final PacketType UPDATE_PLAYER_TYPE // 15
+            = new PacketType(Byte.TYPE);
+
+    // ----  CPE PACKETS ---------------------------------------------------------------------------
+    public static final PacketType EXT_INFO // 16
+            = new PacketType(String.class, Short.TYPE);
+
+    public static final PacketType EXT_ENTRY // 17
+            = new PacketType(String.class, Integer.TYPE);
+
+    public static final PacketType CLICK_DISTANCE // 18
+            = new PacketType(Short.TYPE);
+
+    public static final PacketType CUSTOM_BLOCK_SUPPORT_LEVEL // 19
+            = new PacketType(Byte.TYPE);
+
+    public static final PacketType HOLD_THIS // 20
+            = new PacketType(Byte.TYPE, Byte.TYPE);
+
+    public static final PacketType SET_TEXT_HOTKEY // 21
+            = new PacketType(String.class, String.class, Integer.TYPE, Byte.TYPE);
+
+    public static final PacketType EXT_ADD_PLAYER_NAME // 22
+            = new PacketType(Short.TYPE, String.class, String.class, String.class, Byte.TYPE);
+
+    public static final PacketType EXT_ADD_ENTITY // 23 -- unused
+            = new PacketType(Byte.TYPE, String.class, String.class);
+
+    public static final PacketType EXT_REMOVE_PLAYER_NAME // 24
+            = new PacketType(Short.TYPE);
+
+    public static final PacketType ENV_SET_COLOR // 25
+            = new PacketType(Byte.TYPE, Short.TYPE, Short.TYPE, Short.TYPE);
+
+    public static final PacketType SELECTION_CUBOID // 26
+            = new PacketType(Byte.TYPE, String.class, Short.TYPE, Short.TYPE, Short.TYPE,
+                    Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE,
+                    Short.TYPE);
+
+    public static final PacketType REMOVE_SELECTION_CUBOID // 27
+            = new PacketType(Byte.TYPE);
+
+    public static final PacketType SET_BLOCK_PERMISSIONS // 28
+            = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE);
+
+    public static final PacketType CHANGE_MODEL // 29
+            = new PacketType(Byte.TYPE, String.class);
+
+    public static final PacketType ENV_SET_MAP_APPEARANCE // 30
+            = new PacketType(String.class, Byte.TYPE, Byte.TYPE, Short.TYPE);
+
+    public static final PacketType ENV_SET_WEATHER_TYPE // 31
+            = new PacketType(Byte.TYPE);
+
+    public static final PacketType HACK_CONTROL // 32
+            = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE, Short.TYPE);
+
+    public static final PacketType EXT_ADD_ENTITY2 // 33
+            = new PacketType(Byte.TYPE, String.class, String.class, Short.TYPE,
+                    Short.TYPE, Short.TYPE, Byte.TYPE, Byte.TYPE);
+
     public int length;
     public byte opcode;
     @SuppressWarnings("rawtypes")
     public Class[] params;
-    public String extName = "";
-    public int Version = 1;
-
-    static {
-        new PacketType();
-
-        LEVEL_INIT = new PacketType();
-        LEVEL_DATA = new PacketType(Short.TYPE, byte[].class, Byte.TYPE);
-        LEVEL_FINALIZE = new PacketType(Short.TYPE, Short.TYPE, Short.TYPE);
-        PLAYER_SET_BLOCK = new PacketType(Short.TYPE, Short.TYPE, Short.TYPE,
-                Byte.TYPE, Byte.TYPE);
-        BLOCK_CHANGE = new PacketType(Short.TYPE, Short.TYPE, Short.TYPE, Byte.TYPE);
-        SPAWN_PLAYER = new PacketType(Byte.TYPE, String.class, Short.TYPE,
-                Short.TYPE, Short.TYPE, Byte.TYPE, Byte.TYPE);
-        POSITION_ROTATION = new PacketType(Byte.TYPE, Short.TYPE, Short.TYPE,
-                Short.TYPE, Byte.TYPE, Byte.TYPE);
-        POSITION_ROTATION_UPDATE = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE,
-                Byte.TYPE, Byte.TYPE, Byte.TYPE);
-        POSITION_UPDATE = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE, Byte.TYPE);
-        ROTATION_UPDATE = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE);
-        DESPAWN_PLAYER = new PacketType(Byte.TYPE);
-        CHAT_MESSAGE = new PacketType(Byte.TYPE, String.class);
-        DISCONNECT = new PacketType(String.class);
-        UPDATE_PLAYER_TYPE = new PacketType(Byte.TYPE);
-
-        // --------------------------------------------------------------
-        EXT_INFO = new PacketType(String.class, Short.TYPE);
-        EXT_ENTRY = new PacketType(String.class, Integer.TYPE);
-        CLICK_DISTANCE = new PacketType(Short.TYPE);
-        CUSTOM_BLOCK_SUPPORT_LEVEL = new PacketType(Byte.TYPE);
-        HOLDTHIS = new PacketType(Byte.TYPE, Byte.TYPE);
-        SET_TEXT_HOTKEY = new PacketType(String.class, String.class, Integer.TYPE,
-                Byte.TYPE);
-        EXT_ADD_PLAYER_NAME = new PacketType(Short.TYPE, String.class, String.class,
-                String.class, Byte.TYPE);
-        EXT_ADD_ENTITY = new PacketType(Byte.TYPE, String.class, String.class);
-        EXT_REMOVE_PLAYER_NAME = new PacketType(Short.TYPE);
-        ENV_SET_COLOR = new PacketType(
-                Byte.TYPE, Short.TYPE, Short.TYPE, Short.TYPE);
-        SELECTION_CUBOID = new PacketType(Byte.TYPE, String.class, Short.TYPE,
-                Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE, Short.TYPE,
-                Short.TYPE, Short.TYPE);
-        REMOVE_SELECTION_CUBOID = new PacketType(Byte.TYPE);
-        SET_BLOCK_PERMISSIONS = new PacketType(Byte.TYPE, Byte.TYPE, Byte.TYPE);
-        CHANGE_MODEL = new PacketType(Byte.TYPE, String.class);
-        ENV_SET_MAP_APPEARANCE = new PacketType(String.class, Byte.TYPE, Byte.TYPE,
-                Short.TYPE);
-        ENV_SET_WEATHER_TYPE = new PacketType(Byte.TYPE);
-        MESSAGE_TYPES = new PacketType(Byte.TYPE);
-
-        // set names
-        EXT_INFO.extName = "ExtInfo";
-        EXT_ENTRY.extName = "ExtEntry";
-        CLICK_DISTANCE.extName = "ClickDistance";
-        CUSTOM_BLOCK_SUPPORT_LEVEL.extName = "CustomBlocks";
-        HOLDTHIS.extName = "HeldBlock";
-        SET_TEXT_HOTKEY.extName = "TextHotKey";
-        EXT_ADD_PLAYER_NAME.extName = "ExtPlayerList"; // 3 packets in here
-        ENV_SET_COLOR.extName = "EnvColors";
-        SELECTION_CUBOID.extName = "SelectionCuboid";
-        SET_BLOCK_PERMISSIONS.extName = "BlockPermissions";
-        CHANGE_MODEL.extName = "ChangeModel";
-        ENV_SET_MAP_APPEARANCE.extName = "EnvMapAppearance";
-        ENV_SET_WEATHER_TYPE.extName = "EnvWeatherType";
-        MESSAGE_TYPES.extName = "MessageTypes";
-        nextOpcode = 0;
-    }
 
     @SuppressWarnings("rawtypes")
     private PacketType(Class... classes) {
