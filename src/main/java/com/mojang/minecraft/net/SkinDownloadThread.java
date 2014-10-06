@@ -27,6 +27,8 @@ public class SkinDownloadThread extends Thread {
     public void run() {
         HttpURLConnection connection = null;
         try {
+			player.defaultTexture = false;
+			
             URL skinUrl = new URL(this.URL);
             connection = (HttpURLConnection) skinUrl.openConnection();
             connection.addRequestProperty("User-Agent", Constants.USER_AGENT);
@@ -82,13 +84,14 @@ public class SkinDownloadThread extends Thread {
                     "Network error while downloading skin from \"%s\": \"%s\"",
                     this.URL, ex);
             LogUtil.logWarning(errorMsg);
-
+			player.defaultTexture = true;
         } catch (Exception ex) {
             // Log unexpected errors
             String errorMsg = String.format(
                     "Unexpected error while downloading skin from \"%s\": \"%s\"",
                     this.URL, ex);
             LogUtil.logWarning(errorMsg);
+			player.defaultTexture = true;
 
         } finally {
             // Clean up after ourselves
