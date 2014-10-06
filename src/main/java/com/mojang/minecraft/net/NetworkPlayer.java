@@ -44,10 +44,10 @@ public class NetworkPlayer extends HumanoidMob {
         armor = helmet = false;
         renderOffset = 0.6875F;
         allowAlpha = false;
-        /*if (name.equalsIgnoreCase("Jonty800") || name.equalsIgnoreCase("Jonty800+")
+        if (name.equalsIgnoreCase("Jonty800") || name.equalsIgnoreCase("Jonty800+")
          || name.equalsIgnoreCase("Jonty800@")) {
          modelName = "sheep";
-         }*/
+         }
         if (modelName.equals("humanoid")) {
             downloadSkin();
         } else if (isInteger(modelName)) {
