@@ -15,8 +15,10 @@ import com.mojang.util.LogUtil;
 public final class TextureSelectionScreen extends GuiScreen {
 
     private static final String TITLE = "Texture Packs";
-    private static final int BUTTON_LOAD_FILE = 6, BUTTON_CANCEL = 7, BUTTON_DEFAULT = 8;
+    private static final int BUTTON_LOAD_FILE = 6, BUTTON_CANCEL = 7, BUTTON_DEFAULT = 8, 
+            BUTTON_PREVIOUS = 9, BUTTON_NEXT = 10;
     private static final int MAX_PACKS_TO_SHOW = 5;
+    private static int PAGE = 0;
     private static final String ACTIVE_PACK_INDICATOR = "*";
 
     private final GuiScreen parent;
@@ -33,7 +35,7 @@ public final class TextureSelectionScreen extends GuiScreen {
         if (!frozen && button.active) {
             switch (button.id) {
                 default:
-                    this.openTexture(texturePacks.get(button.id).location);
+                    this.openTexture(texturePacks.get(button.id + PAGE).location);
                     break;
                 case BUTTON_LOAD_FILE:
                     frozen = true;
@@ -58,6 +60,17 @@ public final class TextureSelectionScreen extends GuiScreen {
                     minecraft.textureManager.registerAnimations();
                     minecraft.setCurrentScreen(parent);
                     break;
+                case BUTTON_PREVIOUS:
+                    if (PAGE >= 5){
+                        PAGE = PAGE - 5;
+                    }
+                    break;
+                case BUTTON_NEXT:
+                    int packCount = Math.min(texturePacks.size(), MAX_PACKS_TO_SHOW + (PAGE * 5));
+                    if (PAGE <= packCount / 5){
+                        PAGE = PAGE + 5;
+                    }
+                    break;
             }
         }
     }
@@ -69,12 +82,15 @@ public final class TextureSelectionScreen extends GuiScreen {
         int packCount = Math.min(texturePacks.size(), MAX_PACKS_TO_SHOW);
         for (int i = 0; i < packCount; i++) {
             buttons.add(new Button(i, width / 2 - 100, height / 6 + i * 24, ""));
-            buttons.get(i).text = texturePacks.get(i).name;
+            buttons.get(i).text = texturePacks.get(i + PAGE).name;
         }
 
         buttons.add(new Button(BUTTON_LOAD_FILE, width / 2 - 100, height / 6 + 120 + 12, "Load file..."));
         buttons.add(new Button(BUTTON_CANCEL, width / 2 - 100, height / 6 + 154 + 22, "Cancel"));
         buttons.add(new Button(BUTTON_DEFAULT, width / 2 - 100, height / 6 + 154, "Default Texture"));
+        int pwidth = fontRenderer.getWidth("Previous");
+        buttons.add(new Button(BUTTON_PREVIOUS, width / 2 - (112 + pwidth), height / 6 + 48, pwidth + 6, "Previous"));
+        buttons.add(new Button(BUTTON_NEXT, width / 2 + 106, height / 6 + 48, pwidth + 6, "Next"));
     }
 
     protected void openTexture(String file) {
@@ -99,12 +115,9 @@ public final class TextureSelectionScreen extends GuiScreen {
             drawCenteredString(fontRenderer, "Selecting file...",
                     width / 2 - 100, height / 6 + 120 + 12, 16777215);
         } else {
-            if (texturePacks != null && texturePacks.size() > MAX_PACKS_TO_SHOW) {
-                // Show hint when all available texture packs can't be shown at once
-                String morePacksText = String.format("First %s packs shown; %s more available.",
-                        MAX_PACKS_TO_SHOW, texturePacks.size() - MAX_PACKS_TO_SHOW);
-                drawCenteredString(fontRenderer, morePacksText, width / 2, height / 6 + 120, 16777215);
-            }
+            String morePacksText = String.format("%s-%s out of %s",
+                    1 + PAGE, 5 + PAGE, texturePacks.size());
+            drawCenteredString(fontRenderer, morePacksText, width / 2, height / 6 + 120, 16777215);
 
             if (status != null) {
                 // Show an error message if packs could not be indexed
@@ -119,7 +132,7 @@ public final class TextureSelectionScreen extends GuiScreen {
                 if (texturePacks != null) {
                     for (int i = 0; i < Math.min(texturePacks.size(), MAX_PACKS_TO_SHOW); ++i) {
                         if (minecraft.settings.lastUsedTexturePack != null
-                                && minecraft.settings.lastUsedTexturePack.equals(texturePacks.get(i).location)) {
+                                && minecraft.settings.lastUsedTexturePack.equals(texturePacks.get(i + PAGE).location)) {
                             drawString(fontRenderer, ACTIVE_PACK_INDICATOR,
                                     width / 2 + 100 - fontRenderer.getWidth(ACTIVE_PACK_INDICATOR) - 2,
                                     height / 6 + i * 24 + 2, 16777215);
@@ -132,6 +145,11 @@ public final class TextureSelectionScreen extends GuiScreen {
                         width / 2 + 100 - fontRenderer.getWidth(ACTIVE_PACK_INDICATOR) - 2,
                         height / 6 + 154 + 2, 16777215);
             }
+        }
+        // Update texturepack names based on the page
+        int packCount = Math.min(texturePacks.size(), MAX_PACKS_TO_SHOW);
+        for (int i = 0; i < packCount; i++) {
+            buttons.get(i).text = texturePacks.get(i + PAGE).name;
         }
     }
 
