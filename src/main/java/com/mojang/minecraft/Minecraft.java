@@ -1753,7 +1753,7 @@ public final class Minecraft implements Runnable {
             }
         }
 
-        if (isLoadingMap) {
+        if (packetHandler.isLoadingLevel) {
             // Ignore all keyboard input while loading map, unless Esc is pressed.
             while (Keyboard.next()) {
                 if (Keyboard.getEventKeyState()) {
