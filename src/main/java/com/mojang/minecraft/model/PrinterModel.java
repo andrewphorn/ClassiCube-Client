@@ -5,9 +5,8 @@ package com.mojang.minecraft.model;
  * Attribution-ShareAlike 3.0 Unported.
  * The details of the licence can be found at: http://creativecommons.org/licenses/by-sa/3.0/us/
  */
-
 public class PrinterModel extends Model {
-    // fields
+
     ModelPart Base;
     ModelPart RightWall;
     ModelPart LeftWall;
@@ -99,19 +98,20 @@ public class PrinterModel extends Model {
     }
 
     @Override
-    public final void render(float var1, float var2, float var3, float var4, float var5, float f5) {
-        Base.render(f5);
-        RightWall.render(f5);
-        LeftWall.render(f5);
-        MiddleComp.render(f5);
-        WholeBase.render(f5);
-        Rack.render(f5);
-        Back.render(f5);
-        TopLeftNobble.render(f5);
-        TopRightNobble.render(f5);
-        TopMiddleNobble.render(f5);
-        LeftLine.render(f5);
-        RightLine.render(f5);
+    public final void render(float var1, float var2, float var3,
+            float yawDegrees, float pitchDegrees, float scale) {
+        Base.render(scale);
+        RightWall.render(scale);
+        LeftWall.render(scale);
+        MiddleComp.render(scale);
+        WholeBase.render(scale);
+        Rack.render(scale);
+        Back.render(scale);
+        TopLeftNobble.render(scale);
+        TopRightNobble.render(scale);
+        TopMiddleNobble.render(scale);
+        LeftLine.render(scale);
+        RightLine.render(scale);
     }
 
     private void setRotation(ModelPart model, float x, float y, float z) {

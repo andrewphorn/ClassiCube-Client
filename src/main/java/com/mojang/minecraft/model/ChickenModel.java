@@ -3,6 +3,7 @@ package com.mojang.minecraft.model;
 import com.mojang.util.MathHelper;
 
 public class ChickenModel extends Model {
+
     public ModelPart head;
     public ModelPart body;
     public ModelPart rightLeg;
@@ -40,32 +41,23 @@ public class ChickenModel extends Model {
         leftWing.setPosition(4F, -3 + var1, 0F);
     }
 
-    /**
-     * Sets the models various rotation angles then renders the model.
-     */
     @Override
-    public void render(float par2, float par3, float par4, float par5, float par6, float par7) {
-        setRotationAngles(par2, par3, par4, par5, par6, par7);
-        head.render(par7);
-        bill.render(par7);
-        chin.render(par7);
-        body.render(par7);
-        rightLeg.render(par7);
-        leftLeg.render(par7);
-        rightWing.render(par7);
-        leftWing.render(par7);
+    public void render(float par2, float par3, float par4, float yawDegrees, float pitchDegrees, float scale) {
+        setRotationAngles(par2, par3, par4, yawDegrees, pitchDegrees, scale);
+        head.render(scale);
+        bill.render(scale);
+        chin.render(scale);
+        body.render(scale);
+        rightLeg.render(scale);
+        leftLeg.render(scale);
+        rightWing.render(scale);
+        leftWing.render(scale);
     }
 
-    /**
-     * Sets the model's various rotation angles. For bipeds, par1 and par2 are
-     * used for animating the movement of arms and legs, where par1 represents
-     * the time(so that arms and legs swing back and forth) and par2 represents
-     * how "far" arms and legs can swing at most.
-     */
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5,
-                                  float par6) {
-        head.pitch = par5 / (180F / (float) Math.PI);
-        head.yaw = par4 / (180F / (float) Math.PI);
+    public void setRotationAngles(float par1, float par2, float par3,
+            float yawDegrees, float pitchDegrees, float scale) {
+        head.pitch = pitchDegrees / (180F / (float) Math.PI);
+        head.yaw = yawDegrees / (180F / (float) Math.PI);
         bill.pitch = head.pitch;
         bill.yaw = head.yaw;
         chin.pitch = head.pitch;

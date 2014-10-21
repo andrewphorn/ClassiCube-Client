@@ -3,7 +3,9 @@ package com.mojang.minecraft.model;
 import com.mojang.util.MathHelper;
 
 public class CrocModel extends Model {
+
     // fields
+
     ModelPart tail;
     ModelPart head;
     ModelPart body;
@@ -65,19 +67,19 @@ public class CrocModel extends Model {
     }
 
     @Override
-    public void render(float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        tail.render(f5);
-        head.render(f5);
-        body.render(f5);
-        leg1.render(f5);
-        leg2.render(f5);
-        leg4.render(f5);
-        leg3.render(f5);
+    public void render(float f, float f1, float f2, float yawDegrees, float pitchDegrees, float scale) {
+        super.render(f, f1, f2, yawDegrees, pitchDegrees, scale);
+        setRotationAngles(f, f1, f2, yawDegrees, pitchDegrees, scale);
+        tail.render(scale);
+        head.render(scale);
+        body.render(scale);
+        leg1.render(scale);
+        leg2.render(scale);
+        leg4.render(scale);
+        leg3.render(scale);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
+    public void setRotationAngles(float f, float f1, float f2, float yawDegrees, float pitchDegrees, float scale) {
         // super.setRotationAngles(f, f1, f2, f3, f4, f5);
         tail.yaw = MathHelper.cos(f / (0.9595538255F) * (float) (Math.PI / 90) * f1 + 0);
     }

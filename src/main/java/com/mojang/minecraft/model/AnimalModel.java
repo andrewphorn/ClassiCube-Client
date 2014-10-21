@@ -32,9 +32,10 @@ public class AnimalModel extends Model {
     }
 
     @Override
-    public final void render(float var1, float var2, float var3, float var4, float var5, float scale) {
-        head.yaw = var4 / (float) (180D / Math.PI);
-        head.pitch = var5 / (float) (180D / Math.PI);
+    public final void render(float var1, float var2, float var3,
+            float yawDegrees, float pitchDegrees, float scale) {
+        head.yaw = yawDegrees / (float) (180D / Math.PI);
+        head.pitch = pitchDegrees / (float) (180D / Math.PI);
         body.pitch = (float) (Math.PI / 2D);
         leg1.pitch = MathHelper.cos(var1 * 0.6662F) * 1.4F * var2;
         leg2.pitch = MathHelper.cos(var1 * 0.6662F + (float) Math.PI) * 1.4F * var2;
