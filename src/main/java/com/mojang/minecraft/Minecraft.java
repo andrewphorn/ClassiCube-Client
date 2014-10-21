@@ -96,7 +96,6 @@ import com.mojang.util.MathHelper;
 import com.mojang.util.StreamingUtil;
 import com.mojang.util.Timer;
 import com.mojang.util.Vec3D;
-import java.text.DecimalFormat;
 
 public final class Minecraft implements Runnable {
 
@@ -883,6 +882,7 @@ public final class Minecraft implements Runnable {
             // Get current time in seconds 
             double now = System.nanoTime() / Timer.NANOSEC_PER_SEC;
             double secondsPassed = (now - timer.lastHR);
+            timer.lastFrameDuration = secondsPassed;
             timer.lastHR = now;
 
             // Cap seconds-passed to range [0,1]
@@ -1095,33 +1095,28 @@ public final class Minecraft implements Runnable {
                             // Calculate the limit on chunk-updates-per-frame
                             int maxUpdates;
                             if (settings.limitFramerate) {
-                                maxUpdates = Math.max(Renderer.dynamicChunkUpdateLimit, Renderer.MIN_CHUNK_UPDATES_PER_FRAME);
+                                maxUpdates = Math.max(renderer.dynamicChunkUpdateLimit, renderer.MIN_CHUNK_UPDATES_PER_FRAME);
                             } else {
                                 maxUpdates = Renderer.MIN_CHUNK_UPDATES_PER_FRAME;
                             }
                             chunkUpdates = Math.min(chunkUpdates, maxUpdates);
 
                             // Actually update the chunks. Measure how long it takes.
-                            long timeBeforeChunkUpdates = System.nanoTime();
                             for (int i = 0; i < chunkUpdates; ++i) {
                                 Chunk chunk = levelRenderer.chunksToUpdate.remove(lastChunkId - i);
                                 chunk.update();
                                 chunk.loaded = false;
                             }
-                            long chunkUpdateTime = System.nanoTime() - timeBeforeChunkUpdates;
 
-                            // Adjust measured average-time-per-chunk-update
-                            timer.chunkUpdateTime = timer.chunkUpdateTime * 0.5
-                                    + (chunkUpdateTime / Timer.NANOSEC_PER_SEC / chunkUpdates) * 0.5;
-
-                            // Next frame, use up to 90% of available CPU time for chunks
-                            Renderer.dynamicChunkUpdateLimit = (int) Math.floor(timer.syncTime / timer.chunkUpdateTime * 0.9);
-
-                            DecimalFormat formatter = new DecimalFormat("#0.00000");
-                            LogUtil.logInfo("sT=" + formatter.format(timer.syncTime)
-                                    + " | cUT=" + formatter.format(timer.chunkUpdateTime)
-                                    + " | dCUL=" + Renderer.dynamicChunkUpdateLimit
-                                    + " | mU=" + maxUpdates);
+                            // Adjust chunks-per-frame based on framerate. Back off is under 30fps.
+                            if(timer.lastFrameDuration > 1/30d ){
+                                renderer.everBackedOffFromChunkUpdates=(renderer.dynamicChunkUpdateLimit>renderer.MIN_CHUNK_UPDATES_PER_FRAME);
+                                renderer.dynamicChunkUpdateLimit = Math.max(Renderer.MIN_CHUNK_UPDATES_PER_FRAME, renderer.dynamicChunkUpdateLimit-=2);
+                            }else if(renderer.everBackedOffFromChunkUpdates){
+                                renderer.dynamicChunkUpdateLimit+=1;
+                            }else{
+                                renderer.dynamicChunkUpdateLimit+=3;
+                            }
                         }
 
                         // Mark fog-obscured chunks as invisible
@@ -1437,10 +1432,7 @@ public final class Minecraft implements Runnable {
                     }
 
                     Thread.yield();
-                    long timeBeforeSync = System.nanoTime();
                     Display.update();
-                    long syncNanosecs = System.nanoTime() - timeBeforeSync;
-                    timer.syncTime = timer.syncTime * .5 + (syncNanosecs / Timer.NANOSEC_PER_SEC) * .5;
                 }
             }
 

@@ -20,10 +20,11 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 public final class Renderer {
-
+    // Chunk update timing
     public static final int MIN_CHUNK_UPDATES_PER_FRAME = 4;
-    public static int dynamicChunkUpdateLimit = MIN_CHUNK_UPDATES_PER_FRAME;
-
+    public int dynamicChunkUpdateLimit = MIN_CHUNK_UPDATES_PER_FRAME;
+    public boolean everBackedOffFromChunkUpdates= false;
+    
     public Minecraft minecraft;
     public float fogColorMultiplier = 1F;
     public boolean displayActive = false;
