@@ -43,14 +43,13 @@ public class PacketHandler {
     public boolean canSendHeldBlock = false;
     private boolean serverSupportsMessages = false;
 
-    public boolean isLoadingLevel = true;
+    public boolean isLoadingLevel = false;
 
     public PacketHandler(Minecraft minecraft) {
         this.minecraft = minecraft;
     }
 
     public void setLoadingLevel(boolean value) {
-        LogUtil.logInfo("isLoadingLevel=" + value);
         isLoadingLevel = value;
     }
 

@@ -1753,6 +1753,18 @@ public final class Minecraft implements Runnable {
             }
         }
 
+        if (isLoadingMap) {
+            // Ignore all keyboard input while loading map, unless Esc is pressed.
+            while (Keyboard.next()) {
+                if (Keyboard.getEventKeyState()) {
+                    if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+                        pause();
+                    }
+                }
+            }
+            return;
+        }
+
         // SURVIVAL: Show game over screen
         if (currentScreen == null && player != null && player.health <= 0) {
             setCurrentScreen(null);
