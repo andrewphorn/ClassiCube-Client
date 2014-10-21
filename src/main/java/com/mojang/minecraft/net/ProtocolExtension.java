@@ -25,14 +25,14 @@ public class ProtocolExtension {
     public static final ProtocolExtension CLICK_DISTANCE = new ProtocolExtension("ClickDistance", 1);
     public static final ProtocolExtension CUSTOM_BLOCKS = new ProtocolExtension("CustomBlocks", 1);
     public static final ProtocolExtension HELD_BLOCK = new ProtocolExtension("HeldBlock", 1);
-    //public static final ProtocolExtension ExtPlayerList2 = new ProtocolExtension("ExtPlayerList", 2);
+    //public static final ProtocolExtension EXT_PLAYER_LIST_2 = new ProtocolExtension("ExtPlayerList", 2);
     public static final ProtocolExtension ENV_COLORS = new ProtocolExtension("EnvColors", 1);
     public static final ProtocolExtension SELECTION_CUBOID = new ProtocolExtension("SelectionCuboid", 1);
     public static final ProtocolExtension BLOCK_PERMISSIONS = new ProtocolExtension("BlockPermissions", 1);
     public static final ProtocolExtension CHANGE_MODEL = new ProtocolExtension("ChangeModel", 1);
     public static final ProtocolExtension ENV_MAP_APPEARANCE = new ProtocolExtension("EnvMapAppearance", 1);
     public static final ProtocolExtension ENV_WEATHER_TYPE = new ProtocolExtension("EnvWeatherType", 1);
-    //public static final ProtocolExtension HackControl = new ProtocolExtension("HackControl", 1);
+    //public static final ProtocolExtension HACK_CONTROL = new ProtocolExtension("HackControl", 1);
     public static final ProtocolExtension MESSAGE_TYPES = new ProtocolExtension("MessageTypes", 1);
 
     

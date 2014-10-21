@@ -23,6 +23,7 @@ import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 
 public class Player extends Mob {
+
     public static final long serialVersionUID = 0L;
     public static final int MAX_HEALTH = 20;
     public static final int MAX_ARROWS = 99;
@@ -43,24 +44,24 @@ public class Player extends Mob {
     private int speedTrig = 0;
     private int jumpCount = 0;
 
-    public Player(Level var1, GameSettings gs) {
-        super(var1);
-        if (var1 != null) {
-            var1.player = this;
-            var1.removeEntity(this);
-            var1.addEntity(this);
+    public Player(Level level, GameSettings gs) {
+        super(level);
+        if (level != null) {
+            level.player = this;
+            level.removeEntity(this);
+            level.addEntity(this);
         }
 
         heightOffset = 1.62F;
         health = 20;
         modelName = "humanoid";
         rotOffs = 180F;
-        ai = new Player$1(this);
+        ai = new PlayerAI(this);
         settings = gs;
     }
 
-    public boolean addResource(int var1) {
-        return inventory.addResource(var1);
+    public boolean addResource(int amount) {
+        return inventory.addResource(amount);
     }
 
     @Override
@@ -183,14 +184,11 @@ public class Player extends Mob {
             xRotO = xRot;
             yRotO = yRot;
 
-            boolean bool1 = isInWater();
-            boolean bool2 = isInLava();
-            boolean bool3 = isInOrOnRope();
-
-            float f2 = 0F;
+            boolean inWater = isInWater();
+            boolean inLava = isInLava();
+            boolean onRope = isInOrOnRope();
 
             // this.input.updateMovement(1);
-
             if (i != 0 || j != 0) {
                 yd = input.elevate;
             }
@@ -200,11 +198,11 @@ public class Player extends Mob {
             }
 
             if (input.jump) {
-                if (bool1) {
+                if (inWater) {
                     yd += 0.08F;
-                } else if (bool3) {
+                } else if (onRope) {
                     yd += 0.06F;
-                } else if (bool2) {
+                } else if (inLava) {
                     yd += 0.07F;
                 } else if (i != 0) {
                     yd += 0.05F;
@@ -236,29 +234,29 @@ public class Player extends Mob {
                 }
             }
 
-            if (bool1 && i == 0 && j == 0) {
-                f2 = y;
+            if (inWater && i == 0 && j == 0) {
+                float oldY = y;
                 super.moveRelative(input.strafe, input.move, 0.02F * f1);
                 super.move(xd * f1, yd * f1, zd * f1);
                 xd *= 0.8F;
                 yd *= 0.8F;
                 zd *= 0.8F;
                 yd = (float) (yd - 0.02D);
-                if (horizontalCollision && isFree(xd, yd + 0.6F - y + f2, zd)) {
+                if (horizontalCollision && isFree(xd, yd + 0.6F - y + oldY, zd)) {
                     yd = 0.3F;
                 }
                 return;
             }
 
-            if (bool2 && i == 0 && j == 0) {
-                f2 = y;
+            if (inLava && i == 0 && j == 0) {
+                float oldY = y;
                 super.moveRelative(input.strafe, input.move, 0.02F * f1);
                 super.move(xd * f1, yd * f1, zd * f1);
                 xd *= 0.5F;
                 yd *= 0.5F;
                 zd *= 0.5F;
                 yd = (float) (yd - 0.02D);
-                if (horizontalCollision && isFree(xd, yd + 0.6F - y + f2, zd)) {
+                if (horizontalCollision && isFree(xd, yd + 0.6F - y + oldY, zd)) {
                     yd = 0.3F;
                 }
                 return;
@@ -295,7 +293,7 @@ public class Player extends Mob {
                 if (jumpCount == 0) {
                     isOnIce = false;
                 }
-                f2 = 0.6F;
+                float f2 = 0.6F;
                 xd *= 0.91F;
                 yd *= 0.98F;
                 zd *= 0.91F;
@@ -315,6 +313,7 @@ public class Player extends Mob {
         }
     }
 
+    // SURVIVAL: scoring
     @Override
     public void awardKillScore(Entity var1, int score) {
         this.score += score;
@@ -324,41 +323,45 @@ public class Player extends Mob {
     public void bindTexture(TextureManager textureManager) {
         if (newTexture != null) {
             BufferedImage var2 = newTexture;
-            int[] var3 = new int[512];
-            var2.getRGB(32, 0, 32, 16, var3, 0, 32);
-            int var5 = 0;
+            int[] hairPixels = new int[512];
+            var2.getRGB(32, 0, 32, 16, hairPixels, 0, 32);
 
-            boolean var10001;
+            int pixel = 0;
             while (true) {
-                if (var5 >= var3.length) {
-                    var10001 = false;
+                if (pixel >= hairPixels.length) {
+                    hasHair = false;
                     break;
                 }
-                if (var3[var5] >>> 24 < 128) {
-                    var10001 = true;
+                if (hairPixels[pixel] >>> 24 < 128) {
+                    hasHair = true;
                     break;
                 }
-                ++var5;
+                ++pixel;
             }
-            hasHair = var10001;
 
             //if (modelName.equals("humanoid")) {
             newTextureId = textureManager.load(newTexture);
             //}
             newTexture = null;
         }
+        
+        // modelName is a block number
         if (isInteger(modelName)) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
             return;
         }
-        int var2;
+        
+        int boundTextureId;
         if (newTextureId < 0) {
-            var2 = modelName.equals("humanoid") || defaultTexture ? textureManager.load("/char.png") : textureManager.load("/mob/" + modelName.replace('.', '_') + ".png");
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var2);
+            if (modelName.equals("humanoid") || defaultTexture) {
+                boundTextureId = textureManager.load("/char.png");
+            } else {
+                boundTextureId = textureManager.load("/mob/" + modelName.replace('.', '_') + ".png");
+            }
         } else {
-            var2 = newTextureId;
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var2);
+            boundTextureId = newTextureId;
         }
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, boundTextureId);
     }
 
     @Override
@@ -520,10 +523,9 @@ public class Player extends Mob {
         }
     }
 
-
     @Override
     public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
-                            float var6, float var7) {
+            float var6, float var7) {
         if (isInteger(modelName)) {
             try {
                 GL11.glEnable(GL11.GL_ALPHA_TEST);
