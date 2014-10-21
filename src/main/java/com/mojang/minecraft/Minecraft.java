@@ -285,7 +285,6 @@ public final class Minecraft implements Runnable {
     public boolean canRenderGUI = true;
     boolean isShuttingDown = false;
     int[] inventoryCache;
-    public boolean isLoadingMap = false;
     /**
      * This timer determines how much time will pass between block modifications. It is used to
      * prevent really fast block spamming.
@@ -1608,7 +1607,7 @@ public final class Minecraft implements Runnable {
 
     public void takeAndSaveScreenshot(int width, int height) {
         try {
-            if (isLoadingMap) {
+            if (packetHandler.isLoadingLevel) {
                 // Ignore attempts to screenshot while we're still connecting
                 return;
             }
@@ -1705,27 +1704,29 @@ public final class Minecraft implements Runnable {
             if (!networkManager.isConnected()) {
                 progressBar.setTitle("Connecting..");
                 progressBar.setProgress(0);
-                isLoadingMap = true;
+                packetHandler.setLoadingLevel(true);
             } else {
                 if (networkManager.successful && networkManager.netHandler.connected) {
                     // Do network communication
                     NetworkHandler networkHandler = networkManager.netHandler;
                     try {
-                        networkManager.netHandler.channel.read(networkHandler.in);
-                        for (int packetsReceived = 0;
-                                packetsReceived < NetworkManager.MAX_PACKETS_PER_TICK
-                                && networkHandler.in.position() > 0;
-                                packetsReceived++) {
-                            if (!packetHandler.handlePacket(networkHandler)) {
-                                break;
+                        do {
+                            networkManager.netHandler.channel.read(networkHandler.in);
+                            for (int packetsReceived = 0;
+                                    packetsReceived < NetworkManager.MAX_PACKETS_PER_TICK
+                                    && networkHandler.in.position() > 0;
+                                    packetsReceived++) {
+                                if (!packetHandler.handlePacket(networkHandler)) {
+                                    break;
+                                }
                             }
-                        }
 
-                        if (networkHandler.out.position() > 0) {
-                            networkHandler.out.flip();
-                            networkHandler.channel.write(networkHandler.out);
-                            networkHandler.out.compact();
-                        }
+                            if (networkHandler.out.position() > 0) {
+                                networkHandler.out.flip();
+                                networkHandler.channel.write(networkHandler.out);
+                                networkHandler.out.compact();
+                            }
+                        } while (packetHandler.isLoadingLevel);
                     } catch (Exception ex) {
                         LogUtil.logWarning("Error in network handling code.", ex);
                         setCurrentScreen(new ErrorScreen("Disconnected!",

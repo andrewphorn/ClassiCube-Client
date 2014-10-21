@@ -35,18 +35,24 @@ import com.mojang.util.MathHelper;
 import com.oyasunadev.mcraft.client.util.Constants;
 
 public class PacketHandler {
-    // TODO move out of constants and into something more appropriate
+
     private static final List<ProtocolExtension> supportedExtensions = new ArrayList<>();
     private int receivedExtensionLength;
-    
+
     private final Minecraft minecraft;
     public boolean canSendHeldBlock = false;
     private boolean serverSupportsMessages = false;
-    
-    public PacketHandler(Minecraft minecraft){
+
+    public boolean isLoadingLevel = false;
+
+    public PacketHandler(Minecraft minecraft) {
         this.minecraft = minecraft;
     }
-    
+
+    public void setLoadingLevel(boolean value) {
+        isLoadingLevel = value;
+    }
+
     // return true if more packets should be read; return false if that's it
     public boolean handlePacket(NetworkHandler networkHandler) throws IOException, Exception {
         networkHandler.in.flip();
@@ -63,7 +69,7 @@ public class PacketHandler {
         Object[] packetParams = new Object[packetType.params.length];
 
         for (int i = 0; i < packetParams.length; ++i) {
-            packetParams[i] = networkHandler .readObject(packetType.params[i]);
+            packetParams[i] = networkHandler.readObject(packetType.params[i]);
         }
 
         NetworkManager networkManager = networkHandler.netManager;
@@ -80,13 +86,13 @@ public class PacketHandler {
                 String extName = (String) packetParams[0];
                 Integer version = (Integer) packetParams[1];
                 ProtocolExtension serverExt = new ProtocolExtension(extName, version);
-                if(ProtocolExtension.isSupported(serverExt)){
+                if (ProtocolExtension.isSupported(serverExt)) {
                     supportedExtensions.add(serverExt);
                 }
 
                 if (extName.equalsIgnoreCase(ProtocolExtension.HELD_BLOCK.name)) {
                     canSendHeldBlock = true;
-                }else if (extName.equalsIgnoreCase(ProtocolExtension.MESSAGE_TYPES.name)) {
+                } else if (extName.equalsIgnoreCase(ProtocolExtension.MESSAGE_TYPES.name)) {
                     serverSupportsMessages = true;
                 }
 
@@ -293,12 +299,12 @@ public class PacketHandler {
                 byte playerID = (Byte) packetParams[0];
                 String InGameName = (String) packetParams[1];
                 String skinName = (String) packetParams[2];
-                if(skinName != null) {
+                if (skinName != null) {
                     if (playerID >= 0) {
                         NetworkPlayer tmp = networkManager.players.get(playerID);
                         if (tmp != null) {
                             tmp.defaultTexture = false;
-                            if(skinName == "default") {
+                            if ("default".equals(skinName)) {
                                 tmp.defaultTexture = true;
                             }
                             tmp.SkinName = skinName;
@@ -399,21 +405,23 @@ public class PacketHandler {
                 minecraft.progressBar.setTitle(packetParams[1].toString());
                 minecraft.progressBar.setText(packetParams[2].toString());
                 minecraft.player.userType = (Byte) packetParams[3];
+                setLoadingLevel(true);
 
             } else if (packetType == PacketType.LEVEL_INIT) {
                 minecraft.selectionBoxes.clear();
                 minecraft.setLevel(null);
                 networkManager.levelData = new ByteArrayOutputStream();
+                setLoadingLevel(true);
 
             } else if (packetType == PacketType.LEVEL_DATA) {
                 short chunkLength = (short) packetParams[0];
                 byte[] chunkData = (byte[]) packetParams[1];
                 byte percentComplete = (byte) packetParams[2];
                 networkManager.minecraft.progressBar.setProgress(percentComplete);
-                minecraft.isLoadingMap = false;
                 networkManager.levelData.write(chunkData, 0, chunkLength);
 
             } else if (packetType == PacketType.LEVEL_FINALIZE) {
+                networkManager.minecraft.progressBar.setProgress(100);
                 try {
                     networkManager.levelData.close();
                 } catch (IOException ex) {
@@ -435,6 +443,7 @@ public class PacketHandler {
                 networkManager.levelLoaded = true;
                 // ProgressBarDisplay.InitEnv(this);
                 // this.levelRenderer.refresh();
+                setLoadingLevel(false);
 
             } else if (packetType == PacketType.BLOCK_CHANGE) {
                 if (networkManager.minecraft.level != null) {

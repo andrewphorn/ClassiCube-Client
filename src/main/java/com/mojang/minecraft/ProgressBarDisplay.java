@@ -27,7 +27,7 @@ public final class ProgressBarDisplay {
     public static String sideId = "";
     public static String edgeId = "";
     public static HashMap<String, String> serverConfig = new HashMap<>();
-    private Minecraft minecraft;
+    private final Minecraft minecraft;
     private long start = System.currentTimeMillis();
 
     public ProgressBarDisplay(Minecraft minecraft) {
