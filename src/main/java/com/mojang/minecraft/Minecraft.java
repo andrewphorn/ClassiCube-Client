@@ -96,6 +96,7 @@ import com.mojang.util.MathHelper;
 import com.mojang.util.StreamingUtil;
 import com.mojang.util.Timer;
 import com.mojang.util.Vec3D;
+import java.text.DecimalFormat;
 
 public final class Minecraft implements Runnable {
 
@@ -880,7 +881,7 @@ public final class Minecraft implements Runnable {
 
         try {
             // Get current time in seconds 
-            double now = System.nanoTime() / 1000000000D;
+            double now = System.nanoTime() / Timer.NANOSEC_PER_SEC;
             double secondsPassed = (now - timer.lastHR);
             timer.lastHR = now;
 
@@ -1017,7 +1018,7 @@ public final class Minecraft implements Runnable {
 
                         // Set view distance, sky color, and fog color
                         float viewDistanceFactor
-                                = 1F - (float) Math.pow(1F / (4 - settings.viewDistance), 0.25D);
+                                = 1F - (float) Math.pow(1F / (settings.viewDistance + 1), 0.25D);
                         float skyColorRed = (level.skyColor >> 16 & 255) / 255F;
                         float skyColorBlue = (level.skyColor >> 8 & 255) / 255F;
                         float skyColorGreen = (level.skyColor & 255) / 255F;
@@ -1053,7 +1054,8 @@ public final class Minecraft implements Runnable {
                         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                         renderer.fogColorMultiplier = 1F;
                         GL11.glEnable(GL11.GL_CULL_FACE);
-                        renderer.fogEnd = 512 >> (settings.viewDistance << 1);
+                        // Formula chosen to have fog choices of {12, 32, 84, 208, 512, 1254}
+                        renderer.fogEnd = (float) Math.pow(2, settings.viewDistance + 3);
 
                         // Set up the perspective
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
@@ -1084,22 +1086,48 @@ public final class Minecraft implements Runnable {
 
                         Collections.sort(levelRenderer.chunksToUpdate,
                                 new ChunkDirtyDistanceComparator(player));
-                        int var98 = levelRenderer.chunksToUpdate.size() - 1;
                         int chunkUpdates = levelRenderer.chunksToUpdate.size();
 
-                        if (chunkUpdates > Renderer.MAX_CHUNK_UPDATES_PER_FRAME) {
-                            chunkUpdates = Renderer.MAX_CHUNK_UPDATES_PER_FRAME;
+                        if (chunkUpdates > 0) {
+                            // Update the closest chunk first
+                            int lastChunkId = chunkUpdates - 1;
+
+                            // Calculate the limit on chunk-updates-per-frame
+                            int maxUpdates;
+                            if (settings.limitFramerate) {
+                                maxUpdates = Math.max(Renderer.dynamicChunkUpdateLimit, Renderer.MIN_CHUNK_UPDATES_PER_FRAME);
+                            } else {
+                                maxUpdates = Renderer.MIN_CHUNK_UPDATES_PER_FRAME;
+                            }
+                            chunkUpdates = Math.min(chunkUpdates, maxUpdates);
+
+                            // Actually update the chunks. Measure how long it takes.
+                            long timeBeforeChunkUpdates = System.nanoTime();
+                            for (int i = 0; i < chunkUpdates; ++i) {
+                                Chunk chunk = levelRenderer.chunksToUpdate.remove(lastChunkId - i);
+                                chunk.update();
+                                chunk.loaded = false;
+                            }
+                            long chunkUpdateTime = System.nanoTime() - timeBeforeChunkUpdates;
+
+                            // Adjust measured average-time-per-chunk-update
+                            timer.chunkUpdateTime = timer.chunkUpdateTime * 0.5
+                                    + (chunkUpdateTime / Timer.NANOSEC_PER_SEC / chunkUpdates) * 0.5;
+
+                            // Next frame, use up to 90% of available CPU time for chunks
+                            Renderer.dynamicChunkUpdateLimit = (int) Math.floor(timer.syncTime / timer.chunkUpdateTime * 0.9);
+
+                            DecimalFormat formatter = new DecimalFormat("#0.00000");
+                            LogUtil.logInfo("sT=" + formatter.format(timer.syncTime)
+                                    + " | cUT=" + formatter.format(timer.chunkUpdateTime)
+                                    + " | dCUL=" + Renderer.dynamicChunkUpdateLimit
+                                    + " | mU=" + maxUpdates);
                         }
 
-                        for (int i = 0; i < chunkUpdates; ++i) {
-                            Chunk chunk = levelRenderer.chunksToUpdate.remove(var98 - i);
-                            chunk.update();
-                            chunk.loaded = false;
-                        }
-                        
+                        // Mark fog-obscured chunks as invisible
                         if (levelRenderer.chunkCache != null) {
                             for (Chunk aChunkCache : levelRenderer.chunkCache) {
-                                if (Math.sqrt(aChunkCache.distanceSquared(player))-32 > renderer.fogEnd){
+                                if (Math.sqrt(aChunkCache.distanceSquared(player)) - 32 > renderer.fogEnd) {
                                     aChunkCache.visible = false;
                                 } else {
                                     aChunkCache.visible = true;
@@ -1107,8 +1135,10 @@ public final class Minecraft implements Runnable {
                             }
                         }
 
+                        // Set fog color/density/etc
                         renderer.updateFog();
                         GL11.glEnable(GL11.GL_FOG);
+
                         levelRenderer.sortChunks(player, 0);
                         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
                         // If player is inside a solid block (noclip?)
@@ -1407,7 +1437,10 @@ public final class Minecraft implements Runnable {
                     }
 
                     Thread.yield();
+                    long timeBeforeSync = System.nanoTime();
                     Display.update();
+                    long syncNanosecs = System.nanoTime() - timeBeforeSync;
+                    timer.syncTime = timer.syncTime * .5 + (syncNanosecs / Timer.NANOSEC_PER_SEC) * .5;
                 }
             }
 
@@ -1836,23 +1869,23 @@ public final class Minecraft implements Runnable {
             }
         } else if (currentScreen instanceof GuiScreen) {
             while (Mouse.next()) {
-            int mouseScroll = Mouse.getEventDWheel();
-            if (mouseScroll != 0) {
-                if (mouseScroll > 0) {
-                    if (HUDScreen.chat.size() - HUDScreen.chatLocation < 20){
-                        HUDScreen.chatLocation = HUDScreen.chatLocation;
+                int mouseScroll = Mouse.getEventDWheel();
+                if (mouseScroll != 0) {
+                    if (mouseScroll > 0) {
+                        if (HUDScreen.chat.size() - HUDScreen.chatLocation < 20) {
+                            HUDScreen.chatLocation = HUDScreen.chatLocation;
                             break;
+                        }
+                        mouseScroll = 1;
                     }
-                mouseScroll = 1;
-                }
-                if (mouseScroll < 0) {
-                    mouseScroll = -1;
-                }
-                HUDScreen.chatLocation += mouseScroll;
-                if (HUDScreen.chatLocation < 0){
-                    HUDScreen.chatLocation = 0;
+                    if (mouseScroll < 0) {
+                        mouseScroll = -1;
                     }
-                break;
+                    HUDScreen.chatLocation += mouseScroll;
+                    if (HUDScreen.chatLocation < 0) {
+                        HUDScreen.chatLocation = 0;
+                    }
+                    break;
                 }
                 currentScreen.mouseEvent();
             }
@@ -2022,7 +2055,7 @@ public final class Minecraft implements Runnable {
                     if (Keyboard.getEventKey() == settings.toggleFogKey.key) {
                         boolean shiftDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)
                                 || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
-                        settings.toggleSetting(Setting.RENDER_DISTANCE, shiftDown ? -1 : 1);
+                        settings.toggleSetting(Setting.VIEW_DISTANCE, shiftDown ? -1 : 1);
                     }
                 }
             }

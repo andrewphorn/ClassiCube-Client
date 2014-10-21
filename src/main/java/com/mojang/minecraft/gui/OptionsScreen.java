@@ -6,7 +6,7 @@ import com.mojang.minecraft.Setting;
 public final class OptionsScreen extends GuiScreen {
 
     private final static Setting[] settingsOrder = new Setting[]{Setting.MUSIC, Setting.SOUND,
-            Setting.INVERT_MOUSE, Setting.VIEW_BOBBING, Setting.RENDER_DISTANCE,
+            Setting.INVERT_MOUSE, Setting.VIEW_BOBBING, Setting.VIEW_DISTANCE,
             Setting.LIMIT_FRAMERATE, Setting.SMOOTHING, Setting.ANISOTROPIC, Setting.FONT_SCALE,
             Setting.SHOW_NAMES};
 
