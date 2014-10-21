@@ -15,16 +15,20 @@ import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.LogUtil;
 
 public final class GameSettings {
+
     // ==== CONSTANTS =============================================================================
     public static String[] smoothingOptions = new String[]{"OFF", "Automatic", "Universal"};
     public static String[] showNamesOptions = new String[]{
-            "Hover", "Hover (No Scaling)", "Always", "Always (No Scaling)"
+        "Hover", "Hover (No Scaling)", "Always", "Always (No Scaling)"
     };
     // showNames values
     public static final int SHOWNAMES_HOVER = 0,
             SHOWNAMES_HOVER_UNSCALED = 1,
             SHOWNAMES_ALWAYS = 2,
             SHOWNAMES_ALWAYS_UNSCALED = 3;
+    // common framerate limits
+    public static int MAX_SUPPORTED_FRAMERATE = 60;
+    public static final int[] FRAMERATE_LIMITS = {20, 30, 40, 60, 75, 85, 120, 144};
     // thirdPersonMode values
     public static final int FIRST_PERSON = 0,
             THIRD_PERSON_BACK = 1,
@@ -32,8 +36,9 @@ public final class GameSettings {
     // hackType values
     public static final int HACKTYPE_NORMAL = 0,
             HACKTYPE_ADVANCED = 1;
-    private static final String[] viewDistanceOptions = new String[]{
-        "TINY (8)", "TINY (16)", "SHORT (32)", "SHORT (64)", "NORMAL (128)", "NORMAL (256)", "FAR (512)", "FAR (1024)"
+    private static final String[] viewDistanceOptions = {
+        "TINY (8)", "TINY (16)", "SHORT (32)", "SHORT (64)",
+        "NORMAL (128)", "NORMAL (256)", "FAR (512)", "FAR (1024)"
     };
     // valid range of values for viewDistance
     public static final int VIEWDISTANCE_MIN = 0,
@@ -85,7 +90,7 @@ public final class GameSettings {
     public String lastUsedTexturePack;
     public boolean HacksEnabled = true;
     public int smoothing = 0;
-    public boolean limitFramerate = true;
+    public int framerateLimit = 60;
     public boolean viewBobbing = true;
     public int viewDistance;
 
@@ -102,8 +107,8 @@ public final class GameSettings {
 
     public GameSettings(Minecraft minecraft, File minecraftFolder) {
         bindings = new KeyBinding[]{
-                forwardKey, leftKey, backKey, rightKey, jumpKey, inventoryKey,
-                chatKey, toggleFogKey, saveLocationKey, loadLocationKey};
+            forwardKey, leftKey, backKey, rightKey, jumpKey, inventoryKey,
+            chatKey, toggleFogKey, saveLocationKey, loadLocationKey};
         bindingsmore = new KeyBinding[]{runKey, flyKey, flyUp, flyDown, noClip};
 
         this.minecraft = minecraft;
@@ -138,8 +143,8 @@ public final class GameSettings {
                 return "View distance: " + viewDistanceOptions[viewDistance];
             case VIEW_BOBBING:
                 return "View bobbing: " + toOnOff(viewBobbing);
-            case LIMIT_FRAMERATE:
-                return "Limit framerate: " + toOnOff(limitFramerate);
+            case FRAMERATE_LIMIT:
+                return "Framerate limit: " + (framerateLimit == 0 ? "OFF" : framerateLimit + " FPS");
             case SMOOTHING:
                 return "Smoothing: " + smoothingOptions[smoothing];
             case ANISOTROPIC:
@@ -163,7 +168,7 @@ public final class GameSettings {
         try {
             if (settingsFile.exists()) {
                 try (FileReader fileReader = new FileReader(settingsFile);
-                     BufferedReader reader = new BufferedReader(fileReader)) {
+                        BufferedReader reader = new BufferedReader(fileReader)) {
                     // Read the raw settings keys/values
                     String line;
                     while ((line = reader.readLine()) != null) {
@@ -209,8 +214,23 @@ public final class GameSettings {
                 viewBobbing = isTrue;
                 break;
             case "limitframerate":
-                limitFramerate = isTrue;
-                Display.setVSyncEnabled(limitFramerate);
+                // Not used any more. Replaced by framerateLimit.
+                // Left here for legacy/compatibility reasons.
+                if (isTrue) {
+                    framerateLimit = 60;
+                } else {
+                    framerateLimit = 0;
+                }
+                break;
+            case "frameratelimit":
+                framerateLimit = Integer.parseInt(value);
+                if (framerateLimit != 0) {
+                    framerateLimit = Math.min(framerateLimit, MAX_SUPPORTED_FRAMERATE);
+                    framerateLimit = closestTo(FRAMERATE_LIMITS, framerateLimit);
+                }
+                if (Display.isCreated()) {
+                    Display.setVSyncEnabled(framerateLimit != 0);
+                }
                 break;
             case "smoothing":
                 smoothing = Math.min(Math.max(Byte.parseByte(value),
@@ -255,14 +275,14 @@ public final class GameSettings {
     public void save() {
         try {
             try (FileWriter fileWriter = new FileWriter(settingsFile);
-                 PrintWriter writer = new PrintWriter(fileWriter)) {
+                    PrintWriter writer = new PrintWriter(fileWriter)) {
                 writer.println("music:" + music);
                 writer.println("sound:" + sound);
                 writer.println("invertYMouse:" + invertMouse);
                 writer.println("showDebug:" + showDebug);
                 writer.println("viewDistance:" + viewDistance);
                 writer.println("bobView:" + viewBobbing);
-                writer.println("limitFramerate:" + limitFramerate);
+                writer.println("framerateLimit:" + framerateLimit);
                 writer.println("smoothing:" + smoothing);
                 writer.println("anisotropic:" + anisotropy);
                 writer.println("canServerChangeTextures:" + canServerChangeTextures);
@@ -316,10 +336,24 @@ public final class GameSettings {
             case VIEW_BOBBING:
                 viewBobbing = !viewBobbing;
                 break;
-            case LIMIT_FRAMERATE:
-                limitFramerate = !limitFramerate;
+            case FRAMERATE_LIMIT:
+                if (framerateLimit == 0) {
+                    framerateLimit = FRAMERATE_LIMITS[0];
+                } else if (framerateLimit == FRAMERATE_LIMITS[FRAMERATE_LIMITS.length - 1]) {
+                    framerateLimit = 0;
+                } else {
+                    for (int i = 0; i < FRAMERATE_LIMITS.length; i++) {
+                        if (framerateLimit == FRAMERATE_LIMITS[i]) {
+                            framerateLimit = FRAMERATE_LIMITS[i + 1];
+                            break;
+                        }
+                    }
+                }
+                if(framerateLimit > MAX_SUPPORTED_FRAMERATE){
+                    framerateLimit = 0;
+                }
                 if (Display.isCreated()) {
-                    Display.setVSyncEnabled(limitFramerate);
+                    Display.setVSyncEnabled(framerateLimit != 0);
                 }
                 break;
             case SMOOTHING:
@@ -362,5 +396,34 @@ public final class GameSettings {
                 break;
         }
         save();
+    }
+
+    private static int closestTo(int[] options, int target) {
+        if (options == null) {
+            throw new NullPointerException("options");
+        }
+        int closest = Integer.MAX_VALUE;
+        long minDifference = Integer.MAX_VALUE;
+        for (int i = 0; i < options.length; i++) {
+            long difference = Math.abs((long) options[i] - target);
+            if ( minDifference > difference) {
+                minDifference = difference;
+                closest = options[i];
+            }
+        }
+        return closest;
+    }
+    
+    public void capRefreshRate(int maxRefreshRate){
+        MAX_SUPPORTED_FRAMERATE = maxRefreshRate;
+        if(framerateLimit > maxRefreshRate){
+            for(int i=FRAMERATE_LIMITS.length-1;i>=0;i--){
+                int limit = FRAMERATE_LIMITS[i];
+                if(limit <= maxRefreshRate){
+                    framerateLimit = limit;
+                    break;
+                }
+            }
+        }
     }
 }

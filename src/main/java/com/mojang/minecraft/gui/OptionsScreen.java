@@ -7,7 +7,7 @@ public final class OptionsScreen extends GuiScreen {
 
     private final static Setting[] settingsOrder = new Setting[]{Setting.MUSIC, Setting.SOUND,
             Setting.INVERT_MOUSE, Setting.VIEW_BOBBING, Setting.VIEW_DISTANCE,
-            Setting.LIMIT_FRAMERATE, Setting.SMOOTHING, Setting.ANISOTROPIC, Setting.FONT_SCALE,
+            Setting.FRAMERATE_LIMIT, Setting.SMOOTHING, Setting.ANISOTROPIC, Setting.FONT_SCALE,
             Setting.SHOW_NAMES};
 
     private final String title = "Options";

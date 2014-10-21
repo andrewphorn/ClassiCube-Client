@@ -715,6 +715,8 @@ public final class Minecraft implements Runnable {
         checkGLError("Startup");
 
         settings = new GameSettings(this, mcDir);
+        settings.capRefreshRate(Display.getDisplayMode().getFrequency());
+
         ShapeRenderer.instance = new ShapeRenderer(2097152, settings); // 2MB
         textureManager = new TextureManager(settings, isApplet);
         textureManager.registerAnimations();
@@ -1094,10 +1096,10 @@ public final class Minecraft implements Runnable {
 
                             // Calculate the limit on chunk-updates-per-frame
                             int maxUpdates;
-                            if (settings.limitFramerate) {
-                                maxUpdates = Math.max(renderer.dynamicChunkUpdateLimit, renderer.MIN_CHUNK_UPDATES_PER_FRAME);
-                            } else {
+                            if (settings.framerateLimit == 0) {
                                 maxUpdates = Renderer.MIN_CHUNK_UPDATES_PER_FRAME;
+                            } else {
+                                maxUpdates = Math.max(renderer.dynamicChunkUpdateLimit, Renderer.MIN_CHUNK_UPDATES_PER_FRAME);
                             }
                             chunkUpdates = Math.min(chunkUpdates, maxUpdates);
 
@@ -1109,14 +1111,18 @@ public final class Minecraft implements Runnable {
                             }
 
                             // Adjust chunks-per-frame based on framerate. Back off is under 30fps.
-                            if(timer.lastFrameDuration > 1/30d ){
-                                renderer.everBackedOffFromChunkUpdates=(renderer.dynamicChunkUpdateLimit>renderer.MIN_CHUNK_UPDATES_PER_FRAME);
-                                renderer.dynamicChunkUpdateLimit = Math.max(Renderer.MIN_CHUNK_UPDATES_PER_FRAME, renderer.dynamicChunkUpdateLimit-=2);
-                            }else if(renderer.everBackedOffFromChunkUpdates){
-                                renderer.dynamicChunkUpdateLimit+=1;
-                            }else{
-                                renderer.dynamicChunkUpdateLimit+=3;
+                            double minDesiredFramerate = Math.max(20, settings.framerateLimit / 2);
+                            if (timer.lastFrameDuration > 1 / minDesiredFramerate) {
+                                renderer.everBackedOffFromChunkUpdates = (renderer.dynamicChunkUpdateLimit > Renderer.MIN_CHUNK_UPDATES_PER_FRAME);
+                                renderer.dynamicChunkUpdateLimit = Math.max(Renderer.MIN_CHUNK_UPDATES_PER_FRAME, renderer.dynamicChunkUpdateLimit -= 2);
+                            } else if (renderer.everBackedOffFromChunkUpdates) {
+                                renderer.dynamicChunkUpdateLimit += 1;
+                            } else {
+                                renderer.dynamicChunkUpdateLimit += 3;
                             }
+                        } else {
+                            renderer.dynamicChunkUpdateLimit = Renderer.MIN_CHUNK_UPDATES_PER_FRAME;
+                            renderer.everBackedOffFromChunkUpdates = false;
                         }
 
                         // Mark fog-obscured chunks as invisible
@@ -1436,8 +1442,8 @@ public final class Minecraft implements Runnable {
                 }
             }
 
-            if (settings.limitFramerate) {
-                Display.sync(60);
+            if (settings.framerateLimit != 0) {
+                Display.sync(settings.framerateLimit);
             }
 
             checkGLError("Post render");
@@ -2106,7 +2112,8 @@ public final class Minecraft implements Runnable {
 
             resize();
             Display.setFullscreen(isFullScreen);
-            Display.setVSyncEnabled(settings.limitFramerate);
+            settings.capRefreshRate(Display.getDisplayMode().getFrequency());
+            Display.setVSyncEnabled(settings.framerateLimit != 0);
             Display.update();
 
         } catch (Exception ex) {
