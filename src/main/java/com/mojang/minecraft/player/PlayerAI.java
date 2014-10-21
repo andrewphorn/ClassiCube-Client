@@ -3,12 +3,12 @@ package com.mojang.minecraft.player;
 import com.mojang.minecraft.mob.ai.BasicAI;
 
 // PlayerAI
-public class Player$1 extends BasicAI {
+public class PlayerAI extends BasicAI {
     public static final long serialVersionUID = 0L;
 
-    private Player player;
+    private final Player player;
 
-    public Player$1(Player player) {
+    public PlayerAI(Player player) {
         this.player = player;
     }
 

@@ -52,39 +52,40 @@ public final class SpiderModel extends Model {
     }
 
     @Override
-    public final void render(float var1, float var2, float var3, float var4, float var5, float var6) {
-        head.yaw = var4 / (float) (180D / Math.PI);
-        head.pitch = var5 / (float) (180D / Math.PI);
-        var4 = (float) (Math.PI / 4D);
-        leg1.roll = -var4;
-        leg2.roll = var4;
-        leg3.roll = -var4 * 0.74F;
-        leg4.roll = var4 * 0.74F;
-        leg5.roll = -var4 * 0.74F;
-        leg6.roll = var4 * 0.74F;
-        leg7.roll = -var4;
-        leg8.roll = var4;
-        var4 = (float) (Math.PI / 8D);
-        leg1.yaw = var4 * 2F;
-        leg2.yaw = -var4 * 2F;
-        leg3.yaw = var4;
-        leg4.yaw = -var4;
-        leg5.yaw = -var4;
-        leg6.yaw = var4;
-        leg7.yaw = -var4 * 2F;
-        leg8.yaw = var4 * 2F;
-        var4 = -(MathHelper.cos(var1 * 0.6662F * 2F) * 0.4F) * var2;
-        var5 = -(MathHelper.cos(var1 * 0.6662F * 2F + (float) Math.PI) * 0.4F) * var2;
+    public final void render(float var1, float var2, float var3,
+            float yawDegrees, float pitchDegrees, float scale) {
+        head.yaw = yawDegrees / (float) (180D / Math.PI);
+        head.pitch = pitchDegrees / (float) (180D / Math.PI);
+        yawDegrees = (float) (Math.PI / 4D);
+        leg1.roll = -yawDegrees;
+        leg2.roll = yawDegrees;
+        leg3.roll = -yawDegrees * 0.74F;
+        leg4.roll = yawDegrees * 0.74F;
+        leg5.roll = -yawDegrees * 0.74F;
+        leg6.roll = yawDegrees * 0.74F;
+        leg7.roll = -yawDegrees;
+        leg8.roll = yawDegrees;
+        yawDegrees = (float) (Math.PI / 8D);
+        leg1.yaw = yawDegrees * 2F;
+        leg2.yaw = -yawDegrees * 2F;
+        leg3.yaw = yawDegrees;
+        leg4.yaw = -yawDegrees;
+        leg5.yaw = -yawDegrees;
+        leg6.yaw = yawDegrees;
+        leg7.yaw = -yawDegrees * 2F;
+        leg8.yaw = yawDegrees * 2F;
+        yawDegrees = -(MathHelper.cos(var1 * 0.6662F * 2F) * 0.4F) * var2;
+        pitchDegrees = -(MathHelper.cos(var1 * 0.6662F * 2F + (float) Math.PI) * 0.4F) * var2;
         float var7 = -(MathHelper.cos(var1 * 0.6662F * 2F + (float) (Math.PI / 2D)) * 0.4F) * var2;
         float var8 = -(MathHelper.cos(var1 * 0.6662F * 2F + (float) ((3 * Math.PI) / 2D)) * 0.4F) * var2;
         float var9 = Math.abs(MathHelper.sin(var1 * 0.6662F) * 0.4F) * var2;
         float var10 = Math.abs(MathHelper.sin(var1 * 0.6662F + (float) Math.PI) * 0.4F) * var2;
         float var11 = Math.abs(MathHelper.sin(var1 * 0.6662F + (float) (Math.PI / 2D)) * 0.4F) * var2;
         var2 = Math.abs(MathHelper.sin(var1 * 0.6662F + 4.712389F) * 0.4F) * var2;
-        leg1.yaw += var4;
-        leg2.yaw -= var4;
-        leg3.yaw += var5;
-        leg4.yaw -= var5;
+        leg1.yaw += yawDegrees;
+        leg2.yaw -= yawDegrees;
+        leg3.yaw += pitchDegrees;
+        leg4.yaw -= pitchDegrees;
         leg5.yaw += var7;
         leg6.yaw -= var7;
         leg7.yaw += var8;
@@ -97,16 +98,16 @@ public final class SpiderModel extends Model {
         leg6.roll -= var11;
         leg7.roll += var2;
         leg8.roll -= var2;
-        head.render(var6);
-        neck.render(var6);
-        body.render(var6);
-        leg1.render(var6);
-        leg2.render(var6);
-        leg3.render(var6);
-        leg4.render(var6);
-        leg5.render(var6);
-        leg6.render(var6);
-        leg7.render(var6);
-        leg8.render(var6);
+        head.render(scale);
+        neck.render(scale);
+        body.render(scale);
+        leg1.render(scale);
+        leg2.render(scale);
+        leg3.render(scale);
+        leg4.render(scale);
+        leg5.render(scale);
+        leg6.render(scale);
+        leg7.render(scale);
+        leg8.render(scale);
     }
 }

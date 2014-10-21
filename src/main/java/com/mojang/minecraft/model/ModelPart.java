@@ -20,8 +20,8 @@ public final class ModelPart {
     public int list = 0;
     public boolean mirror = false;
     public boolean render = true;
-    private int u;
-    private int v;
+    private final int u;
+    private final int v;
 
     public ModelPart(int var1, int var2) {
         u = var1;
@@ -33,19 +33,18 @@ public final class ModelPart {
         GL11.glNewList(list, GL11.GL_COMPILE);
         GL11.glBegin(GL11.GL_QUADS);
 
-        for (TexturedQuad var4 : quads) {
-            Vec3D var5 = var4.vertices[1].vector.subtract(var4.vertices[0].vector).normalize();
-            Vec3D var6 = var4.vertices[1].vector.subtract(var4.vertices[2].vector).normalize();
-            // TODO ???
-            GL11.glNormal3f((var5 = new Vec3D(var5.y * var6.z - var5.z * var6.y, var5.z * var6.x
-                            - var5.x * var6.z, var5.x * var6.y - var5.y * var6.x).normalize()).x, var5.y,
-                    var5.z
-            );
+        for (TexturedQuad quad : quads) {
+            Vec3D edge1 = quad.vertices[1].vector.subtract(quad.vertices[0].vector).normalize();
+            Vec3D edge2 = quad.vertices[1].vector.subtract(quad.vertices[2].vector).normalize();
+            Vec3D normal = new Vec3D(edge1.y * edge2.z - edge1.z * edge2.y,
+                    edge1.z * edge2.x - edge1.x * edge2.z,
+                    edge1.x * edge2.y - edge1.y * edge2.x).normalize();
+            GL11.glNormal3f(normal.x, normal.y, normal.z);
 
-            for (int var7 = 0; var7 < 4; ++var7) {
-                Vertex var8;
-                GL11.glTexCoord2f((var8 = var4.vertices[var7]).u, var8.v);
-                GL11.glVertex3f(var8.vector.x * scale, var8.vector.y * scale, var8.vector.z * scale);
+            for (int vIndex = 0; vIndex < 4; ++vIndex) {
+                Vertex vertex = quad.vertices[vIndex];
+                GL11.glTexCoord2f(vertex.u, vertex.v);
+                GL11.glVertex3f(vertex.vector.x * scale, vertex.vector.y * scale, vertex.vector.z * scale);
             }
         }
 
@@ -54,11 +53,10 @@ public final class ModelPart {
         hasList = true;
     }
 
-    public final void render(float var1) {
+    public final void render(float scale) {
         if (render) {
-
             if (!hasList) {
-                generateList(var1);
+                generateList(scale);
             }
 
             if (allowTransparency) {
@@ -70,13 +68,13 @@ public final class ModelPart {
                 if (x == 0F && y == 0F && z == 0F) {
                     GL11.glCallList(list);
                 } else {
-                    GL11.glTranslatef(x * var1, y * var1, z * var1);
+                    GL11.glTranslatef(x * scale, y * scale, z * scale);
                     GL11.glCallList(list);
-                    GL11.glTranslatef(-x * var1, -y * var1, -z * var1);
+                    GL11.glTranslatef(-x * scale, -y * scale, -z * scale);
                 }
             } else {
                 GL11.glPushMatrix();
-                GL11.glTranslatef(x * var1, y * var1, z * var1);
+                GL11.glTranslatef(x * scale, y * scale, z * scale);
                 if (roll != 0F) {
                     GL11.glRotatef(roll * (float) (180D / Math.PI), 0F, 0F, 1F);
                 }
@@ -100,7 +98,7 @@ public final class ModelPart {
     }
 
     public final void setBounds(float var1, float var2, float var3, int var4, int var5, int var6,
-                                float var7) {
+            float var7) {
         vertices = new Vertex[8];
         quads = new TexturedQuad[6];
         float var8 = var1 + var4;
@@ -134,36 +132,35 @@ public final class ModelPart {
         vertices[5] = var15;
         vertices[6] = var21;
         vertices[7] = var14;
-        quads[0] = new TexturedQuad(new Vertex[]{var15, var11, var12, var21}, u + var6 + var4, v
-                + var6, u + var6 + var4 + var6, v + var6 + var5);
-        quads[1] = new TexturedQuad(new Vertex[]{var20, var13, var14, var18}, u, v + var6, u
-                + var6, v + var6 + var5);
-        quads[2] = new TexturedQuad(new Vertex[]{var15, var13, var20, var11}, u + var6, v, u
-                + var6 + var4, v + var6);
-        quads[3] = new TexturedQuad(new Vertex[]{var12, var18, var14, var21}, u + var6 + var4,
-                v, u + var6 + var4 + var4, v + var6);
-        quads[4] = new TexturedQuad(new Vertex[]{var11, var20, var18, var12}, u + var6,
-                v + var6, u + var6 + var4, v + var6 + var5);
-        quads[5] = new TexturedQuad(new Vertex[]{var13, var15, var21, var14}, u + var6 + var4
-                + var6, v + var6, u + var6 + var4 + var6 + var4, v + var6 + var5);
+        quads[0] = new TexturedQuad(new Vertex[]{var15, var11, var12, var21},
+                u + var6 + var4, v + var6, u + var6 + var4 + var6, v + var6 + var5);
+        quads[1] = new TexturedQuad(new Vertex[]{var20, var13, var14, var18},
+                u, v + var6, u + var6, v + var6 + var5);
+        quads[2] = new TexturedQuad(new Vertex[]{var15, var13, var20, var11},
+                u + var6, v, u + var6 + var4, v + var6);
+        quads[3] = new TexturedQuad(new Vertex[]{var12, var18, var14, var21},
+                u + var6 + var4, v, u + var6 + var4 + var4, v + var6);
+        quads[4] = new TexturedQuad(new Vertex[]{var11, var20, var18, var12},
+                u + var6, v + var6, u + var6 + var4, v + var6 + var5);
+        quads[5] = new TexturedQuad(new Vertex[]{var13, var15, var21, var14},
+                u + var6 + var4 + var6, v + var6, u + var6 + var4 + var6 + var4, v + var6 + var5);
         if (mirror) {
             for (TexturedQuad quad : quads) {
-                TexturedQuad var17;
-                Vertex[] var19 = new Vertex[(var17 = quad).vertices.length];
+                Vertex[] newVertices = new Vertex[quad.vertices.length];
 
-                for (var4 = 0; var4 < var17.vertices.length; ++var4) {
-                    var19[var4] = var17.vertices[var17.vertices.length - var4 - 1];
+                for (int vIndex = 0; vIndex < quad.vertices.length; ++vIndex) {
+                    newVertices[vIndex] = quad.vertices[quad.vertices.length - vIndex - 1];
                 }
 
-                var17.vertices = var19;
+                quad.vertices = newVertices;
             }
         }
 
     }
 
-    public final void setPosition(float var1, float var2, float var3) {
-        x = var1;
-        y = var2;
-        z = var3;
+    public final void setPosition(float newX, float newY, float newZ) {
+        x = newX;
+        y = newY;
+        z = newZ;
     }
 }

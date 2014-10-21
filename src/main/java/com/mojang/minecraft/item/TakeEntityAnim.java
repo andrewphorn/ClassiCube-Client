@@ -32,8 +32,8 @@ public class TakeEntityAnim extends Entity {
     }
 
     @Override
-    public void render(TextureManager textureManager, float unknown0) {
-        item.render(textureManager, unknown0);
+    public void render(TextureManager textureManager, float delta) {
+        item.render(textureManager, delta);
     }
 
     @Override

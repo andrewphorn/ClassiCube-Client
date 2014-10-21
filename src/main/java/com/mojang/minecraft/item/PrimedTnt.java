@@ -79,7 +79,7 @@ public class PrimedTnt extends Entity {
     }
 
     @Override
-    public void render(TextureManager textureManager, float unknown0) {
+    public void render(TextureManager textureManager, float delta) {
         int textureID = textureManager.load("/terrain.png");
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
@@ -88,9 +88,9 @@ public class PrimedTnt extends Entity {
 
         GL11.glPushMatrix();
         GL11.glColor4f(brightness, brightness, brightness, 1F);
-        GL11.glTranslatef(xo + (x - xo) * unknown0 - 0.5F,
-                yo + (y - yo) * unknown0 - 0.5F,
-                zo + (z - zo) * unknown0 - 0.5F);
+        GL11.glTranslatef(xo + (x - xo) * delta - 0.5F,
+                yo + (y - yo) * delta - 0.5F,
+                zo + (z - zo) * delta - 0.5F);
         GL11.glPushMatrix();
 
         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
