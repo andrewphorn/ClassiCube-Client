@@ -75,20 +75,20 @@ public class Player extends Mob {
             // your hacktype back to 'normal' in the options menu.
             super.aiStep();
 
-            float var1 = MathHelper.sqrt(xd * xd + zd * zd);
+            float horizDist = MathHelper.sqrt(xd * xd + zd * zd);
             float var2 = (float) Math.atan(-yd * 0.2F) * 15F;
-            if (var1 > 0.1F) {
-                var1 = 0.1F;
+            if (horizDist > 0.1F) {
+                horizDist = 0.1F;
             }
 
             if (!onGround || health <= 0) {
-                var1 = 0F;
+                horizDist = 0F;
             }
 
             if (onGround || health <= 0) {
                 var2 = 0F;
             }
-            bob += (var1 - bob) * 0.4F;
+            bob += (horizDist - bob) * 0.4F;
             tilt += (var2 - tilt) * 0.8F;
             List<?> neighbourEntities = level.findEntities(this, boundingBox.grow(1F, 0F, 1F));
             if (health > 0 && neighbourEntities != null) {
@@ -151,30 +151,30 @@ public class Player extends Mob {
             } else {
                 noclipTrig = 1;
             }
-            int i = 0;
-            int j = 0;
-            int k = 1;
+            boolean isFlying = false;
+            boolean isNoClipping = false;
+            boolean isSpeeding = true;
             float f1 = 1F;
             oBob = bob;
             if (flyingMode && flyTrig < 1) {
-                i = 1;
+                isFlying = true;
             }
             if (noPhysics && noclipTrig < 0) {
-                j = 1;
+                isNoClipping = true;
             }
             if (input.mult > 1F && speedTrig < 1) {
                 f1 = input.mult;
             }
 
             if (!HacksEnabled) {
-                i = 0;
-                j = 0;
-                k = 0;
+                isFlying = false;
+                isNoClipping = false;
+                isSpeeding = false;
                 f1 = 1F;
             }
 
             if (flyTrig > 0 || speedTrig > 0) {
-                k = 0;
+                isSpeeding = false;
             }
 
             xo = x;
@@ -188,11 +188,11 @@ public class Player extends Mob {
             boolean onRope = isInOrOnRope();
 
             // this.input.updateMovement(1);
-            if (i != 0 || j != 0) {
+            if (isFlying || isNoClipping) {
                 yd = input.elevate;
             }
 
-            if (onGround || i != 0) {
+            if (onGround || isFlying) {
                 jumpCount = 0;
             }
 
@@ -203,11 +203,11 @@ public class Player extends Mob {
                     yd += 0.06F;
                 } else if (inLava) {
                     yd += 0.07F;
-                } else if (i != 0) {
+                } else if (isFlying) {
                     yd += 0.05F;
                 } else if (onGround) {
                     if (!input.fall) {
-                        if (!HacksEnabled && k != 0) {
+                        if (!HacksEnabled && isSpeeding) {
                             yd = 0.48F;
                         } else {
                             yd = 0.35F;
@@ -215,7 +215,7 @@ public class Player extends Mob {
                         input.fall = true;
                         jumpCount += 1;
                     }
-                } else if (HacksEnabled && !input.fall && k != 0 && jumpCount < 3) {
+                } else if (HacksEnabled && !input.fall && isSpeeding && jumpCount < 3) {
                     yd = 0.5F;
                     input.fall = true;
                     jumpCount += 1;
@@ -224,7 +224,7 @@ public class Player extends Mob {
                 input.fall = false;
             }
 
-            if (HacksEnabled && k != 0 && jumpCount > 1) {
+            if (HacksEnabled && isSpeeding && jumpCount > 1) {
                 f1 *= 2.5F;
                 if (!isOnIce) {
                     f1 *= jumpCount;
@@ -233,7 +233,7 @@ public class Player extends Mob {
                 }
             }
 
-            if (inWater && i == 0 && j == 0) {
+            if (inWater && !isFlying && !isNoClipping) {
                 float oldY = y;
                 super.moveRelative(input.strafe, input.move, 0.02F * f1);
                 super.move(xd * f1, yd * f1, zd * f1);
@@ -247,7 +247,7 @@ public class Player extends Mob {
                 return;
             }
 
-            if (inLava && i == 0 && j == 0) {
+            if (inLava && !isFlying && !isNoClipping) {
                 float oldY = y;
                 super.moveRelative(input.strafe, input.move, 0.02F * f1);
                 super.move(xd * f1, yd * f1, zd * f1);
@@ -261,19 +261,19 @@ public class Player extends Mob {
                 return;
             }
 
-            if (i != 0) {
+            if (isFlying) {
                 f1 = (float) (f1 * 1.2D);
             }
 
             float f4 = 0F;
             float f3 = 0F;
-            if (j != 0) {
-                f4 = i != 0 ? 0.72F : 0.71F;
-                if (i != 0) {
+            if (isNoClipping) {
+                f4 = isFlying ? 0.72F : 0.71F;
+                if (isFlying) {
                     yd = input.elevate;
                 }
                 f3 = 0.2F;
-            } else if (onGround || jumpCount > 0 || i != 0) {
+            } else if (onGround || jumpCount > 0 || isFlying) {
                 f3 = 0.1F;
             } else {
                 f3 = 0.02F;
@@ -281,14 +281,14 @@ public class Player extends Mob {
 
             super.moveRelative(input.strafe, input.move, f3 * f1);
 
-            if (j != 0 && (xd != 0F || zd != 0F)) {
+            if (isNoClipping && (xd != 0F || zd != 0F)) {
                 super.moveTo(x + xd, y + yd - f4, z + zd, yRot, xRot);
                 yo = y += f4;
             } else {
                 super.move(xd * f1, yd * f1, zd * f1);
             }
-            int var1 = level.getTile((int) x, (int) (y - 2.12F), (int) z);
-            if (Block.blocks[var1] != Block.ICE) {
+            int tileBelow = level.getTile((int) x, (int) (y - 2.12F), (int) z);
+            if (Block.blocks[tileBelow] != Block.ICE) {
                 if (jumpCount == 0) {
                     isOnIce = false;
                 }
@@ -297,7 +297,7 @@ public class Player extends Mob {
                 yd *= 0.98F;
                 zd *= 0.91F;
 
-                if (i != 0) {
+                if (isFlying) {
                     yd *= f2 / 4F;
                     walkDist = 0F;
                 } else {
@@ -314,7 +314,7 @@ public class Player extends Mob {
 
     // SURVIVAL: scoring
     @Override
-    public void awardKillScore(Entity var1, int score) {
+    public void awardKillScore(Entity victim, int score) {
         this.score += score;
     }
 
