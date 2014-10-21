@@ -55,18 +55,18 @@ public class HumanoidModel extends Model {
     }
 
     @Override
-    public final void render(float var1, float var2, float var3, float var4, float var5, float var6) {
-        setRotationAngles(var1, var2, var3, var4, var5, var6);
-        head.render(var6);
-        body.render(var6);
-        rightArm.render(var6);
-        leftArm.render(var6);
-        rightLeg.render(var6);
-        leftLeg.render(var6);
+    public final void render(float var1, float var2, float var3, float var4, float var5, float scale) {
+        setRotationAngles(var1, var2, var3, var4, var5, scale);
+        head.render(scale);
+        body.render(scale);
+        rightArm.render(scale);
+        leftArm.render(scale);
+        rightLeg.render(scale);
+        leftLeg.render(scale);
     }
 
     public void setRotationAngles(float var1, float var2, float var3, float var4, float var5,
-                                  float var6) {
+                                  float scale) {
         head.yaw = var4 / (float) (180D / Math.PI);
         head.pitch = var5 / (float) (180D / Math.PI);
         rightArm.pitch = MathHelper.cos(var1 * 0.6662F + (float) Math.PI) * 2F * var2;

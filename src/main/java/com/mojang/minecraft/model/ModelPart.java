@@ -54,11 +54,11 @@ public final class ModelPart {
         hasList = true;
     }
 
-    public final void render(float var1) {
+    public final void render(float scale) {
         if (render) {
 
             if (!hasList) {
-                generateList(var1);
+                generateList(scale);
             }
 
             if (allowTransparency) {
@@ -70,13 +70,13 @@ public final class ModelPart {
                 if (x == 0F && y == 0F && z == 0F) {
                     GL11.glCallList(list);
                 } else {
-                    GL11.glTranslatef(x * var1, y * var1, z * var1);
+                    GL11.glTranslatef(x * scale, y * scale, z * scale);
                     GL11.glCallList(list);
-                    GL11.glTranslatef(-x * var1, -y * var1, -z * var1);
+                    GL11.glTranslatef(-x * scale, -y * scale, -z * scale);
                 }
             } else {
                 GL11.glPushMatrix();
-                GL11.glTranslatef(x * var1, y * var1, z * var1);
+                GL11.glTranslatef(x * scale, y * scale, z * scale);
                 if (roll != 0F) {
                     GL11.glRotatef(roll * (float) (180D / Math.PI), 0F, 0F, 1F);
                 }

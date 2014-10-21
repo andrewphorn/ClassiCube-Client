@@ -2,7 +2,6 @@ package com.mojang.minecraft.player;
 
 import static com.mojang.minecraft.net.NetworkPlayer.isInteger;
 
-import java.awt.image.BufferedImage;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -322,9 +321,8 @@ public class Player extends Mob {
     @Override
     public void bindTexture(TextureManager textureManager) {
         if (newTexture != null) {
-            BufferedImage var2 = newTexture;
             int[] hairPixels = new int[512];
-            var2.getRGB(32, 0, 32, 16, hairPixels, 0, 32);
+            newTexture.getRGB(32, 0, 32, 16, hairPixels, 0, 32);
 
             int pixel = 0;
             while (true) {
@@ -415,13 +413,13 @@ public class Player extends Mob {
     }
 
     @Override
-    public void render(TextureManager textureManager, float var2) {
+    public void render(TextureManager textureManager, float delta) {
         if (settings.thirdPersonMode == 0) {
             return;
         }
         if (modelName != null) {
-            float var3;
-            if ((var3 = attackTime - var2) < 0F) {
+            float var3 = attackTime - delta;
+            if (var3 < 0F) {
                 var3 = 0F;
             }
 
@@ -449,22 +447,22 @@ public class Player extends Mob {
                 yRotO -= 360F;
             }
 
-            float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * var2;
-            float var5 = oRun + (run - oRun) * var2;
-            float var6 = yRotO + (yRot - yRotO) * var2;
-            float var7 = xRotO + (xRot - xRotO) * var2;
+            float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * delta;
+            float var5 = oRun + (run - oRun) * delta;
+            float var6 = yRotO + (yRot - yRotO) * delta;
+            float var7 = xRotO + (xRot - xRotO) * delta;
             var6 -= var4;
             GL11.glPushMatrix();
-            float var8 = animStepO + (animStep - animStepO) * var2;
+            float var8 = animStepO + (animStep - animStepO) * delta;
             ColorCache c = getBrightnessColor();
 
             GL11.glColor3f(c.R, c.G, c.B);
-            float var9 = 0.0625F; // 1 / 16
+            float scale = 0.0625F; // 1 / 16
             float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5F * var5 * bobStrength - 23F;
-            GL11.glTranslatef(xo + (x - xo) * var2, yo + (y - yo) * var2 - 1.62F + renderOffset, zo
-                    + (z - zo) * var2);
-            float var11;
-            if ((var11 = hurtTime - var2) > 0F || health <= 0) {
+            GL11.glTranslatef(xo + (x - xo) * delta, yo + (y - yo) * delta - 1.62F + renderOffset, zo
+                    + (z - zo) * delta);
+            float var11 = hurtTime - delta;
+            if (var11 > 0F || health <= 0) {
                 if (var11 < 0F) {
                     var11 = 0F;
                 } else {
@@ -474,7 +472,7 @@ public class Player extends Mob {
 
                 float var12 = 0F;
                 if (health <= 0) {
-                    var12 = (deathTime + var2) / 20F;
+                    var12 = (deathTime + delta) / 20F;
                     var11 += var12 * var12 * 800F;
                     if (var11 > 90F) {
                         var11 = 90F;
@@ -490,7 +488,7 @@ public class Player extends Mob {
                 GL11.glRotatef(-(180F - var4 + rotOffs), 0F, 1F, 0F);
             }
 
-            GL11.glTranslatef(0F, -var10 * var9, 0F);
+            GL11.glTranslatef(0F, -var10 * scale, 0F);
             GL11.glScalef(1F, -1F, 1F);
             GL11.glRotatef(180F - var4 + rotOffs, 0F, 1F, 0F);
             if (!allowAlpha) {
@@ -502,13 +500,13 @@ public class Player extends Mob {
             GL11.glScalef(-1F, 1F, 1F);
             modelCache.getModel(modelName).attackOffset = var3 / 5F;
             bindTexture(textureManager);
-            renderModel(textureManager, var8, var2, var5, var6, var7, var9);
+            renderModel(textureManager, var8, delta, var5, var6, var7, scale);
             if (invulnerableTime > invulnerableDuration - 10) {
                 GL11.glColor4f(1F, 1F, 1F, 0.75F);
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                 bindTexture(textureManager);
-                renderModel(textureManager, var8, var2, var5, var6, var7, var9);
+                renderModel(textureManager, var8, delta, var5, var6, var7, scale);
                 GL11.glDisable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             }
@@ -525,7 +523,7 @@ public class Player extends Mob {
 
     @Override
     public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
-            float var6, float var7) {
+            float var6, float scale) {
         if (isInteger(modelName)) {
             try {
                 GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -561,10 +559,10 @@ public class Player extends Mob {
             modelHeadwear = (HumanoidModel) model;
             modelHeadwear.headwear.yaw = modelHeadwear.head.yaw;
             modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
-            modelHeadwear.headwear.render(var7);
+            modelHeadwear.headwear.render(scale);
             GL11.glEnable(GL11.GL_CULL_FACE);
         }
-        model.render(var2, var4, tickCount + var3, var5, var6, var7);
+        model.render(var2, var4, tickCount + var3, var5, var6, scale);
     }
 
     @Override
@@ -580,7 +578,7 @@ public class Player extends Mob {
         deathTime = 0;
     }
 
-    public void setKey(int var1, boolean var2) {
-        input.setKeyState(var1, var2);
+    public void setKey(int key, boolean state) {
+        input.setKeyState(key, state);
     }
 }

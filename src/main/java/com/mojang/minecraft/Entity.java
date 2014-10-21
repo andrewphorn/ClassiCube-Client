@@ -463,8 +463,7 @@ public abstract class Entity implements Serializable {
         removed = true;
     }
 
-    // TODO var2
-    public void render(TextureManager textureManager, float var2) {
+    public void render(TextureManager textureManager, float delta) {
     }
 
     public void renderHover(TextureManager textureManager) {
@@ -478,7 +477,7 @@ public abstract class Entity implements Serializable {
             for (double zSpawn = level.zSpawn + 0.5F; ySpawn > 0F; ++ySpawn) {
                 this.setPos(xSpawn, ySpawn, (float) zSpawn);
                 if (level.isInBounds((int) xSpawn, (int) ySpawn, (int) zSpawn)) {
-                    if (level.getCubes(boundingBox).size() == 0) {
+                    if (level.getCubes(boundingBox).isEmpty()) {
                         break;
                     }
                 } else {

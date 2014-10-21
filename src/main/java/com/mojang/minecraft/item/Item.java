@@ -65,21 +65,21 @@ public class Item extends Entity {
     }
 
     @Override
-    public void render(TextureManager textureManager, float unknown0) {
+    public void render(TextureManager textureManager, float delta) {
         textureId = textureManager.load("/terrain.png");
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
 
         float brightness = level.getBrightness((int) x, (int) y, (int) z);
-        float unknown1 = rot + (tickCount + unknown0) * 3F;
+        float unknown1 = rot + (tickCount + delta) * 3F;
 
         GL11.glPushMatrix();
         GL11.glColor4f(brightness, brightness, brightness, 1F);
 
         float unknown2 = (brightness = MathHelper.sin(unknown1 / 10F)) * 0.1F + 0.1F;
 
-        GL11.glTranslatef(xo + (x - xo) * unknown0, yo + (y - yo) * unknown0 + unknown2, zo
-                + (z - zo) * unknown0);
+        GL11.glTranslatef(xo + (x - xo) * delta, yo + (y - yo) * delta + unknown2, zo
+                + (z - zo) * delta);
         GL11.glRotatef(unknown1, 0F, 1F, 0F);
 
         models[resource].generateList();

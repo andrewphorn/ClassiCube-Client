@@ -10,6 +10,7 @@ import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 
+// SURVIVAL: arrow
 public class Arrow extends Entity {
     public static final long serialVersionUID = 0L;
 
@@ -104,7 +105,7 @@ public class Arrow extends Entity {
     }
 
     @Override
-    public void render(TextureManager textureManager, float unknown0) {
+    public void render(TextureManager textureManager, float delta) {
         textureId = textureManager.load("/item/arrows.png");
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
@@ -113,15 +114,15 @@ public class Arrow extends Entity {
 
         GL11.glPushMatrix();
         GL11.glColor4f(brightness, brightness, brightness, 1F);
-        GL11.glTranslatef(xo + (x - xo) * unknown0, yo + (y - yo) * unknown0 - heightOffset / 2F,
-                zo + (z - zo) * unknown0);
-        GL11.glRotatef(yRotO + (yRot - yRotO) * unknown0 - 90F, 0F, 1F, 0F);
-        GL11.glRotatef(xRotO + (xRot - xRotO) * unknown0, 0F, 0F, 1F);
+        GL11.glTranslatef(xo + (x - xo) * delta, yo + (y - yo) * delta - heightOffset / 2F,
+                zo + (z - zo) * delta);
+        GL11.glRotatef(yRotO + (yRot - yRotO) * delta - 90F, 0F, 1F, 0F);
+        GL11.glRotatef(xRotO + (xRot - xRotO) * delta, 0F, 0F, 1F);
         GL11.glRotatef(45F, 1F, 0F, 0F);
 
         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
 
-        unknown0 = 0.5F;
+        delta = 0.5F;
 
         float unknown1 = (type * 10) / 32F;
         float unknown2 = (5 + type * 10) / 32F;
@@ -158,8 +159,8 @@ public class Arrow extends Entity {
             GL11.glNormal3f(0F, -unknown6, 0F);
 
             shapeRenderer.vertexUV(-8F, -2F, 0F, 0F, unknown1);
-            shapeRenderer.vertexUV(8F, -2F, 0F, unknown0, unknown1);
-            shapeRenderer.vertexUV(8F, 2F, 0F, unknown0, unknown2);
+            shapeRenderer.vertexUV(8F, -2F, 0F, delta, unknown1);
+            shapeRenderer.vertexUV(8F, 2F, 0F, delta, unknown2);
             shapeRenderer.vertexUV(-8F, 2F, 0F, 0F, unknown2);
         }
         shapeRenderer.end();

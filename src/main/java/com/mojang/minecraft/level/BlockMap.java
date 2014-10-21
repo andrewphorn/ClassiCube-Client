@@ -159,7 +159,7 @@ public class BlockMap implements Serializable {
 
     }
 
-    public void render(Vec3D var1, Frustum frustum, TextureManager textureManager, float var4) {
+    public void render(Vec3D var1, Frustum frustum, TextureManager textureManager, float delta) {
         for (int x = 0; x < width; ++x) {
             float var6 = (x << 4) - 2;
             float var7 = (x + 1 << 4) + 2;
@@ -262,7 +262,7 @@ public class BlockMap implements Serializable {
                                         }
                                     }
 
-                                    var22.render(textureManager, var4);
+                                    var22.render(textureManager, delta);
                                 }
                             }
                         }
