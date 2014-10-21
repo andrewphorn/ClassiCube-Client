@@ -33,7 +33,7 @@ public final class GameSettings {
     public static final int HACKTYPE_NORMAL = 0,
             HACKTYPE_ADVANCED = 1;
     private static final String[] viewDistanceOptions = new String[]{
-            "FAR", "NORMAL", "SHORT", "TINY"
+        "TINY (8)", "TINY (16)", "SHORT (32)", "SHORT (64)", "NORMAL (128)", "NORMAL (256)", "FAR (512)", "FAR (1024)"
     };
     // valid range of values for viewDistance
     public static final int VIEWDISTANCE_MIN = 0,
@@ -134,8 +134,8 @@ public final class GameSettings {
                 return "Invert mouse: " + toOnOff(invertMouse);
             case SHOW_DEBUG:
                 return "Show Debug: " + toOnOff(showDebug);
-            case RENDER_DISTANCE:
-                return "Render distance: " + viewDistanceOptions[viewDistance];
+            case VIEW_DISTANCE:
+                return "View distance: " + viewDistanceOptions[viewDistance];
             case VIEW_BOBBING:
                 return "View bobbing: " + toOnOff(viewBobbing);
             case LIMIT_FRAMERATE:
@@ -304,7 +304,7 @@ public final class GameSettings {
             case SHOW_DEBUG:
                 showDebug = !showDebug;
                 break;
-            case RENDER_DISTANCE:
+            case VIEW_DISTANCE:
                 int newViewDist = viewDistance + fogValue;
                 if (newViewDist < VIEWDISTANCE_MIN) {
                     newViewDist = VIEWDISTANCE_MAX;

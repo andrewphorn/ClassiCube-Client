@@ -20,8 +20,9 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 public final class Renderer {
-    // TODO: adaptive chunk update rate, based on framerate
-    public static final int MAX_CHUNK_UPDATES_PER_FRAME = 4;
+
+    public static final int MIN_CHUNK_UPDATES_PER_FRAME = 4;
+    public static int dynamicChunkUpdateLimit = MIN_CHUNK_UPDATES_PER_FRAME;
 
     public Minecraft minecraft;
     public float fogColorMultiplier = 1F;
@@ -143,7 +144,7 @@ public final class Renderer {
                 float blue = 0.9F;
                 GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, createBuffer(red, green, blue, 1F));
             } else if (liquidType == LiquidType.lava) {
-                GL11.glFogf(GL11.GL_FOG_DENSITY, 2F);
+                GL11.glFogf(GL11.GL_FOG_DENSITY, 1.5F);
                 float red = 0.4F;
                 float green = 0.3F;
                 float blue = 0.3F;
@@ -152,7 +153,7 @@ public final class Renderer {
         } else {
             // Regular fog, when not in liquid
             GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_LINEAR);
-            GL11.glFogf(GL11.GL_FOG_START, 0F);
+            GL11.glFogf(GL11.GL_FOG_START, fogEnd / 2);
             GL11.glFogf(GL11.GL_FOG_END, fogEnd);
             GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, createBuffer(1F, 1F, 1F, 1F));
         }
