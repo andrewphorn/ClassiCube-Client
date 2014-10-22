@@ -60,7 +60,7 @@ public final class GameSettings {
 
     private final File settingsFile;
     public boolean showClouds = true;
-    public byte thirdPersonMode = 0;
+    public ThirdPersonMode thirdPersonMode = ThirdPersonMode.NONE;
     public boolean CanSpeed = true;
     public transient Minecraft minecraft;
     public int settingCount; // TODO Never used
@@ -85,10 +85,10 @@ public final class GameSettings {
     public KeyBinding[] bindingsmore;
 
     // ==== SETTINGS ==============================================================================
-    public int HackType = 0;
-    public int ShowNames = 0;
+    public int hackType = 0;
+    public int showNames = 0;
     public String lastUsedTexturePack;
-    public boolean HacksEnabled = true;
+    public boolean hacksEnabled = true;
     public int smoothing = 0;
     public int framerateLimit = 60;
     public boolean viewBobbing = true;
@@ -152,13 +152,13 @@ public final class GameSettings {
             case ALLOW_SERVER_TEXTURES:
                 return "Allow server textures: " + (canServerChangeTextures ? "Yes" : "No");
             case SPEEDHACK_TYPE:
-                return "SpeedHack type: " + (HackType == 0 ? "Normal" : "Adv");
+                return "SpeedHack type: " + (hackType == 0 ? "Normal" : "Adv");
             case FONT_SCALE:
                 return "Font Scale: " + Math.round(scale * 100) + "%";
             case ENABLE_HACKS:
-                return "Enable Hacks: " + (HacksEnabled ? "Yes" : "No");
+                return "Enable Hacks: " + (hacksEnabled ? "Yes" : "No");
             case SHOW_NAMES:
-                return "Show Names: " + showNamesOptions[ShowNames];
+                return "Show Names: " + showNamesOptions[showNames];
             default:
                 throw new IllegalArgumentException();
         }
@@ -243,7 +243,7 @@ public final class GameSettings {
                 canServerChangeTextures = isTrue;
                 break;
             case "hacktype":
-                HackType = Math.min(Math.max(Byte.parseByte(value),
+                hackType = Math.min(Math.max(Byte.parseByte(value),
                         HACKTYPE_NORMAL), HACKTYPE_ADVANCED);
                 break;
             case "scale":
@@ -252,10 +252,10 @@ public final class GameSettings {
                 scale = Math.min(Math.max(roundedVal, SCALE_MIN), SCALE_MAX);
                 break;
             case "hacksenabled":
-                HacksEnabled = isTrue;
+                hacksEnabled = isTrue;
                 break;
             case "shownames":
-                ShowNames = Math.min(Math.max(Byte.parseByte(value),
+                showNames = Math.min(Math.max(Byte.parseByte(value),
                         SHOWNAMES_HOVER), SHOWNAMES_ALWAYS_UNSCALED);
                 break;
             case "texturepack":
@@ -286,10 +286,10 @@ public final class GameSettings {
                 writer.println("smoothing:" + smoothing);
                 writer.println("anisotropic:" + anisotropy);
                 writer.println("canServerChangeTextures:" + canServerChangeTextures);
-                writer.println("HackType:" + HackType);
-                writer.println("Scale:" + scale);
-                writer.println("HacksEnabled:" + HacksEnabled);
-                writer.println("ShowNames:" + ShowNames);
+                writer.println("hackType:" + hackType);
+                writer.println("scale:" + scale);
+                writer.println("hacksEnabled:" + hacksEnabled);
+                writer.println("showNames:" + showNames);
                 writer.println("texturepack:" + lastUsedTexturePack);
                 for (KeyBinding binding : bindings) {
                     writer.println("key_" + binding.name + ":" + binding.key);
@@ -374,9 +374,9 @@ public final class GameSettings {
                 canServerChangeTextures = !canServerChangeTextures;
                 break;
             case SPEEDHACK_TYPE:
-                HackType++;
-                if (HackType > HACKTYPE_ADVANCED) {
-                    HackType = HACKTYPE_NORMAL;
+                hackType++;
+                if (hackType > HACKTYPE_ADVANCED) {
+                    hackType = HACKTYPE_NORMAL;
                 }
                 break;
             case FONT_SCALE:
@@ -386,12 +386,12 @@ public final class GameSettings {
                 }
                 break;
             case ENABLE_HACKS:
-                HacksEnabled = !HacksEnabled;
+                hacksEnabled = !hacksEnabled;
                 break;
             case SHOW_NAMES:
-                ShowNames++;
-                if (ShowNames > SHOWNAMES_ALWAYS_UNSCALED) {
-                    ShowNames = SHOWNAMES_HOVER;
+                showNames++;
+                if (showNames > SHOWNAMES_ALWAYS_UNSCALED) {
+                    showNames = SHOWNAMES_HOVER;
                 }
                 break;
         }

@@ -24,15 +24,6 @@ public class HumanoidMob extends Mob {
         this.setPos(posX, posY, posZ);
     }
 
-    public static boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public void renderModel(TextureManager textureManager, float var2, float var3, float var4, float var5,
                             float var6, float scale) {

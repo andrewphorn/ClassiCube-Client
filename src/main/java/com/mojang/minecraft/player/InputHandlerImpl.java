@@ -129,7 +129,7 @@ public class InputHandlerImpl extends InputHandler {
             }
 
             jumping = keyStates[4];
-            if (settings.HacksEnabled) {
+            if (settings.hacksEnabled) {
                 if (settings.CanSpeed) {
                     running = keyStates[5];
                     Minecraft.playerIsRunning = keyStates[5];

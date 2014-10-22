@@ -16,6 +16,7 @@ import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.MathHelper;
 
 public class Mob extends Entity {
+
     public static final long serialVersionUID = 0L;
     public static final int ATTACK_DURATION = 5;
     public static final int TOTAL_AIR_SUPPLY = 300;
@@ -50,7 +51,7 @@ public class Mob extends Entity {
     protected float animStepO;
     protected int tickCount = 0;
     public String textureName = "/char.png";
-	public boolean defaultTexture = true;
+    public boolean defaultTexture = true;
     protected float bobStrength = 1F;
     protected int deathScore = 0;
     protected boolean dead = false;
@@ -284,7 +285,7 @@ public class Mob extends Entity {
     }
 
     public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
-                            float var6, float scale) {
+            float var6, float scale) {
         modelCache.getModel(modelName).render(var2, var4, tickCount + var3, var5, var6, scale);
     }
 
@@ -349,8 +350,9 @@ public class Mob extends Entity {
         if (hyp > 0.05F) {
             var6 = 1F;
             var5 = hyp * 3F;
-            if (!(this instanceof Player))
+            if (!(this instanceof Player)) {
                 var4 = (float) Math.atan2(distanceY, distanceX) * 180F / (float) Math.PI - 90F;
+            }
         }
 
         if (!onGround) {
@@ -536,5 +538,37 @@ public class Mob extends Entity {
                 }
             }
         }
+    }
+
+    protected static boolean checkForHat(BufferedImage texture) {
+        int[] hairPixels = new int[512];
+        texture.getRGB(32, 0, 32, 16, hairPixels, 0, 32);
+        int pixel = 0;
+
+        boolean hasHair;
+        while (true) {
+            if (pixel >= hairPixels.length) {
+                hasHair = false;
+                break;
+            }
+
+            if (hairPixels[pixel] >>> 24 < 128) {
+                hasHair = true;
+                break;
+            }
+
+            ++pixel;
+        }
+        return hasHair;
+    }
+
+    // Used to test modelName -- if it's numeric, model is a block
+    protected static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 }

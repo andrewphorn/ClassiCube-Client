@@ -1338,7 +1338,7 @@ public final class Minecraft implements Runnable {
                                 && networkManager.players != null
                                 && networkManager.players.size() > 0) {
                             // Render other players' names
-                            if ((settings.ShowNames == 2 || settings.ShowNames == 3)
+                            if ((settings.showNames == 2 || settings.showNames == 3)
                                     && this.player.userType >= 100) {
                                 for (NetworkPlayer np : networkManager.players.values()) {
                                     if (np != null) {
@@ -1398,7 +1398,7 @@ public final class Minecraft implements Runnable {
                         if (heldBlock.block != null) {
                             GL11.glScalef(0.4F, 0.4F, 0.4F);
                             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-                            if (settings.thirdPersonMode == 0 && canRenderGUI) {
+                            if (settings.thirdPersonMode == ThirdPersonMode.NONE && canRenderGUI) {
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D,
                                         heldBlock.minecraft.textureManager.load("/terrain.png"));
                                 heldBlock.block.renderPreview(shapeRenderer);
@@ -1982,10 +1982,7 @@ public final class Minecraft implements Runnable {
 
                             case Keyboard.KEY_F6:
                                 if (HackState.noclip) {
-                                    ++settings.thirdPersonMode;
-                                    if (settings.thirdPersonMode > 2) {
-                                        settings.thirdPersonMode = 0;
-                                    }
+                                    settings.thirdPersonMode = settings.thirdPersonMode.next();
                                 }
                                 break;
 
@@ -2002,9 +1999,9 @@ public final class Minecraft implements Runnable {
                                 break;
                         }
 
-                        if (settings.HacksEnabled) {
+                        if (settings.hacksEnabled) {
                             // Check for hack toggle keys
-                            if (settings.HackType == 0) {
+                            if (settings.hackType == 0) {
                                 if (Keyboard.getEventKey() == settings.noClip.key) {
                                     if (HackState.noclip || HackState.noclip
                                             && player.userType >= 100) {

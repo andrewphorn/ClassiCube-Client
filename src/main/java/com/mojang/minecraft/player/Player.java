@@ -1,7 +1,5 @@
 package com.mojang.minecraft.player;
 
-import static com.mojang.minecraft.net.NetworkPlayer.isInteger;
-
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -10,6 +8,7 @@ import com.mojang.util.ColorCache;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.HackState;
+import com.mojang.minecraft.ThirdPersonMode;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.level.tile.FireBlock;
@@ -36,11 +35,8 @@ public class Player extends Mob {
     public float bob;
     public int score = 0;
     public int arrows = 20;
-    boolean HacksEnabled;
     boolean isOnIce = false;
-    private int flyTrig = 0;
-    private int noclipTrig = 0;
-    private int speedTrig = 0;
+
     private int jumpCount = 0;
 
     public Player(Level level, GameSettings gs) {
@@ -65,7 +61,7 @@ public class Player extends Mob {
 
     @Override
     public void aiStep() {
-        if (settings.HackType == 0 || !(HackState.fly || HackState.speed || HackState.noclip)
+        if (settings.hackType == 0 || !(HackState.fly || HackState.speed || HackState.noclip)
                 && input.canMove) {
             inventory.tick();
             oBob = bob;
@@ -98,7 +94,6 @@ public class Player extends Mob {
             }
         } else {
             oBob = bob;
-            HacksEnabled = settings.HacksEnabled;
             input.updateMovement(1);
             super.aiStep();
             float fx = xd;
@@ -129,51 +124,29 @@ public class Player extends Mob {
             bob += (aaa - bob) * 0.4F;
             tilt += (bbb - tilt) * 0.8F;
 
-            speedTrig = -1; // speed
-            flyTrig = -1; // fly
-            noclipTrig = -1; // noclip
-            // -1 = yes, 1 = no
-
-            if (HackState.fly) {
-                flyTrig = -1;
-            } else {
-                flyTrig = 1;
-            }
-
-            if (HackState.speed) {
-                speedTrig = -1;
-            } else {
-                speedTrig = 1;
-            }
-
-            if (HackState.noclip) {
-                noclipTrig = -1;
-            } else {
-                noclipTrig = 1;
-            }
             boolean isFlying = false;
             boolean isNoClipping = false;
             boolean isSpeeding = true;
-            float f1 = 1F;
+            float speedMult = 1F;
             oBob = bob;
-            if (flyingMode && flyTrig < 1) {
+            if (flyingMode && HackState.fly) {
                 isFlying = true;
             }
-            if (noPhysics && noclipTrig < 0) {
+            if (noPhysics && HackState.noclip) {
                 isNoClipping = true;
             }
-            if (input.mult > 1F && speedTrig < 1) {
-                f1 = input.mult;
+            if (input.mult > 1F && HackState.speed ) {
+                speedMult = input.mult;
             }
 
-            if (!HacksEnabled) {
+            if (!settings.hacksEnabled) {
                 isFlying = false;
                 isNoClipping = false;
                 isSpeeding = false;
-                f1 = 1F;
+                speedMult = 1F;
             }
 
-            if (flyTrig > 0 || speedTrig > 0) {
+            if (!HackState.fly || !HackState.speed ) {
                 isSpeeding = false;
             }
 
@@ -207,7 +180,7 @@ public class Player extends Mob {
                     yd += 0.05F;
                 } else if (onGround) {
                     if (!input.fall) {
-                        if (!HacksEnabled && isSpeeding) {
+                        if (!settings.hacksEnabled && isSpeeding) {
                             yd = 0.48F;
                         } else {
                             yd = 0.35F;
@@ -215,7 +188,7 @@ public class Player extends Mob {
                         input.fall = true;
                         jumpCount += 1;
                     }
-                } else if (HacksEnabled && !input.fall && isSpeeding && jumpCount < 3) {
+                } else if (settings.hacksEnabled && !input.fall && isSpeeding && jumpCount < 3) {
                     yd = 0.5F;
                     input.fall = true;
                     jumpCount += 1;
@@ -224,10 +197,10 @@ public class Player extends Mob {
                 input.fall = false;
             }
 
-            if (HacksEnabled && isSpeeding && jumpCount > 1) {
-                f1 *= 2.5F;
+            if (settings.hacksEnabled && isSpeeding && jumpCount > 1) {
+                speedMult *= 2.5F;
                 if (!isOnIce) {
-                    f1 *= jumpCount;
+                    speedMult *= jumpCount;
                 } else {
                     jumpCount = 0;
                 }
@@ -235,8 +208,8 @@ public class Player extends Mob {
 
             if (inWater && !isFlying && !isNoClipping) {
                 float oldY = y;
-                super.moveRelative(input.strafe, input.move, 0.02F * f1);
-                super.move(xd * f1, yd * f1, zd * f1);
+                super.moveRelative(input.strafe, input.move, 0.02F * speedMult);
+                super.move(xd * speedMult, yd * speedMult, zd * speedMult);
                 xd *= 0.8F;
                 yd *= 0.8F;
                 zd *= 0.8F;
@@ -249,8 +222,8 @@ public class Player extends Mob {
 
             if (inLava && !isFlying && !isNoClipping) {
                 float oldY = y;
-                super.moveRelative(input.strafe, input.move, 0.02F * f1);
-                super.move(xd * f1, yd * f1, zd * f1);
+                super.moveRelative(input.strafe, input.move, 0.02F * speedMult);
+                super.move(xd * speedMult, yd * speedMult, zd * speedMult);
                 xd *= 0.5F;
                 yd *= 0.5F;
                 zd *= 0.5F;
@@ -262,30 +235,30 @@ public class Player extends Mob {
             }
 
             if (isFlying) {
-                f1 = (float) (f1 * 1.2D);
+                speedMult *= 1.2f;
             }
 
             float f4 = 0F;
-            float f3 = 0F;
+            float speedScale;
             if (isNoClipping) {
                 f4 = isFlying ? 0.72F : 0.71F;
                 if (isFlying) {
                     yd = input.elevate;
                 }
-                f3 = 0.2F;
+                speedScale = 0.2F;
             } else if (onGround || jumpCount > 0 || isFlying) {
-                f3 = 0.1F;
+                speedScale = 0.1F;
             } else {
-                f3 = 0.02F;
+                speedScale = 0.02F;
             }
 
-            super.moveRelative(input.strafe, input.move, f3 * f1);
+            super.moveRelative(input.strafe, input.move, speedScale * speedMult);
 
             if (isNoClipping && (xd != 0F || zd != 0F)) {
                 super.moveTo(x + xd, y + yd - f4, z + zd, yRot, xRot);
                 yo = y += f4;
             } else {
-                super.move(xd * f1, yd * f1, zd * f1);
+                super.move(xd * speedMult, yd * speedMult, zd * speedMult);
             }
             int tileBelow = level.getTile((int) x, (int) (y - 2.12F), (int) z);
             if (Block.blocks[tileBelow] != Block.ICE) {
@@ -321,21 +294,7 @@ public class Player extends Mob {
     @Override
     public void bindTexture(TextureManager textureManager) {
         if (newTexture != null) {
-            int[] hairPixels = new int[512];
-            newTexture.getRGB(32, 0, 32, 16, hairPixels, 0, 32);
-
-            int pixel = 0;
-            while (true) {
-                if (pixel >= hairPixels.length) {
-                    hasHair = false;
-                    break;
-                }
-                if (hairPixels[pixel] >>> 24 < 128) {
-                    hasHair = true;
-                    break;
-                }
-                ++pixel;
-            }
+            hasHair = checkForHat(newTexture);
 
             //if (modelName.equals("humanoid")) {
             newTextureId = textureManager.load(newTexture);
@@ -414,7 +373,7 @@ public class Player extends Mob {
 
     @Override
     public void render(TextureManager textureManager, float delta) {
-        if (settings.thirdPersonMode == 0) {
+        if (settings.thirdPersonMode == ThirdPersonMode.NONE) {
             return;
         }
         if (modelName != null) {

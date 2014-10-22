@@ -5,6 +5,7 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.SelectionBoxData;
+import com.mojang.minecraft.ThirdPersonMode;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.physics.AABB;
@@ -169,19 +170,19 @@ public final class Renderer {
         applyBobbing(delta, settings.viewBobbing);
 
         float cameraDistance = -5.1F;
-        if (selected != null && settings.thirdPersonMode == 2) {
+        if (selected != null && settings.thirdPersonMode == ThirdPersonMode.FRONT_FACING) {
             cameraDistance = -(selected.vec.distance(getPlayerVector(delta)) - 0.51F);
             if (cameraDistance < -5.1F) {
                 cameraDistance = -5.1F;
             }
         }
 
-        if (settings.thirdPersonMode == 0) {
+        if (settings.thirdPersonMode == ThirdPersonMode.NONE) {
             GL11.glTranslatef(0F, 0F, -0.1F);
         } else {
             GL11.glTranslatef(0F, 0F, cameraDistance);
         }
-        if (settings.thirdPersonMode == 2) {
+        if (settings.thirdPersonMode == ThirdPersonMode.FRONT_FACING) {
             GL11.glRotatef(-player.xRotO + (player.xRot - player.xRotO) * delta, 1F, 0F, 0F);
             GL11.glRotatef(player.yRotO + (player.yRot - player.yRotO) * delta + 180, 0F, 1F, 0F);
         } else {

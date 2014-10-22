@@ -117,21 +117,21 @@ public class ChatInputScreenExtension extends GuiScreen {
                     minecraft.hud.addChat("&eGUI: &a" + (!minecraft.canRenderGUI ? "On" : "Off")
                             + " -> " + (minecraft.canRenderGUI ? "On" : "Off"));
                 } else if (str1.equalsIgnoreCase("/client hacks")) {
-                    minecraft.settings.HacksEnabled = !minecraft.settings.HacksEnabled;
+                    minecraft.settings.hacksEnabled = !minecraft.settings.hacksEnabled;
                     minecraft.hud.addChat("&eHacks: &a"
-                            + (!minecraft.settings.HacksEnabled ? "Enabled" : "Disabled") + " -> "
-                            + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));
+                            + (!minecraft.settings.hacksEnabled ? "Enabled" : "Disabled") + " -> "
+                            + (minecraft.settings.hacksEnabled ? "Enabled" : "Disabled"));
                 } else if (str1.equalsIgnoreCase("/client speedhack")) {
-                    if (minecraft.settings.HackType == 1) {
-                        minecraft.settings.HackType = 0;
+                    if (minecraft.settings.hackType == 1) {
+                        minecraft.settings.hackType = 0;
                     } else {
-                        minecraft.settings.HackType++;
+                        minecraft.settings.hackType++;
                     }
                     minecraft.hud
                             .addChat("&eSpeedHack: &a"
-                                    + (!(minecraft.settings.HackType == 0) ? "Normal" : "Advanced")
+                                    + (!(minecraft.settings.hackType == 0) ? "Normal" : "Advanced")
                                     + " -> "
-                                    + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
+                                    + ((minecraft.settings.hackType == 0) ? "Normal" : "Advanced"));
                 } else if (str1.equalsIgnoreCase("/client help")) {
                     minecraft.hud.addChat("&a/Client GUI &e- Toggles the GUI");
                     minecraft.hud
@@ -149,9 +149,9 @@ public class ChatInputScreenExtension extends GuiScreen {
                     minecraft.hud.addChat("  &eDebug: &a"
                             + (minecraft.settings.showDebug ? "On" : "Off"));
                     minecraft.hud.addChat("  &eHacks: &a"
-                            + (minecraft.settings.HacksEnabled ? "Enabled" : "Disabled"));
+                            + (minecraft.settings.hacksEnabled ? "Enabled" : "Disabled"));
                     minecraft.hud.addChat("  &eSpeedHack: &a"
-                            + ((minecraft.settings.HackType == 0) ? "Normal" : "Advanced"));
+                            + ((minecraft.settings.hackType == 0) ? "Normal" : "Advanced"));
                 } else {
                     minecraft.hud
                             .addChat("&eTo see a list of client commands type in &a/Client Help");
