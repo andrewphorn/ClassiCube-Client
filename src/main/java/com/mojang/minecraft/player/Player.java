@@ -496,8 +496,11 @@ public class Player extends Mob {
             return;
         }
         
-        // If model is humanoid, render its outer layer ("hair")
+        // Render the rest of the model
         Model model = modelCache.getModel(modelName);
+        model.render(var2, var4, tickCount + var3, yawDegrees, pitchDegrees, scale);
+        
+        // If model is humanoid, render its outer layer ("hair")
         if (hasHair && model instanceof HumanoidModel) {
             GL11.glDisable(GL11.GL_CULL_FACE);
             HumanoidModel modelHeadwear = (HumanoidModel) model;
@@ -506,9 +509,6 @@ public class Player extends Mob {
             modelHeadwear.headwear.render(scale);
             GL11.glEnable(GL11.GL_CULL_FACE);
         }
-        
-        // Render the rest of the model
-        model.render(var2, var4, tickCount + var3, yawDegrees, pitchDegrees, scale);
     }
 
     private void renderBlock(TextureManager textures) {
