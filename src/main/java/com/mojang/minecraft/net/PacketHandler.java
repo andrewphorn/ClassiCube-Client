@@ -37,7 +37,8 @@ import com.oyasunadev.mcraft.client.util.Constants;
 public class PacketHandler {
 
     private static final List<ProtocolExtension> supportedExtensions = new ArrayList<>();
-    private int receivedExtensionLength;
+    private int extEntriesExpected, extEntriesReceived;
+    private boolean receivedExtInfo;
 
     private final Minecraft minecraft;
     public boolean canSendHeldBlock = false;
@@ -57,10 +58,11 @@ public class PacketHandler {
     public boolean handlePacket(NetworkHandler networkHandler) throws IOException, Exception {
         networkHandler.in.flip();
         byte packetId = networkHandler.in.get(0);
-        PacketType packetType = PacketType.packets[packetId];
-        if (packetType == null) {
+        if (packetId < 0 || packetId > PacketType.packets.length - 1) {
             throw new IOException("Unknown packet ID received: " + packetId);
         }
+
+        PacketType packetType = PacketType.packets[packetId];
         if (networkHandler.in.remaining() < packetType.length + 1) {
             networkHandler.in.compact();
             return false;
@@ -75,41 +77,60 @@ public class PacketHandler {
         NetworkManager networkManager = networkHandler.netManager;
         if (networkHandler.netManager.successful) {
             if (packetType == PacketType.EXT_INFO) {
+                if (receivedExtInfo) {
+                    LogUtil.logWarning("Received multiple ExtInfo packets! Only one was expected.");
+                }
+                receivedExtInfo = true;
                 String appName = (String) packetParams[0];
                 short extensionCount = (Short) packetParams[1];
-                LogUtil.logInfo(String.format("Connecting to AppName \"%s\" with ExtensionCount %s",
+                LogUtil.logInfo(String.format("Connecting to AppName \"%s\" with ExtensionCount %d",
                         appName, extensionCount));
-                receivedExtensionLength = extensionCount;
+                extEntriesExpected = extensionCount;
                 supportedExtensions.clear();
 
             } else if (packetType == PacketType.EXT_ENTRY) {
+                extEntriesReceived++;
                 String extName = (String) packetParams[0];
                 Integer version = (Integer) packetParams[1];
-                ProtocolExtension serverExt = new ProtocolExtension(extName, version);
-                if (ProtocolExtension.isSupported(serverExt)) {
-                    supportedExtensions.add(serverExt);
-                }
 
-                if (extName.equalsIgnoreCase(ProtocolExtension.HELD_BLOCK.name)) {
-                    canSendHeldBlock = true;
-                } else if (extName.equalsIgnoreCase(ProtocolExtension.MESSAGE_TYPES.name)) {
-                    serverSupportsMessages = true;
-                }
+                if (extEntriesReceived > extEntriesExpected) {
+                    LogUtil.logWarning(String.format(
+                            "Expected %d ExtEntries but received too many (%d)! "
+                            + "This ext will be ignored: %s with version %d",
+                            extEntriesReceived, extEntriesExpected, extName, version));
+                } else {
+                    ProtocolExtension serverExt = new ProtocolExtension(extName, version);
+                    LogUtil.logInfo(String.format("Receiving ext: %s with version: %d",
+                            serverExt.name, serverExt.version));
+                    if (ProtocolExtension.isSupported(serverExt)) {
+                        supportedExtensions.add(serverExt);
+                        if (extName.equalsIgnoreCase(ProtocolExtension.HELD_BLOCK.name)) {
+                            canSendHeldBlock = true;
+                        } else if (extName.equalsIgnoreCase(ProtocolExtension.MESSAGE_TYPES.name)) {
+                            serverSupportsMessages = true;
+                        }
+                    }
 
-                if (receivedExtensionLength == supportedExtensions.size()) {
-                    LogUtil.logInfo("Sending list of mutually-supported CPE extensions");
-                    Object[] toSendParams = new Object[]{
-                        Constants.CLIENT_NAME, (short) supportedExtensions.size()};
-                    networkManager.netHandler.send(PacketType.EXT_INFO, toSendParams);
-                    for (ProtocolExtension ext : supportedExtensions) {
-                        LogUtil.logInfo(String.format("Sending ext: %s with version: %s",
-                                ext.name, ext.version));
-                        toSendParams = new Object[]{ext.name, ext.version};
-                        networkManager.netHandler.send(PacketType.EXT_ENTRY, toSendParams);
+                    if (extEntriesExpected == extEntriesReceived) {
+                        LogUtil.logInfo(String.format(
+                                "Sending list of mutually-supported CPE extensions (%d)",
+                                supportedExtensions.size()));
+                        Object[] toSendParams = new Object[]{
+                            Constants.CLIENT_NAME, (short) supportedExtensions.size()};
+                        networkManager.netHandler.send(PacketType.EXT_INFO, toSendParams);
+                        for (ProtocolExtension ext : supportedExtensions) {
+                            LogUtil.logInfo(String.format("Sending ext: %s with version: %d",
+                                    ext.name, ext.version));
+                            toSendParams = new Object[]{ext.name, ext.version};
+                            networkManager.netHandler.send(PacketType.EXT_ENTRY, toSendParams);
+                        }
                     }
                 }
 
             } else if (packetType == PacketType.SELECTION_CUBOID) {
+                if (!ProtocolExtension.isSupported(ProtocolExtension.SELECTION_CUBOID)) {
+                    LogUtil.logWarning("Server attempted to use unsupported extension: SelectionCuboid");
+                }
                 Level level = minecraft.level;
                 byte selectionId = (byte) packetParams[0];
                 String selectionName = (String) packetParams[1];
@@ -136,12 +157,18 @@ public class PacketHandler {
                 minecraft.selectionBoxes.put(selectionId, data);
 
             } else if (packetType == PacketType.REMOVE_SELECTION_CUBOID) {
+                if (!ProtocolExtension.isSupported(ProtocolExtension.SELECTION_CUBOID)) {
+                    LogUtil.logWarning("Server attempted to use unsupported extension: SelectionCuboid");
+                }
                 byte selectionId = (Byte) packetParams[0];
                 if (minecraft.selectionBoxes.remove(selectionId) == null) {
                     LogUtil.logWarning("Attempting to remove selection with unknown id " + selectionId);
                 }
 
             } else if (packetType == PacketType.ENV_SET_COLOR) {
+                if (!ProtocolExtension.isSupported(ProtocolExtension.ENV_COLORS)) {
+                    LogUtil.logWarning("Server attempted to use unsupported extension: EnvColors");
+                }
                 byte envVariable = (Byte) packetParams[0];
                 int r = (Short) packetParams[1];
                 int g = (Short) packetParams[2];
@@ -190,6 +217,9 @@ public class PacketHandler {
                 }
 
             } else if (packetType == PacketType.ENV_SET_MAP_APPEARANCE) {
+                if (!ProtocolExtension.isSupported(ProtocolExtension.ENV_MAP_APPEARANCE)) {
+                    LogUtil.logWarning("Server attempted to use unsupported extension: EnvMapAppearance");
+                }
                 String textureUrl = (String) packetParams[0];
                 byte sideBlock = (Byte) packetParams[1];
                 byte edgeBlock = (Byte) packetParams[2];
@@ -240,10 +270,16 @@ public class PacketHandler {
                 }
 
             } else if (packetType == PacketType.CLICK_DISTANCE) {
+                if (!ProtocolExtension.isSupported(ProtocolExtension.CLICK_DISTANCE)) {
+                    LogUtil.logWarning("Server attempted to use unsupported extension: ClickDistance");
+                }
                 short clickDistance = (Short) packetParams[0];
                 minecraft.gamemode.reachDistance = clickDistance / 32;
 
             } else if (packetType == PacketType.HOLD_THIS) {
+                if (!ProtocolExtension.isSupported(ProtocolExtension.HELD_BLOCK)) {
+                    LogUtil.logWarning("Server attempted to use unsupported extension: HeldBlock");
+                }
                 byte blockToHold = (Byte) packetParams[0];
                 byte preventChange = (Byte) packetParams[1];
                 boolean canPreventChange = preventChange > 0;
@@ -260,14 +296,16 @@ public class PacketHandler {
                 }
 
             } else if (packetType == PacketType.SET_TEXT_HOTKEY) {
+                LogUtil.logWarning("Server attempted to use unsupported extension: TextHotKey");
                 String label = (String) packetParams[0];
                 String action = (String) packetParams[1];
                 int keyCode = (Integer) packetParams[2];
                 byte keyMods = (Byte) packetParams[3];
                 HotKeyData data = new HotKeyData(label, action, keyCode, keyMods);
-                minecraft.hotKeys.add(data);
+                //minecraft.hotKeys.add(data);
 
             } else if (packetType == PacketType.EXT_ADD_PLAYER_NAME) {
+                LogUtil.logWarning("Server attempted to use unsupported extension: ExtPlayerList");
                 short nameId = (short) packetParams[0];
                 String playerName = (String) packetParams[1];
                 String listName = (String) packetParams[2];
@@ -296,6 +334,7 @@ public class PacketHandler {
                 Collections.sort(minecraft.playerListNameData, new PlayerListComparator());
 
             } else if (packetType == PacketType.EXT_ADD_ENTITY) {
+                LogUtil.logWarning("Server attempted to use unsupported extension: ExtPlayerList version 1");
                 byte playerID = (Byte) packetParams[0];
                 String InGameName = (String) packetParams[1];
                 String skinName = (String) packetParams[2];
@@ -321,6 +360,7 @@ public class PacketHandler {
                     }
                 }
             } else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
+                LogUtil.logWarning("Server attempted to use unsupported extension: ExtPlayerList");
                 short nameID = (short) packetParams[0];
                 List<PlayerListNameData> cache = minecraft.playerListNameData;
                 for (int q = 0; q < minecraft.playerListNameData.size(); q++) {
@@ -331,6 +371,9 @@ public class PacketHandler {
                 minecraft.playerListNameData = cache;
 
             } else if (packetType == PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL) {
+                if (!ProtocolExtension.isSupported(ProtocolExtension.CUSTOM_BLOCKS)) {
+                    LogUtil.logWarning("Server attempted to use unsupported extension: CustomBlocks");
+                }
                 byte supportLevel = (Byte) packetParams[0];
                 LogUtil.logInfo("Using CustomBlocks level " + supportLevel);
                 networkManager.netHandler.send(
@@ -339,6 +382,9 @@ public class PacketHandler {
                 SessionData.setAllowedBlocks(supportLevel);
 
             } else if (packetType == PacketType.SET_BLOCK_PERMISSIONS) {
+                if (!ProtocolExtension.isSupported(ProtocolExtension.BLOCK_PERMISSIONS)) {
+                    LogUtil.logWarning("Server attempted to use unsupported extension: BlockPermissions");
+                }
                 byte blockType = (byte) packetParams[0];
                 byte allowPlacement = (byte) packetParams[1];
                 byte allowDeletion = (byte) packetParams[2];
@@ -363,6 +409,9 @@ public class PacketHandler {
                 }
 
             } else if (packetType == PacketType.CHANGE_MODEL) {
+                if (!ProtocolExtension.isSupported(ProtocolExtension.CHANGE_MODEL)) {
+                    LogUtil.logWarning("Server attempted to use unsupported extension: ChangeModel");
+                }
                 byte playerId = (byte) packetParams[0];
                 String modelName = ((String) packetParams[1]).toLowerCase();
                 if (playerId >= 0) {
@@ -389,6 +438,9 @@ public class PacketHandler {
                 }
 
             } else if (packetType == PacketType.ENV_SET_WEATHER_TYPE) {
+                if (!ProtocolExtension.isSupported(ProtocolExtension.ENV_WEATHER_TYPE)) {
+                    LogUtil.logWarning("Server attempted to use unsupported extension: EnvWeatherType");
+                }
                 byte weatherType = (byte) packetParams[0];
                 if (weatherType == 0) {
                     minecraft.isRaining = false;

@@ -1,5 +1,6 @@
 package com.mojang.minecraft.net;
 
+import com.mojang.util.LogUtil;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -12,9 +13,7 @@ public class ProtocolExtension {
     public ProtocolExtension(String name, int version) {
         this.name = name;
         this.version = version;
-        supportedExtensions.add(this);
     }
-    
     
     public static boolean isSupported(ProtocolExtension other){
         return supportedExtensions.contains(other);
@@ -35,8 +34,19 @@ public class ProtocolExtension {
     //public static final ProtocolExtension HACK_CONTROL = new ProtocolExtension("HackControl", 1);
     public static final ProtocolExtension MESSAGE_TYPES = new ProtocolExtension("MessageTypes", 1);
 
+    static {
+        supportedExtensions.add(CLICK_DISTANCE);
+        supportedExtensions.add(CUSTOM_BLOCKS);
+        supportedExtensions.add(HELD_BLOCK);
+        supportedExtensions.add(ENV_COLORS);
+        supportedExtensions.add(SELECTION_CUBOID);
+        supportedExtensions.add(BLOCK_PERMISSIONS);
+        supportedExtensions.add(CHANGE_MODEL);
+        supportedExtensions.add(ENV_MAP_APPEARANCE);
+        supportedExtensions.add(ENV_WEATHER_TYPE);
+        supportedExtensions.add(MESSAGE_TYPES);
+    }
     
-
     @Override
     public boolean equals(Object other) {
         if(other instanceof ProtocolExtension){
