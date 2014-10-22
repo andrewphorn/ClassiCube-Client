@@ -26,11 +26,10 @@ public class HumanoidMob extends Mob {
 
     @Override
     public void renderModel(TextureManager textureManager, float var2, float var3, float var4, float var5,
-                            float var6, float scale) {
-        if (modelName.equals("sheep")) {
+            float var6, float scale) {
+        if ("sheep".equals(modelName)) {
             renderSheep(textureManager, var2, var3, var4, var5, var6, scale);
-            return;
-            
+
         } else if (isInteger(modelName)) {
             // Model name is a block number
             try {
@@ -58,61 +57,62 @@ public class HumanoidMob extends Mob {
             } catch (Exception e) {
                 modelName = "humanoid";
             }
-            return;
-        }
-        super.renderModel(textureManager, var2, var3, var4, var5, var6, scale);
-        Model model = modelCache.getModel(modelName);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        if (allowAlpha) {
-            GL11.glEnable(GL11.GL_CULL_FACE);
-        }
+            
+        } else {
+            super.renderModel(textureManager, var2, var3, var4, var5, var6, scale);
+            Model model = modelCache.getModel(modelName);
+            GL11.glEnable(GL11.GL_ALPHA_TEST);
+            if (allowAlpha) {
+                GL11.glEnable(GL11.GL_CULL_FACE);
+            }
 
-        if (hasHair && model instanceof HumanoidModel) {
-            GL11.glDisable(GL11.GL_CULL_FACE);
-            HumanoidModel modelHeadwear = (HumanoidModel) model;
-            modelHeadwear.headwear.yaw = modelHeadwear.head.yaw;
-            modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
-            modelHeadwear.headwear.render(scale);
-            GL11.glEnable(GL11.GL_CULL_FACE);
-        }
+            if (hasHair && model instanceof HumanoidModel) {
+                GL11.glDisable(GL11.GL_CULL_FACE);
+                HumanoidModel modelHeadwear = (HumanoidModel) model;
+                modelHeadwear.headwear.yaw = modelHeadwear.head.yaw;
+                modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
+                modelHeadwear.headwear.render(scale);
+                GL11.glEnable(GL11.GL_CULL_FACE);
+            }
 
-        if (armor || helmet) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/armor/plate.png"));
-            GL11.glDisable(GL11.GL_CULL_FACE);
-            HumanoidModel modelArmour = (HumanoidModel) modelCache.getModel("humanoid.armor");
-            modelArmour.head.render = helmet;
-            modelArmour.body.render = armor;
-            modelArmour.rightArm.render = armor;
-            modelArmour.leftArm.render = armor;
-            modelArmour.rightLeg.render = false;
-            modelArmour.leftLeg.render = false;
-            HumanoidModel humanoidModel = (HumanoidModel) model;
-            modelArmour.head.yaw = humanoidModel.head.yaw;
-            modelArmour.head.pitch = humanoidModel.head.pitch;
-            modelArmour.rightArm.pitch = humanoidModel.rightArm.pitch;
-            modelArmour.rightArm.roll = humanoidModel.rightArm.roll;
-            modelArmour.leftArm.pitch = humanoidModel.leftArm.pitch;
-            modelArmour.leftArm.roll = humanoidModel.leftArm.roll;
-            modelArmour.rightLeg.pitch = humanoidModel.rightLeg.pitch;
-            modelArmour.leftLeg.pitch = humanoidModel.leftLeg.pitch;
-            modelArmour.head.render(scale);
-            modelArmour.body.render(scale);
-            modelArmour.rightArm.render(scale);
-            modelArmour.leftArm.render(scale);
-            modelArmour.rightLeg.render(scale);
-            modelArmour.leftLeg.render(scale);
-            GL11.glEnable(GL11.GL_CULL_FACE);
-        }
+            if (armor || helmet) {
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/armor/plate.png"));
+                GL11.glDisable(GL11.GL_CULL_FACE);
+                HumanoidModel modelArmour = (HumanoidModel) modelCache.getModel("humanoid.armor");
+                modelArmour.head.render = helmet;
+                modelArmour.body.render = armor;
+                modelArmour.rightArm.render = armor;
+                modelArmour.leftArm.render = armor;
+                modelArmour.rightLeg.render = false;
+                modelArmour.leftLeg.render = false;
+                HumanoidModel humanoidModel = (HumanoidModel) model;
+                modelArmour.head.yaw = humanoidModel.head.yaw;
+                modelArmour.head.pitch = humanoidModel.head.pitch;
+                modelArmour.rightArm.pitch = humanoidModel.rightArm.pitch;
+                modelArmour.rightArm.roll = humanoidModel.rightArm.roll;
+                modelArmour.leftArm.pitch = humanoidModel.leftArm.pitch;
+                modelArmour.leftArm.roll = humanoidModel.leftArm.roll;
+                modelArmour.rightLeg.pitch = humanoidModel.rightLeg.pitch;
+                modelArmour.leftLeg.pitch = humanoidModel.leftLeg.pitch;
+                modelArmour.head.render(scale);
+                modelArmour.body.render(scale);
+                modelArmour.rightArm.render(scale);
+                modelArmour.leftArm.render(scale);
+                modelArmour.rightLeg.render(scale);
+                modelArmour.leftLeg.render(scale);
+                GL11.glEnable(GL11.GL_CULL_FACE);
+            }
 
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+        }
     }
 
-    public void renderSheep(TextureManager textureManager, float var2, float var3, float var4, float var5,
-                            float var6, float scale) {
+    public void renderSheep(TextureManager textureManager, float var2, float var3, float var4,
+            float yawDegrees, float pitchDegrees, float scale) {
         AnimalModel model = (AnimalModel) modelCache.getModel("sheep");
         float headY = model.head.y;
         float headZ = model.head.z;
-        super.renderModel(textureManager, var2, var3, var4, var5, var6, scale);
+        super.renderModel(textureManager, var2, var3, var4, yawDegrees, pitchDegrees, scale);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/mob/sheep_fur.png"));
         AnimalModel sheepModel = (AnimalModel) modelCache.getModel("sheep.fur");
         sheepModel.head.yaw = model.head.yaw;

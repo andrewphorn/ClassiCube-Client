@@ -18,6 +18,7 @@ import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.util.LogUtil;
 import com.mojang.util.MathHelper;
 
 public class Player extends Mob {
@@ -135,7 +136,7 @@ public class Player extends Mob {
             if (noPhysics && HackState.noclip) {
                 isNoClipping = true;
             }
-            if (input.mult > 1F && HackState.speed ) {
+            if (input.mult > 1F && HackState.speed) {
                 speedMult = input.mult;
             }
 
@@ -146,7 +147,7 @@ public class Player extends Mob {
                 speedMult = 1F;
             }
 
-            if (!HackState.fly || !HackState.speed ) {
+            if (!HackState.fly || !HackState.speed) {
                 isSpeeding = false;
             }
 
@@ -301,13 +302,13 @@ public class Player extends Mob {
             //}
             newTexture = null;
         }
-        
+
         // modelName is a block number
         if (isInteger(modelName)) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
             return;
         }
-        
+
         int boundTextureId;
         if (newTextureId < 0) {
             if (modelName.equals("humanoid") || defaultTexture) {
@@ -373,155 +374,173 @@ public class Player extends Mob {
 
     @Override
     public void render(TextureManager textureManager, float delta) {
-        if (settings.thirdPersonMode == ThirdPersonMode.NONE) {
+        // A body only needs to be rendered when player is in third-person view
+        // and modelName is set.
+        if (settings.thirdPersonMode == ThirdPersonMode.NONE || modelName == null) {
             return;
         }
-        if (modelName != null) {
-            float var3 = attackTime - delta;
-            if (var3 < 0F) {
-                var3 = 0F;
-            }
 
-            while (yBodyRotO - yBodyRot < -180F) {
-                yBodyRotO += 360F;
-            }
-
-            while (yBodyRotO - yBodyRot >= 180F) {
-                yBodyRotO -= 360F;
-            }
-
-            while (xRotO - xRot < -180F) {
-                xRotO += 360F;
-            }
-
-            while (xRotO - xRot >= 180F) {
-                xRotO -= 360F;
-            }
-
-            while (yRotO - yRot < -180F) {
-                yRotO += 360F;
-            }
-
-            while (yRotO - yRot >= 180F) {
-                yRotO -= 360F;
-            }
-
-            float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * delta;
-            float var5 = oRun + (run - oRun) * delta;
-            float var6 = yRotO + (yRot - yRotO) * delta;
-            float var7 = xRotO + (xRot - xRotO) * delta;
-            var6 -= var4;
-            GL11.glPushMatrix();
-            float var8 = animStepO + (animStep - animStepO) * delta;
-            ColorCache c = getBrightnessColor();
-
-            GL11.glColor3f(c.R, c.G, c.B);
-            float scale = 0.0625F; // 1 / 16
-            float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5F * var5 * bobStrength - 23F;
-            GL11.glTranslatef(xo + (x - xo) * delta, yo + (y - yo) * delta - 1.62F + renderOffset, zo
-                    + (z - zo) * delta);
-            float var11 = hurtTime - delta;
-            if (var11 > 0F || health <= 0) {
-                if (var11 < 0F) {
-                    var11 = 0F;
-                } else {
-                    var11 /= hurtDuration;
-                    var11 = MathHelper.sin(var11 * var11 * var11 * var11 * (float) Math.PI) * 14F;
-                }
-
-                float var12 = 0F;
-                if (health <= 0) {
-                    var12 = (deathTime + delta) / 20F;
-                    var11 += var12 * var12 * 800F;
-                    if (var11 > 90F) {
-                        var11 = 90F;
-                    }
-                }
-
-                var12 = hurtDir;
-                GL11.glRotatef(180F - var4 + rotOffs + 45, 0F, 1F, 0F);
-                GL11.glScalef(1F, 1F, 1F);
-                GL11.glRotatef(-var12, 0F, 1F, 0F);
-                GL11.glRotatef(-var11, 0F, 0F, 1F);
-                GL11.glRotatef(var12, 0F, 1F, 0F);
-                GL11.glRotatef(-(180F - var4 + rotOffs), 0F, 1F, 0F);
-            }
-
-            GL11.glTranslatef(0F, -var10 * scale, 0F);
-            GL11.glScalef(1F, -1F, 1F);
-            GL11.glRotatef(180F - var4 + rotOffs, 0F, 1F, 0F);
-            if (!allowAlpha) {
-                GL11.glDisable(GL11.GL_ALPHA_TEST);
-            } else {
-                GL11.glDisable(GL11.GL_CULL_FACE);
-            }
-
-            GL11.glScalef(-1F, 1F, 1F);
-            modelCache.getModel(modelName).attackOffset = var3 / 5F;
-            bindTexture(textureManager);
-            renderModel(textureManager, var8, delta, var5, var6, var7, scale);
-            if (invulnerableTime > invulnerableDuration - 10) {
-                GL11.glColor4f(1F, 1F, 1F, 0.75F);
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-                bindTexture(textureManager);
-                renderModel(textureManager, var8, delta, var5, var6, var7, scale);
-                GL11.glDisable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            }
-
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-            if (allowAlpha) {
-                GL11.glEnable(GL11.GL_CULL_FACE);
-            }
-
-            GL11.glColor4f(1F, 1F, 1F, 1F);
-            GL11.glPopMatrix();
+        float var3 = attackTime - delta;
+        if (var3 < 0F) {
+            var3 = 0F;
         }
+
+        // Clip all rotation variables to [-180,180) range.
+        while (yBodyRotO - yBodyRot < -180F) {
+            yBodyRotO += 360F;
+        }
+
+        while (yBodyRotO - yBodyRot >= 180F) {
+            yBodyRotO -= 360F;
+        }
+
+        while (xRotO - xRot < -180F) {
+            xRotO += 360F;
+        }
+
+        while (xRotO - xRot >= 180F) {
+            xRotO -= 360F;
+        }
+
+        while (yRotO - yRot < -180F) {
+            yRotO += 360F;
+        }
+
+        while (yRotO - yRot >= 180F) {
+            yRotO -= 360F;
+        }
+
+        // Update rotation angles
+        float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * delta;
+        float var5 = oRun + (run - oRun) * delta;
+        float yawDegrees = yRotO + (yRot - yRotO) * delta;
+        float pitchDegrees = xRotO + (xRot - xRotO) * delta;
+        yawDegrees -= var4;
+        float var8 = animStepO + (animStep - animStepO) * delta;
+
+        GL11.glPushMatrix();
+        ColorCache c = getBrightnessColor();
+        GL11.glColor3f(c.R, c.G, c.B);
+
+        float scale = 0.0625F; // 1 / 16
+        float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5F * var5 * bobStrength - 23F;
+        GL11.glTranslatef(xo + (x - xo) * delta,
+                yo + (y - yo) * delta - 1.62F + renderOffset,
+                zo + (z - zo) * delta);
+
+        // SURVIVAL: hurt/death effect
+        float var11 = hurtTime - delta;
+        if (var11 > 0F || health <= 0) {
+            if (var11 < 0F) {
+                var11 = 0F;
+            } else {
+                var11 /= hurtDuration;
+                var11 = MathHelper.sin(var11 * var11 * var11 * var11 * (float) Math.PI) * 14F;
+            }
+
+            if (health <= 0) {
+                float var12 = (deathTime + delta) / 20F;
+                var11 += var12 * var12 * 800F;
+                if (var11 > 90F) {
+                    var11 = 90F;
+                }
+            }
+
+            GL11.glRotatef(180F - var4 + rotOffs + 45, 0F, 1F, 0F);
+            GL11.glScalef(1F, 1F, 1F);
+            GL11.glRotatef(-hurtDir, 0F, 1F, 0F);
+            GL11.glRotatef(-var11, 0F, 0F, 1F);
+            GL11.glRotatef(hurtDir, 0F, 1F, 0F);
+            GL11.glRotatef(-(180F - var4 + rotOffs), 0F, 1F, 0F);
+        }
+
+        GL11.glTranslatef(0F, -var10 * scale, 0F);
+        GL11.glScalef(1F, -1F, 1F);
+        GL11.glRotatef(180F - var4 + rotOffs, 0F, 1F, 0F);
+        if (!allowAlpha) {
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+        } else {
+            GL11.glDisable(GL11.GL_CULL_FACE);
+        }
+
+        GL11.glScalef(-1F, 1F, 1F);
+        modelCache.getModel(modelName).attackOffset = var3 / 5F;
+        bindTexture(textureManager);
+        renderModel(textureManager, var8, delta, var5, yawDegrees, pitchDegrees, scale);
+        if (invulnerableTime > invulnerableDuration - 10) {
+            GL11.glColor4f(1F, 1F, 1F, 0.75F);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+            bindTexture(textureManager);
+            renderModel(textureManager, var8, delta, var5, yawDegrees, pitchDegrees, scale);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        }
+
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        if (allowAlpha) {
+            GL11.glEnable(GL11.GL_CULL_FACE);
+        }
+
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GL11.glPopMatrix();
     }
 
     @Override
-    public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
-            float var6, float scale) {
+    public void renderModel(TextureManager textures, float var2, float var3, float var4,
+            float yawDegrees, float pitchDegrees, float scale) {
+        
+        // Render block model
         if (isInteger(modelName)) {
-            try {
-                GL11.glEnable(GL11.GL_ALPHA_TEST);
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glPushMatrix();
-
-                // These are here to revert the scalef calls in Mob.java.
-                // While those calls are useful for entity models, they cause the
-                // block models to be rendered upside down.
-                GL11.glScalef(-1F, 1F, 1F);
-                GL11.glScalef(1F, -1F, 1F);
-                Block block = Block.blocks[Integer.parseInt(modelName)];
-                // TODO: Implement proper detection of which blocks need translation.
-                float yTranslation = -1.4F;
-                if (block instanceof FlowerBlock || block instanceof FireBlock) {
-                    yTranslation = -1.8F;
-                }
-                GL11.glTranslatef(-0.5F, yTranslation, -0.2F);
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/terrain.png"));
-
-                block.renderPreview(ShapeRenderer.instance);
-                GL11.glPopMatrix();
-                GL11.glDisable(GL11.GL_BLEND);
-            } catch (Exception e) {
-                modelName = "humanoid";
-            }
+            renderBlock(textures);
             return;
         }
+        
+        // If model is humanoid, render its outer layer ("hair")
         Model model = modelCache.getModel(modelName);
         if (hasHair && model instanceof HumanoidModel) {
             GL11.glDisable(GL11.GL_CULL_FACE);
-            HumanoidModel modelHeadwear = null;
-            modelHeadwear = (HumanoidModel) model;
+            HumanoidModel modelHeadwear = (HumanoidModel) model;
             modelHeadwear.headwear.yaw = modelHeadwear.head.yaw;
             modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
             modelHeadwear.headwear.render(scale);
             GL11.glEnable(GL11.GL_CULL_FACE);
         }
-        model.render(var2, var4, tickCount + var3, var5, var6, scale);
+        
+        // Render the rest of the model
+        model.render(var2, var4, tickCount + var3, yawDegrees, pitchDegrees, scale);
+    }
+
+    private void renderBlock(TextureManager textures) {
+        try {
+            GL11.glEnable(GL11.GL_ALPHA_TEST);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glPushMatrix();
+            
+            // These are here to revert the scalef calls in Mob.java.
+            // While those calls are useful for entity models, they cause the
+            // block models to be rendered upside down.
+            GL11.glScalef(-1F, 1F, 1F);
+            GL11.glScalef(1F, -1F, 1F);
+            Block block = Block.blocks[Integer.parseInt(modelName)];
+            // TODO: Implement proper detection of which blocks need translation.
+            float yTranslation = -1.4F;
+            if (block instanceof FlowerBlock || block instanceof FireBlock) {
+                yTranslation = -1.8F;
+            }
+            GL11.glTranslatef(-0.5F, yTranslation, -0.2F);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures.load("/terrain.png"));
+            
+            block.renderPreview(ShapeRenderer.instance);
+            GL11.glPopMatrix();
+            GL11.glDisable(GL11.GL_BLEND);
+        } catch (Exception e) {
+            String msg = String.format(
+                    "Could not use block model \"%s\"; using humanoid model instead.",
+                    modelName);
+            LogUtil.logWarning(msg, e);
+            modelName = "humanoid";
+        }
     }
 
     @Override

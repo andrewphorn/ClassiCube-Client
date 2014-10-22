@@ -284,9 +284,9 @@ public class Mob extends Entity {
         }
     }
 
-    public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
-            float var6, float scale) {
-        modelCache.getModel(modelName).render(var2, var4, tickCount + var3, var5, var6, scale);
+    public void renderModel(TextureManager var1, float var2, float var3, float var4,
+            float yawDegrees, float pitchDegrees, float scale) {
+        modelCache.getModel(modelName).render(var2, var4, tickCount + var3, yawDegrees, pitchDegrees, scale);
     }
 
     @Override

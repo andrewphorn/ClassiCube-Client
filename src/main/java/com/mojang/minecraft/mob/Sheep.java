@@ -80,14 +80,14 @@ public class Sheep extends QuadrupedMob {
     }
 
     @Override
-    public void renderModel(TextureManager var1, float var2, float var3, float var4, float var5,
-                            float var6, float var7) {
+    public void renderModel(TextureManager var1, float var2, float var3, float var4,
+            float yawDegrees, float pitchDegrees, float scale) {
         AnimalModel var8;
         float var9 = (var8 = (AnimalModel) modelCache.getModel("sheep")).head.y;
         float var10 = var8.head.z;
         var8.head.y += (grazeO + (graze - grazeO) * var3) * 8F;
         var8.head.z -= grazeO + (graze - grazeO) * var3;
-        super.renderModel(var1, var2, var3, var4, var5, var6, var7);
+        super.renderModel(var1, var2, var3, var4, yawDegrees, pitchDegrees, scale);
         if (hasFur || modelName.equals("sheep.fur")) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/mob/sheep_fur.png"));
             GL11.glDisable(GL11.GL_CULL_FACE);
@@ -102,12 +102,12 @@ public class Sheep extends QuadrupedMob {
             var11.leg2.pitch = var8.leg2.pitch;
             var11.leg3.pitch = var8.leg3.pitch;
             var11.leg4.pitch = var8.leg4.pitch;
-            var11.head.render(var7);
-            var11.body.render(var7);
-            var11.leg1.render(var7);
-            var11.leg2.render(var7);
-            var11.leg3.render(var7);
-            var11.leg4.render(var7);
+            var11.head.render(scale);
+            var11.body.render(scale);
+            var11.leg1.render(scale);
+            var11.leg2.render(scale);
+            var11.leg3.render(scale);
+            var11.leg4.render(scale);
         }
 
         var8.head.y = var9;
