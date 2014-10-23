@@ -70,6 +70,7 @@ import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.net.NetworkPlayer;
 import com.mojang.minecraft.net.PacketHandler;
 import com.mojang.minecraft.net.PacketType;
+import com.mojang.minecraft.net.ProtocolExtension;
 import com.mojang.minecraft.net.SkinDownloadThread;
 import com.mojang.minecraft.particle.Particle;
 import com.mojang.minecraft.particle.ParticleManager;
@@ -96,6 +97,8 @@ import com.mojang.util.MathHelper;
 import com.mojang.util.StreamingUtil;
 import com.mojang.util.Timer;
 import com.mojang.util.Vec3D;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Logger;
 
 public final class Minecraft implements Runnable {
 
@@ -446,11 +449,17 @@ public final class Minecraft implements Runnable {
         setLevel(newLevel);
     }
 
-    public String getHash(String urlString) throws Exception {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        byte[] urlBytes = urlString.getBytes();
-        byte[] hashBytes = md.digest(urlBytes);
-        return new BigInteger(1, hashBytes).toString(16);
+    public String getHash(String urlString) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] urlBytes = urlString.getBytes();
+            byte[] hashBytes = md.digest(urlBytes);
+            return new BigInteger(1, hashBytes).toString(16);
+        } catch (NoSuchAlgorithmException ex) {
+            LogUtil.logError("MD5 implementation not found? Very strange!", ex);
+            shutdown();
+            return null;
+        }
     }
 
     public final void grabMouse() {
@@ -1746,7 +1755,7 @@ public final class Minecraft implements Runnable {
                     int playerXRotation = (int) (player.xRot * 256F / 360F) & 255;
                     networkManager.netHandler.send(
                             PacketType.POSITION_ROTATION,
-                            packetHandler.canSendHeldBlock ? player.inventory.getSelected() : -1,
+                            packetHandler.isExtEnabled(ProtocolExtension.HELD_BLOCK) ? player.inventory.getSelected() : -1,
                             playerXUnits, playerYUnits, playerZUnits,
                             playerYRotation, playerXRotation);
                 }

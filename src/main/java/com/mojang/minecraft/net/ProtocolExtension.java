@@ -1,6 +1,5 @@
 package com.mojang.minecraft.net;
 
-import com.mojang.util.LogUtil;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -14,13 +13,16 @@ public class ProtocolExtension {
         this.name = name;
         this.version = version;
     }
-    
-    public static boolean isSupported(ProtocolExtension other){
-        return supportedExtensions.contains(other);
+
+    /**
+     * Checks whether an extension is supported by this client.
+     */
+    public static boolean isSupported(ProtocolExtension ext) {
+        return supportedExtensions.contains(ext);
     }
-    
+
     private static final Set<ProtocolExtension> supportedExtensions = new HashSet<>();
-    
+
     public static final ProtocolExtension CLICK_DISTANCE = new ProtocolExtension("ClickDistance", 1);
     public static final ProtocolExtension CUSTOM_BLOCKS = new ProtocolExtension("CustomBlocks", 1);
     public static final ProtocolExtension HELD_BLOCK = new ProtocolExtension("HeldBlock", 1);
@@ -38,21 +40,23 @@ public class ProtocolExtension {
         supportedExtensions.add(CLICK_DISTANCE);
         supportedExtensions.add(CUSTOM_BLOCKS);
         supportedExtensions.add(HELD_BLOCK);
+        // TODO: implement EXT_PLAYER_LIST_2
         supportedExtensions.add(ENV_COLORS);
         supportedExtensions.add(SELECTION_CUBOID);
         supportedExtensions.add(BLOCK_PERMISSIONS);
         supportedExtensions.add(CHANGE_MODEL);
         supportedExtensions.add(ENV_MAP_APPEARANCE);
         supportedExtensions.add(ENV_WEATHER_TYPE);
+        // TODO: implement HACK_CONTROL
         supportedExtensions.add(MESSAGE_TYPES);
     }
-    
+
     @Override
     public boolean equals(Object other) {
-        if(other instanceof ProtocolExtension){
-            ProtocolExtension otherExt = (ProtocolExtension)other;
+        if (other instanceof ProtocolExtension) {
+            ProtocolExtension otherExt = (ProtocolExtension) other;
             return name.equalsIgnoreCase(otherExt.name) && (version == otherExt.version);
-        }else{
+        } else {
             return false;
         }
     }
