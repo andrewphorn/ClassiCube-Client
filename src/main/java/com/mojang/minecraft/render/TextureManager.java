@@ -569,7 +569,7 @@ public class TextureManager {
         }
         initAtlas();
         if (settings.minecraft.networkManager != null) {
-            for (NetworkPlayer p : settings.minecraft.networkManager.players.values()) {
+            for (NetworkPlayer p : settings.minecraft.networkManager.getPlayers()) {
                 p.bindTexture(instance);
             }
             settings.minecraft.player.bindTexture(instance);
