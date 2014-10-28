@@ -92,7 +92,7 @@ public final class GameSettings {
     public int smoothing = 0;
     public int framerateLimit = 60;
     public boolean viewBobbing = true;
-    public int viewDistance;
+    public int viewDistance = 4; // default to "normal (128)"
 
     // 0 = off, higher values mean nth-powers-of-2 (e.g. 1 => 2x, 2 => 4x, 3 => 8x, 4 => 16x)
     public int anisotropy;
@@ -338,21 +338,33 @@ public final class GameSettings {
                 break;
             case FRAMERATE_LIMIT:
                 if (framerateLimit == 0) {
+                    // From "Off" to lowest limit
                     framerateLimit = FRAMERATE_LIMITS[0];
-                } else if (framerateLimit == FRAMERATE_LIMITS[FRAMERATE_LIMITS.length - 1]) {
+                } else if (framerateLimit == MAX_SUPPORTED_FRAMERATE) {
+                    // From highest limit to "Off"
                     framerateLimit = 0;
                 } else {
+                    // Go to the next higher framerate
                     for (int i = 0; i < FRAMERATE_LIMITS.length; i++) {
                         if (framerateLimit == FRAMERATE_LIMITS[i]) {
-                            framerateLimit = FRAMERATE_LIMITS[i + 1];
+                            if (FRAMERATE_LIMITS[i + 1] > MAX_SUPPORTED_FRAMERATE) {
+                                if (FRAMERATE_LIMITS[i] < MAX_SUPPORTED_FRAMERATE) {
+                                    // Special case: go up to screen refresh rate that's not on our list
+                                    framerateLimit = MAX_SUPPORTED_FRAMERATE;
+                                } else {
+                                    // Wrap around to "Off"
+                                    framerateLimit = 0;
+                                }
+                            }else{
+                                // Go up to the next higher limit
+                                framerateLimit = FRAMERATE_LIMITS[i + 1];
+                            }
                             break;
                         }
                     }
                 }
-                if(framerateLimit > MAX_SUPPORTED_FRAMERATE){
-                    framerateLimit = 0;
-                }
                 if (Display.isCreated()) {
+                    // TODO: decouple vsync from framerate limit
                     Display.setVSyncEnabled(framerateLimit != 0);
                 }
                 break;
@@ -406,24 +418,18 @@ public final class GameSettings {
         long minDifference = Integer.MAX_VALUE;
         for (int i = 0; i < options.length; i++) {
             long difference = Math.abs((long) options[i] - target);
-            if ( minDifference > difference) {
+            if (minDifference > difference) {
                 minDifference = difference;
                 closest = options[i];
             }
         }
         return closest;
     }
-    
-    public void capRefreshRate(int maxRefreshRate){
+
+    public void capRefreshRate(int maxRefreshRate) {
         MAX_SUPPORTED_FRAMERATE = maxRefreshRate;
-        if(framerateLimit > maxRefreshRate){
-            for(int i=FRAMERATE_LIMITS.length-1;i>=0;i--){
-                int limit = FRAMERATE_LIMITS[i];
-                if(limit <= maxRefreshRate){
-                    framerateLimit = limit;
-                    break;
-                }
-            }
+        if (framerateLimit > maxRefreshRate) {
+            framerateLimit = maxRefreshRate;
         }
     }
 }
