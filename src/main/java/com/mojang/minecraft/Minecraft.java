@@ -90,7 +90,6 @@ import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
-import com.mojang.net.NetworkHandler;
 import com.mojang.util.ColorCache;
 import com.mojang.util.LogUtil;
 import com.mojang.util.MathHelper;
@@ -98,7 +97,6 @@ import com.mojang.util.StreamingUtil;
 import com.mojang.util.Timer;
 import com.mojang.util.Vec3D;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Logger;
 
 public final class Minecraft implements Runnable {
 
@@ -690,16 +688,7 @@ public final class Minecraft implements Runnable {
         Display.setResizable(true);
         Display.setTitle("ClassiCube");
 
-        try {
-            Display.create();
-        } catch (LWJGLException ex) {
-            LogUtil.logError("Failed to create the OpenGL context.", ex);
-            try {
-                Thread.sleep(1000L);
-            } catch (InterruptedException ex2) {
-            }
-            Display.create();
-        }
+        Display.create();
 
         logSystemInfo();
 
@@ -814,8 +803,8 @@ public final class Minecraft implements Runnable {
             new SkinDownloadThread(player, skinServer + session.username + ".png").start();
         }
         if (server != null && session != null) {
-            networkManager = new NetworkManager(
-                    this, server, port, session.username, session.mppass);
+            networkManager = new NetworkManager(this);
+            networkManager.beginConnect(server, port, session.username, session.mppass);
         }
     }
 
@@ -1343,16 +1332,12 @@ public final class Minecraft implements Runnable {
                         if (isRaining || isSnowing) {
                             renderer.drawWeather(delta, shapeRenderer);
                         }
-                        if (!isSinglePlayer && networkManager != null
-                                && networkManager.players != null
-                                && networkManager.players.size() > 0) {
+                        if (!isSinglePlayer && networkManager != null && networkManager.hasPlayers()) {
                             // Render other players' names
                             if ((settings.showNames == 2 || settings.showNames == 3)
                                     && this.player.userType >= 100) {
-                                for (NetworkPlayer np : networkManager.players.values()) {
-                                    if (np != null) {
-                                        np.renderHover(textureManager);
-                                    }
+                                for (NetworkPlayer np : networkManager.getPlayers()) {
+                                    np.renderHover(textureManager);
                                 }
                             } else if (renderer.entity != null) {
                                 renderer.entity.renderHover(textureManager);
@@ -1675,10 +1660,8 @@ public final class Minecraft implements Runnable {
 
     private void tick() {
         if (soundPlayer != null) {
-            SoundPlayer var1 = soundPlayer;
-            SoundManager var2 = sound;
-            if (System.currentTimeMillis() > var2.lastMusic && var2.playMusic(var1, "calm")) {
-                var2.lastMusic = System.currentTimeMillis() + var2.random.nextInt(900000) + 300000L;
+            if (System.currentTimeMillis() > sound.lastMusic && sound.playMusic(soundPlayer, "calm")) {
+                sound.lastMusic = System.currentTimeMillis() + sound.random.nextInt(900000) + 300000L;
             }
         }
 
@@ -1710,68 +1693,13 @@ public final class Minecraft implements Runnable {
         }
 
         if (networkManager != null && !(currentScreen instanceof ErrorScreen)) {
-            if (!networkManager.isConnected()) {
+            if (networkManager.isConnected()) {
+                doNetworking();
+            } else {
                 progressBar.setTitle("Connecting..");
                 progressBar.setProgress(0);
                 packetHandler.setLoadingLevel(true);
-            } else {
-                if (networkManager.successful && networkManager.netHandler.connected) {
-                    // Do network communication
-                    NetworkHandler networkHandler = networkManager.netHandler;
-                    try {
-                        do {
-                            networkManager.netHandler.channel.read(networkHandler.in);
-                            for (int packetsReceived = 0;
-                                    packetsReceived < NetworkManager.MAX_PACKETS_PER_TICK
-                                    && networkHandler.in.position() > 0;
-                                    packetsReceived++) {
-                                if (!packetHandler.handlePacket(networkHandler)) {
-                                    break;
-                                }
-                            }
-
-                            if (networkHandler.out.position() > 0) {
-                                networkHandler.out.flip();
-                                networkHandler.channel.write(networkHandler.out);
-                                networkHandler.out.compact();
-                            }
-                        } while (packetHandler.isLoadingLevel);
-                    } catch (Exception ex) {
-                        LogUtil.logWarning("Error in network handling code.", ex);
-                        setCurrentScreen(new ErrorScreen("Disconnected!",
-                                "You\'ve lost connection to the server"));
-                        isConnecting = false;
-                        networkHandler.close();
-                        networkManager = null;
-                    }
-                }
-
-                if (networkManager.levelLoaded) {
-                    // Send player position to the server
-                    int playerXUnits = (int) (player.x * 32F);
-                    int playerYUnits = (int) (player.y * 32F);
-                    int playerZUnits = (int) (player.z * 32F);
-                    int playerYRotation = (int) (player.yRot * 256F / 360F) & 255;
-                    int playerXRotation = (int) (player.xRot * 256F / 360F) & 255;
-                    networkManager.netHandler.send(
-                            PacketType.POSITION_ROTATION,
-                            packetHandler.isExtEnabled(ProtocolExtension.HELD_BLOCK) ? player.inventory.getSelected() : -1,
-                            playerXUnits, playerYUnits, playerZUnits,
-                            playerYRotation, playerXRotation);
-                }
             }
-        }
-
-        if (packetHandler.isLoadingLevel) {
-            // Ignore all keyboard input while loading map, unless Esc is pressed.
-            while (Keyboard.next()) {
-                if (Keyboard.getEventKeyState()) {
-                    if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-                        pause();
-                    }
-                }
-            }
-            return;
         }
 
         // SURVIVAL: Show game over screen
@@ -1847,6 +1775,56 @@ public final class Minecraft implements Runnable {
             }
 
             particleManager.tick();
+        }
+    }
+
+    private void doNetworking() {
+        if (networkManager.isConnected()) {
+            // Do network communication
+            try {
+                do {
+                    networkManager.channel.read(networkManager.in);
+                    for (int packetsReceived = 0;
+                            packetsReceived < NetworkManager.MAX_PACKETS_PER_TICK
+                            && networkManager.in.position() > 0;
+                            packetsReceived++) {
+                        if (!packetHandler.handlePacket(networkManager)) {
+                            break;
+                        }
+                    }
+                    networkManager.writeOut();
+
+                    if (packetHandler.isLoadingLevel) {
+                        // Ignore all keyboard input while loading map, unless Esc is pressed.
+                        while (Keyboard.next()) {
+                            if (Keyboard.getEventKeyState()) {
+                                if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+                                    pause();
+                                }
+                            }
+                        }
+                    }
+                } while (packetHandler.isLoadingLevel);
+
+                // Send player position to the server -- level should be loaded by now.
+                int playerXUnits = (int) (player.x * 32F);
+                int playerYUnits = (int) (player.y * 32F);
+                int playerZUnits = (int) (player.z * 32F);
+                int playerYRotation = (int) (player.yRot * 256F / 360F) & 255;
+                int playerXRotation = (int) (player.xRot * 256F / 360F) & 255;
+                networkManager.send(
+                        PacketType.POSITION_ROTATION,
+                        packetHandler.isExtEnabled(ProtocolExtension.HELD_BLOCK) ? player.inventory.getSelected() : -1,
+                        playerXUnits, playerYUnits, playerZUnits,
+                        playerYRotation, playerXRotation);
+            } catch (Exception ex) {
+                LogUtil.logWarning("Error in network handling code.", ex);
+                setCurrentScreen(new ErrorScreen("Disconnected!",
+                        "You\'ve lost connection to the server"));
+                isConnecting = false;
+                networkManager.close();
+                networkManager = null;
+            }
         }
     }
 

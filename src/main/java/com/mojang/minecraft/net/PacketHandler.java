@@ -27,7 +27,6 @@ import com.mojang.minecraft.level.tile.TextureSide;
 import com.mojang.minecraft.model.ModelManager;
 import com.mojang.minecraft.physics.CustomAABB;
 import com.mojang.minecraft.render.TextureManager;
-import com.mojang.net.NetworkHandler;
 import com.mojang.util.ColorCache;
 import com.mojang.util.LogUtil;
 import com.mojang.util.MathHelper;
@@ -57,7 +56,7 @@ public class PacketHandler {
     }
 
     // return true if more packets should be read; return false if that's it
-    public boolean handlePacket(NetworkHandler networkHandler) throws IOException {
+    public boolean handlePacket(NetworkManager networkHandler) throws IOException {
         networkHandler.in.flip();
         byte packetId = networkHandler.in.get(0);
         if (packetId < 0 || packetId > PacketType.packets.length - 1) {
@@ -76,20 +75,20 @@ public class PacketHandler {
             packetParams[i] = networkHandler.readObject(packetType.params[i]);
         }
 
-        if (networkHandler.netManager.successful) {
+        if (networkHandler.isConnected()) {
             if (packetType.opcode > PacketType.UPDATE_PLAYER_TYPE.opcode) {
-                handleExtendedPacket(networkHandler.netManager, packetType, packetParams);
+                handleExtendedPacket(networkHandler, packetType, packetParams);
             } else {
-                handleStandardPacket(networkHandler.netManager, packetType, packetParams);
+                handleStandardPacket(networkHandler, packetType, packetParams);
             }
         }
 
-        if (!networkHandler.connected) {
+        if (networkHandler.isConnected()) {
+            networkHandler.in.compact();
+            return true;
+        } else {
             return false;
         }
-
-        networkHandler.in.compact();
-        return true;
     }
 
     private void handleStandardPacket(NetworkManager networkManager, PacketType packetType, Object[] packetParams) throws IOException {
@@ -159,7 +158,7 @@ public class PacketHandler {
                 NetworkPlayer newPlayer = new NetworkPlayer(networkManager.minecraft,
                         newPlayerName, newPlayerX, newPlayerY, newPlayerZ,
                         newPlayerYRot * 360 / 256F, newPlayerXRot * 360 / 256F);
-                networkManager.players.put(newPlayerId, newPlayer);
+                networkManager.addPlayer(newPlayerId, newPlayer);
                 minecraft.level.addEntity(newPlayer);
             } else {
                 // Set own spawnpoint
@@ -186,7 +185,7 @@ public class PacketHandler {
                 // Move another player
                 newXRot = (byte) (newXRot + 128);
                 newY = (short) (newY - 22);
-                NetworkPlayer networkPlayer = networkManager.players.get(playerId);
+                NetworkPlayer networkPlayer = networkManager.getPlayer(playerId);
                 if (networkPlayer != null) {
                     networkPlayer.teleport(newX, newY, newZ,
                             newYRot * 360 / 256F, newXRot * 360 / 256F);
@@ -202,7 +201,7 @@ public class PacketHandler {
             byte newYRot = (byte) packetParams[5];
             if (playerId >= 0) {
                 newXRot = (byte) (newXRot + 128);
-                NetworkPlayer networkPlayerInstance = networkManager.players.get(playerId);
+                NetworkPlayer networkPlayerInstance = networkManager.getPlayer(playerId);
                 if (networkPlayerInstance != null) {
                     networkPlayerInstance.queue(deltaX, deltaY,
                             deltaZ, newYRot * 360 / 256F, newXRot * 360 / 256F);
@@ -215,7 +214,7 @@ public class PacketHandler {
             byte newYRot = (Byte) packetParams[2];
             if (playerID >= 0) {
                 newXRot = (byte) (newXRot + 128);
-                NetworkPlayer networkPlayerInstance = networkManager.players.get(playerID);
+                NetworkPlayer networkPlayerInstance = networkManager.getPlayer(playerID);
                 if (networkPlayerInstance != null) {
                     networkPlayerInstance.queue(newYRot * 360 / 256F, newXRot * 360 / 256F);
                 }
@@ -223,7 +222,7 @@ public class PacketHandler {
 
         } else if (packetType == PacketType.POSITION_UPDATE) {
             byte playerID = (Byte) packetParams[0];
-            NetworkPlayer networkPlayerInstance = networkManager.players.get(playerID);
+            NetworkPlayer networkPlayerInstance = networkManager.getPlayer(playerID);
             if (playerID >= 0 && networkPlayerInstance != null) {
                 networkPlayerInstance.queue((Byte) packetParams[1],
                         (Byte) packetParams[2], (Byte) packetParams[3]);
@@ -231,7 +230,7 @@ public class PacketHandler {
 
         } else if (packetType == PacketType.DESPAWN_PLAYER) {
             byte playerID = (Byte) packetParams[0];
-            NetworkPlayer targetPlayer = networkManager.players.remove(playerID);
+            NetworkPlayer targetPlayer = networkManager.removePlayer(playerID);
             if (playerID >= 0 && targetPlayer != null) {
                 targetPlayer.clear();
                 minecraft.level.removeEntity(targetPlayer);
@@ -279,7 +278,7 @@ public class PacketHandler {
             }
 
         } else if (packetType == PacketType.DISCONNECT) {
-            networkManager.netHandler.close();
+            networkManager.close();
             minecraft.setCurrentScreen(new ErrorScreen("Connection lost", (String) packetParams[0]));
 
         } else if (packetType == PacketType.UPDATE_PLAYER_TYPE) {
@@ -308,7 +307,7 @@ public class PacketHandler {
                 LogUtil.logWarning(String.format(
                         "Expected %d ExtEntries but received too many (%d)! "
                         + "This ext will be ignored: %s with version %d",
-                        extEntriesReceived, extEntriesExpected, extName, version));
+                        extEntriesExpected, extEntriesReceived, extName, version));
             } else {
                 ProtocolExtension serverExt = new ProtocolExtension(extName, version);
                 LogUtil.logInfo(String.format("Receiving ext: %s with version: %d",
@@ -324,12 +323,12 @@ public class PacketHandler {
                             enabledExtList.length));
                     Object[] toSendParams = new Object[]{
                         Constants.CLIENT_NAME, (short) enabledExtList.length};
-                    networkManager.netHandler.send(PacketType.EXT_INFO, toSendParams);
+                    networkManager.send(PacketType.EXT_INFO, toSendParams);
                     for (ProtocolExtension ext : enabledExtList) {
                         LogUtil.logInfo(String.format("Sending ext: %s with version: %d",
                                 ext.name, ext.version));
                         toSendParams = new Object[]{ext.name, ext.version};
-                        networkManager.netHandler.send(PacketType.EXT_ENTRY, toSendParams);
+                        networkManager.send(PacketType.EXT_ENTRY, toSendParams);
                     }
                 }
             }
@@ -547,7 +546,7 @@ public class PacketHandler {
             String skinName = (String) packetParams[2];
             if (skinName != null) {
                 if (playerID >= 0) {
-                    NetworkPlayer tmp = networkManager.players.get(playerID);
+                    NetworkPlayer tmp = networkManager.getPlayer(playerID);
                     if (tmp != null) {
                         tmp.defaultTexture = false;
                         if ("default".equals(skinName)) {
@@ -583,7 +582,7 @@ public class PacketHandler {
             }
             byte supportLevel = (byte) packetParams[0];
             LogUtil.logInfo("Using CustomBlocks level " + supportLevel);
-            networkManager.netHandler.send(
+            networkManager.send(
                     PacketType.CUSTOM_BLOCK_SUPPORT_LEVEL,
                     Constants.CUSTOM_BLOCK_SUPPORT_LEVEL);
             SessionData.setAllowedBlocks(supportLevel);
@@ -624,7 +623,7 @@ public class PacketHandler {
             String modelName = ((String) packetParams[1]).toLowerCase();
             if (playerId >= 0) {
                 // Set another player's model
-                NetworkPlayer netPlayer = networkManager.players.get(playerId);
+                NetworkPlayer netPlayer = networkManager.getPlayer(playerId);
                 if (netPlayer != null) {
                     ModelManager m = new ModelManager();
                     if (m.getModel(modelName) == null) {

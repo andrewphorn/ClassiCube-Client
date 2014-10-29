@@ -150,7 +150,7 @@ public class ChatInputScreen extends GuiScreen {
                 minecraft.hud.addChat("&f" + message);
             } else if (message.length() > 0) {
                 if ((message = message.trim()).length() > 0) {
-                    minecraft.networkManager.netHandler.send(PacketType.CHAT_MESSAGE, -1, message);
+                    minecraft.networkManager.send(PacketType.CHAT_MESSAGE, -1, message);
                 }
             }
             history.add(message);

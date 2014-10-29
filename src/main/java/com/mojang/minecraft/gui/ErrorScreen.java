@@ -9,8 +9,8 @@ import java.io.File;
 
 public final class ErrorScreen extends GuiScreen {
 
-    private String title;
-    private String text;
+    private final String title;
+    private final String text;
     private int timeOpen = 359;
 
     public ErrorScreen(String title, String subtitle) {
@@ -24,7 +24,8 @@ public final class ErrorScreen extends GuiScreen {
         if (button.id == 0) {
             minecraft.setCurrentScreen(null);
             if (!Minecraft.isSinglePlayer) {
-                minecraft.networkManager = new NetworkManager(minecraft, minecraft.server, minecraft.port, 
+                minecraft.networkManager = new NetworkManager(minecraft);
+                minecraft.networkManager.beginConnect(minecraft.server, minecraft.port,
                         minecraft.session.username, minecraft.session.mppass);
             } else {
                 try {
@@ -43,8 +44,8 @@ public final class ErrorScreen extends GuiScreen {
                 if (minecraft.level == null) {
                     // If loading failed, generate a new level.
                     minecraft.generateLevel(1);
-                }            
-            }            
+                }
+            }
         }
     }
 
@@ -71,7 +72,7 @@ public final class ErrorScreen extends GuiScreen {
         buttons.set(0, new Button(0, this.width / 2 - 100, this.height / 4 + 96,
                 !Minecraft.isSinglePlayer ? (timeOpen / 60 > 0 ? "Try to reconnect..." + timeOpen / 60 : "Try to reconnect") : "Restart ClassiCube"));
         if (timeOpen / 60 > 0 && !Minecraft.isSinglePlayer) {
-            --timeOpen;        
+            --timeOpen;
             buttons.get(0).active = false;
         }
     }
