@@ -307,7 +307,7 @@ public class PacketHandler {
                 LogUtil.logWarning(String.format(
                         "Expected %d ExtEntries but received too many (%d)! "
                         + "This ext will be ignored: %s with version %d",
-                        extEntriesReceived, extEntriesExpected, extName, version));
+                        extEntriesExpected, extEntriesReceived, extName, version));
             } else {
                 ProtocolExtension serverExt = new ProtocolExtension(extName, version);
                 LogUtil.logInfo(String.format("Receiving ext: %s with version: %d",
