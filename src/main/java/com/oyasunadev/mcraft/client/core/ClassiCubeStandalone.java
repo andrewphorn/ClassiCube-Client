@@ -253,7 +253,6 @@ public class ClassiCubeStandalone {
          */
         public MinecraftFrame() {
             setSize(1024, 512);
-            // setResizable(false);
             setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             setLayout(new BorderLayout());
 
@@ -273,7 +272,7 @@ public class ClassiCubeStandalone {
          * @param server Server address
          * @param mppass The player's MPPass
          * @param port Server port
-         * @param skinServer The url of the skin server.
+         * @param skinServer The URL of the skin server.
          * @param fullscreen True if the game should be in fullScreen.
          */
         public void startMinecraft(String player, String server, String mppass, int port,

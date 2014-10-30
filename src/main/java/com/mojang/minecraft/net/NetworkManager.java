@@ -154,6 +154,7 @@ public class NetworkManager {
         }
     }
 
+    // Flips the buffer and writes out all pending data.
     public void writeOut() throws IOException {
         if (out.position() > 0) {
             out.flip();

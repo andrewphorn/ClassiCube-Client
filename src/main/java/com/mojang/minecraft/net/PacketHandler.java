@@ -65,6 +65,7 @@ public class PacketHandler {
 
         PacketType packetType = PacketType.packets[packetId];
         if (networkHandler.in.remaining() < packetType.length + 1) {
+            // No more packets left to read
             networkHandler.in.compact();
             return false;
         }
@@ -87,16 +88,30 @@ public class PacketHandler {
             networkHandler.in.compact();
             return true;
         } else {
+            // We've been disconnected!
             return false;
         }
     }
 
     private void handleStandardPacket(NetworkManager networkManager, PacketType packetType, Object[] packetParams) throws IOException {
         if (packetType == PacketType.IDENTIFICATION) {
-            minecraft.progressBar.setTitle(packetParams[1].toString());
-            minecraft.progressBar.setText(packetParams[2].toString());
+            String name = packetParams[1].toString();
+            String motd = packetParams[2].toString();
+            minecraft.progressBar.setTitle(name);
+            minecraft.progressBar.setText(motd);
+            // Read WoM-style hack control flags
+            //TODO: if(!isExtEnabled(ProtocolExtension.HACK_CONTROL)){ ... }
+            minecraft.womConfig.readHax(name, motd);
+            if (!receivedExtInfo) {
+                // Only process WoM-style "cfg" command if CPE is not enabled
+                minecraft.womConfig.readCfg(motd);
+            }
             minecraft.player.userType = (Byte) packetParams[3];
             setLoadingLevel(true);
+            if (minecraft.womConfig.isEnabled() && minecraft.womConfig.hasKey("server.sendwomid")) {
+                String womIdCmd = "/womid ClassiCube" + Constants.CLASSICUBE_VERSION;
+                networkManager.send(PacketType.CHAT_MESSAGE, -1, womIdCmd);
+            }
 
         } else if (packetType == PacketType.LEVEL_INIT) {
             minecraft.selectionBoxes.clear();
@@ -278,6 +293,7 @@ public class PacketHandler {
             }
 
         } else if (packetType == PacketType.DISCONNECT) {
+            isLoadingLevel = false; // Reset this, in case we get kicked while changing levels.
             networkManager.close();
             minecraft.setCurrentScreen(new ErrorScreen("Connection lost", (String) packetParams[0]));
 
