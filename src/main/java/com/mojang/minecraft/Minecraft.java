@@ -230,7 +230,7 @@ public final class Minecraft implements Runnable {
     /**
      * Reads and writes packets (via the network manager).
      */
-    PacketHandler packetHandler = new PacketHandler(this);
+    private PacketHandler packetHandler = new PacketHandler(this);
 
     /**
      * Plays sounds.
@@ -2107,5 +2107,33 @@ public final class Minecraft implements Runnable {
         } catch (Exception ex) {
             LogUtil.logWarning("Error toggling fullscreen " + (isFullScreen ? "ON" : "OFF"), ex);
         }
+    }
+
+    public void restartSinglePlayer() {
+        try {
+            if (!isLevelLoaded) {
+                // Try to load a previously-saved level
+                Level newLevel = new LevelLoader().load(new File(Minecraft.mcDir, "levelc.cw"), player);
+                if (newLevel != null) {
+                    progressBar.setText("Loading saved map...");
+                    setLevel(newLevel);
+                    Minecraft.isSinglePlayer = true;
+                }
+            }
+        } catch (Exception ex) {
+            LogUtil.logError("Failed to load a saved singleplayer level.", ex);
+        }
+        if (level == null) {
+            // If loading failed, generate a new level.
+            generateLevel(1);
+        }
+    }
+
+    public void reconnect() {
+        // Reset networking and reconnect
+        networkManager = new NetworkManager(this);
+        packetHandler = new PacketHandler(this);
+        womConfig = new WOMConfig(this);
+        networkManager.beginConnect(server, port, session.username, session.mppass);
     }
 }
