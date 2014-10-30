@@ -36,7 +36,7 @@ import java.util.Set;
 
 // This class is responsible for responding to individual packets coming from the client.
 // It also handles CPE Negotiation process.
-public class PacketHandler {
+public final class PacketHandler {
 
     private final Set<ProtocolExtension> enabledExtensions = new HashSet<>();
 
@@ -45,8 +45,8 @@ public class PacketHandler {
 
     private final Minecraft minecraft;
 
-    public boolean isLoadingLevel = false;
-    
+    public boolean isLoadingLevel;
+
     // This object is used to store the level object while it's being loaded.
     // Packets that modify can modify the level before it loaded (like ENV_SET_COLOR)
     // should modify this object instead of "minecraft.level" while isLoadingLevel is true.
@@ -54,6 +54,7 @@ public class PacketHandler {
 
     public PacketHandler(Minecraft minecraft) {
         this.minecraft = minecraft;
+        setLoadingLevel(true);
     }
 
     public void setLoadingLevel(boolean value) {
@@ -300,7 +301,7 @@ public class PacketHandler {
             }
 
         } else if (packetType == PacketType.DISCONNECT) {
-            isLoadingLevel = false; // Reset this, in case we get kicked while changing levels.
+            setLoadingLevel(false); // Reset this, in case we get kicked while changing levels.
             networkManager.close();
             minecraft.setCurrentScreen(new ErrorScreen("Connection lost", (String) packetParams[0]));
 
@@ -442,7 +443,9 @@ public class PacketHandler {
                     } else {
                         level.customShadowColor = new ColorCache(r / 255F, g / 255F, b / 255F);
                     }
-                    if(!isLoadingLevel) minecraft.levelRenderer.refresh();
+                    if (!isLoadingLevel) {
+                        minecraft.levelRenderer.refresh();
+                    }
                     break;
                 case 4: // diffuse color
                     if (doReset) {
@@ -450,7 +453,9 @@ public class PacketHandler {
                     } else {
                         level.customLightColor = new ColorCache(r / 255F, g / 255F, b / 255F);
                     }
-                    if(!isLoadingLevel) minecraft.levelRenderer.refresh();
+                    if (!isLoadingLevel) {
+                        minecraft.levelRenderer.refresh();
+                    }
                     break;
             }
 
