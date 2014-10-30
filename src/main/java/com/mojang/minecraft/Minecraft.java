@@ -72,6 +72,7 @@ import com.mojang.minecraft.net.PacketHandler;
 import com.mojang.minecraft.net.PacketType;
 import com.mojang.minecraft.net.ProtocolExtension;
 import com.mojang.minecraft.net.SkinDownloadThread;
+import com.mojang.minecraft.net.WOMConfig;
 import com.mojang.minecraft.particle.Particle;
 import com.mojang.minecraft.particle.ParticleManager;
 import com.mojang.minecraft.particle.WaterDropParticle;
@@ -190,6 +191,8 @@ public final class Minecraft implements Runnable {
      * Used to display progress when needed.
      */
     public ProgressBarDisplay progressBar = new ProgressBarDisplay(this);
+
+    public WOMConfig womConfig = new WOMConfig(this);
     /**
      * This is used to render whatever we need to render.
      */
