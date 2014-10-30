@@ -290,7 +290,9 @@ public final class GameSettings {
                 writer.println("scale:" + scale);
                 writer.println("hacksEnabled:" + hacksEnabled);
                 writer.println("showNames:" + showNames);
-                writer.println("texturepack:" + lastUsedTexturePack);
+                if (lastUsedTexturePack != null) {
+                    writer.println("texturepack:" + lastUsedTexturePack);
+                }
                 for (KeyBinding binding : bindings) {
                     writer.println("key_" + binding.name + ":" + binding.key);
                 }
@@ -371,14 +373,14 @@ public final class GameSettings {
                 if (smoothing > SMOOTHING_UNIVERSAL) {
                     smoothing = SMOOTHING_OFF;
                 }
-                minecraft.textureManager.textures.clear();
+                minecraft.textureManager.forceTextureReload();
                 break;
             case ANISOTROPIC:
                 anisotropy++;
                 if (anisotropy > TextureManager.getMaxAnisotropySetting()) {
                     anisotropy = ANISOTROPY_OFF;
                 }
-                minecraft.textureManager.textures.clear();
+                minecraft.textureManager.forceTextureReload();
                 break;
             case ALLOW_SERVER_TEXTURES:
                 canServerChangeTextures = !canServerChangeTextures;
