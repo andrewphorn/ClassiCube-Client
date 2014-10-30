@@ -23,28 +23,10 @@ public final class ErrorScreen extends GuiScreen {
     protected final void onButtonClick(Button button) {
         if (button.id == 0) {
             minecraft.setCurrentScreen(null);
-            if (!Minecraft.isSinglePlayer) {
-                minecraft.networkManager = new NetworkManager(minecraft);
-                minecraft.networkManager.beginConnect(minecraft.server, minecraft.port,
-                        minecraft.session.username, minecraft.session.mppass);
+            if (Minecraft.isSinglePlayer) {
+                minecraft.restartSinglePlayer();
             } else {
-                try {
-                    if (!minecraft.isLevelLoaded) {
-                        // Try to load a previously-saved level
-                        Level level = new LevelLoader().load(new File(Minecraft.mcDir, "levelc.cw"), minecraft.player);
-                        if (level != null) {
-                            minecraft.progressBar.setText("Loading saved map...");
-                            minecraft.setLevel(level);
-                            Minecraft.isSinglePlayer = true;
-                        }
-                    }
-                } catch (Exception ex) {
-                    LogUtil.logError("Failed to load a saved singleplayer level.", ex);
-                }
-                if (minecraft.level == null) {
-                    // If loading failed, generate a new level.
-                    minecraft.generateLevel(1);
-                }
+                minecraft.reconnect();
             }
         }
     }
@@ -64,13 +46,18 @@ public final class ErrorScreen extends GuiScreen {
     }
 
     @Override
-    public final void render(int var1, int var2) {
+    public final void render(int mouseX, int mouseY) {
         drawFadingBox(0, 0, width, height, -12574688, -11530224);
         drawCenteredString(fontRenderer, title, width / 2, 90, 16777215);
         drawCenteredString(fontRenderer, text, width / 2, 110, 16777215);
-        super.render(var1, var2);
-        buttons.set(0, new Button(0, this.width / 2 - 100, this.height / 4 + 96,
-                !Minecraft.isSinglePlayer ? (timeOpen / 60 > 0 ? "Try to reconnect..." + timeOpen / 60 : "Try to reconnect") : "Restart ClassiCube"));
+        super.render(mouseX, mouseY);
+        String buttonLabel;
+        if (Minecraft.isSinglePlayer) {
+            buttonLabel = "Restart ClassiCube";
+        } else {
+            buttonLabel = (timeOpen / 60 > 0 ? "Try to reconnect..." + timeOpen / 60 : "Try to reconnect");
+        }
+        buttons.set(0, new Button(0, this.width / 2 - 100, this.height / 4 + 96, buttonLabel));
         if (timeOpen / 60 > 0 && !Minecraft.isSinglePlayer) {
             --timeOpen;
             buttons.get(0).active = false;
