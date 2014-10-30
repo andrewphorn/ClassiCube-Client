@@ -41,7 +41,6 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
                 // (var2 = new LevelDialog(this)).setDaemon(true);
                 // SwingUtilities.invokeLater(var2);
                 // }
-
                 if (finished || loaded && button.id == 6) {
                     minecraft.setCurrentScreen(parent);
                 }
@@ -60,7 +59,7 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
 
     @Override
     public void onOpen() {
-        new Thread(this).start();
+        new Thread(this, "LoadLevelScreen").start();
 
         for (int i = 0; i < 5; ++i) {
             buttons.add(new Button(i, width / 2 - 100, height / 6 + i * 24, "---"));
@@ -72,9 +71,9 @@ public class LoadLevelScreen extends GuiScreen implements Runnable {
         // "Load file..."));
         buttons.add(new Button(6, width / 2 - 100, height / 6 + 168, "Cancel"));
         frozen = true;
-        LevelDialog var2;
-        (var2 = new LevelDialog(this)).setDaemon(true);
-        SwingUtilities.invokeLater(var2);
+        LevelDialog dialog = new LevelDialog(this);
+        dialog.setDaemon(true);
+        SwingUtilities.invokeLater(dialog);
     }
 
     protected void openLevel(File file) {

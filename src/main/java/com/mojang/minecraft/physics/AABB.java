@@ -218,11 +218,6 @@ public class AABB implements Serializable {
         return new AABB(var4, var5, var6, var7, var8, var9);
     }
 
-    /**
-     * Gets the size of the AABB.
-     *
-     * @return The size of the AABB.
-     */
     public float getSize() {
         return (minX - maxX + minY - maxY + minZ - maxZ) / 3F;
     }
@@ -241,8 +236,8 @@ public class AABB implements Serializable {
         float newZ0 = maxZ - z;
         x += minX;
         y += minY;
-        float newZ1 = minZ + z;
-        return new AABB(newX0, newY0, newZ0, x, y, newZ1);
+        z += minZ;
+        return new AABB(newX0, newY0, newZ0, x, y, z);
     }
 
     /**

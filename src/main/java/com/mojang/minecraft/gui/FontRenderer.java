@@ -12,10 +12,11 @@ import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 
 public final class FontRenderer {
+
     public int charHeight;
     public int charWidth;
-    public int[] font = new int[256];
-    private int fontId = 0;
+    public int[] charWidths = new int[256];
+    private int fontTextureId = 0;
     private GameSettings settings;
 
     public FontRenderer(GameSettings settings, String fontImage, TextureManager textures)
@@ -55,9 +56,9 @@ public final class FontRenderer {
             if (character == 32) {
                 chWidth = 4 * this.settings.scale;
             }
-            this.font[character] = (int) chWidth;
+            this.charWidths[character] = (int) chWidth;
         }
-        fontId = textures.load(fontImage);
+        fontTextureId = textures.load(fontImage);
     }
 
     public static String stripColor(String message) {
@@ -87,14 +88,13 @@ public final class FontRenderer {
         if (text == null) {
             return 0;
         }
-        char[] arrayOfChar = text.toCharArray();
         int i = 0;
-        for (int j = 0; j < arrayOfChar.length; j++) {
-            int k = arrayOfChar[j];
+        for (int j = 0; j < text.length(); j++) {
+            int k = text.charAt(j);
             if (k == 38) {
                 j++;
             } else {
-                i += font[k];
+                i += charWidths[k];
             }
         }
         return (int) Math.floor(i * settings.scale);
@@ -105,65 +105,66 @@ public final class FontRenderer {
     }
 
     private void render(String text, float x, float y, int color, boolean shadow) {
-        if (text != null) {
-            char[] chars = text.toCharArray();
-            if (shadow) {
-                color = (color & 16579836) >> 2;
-            }
-            float f1 = settings.scale;
-            float f2 = 1F / f1;
-            x = x * f2;
-            y = y * f2;
-            GL11.glBindTexture(3553, fontId);
-
-            ShapeRenderer.instance.begin();
-            ShapeRenderer.instance.color(color);
-            int var7 = 0;
-            for (int count = 0; count < chars.length; ++count) {
-                if (chars[count] == '&' && chars.length > count + 1) {
-                    int code = "0123456789abcdef".indexOf(chars[count + 1]);
-                    if (code < 0) {
-                        code = 15;
-                    }
-
-                    int intensity = (code & 8) << 3;
-                    int blue = (code & 1) * 191 + intensity;
-                    int green = ((code & 2) >> 1) * 191 + intensity;
-                    int red = ((code & 4) >> 2) * 191 + intensity;
-
-                    int c = red << 16 | green << 8 | blue;
-                    if (shadow) {
-                        c = (c & 16579836) >> 2;
-                    }
-
-                    ShapeRenderer.instance.color(c);
-                    if (chars.length - 2 == count) {
-                        break;
-                    }
-                    count += 2;
-                }
-                color = chars[count] % 16 << 3;
-                int var9 = chars[count] / 16 << 3;
-                float var13 = 7.99F;
-
-                ShapeRenderer.instance.vertexUV(x + var7, y + var13, 0F, color / 128F,
-                        (var9 + var13) / 128F);
-                ShapeRenderer.instance.vertexUV(x + var7 + var13, y + var13, 0F,
-                        (color + var13) / 128F, (var9 + var13) / 128F);
-                ShapeRenderer.instance.vertexUV(x + var7 + var13, y, 0F, (color + var13) / 128F,
-                        var9 / 128F);
-                ShapeRenderer.instance.vertexUV(x + var7, y, 0F, color / 128F, var9 / 128F);
-
-                if (chars[count] < font.length) {
-                    var7 += font[chars[count]];
-                }
-            }
-            GL11.glPushMatrix();
-            GL11.glScalef(f1, f1, 1F);
-            ShapeRenderer.instance.end();
-            GL11.glPopMatrix();
-
+        if (text == null) {
+            return;
         }
+        if (shadow) {
+            color = (color & 16579836) >> 2;
+        }
+        float f1 = settings.scale;
+        float f2 = 1F / f1;
+        x = x * f2;
+        y = y * f2;
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, fontTextureId);
+
+        ShapeRenderer.instance.begin();
+        ShapeRenderer.instance.color(color);
+        int offset = 0;
+        for (int i = 0; i < text.length(); ++i) {
+            char ch = text.charAt(i);
+            if (ch == '&' && text.length() > i + 1) {
+                // Color code handling
+                int code = "0123456789abcdef".indexOf(text.charAt(i + 1));
+                if (code < 0) {
+                    code = 15;
+                }
+
+                int intensity = (code & 8) << 3;
+                int blue = (code & 1) * 191 + intensity;
+                int green = ((code & 2) >> 1) * 191 + intensity;
+                int red = ((code & 4) >> 2) * 191 + intensity;
+
+                int c = red << 16 | green << 8 | blue;
+                if (shadow) {
+                    c = (c & 16579836) >> 2;
+                }
+
+                ShapeRenderer.instance.color(c);
+                if (text.length() - 2 == i) {
+                    break;
+                }
+                i += 2;
+            }
+            color = ch % 16 << 3;
+            int var9 = ch / 16 << 3;
+            float var13 = 7.99F;
+
+            ShapeRenderer.instance.vertexUV(x + offset, y + var13, 0F, color / 128F,
+                    (var9 + var13) / 128F);
+            ShapeRenderer.instance.vertexUV(x + offset + var13, y + var13, 0F,
+                    (color + var13) / 128F, (var9 + var13) / 128F);
+            ShapeRenderer.instance.vertexUV(x + offset + var13, y, 0F, (color + var13) / 128F,
+                    var9 / 128F);
+            ShapeRenderer.instance.vertexUV(x + offset, y, 0F, color / 128F, var9 / 128F);
+
+            if (ch < charWidths.length) {
+                offset += charWidths[ch];
+            }
+        }
+        GL11.glPushMatrix();
+        GL11.glScalef(f1, f1, 1F);
+        ShapeRenderer.instance.end();
+        GL11.glPopMatrix();
     }
 
     public final void render(String text, int x, int y, int color) {

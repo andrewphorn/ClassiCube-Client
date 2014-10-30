@@ -214,7 +214,7 @@ public class ClassiCubeStandalone {
              */
             public synchronized void startThread() {
                 if (thread == null) {
-                    thread = new Thread(minecraft, "Client");
+                    thread = new Thread(minecraft, "GameLoop-Standalone");
 
                     thread.start();
                 }
@@ -315,7 +315,7 @@ public class ClassiCubeStandalone {
                 }
 
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
                 }
             }

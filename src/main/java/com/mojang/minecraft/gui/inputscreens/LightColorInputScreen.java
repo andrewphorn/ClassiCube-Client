@@ -16,7 +16,7 @@ public class LightColorInputScreen extends InputValueScreen {
     protected final void onButtonClick(Button button) {
         if (button.active) {
             if (button.id == 0 && name.length() > 0) {
-                minecraft.level.customLightColour = ColorCache.parseHex(name);
+                minecraft.level.customLightColor = ColorCache.parseHex(name);
                 minecraft.levelRenderer.refresh();
                 minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
             }
@@ -25,7 +25,7 @@ public class LightColorInputScreen extends InputValueScreen {
                 minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
             }
             if (button.id == 800) {
-                minecraft.level.customLightColour = new ColorCache(0.99f, 0.99f, 0.99f);
+                minecraft.level.customLightColor = new ColorCache(0.99f, 0.99f, 0.99f);
                 minecraft.levelRenderer.refresh();
                 minecraft.setCurrentScreen(new AdvancedOptionsScreen(parent, minecraft.settings));
             }

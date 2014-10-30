@@ -26,17 +26,19 @@ public final class Renderer {
     public int dynamicChunkUpdateLimit = MIN_CHUNK_UPDATES_PER_FRAME;
     public boolean everBackedOffFromChunkUpdates= false;
     
+    // fog
+    private static final float LAVA_FOG_DENSITY = 1.8F;
+    private static final float WATER_FOG_DENSITY = 0.1F;
+    public float fogRed, fogBlue, fogGreen;
+    public float fogEnd = 0F;
+    
     public Minecraft minecraft;
     public float fogColorMultiplier = 1F;
     public boolean displayActive = false;
-    public float fogEnd = 0F;
     public HeldBlock heldBlock;
     public int levelTicks;
     public Entity entity = null;
     public Random random = new Random();
-    public float fogRed;
-    public float fogBlue;
-    public float fogGreen;
     private final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 
     public Renderer(Minecraft minecraft) {
@@ -140,13 +142,13 @@ public final class Renderer {
             LiquidType liquidType = headBlock.getLiquidType();
             GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_EXP);
             if (liquidType == LiquidType.water) {
-                GL11.glFogf(GL11.GL_FOG_DENSITY, 0.1F);
+                GL11.glFogf(GL11.GL_FOG_DENSITY, WATER_FOG_DENSITY);
                 float red = 0.4F;
                 float green = 0.4F;
                 float blue = 0.9F;
                 GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, createBuffer(red, green, blue, 1F));
             } else if (liquidType == LiquidType.lava) {
-                GL11.glFogf(GL11.GL_FOG_DENSITY, 1.5F);
+                GL11.glFogf(GL11.GL_FOG_DENSITY, LAVA_FOG_DENSITY);
                 float red = 0.4F;
                 float green = 0.3F;
                 float blue = 0.3F;
