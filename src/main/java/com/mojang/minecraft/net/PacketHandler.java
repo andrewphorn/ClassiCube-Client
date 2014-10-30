@@ -422,17 +422,17 @@ public class PacketHandler {
                     break;
                 case 3: // ambient light
                     if (doReset) {
-                        minecraft.level.customShadowColour = null;
+                        minecraft.level.customShadowColor = null;
                     } else {
-                        minecraft.level.customShadowColour = new ColorCache(r / 255F, g / 255F, b / 255F);
+                        minecraft.level.customShadowColor = new ColorCache(r / 255F, g / 255F, b / 255F);
                     }
                     minecraft.levelRenderer.refresh();
                     break;
                 case 4: // diffuse color
                     if (doReset) {
-                        minecraft.level.customLightColour = null;
+                        minecraft.level.customLightColor = null;
                     } else {
-                        minecraft.level.customLightColour = new ColorCache(r / 255F, g / 255F, b / 255F);
+                        minecraft.level.customLightColor = new ColorCache(r / 255F, g / 255F, b / 255F);
                     }
                     minecraft.levelRenderer.refresh();
                     break;

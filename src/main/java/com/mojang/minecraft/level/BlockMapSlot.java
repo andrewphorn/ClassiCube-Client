@@ -1,38 +1,33 @@
 package com.mojang.minecraft.level;
 
+import com.mojang.minecraft.Entity;
 import java.io.Serializable;
 
-import com.mojang.minecraft.Entity;
-
-class BlockMap$Slot implements Serializable {
+class BlockMapSlot implements Serializable {
 
     public static final long serialVersionUID = 0L;
-    // $FF: synthetic field
     final BlockMap blockMap;
     private int xSlot;
     private int ySlot;
     private int zSlot;
 
-    public BlockMap$Slot(BlockMap blockMap) {
+    public BlockMapSlot(BlockMap blockMap) {
         this.blockMap = blockMap;
     }
 
-    // $FF: synthetic method
-    static int getXSlot(BlockMap$Slot slot) {
+    static int getXSlot(BlockMapSlot slot) {
         return slot.xSlot;
     }
 
-    // $FF: synthetic method
-    static int getYSlot(BlockMap$Slot slot) {
+    static int getYSlot(BlockMapSlot slot) {
         return slot.ySlot;
     }
 
-    // $FF: synthetic method
-    static int getZSlot(BlockMap$Slot slot) {
+    static int getZSlot(BlockMapSlot slot) {
         return slot.zSlot;
     }
 
-    public BlockMap$Slot init(float x, float y, float z) {
+    public BlockMapSlot init(float x, float y, float z) {
         xSlot = (int) (x / 16F);
         ySlot = (int) (y / 16F);
         zSlot = (int) (z / 16F);
@@ -63,29 +58,17 @@ class BlockMap$Slot implements Serializable {
         return this;
     }
 
-    /**
-     * Adds an entity to the BlockMap slot.
-     *
-     * @param entity
-     */
     public void add(Entity entity) {
         if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
             blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
                     * BlockMap.getWidth(blockMap) + xSlot].add(entity);
         }
-
     }
 
-    /**
-     * Removes an entity from the BlockMap slot.
-     *
-     * @param entity
-     */
     public void remove(Entity entity) {
         if (xSlot >= 0 && ySlot >= 0 && zSlot >= 0) {
             blockMap.entityGrid[(zSlot * BlockMap.getDepth(blockMap) + ySlot)
                     * BlockMap.getWidth(blockMap) + xSlot].remove(entity);
         }
-
     }
 }

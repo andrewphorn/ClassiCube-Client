@@ -18,9 +18,9 @@ public class BlockMap implements Serializable {
     private int width;
     private int depth;
     private int height;
-    private BlockMap$Slot slot = new BlockMap$Slot(this);
-    private BlockMap$Slot slot2 = new BlockMap$Slot(this);
-    private List<Entity> tmp = new ArrayList<>();
+    private final BlockMapSlot slot = new BlockMapSlot(this);
+    private final BlockMapSlot slot2 = new BlockMapSlot(this);
+    private final List<Entity> tmp = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     public BlockMap(int x, int y, int z) {
@@ -94,14 +94,12 @@ public class BlockMap implements Serializable {
 
     public List<Entity> getEntities(Entity entity, float x1, float y1, float z1, float x2,
                                     float y2, float z2, List<Entity> entityListToChange) {
-        BlockMap$Slot thisSlot = slot.init(x1, y1, z1);
-        BlockMap$Slot otherSlot = slot2.init(x2, y2, z2);
+        BlockMapSlot thisSlot = slot.init(x1, y1, z1);
+        BlockMapSlot otherSlot = slot2.init(x2, y2, z2);
 
-        for (int i = BlockMap$Slot.getXSlot(thisSlot) - 1; i <= BlockMap$Slot.getXSlot(otherSlot) + 1; ++i) {
-            for (int j = BlockMap$Slot.getYSlot(thisSlot) - 1; j <= BlockMap$Slot
-                    .getYSlot(otherSlot) + 1; ++j) {
-                for (int k = BlockMap$Slot.getZSlot(thisSlot) - 1; k <= BlockMap$Slot
-                        .getZSlot(otherSlot) + 1; ++k) {
+        for (int i = BlockMapSlot.getXSlot(thisSlot) - 1; i <= BlockMapSlot.getXSlot(otherSlot) + 1; ++i) {
+            for (int j = BlockMapSlot.getYSlot(thisSlot) - 1; j <= BlockMapSlot.getYSlot(otherSlot) + 1; ++j) {
+                for (int k = BlockMapSlot.getZSlot(thisSlot) - 1; k <= BlockMapSlot.getZSlot(otherSlot) + 1; ++k) {
                     if (i >= 0 && j >= 0 && k >= 0 && i < width && j < depth && k < height) {
                         for (Entity theEntity : entityGrid[(k * depth + j) * width + i]) {
                             if (theEntity != entity && theEntity.intersects(x1, y1, z1, x2, y2, z2)) {
@@ -126,8 +124,8 @@ public class BlockMap implements Serializable {
     }
 
     public void moved(Entity entity) {
-        BlockMap$Slot var2 = slot.init(entity.xOld, entity.yOld, entity.zOld);
-        BlockMap$Slot var3 = slot2.init(entity.x, entity.y, entity.z);
+        BlockMapSlot var2 = slot.init(entity.xOld, entity.yOld, entity.zOld);
+        BlockMapSlot var3 = slot2.init(entity.x, entity.y, entity.z);
         if (!var2.equals(var3)) {
             var2.remove(entity);
             var3.add(entity);
@@ -159,7 +157,7 @@ public class BlockMap implements Serializable {
 
     }
 
-    public void render(Vec3D var1, Frustum frustum, TextureManager textureManager, float delta) {
+    public void render(Vec3D playerVector, Frustum frustum, TextureManager textureManager, float delta) {
         for (int x = 0; x < width; ++x) {
             float var6 = (x << 4) - 2;
             float var7 = (x + 1 << 4) + 2;
@@ -253,7 +251,7 @@ public class BlockMap implements Serializable {
 
                             for (Object anEntitySlotInGrid : entitySlotInGrid) {
                                 Entity var22 = (Entity) anEntitySlotInGrid;
-                                if (var22.shouldRender(var1)) {
+                                if (var22.shouldRender(playerVector)) {
                                     if (!var21) {
                                         AABB var24 = var22.boundingBox;
                                         if (!frustum.isBoxInFrustum(var24.maxX, var24.maxY, var24.maxZ,

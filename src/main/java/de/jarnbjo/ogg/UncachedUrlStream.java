@@ -117,7 +117,7 @@ public class UncachedUrlStream implements PhysicalOggStream {
         this.sourceStream = this.source.getInputStream();
 
         loaderThread = new LoaderThread(sourceStream, pageCache);
-        new Thread(loaderThread).start();
+        new Thread(loaderThread,"Ogg-UncachedUrlStream").start();
 
         while (!loaderThread.isBosDone() || pageCache.size() < PAGECACHE_SIZE) {
             try {

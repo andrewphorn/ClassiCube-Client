@@ -147,9 +147,9 @@ public final class LevelRenderer {
 
     public final void refreshEnvironment() {
         GL11.glNewList(bedrockListId, GL11.GL_COMPILE);
-        if (level.customLightColour != null) {
-            GL11.glColor4f(level.customLightColour.R, level.customLightColour.G,
-                    level.customLightColour.B, 1F);
+        if (level.customLightColor != null) {
+            GL11.glColor4f(level.customLightColor.R, level.customLightColor.G,
+                    level.customLightColor.B, 1F);
         } else {
             GL11.glColor4f(0.5F, 0.5F, 0.5F, 1F);
         }
@@ -209,9 +209,9 @@ public final class LevelRenderer {
         GL11.glEndList();
 
         GL11.glNewList(waterListId, GL11.GL_COMPILE);
-        if (level.customLightColour != null) {
-            GL11.glColor4f(level.customLightColour.R, level.customLightColour.G,
-                    level.customLightColour.B, 1F);
+        if (level.customLightColor != null) {
+            GL11.glColor4f(level.customLightColor.R, level.customLightColor.G,
+                    level.customLightColor.B, 1F);
         }
         float waterLevel = level.getWaterLevel();
         GL11.glEnable(GL11.GL_BLEND);

@@ -355,7 +355,7 @@ public final class GameSettings {
                                     // Wrap around to "Off"
                                     framerateLimit = 0;
                                 }
-                            }else{
+                            } else {
                                 // Go up to the next higher limit
                                 framerateLimit = FRAMERATE_LIMITS[i + 1];
                             }
@@ -363,10 +363,8 @@ public final class GameSettings {
                         }
                     }
                 }
-                if (Display.isCreated()) {
-                    // TODO: decouple vsync from framerate limit
-                    Display.setVSyncEnabled(framerateLimit != 0);
-                }
+                // TODO: decouple vsync from framerate limit
+                Display.setVSyncEnabled(framerateLimit != 0);
                 break;
             case SMOOTHING:
                 smoothing++;
