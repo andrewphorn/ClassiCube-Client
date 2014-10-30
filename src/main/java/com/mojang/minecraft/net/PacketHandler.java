@@ -46,6 +46,10 @@ public class PacketHandler {
     private final Minecraft minecraft;
 
     public boolean isLoadingLevel = false;
+    
+    // This object is used to store the level object while it's being loaded.
+    // Packets that modify can modify the level before it loaded (like ENV_SET_COLOR)
+    // should modify this object instead of "minecraft.level" while isLoadingLevel is true.
     private Level newLevel;
 
     public PacketHandler(Minecraft minecraft) {
