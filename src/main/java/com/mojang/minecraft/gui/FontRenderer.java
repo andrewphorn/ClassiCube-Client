@@ -144,6 +144,7 @@ public final class FontRenderer {
                     break;
                 }
                 i += 2;
+                ch = text.charAt(i);
             }
             color = ch % 16 << 3;
             int var9 = ch / 16 << 3;
