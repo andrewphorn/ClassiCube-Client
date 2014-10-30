@@ -20,7 +20,6 @@
  *
  *
  */
-
 package de.jarnbjo.ogg;
 
 import java.io.IOException;
@@ -33,12 +32,10 @@ import java.util.Collection;
 import java.util.HashMap;
 
 /**
- * Implementation of the <code>PhysicalOggStream</code> interface for reading
- * and caching an Ogg stream from a URL. This class reads the data as fast as
- * possible from the URL, caches it locally either in memory or on disk, and
- * supports seeking within the available data.
+ * Implementation of the <code>PhysicalOggStream</code> interface for reading and caching an Ogg
+ * stream from a URL. This class reads the data as fast as possible from the URL, caches it locally
+ * either in memory or on disk, and supports seeking within the available data.
  */
-
 public class CachedUrlStream implements PhysicalOggStream {
 
     public class LoaderThread implements Runnable {
@@ -141,16 +138,14 @@ public class CachedUrlStream implements PhysicalOggStream {
     /**
      * Creates an instance of this class, using a memory cache.
      */
-
     public CachedUrlStream(URL source) throws IOException {
         this(source, null);
     }
 
     /**
-     * Creates an instance of this class, using the specified file as cache. The
-     * file is not automatically deleted when this class is disposed.
+     * Creates an instance of this class, using the specified file as cache. The file is not
+     * automatically deleted when this class is disposed.
      */
-
     public CachedUrlStream(URL source, RandomAccessFile drain) throws OggFormatException,
             IOException {
 
@@ -169,13 +164,14 @@ public class CachedUrlStream implements PhysicalOggStream {
         this.sourceStream = this.source.getInputStream();
 
         loaderThread = new LoaderThread(sourceStream, drain, memoryCache);
-        new Thread(loaderThread).start();
+        new Thread(loaderThread, "Ogg-CachedUrlStream").start();
 
         while (!loaderThread.isBosDone() || pageOffsets.size() < 20) {
             // System.out.print("pageOffsets.size(): "+pageOffsets.size()+"\r");
             try {
                 Thread.sleep(200);
-            } catch (InterruptedException ex) {}
+            } catch (InterruptedException ex) {
+            }
         }
         // System.out.println();
         // System.out.println("caching "+pageOffsets.size()+"/20 pages\r");
@@ -202,7 +198,6 @@ public class CachedUrlStream implements PhysicalOggStream {
      * EndOfOggStreamException, IOException, OggFormatException { return
      * OggPage.create(sourceStream, skipData); }
      */
-
     public Collection<LogicalOggStreamImpl> getLogicalStreams() {
         return logicalStreams.values();
     }

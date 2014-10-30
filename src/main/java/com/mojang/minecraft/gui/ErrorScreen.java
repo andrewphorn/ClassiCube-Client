@@ -1,22 +1,20 @@
 package com.mojang.minecraft.gui;
 
-import com.mojang.minecraft.net.NetworkManager;
 import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.level.LevelLoader;
-import com.mojang.util.LogUtil;
-import java.io.File;
+import com.mojang.util.Timer;
 
 public final class ErrorScreen extends GuiScreen {
 
     private final String title;
     private final String text;
-    private int timeOpen = 359;
+    private final double endTime;
+    private static final int RECONNECT_DELAY = 3; // Wait 3 seconds before allowing reconnect
 
     public ErrorScreen(String title, String subtitle) {
         this.title = title;
         text = subtitle;
         isOpaque = true;
+        endTime = System.nanoTime() / Timer.NANOSEC_PER_SEC + RECONNECT_DELAY;
     }
 
     @Override
@@ -39,10 +37,15 @@ public final class ErrorScreen extends GuiScreen {
     public final void onOpen() {
         buttons.clear();
         this.buttons.add(new Button(0, this.width / 2 - 100, this.height / 4 + 96,
-                !Minecraft.isSinglePlayer ? "Try to reconnect..." + timeOpen / 60 : "Restart ClassiCube"));
+                !Minecraft.isSinglePlayer ? "Try to reconnect..." + secondsUntilReconnect() : "Restart ClassiCube"));
         if (minecraft.isFullScreen) {
             minecraft.toggleFullscreen();
         }
+    }
+
+    int secondsUntilReconnect() {
+        double now = System.nanoTime() / Timer.NANOSEC_PER_SEC;
+        return (int) Math.max(0, Math.ceil(endTime - now));
     }
 
     @Override
@@ -52,14 +55,17 @@ public final class ErrorScreen extends GuiScreen {
         drawCenteredString(fontRenderer, text, width / 2, 110, 16777215);
         super.render(mouseX, mouseY);
         String buttonLabel;
+        int secToReconnect = secondsUntilReconnect();
         if (Minecraft.isSinglePlayer) {
             buttonLabel = "Restart ClassiCube";
         } else {
-            buttonLabel = (timeOpen / 60 > 0 ? "Try to reconnect..." + timeOpen / 60 : "Try to reconnect");
+            buttonLabel = "Try to reconnect";
+            if (secToReconnect > 0) {
+                buttonLabel = buttonLabel + "..." + secondsUntilReconnect();
+            }
         }
         buttons.set(0, new Button(0, this.width / 2 - 100, this.height / 4 + 96, buttonLabel));
-        if (timeOpen / 60 > 0 && !Minecraft.isSinglePlayer) {
-            --timeOpen;
+        if (!Minecraft.isSinglePlayer && secToReconnect > 0) {
             buttons.get(0).active = false;
         }
     }

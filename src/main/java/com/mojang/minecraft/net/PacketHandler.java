@@ -46,12 +46,22 @@ public class PacketHandler {
     private final Minecraft minecraft;
 
     public boolean isLoadingLevel = false;
+    
+    // This object is used to store the level object while it's being loaded.
+    // Packets that modify can modify the level before it loaded (like ENV_SET_COLOR)
+    // should modify this object instead of "minecraft.level" while isLoadingLevel is true.
+    private Level newLevel;
 
     public PacketHandler(Minecraft minecraft) {
         this.minecraft = minecraft;
     }
 
     public void setLoadingLevel(boolean value) {
+        if (value && !isLoadingLevel) {
+            newLevel = new Level();
+        } else if (!value && isLoadingLevel) {
+            newLevel = null;
+        }
         isLoadingLevel = value;
     }
 
@@ -141,18 +151,15 @@ public class PacketHandler {
             short xSize = (short) packetParams[0];
             short ySize = (short) packetParams[1];
             short zSize = (short) packetParams[2];
-            Level newLevel = new Level();
             newLevel.setNetworkMode(true);
             newLevel.setData(xSize, ySize, zSize, decompressedStream);
-            networkManager.minecraft.setLevel(newLevel);
-            networkManager.minecraft.isConnecting = false;
+            minecraft.setLevel(newLevel);
+            minecraft.isConnecting = false;
             networkManager.levelLoaded = true;
-            // ProgressBarDisplay.InitEnv(this);
-            // this.levelRenderer.refresh();
             setLoadingLevel(false);
 
         } else if (packetType == PacketType.BLOCK_CHANGE) {
-            if (networkManager.minecraft.level != null) {
+            if (minecraft.level != null) {
                 networkManager.minecraft.level.netSetTile(
                         (short) packetParams[0], (short) packetParams[1],
                         (short) packetParams[2], (byte) packetParams[3]);
@@ -398,43 +405,52 @@ public class PacketHandler {
             // If R, G, or B is out-of-range, we should reset the color to default.
             boolean doReset = (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255);
             int dec = (r & 0x0ff) << 16 | (g & 0x0ff) << 8 | b & 0x0ff;
+
+            // Don't mess with "minecraft.level" if we're still in the process of loading a level.
+            Level level;
+            if (isLoadingLevel) {
+                level = newLevel;
+            } else {
+                level = minecraft.level;
+            }
+
             switch (envVariable) {
                 case 0: // sky
                     if (doReset) {
-                        minecraft.level.skyColor = Level.DEFAULT_SKY_COLOR;
+                        level.skyColor = Level.DEFAULT_SKY_COLOR;
                     } else {
-                        minecraft.level.skyColor = dec;
+                        level.skyColor = dec;
                     }
                     break;
                 case 1: // cloud
                     if (doReset) {
-                        minecraft.level.cloudColor = Level.DEFAULT_CLOUD_COLOR;
+                        level.cloudColor = Level.DEFAULT_CLOUD_COLOR;
                     } else {
-                        minecraft.level.cloudColor = dec;
+                        level.cloudColor = dec;
                     }
                     break;
                 case 2: // fog
                     if (doReset) {
-                        minecraft.level.fogColor = Level.DEFAULT_FOG_COLOR;
+                        level.fogColor = Level.DEFAULT_FOG_COLOR;
                     } else {
-                        minecraft.level.fogColor = dec;
+                        level.fogColor = dec;
                     }
                     break;
                 case 3: // ambient light
                     if (doReset) {
-                        minecraft.level.customShadowColour = null;
+                        level.customShadowColor = null;
                     } else {
-                        minecraft.level.customShadowColour = new ColorCache(r / 255F, g / 255F, b / 255F);
+                        level.customShadowColor = new ColorCache(r / 255F, g / 255F, b / 255F);
                     }
-                    minecraft.levelRenderer.refresh();
+                    if(!isLoadingLevel) minecraft.levelRenderer.refresh();
                     break;
                 case 4: // diffuse color
                     if (doReset) {
-                        minecraft.level.customLightColour = null;
+                        level.customLightColor = null;
                     } else {
-                        minecraft.level.customLightColour = new ColorCache(r / 255F, g / 255F, b / 255F);
+                        level.customLightColor = new ColorCache(r / 255F, g / 255F, b / 255F);
                     }
-                    minecraft.levelRenderer.refresh();
+                    if(!isLoadingLevel) minecraft.levelRenderer.refresh();
                     break;
             }
 

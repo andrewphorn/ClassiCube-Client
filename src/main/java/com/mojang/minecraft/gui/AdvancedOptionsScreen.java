@@ -78,7 +78,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
                 minecraft.setCurrentScreen(screen);
             }
             if (clickedButton.id == 500) {
-                ColorCache c = minecraft.level.customLightColour;
+                ColorCache c = minecraft.level.customLightColor;
                 Color color = new Color(255, 255, 255);
                 String colorString = "";
                 if (c != null) {
@@ -95,7 +95,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
                 minecraft.setCurrentScreen(screen);
             }
             if (clickedButton.id == 600) {
-                ColorCache c = minecraft.level.customShadowColour;
+                ColorCache c = minecraft.level.customShadowColor;
                 Color color = new Color(155, 155, 155);
                 String colorString = "";
                 if (c != null) {

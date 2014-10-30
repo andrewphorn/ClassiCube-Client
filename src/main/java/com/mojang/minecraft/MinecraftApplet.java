@@ -12,6 +12,7 @@ import java.net.URL;
 import com.mojang.util.LogUtil;
 
 public class MinecraftApplet extends Applet {
+
     private static final long serialVersionUID = 1L;
 
     private Canvas canvas;
@@ -127,7 +128,7 @@ public class MinecraftApplet extends Applet {
 
     public void startGameThread() {
         if (thread == null) {
-            thread = new Thread(minecraft);
+            thread = new Thread(minecraft, "GameLoop-Applet");
 
             thread.start();
         }

@@ -791,7 +791,7 @@ public final class Minecraft implements Runnable {
             soundPlayer.dataLine.open(soundFormat, 4410);
             soundPlayer.dataLine.start();
             soundPlayer.running = true;
-            Thread soundPlayerThread = new Thread(soundPlayer);
+            Thread soundPlayerThread = new Thread(soundPlayer, "SoundPlayer");
             soundPlayerThread.setDaemon(true);
             soundPlayerThread.setPriority(Thread.MAX_PRIORITY);
             soundPlayerThread.start();
@@ -884,7 +884,6 @@ public final class Minecraft implements Runnable {
             // Get current time in seconds 
             double now = System.nanoTime() / Timer.NANOSEC_PER_SEC;
             double secondsPassed = (now - timer.lastHR);
-            timer.lastFrameDuration = secondsPassed;
             timer.lastHR = now;
 
             // Cap seconds-passed to range [0,1]
@@ -894,6 +893,7 @@ public final class Minecraft implements Runnable {
             if (secondsPassed > 1D) {
                 secondsPassed = 1D;
             }
+            timer.lastFrameDuration = timer.lastFrameDuration * 0.5 + secondsPassed * 0.5;
 
             // Figure out how many ticks took place since last frame
             timer.elapsedDelta = (float) (timer.elapsedDelta + secondsPassed * timer.speed * timer.tps);
@@ -987,33 +987,35 @@ public final class Minecraft implements Runnable {
                                 var87 * reachDistance);
 
                         // SURVIVAL: find a nearby entity to pick up
-                        renderer.entity = null;
-                        List<Entity> nearbyEntities = level.blockMap.getEntities(
-                                player,
-                                player.boundingBox.expand(var34 * reachDistance,
-                                        var33 * reachDistance, var87 * reachDistance)
-                        );
+                        if (isSurvival()) {
+                            renderer.entity = null;
+                            List<Entity> nearbyEntities = level.blockMap.getEntities(
+                                    player,
+                                    player.boundingBox.expand(var34 * reachDistance,
+                                            var33 * reachDistance, var87 * reachDistance)
+                            );
 
-                        float var35 = 0F;
-                        for (Entity entity : nearbyEntities) {
-                            if (entity.isPickable()) {
-                                var74 = 0.1F;
-                                MovingObjectPosition var78 = entity.boundingBox
-                                        .grow(var74, var74, var74)
-                                        .clip(newPlayerVector, vec3D);
-                                if (var78 != null) {
-                                    var74 = newPlayerVector.distance(var78.vec);
-                                    if (var74 < var35 || var35 == 0F) {
-                                        renderer.entity = entity;
-                                        var35 = var74;
+                            float var35 = 0F;
+                            for (Entity entity : nearbyEntities) {
+                                if (entity.isPickable()) {
+                                    var74 = 0.1F;
+                                    MovingObjectPosition var78 = entity.boundingBox
+                                            .grow(var74, var74, var74)
+                                            .clip(newPlayerVector, vec3D);
+                                    if (var78 != null) {
+                                        var74 = newPlayerVector.distance(var78.vec);
+                                        if (var74 < var35 || var35 == 0F) {
+                                            renderer.entity = entity;
+                                            var35 = var74;
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        // SURVIVAL: place picked-up object into hand
-                        if (renderer.entity != null && isSurvival()) {
-                            selected = new MovingObjectPosition(renderer.entity);
+                            // SURVIVAL: place picked-up object into hand
+                            if (renderer.entity != null && isSurvival()) {
+                                selected = new MovingObjectPosition(renderer.entity);
+                            }
                         }
 
                         GL11.glViewport(0, 0, width, height);
@@ -1110,15 +1112,22 @@ public final class Minecraft implements Runnable {
                                 chunk.loaded = false;
                             }
 
-                            // Adjust chunks-per-frame based on framerate. Back off is under 30fps.
-                            double minDesiredFramerate = Math.max(20, settings.framerateLimit / 2);
-                            if (timer.lastFrameDuration > 1 / minDesiredFramerate) {
-                                renderer.everBackedOffFromChunkUpdates = (renderer.dynamicChunkUpdateLimit > Renderer.MIN_CHUNK_UPDATES_PER_FRAME);
-                                renderer.dynamicChunkUpdateLimit = Math.max(Renderer.MIN_CHUNK_UPDATES_PER_FRAME, renderer.dynamicChunkUpdateLimit -= 2);
-                            } else if (renderer.everBackedOffFromChunkUpdates) {
-                                renderer.dynamicChunkUpdateLimit += 1;
-                            } else {
-                                renderer.dynamicChunkUpdateLimit += 3;
+                            if (settings.framerateLimit > 0) {
+                                // Adjust chunks-per-frame based on framerate. Back off is under 30fps.
+                                double minDesiredFramerate = Math.max(20, settings.framerateLimit / 2);
+                                int tempFps = (int) Math.floor(1 / timer.lastFrameDuration);
+                                String fpsStr = "[" + tempFps + " / " + minDesiredFramerate + "] ";
+                                if (timer.lastFrameDuration > 1 / minDesiredFramerate) {
+                                    renderer.everBackedOffFromChunkUpdates = (renderer.dynamicChunkUpdateLimit > Renderer.MIN_CHUNK_UPDATES_PER_FRAME);
+                                    //LogUtil.logInfo(fpsStr + "backing off from " + renderer.dynamicChunkUpdateLimit + " to " + Math.max(Renderer.MIN_CHUNK_UPDATES_PER_FRAME, renderer.dynamicChunkUpdateLimit - 2));
+                                    renderer.dynamicChunkUpdateLimit = Math.max(Renderer.MIN_CHUNK_UPDATES_PER_FRAME, renderer.dynamicChunkUpdateLimit - 2);
+                                } else if (renderer.everBackedOffFromChunkUpdates) {
+                                    //LogUtil.logInfo(fpsStr + "ramping up from " + renderer.dynamicChunkUpdateLimit + " to " + (renderer.dynamicChunkUpdateLimit + 1));
+                                    renderer.dynamicChunkUpdateLimit += 1;
+                                } else {
+                                    //LogUtil.logInfo(fpsStr + "ramping up from " + renderer.dynamicChunkUpdateLimit + " to " + (renderer.dynamicChunkUpdateLimit + 3));
+                                    renderer.dynamicChunkUpdateLimit += 3;
+                                }
                             }
                         } else {
                             renderer.dynamicChunkUpdateLimit = Renderer.MIN_CHUNK_UPDATES_PER_FRAME;
@@ -1183,6 +1192,7 @@ public final class Minecraft implements Runnable {
 
                         renderer.setLighting(true);
                         Vec3D playerVector = renderer.getPlayerVector(delta);
+                        // TODO: investigate if this render pass is necessary
                         level.blockMap.render(playerVector, frustum, levelRenderer.textureManager, delta);
                         renderer.setLighting(false);
                         renderer.updateFog();
@@ -1227,7 +1237,6 @@ public final class Minecraft implements Runnable {
                         renderer.updateFog();
                         if (selected != null) {
                             GL11.glDisable(GL11.GL_ALPHA_TEST);
-                            MovingObjectPosition var102 = selected;
 
                             GL11.glEnable(GL11.GL_BLEND);
                             GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -1241,22 +1250,22 @@ public final class Minecraft implements Runnable {
                                 GL11.glColor4f(1F, 1F, 1F, 0.5F);
                                 GL11.glPushMatrix();
 
-                                int blockId = levelRenderer.level.getTile(var102.x, var102.y, var102.z);
+                                int blockId = levelRenderer.level.getTile(selected.x, selected.y, selected.z);
                                 blockAroundHead = (blockId > 0 ? Block.blocks[blockId] : null);
                                 float blockXAverage = (blockAroundHead.maxX + blockAroundHead.minX) / 2F;
                                 float blockYAverage = (blockAroundHead.maxY + blockAroundHead.minY) / 2F;
                                 float blockZAverage = (blockAroundHead.maxZ + blockAroundHead.minZ) / 2F;
-                                GL11.glTranslatef(var102.x + blockXAverage,
-                                        var102.y + blockYAverage, var102.z + blockZAverage);
+                                GL11.glTranslatef(selected.x + blockXAverage,
+                                        selected.y + blockYAverage, selected.z + blockZAverage);
                                 GL11.glScalef(1F, 1.01F, 1.01F);
-                                GL11.glTranslatef(-(var102.x + blockXAverage),
-                                        -(var102.y + blockYAverage), -(var102.z + blockZAverage));
+                                GL11.glTranslatef(-(selected.x + blockXAverage),
+                                        -(selected.y + blockYAverage), -(selected.z + blockZAverage));
                                 shapeRenderer.begin();
                                 shapeRenderer.noColor();
                                 GL11.glDepthMask(false);
                                 // Do the sides
                                 for (int side = 0; side < 6; ++side) {
-                                    blockAroundHead.renderSide(shapeRenderer, var102.x, var102.y, var102.z,
+                                    blockAroundHead.renderSide(shapeRenderer, selected.x, selected.y, selected.z,
                                             side, 240 + (int) (levelRenderer.cracks * 10F));
                                 }
 
@@ -1440,6 +1449,21 @@ public final class Minecraft implements Runnable {
 
             if (settings.framerateLimit != 0) {
                 Display.sync(settings.framerateLimit);
+
+                double fps = (1 / timer.lastFrameDuration);
+                if (fps < settings.framerateLimit / 2) {
+                    if (vsync) {
+                        Display.setVSyncEnabled(false);
+                        vsync = false;
+                        LogUtil.logInfo("VSYNC OFF");
+                    }
+                } else {
+                    if (!vsync) {
+                        Display.setVSyncEnabled(true);
+                        vsync = true;
+                        LogUtil.logInfo("VSYNC ON");
+                    }
+                }
             }
 
             checkGLError("Post render");
@@ -1448,6 +1472,8 @@ public final class Minecraft implements Runnable {
             setCurrentScreen(new ErrorScreen("Client error", "The game broke! [" + ex + "]"));
         }
     }
+
+    boolean vsync = false;
 
     public final void setCurrentScreen(GuiScreen newScreen) {
         if (currentScreen != null) {
@@ -1508,7 +1534,7 @@ public final class Minecraft implements Runnable {
             newLevel.initTransient();
             gamemode.apply(newLevel);
             newLevel.font = fontRenderer;
-            newLevel.rendererContext = this;
+            newLevel.minecraft = this;
             if (!isOnline()) { // if not online (singleplayer)
                 player = (Player) newLevel.findSubclassOf(Player.class);
                 if (player == null) {
@@ -1772,7 +1798,9 @@ public final class Minecraft implements Runnable {
             }
 
             ++levelRenderer.ticks;
-            level.tickEntities();
+            if (level.blockMap != null) {
+                level.tickEntities();
+            }
             if (!isOnline()) {
                 level.tick();
             }
