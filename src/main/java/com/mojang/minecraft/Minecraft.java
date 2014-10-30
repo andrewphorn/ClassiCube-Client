@@ -1798,7 +1798,9 @@ public final class Minecraft implements Runnable {
             }
 
             ++levelRenderer.ticks;
-            level.tickEntities();
+            if (level.blockMap != null) {
+                level.tickEntities();
+            }
             if (!isOnline()) {
                 level.tick();
             }
