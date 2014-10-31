@@ -11,6 +11,7 @@ import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.physics.CustomAABB;
 import com.mojang.minecraft.player.Player;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.ColorCache;
 import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
@@ -206,9 +207,9 @@ public final class Renderer {
 
         float speed = 1F;
         if (minecraft.isRaining) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load("/rain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load(Textures.RAIN));
         } else if (minecraft.isSnowing) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load("/snow.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load(Textures.SNOW));
             speed = 0.2F;
         }
         int playerX = (int) minecraft.player.x;

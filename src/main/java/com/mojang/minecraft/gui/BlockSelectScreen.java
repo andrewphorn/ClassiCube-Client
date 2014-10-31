@@ -10,6 +10,7 @@ import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.level.tile.BlockID;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.texture.Textures;
 
 public final class BlockSelectScreen extends GuiScreen {
 
@@ -94,7 +95,7 @@ public final class BlockSelectScreen extends GuiScreen {
         drawCenteredString(fontRenderer, "Select block", width / 2, 40, 16777215);
         TextureManager textureManager = minecraft.textureManager;
         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
-        var2 = textureManager.load("/terrain.png");
+        var2 = textureManager.load(Textures.TERRAIN);
         GL11.glBindTexture(3553, var2);
 
         for (int i = 0; i < SessionData.allowedBlocks.size(); ++i) {

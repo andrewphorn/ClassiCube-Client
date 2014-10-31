@@ -7,6 +7,7 @@ import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.MathHelper;
 
 public class Item extends Entity {
@@ -66,7 +67,7 @@ public class Item extends Entity {
 
     @Override
     public void render(TextureManager textureManager, float delta) {
-        textureId = textureManager.load("/terrain.png");
+        textureId = textureManager.load(Textures.TERRAIN);
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
 

@@ -12,6 +12,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.LogUtil;
 
 public final class GameSettings {
@@ -290,7 +291,9 @@ public final class GameSettings {
                 writer.println("scale:" + scale);
                 writer.println("hacksEnabled:" + hacksEnabled);
                 writer.println("showNames:" + showNames);
-                writer.println("texturepack:" + lastUsedTexturePack);
+                if (lastUsedTexturePack != null) {
+                    writer.println("texturepack:" + lastUsedTexturePack);
+                }
                 for (KeyBinding binding : bindings) {
                     writer.println("key_" + binding.name + ":" + binding.key);
                 }
@@ -371,14 +374,24 @@ public final class GameSettings {
                 if (smoothing > SMOOTHING_UNIVERSAL) {
                     smoothing = SMOOTHING_OFF;
                 }
-                minecraft.textureManager.textures.clear();
+                minecraft.textureManager.forceTextureReload(Textures.TERRAIN);
+                minecraft.textureManager.forceTextureReload(Textures.MAP_EDGE);
+                minecraft.textureManager.forceTextureReload(Textures.MAP_SIDE);
+                minecraft.textureManager.forceTextureReload("customTerrain");
+                minecraft.textureManager.forceTextureReload("customEdge");
+                minecraft.textureManager.forceTextureReload("customSide");
                 break;
             case ANISOTROPIC:
                 anisotropy++;
                 if (anisotropy > TextureManager.getMaxAnisotropySetting()) {
                     anisotropy = ANISOTROPY_OFF;
                 }
-                minecraft.textureManager.textures.clear();
+                minecraft.textureManager.forceTextureReload(Textures.TERRAIN);
+                minecraft.textureManager.forceTextureReload(Textures.MAP_EDGE);
+                minecraft.textureManager.forceTextureReload(Textures.MAP_SIDE);
+                minecraft.textureManager.forceTextureReload("customTerrain");
+                minecraft.textureManager.forceTextureReload("customEdge");
+                minecraft.textureManager.forceTextureReload("customSide");
                 break;
             case ALLOW_SERVER_TEXTURES:
                 canServerChangeTextures = !canServerChangeTextures;

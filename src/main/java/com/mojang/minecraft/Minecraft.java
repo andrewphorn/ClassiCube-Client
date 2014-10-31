@@ -89,6 +89,7 @@ import com.mojang.minecraft.render.Renderer;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.render.texture.TextureFX;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.minecraft.sound.SoundManager;
 import com.mojang.minecraft.sound.SoundPlayer;
 import com.mojang.util.ColorCache;
@@ -734,7 +735,7 @@ public final class Minecraft implements Runnable {
             }
         }
 
-        fontRenderer = new FontRenderer(settings, "/default.png", textureManager);
+        fontRenderer = new FontRenderer(settings, Textures.FONT, textureManager);
         monitoringThread = new MonitoringThread(1000); // 1s refresh
         textureManager.initAtlas();
 
@@ -1206,9 +1207,9 @@ public final class Minecraft implements Runnable {
                             if (!particleManager.particles[pass].isEmpty()) {
                                 int textureId = 0;
                                 if (pass == 0) {
-                                    textureId = particleManager.textureManager.load("/particles.png");
+                                    textureId = particleManager.textureManager.load(Textures.PARTICLES);
                                 } else if (pass == 1) {
-                                    textureId = particleManager.textureManager.load("/terrain.png");
+                                    textureId = particleManager.textureManager.load(Textures.TERRAIN);
                                 }
 
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
@@ -1224,7 +1225,7 @@ public final class Minecraft implements Runnable {
                             }
                         }
 
-                        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/rock.png"));
+                        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.MAP_SIDE));
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
                         levelRenderer.renderBedrock();
                         renderer.updateFog();
@@ -1246,7 +1247,7 @@ public final class Minecraft implements Runnable {
                             // SURVIVAL: draw cracks on sides of the block being broken
                             if (levelRenderer.cracks > 0F) {
                                 GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_SRC_COLOR);
-                                GL11.glBindTexture(GL11.GL_TEXTURE_2D, levelRenderer.textureManager.load("/terrain.png"));
+                                GL11.glBindTexture(GL11.GL_TEXTURE_2D, levelRenderer.textureManager.load(Textures.TERRAIN));
                                 GL11.glColor4f(1F, 1F, 1F, 0.5F);
                                 GL11.glPushMatrix();
 
@@ -1295,7 +1296,7 @@ public final class Minecraft implements Runnable {
                         renderer.updateFog();
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
                         GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                levelRenderer.textureManager.load("/water.png"));
+                                levelRenderer.textureManager.load(Textures.MAP_EDGE));
                         levelRenderer.renderOutsideWater();
                         GL11.glColorMask(false, false, false, false);
 
@@ -1304,7 +1305,7 @@ public final class Minecraft implements Runnable {
 
                         if (chunksRemaining > 0) {
                             GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                    levelRenderer.textureManager.load("/terrain.png"));
+                                    levelRenderer.textureManager.load(Textures.TERRAIN));
                             GL11.glCallLists(levelRenderer.buffer);
                         }
 
@@ -1406,7 +1407,7 @@ public final class Minecraft implements Runnable {
                             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
                             if (settings.thirdPersonMode == ThirdPersonMode.NONE && canRenderGUI) {
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                                        heldBlock.minecraft.textureManager.load("/terrain.png"));
+                                        heldBlock.minecraft.textureManager.load(Textures.TERRAIN));
                                 heldBlock.block.renderPreview(shapeRenderer);
                             }
                         } else {
@@ -1700,7 +1701,7 @@ public final class Minecraft implements Runnable {
             }
         }
 
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.TERRAIN));
         TextureManager texManager = textureManager;
 
         for (int i = 0; i < texManager.animations.size(); ++i) {
@@ -1994,9 +1995,7 @@ public final class Minecraft implements Runnable {
                                 break;
 
                             case Keyboard.KEY_F6:
-                                if (HackState.noclip) {
-                                    settings.thirdPersonMode = settings.thirdPersonMode.next();
-                                }
+                                settings.thirdPersonMode = settings.thirdPersonMode.next();
                                 break;
 
                             case Keyboard.KEY_F11:

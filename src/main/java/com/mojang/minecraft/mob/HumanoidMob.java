@@ -11,6 +11,7 @@ import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.texture.Textures;
 
 public class HumanoidMob extends Mob {
 
@@ -49,7 +50,7 @@ public class HumanoidMob extends Mob {
                     yTranslation = -1.8F;
                 }
                 GL11.glTranslatef(-0.5F, yTranslation, -0.2F);
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.TERRAIN));
 
                 block.renderPreview(ShapeRenderer.instance);
                 GL11.glPopMatrix();
@@ -76,7 +77,7 @@ public class HumanoidMob extends Mob {
             }
 
             if (armor || helmet) {
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/armor/plate.png"));
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.ARMOR_PLATE));
                 GL11.glDisable(GL11.GL_CULL_FACE);
                 HumanoidModel modelArmour = (HumanoidModel) modelCache.getModel("humanoid.armor");
                 modelArmour.head.render = helmet;
@@ -113,7 +114,7 @@ public class HumanoidMob extends Mob {
         float headY = model.head.y;
         float headZ = model.head.z;
         super.renderModel(textureManager, var2, var3, var4, yawDegrees, pitchDegrees, scale);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/mob/sheep_fur.png"));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.SHEEP_FUR));
         AnimalModel sheepModel = (AnimalModel) modelCache.getModel("sheep.fur");
         sheepModel.head.yaw = model.head.yaw;
         sheepModel.head.pitch = model.head.pitch;

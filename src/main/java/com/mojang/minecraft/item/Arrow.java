@@ -8,6 +8,7 @@ import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.MathHelper;
 
 // SURVIVAL: arrow
@@ -106,7 +107,7 @@ public class Arrow extends Entity {
 
     @Override
     public void render(TextureManager textureManager, float delta) {
-        textureId = textureManager.load("/item/arrows.png");
+        textureId = textureManager.load(Textures.ARROWS);
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
 

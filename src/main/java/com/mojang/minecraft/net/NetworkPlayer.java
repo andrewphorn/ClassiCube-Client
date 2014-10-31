@@ -9,6 +9,7 @@ import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.mob.HumanoidMob;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.texture.Textures;
 
 public class NetworkPlayer extends HumanoidMob {
 
@@ -49,7 +50,7 @@ public class NetworkPlayer extends HumanoidMob {
         if (modelName.equals("humanoid")) {
             downloadSkin();
         } else if (isInteger(modelName)) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load(Textures.TERRAIN));
         }
     }
 
@@ -79,12 +80,12 @@ public class NetworkPlayer extends HumanoidMob {
             newTexture = null;
         }
         if (isInteger(modelName)) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.TERRAIN));
             return;
         }
         if (newTextureId < 0) {
             if ("humanoid".equals(modelName)) {
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/char.png"));
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.HUMANOID_SKIN));
             } else {
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/mob/" + modelName.replace('.', '_') + ".png"));
             }

@@ -36,7 +36,7 @@ import org.lwjgl.opengl.GLContext;
 public class TextureManager {
 
     public boolean Applet;
-    public HashMap<String, Integer> textures = new HashMap<>();
+    private final HashMap<String, Integer> textures = new HashMap<>();
     public HashMap<Integer, BufferedImage> textureImages = new HashMap<>();
     public IntBuffer idBuffer = BufferUtils.createIntBuffer(1);
     public ByteBuffer textureBuffer = BufferUtils.createByteBuffer(262144);
@@ -66,7 +66,6 @@ public class TextureManager {
     public File minecraftFolder;
     public File texturesFolder;
     public int previousMipmapMode;
-    TextureManager instance;
 
     public TextureManager(GameSettings settings, boolean Applet) {
         this.Applet = Applet;
@@ -79,7 +78,6 @@ public class TextureManager {
             texturesFolder.mkdir();
         }
         ImageIO.setUseCache(false);
-        instance = this;
     }
 
     public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y)
@@ -205,23 +203,17 @@ public class TextureManager {
 
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA, mipWidth, mipHeight, 0,
                     GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, mipData1);
-            // GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F * level); // Create
-            // transparency for each level.
+            // GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F * level); // Create transparency for each level.
             mipData = mipData1;
         }
     }
 
-    public void initAtlas() {
-        String textureFile = "/terrain.png";
-        BufferedImage image = null;
+    public void initAtlas() throws IOException {
+        BufferedImage image;
         if (currentTerrainPng != null) {
             image = currentTerrainPng;
         } else {
-            try {
-                image = loadImageFast(TextureManager.class.getResourceAsStream(textureFile));
-            } catch (IOException ex) {
-                LogUtil.logError("Error loading default texture atlas.", ex);
-            }
+            image = loadImageFast(TextureManager.class.getResourceAsStream("/terrain.png"));
         }
         textureAtlas.clear();
         textureAtlas = Atlas2dInto1d(image, 16, image.getWidth() / 16);
@@ -474,8 +466,7 @@ public class TextureManager {
         if (file.startsWith("/rock") && textures.containsKey("customSide")) {
             return textures.get("customSide");
         }
-        if (file.startsWith("/rock") && !textures.containsKey("customSide")
-                && customSideBlock != null) {
+        if (file.startsWith("/rock") && !textures.containsKey("customSide") && customSideBlock != null) {
             int id = load(customSideBlock);
             textures.put("customSide", id);
             return id;
@@ -494,7 +485,6 @@ public class TextureManager {
             return textures.get(file);
         } else {
             try {
-
                 idBuffer.clear();
                 GL11.glGenTextures(idBuffer);
                 int textureID = idBuffer.get(0);
@@ -570,9 +560,9 @@ public class TextureManager {
         initAtlas();
         if (settings.minecraft.networkManager != null) {
             for (NetworkPlayer p : settings.minecraft.networkManager.getPlayers()) {
-                p.bindTexture(instance);
+                p.bindTexture(this);
             }
-            settings.minecraft.player.bindTexture(instance);
+            settings.minecraft.player.bindTexture(this);
         }
         animations.clear();
     }
@@ -584,8 +574,24 @@ public class TextureManager {
         animations.add(new TextureFireFX());
     }
 
-    public void resetAllMods() {
+    public void forceTextureReload() {
+        for (int id : textures.values()) {
+            GL11.glDeleteTextures(id);
+        }
+        LogUtil.logInfo("Reloaded all " + textures.size() + " textures.");
         textures.clear();
+    }
+
+    public void forceTextureReload(String textureName) {
+        if (textures.containsKey(textureName)) {
+            LogUtil.logInfo("Reloaded texture: " + textureName);
+            GL11.glDeleteTextures(textures.remove(textureName));
+        }
+    }
+
+    public void resetAllMods() {
+        forceTextureReload();
+
         currentTerrainPng = null;
         customEdgeBlock = null;
         customSideBlock = null;

@@ -12,6 +12,7 @@ import com.mojang.minecraft.particle.TerrainParticle;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.MathHelper;
 
 public class PrimedTnt extends Entity {
@@ -80,7 +81,7 @@ public class PrimedTnt extends Entity {
 
     @Override
     public void render(TextureManager textureManager, float delta) {
-        int textureID = textureManager.load("/terrain.png");
+        int textureID = textureManager.load(Textures.TERRAIN);
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
 

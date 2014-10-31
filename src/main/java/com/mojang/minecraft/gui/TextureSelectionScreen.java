@@ -10,12 +10,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.LogUtil;
 
 public final class TextureSelectionScreen extends GuiScreen {
 
     private static final String TITLE = "Texture Packs";
-    private static final int BUTTON_LOAD_FILE = 6, BUTTON_CANCEL = 7, BUTTON_DEFAULT = 8, 
+    private static final int BUTTON_LOAD_FILE = 6, BUTTON_CANCEL = 7, BUTTON_DEFAULT = 8,
             BUTTON_PREVIOUS = 9, BUTTON_NEXT = 10;
     private static final int MAX_PACKS_TO_SHOW = 5;
     private static int PAGE = 0;
@@ -45,29 +46,36 @@ public final class TextureSelectionScreen extends GuiScreen {
                     minecraft.setCurrentScreen(parent);
                     break;
                 case BUTTON_DEFAULT:
-                    minecraft.textureManager.resetAllMods();
-                    minecraft.textureManager.load("/terrain.png");
-                    minecraft.textureManager.initAtlas();
-                    minecraft.textureManager.textures.clear();
                     try {
-                        minecraft.fontRenderer = new FontRenderer(minecraft.settings, "/default.png",
-                                minecraft.textureManager);
+                        // Save preference
+                        minecraft.settings.lastUsedTexturePack = null;
+                        minecraft.settings.save();
+                        
+                        // Reset the texture pack
+                        minecraft.textureManager.resetAllMods();
+                        minecraft.textureManager.load(Textures.TERRAIN);
+                        minecraft.textureManager.initAtlas();
+                        minecraft.fontRenderer =
+                                new FontRenderer(minecraft.settings, Textures.FONT, minecraft.textureManager);
+                        minecraft.textureManager.registerAnimations();
+                        
+                        // Return back to the main menu
+                        minecraft.setCurrentScreen(parent);
+                        
                     } catch (IOException ex) {
-                        LogUtil.logError("Error creating default font renderer.", ex);
+                        // If the default texture could not be loaded, something went seriously wrong
+                        LogUtil.logError("Error loading default texture pack.", ex);
+                        minecraft.setCurrentScreen(new ErrorScreen("Client error", "The game broke! [" + ex + "]"));
                     }
-                    minecraft.settings.lastUsedTexturePack = null;
-                    minecraft.settings.save();
-                    minecraft.textureManager.registerAnimations();
-                    minecraft.setCurrentScreen(parent);
                     break;
                 case BUTTON_PREVIOUS:
-                    if (PAGE >= 5){
+                    if (PAGE >= 5) {
                         PAGE = PAGE - 5;
                     }
                     break;
                 case BUTTON_NEXT:
                     int packCount = Math.min(texturePacks.size(), MAX_PACKS_TO_SHOW + (PAGE * 5));
-                    if (PAGE <= packCount / 5){
+                    if (PAGE <= packCount / 5) {
                         PAGE = PAGE + 5;
                     }
                     break;
@@ -96,8 +104,8 @@ public final class TextureSelectionScreen extends GuiScreen {
     protected void openTexture(String file) {
         try {
             minecraft.textureManager.loadTexturePack(file);
-            minecraft.fontRenderer = new FontRenderer(minecraft.settings, "/default.png",
-                    minecraft.textureManager);
+            minecraft.fontRenderer =
+                    new FontRenderer(minecraft.settings, Textures.FONT, minecraft.textureManager);
             minecraft.settings.lastUsedTexturePack = file;
             minecraft.settings.save();
             minecraft.setCurrentScreen(parent);
