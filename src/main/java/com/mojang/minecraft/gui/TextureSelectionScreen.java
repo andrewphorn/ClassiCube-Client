@@ -55,8 +55,8 @@ public final class TextureSelectionScreen extends GuiScreen {
                         minecraft.textureManager.resetAllMods();
                         minecraft.textureManager.load(Textures.TERRAIN);
                         minecraft.textureManager.initAtlas();
-                        minecraft.fontRenderer = new FontRenderer(minecraft.settings,
-                                "/default.png", minecraft.textureManager);
+                        minecraft.fontRenderer =
+                                new FontRenderer(minecraft.settings, Textures.FONT, minecraft.textureManager);
                         minecraft.textureManager.registerAnimations();
                         
                         // Return back to the main menu
@@ -104,8 +104,8 @@ public final class TextureSelectionScreen extends GuiScreen {
     protected void openTexture(String file) {
         try {
             minecraft.textureManager.loadTexturePack(file);
-            minecraft.fontRenderer = new FontRenderer(minecraft.settings, "/default.png",
-                    minecraft.textureManager);
+            minecraft.fontRenderer =
+                    new FontRenderer(minecraft.settings, Textures.FONT, minecraft.textureManager);
             minecraft.settings.lastUsedTexturePack = file;
             minecraft.settings.save();
             minecraft.setCurrentScreen(parent);

@@ -735,7 +735,7 @@ public final class Minecraft implements Runnable {
             }
         }
 
-        fontRenderer = new FontRenderer(settings, "/default.png", textureManager);
+        fontRenderer = new FontRenderer(settings, Textures.FONT, textureManager);
         monitoringThread = new MonitoringThread(1000); // 1s refresh
         textureManager.initAtlas();
 
