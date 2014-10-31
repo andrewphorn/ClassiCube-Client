@@ -16,8 +16,8 @@ import com.mojang.util.LogUtil;
 public final class TextureSelectionScreen extends GuiScreen {
 
     private static final String TITLE = "Texture Packs";
-    private static final int BUTTON_LOAD_FILE = 6, BUTTON_CANCEL = 7, BUTTON_DEFAULT = 8,
-            BUTTON_PREVIOUS = 9, BUTTON_NEXT = 10;
+    private static final int BUTTON_LOAD_FILE = 5, BUTTON_CANCEL = 6, BUTTON_DEFAULT = 7,
+            BUTTON_PREVIOUS = 8, BUTTON_NEXT = 9;
     private static final int MAX_PACKS_TO_SHOW = 5;
     private static int PAGE = 0;
     private static final String ACTIVE_PACK_INDICATOR = "*";
@@ -76,8 +76,7 @@ public final class TextureSelectionScreen extends GuiScreen {
                     }
                     break;
                 case BUTTON_NEXT:
-                    int packCount = Math.min(texturePacks.size(), MAX_PACKS_TO_SHOW + (PAGE * 5));
-                    if (PAGE <= packCount / 5) {
+                    if (PAGE + 5 < texturePacks.size()) {
                         PAGE = PAGE + 5;
                     }
                     break;
@@ -88,6 +87,7 @@ public final class TextureSelectionScreen extends GuiScreen {
     @Override
     public void onOpen() {
         // Index available texture packs
+        PAGE = 0;
         texturePacks = indexTexturePacks();
         int packCount = Math.min(texturePacks.size(), MAX_PACKS_TO_SHOW);
         for (int i = 0; i < packCount; i++) {
@@ -100,7 +100,9 @@ public final class TextureSelectionScreen extends GuiScreen {
         buttons.add(new Button(BUTTON_DEFAULT, width / 2 - 100, height / 6 + 154, "Default Texture"));
         int pwidth = fontRenderer.getWidth("Previous");
         buttons.add(new Button(BUTTON_PREVIOUS, width / 2 - (112 + pwidth), height / 6 + 48, pwidth + 6, "Previous"));
+        buttons.get(BUTTON_PREVIOUS).visible = PAGE != 0;
         buttons.add(new Button(BUTTON_NEXT, width / 2 + 106, height / 6 + 48, pwidth + 6, "Next"));
+        buttons.get(BUTTON_NEXT).visible = texturePacks.size() > PAGE + 5;
     }
 
     protected void openTexture(String file) {
@@ -161,6 +163,8 @@ public final class TextureSelectionScreen extends GuiScreen {
         for (int i = 0; i < packCount; i++) {
             buttons.get(i).text = texturePacks.get(i + PAGE).name;
         }
+        buttons.get(BUTTON_PREVIOUS).visible = PAGE != 0;
+        buttons.get(BUTTON_NEXT).visible = texturePacks.size() > PAGE + 5;
     }
 
     // Index available texture packs under "texturepacks" folder.
