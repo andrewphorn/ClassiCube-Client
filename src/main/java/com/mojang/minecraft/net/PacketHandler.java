@@ -478,21 +478,15 @@ public final class PacketHandler {
             }
 
             if (sideBlock > 0 && sideBlock < Block.blocks.length) {
-                int ID = Block.blocks[sideBlock].textureId;
-                minecraft.textureManager.customSideBlock = minecraft.textureManager.textureAtlas.get(ID);
+                minecraft.textureManager.setSideBlock(sideBlock);
             } else {
-                minecraft.textureManager.customSideBlock = null;
+                minecraft.textureManager.resetSideBlock();
             }
             if (edgeBlock > 0 && edgeBlock < Block.blocks.length) {
-                Block block = Block.blocks[edgeBlock];
-                int ID = block.getTextureId(TextureSide.Top);
-                minecraft.textureManager.customEdgeBlock = minecraft.textureManager.textureAtlas.get(ID);
+                minecraft.textureManager.setEdgeBlock(edgeBlock);
             } else {
-                minecraft.textureManager.customEdgeBlock = null;
+                minecraft.textureManager.resetEdgeBlock();
             }
-
-            minecraft.textureManager.forceTextureReload("customEdge");
-            minecraft.textureManager.forceTextureReload("customSide");
 
             if (minecraft.level != null) {
                 minecraft.levelRenderer.refreshEnvironment();

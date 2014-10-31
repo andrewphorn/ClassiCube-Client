@@ -52,12 +52,14 @@ public final class TextureSelectionScreen extends GuiScreen {
                         minecraft.settings.save();
                         
                         // Reset the texture pack
-                        minecraft.textureManager.resetAllMods();
+                        minecraft.textureManager.resetCustomTextures();
                         minecraft.textureManager.load(Textures.TERRAIN);
                         minecraft.textureManager.initAtlas();
                         minecraft.fontRenderer =
                                 new FontRenderer(minecraft.settings, Textures.FONT, minecraft.textureManager);
                         minecraft.textureManager.registerAnimations();
+                        minecraft.textureManager.setEdgeBlock(minecraft.textureManager.getEdgeBlock());
+                        minecraft.textureManager.setSideBlock(minecraft.textureManager.getSideBlock());
                         
                         // Return back to the main menu
                         minecraft.setCurrentScreen(parent);

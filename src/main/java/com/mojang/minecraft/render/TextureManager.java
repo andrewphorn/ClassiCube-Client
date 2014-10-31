@@ -8,6 +8,7 @@ import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.render.texture.TextureFireFX;
 import com.mojang.minecraft.render.texture.TextureLavaFX;
 import com.mojang.minecraft.render.texture.TextureWaterFX;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.LogUtil;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,17 +36,27 @@ import org.lwjgl.opengl.GLContext;
 
 public class TextureManager {
 
-    public boolean Applet;
+    public boolean applet;
     private final HashMap<String, Integer> textures = new HashMap<>();
     public HashMap<Integer, BufferedImage> textureImages = new HashMap<>();
     public IntBuffer idBuffer = BufferUtils.createIntBuffer(1);
     public ByteBuffer textureBuffer = BufferUtils.createByteBuffer(262144);
     public List<TextureFX> animations = new ArrayList<>();
     public GameSettings settings;
-    public List<BufferedImage> textureAtlas = new ArrayList<>();
-    public BufferedImage currentTerrainPng = null;
+
+    // Stores block IDs of side/edge blocks. "-1" means "use default".
+    private int sideBlockId = -1;
+    private int edgeBlockId = -1;
+
+    // If a corresponding *BlockId field is set to non-default value, these fields will
+    // store a bitmap from the texture atlas corresponding to that block's texture.
+    // These fields need to be updated (by calling setSideBlock/setEdgeBlock) when
+    // texture pack is changed.
     public BufferedImage customSideBlock = null;
     public BufferedImage customEdgeBlock = null;
+
+    public List<BufferedImage> textureAtlas = new ArrayList<>();
+    public BufferedImage currentTerrainPng = null;
     public BufferedImage customDirtPng = null;
     public BufferedImage customRainPng = null;
     public BufferedImage customGUI = null;
@@ -68,7 +79,7 @@ public class TextureManager {
     public int previousMipmapMode;
 
     public TextureManager(GameSettings settings, boolean Applet) {
-        this.Applet = Applet;
+        this.applet = Applet;
         this.settings = settings;
 
         minecraftFolder = Minecraft.mcDir;
@@ -247,8 +258,7 @@ public class TextureManager {
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         }
 
-        // GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
-        // GL11.GL_MODULATE);
+        // GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
         int[] pixels = new int[width * height];
         byte[] color = new byte[width * height << 2];
 
@@ -463,22 +473,25 @@ public class TextureManager {
         if (file.startsWith("/dirt") && textures.containsKey("customDirt")) {
             return textures.get("customDirt");
         }
-        if (file.startsWith("/rock") && textures.containsKey("customSide")) {
-            return textures.get("customSide");
+
+        if (Textures.MAP_SIDE.equals(file) && customSideBlock != null) {
+            if (!textures.containsKey("customSide")) {
+                int id = load(customSideBlock);
+                textures.put("customSide", id);
+                return id;
+            } else {
+                return textures.get("customSide");
+            }
         }
-        if (file.startsWith("/rock") && !textures.containsKey("customSide") && customSideBlock != null) {
-            int id = load(customSideBlock);
-            textures.put("customSide", id);
-            return id;
-        }
-        if (file.startsWith("/water") && textures.containsKey("customEdge")) {
-            return textures.get("customEdge");
-        }
-        if (file.startsWith("/water") && !textures.containsKey("customEdge")
-                && customEdgeBlock != null) {
-            int id = load(customEdgeBlock);
-            textures.put("customEdge", id);
-            return id;
+
+        if (Textures.MAP_EDGE.equals(file) && customEdgeBlock != null) {
+            if (!textures.containsKey("customEdge")) {
+                int id = load(customEdgeBlock);
+                textures.put("customEdge", id);
+                return id;
+            } else {
+                return textures.get("customEdge");
+            }
         }
 
         if (textures.get(file) != null) {
@@ -536,7 +549,7 @@ public class TextureManager {
 
     public void loadTexturePack(final String file) throws IOException {
         if (file.endsWith(".zip")) {
-            resetAllMods();
+            resetCustomTextures();
             try (ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/" + file))) {
                 currentTerrainPng = loadImageFromZip(zip, "terrain.png");
                 customRainPng = loadImageFromZip(zip, "rain.png");
@@ -565,6 +578,10 @@ public class TextureManager {
             settings.minecraft.player.bindTexture(this);
         }
         animations.clear();
+
+        // Force to reload custom side/edge textures from the atlas, while keeping block IDs same.
+        setSideBlock(sideBlockId);
+        setEdgeBlock(edgeBlockId);
     }
 
     public void registerAnimations() {
@@ -589,7 +606,11 @@ public class TextureManager {
         }
     }
 
-    public void resetAllMods() {
+    // Resets all custom textures to their defaults.
+    // Frees all previosly-loaded textures (including the font).
+    // Does *not* affect block types for map edges/sides.
+    // Use resetSideBlock/resetEdgeBlock for that.
+    public void resetCustomTextures() {
         forceTextureReload();
 
         currentTerrainPng = null;
@@ -612,5 +633,47 @@ public class TextureManager {
         customSkeleton = null;
         customSpider = null;
         customZombie = null;
+    }
+
+    public int getSideBlock() {
+        return sideBlockId;
+    }
+
+    public void setSideBlock(int blockId) {
+        sideBlockId = blockId;
+        if (blockId < 0 || blockId > Block.blocks.length) {
+            resetSideBlock();
+        } else {
+            int texId = Block.blocks[blockId].textureId;
+            forceTextureReload("customSide");
+            customSideBlock = textureAtlas.get(texId);
+        }
+    }
+
+    public void resetSideBlock() {
+        sideBlockId = -1;
+        customSideBlock = null;
+        forceTextureReload("customSide");
+    }
+
+    public int getEdgeBlock() {
+        return edgeBlockId;
+    }
+
+    public void setEdgeBlock(int blockId) {
+        edgeBlockId = blockId;
+        if (blockId < 0 || blockId > Block.blocks.length) {
+            resetEdgeBlock();
+        } else {
+            int texId = Block.blocks[blockId].textureId;
+            forceTextureReload("customEdge");
+            customEdgeBlock = textureAtlas.get(texId);
+        }
+    }
+
+    public void resetEdgeBlock() {
+        edgeBlockId = -1;
+        customEdgeBlock = null;
+        forceTextureReload("customEdge");
     }
 }

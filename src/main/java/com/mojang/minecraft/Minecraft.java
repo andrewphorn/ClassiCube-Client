@@ -308,7 +308,7 @@ public final class Minecraft implements Runnable {
      * Creates a new Minecraft instance.
      *
      * @param canvas Canvas to use for drawing.
-     * @param applet Applet of this instance
+     * @param applet applet of this instance
      * @param width Width of the window
      * @param height Height of the window
      * @param fullscreen True if game should be in fullscreen
