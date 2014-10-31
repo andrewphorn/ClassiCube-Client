@@ -33,7 +33,7 @@ public final class TextureSelectionScreen extends GuiScreen {
 
     @Override
     protected final void onButtonClick(Button button) {
-        if (!frozen && button.active) {
+        if (!frozen && button.active && button.visible) {
             switch (button.id) {
                 default:
                     this.openTexture(texturePacks.get(button.id + page).location);
@@ -71,10 +71,10 @@ public final class TextureSelectionScreen extends GuiScreen {
                     }
                     break;
                 case BUTTON_PREVIOUS:
-                    setOffset(page-PACKS_PER_PAGE);
+                    setOffset(page - PACKS_PER_PAGE);
                     break;
                 case BUTTON_NEXT:
-                    setOffset(page+PACKS_PER_PAGE);
+                    setOffset(page + PACKS_PER_PAGE);
                     break;
             }
         }
@@ -137,7 +137,7 @@ public final class TextureSelectionScreen extends GuiScreen {
                     width / 2 - 100, height / 6 + 120 + 12, 16777215);
         } else {
             String morePacksText = String.format("%s-%s out of %s",
-                    1 + page, 5 + page, texturePacks.size());
+                    1 + page, Math.min(5 + page, texturePacks.size()), texturePacks.size());
             drawCenteredString(fontRenderer, morePacksText, width / 2, height / 6 + 120, 16777215);
 
             if (status != null) {
@@ -149,11 +149,10 @@ public final class TextureSelectionScreen extends GuiScreen {
             super.render(mouseX, mouseY);
 
             // Show an indicator (asterisk) for the currently-selected texture pack
-            if (minecraft.settings.lastUsedTexturePack != null) {
-                if (texturePacks != null) {
-                    for (int i = 0; i < Math.min(texturePacks.size(), PACKS_PER_PAGE); ++i) {
-                        if (minecraft.settings.lastUsedTexturePack != null
-                                && minecraft.settings.lastUsedTexturePack.equals(texturePacks.get(i + page).location)) {
+            if (minecraft.settings.lastUsedTexturePack != null && texturePacks != null) {
+                for (int i = 0; i < PACKS_PER_PAGE; ++i) {
+                    if (page + i < texturePacks.size()) {
+                        if (minecraft.settings.lastUsedTexturePack.equals(texturePacks.get(page + i).location)) {
                             drawString(fontRenderer, ACTIVE_PACK_INDICATOR,
                                     width / 2 + 100 - fontRenderer.getWidth(ACTIVE_PACK_INDICATOR) - 2,
                                     height / 6 + i * 24 + 2, 16777215);
@@ -162,6 +161,7 @@ public final class TextureSelectionScreen extends GuiScreen {
                     }
                 }
             } else {
+                // Default texture pack selected.
                 drawString(fontRenderer, ACTIVE_PACK_INDICATOR,
                         width / 2 + 100 - fontRenderer.getWidth(ACTIVE_PACK_INDICATOR) - 2,
                         height / 6 + 154 + 2, 16777215);
