@@ -466,8 +466,7 @@ public class TextureManager {
         if (file.startsWith("/rock") && textures.containsKey("customSide")) {
             return textures.get("customSide");
         }
-        if (file.startsWith("/rock") && !textures.containsKey("customSide")
-                && customSideBlock != null) {
+        if (file.startsWith("/rock") && !textures.containsKey("customSide") && customSideBlock != null) {
             int id = load(customSideBlock);
             textures.put("customSide", id);
             return id;
@@ -486,7 +485,6 @@ public class TextureManager {
             return textures.get(file);
         } else {
             try {
-
                 idBuffer.clear();
                 GL11.glGenTextures(idBuffer);
                 int textureID = idBuffer.get(0);
@@ -575,18 +573,25 @@ public class TextureManager {
         animations.add(new TextureLavaFX());
         animations.add(new TextureFireFX());
     }
-    
-    public void forceTextureReload(){
-        for(int id : textures.values()){
+
+    public void forceTextureReload() {
+        for (int id : textures.values()) {
             GL11.glDeleteTextures(id);
         }
-        LogUtil.logInfo("Freed "+textures.size()+" textures.");
+        LogUtil.logInfo("Reloaded all " + textures.size() + " textures.");
         textures.clear();
+    }
+
+    public void forceTextureReload(String textureName) {
+        if (textures.containsKey(textureName)) {
+            LogUtil.logInfo("Reloaded texture: " + textureName);
+            GL11.glDeleteTextures(textures.remove(textureName));
+        }
     }
 
     public void resetAllMods() {
         forceTextureReload();
-        
+
         currentTerrainPng = null;
         customEdgeBlock = null;
         customSideBlock = null;

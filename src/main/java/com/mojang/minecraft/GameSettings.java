@@ -373,14 +373,14 @@ public final class GameSettings {
                 if (smoothing > SMOOTHING_UNIVERSAL) {
                     smoothing = SMOOTHING_OFF;
                 }
-                minecraft.textureManager.forceTextureReload();
+                minecraft.textureManager.forceTextureReload("customTerrain");
                 break;
             case ANISOTROPIC:
                 anisotropy++;
                 if (anisotropy > TextureManager.getMaxAnisotropySetting()) {
                     anisotropy = ANISOTROPY_OFF;
                 }
-                minecraft.textureManager.forceTextureReload();
+                minecraft.textureManager.forceTextureReload("customTerrain");
                 break;
             case ALLOW_SERVER_TEXTURES:
                 canServerChangeTextures = !canServerChangeTextures;

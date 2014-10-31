@@ -477,19 +477,22 @@ public final class PacketHandler {
                 newLevel.waterLevel = sideLevel;
             }
 
-            if (sideBlock == -1) {
-                minecraft.textureManager.customSideBlock = null;
-            } else if (sideBlock < Block.blocks.length) {
+            if (sideBlock > 0 && sideBlock < Block.blocks.length) {
                 int ID = Block.blocks[sideBlock].textureId;
                 minecraft.textureManager.customSideBlock = minecraft.textureManager.textureAtlas.get(ID);
+            } else {
+                minecraft.textureManager.customSideBlock = null;
             }
-            if (edgeBlock == -1) {
-                minecraft.textureManager.customEdgeBlock = null;
-            } else if (edgeBlock < Block.blocks.length) {
+            if (edgeBlock > 0 && edgeBlock < Block.blocks.length) {
                 Block block = Block.blocks[edgeBlock];
                 int ID = block.getTextureId(TextureSide.Top);
                 minecraft.textureManager.customEdgeBlock = minecraft.textureManager.textureAtlas.get(ID);
+            } else {
+                minecraft.textureManager.customEdgeBlock = null;
             }
+
+            minecraft.textureManager.forceTextureReload("customEdge");
+            minecraft.textureManager.forceTextureReload("customSide");
 
             if (minecraft.level != null) {
                 minecraft.levelRenderer.refreshEnvironment();

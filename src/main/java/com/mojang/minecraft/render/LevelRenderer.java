@@ -147,6 +147,7 @@ public final class LevelRenderer {
 
     public final void refreshEnvironment() {
         GL11.glNewList(bedrockListId, GL11.GL_COMPILE);
+        
         if (level.customLightColor != null) {
             GL11.glColor4f(level.customLightColor.R, level.customLightColor.G,
                     level.customLightColor.B, 1F);
