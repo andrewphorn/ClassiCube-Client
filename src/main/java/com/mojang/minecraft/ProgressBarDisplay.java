@@ -4,6 +4,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.render.ShapeRenderer;
+import com.mojang.minecraft.render.texture.Textures;
 
 public final class ProgressBarDisplay {
 
@@ -30,7 +31,7 @@ public final class ProgressBarDisplay {
                 int var5 = minecraft.height * 240 / minecraft.height;
                 GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                 ShapeRenderer renderer = ShapeRenderer.instance;
-                int textureId = minecraft.textureManager.load("/dirt.png");
+                int textureId = minecraft.textureManager.load(Textures.LOADING_BACKGROUND);
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
                 float uvScale = 32f;
                 renderer.begin();

@@ -9,6 +9,7 @@ import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.model.AnimalModel;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.texture.Textures;
 
 public class Sheep extends QuadrupedMob {
 
@@ -89,7 +90,7 @@ public class Sheep extends QuadrupedMob {
         var8.head.z -= grazeO + (graze - grazeO) * var3;
         super.renderModel(var1, var2, var3, var4, yawDegrees, pitchDegrees, scale);
         if (hasFur || modelName.equals("sheep.fur")) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load("/mob/sheep_fur.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.load(Textures.SHEEP_FUR));
             GL11.glDisable(GL11.GL_CULL_FACE);
             AnimalModel var11;
             (var11 = (AnimalModel) modelCache.getModel("sheep.fur")).head.yaw = var8.head.yaw;

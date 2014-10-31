@@ -18,6 +18,7 @@ import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.LogUtil;
 import com.mojang.util.MathHelper;
 
@@ -305,14 +306,14 @@ public class Player extends Mob {
 
         // modelName is a block number
         if (isInteger(modelName)) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.TERRAIN));
             return;
         }
 
         int boundTextureId;
         if (newTextureId < 0) {
             if (modelName.equals("humanoid") || defaultTexture) {
-                boundTextureId = textureManager.load("/char.png");
+                boundTextureId = textureManager.load(Textures.HUMANOID_SKIN);
             } else {
                 boundTextureId = textureManager.load("/mob/" + modelName.replace('.', '_') + ".png");
             }
@@ -529,7 +530,7 @@ public class Player extends Mob {
                 yTranslation = -1.8F;
             }
             GL11.glTranslatef(-0.5F, yTranslation, -0.2F);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures.load(Textures.TERRAIN));
             
             block.renderPreview(ShapeRenderer.instance);
             GL11.glPopMatrix();

@@ -8,6 +8,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.render.texture.Textures;
 
 public class GuiScreen extends Screen {
 
@@ -91,7 +92,7 @@ public class GuiScreen extends Screen {
                 continue;
             }
 
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load("/gui/gui.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load(Textures.GUI));
             GL11.glColor4f(1F, 1F, 1F, 1F);
             byte spriteOffset = 1;
             boolean isHovered = (mouseX >= button.x) && (mouseY >= button.y)

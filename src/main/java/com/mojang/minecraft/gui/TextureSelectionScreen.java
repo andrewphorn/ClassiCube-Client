@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.LogUtil;
 
 public final class TextureSelectionScreen extends GuiScreen {
@@ -52,7 +53,7 @@ public final class TextureSelectionScreen extends GuiScreen {
                         
                         // Reset the texture pack
                         minecraft.textureManager.resetAllMods();
-                        minecraft.textureManager.load("/terrain.png");
+                        minecraft.textureManager.load(Textures.TERRAIN);
                         minecraft.textureManager.initAtlas();
                         minecraft.fontRenderer = new FontRenderer(minecraft.settings,
                                 "/default.png", minecraft.textureManager);

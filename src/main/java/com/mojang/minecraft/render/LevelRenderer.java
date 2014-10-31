@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.player.Player;
+import com.mojang.minecraft.render.texture.Textures;
 
 public final class LevelRenderer {
 
@@ -263,7 +264,7 @@ public final class LevelRenderer {
         buffer.flip();
         
         if (buffer.remaining() > 0) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/terrain.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.TERRAIN));
             GL11.glCallLists(buffer);
         }
         
@@ -295,7 +296,7 @@ public final class LevelRenderer {
     
     public void drawClouds(float delta, ShapeRenderer shapeRenderer) {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-                textureManager.load("/clouds.png"));
+                textureManager.load(Textures.CLOUDS));
         GL11.glColor4f(1F, 1F, 1F, 1F);
         float cloudColorRed = (level.cloudColor >> 16 & 255) / 255F;
         float cloudColorBlue = (level.cloudColor >> 8 & 255) / 255F;
