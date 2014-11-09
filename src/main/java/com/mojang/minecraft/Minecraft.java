@@ -131,7 +131,7 @@ public final class Minecraft implements Runnable {
     /**
      * The url of the skin server where the skins are located.
      */
-    public String skinServer = "http://www.classicube.net/static/skins/";
+    public static String skinServer = "http://www.classicube.net/static/skins/";
     /**
      * The current GameMode.
      */
@@ -804,7 +804,7 @@ public final class Minecraft implements Runnable {
         checkGLError("Post startup");
         hud = new HUDScreen(this, width, height);
         if (session != null) {
-            new SkinDownloadThread(player, skinServer + session.username + ".png").start();
+            player.setSkin(session.username);
         }
         if (server != null && session != null) {
             networkManager = new NetworkManager(this);
@@ -1538,6 +1538,7 @@ public final class Minecraft implements Runnable {
                 player = (Player) newLevel.findSubclassOf(Player.class);
                 if (player == null) {
                     player = new Player(newLevel, settings);
+                    newLevel.player = player;
                 }
                 player.settings = settings;
                 player.resetPos();

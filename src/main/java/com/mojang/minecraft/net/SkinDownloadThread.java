@@ -1,5 +1,6 @@
 package com.mojang.minecraft.net;
 
+import com.mojang.minecraft.mob.HumanoidMob;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -7,28 +8,28 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import com.mojang.minecraft.mob.Mob;
-import com.mojang.minecraft.render.TextureManager;
 import com.mojang.util.LogUtil;
 import com.oyasunadev.mcraft.client.util.Constants;
 
 public class SkinDownloadThread extends Thread {
+    
+    private final HumanoidMob targetPlayer;
+    private final String URL, skinName;
+    private final boolean nonHumanoidSkin;
 
-    private final Mob player;
-    private final String URL;
-
-    public SkinDownloadThread(Mob player, String url) {
+    // If "nonHumanoidSkin" is set, forces skin change even if player's modelName is not humanoid.
+    public SkinDownloadThread(HumanoidMob player, String url, String skinName, boolean nonHumanoidSkin) {
         super();
-        this.player = player;
+        this.targetPlayer = player;
         this.URL = url;
+        this.skinName = skinName;
+        this.nonHumanoidSkin = nonHumanoidSkin;
     }
-
+    
     @Override
     public void run() {
         HttpURLConnection connection = null;
         try {
-			player.defaultTexture = false;
-			
             URL skinUrl = new URL(this.URL);
             connection = (HttpURLConnection) skinUrl.openConnection();
             connection.addRequestProperty("User-Agent", Constants.USER_AGENT);
@@ -36,7 +37,7 @@ public class SkinDownloadThread extends Thread {
             connection.setDoInput(true);
             connection.setDoOutput(false);
             connection.connect();
-
+            
             int responseCode = connection.getResponseCode(); // may throw IOException
             if (responseCode == HttpURLConnection.HTTP_NOT_FOUND
                     || responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
@@ -44,20 +45,15 @@ public class SkinDownloadThread extends Thread {
                 // Minecraft.net returns 403 for missing skins, for some reason. Skip those too.
                 return;
             }
-
+            
             BufferedImage image = ImageIO.read(connection.getInputStream());
-            if (image.getHeight() == image.getWidth()) {
-                player.newTexture = image
-                        .getSubimage(0, 0, image.getWidth(), image.getHeight() / 2);
-            } else {
-                player.newTexture = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
+            if (!nonHumanoidSkin && image.getHeight() == image.getWidth()) {
+                // TODO: 1.8 skins
+                image = image.getSubimage(0, 0, image.getWidth(), image.getHeight() / 2);
             }
-
-            if (player.modelName.equalsIgnoreCase("printer")) {
-                if (image.getWidth() < 128 || image.getWidth() < 128)
-                    player.newTexture = null;
-            }
-
+            
+            targetPlayer.setSkinImage(skinName, image);
+            
         } catch (IOException ex) {
             // Log connection errors
             if (connection != null) {
@@ -84,15 +80,13 @@ public class SkinDownloadThread extends Thread {
                     "Network error while downloading skin from \"%s\": \"%s\"",
                     this.URL, ex);
             LogUtil.logWarning(errorMsg);
-			player.defaultTexture = true;
         } catch (Exception ex) {
             // Log unexpected errors
             String errorMsg = String.format(
                     "Unexpected error while downloading skin from \"%s\": \"%s\"",
                     this.URL, ex);
             LogUtil.logWarning(errorMsg);
-			player.defaultTexture = true;
-
+            
         } finally {
             // Clean up after ourselves
             if (connection != null) {

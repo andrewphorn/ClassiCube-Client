@@ -19,8 +19,10 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipEntry;
 import javax.imageio.ImageIO;
@@ -328,6 +330,10 @@ public class TextureManager {
         previousMipmapMode = settings.smoothing;
     }
 
+    public int loadMob(String modelName){
+        return load("/mob/" + modelName.replace('.', '_') + ".png");
+    }
+    
     public int load(String file) {
         if (this.currentTerrainPng == null && animations.isEmpty()) {
             registerAnimations();
@@ -603,6 +609,22 @@ public class TextureManager {
         if (textures.containsKey(textureName)) {
             LogUtil.logInfo("Reloaded texture: " + textureName);
             GL11.glDeleteTextures(textures.remove(textureName));
+        }
+    }
+
+    public void unloadTexture(int textureId) {
+        // For logging purposes, find the names of all textures being unloaded.
+        boolean found = false;
+        for (Entry<String, Integer> entry : textures.entrySet()) {
+            if (entry.getValue().equals(textureId)) {
+                LogUtil.logInfo("Unloaded texture: " + entry.getKey());
+                found = true;
+            }
+        }
+        if (found) {
+            // If any were found, remove them.
+            while(textures.values().remove(textureId)){}
+            GL11.glDeleteTextures(textureId);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.mojang.minecraft.mob;
 
+import com.mojang.minecraft.Minecraft;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.minecraft.level.Level;
@@ -9,19 +10,20 @@ import com.mojang.minecraft.level.tile.FlowerBlock;
 import com.mojang.minecraft.model.AnimalModel;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
+import com.mojang.minecraft.net.SkinDownloadThread;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.render.texture.Textures;
+import java.awt.image.BufferedImage;
 
 public class HumanoidMob extends Mob {
 
-    public static final long serialVersionUID = 0L;
-    public boolean helmet = Math.random() < 0.20000000298023224D;
-    public boolean armor = Math.random() < 0.20000000298023224D;
+    public boolean helmet = Math.random() < 0.2;
+    public boolean armor = Math.random() < 0.2;
 
     public HumanoidMob(Level level, float posX, float posY, float posZ) {
         super(level);
-        modelName = "humanoid";
+        modelName = Model.HUMANOID;
         this.setPos(posX, posY, posZ);
     }
 
@@ -58,7 +60,7 @@ public class HumanoidMob extends Mob {
             } catch (Exception e) {
                 modelName = "humanoid";
             }
-            
+
         } else {
             super.renderModel(textureManager, var2, var3, var4, var5, var6, scale);
             Model model = modelCache.getModel(modelName);
@@ -135,5 +137,119 @@ public class HumanoidMob extends Mob {
 
         model.head.y = headY;
         model.head.z = headZ;
+    }
+
+    protected String modelName;
+    private String skinName;
+    private BufferedImage skinBitmap;
+    private volatile BufferedImage newSkinBitmap;
+    private volatile int textureId;
+
+    // Gets the name of the current skin. Can be 'null' (meaning 'use default').
+    public String getSkinName() {
+        return skinName;
+    }
+
+    // Sets model name. newName must not be null. Removes any non-standard skin.
+    // For humanoid skins, setSkin() should be called with the player's name afterwards.
+    public synchronized void setModel(String newName) {
+        if (null == newName) {
+            throw new IllegalArgumentException("newName cannot be null");
+        }
+        resetSkin();
+        modelName = newName;
+    }
+
+    // Replaces ANY skin with a default texture.
+    public synchronized void resetSkin() {
+        skinName = null;
+        newSkinBitmap = null;
+    }
+
+    // Causes current skin to be re-downloaded (if any is set).
+    public void reloadSkin() {
+        setSkin(skinName);
+    }
+
+    // Immediately unloads current skin texture. Should be called from main thread only.
+    public synchronized void unloadSkin(TextureManager textureManager) {
+        if (skinBitmap != null) {
+            // Only unload texture if not default
+            textureManager.unloadTexture(textureId);
+        }
+    }
+
+    // Sets current skin image IF given skinName matches current skinName.
+    // Can be called from any thread -- used as a callback for SkinDownloadThread.
+    // Given image will be loaded next frame, in bindTexture().
+    public synchronized void setSkinImage(String skinName, BufferedImage image) {
+        if (this.skinName.equals(skinName)) {
+            newSkinBitmap = image;
+        }
+    }
+
+    public synchronized void setSkin(String skinName) {
+        if (skinName == null || skinName.length() == 0) {
+            // Blank values of "skinName" reset skin to default.
+            this.newSkinBitmap = null;
+            this.skinName = null;
+            return;
+        }
+        if (isInteger(modelName)) {
+            // Skins not supported for block models
+            return;
+        }
+        this.skinName = skinName;
+
+        String lowercaseUrl = skinName.toLowerCase();
+        boolean isFullUrl = (lowercaseUrl.startsWith("http://") || lowercaseUrl.startsWith("https://"))
+                && lowercaseUrl.endsWith(".png");
+        boolean isHumanoid = Model.HUMANOID.equals(modelName);
+
+        String downloadUrl;
+        if (isFullUrl) {
+            // Full URL was given, download from there.
+            downloadUrl = skinName;
+        } else {
+            // Only the player name was given. Download from skin server.
+            downloadUrl = Minecraft.skinServer + skinName + ".png";
+        }
+
+        // Non-humanoid skins are only downloaded if full URL was given.
+        // (See "Interaction with ExtPlayerList" in CPE ChangeModel spec)
+        if (isHumanoid || isFullUrl) {
+            new SkinDownloadThread(this, downloadUrl, skinName, !isHumanoid).start();
+        }
+    }
+
+    @Override
+    public void bindTexture(TextureManager textureManager) {
+        // If skin changed, or if no skin texture is yet loaded...
+        if (skinBitmap != newSkinBitmap || textureId < 0) {
+            synchronized (this) {
+                if (skinBitmap != newSkinBitmap || textureId < 0) {
+                    if (skinBitmap != null) {
+                        // Unload the old texture
+                        textureManager.unloadTexture(textureId);
+                    }
+                    if (newSkinBitmap == null) {
+                        // Load default skin
+                        if (isInteger(modelName)) {
+                            textureId = textureManager.load(Textures.TERRAIN);
+                        } else if (Model.HUMANOID.equals(modelName)) {
+                            textureId = textureManager.load(Textures.HUMANOID_SKIN);
+                        } else {
+                            textureId = textureManager.loadMob(modelName);
+                        }
+                    } else {
+                        // Load custom skin
+                        hasHair = Model.HUMANOID.equals(modelName) && checkForHat(newSkinBitmap);
+                        textureId = textureManager.load(newSkinBitmap);
+                    }
+                    skinBitmap = newSkinBitmap;
+                }
+            }
+        }
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
     }
 }

@@ -17,7 +17,6 @@ import com.mojang.util.MathHelper;
 
 public class Mob extends Entity {
 
-    public static final long serialVersionUID = 0L;
     public static final int ATTACK_DURATION = 5;
     public static final int TOTAL_AIR_SUPPLY = 300;
     public static ModelManager modelCache;
@@ -29,7 +28,6 @@ public class Mob extends Entity {
     public boolean hasHair = true;
     public boolean allowAlpha = true;
     public float rotOffs = 0F;
-    public String modelName = null;
     public float renderOffset = 0F;
     public int health = 20;
     public int lastHealth;
@@ -50,12 +48,12 @@ public class Mob extends Entity {
     protected float animStep;
     protected float animStepO;
     protected int tickCount = 0;
-    public String textureName = "/char.png";
-    public boolean defaultTexture = true;
     protected float bobStrength = 1F;
     protected int deathScore = 0;
     protected boolean dead = false;
-    public transient BufferedImage newTexture = null;
+    
+    protected String modelName;
+    protected String textureName;
 
     public Mob(Level level) {
         super(level);
@@ -71,7 +69,6 @@ public class Mob extends Entity {
         if (ai != null) {
             ai.tick(level, this);
         }
-
     }
 
     protected void bindTexture(TextureManager textureManager) {
@@ -79,6 +76,7 @@ public class Mob extends Entity {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
     }
 
+    // SURVIVAL
     @Override
     protected void causeFallDamage(float height) {
         if (!level.creativeMode) {
@@ -86,10 +84,10 @@ public class Mob extends Entity {
             if (fallHeight > 0) {
                 hurt(null, fallHeight);
             }
-
         }
     }
 
+    // SURVIVAL
     public void die(Entity killedBy) {
         if (!level.creativeMode) {
             if (deathScore > 0 && killedBy != null) {
@@ -100,6 +98,7 @@ public class Mob extends Entity {
         }
     }
 
+    // SURVIVAL
     public void heal(int healBy) {
         if (health > 0) {
             health += healBy;
@@ -111,6 +110,7 @@ public class Mob extends Entity {
         }
     }
 
+    // SURVIVAL
     @Override
     public void hurt(Entity entity, int amount) {
         if (!level.creativeMode) {
@@ -164,6 +164,7 @@ public class Mob extends Entity {
         return true;
     }
 
+    // SURVIVAL
     // TODO First two variable never used
     public void knockback(Entity entity, int var2, float var3, float var4) {
         float var5 = MathHelper.sqrt(var3 * var3 + var4 * var4);
@@ -566,9 +567,13 @@ public class Mob extends Entity {
     protected static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
+            return true;
         } catch (NumberFormatException e) {
             return false;
         }
-        return true;
+    }
+
+    public String getModelName() {
+        return modelName;
     }
 }
