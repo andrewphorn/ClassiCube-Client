@@ -571,6 +571,7 @@ public class Mob extends Entity {
         }
     }
 
+    // Returns current model name. Will not be null.
     public String getModelName() {
         return modelName;
     }
