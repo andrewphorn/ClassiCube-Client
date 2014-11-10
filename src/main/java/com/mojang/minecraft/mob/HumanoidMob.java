@@ -19,6 +19,11 @@ import java.awt.image.BufferedImage;
 
 public class HumanoidMob extends Mob {
 
+    private String skinName;
+    private BufferedImage skinBitmap;
+    private volatile BufferedImage newSkinBitmap;
+    private volatile int textureId = -1;
+
     protected HumanoidMob(Level level, String modelName, float posX, float posY, float posZ) {
         super(level, modelName);
         this.setPos(posX, posY, posZ);
@@ -27,25 +32,27 @@ public class HumanoidMob extends Mob {
     @Override
     public void renderModel(TextureManager textures, float var2, float var3, float var4,
             float yawDegrees, float pitchDegrees, float scale) {
-
         // Render block model
         if (isInteger(modelName)) {
+            // Special handling for block models
             renderBlock(textures);
-            return;
-        }
+        } else if ("sheep".equals(modelName)) {
+            // Special handling for sheep models (because of the fur)
+            renderSheep(textures, var2, var3, var4, yawDegrees, pitchDegrees, scale);
+        } else {
+            // Regular rendering for the rest
+            Model model = modelCache.getModel(modelName);
+            model.render(var2, var4, tickCount + var3, yawDegrees, pitchDegrees, scale);
 
-        // Render the rest of the model
-        Model model = modelCache.getModel(modelName);
-        model.render(var2, var4, tickCount + var3, yawDegrees, pitchDegrees, scale);
-
-        // If model is humanoid, render its outer layer ("hair")
-        if (hasHair && model instanceof HumanoidModel) {
-            GL11.glDisable(GL11.GL_CULL_FACE);
-            HumanoidModel modelHeadwear = (HumanoidModel) model;
-            modelHeadwear.headwear.yaw = modelHeadwear.head.yaw;
-            modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
-            modelHeadwear.headwear.render(scale);
-            GL11.glEnable(GL11.GL_CULL_FACE);
+            // If model is humanoid, render its outer layer ("hair")
+            if (hasHair && model instanceof HumanoidModel) {
+                GL11.glDisable(GL11.GL_CULL_FACE);
+                HumanoidModel modelHeadwear = (HumanoidModel) model;
+                modelHeadwear.headwear.yaw = modelHeadwear.head.yaw;
+                modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
+                modelHeadwear.headwear.render(scale);
+                GL11.glEnable(GL11.GL_CULL_FACE);
+            }
         }
     }
 
@@ -88,32 +95,27 @@ public class HumanoidMob extends Mob {
         float headZ = model.head.z;
         super.renderModel(textureManager, var2, var3, var4, yawDegrees, pitchDegrees, scale);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.SHEEP_FUR));
-        AnimalModel sheepModel = (AnimalModel) modelCache.getModel("sheep.fur");
-        sheepModel.head.yaw = model.head.yaw;
-        sheepModel.head.pitch = model.head.pitch;
-        sheepModel.head.y = model.head.y;
-        sheepModel.head.x = model.head.x;
-        sheepModel.body.yaw = model.body.yaw;
-        sheepModel.body.pitch = model.body.pitch;
-        sheepModel.leg1.pitch = model.leg1.pitch;
-        sheepModel.leg2.pitch = model.leg2.pitch;
-        sheepModel.leg3.pitch = model.leg3.pitch;
-        sheepModel.leg4.pitch = model.leg4.pitch;
-        sheepModel.head.render(scale);
-        sheepModel.body.render(scale);
-        sheepModel.leg1.render(scale);
-        sheepModel.leg2.render(scale);
-        sheepModel.leg3.render(scale);
-        sheepModel.leg4.render(scale);
+        AnimalModel furModel = (AnimalModel) modelCache.getModel("sheep.fur");
+        furModel.head.yaw = model.head.yaw;
+        furModel.head.pitch = model.head.pitch;
+        furModel.head.y = model.head.y;
+        furModel.head.x = model.head.x;
+        furModel.body.yaw = model.body.yaw;
+        furModel.body.pitch = model.body.pitch;
+        furModel.leg1.pitch = model.leg1.pitch;
+        furModel.leg2.pitch = model.leg2.pitch;
+        furModel.leg3.pitch = model.leg3.pitch;
+        furModel.leg4.pitch = model.leg4.pitch;
+        furModel.head.render(scale);
+        furModel.body.render(scale);
+        furModel.leg1.render(scale);
+        furModel.leg2.render(scale);
+        furModel.leg3.render(scale);
+        furModel.leg4.render(scale);
 
         model.head.y = headY;
         model.head.z = headZ;
     }
-
-    private String skinName;
-    private BufferedImage skinBitmap;
-    private volatile BufferedImage newSkinBitmap;
-    private volatile int textureId = -1;
 
     // Gets the name of the current skin. Can be 'null' (meaning 'use default').
     public String getSkinName() {
@@ -126,7 +128,7 @@ public class HumanoidMob extends Mob {
         if (null == newName) {
             throw new IllegalArgumentException("newName cannot be null");
         }
-        LogUtil.logInfo("setModel(" + newName + ")");
+        //LogUtil.logInfo("setModel(" + newName + ")");
         resetSkin();
         modelName = newName;
     }
@@ -160,7 +162,7 @@ public class HumanoidMob extends Mob {
     }
 
     public synchronized void setSkin(String skinName) {
-        LogUtil.logInfo("setSkin(" + skinName + ")");
+        //LogUtil.logInfo("setSkin(" + skinName + ")");
         if (skinName == null || skinName.length() == 0) {
             // Blank values of "skinName" reset skin to default.
             this.newSkinBitmap = null;
