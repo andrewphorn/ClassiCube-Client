@@ -988,36 +988,34 @@ public final class Minecraft implements Runnable {
                         vec3D = newPlayerVector.add(var34 * reachDistance, var33 * reachDistance,
                                 var87 * reachDistance);
 
-                        // SURVIVAL: find a nearby entity to pick up
-                        if (isSurvival()) {
-                            renderer.entity = null;
-                            List<Entity> nearbyEntities = level.blockMap.getEntities(
-                                    player,
-                                    player.boundingBox.expand(var34 * reachDistance,
-                                            var33 * reachDistance, var87 * reachDistance)
-                            );
+                        renderer.entity = null;
+                        List<Entity> nearbyEntities = level.blockMap.getEntities(
+                                player,
+                                player.boundingBox.expand(var34 * reachDistance,
+                                        var33 * reachDistance, var87 * reachDistance)
+                        );
 
-                            float var35 = 0F;
-                            for (Entity entity : nearbyEntities) {
-                                if (entity.isPickable()) {
-                                    var74 = 0.1F;
-                                    MovingObjectPosition var78 = entity.boundingBox
-                                            .grow(var74, var74, var74)
-                                            .clip(newPlayerVector, vec3D);
-                                    if (var78 != null) {
-                                        var74 = newPlayerVector.distance(var78.vec);
-                                        if (var74 < var35 || var35 == 0F) {
-                                            renderer.entity = entity;
-                                            var35 = var74;
-                                        }
+                        // Find the closest entity (player)
+                        final float growFactor = 0.1F;
+                        float closestDist = 0F;
+                        for (Entity entity : nearbyEntities) {
+                            if (entity.isPickable()) {
+                                MovingObjectPosition var78 = entity.boundingBox
+                                        .grow(growFactor, growFactor, growFactor)
+                                        .clip(newPlayerVector, vec3D);
+                                if (var78 != null) {
+                                    float distanceToPlayer = newPlayerVector.distance(var78.vec);
+                                    if (distanceToPlayer < closestDist || closestDist == 0F) {
+                                        renderer.entity = entity;
+                                        closestDist = distanceToPlayer;
                                     }
                                 }
                             }
+                        }
 
-                            // SURVIVAL: place picked-up object into hand
-                            if (renderer.entity != null && isSurvival()) {
-                                selected = new MovingObjectPosition(renderer.entity);
-                            }
+                        // SURVIVAL: target entity
+                        if (renderer.entity != null && isSurvival()) {
+                            selected = new MovingObjectPosition(renderer.entity);
                         }
 
                         GL11.glViewport(0, 0, width, height);
