@@ -6,7 +6,6 @@ import com.mojang.util.MathHelper;
 
 final class Sheep$1 extends BasicAI {
 
-    private static final long serialVersionUID = 1L;
     // $FF: synthetic field
     final Sheep sheep;
 

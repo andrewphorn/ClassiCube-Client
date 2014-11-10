@@ -13,8 +13,6 @@ import com.mojang.util.LogUtil;
 
 public class MinecraftApplet extends Applet {
 
-    private static final long serialVersionUID = 1L;
-
     private Canvas canvas;
     private Minecraft minecraft;
 

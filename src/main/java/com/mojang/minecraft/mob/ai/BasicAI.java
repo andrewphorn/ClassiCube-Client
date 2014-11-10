@@ -11,7 +11,6 @@ import com.mojang.minecraft.player.Player;
 
 public class BasicAI extends AI {
 
-    public static final long serialVersionUID = 0L;
     public Random random = new Random();
     public float xxa;
     public float yya;

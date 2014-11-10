@@ -13,7 +13,6 @@ import com.mojang.minecraft.render.texture.Textures;
 
 public class Sheep extends QuadrupedMob {
 
-    public static final long serialVersionUID = 0L;
     public boolean hasFur = true;
     public boolean grazing = false;
     public int grazingTime = 0;

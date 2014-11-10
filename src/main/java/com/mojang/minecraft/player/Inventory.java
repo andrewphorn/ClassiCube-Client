@@ -8,7 +8,6 @@ import com.mojang.minecraft.level.tile.Block;
 
 public class Inventory implements Serializable {
 
-    public static final long serialVersionUID = 0L;
     public static final int POP_TIME_DURATION = 5;
     public int[] slots = new int[9];
     public int[] count = new int[9];

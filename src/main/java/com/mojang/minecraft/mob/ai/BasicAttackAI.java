@@ -7,7 +7,6 @@ import com.mojang.util.Vec3D;
 
 public class BasicAttackAI extends BasicAI {
 
-    public static final long serialVersionUID = 0L;
     public int damage = 6;
 
     public boolean attack(Entity var1) {

@@ -8,7 +8,6 @@ import com.mojang.util.Vec3D;
 
 public class AABB implements Serializable {
 
-    public static final long serialVersionUID = 0L;
     public float maxX;
     public float maxY;
     public float maxZ;

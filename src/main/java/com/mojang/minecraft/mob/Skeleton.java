@@ -5,8 +5,6 @@ import com.mojang.minecraft.level.Level;
 
 public class Skeleton extends Zombie {
 
-    public static final long serialVersionUID = 0L;
-
     public Skeleton(Level level, float posX, float posY, float posZ) {
         super(level, posX, posY, posZ);
         modelName = "skeleton";

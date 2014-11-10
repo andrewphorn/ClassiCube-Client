@@ -5,8 +5,6 @@ import com.mojang.minecraft.mob.ai.BasicAttackAI;
 
 public class Zombie extends HumanoidMob {
 
-    public static final long serialVersionUID = 0L;
-
     public Zombie(Level level, float posX, float posY, float posZ) {
         super(level, posX, posY, posZ);
         modelName = "zombie";

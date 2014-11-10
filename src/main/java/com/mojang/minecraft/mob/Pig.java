@@ -7,8 +7,6 @@ import com.mojang.minecraft.level.tile.Block;
 
 public class Pig extends QuadrupedMob {
 
-    public static final long serialVersionUID = 0L;
-
     public Pig(Level level, float posX, float posY, float posZ) {
         super(level, posX, posY, posZ);
         heightOffset = 1.72F;

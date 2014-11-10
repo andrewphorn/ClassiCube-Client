@@ -18,7 +18,6 @@ import com.mojang.util.Vec3D;
 
 public abstract class Entity implements Serializable {
 
-    public static final long serialVersionUID = 0L;
     public Level level;
     public float xo;
     public float yo;
@@ -363,7 +362,7 @@ public abstract class Entity implements Serializable {
             walkDist = (float) (walkDist + MathHelper.sqrt(var18 * var18 + var17 * var17) * 0.6D);
         }
         int var39 = (int) Math.floor(x);
-        int var30 = (int) Math.floor(y - 0.20000000298023224D - heightOffset);
+        int var30 = (int) Math.floor(y - 0.2 - heightOffset);
         int var31 = (int) Math.floor(z);
         int var32 = level.getTile(var39, var30, var31);
         if (makeStepSound && onGround && !noPhysics) {

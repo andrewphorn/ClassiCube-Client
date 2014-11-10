@@ -8,10 +8,7 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.mob.HumanoidMob;
-import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.render.TextureManager;
-import com.mojang.minecraft.render.texture.Textures;
-import com.mojang.util.LogUtil;
 
 public class NetworkPlayer extends HumanoidMob {
 

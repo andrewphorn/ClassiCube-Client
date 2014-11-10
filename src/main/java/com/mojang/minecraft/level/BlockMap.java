@@ -12,7 +12,6 @@ import com.mojang.util.Vec3D;
 
 public class BlockMap implements Serializable {
 
-    public static final long serialVersionUID = 0L;
     public List<Entity>[] entityGrid;
     public List<Entity> all = new ArrayList<>();
     private int width;

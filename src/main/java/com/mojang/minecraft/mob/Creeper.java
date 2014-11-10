@@ -4,8 +4,6 @@ import com.mojang.minecraft.level.Level;
 
 public class Creeper extends Mob {
 
-    public static final long serialVersionUID = 0L;
-
     public Creeper(Level level, float posX, float posY, float posZ) {
         super(level);
         heightOffset = 1.62F;

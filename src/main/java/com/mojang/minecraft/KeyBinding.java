@@ -6,7 +6,6 @@ import java.io.Serializable;
  * Holds information about a keybinding
  */
 public class KeyBinding implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     public String name;
 

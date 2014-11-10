@@ -16,7 +16,7 @@ import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.MathHelper;
 
 public class PrimedTnt extends Entity {
-    public static final long serialVersionUID = 0L;
+
     public int life = 0;
     private float xd;
     private float yd;

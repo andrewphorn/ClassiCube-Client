@@ -23,10 +23,9 @@ import com.oyasunadev.mcraft.client.util.Constants;
 
 // MinecraftCanvas
 public class MinecraftCanvas extends Canvas {
-    private static final long serialVersionUID = 1L;
     private Image image;
     private Image image2;
-    private MinecraftApplet applet;
+    private final MinecraftApplet applet;
 
     public MinecraftCanvas(MinecraftApplet minecraftApplet) {
         applet = minecraftApplet;
