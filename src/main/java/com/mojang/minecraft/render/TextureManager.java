@@ -328,7 +328,7 @@ public class TextureManager {
         previousMipmapMode = settings.smoothing;
     }
 
-    public int load(String file) {
+    public int load(final String file) {
         if (this.currentTerrainPng == null && animations.isEmpty()) {
             registerAnimations();
         }
@@ -429,7 +429,7 @@ public class TextureManager {
         }
 
         if (file.startsWith("/default") && textures.containsKey("customFont")) {
-            return textures.get("customGUI");
+            return textures.get("customFont");
         }
         if (file.startsWith("/default") && !textures.containsKey("customFont")
                 && customFont != null) {
@@ -547,8 +547,7 @@ public class TextureManager {
         }
     }
 
-    public void reloadTexturePack() throws IOException {
-        resetCustomTextures();
+    public void reloadTextures() throws IOException {
         initAtlas();
         if (settings.minecraft.networkManager != null) {
             for (NetworkPlayer p : settings.minecraft.networkManager.getPlayers()) {
@@ -567,7 +566,7 @@ public class TextureManager {
 
     public void loadTexturePack(final String file) throws IOException {
         if (file.endsWith(".zip")) {
-            resetCustomTextures();
+            useDefaultTextures();
             try (ZipFile zip = new ZipFile(new File(minecraftFolder, "texturepacks/" + file))) {
                 currentTerrainPng = loadImageFromZip(zip, "terrain.png");
                 customRainPng = loadImageFromZip(zip, "rain.png");
@@ -588,7 +587,7 @@ public class TextureManager {
                 customClouds = loadImageFromZip(zip, "clouds.png");
             }
         }
-        reloadTexturePack();
+        reloadTextures();
     }
 
     public void registerAnimations() {
@@ -626,7 +625,7 @@ public class TextureManager {
     // Frees all previosly-loaded textures (including the font).
     // Does *not* affect block types for map edges/sides.
     // Use resetSideBlock/resetEdgeBlock for that.
-    public void resetCustomTextures() {
+    public void useDefaultTextures() {
         currentTerrainPng = null;
         customEdgeBlock = null;
         customSideBlock = null;
@@ -668,7 +667,6 @@ public class TextureManager {
         unloadTexture(Textures.MOB_SKELETON);
         unloadTexture(Textures.MOB_SPIDER);
         unloadTexture(Textures.MOB_ZOMBIE);
-        registerAnimations();
     }
 
     public int getSideBlock() {

@@ -10,7 +10,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.LogUtil;
 
 public final class TextureSelectionScreen extends GuiScreen {
@@ -53,7 +52,8 @@ public final class TextureSelectionScreen extends GuiScreen {
                         minecraft.settings.save();
 
                         // Reset the texture pack
-                        minecraft.textureManager.reloadTexturePack();
+                        minecraft.textureManager.useDefaultTextures();
+                        minecraft.textureManager.reloadTextures();
 
                         // Return back to the main menu
                         minecraft.setCurrentScreen(parent);
