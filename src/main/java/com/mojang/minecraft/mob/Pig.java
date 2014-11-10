@@ -4,16 +4,14 @@ import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.render.texture.Textures;
 
 public class Pig extends QuadrupedMob {
 
-    public static final long serialVersionUID = 0L;
-
     public Pig(Level level, float posX, float posY, float posZ) {
-        super(level, posX, posY, posZ);
+        super(level, "pig", posX, posY, posZ);
         heightOffset = 1.72F;
-        modelName = "pig";
-        textureName = "/mob/pig.png";
+        textureName = Textures.MOB_PIG;
     }
 
     @Override

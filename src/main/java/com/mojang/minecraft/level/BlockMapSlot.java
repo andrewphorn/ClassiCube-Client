@@ -5,7 +5,6 @@ import java.io.Serializable;
 
 class BlockMapSlot implements Serializable {
 
-    public static final long serialVersionUID = 0L;
     final BlockMap blockMap;
     private int xSlot;
     private int ySlot;

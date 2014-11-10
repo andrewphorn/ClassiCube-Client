@@ -13,8 +13,6 @@ import com.mojang.util.MathHelper;
 
 // SURVIVAL: arrow
 public class Arrow extends Entity {
-    public static final long serialVersionUID = 0L;
-
     private float xd;
     private float yd;
     private float zd;

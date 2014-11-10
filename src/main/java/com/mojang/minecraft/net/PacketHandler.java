@@ -23,7 +23,9 @@ import com.mojang.minecraft.gui.HUDScreen;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.LevelLoader;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.level.tile.TextureSide;
+import com.mojang.minecraft.level.tile.BlockID;
+import com.mojang.minecraft.mob.HumanoidMob;
+import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.model.ModelManager;
 import com.mojang.minecraft.physics.CustomAABB;
 import com.mojang.minecraft.render.TextureManager;
@@ -255,7 +257,7 @@ public final class PacketHandler {
             byte playerID = (Byte) packetParams[0];
             NetworkPlayer targetPlayer = networkManager.removePlayer(playerID);
             if (playerID >= 0 && targetPlayer != null) {
-                targetPlayer.clear();
+                targetPlayer.unloadSkin(minecraft.textureManager);
                 minecraft.level.removeEntity(targetPlayer);
             } // else: This packet cannot be applied to self, and is ignored if playerId<0
 
@@ -590,29 +592,21 @@ public final class PacketHandler {
         } else if (packetType == PacketType.EXT_ADD_ENTITY) {
             LogUtil.logWarning("Server attempted to use unsupported extension: ExtPlayerList version 1");
             byte playerID = (byte) packetParams[0];
-            String InGameName = (String) packetParams[1];
+            String inGameName = (String) packetParams[1];
             String skinName = (String) packetParams[2];
             if (skinName != null) {
                 if (playerID >= 0) {
-                    NetworkPlayer tmp = networkManager.getPlayer(playerID);
-                    if (tmp != null) {
-                        tmp.defaultTexture = false;
-                        if ("default".equals(skinName)) {
-                            tmp.defaultTexture = true;
-                        }
-                        tmp.SkinName = skinName;
-                        tmp.downloadSkin(tmp.SkinName);
-                        tmp.bindTexture(minecraft.textureManager);
-                        tmp.displayName = InGameName;
-                        tmp.renderHover(minecraft.textureManager);
+                    NetworkPlayer targetPlayer = networkManager.getPlayer(playerID);
+                    if (targetPlayer != null) {
+                        targetPlayer.setSkin(skinName);
+                        targetPlayer.displayName = inGameName;
                     }
-                } else if (playerID == -1) {
-                    minecraft.player.textureName = skinName;
-                    new SkinDownloadThread(minecraft.player, skinName).start();
-                    minecraft.player.bindTexture(minecraft.textureManager);
+                } else {
+                    minecraft.player.setSkin(skinName);
                     //No need to set the display name for yourself
                 }
             }
+
         } else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
             LogUtil.logWarning("Server attempted to use unsupported extension: ExtPlayerList");
             short nameID = (short) packetParams[0];
@@ -648,17 +642,17 @@ public final class PacketHandler {
             } else {
                 if (allowPlacement == 0) {
                     if (minecraft.disallowedPlacementBlocks.add(block)) {
-                        LogUtil.logInfo("Disallowing placement of block: " + blockType);
+                        LogUtil.logInfo("Disallowing placement of block: " + BlockID.findName(blockType));
                     }
                 } else if (minecraft.disallowedPlacementBlocks.remove(block)) {
-                    LogUtil.logInfo("Allowing placement of block: " + blockType);
+                    LogUtil.logInfo("Allowing placement of block: " + BlockID.findName(blockType));
                 }
                 if (allowDeletion == 0) {
                     if (minecraft.disallowedBreakingBlocks.add(block)) {
-                        LogUtil.logInfo("Disallowing deletion of block: " + blockType);
+                        LogUtil.logInfo("Disallowing deletion of block: " + BlockID.findName(blockType));
                     }
                 } else if (minecraft.disallowedBreakingBlocks.remove(block)) {
-                    LogUtil.logInfo("Allowing deletion of block: " + blockType);
+                    LogUtil.logInfo("Allowing deletion of block: " + BlockID.findName(blockType));
                 }
             }
 
@@ -669,27 +663,23 @@ public final class PacketHandler {
             byte playerId = (byte) packetParams[0];
             // Model names are case-insensitive
             String modelName = ((String) packetParams[1]).toLowerCase();
+            HumanoidMob targetPlayer;
+
             if (playerId >= 0) {
                 // Set another player's model
-                NetworkPlayer netPlayer = networkManager.getPlayer(playerId);
-                if (netPlayer != null) {
-                    ModelManager m = new ModelManager();
-                    if (m.getModel(modelName) == null) {
-                        netPlayer.modelName = "humanoid";
-                    } else {
-                        netPlayer.modelName = modelName;
-                    }
-                    netPlayer.bindTexture(minecraft.textureManager);
-                }
-            } else if (playerId == -1) {
+                targetPlayer = networkManager.getPlayer(playerId);
+            } else {
                 // Set own model
-                ModelManager modelManager = new ModelManager();
-                if (modelManager.getModel(modelName) == null) {
-                    minecraft.player.modelName = "humanoid";
+                targetPlayer = minecraft.player;
+            }
+            if (targetPlayer != null && !targetPlayer.getModelName().equals(modelName)) {
+                ModelManager m = new ModelManager();
+                if (m.getModel(modelName) != null) {
+                    targetPlayer.setModel(modelName);
                 } else {
-                    minecraft.player.modelName = modelName;
+                    // Unknown model name given -- reset to humanoid
+                    targetPlayer.setModel(Model.HUMANOID);
                 }
-                minecraft.player.bindTexture(minecraft.textureManager);
             }
 
         } else if (packetType == PacketType.ENV_SET_WEATHER_TYPE) {

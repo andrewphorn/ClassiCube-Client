@@ -8,7 +8,6 @@ import com.mojang.util.MathHelper;
 
 final class Creeper$1 extends BasicAttackAI {
 
-    public static final long serialVersionUID = 0L;
     // $FF: synthetic field
     final Creeper creeper;
 

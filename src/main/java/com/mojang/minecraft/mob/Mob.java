@@ -17,7 +17,6 @@ import com.mojang.util.MathHelper;
 
 public class Mob extends Entity {
 
-    public static final long serialVersionUID = 0L;
     public static final int ATTACK_DURATION = 5;
     public static final int TOTAL_AIR_SUPPLY = 300;
     public static ModelManager modelCache;
@@ -29,7 +28,6 @@ public class Mob extends Entity {
     public boolean hasHair = true;
     public boolean allowAlpha = true;
     public float rotOffs = 0F;
-    public String modelName = null;
     public float renderOffset = 0F;
     public int health = 20;
     public int lastHealth;
@@ -50,15 +48,16 @@ public class Mob extends Entity {
     protected float animStep;
     protected float animStepO;
     protected int tickCount = 0;
-    public String textureName = "/char.png";
-    public boolean defaultTexture = true;
     protected float bobStrength = 1F;
     protected int deathScore = 0;
     protected boolean dead = false;
-    public transient BufferedImage newTexture = null;
 
-    public Mob(Level level) {
+    protected String modelName;
+    protected String textureName;
+
+    protected Mob(Level level, String modelName) {
         super(level);
+        this.modelName = modelName;
         this.setPos(x, y, z);
         timeOffs = (float) Math.random() * 12398F;
         rot = (float) (Math.random() * 3.1415927410125732D * 2D);
@@ -71,7 +70,6 @@ public class Mob extends Entity {
         if (ai != null) {
             ai.tick(level, this);
         }
-
     }
 
     protected void bindTexture(TextureManager textureManager) {
@@ -79,6 +77,7 @@ public class Mob extends Entity {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
     }
 
+    // SURVIVAL
     @Override
     protected void causeFallDamage(float height) {
         if (!level.creativeMode) {
@@ -86,10 +85,10 @@ public class Mob extends Entity {
             if (fallHeight > 0) {
                 hurt(null, fallHeight);
             }
-
         }
     }
 
+    // SURVIVAL
     public void die(Entity killedBy) {
         if (!level.creativeMode) {
             if (deathScore > 0 && killedBy != null) {
@@ -100,6 +99,7 @@ public class Mob extends Entity {
         }
     }
 
+    // SURVIVAL
     public void heal(int healBy) {
         if (health > 0) {
             health += healBy;
@@ -111,6 +111,7 @@ public class Mob extends Entity {
         }
     }
 
+    // SURVIVAL
     @Override
     public void hurt(Entity entity, int amount) {
         if (!level.creativeMode) {
@@ -164,6 +165,7 @@ public class Mob extends Entity {
         return true;
     }
 
+    // SURVIVAL
     // TODO First two variable never used
     public void knockback(Entity entity, int var2, float var3, float var4) {
         float var5 = MathHelper.sqrt(var3 * var3 + var4 * var4);
@@ -177,111 +179,108 @@ public class Mob extends Entity {
         if (yd > 0.4F) {
             yd = 0.4F;
         }
-
     }
 
     @Override
     public void render(TextureManager textureManager, float delta) {
-        if (modelName != null) {
-            float var3 = attackTime - delta;
-            if (var3 < 0F) {
-                var3 = 0F;
-            }
+        float var3 = attackTime - delta;
+        if (var3 < 0F) {
+            var3 = 0F;
+        }
 
-            while (yBodyRotO - yBodyRot < -180F) {
-                yBodyRotO += 360F;
-            }
+        while (yBodyRotO - yBodyRot < -180F) {
+            yBodyRotO += 360F;
+        }
 
-            while (yBodyRotO - yBodyRot >= 180F) {
-                yBodyRotO -= 360F;
-            }
+        while (yBodyRotO - yBodyRot >= 180F) {
+            yBodyRotO -= 360F;
+        }
 
-            while (xRotO - xRot < -180F) {
-                xRotO += 360F;
-            }
+        while (xRotO - xRot < -180F) {
+            xRotO += 360F;
+        }
 
-            while (xRotO - xRot >= 180F) {
-                xRotO -= 360F;
-            }
+        while (xRotO - xRot >= 180F) {
+            xRotO -= 360F;
+        }
 
-            while (yRotO - yRot < -180F) {
-                yRotO += 360F;
-            }
+        while (yRotO - yRot < -180F) {
+            yRotO += 360F;
+        }
 
-            while (yRotO - yRot >= 180F) {
-                yRotO -= 360F;
-            }
+        while (yRotO - yRot >= 180F) {
+            yRotO -= 360F;
+        }
 
-            float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * delta;
-            float var5 = oRun + (run - oRun) * delta;
-            float var6 = yRotO + (yRot - yRotO) * delta;
-            float var7 = xRotO + (xRot - xRotO) * delta;
-            var6 -= var4;
-            GL11.glPushMatrix();
-            float var8 = animStepO + (animStep - animStepO) * delta;
-            ColorCache brightness = getBrightnessColor();
-            GL11.glColor3f(brightness.R, brightness.G, brightness.B);
-            float var9 = 0.0625F;
-            float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5F * var5 * bobStrength - 23F;
-            GL11.glTranslatef(xo + (x - xo) * delta, yo + (y - yo) * delta - 1.62F + renderOffset, zo
-                    + (z - zo) * delta);
-            float var11;
-            if ((var11 = hurtTime - delta) > 0F || health <= 0) {
-                if (var11 < 0F) {
-                    var11 = 0F;
-                } else {
-                    var11 = MathHelper.sin((var11 /= hurtDuration) * var11 * var11 * var11
-                            * (float) Math.PI) * 14F;
-                }
-
-                float var12 = 0F;
-                if (health <= 0) {
-                    var12 = (deathTime + delta) / 20F;
-                    if ((var11 += var12 * var12 * 800F) > 90F) {
-                        var11 = 90F;
-                    }
-                }
-
-                var12 = hurtDir;
-                GL11.glRotatef(180F - var4 + rotOffs, 0F, 1F, 0F);
-                GL11.glScalef(1F, 1F, 1F);
-                GL11.glRotatef(-var12, 0F, 1F, 0F);
-                GL11.glRotatef(-var11, 0F, 0F, 1F);
-                GL11.glRotatef(var12, 0F, 1F, 0F);
-                GL11.glRotatef(-(180F - var4 + rotOffs), 0F, 1F, 0F);
-            }
-
-            GL11.glTranslatef(0F, -var10 * var9, 0F);
-            GL11.glScalef(1F, -1F, 1F);
-            GL11.glRotatef(180F - var4 + rotOffs, 0F, 1F, 0F);
-            if (!allowAlpha) {
-                GL11.glDisable(GL11.GL_ALPHA_TEST);
+        float var4 = yBodyRotO + (yBodyRot - yBodyRotO) * delta;
+        float var5 = oRun + (run - oRun) * delta;
+        float var6 = yRotO + (yRot - yRotO) * delta;
+        float var7 = xRotO + (xRot - xRotO) * delta;
+        var6 -= var4;
+        GL11.glPushMatrix();
+        float var8 = animStepO + (animStep - animStepO) * delta;
+        ColorCache brightness = getBrightnessColor();
+        GL11.glColor3f(brightness.R, brightness.G, brightness.B);
+        float var9 = 0.0625F;
+        float var10 = -Math.abs(MathHelper.cos(var8 * 0.6662F)) * 5F * var5 * bobStrength - 23F;
+        GL11.glTranslatef(xo + (x - xo) * delta, yo + (y - yo) * delta - 1.62F + renderOffset, zo
+                + (z - zo) * delta);
+        float var11;
+        if ((var11 = hurtTime - delta) > 0F || health <= 0) {
+            if (var11 < 0F) {
+                var11 = 0F;
             } else {
-                GL11.glDisable(GL11.GL_CULL_FACE);
+                var11 = MathHelper.sin((var11 /= hurtDuration) * var11 * var11 * var11
+                        * (float) Math.PI) * 14F;
             }
 
-            GL11.glScalef(-1F, 1F, 1F);
-            modelCache.getModel(modelName).attackOffset = var3 / 5F;
+            float var12 = 0F;
+            if (health <= 0) {
+                var12 = (deathTime + delta) / 20F;
+                if ((var11 += var12 * var12 * 800F) > 90F) {
+                    var11 = 90F;
+                }
+            }
+
+            var12 = hurtDir;
+            GL11.glRotatef(180F - var4 + rotOffs, 0F, 1F, 0F);
+            GL11.glScalef(1F, 1F, 1F);
+            GL11.glRotatef(-var12, 0F, 1F, 0F);
+            GL11.glRotatef(-var11, 0F, 0F, 1F);
+            GL11.glRotatef(var12, 0F, 1F, 0F);
+            GL11.glRotatef(-(180F - var4 + rotOffs), 0F, 1F, 0F);
+        }
+
+        GL11.glTranslatef(0F, -var10 * var9, 0F);
+        GL11.glScalef(1F, -1F, 1F);
+        GL11.glRotatef(180F - var4 + rotOffs, 0F, 1F, 0F);
+        if (!allowAlpha) {
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+        } else {
+            GL11.glDisable(GL11.GL_CULL_FACE);
+        }
+
+        GL11.glScalef(-1F, 1F, 1F);
+        modelCache.getModel(modelName).attackOffset = var3 / 5F;
+        bindTexture(textureManager);
+        renderModel(textureManager, var8, delta, var5, var6, var7, var9);
+        if (invulnerableTime > invulnerableDuration - 10) {
+            GL11.glColor4f(1F, 1F, 1F, 0.75F);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             bindTexture(textureManager);
             renderModel(textureManager, var8, delta, var5, var6, var7, var9);
-            if (invulnerableTime > invulnerableDuration - 10) {
-                GL11.glColor4f(1F, 1F, 1F, 0.75F);
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-                bindTexture(textureManager);
-                renderModel(textureManager, var8, delta, var5, var6, var7, var9);
-                GL11.glDisable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            }
-
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-            if (allowAlpha) {
-                GL11.glEnable(GL11.GL_CULL_FACE);
-            }
-
-            GL11.glColor4f(1F, 1F, 1F, 1F);
-            GL11.glPopMatrix();
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }
+
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        if (allowAlpha) {
+            GL11.glEnable(GL11.GL_CULL_FACE);
+        }
+
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GL11.glPopMatrix();
     }
 
     public void renderModel(TextureManager var1, float var2, float var3, float var4,
@@ -566,9 +565,13 @@ public class Mob extends Entity {
     protected static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
+            return true;
         } catch (NumberFormatException e) {
             return false;
         }
-        return true;
+    }
+
+    public String getModelName() {
+        return modelName;
     }
 }

@@ -1,6 +1,7 @@
 package com.mojang.minecraft.model;
 
 public abstract class Model {
+    public static final String HUMANOID = "humanoid";
 
     public float attackOffset;
 

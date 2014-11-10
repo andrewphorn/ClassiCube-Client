@@ -11,14 +11,12 @@ import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.MathHelper;
 
 public class Item extends Entity {
-    public static final long serialVersionUID = 0L;
-
-    private static ItemModel[] models = new ItemModel[256];
+    private static final ItemModel[] models = new ItemModel[256];
     private float xd;
     private float yd;
     private float zd;
     private float rot;
-    private int resource;
+    private final int resource;
     private int tickCount;
     private int age = 0;
 

@@ -13,7 +13,6 @@ import com.mojang.minecraft.render.texture.Textures;
 
 public class Sheep extends QuadrupedMob {
 
-    public static final long serialVersionUID = 0L;
     public boolean hasFur = true;
     public boolean grazing = false;
     public int grazingTime = 0;
@@ -21,11 +20,10 @@ public class Sheep extends QuadrupedMob {
     public float grazeO;
 
     public Sheep(Level level, float posX, float posY, float posZ) {
-        super(level, posX, posY, posZ);
+        super(level, "sheep", posX, posY, posZ);
         setSize(1.4F, 1.72F);
         this.setPos(posX, posY, posZ);
         heightOffset = 1.72F;
-        modelName = "sheep";
         textureName = "/mob/sheep.png";
         ai = new Sheep$1(this);
     }

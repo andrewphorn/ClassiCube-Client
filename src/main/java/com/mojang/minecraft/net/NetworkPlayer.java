@@ -8,26 +8,22 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.mob.HumanoidMob;
+import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.render.TextureManager;
-import com.mojang.minecraft.render.texture.Textures;
 
 public class NetworkPlayer extends HumanoidMob {
 
-    public static final long serialVersionUID = 77479605454997290L;
     public transient List<PositionUpdate> moveQueue = new LinkedList<>();
     public String name;
     public String displayName;
-    public String SkinName = null;
-    private final transient Minecraft minecraft;
+    private final Minecraft minecraft;
     private int xp;
     private int yp;
     private int zp;
-    private transient int newTextureId = -1;
-    private transient TextureManager textures;
 
     public NetworkPlayer(Minecraft minecraft, String displayName, int x, int y, int z,
             float xRot, float yRot) {
-        super(minecraft.level, x, y, z);
+        super(minecraft.level, Model.HUMANOID, x, y, z);
         this.minecraft = minecraft;
         this.displayName = displayName;
         displayName = FontRenderer.stripColor(displayName);
@@ -40,18 +36,14 @@ public class NetworkPlayer extends HumanoidMob {
         this.setPos(x / 32F, y / 32F, z / 32F);
         this.xRot = xRot;
         this.yRot = yRot;
-        armor = helmet = false;
         renderOffset = 0.6875F;
         allowAlpha = false;
-        if (name.equalsIgnoreCase("Jonty800") || name.equalsIgnoreCase("Jonty800+")
+        if (name.equalsIgnoreCase("Jonty800")
+                || name.equalsIgnoreCase("Jonty800+")
                 || name.equalsIgnoreCase("Jonty800@")) {
-            modelName = "sheep";
+            setModel("sheep");
         }
-        if (modelName.equals("humanoid")) {
-            downloadSkin();
-        } else if (isInteger(modelName)) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.textureManager.load(Textures.TERRAIN));
-        }
+        setSkin(name);
     }
 
     @Override
@@ -68,53 +60,6 @@ public class NetworkPlayer extends HumanoidMob {
         onGround = true;
     }
 
-    @Override
-    public void bindTexture(TextureManager textureManager) {
-        textures = textureManager;
-        if (newTexture != null) {
-            hasHair = checkForHat(newTexture);
-
-            //if (modelName.equals("humanoid")) {
-            newTextureId = defaultTexture ? -1 : textureManager.load(newTexture);
-            //}
-            newTexture = null;
-        }
-        if (isInteger(modelName)) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.TERRAIN));
-            return;
-        }
-        if (newTextureId < 0) {
-            if ("humanoid".equals(modelName)) {
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.HUMANOID_SKIN));
-            } else {
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load("/mob/" + modelName.replace('.', '_') + ".png"));
-            }
-        } else {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, newTextureId);
-        }
-    }
-
-    public void clear() {
-        if (newTextureId >= 0 && textures != null) {
-            TextureManager textureManager = textures;
-            textureManager.textureImages.remove(newTextureId);
-            textureManager.idBuffer.clear();
-            textureManager.idBuffer.put(newTextureId);
-            textureManager.idBuffer.flip();
-            GL11.glDeleteTextures(textureManager.idBuffer);
-        }
-
-    }
-
-    public void downloadSkin() {
-        String skinToDownload = (SkinName == null ? name : SkinName);
-        downloadSkin(minecraft.skinServer + skinToDownload + ".png");
-    }
-
-    public void downloadSkin(String URL) {
-        new SkinDownloadThread(this, URL).start();
-    }
-
     public void queue(byte x, byte y, byte z) {
         moveQueue.add(new PositionUpdate((xp + x / 2F) / 32F, (yp + y / 2F) / 32F,
                 (zp + z / 2F) / 32F));
@@ -125,29 +70,29 @@ public class NetworkPlayer extends HumanoidMob {
     }
 
     public void queue(byte x, byte y, byte z, float xRot, float yRot) {
-        float var6 = yRot - this.yRot;
-        float var7 = xRot - this.xRot;
+        float dyRot = yRot - this.yRot;
+        float dxRot = xRot - this.xRot;
 
-        while (var6 >= 180F) {
-            var6 -= 360F;
+        while (dyRot >= 180F) {
+            dyRot -= 360F;
         }
 
-        while (var6 < -180F) {
-            var6 += 360F;
+        while (dyRot < -180F) {
+            dyRot += 360F;
         }
 
-        while (var7 >= 180F) {
-            var7 -= 360F;
+        while (dxRot >= 180F) {
+            dxRot -= 360F;
         }
 
-        while (var7 < -180F) {
-            var7 += 360F;
+        while (dxRot < -180F) {
+            dxRot += 360F;
         }
 
-        var6 = this.yRot + var6 * 0.5F;
-        var7 = this.xRot + var7 * 0.5F;
+        dyRot = this.yRot + dyRot * 0.5F;
+        dxRot = this.xRot + dxRot * 0.5F;
         moveQueue.add(new PositionUpdate((xp + x / 2F) / 32F, (yp + y / 2F) / 32F,
-                (zp + z / 2F) / 32F, var6, var7));
+                (zp + z / 2F) / 32F, dyRot, dxRot));
         xp += x;
         yp += y;
         zp += z;

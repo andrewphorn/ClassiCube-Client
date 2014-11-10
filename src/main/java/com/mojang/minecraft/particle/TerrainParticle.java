@@ -7,8 +7,6 @@ import com.mojang.minecraft.render.ShapeRenderer;
 
 public class TerrainParticle extends Particle {
 
-    private static final long serialVersionUID = 1L;
-
     public TerrainParticle(Level level, float x, float y, float z, float destX, float destY,
                            float destZ, Block block) {
         super(level, x, y, z, destX, destY, destZ);

@@ -5,18 +5,13 @@ import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.render.TextureManager;
 
 public class TakeEntityAnim extends Entity {
-    private static final long serialVersionUID = 1L;
-
     private int time = 0;
 
-    private Entity item;
+    private final Entity item;
 
-    private Entity player;
+    private final Entity player;
 
-    private float xorg;
-
-    private float yorg;
-    private float zorg;
+    private final float xorg, yorg, zorg;
 
     public TakeEntityAnim(Level level, Entity item, Entity player) {
         super(level);

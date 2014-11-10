@@ -4,8 +4,6 @@ import com.mojang.minecraft.mob.ai.BasicAI;
 
 // PlayerAI
 public class PlayerAI extends BasicAI {
-    public static final long serialVersionUID = 0L;
-
     private final Player player;
 
     public PlayerAI(Player player) {

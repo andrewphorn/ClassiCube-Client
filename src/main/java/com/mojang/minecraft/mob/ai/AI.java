@@ -8,7 +8,6 @@ import com.mojang.minecraft.mob.Mob;
 
 public abstract class AI implements Serializable {
 
-    public static final long serialVersionUID = 0L;
     public int defaultLookAngle = 0;
 
     public void beforeRemove() {

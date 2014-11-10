@@ -5,12 +5,12 @@ import com.mojang.minecraft.HackState;
 import com.mojang.minecraft.Minecraft;
 
 public class InputHandlerImpl extends InputHandler {
-    public static final long serialVersionUID = 0L;
+
     private boolean[] keylist = new boolean[10];
     private boolean[] keyStates = new boolean[100];
 
-    private transient GameSettings settings;
-    private Player player;
+    private final GameSettings settings;
+    private final Player player;
 
     public InputHandlerImpl(GameSettings gameSettings, Player player) {
         settings = gameSettings;
