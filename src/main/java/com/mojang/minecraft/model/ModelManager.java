@@ -6,6 +6,7 @@ import com.mojang.minecraft.SessionData;
  * Manages the Models built into the Client.
  */
 public final class ModelManager {
+
     private final HumanoidModel human = new HumanoidModel(0F);
     private final HumanoidModel armoredHuman = new HumanoidModel(1F);
     private final CreeperModel creeper = new CreeperModel();
@@ -36,14 +37,15 @@ public final class ModelManager {
         return modelName.equals("humanoid") ? human
                 : modelName.equals("humanoid.armor") ? armoredHuman
                         : modelName.equals("creeper") ? creeper
-                                : modelName.equals("chicken") ? chicken : modelName
-                                        .equals("skeleton") ? skeleton : modelName
-                                                .equals("printer") ? printer
-                                                        : modelName.equals("croc") ? croc : modelName
-                                                                .equals("zombie") ? zombie : modelName
-                                                                        .equals("pig") ? pig
-                                                                                : modelName.equals("sheep") ? sheep : modelName
-                                                                                        .equals("spider") ? spider : modelName
-                                                                                                .equals("sheep.fur") ? sheepFur : null;
+                                : modelName.equals("chicken") ? chicken
+                                        : modelName.equals("skeleton") ? skeleton
+                                                : modelName.equals("printer") ? printer
+                                                        : modelName.equals("croc") ? croc
+                                                                : modelName.equals("zombie") ? zombie
+                                                                        : modelName.equals("pig") ? pig
+                                                                                : modelName.equals("sheep") ? sheep
+                                                                                        : modelName.equals("spider") ? spider
+                                                                                                : modelName.equals("sheep.fur") ? sheepFur
+                                                                                                        : null;
     }
 }

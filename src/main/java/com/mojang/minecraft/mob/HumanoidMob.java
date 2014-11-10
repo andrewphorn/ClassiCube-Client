@@ -14,10 +14,10 @@ import com.mojang.minecraft.net.SkinDownloadThread;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.render.texture.Textures;
+import com.mojang.util.LogUtil;
 import java.awt.image.BufferedImage;
 
 public class HumanoidMob extends Mob {
-
     public boolean helmet = Math.random() < 0.2;
     public boolean armor = Math.random() < 0.2;
 
@@ -28,10 +28,10 @@ public class HumanoidMob extends Mob {
     }
 
     @Override
-    public void renderModel(TextureManager textureManager, float var2, float var3, float var4, float var5,
-            float var6, float scale) {
+    public void renderModel(TextureManager textureManager, float var2, float var3, float var4,
+            float yawDegrees, float pitchDegrees, float scale) {
         if ("sheep".equals(modelName)) {
-            renderSheep(textureManager, var2, var3, var4, var5, var6, scale);
+            renderSheep(textureManager, var2, var3, var4, yawDegrees, pitchDegrees, scale);
 
         } else if (isInteger(modelName)) {
             // Model name is a block number
@@ -57,12 +57,13 @@ public class HumanoidMob extends Mob {
                 block.renderPreview(ShapeRenderer.instance);
                 GL11.glPopMatrix();
                 GL11.glDisable(GL11.GL_BLEND);
-            } catch (Exception e) {
-                modelName = "humanoid";
+            } catch (Exception ex) {
+                LogUtil.logError("Error rendering block model. Reverting to default.", ex);
+                modelName = Model.HUMANOID;
             }
 
         } else {
-            super.renderModel(textureManager, var2, var3, var4, var5, var6, scale);
+            super.renderModel(textureManager, var2, var3, var4, yawDegrees, pitchDegrees, scale);
             Model model = modelCache.getModel(modelName);
             GL11.glEnable(GL11.GL_ALPHA_TEST);
             if (allowAlpha) {
@@ -143,7 +144,7 @@ public class HumanoidMob extends Mob {
     private String skinName;
     private BufferedImage skinBitmap;
     private volatile BufferedImage newSkinBitmap;
-    private volatile int textureId;
+    private volatile int textureId = -1;
 
     // Gets the name of the current skin. Can be 'null' (meaning 'use default').
     public String getSkinName() {
@@ -156,6 +157,7 @@ public class HumanoidMob extends Mob {
         if (null == newName) {
             throw new IllegalArgumentException("newName cannot be null");
         }
+        LogUtil.logInfo("setModel(" + newName + ")");
         resetSkin();
         modelName = newName;
     }
@@ -183,12 +185,13 @@ public class HumanoidMob extends Mob {
     // Can be called from any thread -- used as a callback for SkinDownloadThread.
     // Given image will be loaded next frame, in bindTexture().
     public synchronized void setSkinImage(String skinName, BufferedImage image) {
-        if (this.skinName.equals(skinName)) {
+        if (this.skinName != null && this.skinName.equals(skinName)) {
             newSkinBitmap = image;
         }
     }
 
     public synchronized void setSkin(String skinName) {
+        LogUtil.logInfo("setSkin(" + skinName + ")");
         if (skinName == null || skinName.length() == 0) {
             // Blank values of "skinName" reset skin to default.
             this.newSkinBitmap = null;
@@ -237,9 +240,9 @@ public class HumanoidMob extends Mob {
                         if (isInteger(modelName)) {
                             textureId = textureManager.load(Textures.TERRAIN);
                         } else if (Model.HUMANOID.equals(modelName)) {
-                            textureId = textureManager.load(Textures.HUMANOID_SKIN);
+                            textureId = textureManager.load(Textures.MOB_HUMANOID);
                         } else {
-                            textureId = textureManager.loadMob(modelName);
+                            textureId = textureManager.load(Textures.forModel(modelName));
                         }
                     } else {
                         // Load custom skin

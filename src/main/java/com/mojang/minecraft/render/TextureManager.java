@@ -95,9 +95,6 @@ public class TextureManager {
 
     public static BufferedImage crop(BufferedImage src, int width, int height, int x, int y)
             throws IOException {
-
-        // LogUtil.logInfo("---" + src.getWidth() + " - " + src.getHeight() +
-        // " - " + x + " - " + y);
         BufferedImage clipping = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);// src.getType());
         Graphics2D area = (Graphics2D) clipping.getGraphics().create();
         area.drawImage(src, 0, 0, clipping.getWidth(), clipping.getHeight(), x, y,
@@ -330,10 +327,6 @@ public class TextureManager {
         previousMipmapMode = settings.smoothing;
     }
 
-    public int loadMob(String modelName){
-        return load("/mob/" + modelName.replace('.', '_') + ".png");
-    }
-    
     public int load(String file) {
         if (this.currentTerrainPng == null && animations.isEmpty()) {
             registerAnimations();
@@ -597,33 +590,26 @@ public class TextureManager {
         animations.add(new TextureFireFX());
     }
 
-    public void forceTextureReload() {
-        for (int id : textures.values()) {
-            GL11.glDeleteTextures(id);
-        }
-        LogUtil.logInfo("Reloaded all " + textures.size() + " textures.");
-        textures.clear();
-    }
-
-    public void forceTextureReload(String textureName) {
+    public void unloadTexture(String textureName) {
         if (textures.containsKey(textureName)) {
-            LogUtil.logInfo("Reloaded texture: " + textureName);
+            LogUtil.logInfo("Unloaded texture: " + textureName);
             GL11.glDeleteTextures(textures.remove(textureName));
         }
     }
 
     public void unloadTexture(int textureId) {
-        // For logging purposes, find the names of all textures being unloaded.
         boolean found = false;
         for (Entry<String, Integer> entry : textures.entrySet()) {
             if (entry.getValue().equals(textureId)) {
+                // For logging purposes, find the names of all textures being unloaded.
                 LogUtil.logInfo("Unloaded texture: " + entry.getKey());
                 found = true;
             }
         }
         if (found) {
             // If any were found, remove them.
-            while(textures.values().remove(textureId)){}
+            while (textures.values().remove(textureId)) {
+            }
             GL11.glDeleteTextures(textureId);
         }
     }
@@ -633,8 +619,6 @@ public class TextureManager {
     // Does *not* affect block types for map edges/sides.
     // Use resetSideBlock/resetEdgeBlock for that.
     public void resetCustomTextures() {
-        forceTextureReload();
-
         currentTerrainPng = null;
         customEdgeBlock = null;
         customSideBlock = null;
@@ -644,6 +628,16 @@ public class TextureManager {
         customIcons = null;
         customFont = null;
         customClouds = null;
+
+        unloadTexture(Textures.TERRAIN);
+        unloadTexture(Textures.MAP_EDGE);
+        unloadTexture(Textures.MAP_SIDE);
+        unloadTexture(Textures.LOADING_BACKGROUND);
+        unloadTexture(Textures.RAIN);
+        unloadTexture(Textures.GUI);
+        unloadTexture(Textures.ICONS);
+        unloadTexture(Textures.FONT);
+        unloadTexture(Textures.CLOUDS);
 
         customChicken = null;
         customCreeper = null;
@@ -655,6 +649,17 @@ public class TextureManager {
         customSkeleton = null;
         customSpider = null;
         customZombie = null;
+
+        unloadTexture(Textures.MOB_CHICKEN);
+        unloadTexture(Textures.MOB_CREEPER);
+        unloadTexture(Textures.MOB_CROC);
+        unloadTexture(Textures.MOB_HUMANOID);
+        unloadTexture(Textures.MOB_PIG);
+        unloadTexture(Textures.MOB_PRINTER);
+        unloadTexture(Textures.MOB_SHEEP);
+        unloadTexture(Textures.MOB_SKELETON);
+        unloadTexture(Textures.MOB_SPIDER);
+        unloadTexture(Textures.MOB_ZOMBIE);
     }
 
     public int getSideBlock() {
@@ -667,7 +672,7 @@ public class TextureManager {
             resetSideBlock();
         } else {
             int texId = Block.blocks[blockId].textureId;
-            forceTextureReload("customSide");
+            unloadTexture("customSide");
             customSideBlock = textureAtlas.get(texId);
         }
     }
@@ -675,7 +680,7 @@ public class TextureManager {
     public void resetSideBlock() {
         sideBlockId = -1;
         customSideBlock = null;
-        forceTextureReload("customSide");
+        unloadTexture("customSide");
     }
 
     public int getEdgeBlock() {
@@ -688,7 +693,7 @@ public class TextureManager {
             resetEdgeBlock();
         } else {
             int texId = Block.blocks[blockId].textureId;
-            forceTextureReload("customEdge");
+            unloadTexture("customEdge");
             customEdgeBlock = textureAtlas.get(texId);
         }
     }
@@ -696,6 +701,6 @@ public class TextureManager {
     public void resetEdgeBlock() {
         edgeBlockId = -1;
         customEdgeBlock = null;
-        forceTextureReload("customEdge");
+        unloadTexture("customEdge");
     }
 }

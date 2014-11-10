@@ -77,15 +77,13 @@ public class SkinDownloadThread extends Thread {
                 }
             }
             String errorMsg = String.format(
-                    "Network error while downloading skin from \"%s\": \"%s\"",
-                    this.URL, ex);
-            LogUtil.logWarning(errorMsg);
+                    "Network error while downloading skin from \"%s\"", this.URL);
+            LogUtil.logWarning(errorMsg,ex);
         } catch (Exception ex) {
             // Log unexpected errors
             String errorMsg = String.format(
-                    "Unexpected error while downloading skin from \"%s\": \"%s\"",
-                    this.URL, ex);
-            LogUtil.logWarning(errorMsg);
+                    "Unexpected error while downloading skin from \"%s\"", this.URL);
+            LogUtil.logWarning(errorMsg, ex);
             
         } finally {
             // Clean up after ourselves

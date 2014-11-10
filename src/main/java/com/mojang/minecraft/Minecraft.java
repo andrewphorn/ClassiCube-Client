@@ -1345,14 +1345,15 @@ public final class Minecraft implements Runnable {
                         if (isRaining || isSnowing) {
                             renderer.drawWeather(delta, shapeRenderer);
                         }
-                        if (!isSinglePlayer && networkManager != null && networkManager.hasPlayers()) {
+                        if (!isSinglePlayer && networkManager != null) {
                             // Render other players' names
-                            if ((settings.showNames == 2 || settings.showNames == 3)
-                                    && this.player.userType >= 100) {
+                            if ((settings.showNames == 2 || settings.showNames == 3) && this.player.userType >= 100) {
+                                // Render all names
                                 for (NetworkPlayer np : networkManager.getPlayers()) {
                                     np.renderHover(textureManager);
                                 }
                             } else if (renderer.entity != null) {
+                                // Render on-hover
                                 renderer.entity.renderHover(textureManager);
                             }
                         }

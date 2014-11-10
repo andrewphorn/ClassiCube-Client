@@ -55,7 +55,6 @@ public class ClassiCubeStandalone {
          */
         public class MCraftApplet extends MinecraftApplet {
 
-            private static final long serialVersionUID = 1L;
             private final Map<String, String> parameters = new HashMap<>();
 
             @Override
@@ -89,7 +88,6 @@ public class ClassiCubeStandalone {
          */
         public class MinecraftCanvas extends Canvas {
 
-            private static final long serialVersionUID = 1L;
             public Image image;
             private Image image2;
 
@@ -238,19 +236,8 @@ public class ClassiCubeStandalone {
             }
         }
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * Minecraft reference.
-         */
         private Minecraft minecraft;
 
-        /**
-         * Default constructor.
-         */
         public MinecraftFrame() {
             setSize(1024, 512);
             setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

@@ -374,24 +374,24 @@ public final class GameSettings {
                 if (smoothing > SMOOTHING_UNIVERSAL) {
                     smoothing = SMOOTHING_OFF;
                 }
-                minecraft.textureManager.forceTextureReload(Textures.TERRAIN);
-                minecraft.textureManager.forceTextureReload(Textures.MAP_EDGE);
-                minecraft.textureManager.forceTextureReload(Textures.MAP_SIDE);
-                minecraft.textureManager.forceTextureReload("customTerrain");
-                minecraft.textureManager.forceTextureReload("customEdge");
-                minecraft.textureManager.forceTextureReload("customSide");
+                minecraft.textureManager.unloadTexture(Textures.TERRAIN);
+                minecraft.textureManager.unloadTexture(Textures.MAP_EDGE);
+                minecraft.textureManager.unloadTexture(Textures.MAP_SIDE);
+                minecraft.textureManager.unloadTexture("customTerrain");
+                minecraft.textureManager.unloadTexture("customEdge");
+                minecraft.textureManager.unloadTexture("customSide");
                 break;
             case ANISOTROPIC:
                 anisotropy++;
                 if (anisotropy > TextureManager.getMaxAnisotropySetting()) {
                     anisotropy = ANISOTROPY_OFF;
                 }
-                minecraft.textureManager.forceTextureReload(Textures.TERRAIN);
-                minecraft.textureManager.forceTextureReload(Textures.MAP_EDGE);
-                minecraft.textureManager.forceTextureReload(Textures.MAP_SIDE);
-                minecraft.textureManager.forceTextureReload("customTerrain");
-                minecraft.textureManager.forceTextureReload("customEdge");
-                minecraft.textureManager.forceTextureReload("customSide");
+                minecraft.textureManager.unloadTexture(Textures.TERRAIN);
+                minecraft.textureManager.unloadTexture(Textures.MAP_EDGE);
+                minecraft.textureManager.unloadTexture(Textures.MAP_SIDE);
+                minecraft.textureManager.unloadTexture("customTerrain");
+                minecraft.textureManager.unloadTexture("customEdge");
+                minecraft.textureManager.unloadTexture("customSide");
                 break;
             case ALLOW_SERVER_TEXTURES:
                 canServerChangeTextures = !canServerChangeTextures;
