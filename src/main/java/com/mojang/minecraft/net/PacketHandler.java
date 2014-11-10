@@ -664,13 +664,16 @@ public final class PacketHandler {
             // Model names are case-insensitive
             String modelName = ((String) packetParams[1]).toLowerCase();
             HumanoidMob targetPlayer;
+            String username;
 
             if (playerId >= 0) {
                 // Set another player's model
                 targetPlayer = networkManager.getPlayer(playerId);
+                username = networkManager.getPlayer(playerId).name;
             } else {
                 // Set own model
                 targetPlayer = minecraft.player;
+                username = minecraft.session.username;
             }
             if (targetPlayer != null && !targetPlayer.getModelName().equals(modelName)) {
                 ModelManager m = new ModelManager();
@@ -679,6 +682,10 @@ public final class PacketHandler {
                 } else {
                     // Unknown model name given -- reset to humanoid
                     targetPlayer.setModel(Model.HUMANOID);
+                }
+
+                if (targetPlayer.getModelName().equals(Model.HUMANOID)) {
+                    targetPlayer.setSkin(username);
                 }
             }
 

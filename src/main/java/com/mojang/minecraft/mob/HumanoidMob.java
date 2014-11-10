@@ -137,6 +137,7 @@ public class HumanoidMob extends Mob {
     public synchronized void resetSkin() {
         skinName = null;
         newSkinBitmap = null;
+        textureId = -1;
     }
 
     // Causes current skin to be re-downloaded (if any is set).
