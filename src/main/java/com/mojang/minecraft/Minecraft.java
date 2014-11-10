@@ -1539,7 +1539,9 @@ public final class Minecraft implements Runnable {
                 if (player == null) {
                     player = new Player(newLevel, settings);
                     newLevel.player = player;
-                    player.lastHumanoidSkinName = session.username;
+                    if (session != null) {
+                        player.lastHumanoidSkinName = session.username;
+                    }
                 }
                 player.settings = settings;
                 player.resetPos();
@@ -1704,24 +1706,7 @@ public final class Minecraft implements Runnable {
             }
         }
 
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.TERRAIN));
-        TextureManager texManager = textureManager;
-
-        for (int i = 0; i < texManager.animations.size(); ++i) {
-            // Animate textures, like lava and water
-            TextureFX texFX = texManager.animations.get(i);
-            texFX.animate();
-            if (texManager.textureBuffer.capacity() != texFX.textureData.length) {
-                texManager.textureBuffer = BufferUtils.createByteBuffer(texFX.textureData.length);
-            } else {
-                texManager.textureBuffer.clear();
-            }
-            texManager.textureBuffer.put(texFX.textureData);
-            texManager.textureBuffer.position(0).limit(texFX.textureData.length);
-            GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, texFX.textureId % 16 << 4,
-                    texFX.textureId / 16 << 4, 16, 16,
-                    GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, texManager.textureBuffer);
-        }
+        renderAnimatedTextures();
 
         if (networkManager != null && !(currentScreen instanceof ErrorScreen)) {
             if (networkManager.isConnected()) {
@@ -1807,6 +1792,25 @@ public final class Minecraft implements Runnable {
             }
 
             particleManager.tick();
+        }
+    }
+
+    private void renderAnimatedTextures() {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.TERRAIN));
+        for (int i = 0; i < textureManager.animations.size(); ++i) {
+            // Animate textures, like lava and water
+            TextureFX texFX = textureManager.animations.get(i);
+            texFX.animate();
+            if (textureManager.textureBuffer.capacity() != texFX.textureData.length) {
+                textureManager.textureBuffer = BufferUtils.createByteBuffer(texFX.textureData.length);
+            } else {
+                textureManager.textureBuffer.clear();
+            }
+            textureManager.textureBuffer.put(texFX.textureData);
+            textureManager.textureBuffer.position(0).limit(texFX.textureData.length);
+            GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, texFX.textureId % 16 << 4,
+                    texFX.textureId / 16 << 4, 16, 16,
+                    GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textureManager.textureBuffer);
         }
     }
 

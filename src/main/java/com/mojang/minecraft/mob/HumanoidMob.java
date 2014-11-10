@@ -163,6 +163,11 @@ public class HumanoidMob extends Mob {
         }
     }
 
+    // Used by TextureManager to reload char.png after texture pack change.
+    public void forceTextureReload() {
+        textureId = -1;
+    }
+
     // Sets this player's skin.
     // Can accept usernames (skin will be downloaded from location of Minecraft.skinServer).
     // Can also accept absolute URLs, as long as they begin with "http://" or "https://" and end with ".png" (case-insensitive).

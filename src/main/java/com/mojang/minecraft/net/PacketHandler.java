@@ -548,7 +548,9 @@ public final class PacketHandler {
             //minecraft.hotKeys.add(data);
 
         } else if (packetType == PacketType.EXT_ADD_PLAYER_NAME) {
-            LogUtil.logWarning("Server attempted to use unsupported extension: ExtPlayerList");
+            if (!ProtocolExtension.isSupported(ProtocolExtension.EXT_PLAYER_LIST_2)) {
+                LogUtil.logWarning("Server attempted to use unsupported extension: ExtPlayerList");
+            }
             short nameId = (short) packetParams[0];
             String playerName = (String) packetParams[1];
             String listName = (String) packetParams[2];

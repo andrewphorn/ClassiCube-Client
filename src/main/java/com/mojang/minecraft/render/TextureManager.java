@@ -2,6 +2,7 @@ package com.mojang.minecraft.render;
 
 import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
+import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.net.NetworkPlayer;
 import com.mojang.minecraft.render.texture.TextureFX;
@@ -223,7 +224,7 @@ public class TextureManager {
         if (currentTerrainPng != null) {
             image = currentTerrainPng;
         } else {
-            image = loadImageFast(TextureManager.class.getResourceAsStream("/terrain.png"));
+            image = loadImageFast(TextureManager.class.getResourceAsStream(Textures.TERRAIN));
         }
         textureAtlas.clear();
         textureAtlas = Atlas2dInto1d(image, 16, image.getWidth() / 16);
@@ -546,6 +547,24 @@ public class TextureManager {
         }
     }
 
+    public void reloadTexturePack() throws IOException {
+        resetCustomTextures();
+        initAtlas();
+        if (settings.minecraft.networkManager != null) {
+            for (NetworkPlayer p : settings.minecraft.networkManager.getPlayers()) {
+                p.forceTextureReload();
+            }
+            settings.minecraft.player.forceTextureReload();
+        }
+        settings.minecraft.fontRenderer = new FontRenderer(settings, Textures.FONT, this);
+
+        // Force to reload custom side/edge textures from the atlas, while keeping block IDs same.
+        setSideBlock(sideBlockId);
+        setEdgeBlock(edgeBlockId);
+
+        registerAnimations();
+    }
+
     public void loadTexturePack(final String file) throws IOException {
         if (file.endsWith(".zip")) {
             resetCustomTextures();
@@ -569,18 +588,7 @@ public class TextureManager {
                 customClouds = loadImageFromZip(zip, "clouds.png");
             }
         }
-        initAtlas();
-        if (settings.minecraft.networkManager != null) {
-            for (NetworkPlayer p : settings.minecraft.networkManager.getPlayers()) {
-                p.bindTexture(this);
-            }
-            settings.minecraft.player.bindTexture(this);
-        }
-        animations.clear();
-
-        // Force to reload custom side/edge textures from the atlas, while keeping block IDs same.
-        setSideBlock(sideBlockId);
-        setEdgeBlock(edgeBlockId);
+        reloadTexturePack();
     }
 
     public void registerAnimations() {
@@ -660,6 +668,7 @@ public class TextureManager {
         unloadTexture(Textures.MOB_SKELETON);
         unloadTexture(Textures.MOB_SPIDER);
         unloadTexture(Textures.MOB_ZOMBIE);
+        registerAnimations();
     }
 
     public int getSideBlock() {

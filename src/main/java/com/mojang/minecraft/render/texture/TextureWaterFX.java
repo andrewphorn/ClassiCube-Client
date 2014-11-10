@@ -72,6 +72,5 @@ public final class TextureWaterFX extends TextureFX {
             textureData[(var2 << 2) + 2] = (byte) var1;
             textureData[(var2 << 2) + 3] = (byte) var10;
         }
-
     }
 }
