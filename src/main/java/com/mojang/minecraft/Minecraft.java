@@ -1541,6 +1541,7 @@ public final class Minecraft implements Runnable {
                 if (player == null) {
                     player = new Player(newLevel, settings);
                     newLevel.player = player;
+                    player.lastHumanoidSkinName = session.username;
                 }
                 player.settings = settings;
                 player.resetPos();
@@ -1554,6 +1555,7 @@ public final class Minecraft implements Runnable {
 
         if (player == null) {
             player = new Player(newLevel, settings);
+            player.lastHumanoidSkinName = session.username;
             player.resetPos();
             gamemode.preparePlayer(player);
             if (newLevel != null) {

@@ -47,7 +47,7 @@ public class SkinDownloadThread extends Thread {
             }
             
             BufferedImage image = ImageIO.read(connection.getInputStream());
-            if (!nonHumanoidSkin && image.getHeight() == image.getWidth()) {
+            if (!nonHumanoidSkin && image != null && image.getHeight() == image.getWidth()) {
                 // TODO: 1.8 skins
                 image = image.getSubimage(0, 0, image.getWidth(), image.getHeight() / 2);
             }

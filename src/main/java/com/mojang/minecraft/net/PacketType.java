@@ -126,32 +126,32 @@ public class PacketType {
         packets[opcode] = this;
         params = new Class[classes.length];
 
-        int length = 0;
+        int thisPacketLength = 0;
 
-        for (int classNumber = 0; classNumber < classes.length; classNumber++) {
-            Class class_ = classes[classNumber];
+        for (int i = 0; i < classes.length; i++) {
+            Class fieldType = classes[i];
 
-            params[classNumber] = class_;
+            params[i] = fieldType;
 
-            if (class_ == Long.TYPE) {
-                length += 8;
-            } else if (class_ == Integer.TYPE) {
-                length += 4;
-            } else if (class_ == Short.TYPE) {
-                length += 2;
-            } else if (class_ == Byte.TYPE) {
-                ++length;
-            } else if (class_ == Float.TYPE) {
-                length += 4;
-            } else if (class_ == Double.TYPE) {
-                length += 8;
-            } else if (class_ == byte[].class) {
-                length += 1024;
-            } else if (class_ == String.class) {
-                length += 64;
+            if (fieldType == Long.TYPE) {
+                thisPacketLength += 8;
+            } else if (fieldType == Integer.TYPE) {
+                thisPacketLength += 4;
+            } else if (fieldType == Short.TYPE) {
+                thisPacketLength += 2;
+            } else if (fieldType == Byte.TYPE) {
+                thisPacketLength += 1;
+            } else if (fieldType == Float.TYPE) {
+                thisPacketLength += 4;
+            } else if (fieldType == Double.TYPE) {
+                thisPacketLength += 8;
+            } else if (fieldType == byte[].class) {
+                thisPacketLength += 1024;
+            } else if (fieldType == String.class) {
+                thisPacketLength += 64;
             }
         }
 
-        this.length = length;
+        this.length = thisPacketLength;
     }
 }

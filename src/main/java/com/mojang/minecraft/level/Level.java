@@ -77,7 +77,6 @@ public class Level implements Serializable {
     }
 
     public void addEntity(Entity entity) {
-        LogUtil.logInfo("Adding entity: "+entity);
         blockMap.insert(entity);
         entity.setLevel(this);
     }

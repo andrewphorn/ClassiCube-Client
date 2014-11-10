@@ -26,8 +26,8 @@ public class NetworkPlayer extends HumanoidMob {
         super(minecraft.level, Model.HUMANOID, x, y, z);
         this.minecraft = minecraft;
         this.displayName = displayName;
-        displayName = FontRenderer.stripColor(displayName);
-        name = displayName;
+        name = FontRenderer.stripColor(displayName);
+        lastHumanoidSkinName = name;
         xp = x;
         yp = y;
         zp = z;
@@ -43,7 +43,7 @@ public class NetworkPlayer extends HumanoidMob {
                 || name.equalsIgnoreCase("Jonty800@")) {
             setModel("sheep");
         }
-        setSkin(name);
+        setSkin(this.name);
     }
 
     @Override

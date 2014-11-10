@@ -169,39 +169,26 @@ public final class PacketHandler {
             } // else: no level is loaded, ignore block change
 
         } else if (packetType == PacketType.SPAWN_PLAYER) {
-            byte newPlayerId = (Byte) packetParams[0];
-            String newPlayerName = (String) packetParams[1];
-            short newPlayerX = (Short) packetParams[2];
-            short newPlayerY = (Short) packetParams[3];
-            short newPlayerZ = (Short) packetParams[4];
-            byte newPlayerXRot = (Byte) packetParams[5];
-            byte newPlayerYRot = (Byte) packetParams[6];
-            if (newPlayerId >= 0) {
-                // Spawn a new player
-                newPlayerXRot = (byte) (newPlayerXRot + 128);
-                newPlayerY = (short) (newPlayerY - 22);
-                NetworkPlayer newPlayer = new NetworkPlayer(networkManager.minecraft,
-                        newPlayerName, newPlayerX, newPlayerY, newPlayerZ,
-                        newPlayerYRot * 360 / 256F, newPlayerXRot * 360 / 256F);
-                networkManager.addPlayer(newPlayerId, newPlayer);
-                minecraft.level.addEntity(newPlayer);
-            } else {
-                // Set own spawnpoint
-                minecraft.level.setSpawnPos(
-                        newPlayerX / 32, newPlayerY / 32, newPlayerZ / 32,
-                        newPlayerXRot * 320 / 256);
-                minecraft.player.moveTo(newPlayerX / 32F,
-                        newPlayerY / 32F, newPlayerZ / 32F,
-                        newPlayerXRot * 360 / 256F, newPlayerYRot * 360 / 256F);
+            if (ProtocolExtension.isSupported(ProtocolExtension.EXT_PLAYER_LIST_2)) {
+                LogUtil.logWarning("Server tried to send SPAWN_PLAYER even though ExtPlayerList version 2 is in use.");
+                return;
             }
+            byte newPlayerId = (byte) packetParams[0];
+            String newPlayerName = (String) packetParams[1];
+            short newPlayerX = (short) packetParams[2];
+            short newPlayerY = (short) packetParams[3];
+            short newPlayerZ = (short) packetParams[4];
+            byte newPlayerXRot = (byte) packetParams[5];
+            byte newPlayerYRot = (byte) packetParams[6];
+            handleSpawnPlayer(networkManager, newPlayerName, newPlayerId, newPlayerX, newPlayerY, newPlayerZ, newPlayerXRot, newPlayerYRot);
 
         } else if (packetType == PacketType.POSITION_ROTATION) {
-            byte playerId = (Byte) packetParams[0];
-            short newX = (Short) packetParams[1];
-            short newY = (Short) packetParams[2];
-            short newZ = (Short) packetParams[3];
-            byte newXRot = (Byte) packetParams[4];
-            byte newYRot = (Byte) packetParams[5];
+            byte playerId = (byte) packetParams[0];
+            short newX = (short) packetParams[1];
+            short newY = (short) packetParams[2];
+            short newZ = (short) packetParams[3];
+            byte newXRot = (byte) packetParams[4];
+            byte newYRot = (byte) packetParams[5];
             if (playerId < 0) {
                 // Move self
                 minecraft.player.moveTo(newX / 32F, newY / 32F, newZ / 32F,
@@ -234,9 +221,9 @@ public final class PacketHandler {
             } // else: This packet cannot be applied to self, and is ignored if playerId<0
 
         } else if (packetType == PacketType.ROTATION_UPDATE) {
-            byte playerID = (Byte) packetParams[0];
-            byte newXRot = (Byte) packetParams[1];
-            byte newYRot = (Byte) packetParams[2];
+            byte playerID = (byte) packetParams[0];
+            byte newXRot = (byte) packetParams[1];
+            byte newYRot = (byte) packetParams[2];
             if (playerID >= 0) {
                 newXRot = (byte) (newXRot + 128);
                 NetworkPlayer networkPlayerInstance = networkManager.getPlayer(playerID);
@@ -246,15 +233,15 @@ public final class PacketHandler {
             } // else: This packet cannot be applied to self, and is ignored if playerId<0
 
         } else if (packetType == PacketType.POSITION_UPDATE) {
-            byte playerID = (Byte) packetParams[0];
+            byte playerID = (byte) packetParams[0];
             NetworkPlayer networkPlayerInstance = networkManager.getPlayer(playerID);
             if (playerID >= 0 && networkPlayerInstance != null) {
-                networkPlayerInstance.queue((Byte) packetParams[1],
-                        (Byte) packetParams[2], (Byte) packetParams[3]);
+                networkPlayerInstance.queue((byte) packetParams[1],
+                        (byte) packetParams[2], (byte) packetParams[3]);
             } // else: This packet cannot be applied to self, and is ignored if playerId<0
 
         } else if (packetType == PacketType.DESPAWN_PLAYER) {
-            byte playerID = (Byte) packetParams[0];
+            byte playerID = (byte) packetParams[0];
             NetworkPlayer targetPlayer = networkManager.removePlayer(playerID);
             if (playerID >= 0 && targetPlayer != null) {
                 targetPlayer.unloadSkin(minecraft.textureManager);
@@ -262,7 +249,7 @@ public final class PacketHandler {
             } // else: This packet cannot be applied to self, and is ignored if playerId<0
 
         } else if (packetType == PacketType.CHAT_MESSAGE) {
-            byte messageType = (Byte) packetParams[0];
+            byte messageType = (byte) packetParams[0];
             String message = (String) packetParams[1];
             if (messageType > 0 && isExtEnabled(ProtocolExtension.MESSAGE_TYPES)) {
                 // MESSAGE_TYPES CPE
@@ -594,18 +581,7 @@ public final class PacketHandler {
             byte playerID = (byte) packetParams[0];
             String inGameName = (String) packetParams[1];
             String skinName = (String) packetParams[2];
-            if (skinName != null) {
-                if (playerID >= 0) {
-                    NetworkPlayer targetPlayer = networkManager.getPlayer(playerID);
-                    if (targetPlayer != null) {
-                        targetPlayer.setSkin(skinName);
-                        targetPlayer.displayName = inGameName;
-                    }
-                } else {
-                    minecraft.player.setSkin(skinName);
-                    //No need to set the display name for yourself
-                }
-            }
+            handleExtAddEntity(networkManager, playerID, inGameName, skinName);
 
         } else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
             LogUtil.logWarning("Server attempted to use unsupported extension: ExtPlayerList");
@@ -664,16 +640,14 @@ public final class PacketHandler {
             // Model names are case-insensitive
             String modelName = ((String) packetParams[1]).toLowerCase();
             HumanoidMob targetPlayer;
-            String username;
+            LogUtil.logInfo("CM: " + playerId + " " + modelName);
 
             if (playerId >= 0) {
                 // Set another player's model
                 targetPlayer = networkManager.getPlayer(playerId);
-                username = networkManager.getPlayer(playerId).name;
             } else {
                 // Set own model
                 targetPlayer = minecraft.player;
-                username = minecraft.session.username;
             }
             if (targetPlayer != null && !targetPlayer.getModelName().equals(modelName)) {
                 ModelManager m = new ModelManager();
@@ -685,7 +659,7 @@ public final class PacketHandler {
                 }
 
                 if (targetPlayer.getModelName().equals(Model.HUMANOID)) {
-                    targetPlayer.setSkin(username);
+                    targetPlayer.setSkin(targetPlayer.lastHumanoidSkinName);
                 }
             }
 
@@ -704,6 +678,71 @@ public final class PacketHandler {
                 minecraft.isSnowing = !minecraft.isSnowing;
                 minecraft.isRaining = false;
             }
+
+        } else if (packetType == PacketType.EXT_ADD_ENTITY2) {
+            if (!ProtocolExtension.isSupported(ProtocolExtension.EXT_PLAYER_LIST_2)) {
+                LogUtil.logWarning("Server attempted to use unsupported extension: ExtPlayerList version 2");
+            }
+            // "When an ExtAddEntity2 packet is received, it must be treated as the SpawnPlayer packet.
+            // A player model must be spawned in-game at the given location, with InGameName text
+            // drawn above it. Skin should be loaded using the given SkinName for a player name.
+            // When client receives ExtAddEntity2 packet for an already-spawned player, a duplicate
+            // entity must not be spawned and existing entity's position must not be changed.
+            // Instead their InGameName and SkinName must be updated. If a negative EntityID is
+            // given for ExtAddEntity2, client must update player's own spawn point, InGameName, and SkinName."
+            byte playerID = (byte) packetParams[0];
+            String inGameName = (String) packetParams[1];
+            String skinName = (String) packetParams[2];
+            short spawnX = (short) packetParams[3];
+            short spawnY = (short) packetParams[4];
+            short spawnZ = (short) packetParams[5];
+            byte spawnYaw = (byte) packetParams[6];
+            byte spawnPitch = (byte) packetParams[7];
+            LogUtil.logInfo("EAE2: " + playerID + " " + inGameName + " " + skinName);
+
+            if (playerID < 0 || networkManager.getPlayer(playerID) == null) {
+                handleSpawnPlayer(networkManager, inGameName, playerID, spawnX, spawnY, spawnZ, spawnYaw, spawnPitch);
+            }
+
+            handleExtAddEntity(networkManager, playerID, inGameName, skinName);
+        }
+    }
+
+    private void handleExtAddEntity(NetworkManager networkManager, byte playerID, String inGameName, String skinName) {
+        if (skinName != null) {
+            if (playerID >= 0) {
+                NetworkPlayer targetPlayer = networkManager.getPlayer(playerID);
+                if (targetPlayer != null) {
+                    targetPlayer.setSkin(skinName);
+                    targetPlayer.lastHumanoidSkinName = skinName;
+                    targetPlayer.displayName = inGameName;
+                }
+            } else {
+                minecraft.player.setSkin(skinName);
+                minecraft.player.lastHumanoidSkinName = skinName;
+                //No need to set the display name for yourself
+            }
+        }
+    }
+
+    private void handleSpawnPlayer(NetworkManager networkManager, String newPlayerName, byte newPlayerId,
+            short newPlayerX, short newPlayerY, short newPlayerZ, byte newPlayerXRot, byte newPlayerYRot) {
+        if (newPlayerId >= 0) {
+            newPlayerXRot = (byte) (newPlayerXRot + 128);
+            newPlayerY = (short) (newPlayerY - 22);
+            NetworkPlayer newPlayer
+                    = new NetworkPlayer(networkManager.minecraft,
+                            newPlayerName, newPlayerX, newPlayerY, newPlayerZ,
+                            newPlayerYRot * 360 / 256F, newPlayerXRot * 360 / 256F);
+            networkManager.addPlayer(newPlayerId, newPlayer);
+            minecraft.level.addEntity(newPlayer);
+        } else {
+            // Set own spawnpoint
+            minecraft.level.setSpawnPos(newPlayerX / 32, newPlayerY / 32, newPlayerZ / 32,
+                    newPlayerXRot * 320 / 256);
+            minecraft.player.moveTo(newPlayerX / 32F,
+                    newPlayerY / 32F, newPlayerZ / 32F,
+                    newPlayerXRot * 360 / 256F, newPlayerYRot * 360 / 256F);
         }
     }
 

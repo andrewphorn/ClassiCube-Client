@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
 
 public class HumanoidMob extends Mob {
 
+    public String lastHumanoidSkinName;
     private String skinName;
     private BufferedImage skinBitmap;
     private volatile BufferedImage newSkinBitmap;
@@ -128,7 +129,7 @@ public class HumanoidMob extends Mob {
         if (null == newName) {
             throw new IllegalArgumentException("newName cannot be null");
         }
-        //LogUtil.logInfo("setModel(" + newName + ")");
+        LogUtil.logInfo("setModel(" + newName + ")");
         resetSkin();
         modelName = newName;
     }
