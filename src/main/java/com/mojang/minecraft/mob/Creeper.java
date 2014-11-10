@@ -5,9 +5,8 @@ import com.mojang.minecraft.level.Level;
 public class Creeper extends Mob {
 
     public Creeper(Level level, float posX, float posY, float posZ) {
-        super(level);
+        super(level, "creeper");
         heightOffset = 1.62F;
-        modelName = "creeper";
         textureName = "/mob/creeper.png";
         ai = new Creeper$1(this);
         ai.defaultLookAngle = 45;

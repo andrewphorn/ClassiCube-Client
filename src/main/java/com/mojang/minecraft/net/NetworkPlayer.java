@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.mob.HumanoidMob;
+import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.render.TextureManager;
 
 public class NetworkPlayer extends HumanoidMob {
@@ -22,7 +23,7 @@ public class NetworkPlayer extends HumanoidMob {
 
     public NetworkPlayer(Minecraft minecraft, String displayName, int x, int y, int z,
             float xRot, float yRot) {
-        super(minecraft.level, x, y, z);
+        super(minecraft.level, Model.HUMANOID, x, y, z);
         this.minecraft = minecraft;
         this.displayName = displayName;
         displayName = FontRenderer.stripColor(displayName);
@@ -35,7 +36,6 @@ public class NetworkPlayer extends HumanoidMob {
         this.setPos(x / 32F, y / 32F, z / 32F);
         this.xRot = xRot;
         this.yRot = yRot;
-        armor = helmet = false;
         renderOffset = 0.6875F;
         allowAlpha = false;
         if (name.equalsIgnoreCase("Jonty800")

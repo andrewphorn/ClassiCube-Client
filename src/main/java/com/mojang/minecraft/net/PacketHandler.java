@@ -606,7 +606,7 @@ public final class PacketHandler {
                     //No need to set the display name for yourself
                 }
             }
-            
+
         } else if (packetType == PacketType.EXT_REMOVE_PLAYER_NAME) {
             LogUtil.logWarning("Server attempted to use unsupported extension: ExtPlayerList");
             short nameID = (short) packetParams[0];
@@ -672,7 +672,7 @@ public final class PacketHandler {
                 // Set own model
                 targetPlayer = minecraft.player;
             }
-            if (targetPlayer != null) {
+            if (targetPlayer != null && !targetPlayer.getModelName().equals(modelName)) {
                 ModelManager m = new ModelManager();
                 if (m.getModel(modelName) != null) {
                     targetPlayer.setModel(modelName);

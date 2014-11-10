@@ -98,6 +98,7 @@ import com.mojang.util.MathHelper;
 import com.mojang.util.StreamingUtil;
 import com.mojang.util.Timer;
 import com.mojang.util.Vec3D;
+import com.oyasunadev.mcraft.client.util.Constants;
 import java.security.NoSuchAlgorithmException;
 
 public final class Minecraft implements Runnable {
@@ -808,7 +809,7 @@ public final class Minecraft implements Runnable {
         }
         if (server != null && session != null) {
             networkManager = new NetworkManager(this);
-            networkManager.beginConnect(server, port, session.username, session.mppass);
+            networkManager.beginConnect(server, port);
         }
     }
 
@@ -1812,6 +1813,14 @@ public final class Minecraft implements Runnable {
     private void doNetworking() {
         // Do network communication
         try {
+            if (!networkManager.handshakeSent) {
+                networkManager.send(
+                        PacketType.IDENTIFICATION,
+                        Constants.PROTOCOL_VERSION, session.username, session.mppass,
+                        (int) Constants.CLIENT_TYPE);
+                networkManager.handshakeSent = true;
+            }
+
             do {
                 networkManager.channel.read(networkManager.in);
                 for (int packetsReceived = 0;
@@ -2158,6 +2167,6 @@ public final class Minecraft implements Runnable {
         networkManager = new NetworkManager(this);
         packetHandler = new PacketHandler(this);
         womConfig = new WOMConfig(this);
-        networkManager.beginConnect(server, port, session.username, session.mppass);
+        networkManager.beginConnect(server, port);
     }
 }

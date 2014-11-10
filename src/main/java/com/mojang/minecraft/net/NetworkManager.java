@@ -23,6 +23,7 @@ public class NetworkManager {
     public Minecraft minecraft;
 
     private volatile boolean connected;
+    public boolean handshakeSent = false;
     public SocketChannel channel;
     public final ByteBuffer in = ByteBuffer.allocate(BUFFER_SIZE);
     public final ByteBuffer out = ByteBuffer.allocate(BUFFER_SIZE);
@@ -36,9 +37,9 @@ public class NetworkManager {
         this.minecraft = minecraft;
     }
 
-    public void beginConnect(String server, int port, String username, String key) {
+    public void beginConnect(String server, int port) {
         minecraft.isConnecting = true;
-        new ServerConnectThread(this, server, port, username, key, minecraft).start();
+        new ServerConnectThread(this, server, port, minecraft).start();
     }
 
     // Called from ServerConnectThread
@@ -47,7 +48,6 @@ public class NetworkManager {
         channel.connect(new InetSocketAddress(ip, port));
         channel.configureBlocking(false);
 
-        System.currentTimeMillis();
         /*
          * sock = channel.socket(); sock.setTcpNoDelay(true);
          * sock.setTrafficClass(soTrafficClass); sock.setKeepAlive(false);
@@ -55,13 +55,17 @@ public class NetworkManager {
          * sock.getInetAddress().toString();
          */
 
-        connected = true;
         in.clear();
         out.clear();
+        connected = true;
     }
 
     public boolean isConnected() {
         return connected;
+    }
+    
+    public void setConnected(boolean value){
+        connected = value;
     }
 
     @SuppressWarnings("rawtypes")

@@ -18,6 +18,7 @@ import com.mojang.minecraft.render.LevelRenderer;
 import com.mojang.minecraft.sound.AudioInfo;
 import com.mojang.minecraft.sound.EntitySoundPos;
 import com.mojang.minecraft.sound.LevelSoundPos;
+import com.mojang.util.LogUtil;
 import com.mojang.util.MathHelper;
 import com.mojang.util.Vec3D;
 import java.util.ArrayDeque;
@@ -76,6 +77,7 @@ public class Level implements Serializable {
     }
 
     public void addEntity(Entity entity) {
+        LogUtil.logInfo("Adding entity: "+entity);
         blockMap.insert(entity);
         entity.setLevel(this);
     }

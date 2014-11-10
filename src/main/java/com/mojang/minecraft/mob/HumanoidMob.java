@@ -18,96 +18,66 @@ import com.mojang.util.LogUtil;
 import java.awt.image.BufferedImage;
 
 public class HumanoidMob extends Mob {
-    public boolean helmet = Math.random() < 0.2;
-    public boolean armor = Math.random() < 0.2;
 
-    public HumanoidMob(Level level, float posX, float posY, float posZ) {
-        super(level);
-        modelName = Model.HUMANOID;
+    protected HumanoidMob(Level level, String modelName, float posX, float posY, float posZ) {
+        super(level, modelName);
         this.setPos(posX, posY, posZ);
     }
 
     @Override
-    public void renderModel(TextureManager textureManager, float var2, float var3, float var4,
+    public void renderModel(TextureManager textures, float var2, float var3, float var4,
             float yawDegrees, float pitchDegrees, float scale) {
-        if ("sheep".equals(modelName)) {
-            renderSheep(textureManager, var2, var3, var4, yawDegrees, pitchDegrees, scale);
 
-        } else if (isInteger(modelName)) {
-            // Model name is a block number
-            try {
-                GL11.glEnable(GL11.GL_ALPHA_TEST);
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glPushMatrix();
+        // Render block model
+        if (isInteger(modelName)) {
+            renderBlock(textures);
+            return;
+        }
 
-                // These are here to revert the scalef calls in Mob.java.
-                // While those calls are useful for entity models, they cause the
-                // block models to be rendered upside down.
-                GL11.glScalef(-1F, 1F, 1F);
-                GL11.glScalef(1F, -1F, 1F);
-                Block block = Block.blocks[Integer.parseInt(modelName)];
-                // TODO: Implement proper detection of which blocks need translation.
-                float yTranslation = -1.4F;
-                if (block instanceof FlowerBlock || block instanceof FireBlock) {
-                    yTranslation = -1.8F;
-                }
-                GL11.glTranslatef(-0.5F, yTranslation, -0.2F);
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.TERRAIN));
+        // Render the rest of the model
+        Model model = modelCache.getModel(modelName);
+        model.render(var2, var4, tickCount + var3, yawDegrees, pitchDegrees, scale);
 
-                block.renderPreview(ShapeRenderer.instance);
-                GL11.glPopMatrix();
-                GL11.glDisable(GL11.GL_BLEND);
-            } catch (Exception ex) {
-                LogUtil.logError("Error rendering block model. Reverting to default.", ex);
-                modelName = Model.HUMANOID;
-            }
+        // If model is humanoid, render its outer layer ("hair")
+        if (hasHair && model instanceof HumanoidModel) {
+            GL11.glDisable(GL11.GL_CULL_FACE);
+            HumanoidModel modelHeadwear = (HumanoidModel) model;
+            modelHeadwear.headwear.yaw = modelHeadwear.head.yaw;
+            modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
+            modelHeadwear.headwear.render(scale);
+            GL11.glEnable(GL11.GL_CULL_FACE);
+        }
+    }
 
-        } else {
-            super.renderModel(textureManager, var2, var3, var4, yawDegrees, pitchDegrees, scale);
-            Model model = modelCache.getModel(modelName);
+    private void renderBlock(TextureManager textures) {
+        try {
             GL11.glEnable(GL11.GL_ALPHA_TEST);
-            if (allowAlpha) {
-                GL11.glEnable(GL11.GL_CULL_FACE);
-            }
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glPushMatrix();
 
-            if (hasHair && model instanceof HumanoidModel) {
-                GL11.glDisable(GL11.GL_CULL_FACE);
-                HumanoidModel modelHeadwear = (HumanoidModel) model;
-                modelHeadwear.headwear.yaw = modelHeadwear.head.yaw;
-                modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
-                modelHeadwear.headwear.render(scale);
-                GL11.glEnable(GL11.GL_CULL_FACE);
+            // These are here to revert the scalef calls in Mob.java.
+            // While those calls are useful for entity models, they cause the
+            // block models to be rendered upside down.
+            GL11.glScalef(-1F, 1F, 1F);
+            GL11.glScalef(1F, -1F, 1F);
+            Block block = Block.blocks[Integer.parseInt(modelName)];
+            // TODO: Implement proper detection of which blocks need translation.
+            float yTranslation = -1.4F;
+            if (block instanceof FlowerBlock || block instanceof FireBlock) {
+                yTranslation = -1.8F;
             }
+            GL11.glTranslatef(-0.5F, yTranslation, -0.2F);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures.load(Textures.TERRAIN));
 
-            if (armor || helmet) {
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureManager.load(Textures.ARMOR_PLATE));
-                GL11.glDisable(GL11.GL_CULL_FACE);
-                HumanoidModel modelArmour = (HumanoidModel) modelCache.getModel("humanoid.armor");
-                modelArmour.head.render = helmet;
-                modelArmour.body.render = armor;
-                modelArmour.rightArm.render = armor;
-                modelArmour.leftArm.render = armor;
-                modelArmour.rightLeg.render = false;
-                modelArmour.leftLeg.render = false;
-                HumanoidModel humanoidModel = (HumanoidModel) model;
-                modelArmour.head.yaw = humanoidModel.head.yaw;
-                modelArmour.head.pitch = humanoidModel.head.pitch;
-                modelArmour.rightArm.pitch = humanoidModel.rightArm.pitch;
-                modelArmour.rightArm.roll = humanoidModel.rightArm.roll;
-                modelArmour.leftArm.pitch = humanoidModel.leftArm.pitch;
-                modelArmour.leftArm.roll = humanoidModel.leftArm.roll;
-                modelArmour.rightLeg.pitch = humanoidModel.rightLeg.pitch;
-                modelArmour.leftLeg.pitch = humanoidModel.leftLeg.pitch;
-                modelArmour.head.render(scale);
-                modelArmour.body.render(scale);
-                modelArmour.rightArm.render(scale);
-                modelArmour.leftArm.render(scale);
-                modelArmour.rightLeg.render(scale);
-                modelArmour.leftLeg.render(scale);
-                GL11.glEnable(GL11.GL_CULL_FACE);
-            }
-
-            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            block.renderPreview(ShapeRenderer.instance);
+            GL11.glPopMatrix();
+            GL11.glDisable(GL11.GL_BLEND);
+        } catch (Exception e) {
+            String msg = String.format(
+                    "Could not use block model \"%s\"; using humanoid model instead.",
+                    modelName);
+            LogUtil.logWarning(msg, e);
+            setModel(Model.HUMANOID);
         }
     }
 
@@ -140,7 +110,6 @@ public class HumanoidMob extends Mob {
         model.head.z = headZ;
     }
 
-    protected String modelName;
     private String skinName;
     private BufferedImage skinBitmap;
     private volatile BufferedImage newSkinBitmap;
@@ -153,7 +122,7 @@ public class HumanoidMob extends Mob {
 
     // Sets model name. newName must not be null. Removes any non-standard skin.
     // For humanoid skins, setSkin() should be called with the player's name afterwards.
-    public synchronized void setModel(String newName) {
+    public final synchronized void setModel(String newName) {
         if (null == newName) {
             throw new IllegalArgumentException("newName cannot be null");
         }

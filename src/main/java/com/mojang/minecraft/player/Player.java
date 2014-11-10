@@ -11,15 +11,10 @@ import com.mojang.minecraft.HackState;
 import com.mojang.minecraft.ThirdPersonMode;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.tile.Block;
-import com.mojang.minecraft.level.tile.FireBlock;
-import com.mojang.minecraft.level.tile.FlowerBlock;
 import com.mojang.minecraft.mob.HumanoidMob;
 import com.mojang.minecraft.model.HumanoidModel;
 import com.mojang.minecraft.model.Model;
-import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
-import com.mojang.minecraft.render.texture.Textures;
-import com.mojang.util.LogUtil;
 import com.mojang.util.MathHelper;
 
 public class Player extends HumanoidMob {
@@ -27,7 +22,6 @@ public class Player extends HumanoidMob {
     public static final int MAX_HEALTH = 20;
     public static final int MAX_ARROWS = 99;
     public static boolean noPush = false;
-    private static int newTextureId = -1;
     public transient GameSettings settings;
     public transient InputHandler input;
     public Inventory inventory = new Inventory();
@@ -41,7 +35,7 @@ public class Player extends HumanoidMob {
     private int jumpCount = 0;
 
     public Player(Level level, GameSettings gs) {
-        super(level, 0, 0, 0);
+        super(level, Model.HUMANOID, 0, 0, 0);
         if (level != null) {
             level.player = this;
             level.removeEntity(this);
@@ -50,7 +44,6 @@ public class Player extends HumanoidMob {
 
         heightOffset = 1.62F;
         health = 20;
-        modelName = "humanoid";
         rotOffs = 180F;
         ai = new PlayerAI(this);
         settings = gs;
@@ -454,63 +447,6 @@ public class Player extends HumanoidMob {
 
         GL11.glColor4f(1F, 1F, 1F, 1F);
         GL11.glPopMatrix();
-    }
-
-    @Override
-    public void renderModel(TextureManager textures, float var2, float var3, float var4,
-            float yawDegrees, float pitchDegrees, float scale) {
-
-        // Render block model
-        if (isInteger(modelName)) {
-            renderBlock(textures);
-            return;
-        }
-
-        // Render the rest of the model
-        Model model = modelCache.getModel(modelName);
-        model.render(var2, var4, tickCount + var3, yawDegrees, pitchDegrees, scale);
-
-        // If model is humanoid, render its outer layer ("hair")
-        if (hasHair && model instanceof HumanoidModel) {
-            GL11.glDisable(GL11.GL_CULL_FACE);
-            HumanoidModel modelHeadwear = (HumanoidModel) model;
-            modelHeadwear.headwear.yaw = modelHeadwear.head.yaw;
-            modelHeadwear.headwear.pitch = modelHeadwear.head.pitch;
-            modelHeadwear.headwear.render(scale);
-            GL11.glEnable(GL11.GL_CULL_FACE);
-        }
-    }
-
-    private void renderBlock(TextureManager textures) {
-        try {
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glPushMatrix();
-
-            // These are here to revert the scalef calls in Mob.java.
-            // While those calls are useful for entity models, they cause the
-            // block models to be rendered upside down.
-            GL11.glScalef(-1F, 1F, 1F);
-            GL11.glScalef(1F, -1F, 1F);
-            Block block = Block.blocks[Integer.parseInt(modelName)];
-            // TODO: Implement proper detection of which blocks need translation.
-            float yTranslation = -1.4F;
-            if (block instanceof FlowerBlock || block instanceof FireBlock) {
-                yTranslation = -1.8F;
-            }
-            GL11.glTranslatef(-0.5F, yTranslation, -0.2F);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures.load(Textures.TERRAIN));
-
-            block.renderPreview(ShapeRenderer.instance);
-            GL11.glPopMatrix();
-            GL11.glDisable(GL11.GL_BLEND);
-        } catch (Exception e) {
-            String msg = String.format(
-                    "Could not use block model \"%s\"; using humanoid model instead.",
-                    modelName);
-            LogUtil.logWarning(msg, e);
-            modelName = "humanoid";
-        }
     }
 
     @Override
