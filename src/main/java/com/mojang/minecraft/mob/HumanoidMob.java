@@ -161,12 +161,18 @@ public class HumanoidMob extends Mob {
         }
     }
 
+    // Sets this player's skin.
+    // Can accept usernames (skin will be downloaded from location of Minecraft.skinServer).
+    // Can also accept absolute URLs, as long as they begin with "http://" or "https://" and end with ".png" (case-insensitive).
+    // Can also accept null or empty strings (which act exactly like resetSkin()).
+    // NOTE: If modelName is an integer (i.e. is a block model), given skin will be ignored.
+    // NOTE: If modelName is not "humanoid", only absolute URLs will be accepted.
+    // NOTE: Does not block -- skins are downloaded asynchronously by SkinDownloadThread.
     public synchronized void setSkin(String skinName) {
         //LogUtil.logInfo("setSkin(" + skinName + ")");
         if (skinName == null || skinName.length() == 0) {
             // Blank values of "skinName" reset skin to default.
-            this.newSkinBitmap = null;
-            this.skinName = null;
+            resetSkin();
             return;
         }
         if (isInteger(modelName)) {
