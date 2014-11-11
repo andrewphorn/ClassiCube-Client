@@ -51,23 +51,11 @@ public final class FontRenderer {
             int col = character % 16;
             int row = character / 16;
             int offset = (col * maxCharWidth) + (row * maxCharHeight * width);
-            String line = character + " @" + row + "," + col + " (" + offset + "): ";
 
             if (character == 32) {
                 // Space is always 50% width
                 charWidths[32] = maxCharWidth / 2;
             } else {
-                if (character == (int) '1') {
-                    for (int r = 0; r < maxCharHeight; r++) {
-                        String line1 = "";
-                        for (int c = 0; c < maxCharWidth; c++) {
-                            int val = (fontData[offset + r * width + c] >> 24) & 0xFF;
-                            line1 += (val < 16 ? "0" : "") + Integer.toHexString(val);
-                        }
-                        LogUtil.logInfo(line1);
-                    }
-                }
-
                 // Other chars' width is determined by examining pixels
                 // First, find start of character (first non-empty row)
                 int chStart = 0;
@@ -88,7 +76,6 @@ public final class FontRenderer {
 
                 charOffsets[character] = chStart;
                 charWidths[character] = chEnd - chStart + 1;
-                LogUtil.logInfo(line + (char) character + " = " + charWidths[character] + " [" + chStart + "-" + chEnd + "]");
             }
         }
     }
