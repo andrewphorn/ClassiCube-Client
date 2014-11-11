@@ -703,7 +703,7 @@ public final class Minecraft implements Runnable {
         checkGLError("Pre startup");
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glShadeModel(GL11.GL_FLAT);
         GL11.glClearDepth(1D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
@@ -736,9 +736,8 @@ public final class Minecraft implements Runnable {
             }
         }
 
-        fontRenderer = new FontRenderer(settings, Textures.FONT, textureManager);
+        fontRenderer = new FontRenderer(settings, textureManager);
         monitoringThread = new MonitoringThread(1000); // 1s refresh
-        textureManager.initAtlas();
 
         levelRenderer = new LevelRenderer(this, textureManager);
         Item.initModels();
