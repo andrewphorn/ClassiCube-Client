@@ -4,6 +4,7 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.level.tile.Block;
+import com.mojang.minecraft.level.tile.TextureSide;
 import com.mojang.minecraft.net.NetworkPlayer;
 import com.mojang.minecraft.render.texture.TextureFX;
 import com.mojang.minecraft.render.texture.TextureFireFX;
@@ -615,7 +616,7 @@ public class TextureManager {
         if (blockId < 0 || blockId > Block.blocks.length) {
             resetSideBlock();
         } else {
-            int texId = Block.blocks[blockId].textureId;
+            int texId = Block.blocks[blockId].getTextureId(TextureSide.Front);
             unloadTexture(Textures.MAP_SIDE);
             customSideBlock = textureAtlas.get(texId);
         }
@@ -636,7 +637,7 @@ public class TextureManager {
         if (blockId < 0 || blockId > Block.blocks.length) {
             resetEdgeBlock();
         } else {
-            int texId = Block.blocks[blockId].textureId;
+            int texId = Block.blocks[blockId].getTextureId(TextureSide.Top);
             unloadTexture(Textures.MAP_EDGE);
             customEdgeBlock = textureAtlas.get(texId);
         }
