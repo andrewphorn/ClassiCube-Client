@@ -10,7 +10,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.LogUtil;
 
 public final class TextureSelectionScreen extends GuiScreen {
@@ -47,19 +46,14 @@ public final class TextureSelectionScreen extends GuiScreen {
                     break;
                 case BUTTON_DEFAULT:
                     try {
+                        LogUtil.logInfo("Resetting texture pack to default.");
                         // Save preference
                         minecraft.settings.lastUsedTexturePack = null;
                         minecraft.settings.save();
 
                         // Reset the texture pack
-                        minecraft.textureManager.resetCustomTextures();
-                        minecraft.textureManager.load(Textures.TERRAIN);
-                        minecraft.textureManager.initAtlas();
-                        minecraft.fontRenderer
-                                = new FontRenderer(minecraft.settings, Textures.FONT, minecraft.textureManager);
-                        minecraft.textureManager.registerAnimations();
-                        minecraft.textureManager.setEdgeBlock(minecraft.textureManager.getEdgeBlock());
-                        minecraft.textureManager.setSideBlock(minecraft.textureManager.getSideBlock());
+                        minecraft.textureManager.useDefaultTextures();
+                        minecraft.textureManager.reloadTextures();
 
                         // Return back to the main menu
                         minecraft.setCurrentScreen(parent);
@@ -115,10 +109,9 @@ public final class TextureSelectionScreen extends GuiScreen {
     }
 
     protected void openTexture(String file) {
+        LogUtil.logInfo("Loading texture pack from " + file);
         try {
             minecraft.textureManager.loadTexturePack(file);
-            minecraft.fontRenderer
-                    = new FontRenderer(minecraft.settings, Textures.FONT, minecraft.textureManager);
             minecraft.settings.lastUsedTexturePack = file;
             minecraft.settings.save();
             minecraft.setCurrentScreen(parent);

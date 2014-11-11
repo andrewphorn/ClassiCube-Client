@@ -73,6 +73,7 @@ public class WOMConfig {
             String url = "http://" + splitlineText.replace("$U", minecraft.session.username);
 
             LogUtil.logInfo("Fetching config from: " + url);
+            minecraft.progressBar.setText("Loading...");
             serverConfig = fetchConfig(url);
             if (serverConfig.containsKey("server.detail")) {
                 minecraft.progressBar.setText(serverConfig.get("server.detail"));

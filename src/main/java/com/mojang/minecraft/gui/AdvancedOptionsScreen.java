@@ -14,7 +14,7 @@ import com.mojang.minecraft.gui.inputscreens.WaterLevelInputScreen;
 public final class AdvancedOptionsScreen extends GuiScreen {
 
     private final static Setting[] settingsOrder = new Setting[]{Setting.ENABLE_HACKS,
-            Setting.SPEEDHACK_TYPE, Setting.ALLOW_SERVER_TEXTURES, Setting.SHOW_DEBUG};
+        Setting.SPEEDHACK_TYPE, Setting.ALLOW_SERVER_TEXTURES, Setting.SHOW_DEBUG};
     private final GuiScreen parent;
     private final String title = "Advanced Options";
     private final GameSettings settings;
@@ -29,7 +29,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
         int numberOfBitsInAHalfByte = 4;
         int halfByte = 0x0F;
         char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
-                'E', 'F'};
+            'E', 'F'};
         StringBuilder hexBuilder = new StringBuilder(sizeOfIntInHalfBytes);
         hexBuilder.setLength(sizeOfIntInHalfBytes);
         for (int i = sizeOfIntInHalfBytes - 1; i >= 0; --i) {
@@ -71,8 +71,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
             if (clickedButton.id == 400) {
                 FogColorInputScreen screen = new FogColorInputScreen(parent, ""
                         + Integer.toHexString(minecraft.level.fogColor), height,
-                        "Enter new value for fog color..."
-                );
+                        "Enter new value for fog color...");
                 screen.allowedChars = "ABCDEFabcdef1234567890";
                 screen.stringLimit = 6;
                 minecraft.setCurrentScreen(screen);
@@ -80,7 +79,7 @@ public final class AdvancedOptionsScreen extends GuiScreen {
             if (clickedButton.id == 500) {
                 ColorCache c = minecraft.level.customLightColor;
                 Color color = new Color(255, 255, 255);
-                String colorString = "";
+                String colorString;
                 if (c != null) {
                     colorString = String.format("%02x%02x%02x", (int) (c.R * 255),
                             (int) (c.G * 255), (int) (c.B * 255));

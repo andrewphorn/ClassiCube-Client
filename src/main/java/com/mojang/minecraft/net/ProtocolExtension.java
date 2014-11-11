@@ -26,7 +26,7 @@ public class ProtocolExtension {
     public static final ProtocolExtension CLICK_DISTANCE = new ProtocolExtension("ClickDistance", 1);
     public static final ProtocolExtension CUSTOM_BLOCKS = new ProtocolExtension("CustomBlocks", 1);
     public static final ProtocolExtension HELD_BLOCK = new ProtocolExtension("HeldBlock", 1);
-    //public static final ProtocolExtension EXT_PLAYER_LIST = new ProtocolExtension("ExtPlayerList", 1);
+    public static final ProtocolExtension EMOTE_FIX = new ProtocolExtension("EmoteFix", 1);
     public static final ProtocolExtension EXT_PLAYER_LIST_2 = new ProtocolExtension("ExtPlayerList", 2);
     public static final ProtocolExtension ENV_COLORS = new ProtocolExtension("EnvColors", 1);
     public static final ProtocolExtension SELECTION_CUBOID = new ProtocolExtension("SelectionCuboid", 1);
@@ -41,6 +41,7 @@ public class ProtocolExtension {
         supportedExtensions.add(CLICK_DISTANCE);
         supportedExtensions.add(CUSTOM_BLOCKS);
         supportedExtensions.add(HELD_BLOCK);
+        supportedExtensions.add(EMOTE_FIX);
         supportedExtensions.add(EXT_PLAYER_LIST_2);
         supportedExtensions.add(ENV_COLORS);
         supportedExtensions.add(SELECTION_CUBOID);

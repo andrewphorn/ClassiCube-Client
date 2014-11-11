@@ -194,7 +194,6 @@ public class Block {
 
     protected Block(int id, int textureID) {
         this(id);
-
         textureId = textureID;
     }
 

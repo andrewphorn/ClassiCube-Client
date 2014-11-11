@@ -90,7 +90,7 @@ public final class GameSettings {
     public int showNames = 0;
     public String lastUsedTexturePack;
     public boolean hacksEnabled = true;
-    public int smoothing = 0;
+    public int smoothing = SMOOTHING_OFF;
     public int framerateLimit = 60;
     public boolean viewBobbing = true;
     public int viewDistance = 4; // default to "normal (128)"
@@ -377,9 +377,6 @@ public final class GameSettings {
                 minecraft.textureManager.unloadTexture(Textures.TERRAIN);
                 minecraft.textureManager.unloadTexture(Textures.MAP_EDGE);
                 minecraft.textureManager.unloadTexture(Textures.MAP_SIDE);
-                minecraft.textureManager.unloadTexture("customTerrain");
-                minecraft.textureManager.unloadTexture("customEdge");
-                minecraft.textureManager.unloadTexture("customSide");
                 break;
             case ANISOTROPIC:
                 anisotropy++;
@@ -389,9 +386,6 @@ public final class GameSettings {
                 minecraft.textureManager.unloadTexture(Textures.TERRAIN);
                 minecraft.textureManager.unloadTexture(Textures.MAP_EDGE);
                 minecraft.textureManager.unloadTexture(Textures.MAP_SIDE);
-                minecraft.textureManager.unloadTexture("customTerrain");
-                minecraft.textureManager.unloadTexture("customEdge");
-                minecraft.textureManager.unloadTexture("customSide");
                 break;
             case ALLOW_SERVER_TEXTURES:
                 canServerChangeTextures = !canServerChangeTextures;

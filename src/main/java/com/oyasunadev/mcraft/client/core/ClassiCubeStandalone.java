@@ -314,10 +314,7 @@ public class ClassiCubeStandalone {
         }
     }
 
-    public static String[] storedArgs;
-
     public static void main(String[] args) {
-        storedArgs = args;
         String player = null;
         String server = null;
         int port = 0;
@@ -325,7 +322,7 @@ public class ClassiCubeStandalone {
         String skinServer = null;
         boolean startFullScreen = false;
         try {
-            if (args != null && args.length <= 3) {
+            if (args != null && args.length> 0 && args.length <= 3) {
                 // direct-connect URL
                 ServerJoinInfo details = getDetailsFromDirectUrl(args[0]);
                 if (details != null) {
@@ -352,14 +349,14 @@ public class ClassiCubeStandalone {
                     startFullScreen = Boolean.parseBoolean(args[5]);
                 }
             }
-                ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
-                if (player == null || server == null || mppass == null || port <= 0) {
-                    classicubeStandalone.startMinecraft(null, null, null, 0, skinServer, startFullScreen);
-                } else {
-                    classicubeStandalone.startMinecraft(player, server, mppass, port, skinServer, startFullScreen);
-                }
+            ClassiCubeStandalone classicubeStandalone = new ClassiCubeStandalone();
+            if (player == null || server == null || mppass == null || port <= 0) {
+                classicubeStandalone.startMinecraft(null, null, null, 0, skinServer, startFullScreen);
+            } else {
+                classicubeStandalone.startMinecraft(player, server, mppass, port, skinServer, startFullScreen);
+            }
         } catch (Exception e) {
-            System.err.println("ClassiCube client: Cannot parse parameters: "+ e.getMessage());
+            System.err.println("ClassiCube client: Cannot parse parameters: " + e.getMessage());
         }
     }
 

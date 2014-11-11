@@ -38,8 +38,7 @@ public final class TextureLavaFX extends TextureFX {
                     }
                 }
 
-                green[var1 + (var2 << 4)] = var3
-                        / 10F
+                green[var1 + (var2 << 4)] = var3 / 10F
                         + (blue[(var1 & 15) + ((var2 & 15) << 4)]
                         + blue[(var1 + 1 & 15) + ((var2 & 15) << 4)]
                         + blue[(var1 + 1 & 15) + ((var2 + 1 & 15) << 4)] + blue[(var1 & 15)
@@ -77,6 +76,5 @@ public final class TextureLavaFX extends TextureFX {
             textureData[(var2 << 2) + 2] = (byte) var7;
             textureData[(var2 << 2) + 3] = -1;
         }
-
     }
 }
