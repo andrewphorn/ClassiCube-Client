@@ -99,14 +99,13 @@ public final class PauseScreen extends GuiScreen {
     @Override
     public final void onOpen() {
         buttons.clear();
+        int w = fontRenderer.getWidth("Screenshots...") + 2;
         if (minecraft.session != null) {
             buttons.add(new Button(0, width / 2 - 100, height / 4, "Options..."));
             buttons.add(new Button(1, width / 2 - 100, height / 4 + 24, "Save level..."));
             buttons.add(new Button(2, width / 2 - 100, height / 4 + 48, "Change texture pack..."));
             buttons.add(new Button(3, width / 2 - 100, height - 36, "Back to game"));
-            int w = fontRenderer.getWidth("Screenshots...");
-            buttons.add(new Button(4, width - fontRenderer.getWidth("Screenshots...") - 15,
-                    height - 36, fontRenderer.getWidth("Screenshots..."), "Screenshots"));
+            buttons.add(new Button(4, width - w - 15, height - 36, w, "Screenshots"));
             buttons.add(new Button(5, width - w - 15, height - 58, w, "Chat Logs"));
         } else {
             buttons.add(new Button(0, width / 2 - 100, height / 4, "Options..."));
@@ -115,9 +114,7 @@ public final class PauseScreen extends GuiScreen {
             buttons.add(new Button(3, width / 2 - 100, height / 4 + 72, "Load level..."));
             buttons.add(new Button(4, width / 2 - 100, height / 4 + 96, "Change texture pack..."));
             buttons.add(new Button(5, width / 2 - 100, height - 36, "Back to game"));
-            int w = fontRenderer.getWidth("Screenshots...");
-            buttons.add(new Button(6, width - fontRenderer.getWidth("Screenshots...") - 15,
-                    height - 36, fontRenderer.getWidth("Screenshots..."), "Screenshots"));
+            buttons.add(new Button(6, width - w - 15, height - 36, w, "Screenshots"));
             buttons.add(new Button(7, width - w - 15, height - 58, w, "Chat Logs"));
         }
     }

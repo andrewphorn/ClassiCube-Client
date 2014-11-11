@@ -71,7 +71,6 @@ import com.mojang.minecraft.net.NetworkPlayer;
 import com.mojang.minecraft.net.PacketHandler;
 import com.mojang.minecraft.net.PacketType;
 import com.mojang.minecraft.net.ProtocolExtension;
-import com.mojang.minecraft.net.SkinDownloadThread;
 import com.mojang.minecraft.net.WOMConfig;
 import com.mojang.minecraft.particle.Particle;
 import com.mojang.minecraft.particle.ParticleManager;
@@ -721,7 +720,6 @@ public final class Minecraft implements Runnable {
 
         ShapeRenderer.instance = new ShapeRenderer(2097152, settings); // 2MB
         textureManager = new TextureManager(settings, isApplet);
-        textureManager.registerAnimations();
 
         if (settings.lastUsedTexturePack != null) {
             // Try to load custom texture pack

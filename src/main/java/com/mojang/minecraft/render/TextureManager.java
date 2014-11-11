@@ -1,7 +1,6 @@
 package com.mojang.minecraft.render;
 
 import com.mojang.minecraft.GameSettings;
-import static com.mojang.minecraft.GameSettings.SMOOTHING_OFF;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.FontRenderer;
 import com.mojang.minecraft.level.tile.Block;
@@ -21,7 +20,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -521,6 +519,13 @@ public class TextureManager {
             }
         }
         reloadTextures();
+        load(Textures.TERRAIN);
+        if (currentTerrainPng != null) {
+            // Disable animations for non-standard texture packs
+            animations.clear();
+        } else {
+            registerAnimations();
+        }
     }
 
     public void registerAnimations() {

@@ -3,7 +3,6 @@ package com.mojang.minecraft.net;
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.gui.ErrorScreen;
 import com.mojang.util.LogUtil;
-import com.oyasunadev.mcraft.client.util.Constants;
 
 public class ServerConnectThread extends Thread {
 
