@@ -405,7 +405,12 @@ public class TextureManager {
                 int id = loadCustom(file, currentTerrainPng);
                 try {
                     initAtlas();
-                    registerAnimations();
+                    if (currentTerrainPng != null) {
+                        // Disable animations for non-standard texture packs
+                        animations.clear();
+                    } else {
+                        registerAnimations();
+                    }
                 } catch (IOException ex) {
                     throw new RuntimeException("Failed to load texture atlas!", ex);
                 }
@@ -491,6 +496,7 @@ public class TextureManager {
         settings.minecraft.fontRenderer = new FontRenderer(settings, this);
 
         // Force to reload custom side/edge textures from the atlas, while keeping block IDs same.
+        load(Textures.TERRAIN);
         setSideBlock(sideBlockId);
         setEdgeBlock(edgeBlockId);
     }
@@ -519,13 +525,6 @@ public class TextureManager {
             }
         }
         reloadTextures();
-        load(Textures.TERRAIN);
-        if (currentTerrainPng != null) {
-            // Disable animations for non-standard texture packs
-            animations.clear();
-        } else {
-            registerAnimations();
-        }
     }
 
     public void registerAnimations() {
@@ -647,5 +646,15 @@ public class TextureManager {
         edgeBlockId = -1;
         customEdgeBlock = null;
         unloadTexture(Textures.MAP_EDGE);
+    }
+
+    public void setTerrainTexture(BufferedImage newImage) {
+        currentTerrainPng = newImage;
+        unloadTexture(Textures.TERRAIN);
+        unloadTexture(Textures.MAP_EDGE);
+        unloadTexture(Textures.MAP_SIDE);
+        load(Textures.TERRAIN);
+        setSideBlock(sideBlockId);
+        setEdgeBlock(edgeBlockId);
     }
 }

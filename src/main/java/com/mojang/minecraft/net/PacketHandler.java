@@ -29,6 +29,7 @@ import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.model.ModelManager;
 import com.mojang.minecraft.physics.CustomAABB;
 import com.mojang.minecraft.render.TextureManager;
+import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.ColorCache;
 import com.mojang.util.LogUtil;
 import com.mojang.util.MathHelper;
@@ -498,18 +499,15 @@ public final class PacketHandler {
                     }
                     image = ImageIO.read(file);
                     if (image.getWidth() % 16 == 0 && image.getHeight() % 16 == 0) {
-                        minecraft.textureManager.animations.clear();
-                        minecraft.textureManager.currentTerrainPng = image;
+                        minecraft.textureManager.setTerrainTexture(image);
+                    } else {
+                        LogUtil.logInfo("Unacceptable terrain texture dimensions: " + image.getWidth() + " x " + image.getHeight());
                     }
                 }
             } else {
                 // Reset texture to default
-                try {
-                    minecraft.textureManager.currentTerrainPng = ImageIO.read(
-                            TextureManager.class.getResourceAsStream("/terrain.png"));
-                } catch (IOException ex2) {
-                    LogUtil.logError("Error reading default terrain texture.", ex2);
-                }
+                LogUtil.logInfo("Reset texture to default.");
+                minecraft.textureManager.setTerrainTexture(null);
             }
 
         } else if (packetType == PacketType.CLICK_DISTANCE) {

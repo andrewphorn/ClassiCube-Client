@@ -375,8 +375,6 @@ public final class GameSettings {
                     smoothing = SMOOTHING_OFF;
                 }
                 minecraft.textureManager.unloadTexture(Textures.TERRAIN);
-                minecraft.textureManager.unloadTexture(Textures.MAP_EDGE);
-                minecraft.textureManager.unloadTexture(Textures.MAP_SIDE);
                 break;
             case ANISOTROPIC:
                 anisotropy++;
@@ -384,8 +382,6 @@ public final class GameSettings {
                     anisotropy = ANISOTROPY_OFF;
                 }
                 minecraft.textureManager.unloadTexture(Textures.TERRAIN);
-                minecraft.textureManager.unloadTexture(Textures.MAP_EDGE);
-                minecraft.textureManager.unloadTexture(Textures.MAP_SIDE);
                 break;
             case ALLOW_SERVER_TEXTURES:
                 canServerChangeTextures = !canServerChangeTextures;
