@@ -605,7 +605,7 @@ public class TextureManager {
         if (blockId < 0 || blockId > Block.blocks.length) {
             resetSideBlock();
         } else {
-            int texId = Block.blocks[blockId].getTextureId(TextureSide.Front);
+            int texId = Block.blocks[blockId].getTextureId(TextureSide.Top);
             unloadTexture(Textures.MAP_SIDE);
             customSideBlock = textureAtlas.get(texId);
         }
