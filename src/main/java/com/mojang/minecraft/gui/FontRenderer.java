@@ -40,6 +40,7 @@ public final class FontRenderer {
         fontTextureId = textures.load(Textures.FONT);
     }
 
+    // Calculates width and offset of every character, to space characters correctly.
     private void calculateCharWidths(BufferedImage fontTexture, int width, int height) {
         int[] fontData = new int[width * height];
         fontTexture.getRGB(0, 0, width, height, fontData, 0, width);
@@ -80,6 +81,7 @@ public final class FontRenderer {
     }
 
     private static boolean isColEmpty(int[] imgData, int offset, int imageWidth, int maxCharHeight) {
+        // Checks if a column of pixels contains any non-transparent pixels
         for (int row = 0; row < maxCharHeight; row++) {
             int rowOffset = offset + row * imageWidth;
             if (((imgData[rowOffset] >> 24) & 0xFF) > 128) {
@@ -109,25 +111,21 @@ public final class FontRenderer {
         return output.toString();
     }
 
-    public float getScale() {
-        return 7F / textureHeight * settings.scale;
-    }
-
     public int getWidth(String text) {
-        float charWidthScale = 128f / textureWidth;
         if (text == null) {
             return 0;
         }
-        int i = 0;
+        float charWidthScale = 128f / textureWidth;
+        float width = 0;
         for (int j = 0; j < text.length(); j++) {
             int k = text.charAt(j);
-            if (k == 38) {
+            if (k == '&') {
                 j++;
             } else {
-                i += charWidths[k] * charWidthScale + 1;
+                width += charWidths[k] * charWidthScale + 1;
             }
         }
-        return (int) Math.floor(i * settings.scale);
+        return (int) Math.ceil(width * settings.scale);
     }
 
     public int getHeight() {
