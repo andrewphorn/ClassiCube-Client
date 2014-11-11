@@ -11,12 +11,11 @@ import com.mojang.minecraft.GameSettings;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.render.texture.Textures;
-import com.mojang.util.LogUtil;
 
 public final class FontRenderer {
 
-    public int charHeight;
-    public int charWidth;
+    public int textureHeight;
+    public int textureWidth;
     public int[] charOffsets = new int[256];
     public int[] charWidths = new int[256];
     private final int fontTextureId;
@@ -34,8 +33,8 @@ public final class FontRenderer {
         }
         int width = fontTexture.getWidth();
         int height = fontTexture.getHeight();
-        charWidth = width;
-        charHeight = height;
+        textureWidth = width;
+        textureHeight = height;
 
         calculateCharWidths(fontTexture, width, height);
         fontTextureId = textures.load(Textures.FONT);
@@ -111,10 +110,11 @@ public final class FontRenderer {
     }
 
     public float getScale() {
-        return 7F / charHeight * settings.scale;
+        return 7F / textureHeight * settings.scale;
     }
 
     public int getWidth(String text) {
+        float charWidthScale = 128f / textureWidth;
         if (text == null) {
             return 0;
         }
@@ -124,14 +124,14 @@ public final class FontRenderer {
             if (k == 38) {
                 j++;
             } else {
-                i += charWidths[k] + 1;
+                i += charWidths[k] * charWidthScale + 1;
             }
         }
         return (int) Math.floor(i * settings.scale);
     }
 
     public int getHeight() {
-        return (int) Math.floor(charHeight * settings.scale);
+        return (int) Math.floor(textureHeight * settings.scale);
     }
 
     private void render(String text, float x, float y, int color, boolean shadow) {
@@ -141,15 +141,16 @@ public final class FontRenderer {
         if (shadow) {
             color = (color & 16579836) >> 2;
         }
-        float f1 = settings.scale;
-        float f2 = 1F / f1;
-        x = x * f2;
-        y = y * f2;
+        x /= settings.scale;
+        y /= settings.scale;
+
+        float charWidthScale = 128f / textureWidth;
+
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, fontTextureId);
 
         ShapeRenderer.instance.begin();
         ShapeRenderer.instance.color(color);
-        int xOffset = 0;
+        float xOffset = 0;
         for (int i = 0; i < text.length(); ++i) {
             char ch = text.charAt(i);
             if (ch == '&' && text.length() > i + 1) {
@@ -180,7 +181,7 @@ public final class FontRenderer {
             int rowOffset = ch / 16 << 3;
             float charQuadSize = 7.99F;
 
-            xOffset -= charOffsets[ch];
+            xOffset -= charOffsets[ch] * charWidthScale;
 
             ShapeRenderer.instance.vertexUV(x + xOffset, y + charQuadSize, 0F,
                     colOffset / 128F, (rowOffset + charQuadSize) / 128F);
@@ -190,10 +191,10 @@ public final class FontRenderer {
                     (colOffset + charQuadSize) / 128F, rowOffset / 128F);
             ShapeRenderer.instance.vertexUV(x + xOffset, y, 0F, colOffset / 128F, rowOffset / 128F);
 
-            xOffset += charWidths[ch] + charOffsets[ch] + 1;
+            xOffset += (charWidths[ch] + charOffsets[ch]) * charWidthScale + 1;
         }
         GL11.glPushMatrix();
-        GL11.glScalef(f1, f1, 1F);
+        GL11.glScalef(settings.scale, settings.scale, 1F);
         ShapeRenderer.instance.end();
         GL11.glPopMatrix();
     }
