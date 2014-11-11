@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -28,14 +30,10 @@ import com.mojang.minecraft.mob.HumanoidMob;
 import com.mojang.minecraft.model.Model;
 import com.mojang.minecraft.model.ModelManager;
 import com.mojang.minecraft.physics.CustomAABB;
-import com.mojang.minecraft.render.TextureManager;
-import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.ColorCache;
 import com.mojang.util.LogUtil;
 import com.mojang.util.MathHelper;
 import com.oyasunadev.mcraft.client.util.Constants;
-import java.util.HashSet;
-import java.util.Set;
 
 // This class is responsible for responding to individual packets coming from the client.
 // It also handles CPE Negotiation process.
@@ -640,7 +638,7 @@ public final class PacketHandler {
             // Model names are case-insensitive
             String modelName = ((String) packetParams[1]).toLowerCase();
             HumanoidMob targetPlayer;
-            LogUtil.logInfo("CM: " + playerId + " " + modelName);
+            //LogUtil.logInfo("CM: " + playerId + " " + modelName);
 
             if (playerId >= 0) {
                 // Set another player's model
@@ -698,7 +696,7 @@ public final class PacketHandler {
             short spawnZ = (short) packetParams[5];
             byte spawnYaw = (byte) packetParams[6];
             byte spawnPitch = (byte) packetParams[7];
-            LogUtil.logInfo("EAE2: " + playerID + " " + inGameName + " " + skinName);
+            //LogUtil.logInfo("EAE2: " + playerID + " " + inGameName + " " + skinName);
 
             if (playerID < 0 || networkManager.getPlayer(playerID) == null) {
                 handleSpawnPlayer(networkManager, inGameName, playerID, spawnX, spawnY, spawnZ, spawnYaw, spawnPitch);

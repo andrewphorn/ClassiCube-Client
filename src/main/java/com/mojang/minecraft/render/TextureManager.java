@@ -537,26 +537,15 @@ public class TextureManager {
 
     public void unloadTexture(String textureName) {
         if (textures.containsKey(textureName)) {
-            LogUtil.logInfo("Unloaded texture: " + textureName);
+            //LogUtil.logInfo("Unloaded texture: " + textureName);
             GL11.glDeleteTextures(textures.remove(textureName));
         }
     }
 
     public void unloadTexture(int textureId) {
-        boolean found = false;
-        for (Entry<String, Integer> entry : textures.entrySet()) {
-            if (entry.getValue().equals(textureId)) {
-                // For logging purposes, find the names of all textures being unloaded.
-                LogUtil.logInfo("Unloaded texture: " + entry.getKey());
-                found = true;
-            }
+        while (textures.values().remove(textureId)) {
         }
-        if (found) {
-            // If any were found, remove them.
-            while (textures.values().remove(textureId)) {
-            }
-            GL11.glDeleteTextures(textureId);
-        }
+        GL11.glDeleteTextures(textureId);
     }
 
     // Resets all custom textures to their defaults.

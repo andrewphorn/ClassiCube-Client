@@ -129,7 +129,7 @@ public class HumanoidMob extends Mob {
         if (null == newName) {
             throw new IllegalArgumentException("newName cannot be null");
         }
-        LogUtil.logInfo("setModel(" + newName + ")");
+        //LogUtil.logInfo("setModel(" + newName + ")");
         resetSkin();
         modelName = newName;
     }
