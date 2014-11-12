@@ -504,7 +504,7 @@ public final class PacketHandler {
                 }
             } else {
                 // Reset texture to default
-                LogUtil.logInfo("Reset texture to default.");
+                LogUtil.logInfo("Reset terrain texture to default.");
                 minecraft.textureManager.setTerrainTexture(null);
             }
 
