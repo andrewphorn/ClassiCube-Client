@@ -28,7 +28,7 @@ public final class GameSettings {
             SHOWNAMES_ALWAYS = 2,
             SHOWNAMES_ALWAYS_UNSCALED = 3;
     // common framerate limits
-    public static int MAX_SUPPORTED_FRAMERATE = 60;
+    public static int MAX_SUPPORTED_FRAMERATE = 144;
     public static final int[] FRAMERATE_LIMITS = {20, 30, 40, 60, 75, 85, 120, 144};
     // thirdPersonMode values
     public static final int FIRST_PERSON = 0,
