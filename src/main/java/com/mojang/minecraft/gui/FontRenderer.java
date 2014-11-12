@@ -54,7 +54,7 @@ public final class FontRenderer {
 
             if (character == 32) {
                 // Space is always 50% width
-                charWidths[32] = maxCharWidth / 2;
+                charWidths[32] = maxCharWidth / 3;
             } else {
                 // Other chars' width is determined by examining pixels
                 // First, find start of character (first non-empty row)
@@ -129,7 +129,7 @@ public final class FontRenderer {
     }
 
     public int getHeight() {
-        return (int) Math.floor(textureHeight * settings.scale);
+        return (int) Math.ceil(textureHeight * settings.scale);
     }
 
     private void render(String text, float x, float y, int color, boolean shadow) {
@@ -141,6 +141,7 @@ public final class FontRenderer {
         }
         x /= settings.scale;
         y /= settings.scale;
+        y += 7.99F * (1 - settings.scale) / 2;
 
         float charWidthScale = 128f / textureWidth;
 

@@ -34,8 +34,8 @@ public final class HUDScreen extends Screen {
     public int ticks = 0;
     public List<ChatScreenData> chatsOnScreen = new ArrayList<>();
     int page = 0;
-    private Random random = new Random();
-    private Minecraft minecraft;
+    private final Random random = new Random();
+    private final Minecraft minecraft;
     public static int chatLocation = 0;
     
     public HUDScreen(Minecraft minecraft, int width, int height) {
@@ -55,7 +55,6 @@ public final class HUDScreen extends Screen {
         while (chat.size() > 1000) {
             chat.remove(chat.size() - 1);
         }
-
     }
 
     public int findGroupChanges(int Page, List<PlayerListNameData> playerListNames) {
@@ -151,7 +150,7 @@ public final class HUDScreen extends Screen {
             }
         }
 
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
 
         String var23;
         for (var12 = 0; var12 < var8.slots.length; ++var12) {
@@ -238,7 +237,7 @@ public final class HUDScreen extends Screen {
                     .render("Arrows: " + minecraft.player.arrows, width / 2 + 8, height - 33, 16777215);
         }
 
-        byte chatLinesInScreen = 10; // chats per screen
+        int chatLinesInScreen = 10; // chats per screen
         boolean isLargeChatScreen = false;
         if (minecraft.currentScreen instanceof ChatInputScreen) {
             chatLinesInScreen = 20;
@@ -247,34 +246,30 @@ public final class HUDScreen extends Screen {
         chatLinesInScreen = (byte) (chatLinesInScreen
                 + (chatLinesInScreen - chatLinesInScreen * minecraft.settings.scale) - 1);
 
+        int chatSpacing = (int)Math.ceil(9*minecraft.settings.scale);
+        
         if (isLargeChatScreen) {
             int chatX = 2;
-            int chatY = height - chatsOnScreen.size() * 9 - 30;
-            // The longest line's length
-
-            String longestMessageNoColor = "";
-            String longestMessage = "";
-            for (ChatScreenData line : chatsOnScreen) {
-                String lineNoColor = FontRenderer.stripColor(line.string);
-                if (lineNoColor.length() > longestMessageNoColor.length()) {
-                    longestMessage = line.string;
-                    longestMessageNoColor = lineNoColor;
-                }
+            int chatY = height - chatsOnScreen.size() * chatSpacing - 30;
+            
+            // Find the longest line's length
+            int longestMessageWidth = 0;
+        for (i = chatLocation; i < chat.size() && i < chatLinesInScreen + chatLocation; ++i) {
+                int messageWidth = fontRenderer.getWidth(chat.get(i).message);
+                longestMessageWidth = Math.max(messageWidth, longestMessageWidth);
             }
-            int messageWidth = fontRenderer.getWidth(longestMessage);
-            int chatWidth = chatX + messageWidth + 6;
-            // Get the chat lines, multiply by their height to get the chat
-            // height.
-            int chatHeight = chatY + chatsOnScreen.size() * 9 + 6;
+            int chatWidth = chatX + longestMessageWidth + 2;
+            // Get the chat lines, multiply by their height to get the chat height.
+            int chatHeight = chatY + chatsOnScreen.size() * chatSpacing + 4;
             drawBox(chatX, chatY, chatWidth, chatHeight, ChatInputScreen.ChatRGB);
         }
         chatsOnScreen.clear();
         for (i = chatLocation; i < chat.size() && i < chatLinesInScreen + chatLocation; ++i) {
             if (chat.get(i).time < 200 || isLargeChatScreen) {
                 String message = chat.get(i).message;
-                fontRenderer.render(message, 4, height - 8 - (i - chatLocation) * 9 - 27, 16777215);
+                fontRenderer.render(message, 4, height - 8 - (i - chatLocation) * chatSpacing - 27, 16777215);
                 // add click data for urls
-                chatsOnScreen.add(new ChatScreenData(1, 8, 4, height - 8 - (i - chatLocation) * 9 - 27, message,
+                chatsOnScreen.add(new ChatScreenData(1, 8, 4, height - (chatSpacing-1) - (i - chatLocation) * chatSpacing - 27, message,
                         fontRenderer));
             }
         }
