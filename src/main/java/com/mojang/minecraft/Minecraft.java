@@ -1854,7 +1854,7 @@ public final class Minecraft implements Runnable {
             int playerXRotation = (int) (player.xRot * 256F / 360F) & 255;
             networkManager.send(
                     PacketType.POSITION_ROTATION,
-                    packetHandler.isExtEnabled(ProtocolExtension.HELD_BLOCK) ? player.inventory.getSelected() : -1,
+                    networkManager.isExtEnabled(ProtocolExtension.HELD_BLOCK) ? player.inventory.getSelected() : -1,
                     playerXUnits, playerYUnits, playerZUnits,
                     playerYRotation, playerXRotation);
         } catch (Exception ex) {

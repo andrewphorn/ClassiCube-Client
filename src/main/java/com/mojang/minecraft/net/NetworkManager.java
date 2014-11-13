@@ -12,15 +12,20 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class NetworkManager {
 
     public static final int MAX_PACKETS_PER_TICK = 100;
     private static final int BUFFER_SIZE = 1048576;
 
-    public Minecraft minecraft;
+    private final Set<ProtocolExtension> enabledExtensions = new HashSet<>();
+
+    private final Minecraft minecraft;
 
     private volatile boolean connected;
     public boolean handshakeSent = false;
@@ -54,7 +59,6 @@ public class NetworkManager {
          * sock.setReuseAddress(false); sock.setSoTimeout(100);
          * sock.getInetAddress().toString();
          */
-
         in.clear();
         out.clear();
         connected = true;
@@ -63,8 +67,8 @@ public class NetworkManager {
     public boolean isConnected() {
         return connected;
     }
-    
-    public void setConnected(boolean value){
+
+    public void setConnected(boolean value) {
         connected = value;
     }
 
@@ -88,7 +92,14 @@ public class NetworkManager {
                     return in.getFloat();
                 } else if (obj == String.class) {
                     in.get(stringBytes);
-                    return new String(stringBytes, "UTF-8").trim();
+                    String rawStr = new String(stringBytes, StandardCharsets.US_ASCII);
+                    if (isExtEnabled(ProtocolExtension.EMOTE_FIX)) {
+                        // In EmoteFix mode: trim spaces and nulls only
+                        return trimSpacesAndNulls(rawStr);
+                    } else {
+                        // In legacy mode: trim all control characters and spaces too.
+                        return rawStr.trim();
+                    }
                 } else if (obj == byte[].class) {
                     byte[] theBytes = new byte[1024];
                     in.get(theBytes);
@@ -229,5 +240,36 @@ public class NetworkManager {
         }
 
         channel = null;
+    }
+
+    // For EmoteFix
+    private static String trimSpacesAndNulls(String value) {
+        int len = value.length();
+        int st = 0;
+
+        while ((st < len) && (value.charAt(st) == ' ' || value.charAt(st) == 0 )) {
+            st++;
+        }
+        while ((st < len) && (value.charAt(len - 1) == ' ' || value.charAt(len - 1) == 0)) {
+            len--;
+        }
+        return ((st > 0) || (len < value.length())) ? value.substring(st, len) : value;
+    }
+
+    /**
+     * Checks whether an extension is currently enabled (and mutually supported) by this client and
+     * the server that we are currently connected to.
+     */
+    public boolean isExtEnabled(ProtocolExtension ext) {
+        return enabledExtensions.contains(ext);
+    }
+
+    public ProtocolExtension[] listEnabledExtensions() {
+        ProtocolExtension[] extList = new ProtocolExtension[enabledExtensions.size()];
+        return enabledExtensions.toArray(extList);
+    }
+
+    public void enableExtension(ProtocolExtension ext) {
+        enabledExtensions.add(ext);
     }
 }
