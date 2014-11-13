@@ -1112,8 +1112,8 @@ public final class Minecraft implements Runnable {
                             if (settings.framerateLimit > 0) {
                                 // Adjust chunks-per-frame based on framerate. Back off is under 30fps.
                                 double minDesiredFramerate = Math.max(20, settings.framerateLimit / 2);
-                                int tempFps = (int) Math.floor(1 / timer.lastFrameDuration);
-                                String fpsStr = "[" + tempFps + " / " + minDesiredFramerate + "] ";
+                                //int tempFps = (int) Math.floor(1 / timer.lastFrameDuration);
+                                //String fpsStr = "[" + tempFps + " / " + minDesiredFramerate + "] ";
                                 if (timer.lastFrameDuration > 1 / minDesiredFramerate) {
                                     renderer.everBackedOffFromChunkUpdates = (renderer.dynamicChunkUpdateLimit > Renderer.MIN_CHUNK_UPDATES_PER_FRAME);
                                     //LogUtil.logInfo(fpsStr + "backing off from " + renderer.dynamicChunkUpdateLimit + " to " + Math.max(Renderer.MIN_CHUNK_UPDATES_PER_FRAME, renderer.dynamicChunkUpdateLimit - 2));

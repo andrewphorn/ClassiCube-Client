@@ -83,15 +83,14 @@ public final class HUDScreen extends Screen {
         if (!minecraft.canRenderGUI) {
             return;
         }
-        TextureManager var6 = minecraft.textureManager;
         GL11.glBindTexture(3553, minecraft.textureManager.load(Textures.GUI));
         ShapeRenderer var7 = ShapeRenderer.instance;
         GL11.glColor4f(1F, 1F, 1F, 1F);
         GL11.glEnable(3042);
-        Inventory var8 = minecraft.player.inventory;
+        Inventory inventory = minecraft.player.inventory;
         imgZ = -90F;
         drawImage(width / 2 - 91, height - 22, 0, 0, 182, 22);
-        drawImage(width / 2 - 91 - 1 + var8.selected * 20, height - 22 - 1, 0, 22, 24, 22);
+        drawImage(width / 2 - 91 - 1 + inventory.selected * 20, height - 22 - 1, 0, 22, 24, 22);
         GL11.glBindTexture(3553, minecraft.textureManager.load(Textures.ICONS));
         drawImage(width / 2 - 7, height / 2 - 7, 0, 0, 16, 16);
         boolean var9 = (minecraft.player.invulnerableTime / 3 & 1) == 1;
@@ -156,15 +155,16 @@ public final class HUDScreen extends Screen {
         GL11.glDisable(GL11.GL_BLEND);
 
         String var23;
-        for (var12 = 0; var12 < var8.slots.length; ++var12) {
+        for (var12 = 0; var12 < inventory.slots.length; ++var12) {
             var26 = width / 2 - 90 + var12 * 20;
             i = height - 16;
-            if ((var15 = var8.slots[var12]) > 0) {
+            int selectedBlock = inventory.slots[var12];
+            if (selectedBlock > 0) {
                 GL11.glPushMatrix();
                 GL11.glTranslatef(var26, i, -50F);
-                if (var8.popTime[var12] > 0) {
+                if (inventory.popTime[var12] > 0) {
                     float var18;
-                    float var21 = -MathHelper.sin((var18 = (var8.popTime[var12] - var1) / 5F)
+                    float var21 = -MathHelper.sin((var18 = (inventory.popTime[var12] - var1) / 5F)
                             * var18 * (float) Math.PI) * 8F;
                     float var19 = MathHelper.sin(var18 * var18 * (float) Math.PI) + 1F;
                     float var16 = MathHelper.sin(var18 * (float) Math.PI) + 1F;
@@ -179,21 +179,21 @@ public final class HUDScreen extends Screen {
                 GL11.glRotatef(45F, 0F, 1F, 0F);
                 GL11.glTranslatef(-1.5F, 0.5F, 0.5F);
                 GL11.glScalef(-1F, -1F, -1F);
-                int var20 = var6.load(Textures.TERRAIN);
+                int var20 = (minecraft.textureManager).load(Textures.TERRAIN);
                 GL11.glBindTexture(3553, var20);
                 var7.begin();
-                Block.blocks[var15].renderFullBrightness(var7);
+                Block.blocks[selectedBlock].renderFullBrightness(var7);
                 var7.end();
                 GL11.glPopMatrix();
-                if (var8.count[var12] > 1) {
-                    var23 = "" + var8.count[var12];
+                // SURVIVAL: show number of blocks in hand
+                if (inventory.count[var12] > 1) {
+                    var23 = "" + inventory.count[var12];
                     fontRenderer.render(var23, var26 + 19 - fontRenderer.getWidth(var23), i + 6,
                             16777215);
                 }
             }
         }
-        // if (Minecraft.isSinglePlayer)
-        // var5.render("Development Build", 2, 32, 16777215);
+
         if (minecraft.settings.showDebug) {
             GL11.glPushMatrix();
             GL11.glScalef(0.7F, 0.7F, 1F);
@@ -281,103 +281,105 @@ public final class HUDScreen extends Screen {
         i = width / 2;
         var15 = height / 2;
         hoveredPlayer = null;
-        if (Keyboard.isCreated()) {
-            if (Keyboard.isKeyDown(15) && minecraft.networkManager != null
-                    && minecraft.networkManager.isConnected()) {
-                for (int l = 2; l < 11; l++) {
-                    if (Keyboard.isKeyDown(l)) {
-                        page = l - 2;
+        if (!Keyboard.isCreated()) {
+            return;
+        }
+
+        if (Keyboard.isKeyDown(15) && minecraft.networkManager != null
+                && minecraft.networkManager.isConnected()) {
+            for (int l = 2; l < 11; l++) {
+                if (Keyboard.isKeyDown(l)) {
+                    page = l - 2;
+                }
+            }
+            List<String> playersOnWorld = minecraft.networkManager.getPlayerNames();
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GL11.glBegin(GL11.GL_QUADS);
+            GL11.glColor4f(0F, 0F, 0F, 0.7F);
+            GL11.glVertex2f(i + 132, var15 - 72 - 12);
+            GL11.glVertex2f(i - 132, var15 - 72 - 12);
+            GL11.glColor4f(0.2F, 0.2F, 0.2F, 0.8F);
+            GL11.glVertex2f(i - 132, var15 + 72);
+            GL11.glVertex2f(i + 132, var15 + 72);
+            GL11.glEnd();
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            boolean drawDefault = false;
+            List<PlayerListNameData> playerListNames = minecraft.playerListNameData;
+            if (playerListNames.isEmpty()) {
+                drawDefault = true;
+            }
+            int maxStringsPerColumn = 14;
+            int maxStringsPerScreen = 28;
+
+            var23 = !drawDefault ? "Players online: (page " + (page + 1) + ")"
+                    : "Players online:";
+            fontRenderer.render(var23, i - fontRenderer.getWidth(var23) / 2, var15 - 64 - 12,
+                    25855);
+            if (drawDefault) {
+                for (lastHealth = 0; lastHealth < playersOnWorld.size(); ++lastHealth) {
+                    int var28 = i + lastHealth % 2 * 120 - 120;
+                    int var17 = var15 - 64 + (lastHealth / 2 << 3);
+                    if (var2 && var3 >= var28 && var4 >= var17 && var3 < var28 + 120
+                            && var4 < var17 + 8) {
+                        hoveredPlayer = playersOnWorld.get(lastHealth);
+                        fontRenderer.renderNoShadow(playersOnWorld.get(lastHealth), var28 + 2,
+                                var17, 16777215);
+                    } else {
+                        fontRenderer.renderNoShadow(playersOnWorld.get(lastHealth), var28, var17,
+                                15658734);
                     }
                 }
-                List<String> playersOnWorld = minecraft.networkManager.getPlayerNames();
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                GL11.glBegin(GL11.GL_QUADS);
-                GL11.glColor4f(0F, 0F, 0F, 0.7F);
-                GL11.glVertex2f(i + 132, var15 - 72 - 12);
-                GL11.glVertex2f(i - 132, var15 - 72 - 12);
-                GL11.glColor4f(0.2F, 0.2F, 0.2F, 0.8F);
-                GL11.glVertex2f(i - 132, var15 + 72);
-                GL11.glVertex2f(i + 132, var15 + 72);
-                GL11.glEnd();
-                GL11.glDisable(GL11.GL_BLEND);
-                GL11.glEnable(GL11.GL_TEXTURE_2D);
-                boolean drawDefault = false;
-                List<PlayerListNameData> playerListNames = minecraft.playerListNameData;
-                if (playerListNames.isEmpty()) {
-                    drawDefault = true;
+            } else { // draw the new screen
+                String lastGroupName = "";
+                int x = i + 8;
+                int y = var15 - 73;
+                int groupChanges = 0;
+                boolean hasStartedNewColumn = false;
+
+                List<PlayerListNameData> namesToPrint = new ArrayList<>();
+
+                for (int m = 0; m < page; m++) {
+                    groupChanges += findGroupChanges(m, playerListNames);
                 }
-                int maxStringsPerColumn = 14;
-                int maxStringsPerScreen = 28;
-
-                var23 = !drawDefault ? "Players online: (page " + (page + 1) + ")"
-                        : "Players online:";
-                fontRenderer.render(var23, i - fontRenderer.getWidth(var23) / 2, var15 - 64 - 12,
-                        25855);
-                if (drawDefault) {
-                    for (lastHealth = 0; lastHealth < playersOnWorld.size(); ++lastHealth) {
-                        int var28 = i + lastHealth % 2 * 120 - 120;
-                        int var17 = var15 - 64 + (lastHealth / 2 << 3);
-                        if (var2 && var3 >= var28 && var4 >= var17 && var3 < var28 + 120
-                                && var4 < var17 + 8) {
-                            hoveredPlayer = playersOnWorld.get(lastHealth);
-                            fontRenderer.renderNoShadow(playersOnWorld.get(lastHealth), var28 + 2,
-                                    var17, 16777215);
-                        } else {
-                            fontRenderer.renderNoShadow(playersOnWorld.get(lastHealth), var28, var17,
-                                    15658734);
+                int rangeA = maxStringsPerScreen * page - groupChanges;
+                int rangeB = rangeA + maxStringsPerScreen
+                        - findGroupChanges(page, playerListNames);
+                rangeB = Math.min(rangeB, playerListNames.size());
+                for (int k = rangeA; k < rangeB; k++) {
+                    namesToPrint.add(playerListNames.get(k));
+                }
+                int groupsOnThisPage = 0;
+                for (lastHealth = 0; lastHealth < namesToPrint.size(); ++lastHealth) {
+                    if (lastHealth < maxStringsPerColumn - groupsOnThisPage) {
+                        x = i - 128 + 8;
+                    } else {
+                        if (lastHealth >= maxStringsPerColumn - groupsOnThisPage
+                                && !hasStartedNewColumn) {
+                            y = var15 - 73;
+                            hasStartedNewColumn = true;
                         }
+                        x = i + 8;
                     }
-                } else { // draw the new screen
-                    String lastGroupName = "";
-                    int x = i + 8;
-                    int y = var15 - 73;
-                    int groupChanges = 0;
-                    boolean hasStartedNewColumn = false;
 
-                    List<PlayerListNameData> namesToPrint = new ArrayList<>();
-
-                    for (int m = 0; m < page; m++) {
-                        groupChanges += findGroupChanges(m, playerListNames);
-                    }
-                    int rangeA = maxStringsPerScreen * page - groupChanges;
-                    int rangeB = rangeA + maxStringsPerScreen
-                            - findGroupChanges(page, playerListNames);
-                    rangeB = Math.min(rangeB, playerListNames.size());
-                    for (int k = rangeA; k < rangeB; k++) {
-                        namesToPrint.add(playerListNames.get(k));
-                    }
-                    int groupsOnThisPage = 0;
-                    for (lastHealth = 0; lastHealth < namesToPrint.size(); ++lastHealth) {
-                        if (lastHealth < maxStringsPerColumn - groupsOnThisPage) {
-                            x = i - 128 + 8;
-                        } else {
-                            if (lastHealth >= maxStringsPerColumn - groupsOnThisPage
-                                    && !hasStartedNewColumn) {
-                                y = var15 - 73;
-                                hasStartedNewColumn = true;
-                            }
-                            x = i + 8;
-                        }
-
+                    y += 9;
+                    PlayerListNameData pi = namesToPrint.get(lastHealth);
+                    if (!lastGroupName.equals(pi.groupName)) {
+                        lastGroupName = pi.groupName;
+                        fontRenderer.render(lastGroupName, x + 2, y, 51455);
+                        groupsOnThisPage++;
                         y += 9;
-                        PlayerListNameData pi = namesToPrint.get(lastHealth);
-                        if (!lastGroupName.equals(pi.groupName)) {
-                            lastGroupName = pi.groupName;
-                            fontRenderer.render(lastGroupName, x + 2, y, 51455);
-                            groupsOnThisPage++;
-                            y += 9;
-                        }
-                        String playerName = FontRenderer.stripColor(pi.playerName);
-                        String listName = pi.listName;
-                        if (var2 && var3 >= x && var4 >= y && var3 < x + 120 && var4 < y + 8) {
-                            // if your mouse is hovered over this name
-                            hoveredPlayer = playerName;
-                            fontRenderer.renderNoShadow(listName, x + 8, y, 16777215);
-                        } else { // else render a normal name
-                            fontRenderer.renderNoShadow(listName, x + 6, y, 15658734);
-                        }
+                    }
+                    String playerName = FontRenderer.stripColor(pi.playerName);
+                    String listName = pi.listName;
+                    if (var2 && var3 >= x && var4 >= y && var3 < x + 120 && var4 < y + 8) {
+                        // if your mouse is hovered over this name
+                        hoveredPlayer = playerName;
+                        fontRenderer.renderNoShadow(listName, x + 8, y, 16777215);
+                    } else { // else render a normal name
+                        fontRenderer.renderNoShadow(listName, x + 6, y, 15658734);
                     }
                 }
             }
