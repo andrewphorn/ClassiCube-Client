@@ -10,16 +10,13 @@ public class ChatScreenData {
     public float y;
     public String string;
     public AABB bounds;
-    public FontRenderer renderer;
 
-    public ChatScreenData(float width, float height, float x, float y, String message,
-                          FontRenderer f) {
+    public ChatScreenData(float width, float height, float x, float y, String message) {
         this.width = width;
         this.height = height;
         this.x = x;
         this.y = y;
         string = message;
-        renderer = f;
-        bounds = new AABB(x, y, 0, f.getWidth(message), y + height, 0f);
+        bounds = new AABB(x, y, 0, width, y + height, 0);
     }
 }

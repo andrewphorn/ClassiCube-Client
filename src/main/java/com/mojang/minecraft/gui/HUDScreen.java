@@ -19,6 +19,7 @@ import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.MathHelper;
 
 public final class HUDScreen extends Screen {
+
     public static String Compass = "";
     public static String ServerName = "";
     public static String UserDetail = "";
@@ -37,7 +38,7 @@ public final class HUDScreen extends Screen {
     private final Random random = new Random();
     private final Minecraft minecraft;
     public static int chatLocation = 0;
-    
+
     public HUDScreen(Minecraft minecraft, int width, int height) {
         this.minecraft = minecraft;
         this.width = width * 240 / height;
@@ -248,31 +249,32 @@ public final class HUDScreen extends Screen {
         chatLinesInScreen = (byte) (chatLinesInScreen
                 + (chatLinesInScreen - chatLinesInScreen * minecraft.settings.scale) - 1);
 
-        int chatSpacing = (int)Math.ceil(9*minecraft.settings.scale);
-        
+        int chatSpacing = (int) Math.ceil(9 * minecraft.settings.scale);
+
         if (isLargeChatScreen) {
             int chatX = 2;
             int chatY = height - chatsOnScreen.size() * chatSpacing - 30;
-            
+
             // Find the longest line's length
             int longestMessageWidth = 0;
-        for (i = chatLocation; i < chat.size() && i < chatLinesInScreen + chatLocation; ++i) {
+            for (i = chatLocation; i < chat.size() && i < chatLinesInScreen + chatLocation; ++i) {
                 int messageWidth = fontRenderer.getWidth(chat.get(i).message);
                 longestMessageWidth = Math.max(messageWidth, longestMessageWidth);
             }
-            int chatWidth = chatX + longestMessageWidth + 2;
+            int chatWidth = chatX + longestMessageWidth + 3;
             // Get the chat lines, multiply by their height to get the chat height.
             int chatHeight = chatY + chatsOnScreen.size() * chatSpacing + 4;
             drawBox(chatX, chatY, chatWidth, chatHeight, ChatInputScreen.ChatRGB);
         }
         chatsOnScreen.clear();
+        float yAdjust = 7.99F * (1 - minecraft.settings.scale) / 2 * minecraft.settings.scale;
         for (i = chatLocation; i < chat.size() && i < chatLinesInScreen + chatLocation; ++i) {
             if (chat.get(i).time < 200 || isLargeChatScreen) {
                 String message = chat.get(i).message;
-                fontRenderer.render(message, 4, height - 8 - (i - chatLocation) * chatSpacing - 27, 16777215);
-                // add click data for urls
-                chatsOnScreen.add(new ChatScreenData(1, 8, 4, height - (chatSpacing-1) - (i - chatLocation) * chatSpacing - 27, message,
-                        fontRenderer));
+                int y = height - 8 - (i - chatLocation) * chatSpacing - 27;
+                fontRenderer.render(message, 4, y, 16777215);
+                chatsOnScreen.add(
+                        new ChatScreenData(fontRenderer.getWidth(message), 8, 4, y + yAdjust, message));
             }
         }
 

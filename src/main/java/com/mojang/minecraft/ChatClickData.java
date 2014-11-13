@@ -14,18 +14,19 @@ import com.mojang.minecraft.gui.FontRenderer;
  * @author Jon
  */
 public class ChatClickData {
+
     private static final Pattern patternControlCode = Pattern.compile("(?i)\\u00A7[0-9A-FK-OR]");
     public final String message;
-    /**
-     * The idea is to work with urls http, fpt, sftp, gopher, telnet and file
-     * (tee hee)
-     */
-    private final String urlPattern = "((https?|ftp|sftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
-    private final Pattern compiledPattern = Pattern.compile(urlPattern, Pattern.CASE_INSENSITIVE);
     private final ArrayList<LinkData> clickedUrls;
+    
+    // Regex pattern courtesy of Matthew O'Riordan
+    private final String urlPattern = "((([A-Za-z]{2,9}:(?:\\/\\/)?)(?:[\\-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9\\.\\-]+"
+            + "|(?:www\\.|[\\-;:&=\\+\\$,\\w]+@)[A-Za-z0-9\\.\\-]+)"
+            + "((?:\\/[\\+~%\\/\\.\\w\\-_]*)?\\??(?:[\\-\\+=&;%@\\.\\w_]*)#?(?:[\\.\\!\\/\\\\\\w]*))?)";
+    private final Pattern compiledPattern = Pattern.compile(urlPattern);
 
-    public ChatClickData(FontRenderer fontRenderer, ChatLine chatLine) {
-        message = chatLine.message;
+    public ChatClickData(FontRenderer fontRenderer, String message) {
+        this.message = message;
         clickedUrls = pullLinks(message, fontRenderer);
     }
 
@@ -43,11 +44,9 @@ public class ChatClickData {
         if (urlMatcher.matches()) {
             try {
                 String url = urlMatcher.group(0);
-
-                if (urlMatcher.group(1) == null) { // will dis happen?
+                if (!url.startsWith("http://")) {
                     url = "http://" + url;
                 }
-
                 return new URI(url);
             } catch (URISyntaxException uriE) {
                 // Not sure if we need to do anything here
@@ -61,7 +60,7 @@ public class ChatClickData {
      * Strips any URLs from the the line where the user clicked
      *
      * @param text The text in question
-     * @param fr   The font renderer instance
+     * @param fr The font renderer instance
      * @return ArrayList of LinkData
      */
     private ArrayList<LinkData> pullLinks(String text, FontRenderer fr) {
@@ -72,13 +71,15 @@ public class ChatClickData {
             if (urlStr.startsWith("(") && urlStr.endsWith(")")) {
                 urlStr = urlStr.substring(1, urlStr.length() - 1);
             }
-            links.add(new LinkData(urlStr, fr.getWidth(text.substring(0, m.start())), fr
-                    .getWidth(text.substring(0, m.end()))));
+            links.add(new LinkData(urlStr,
+                    fr.getWidth(text.substring(0, m.start())),
+                    fr.getWidth(text.substring(0, m.end()))));
         }
         return links;
     }
 
     public class LinkData {
+
         public String link;
         public int x0;
         public int x1;
