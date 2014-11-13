@@ -8,19 +8,21 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Vector;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.mojang.minecraft.ChatClickData;
 import com.mojang.minecraft.ChatClickData.LinkData;
+import com.mojang.minecraft.ChatLine;
 import com.mojang.util.LogUtil;
 import com.mojang.minecraft.net.PacketType;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatInputScreenExtension extends GuiScreen {
 
-    public static Vector<String> history = new Vector<>();
+    public static List<String> history = new ArrayList<>();
     /**
      * The background color of the chat.
      */
@@ -258,12 +260,11 @@ public class ChatInputScreenExtension extends GuiScreen {
             insertTextAtCaret(minecraft.hud.hoveredPlayer + " ");
         }
         if (clickType == 0) {
-            for (int i = 0; i < minecraft.hud.chat.size(); i++) {
+            for (ChatLine chat : minecraft.hud.chat) {
                 for (ChatScreenData data : minecraft.hud.chatsOnScreen) {
                     if (x > data.bounds.maxX && x < data.bounds.minX && y > data.bounds.maxY
                             && y < data.bounds.minY) {
-                        ChatClickData chatClickData = new ChatClickData(fontRenderer,
-                                minecraft.hud.chat.get(i));
+                        ChatClickData chatClickData = new ChatClickData(fontRenderer, chat);
                         if (data.string.equals(chatClickData.message)) {
                             for (LinkData ld : chatClickData.getClickedUrls()) {
                                 if (ld != null) {
@@ -337,12 +338,11 @@ public class ChatInputScreenExtension extends GuiScreen {
         float scale = 0.6f;
         int x = Mouse.getEventX() * width / minecraft.width;
         int y = height - Mouse.getEventY() * height / minecraft.height - 1;
-        for (int i = 0; i < minecraft.hud.chat.size(); i++) {
+        for (ChatLine chat : minecraft.hud.chat) {
             for (ChatScreenData data : minecraft.hud.chatsOnScreen) {
                 if (x > data.bounds.maxX && x < data.bounds.minX && y > data.bounds.maxY
                         && y < data.bounds.minY) {
-                    ChatClickData chatClickData = new ChatClickData(fontRenderer,
-                            minecraft.hud.chat.get(i));
+                    ChatClickData chatClickData = new ChatClickData(fontRenderer, chat);
                     if (data.string.equals(chatClickData.message)) {
                         for (LinkData ld : chatClickData.getClickedUrls()) {
                             if (ld != null) {

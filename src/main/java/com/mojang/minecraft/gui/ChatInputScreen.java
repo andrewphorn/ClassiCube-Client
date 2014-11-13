@@ -8,19 +8,21 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Vector;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.mojang.minecraft.ChatClickData;
 import com.mojang.minecraft.ChatClickData.LinkData;
+import com.mojang.minecraft.ChatLine;
 import com.mojang.util.LogUtil;
 import com.mojang.minecraft.net.PacketType;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatInputScreen extends GuiScreen {
 
-    public static Vector<String> history = new Vector<>();
+    public static List<String> history = new ArrayList<>();
     /**
      * The background color of the chat.
      */
@@ -246,10 +248,10 @@ public class ChatInputScreen extends GuiScreen {
             insertTextAtCaret(minecraft.hud.hoveredPlayer + " ");
         }
         if (clickType == 0) {
-            for (int i = 0; i < minecraft.hud.chat.size(); i++) {
+            for (ChatLine chat : minecraft.hud.chat) {
                 for (ChatScreenData data : minecraft.hud.chatsOnScreen) {
                     if (x > data.bounds.maxX && x < data.bounds.minX && y > data.bounds.maxY && y < data.bounds.minY) {
-                        ChatClickData chatClickData = new ChatClickData(fontRenderer, minecraft.hud.chat.get(i));
+                        ChatClickData chatClickData = new ChatClickData(fontRenderer, chat);
                         if (data.string.equals(chatClickData.message)) {
                             for (LinkData ld : chatClickData.getClickedUrls()) {
                                 if (ld != null) {
@@ -289,9 +291,7 @@ public class ChatInputScreen extends GuiScreen {
     public void render(int paramInt1, int paramInt2) {
         // super.drawBox(2, height - 14, width - 2, height - 2, -2147483648);
         char[] temp = new char[128];
-        for (int a = 0; a < inputLine.length(); a++) {
-            temp[a] = inputLine.toCharArray()[a];
-        }
+        System.arraycopy(inputLine.toCharArray(), 0, temp, 0, inputLine.length());
 
         if (temp.length == 0) {
             temp[temp.length] = tickCount / 6 % 2 == 0 ? '_' : ' ';
@@ -299,13 +299,13 @@ public class ChatInputScreen extends GuiScreen {
             temp[caretPos] = tickCount / 6 % 2 == 0 ? '_' : temp[caretPos];
         }
 
-        String string = "";
+        StringBuilder string = new StringBuilder("> ");
         String messageNoCaret = "";
         for (int i = 0; i < temp.length; i++) {
             if (i != caretPos) {
                 messageNoCaret += temp[i];
             }
-            string += temp[i];
+            string.append(temp[i]);
         }
         int x1 = 2;
         /*
@@ -316,20 +316,20 @@ public class ChatInputScreen extends GuiScreen {
 
         int y1 = height - 14;
         int y2 = y1 + 12;
-        super.drawBox(x1, y1, x2, y2, ChatRGB);
+        GuiScreen.drawBox(x1, y1, x2, y2, ChatRGB);
 
-        drawString(fontRenderer, "> " + string, 4, height - 12, 14737632);
+        drawString(fontRenderer, string.toString(), 4, height - 12, 14737632);
         float scale = 0.6f;
         int x = Mouse.getEventX() * width / minecraft.width;
         int y = height - Mouse.getEventY() * height / minecraft.height - 1;
-        for (int i = 0; i < minecraft.hud.chat.size(); i++) {
+        for (ChatLine chat : HUDScreen.chat) {
             for (ChatScreenData data : minecraft.hud.chatsOnScreen) {
                 if (x > data.bounds.maxX && x < data.bounds.minX && y > data.bounds.maxY && y < data.bounds.minY) {
-                    ChatClickData chatClickData = new ChatClickData(fontRenderer, minecraft.hud.chat.get(i));
+                    ChatClickData chatClickData = new ChatClickData(fontRenderer, chat);
                     if (data.string.equals(chatClickData.message)) {
                         for (LinkData ld : chatClickData.getClickedUrls()) {
                             if (ld != null && (x > ld.x0 && x < ld.x1 && y > data.bounds.maxY && y < data.bounds.minY)) {
-                                super.drawBox(ld.x0, data.y - 1, ld.x1 + 3 * scale, data.y + 9 * scale, -2147483648);
+                                GuiScreen.drawBox(ld.x0, data.y - 1, ld.x1 + 3 * scale, data.y + 9 * scale, -2147483648);
                             }
                         }
                     }

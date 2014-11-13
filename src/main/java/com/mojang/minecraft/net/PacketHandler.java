@@ -7,9 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -45,6 +43,7 @@ public final class PacketHandler {
     private final Minecraft minecraft;
 
     public boolean isLoadingLevel;
+    private long lastLevelProgress;
 
     // This object is used to store the level object while it's being loaded.
     // Packets that modify can modify the level before it loaded (like ENV_SET_COLOR)
@@ -133,7 +132,15 @@ public final class PacketHandler {
             short chunkLength = (short) packetParams[0];
             byte[] chunkData = (byte[]) packetParams[1];
             byte percentComplete = (byte) packetParams[2];
-            minecraft.progressBar.setProgress(percentComplete);
+
+            // Update progress bar at most 10 times per second, to avoid long map load times.
+            long now = System.currentTimeMillis();
+            if (now - lastLevelProgress > 50) {
+                // setProgress forces a full screen refresh, use sparingly!
+                minecraft.progressBar.setProgress(percentComplete);
+                lastLevelProgress = now;
+            }
+
             networkManager.levelData.write(chunkData, 0, chunkLength);
 
         } else if (packetType == PacketType.LEVEL_FINALIZE) {

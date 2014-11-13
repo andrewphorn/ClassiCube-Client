@@ -79,7 +79,9 @@ public final class HUDScreen extends Screen {
     public final void render(float var1, boolean var2, int var3, int var4) {
         FontRenderer fontRenderer = minecraft.fontRenderer;
         minecraft.renderer.enableGuiMode();
-        if (!minecraft.canRenderGUI) return;
+        if (!minecraft.canRenderGUI) {
+            return;
+        }
         TextureManager var6 = minecraft.textureManager;
         GL11.glBindTexture(3553, minecraft.textureManager.load(Textures.GUI));
         ShapeRenderer var7 = ShapeRenderer.instance;

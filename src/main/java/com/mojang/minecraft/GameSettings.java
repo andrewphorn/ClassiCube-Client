@@ -417,11 +417,11 @@ public final class GameSettings {
         }
         int closest = Integer.MAX_VALUE;
         long minDifference = Integer.MAX_VALUE;
-        for (int i = 0; i < options.length; i++) {
-            long difference = Math.abs((long) options[i] - target);
+        for (int option : options) {
+            long difference = Math.abs((long) option - target);
             if (minDifference > difference) {
                 minDifference = difference;
-                closest = options[i];
+                closest = option;
             }
         }
         return closest;

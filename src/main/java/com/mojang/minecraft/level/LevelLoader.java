@@ -15,19 +15,12 @@ import com.mojang.minecraft.player.Player;
 
 public class LevelLoader {
 
-    public LevelLoader() {
-    }
-
     // Used for received map streams from servers
-    public static byte[] decompress(InputStream input) {
-        try {
-            DataInputStream stream = new DataInputStream(new GZIPInputStream(input));
+    public static byte[] decompress(InputStream input) throws IOException {
+        try (DataInputStream stream = new DataInputStream(new GZIPInputStream(input))) {
             byte[] blockArray = new byte[stream.readInt()];
             stream.readFully(blockArray);
-            stream.close();
             return blockArray;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
         }
     }
 

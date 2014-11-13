@@ -726,7 +726,7 @@ public class Level implements Serializable {
 
     public int getTile(int x, int y, int z) {
         return x >= 0 && y >= 0 && z >= 0 && x < width && y < height && z < length
-                ? blocks[(y * length + z) * width + x] & 255
+                ? blocks[(y * length + z) * width + x]
                 : 0;
     }
 

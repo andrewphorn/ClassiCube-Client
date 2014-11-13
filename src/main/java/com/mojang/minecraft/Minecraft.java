@@ -773,7 +773,7 @@ public final class Minecraft implements Runnable {
             }
         }
 
-        particleManager = new ParticleManager(textureManager);
+        particleManager = new ParticleManager();
         if (isLevelLoaded) {
             try {
                 cursor = new Cursor(16, 16, 0, 0, 1, BufferUtils.createIntBuffer(256), null);
@@ -1200,19 +1200,21 @@ public final class Minecraft implements Runnable {
                         var69 = MathHelper.cos(player.xRot * (float) Math.PI / 180F);
 
                         for (int pass = 0; pass < 2; ++pass) {
-                            if (!particleManager.particles[pass].isEmpty()) {
+                            List<Particle> particles = (pass == 0 ? particleManager.particles0 : particleManager.particles1);
+
+                            if (!particles.isEmpty()) {
                                 int textureId = 0;
                                 if (pass == 0) {
-                                    textureId = particleManager.textureManager.load(Textures.PARTICLES);
+                                    textureId = textureManager.load(Textures.PARTICLES);
                                 } else if (pass == 1) {
-                                    textureId = particleManager.textureManager.load(Textures.TERRAIN);
+                                    textureId = textureManager.load(Textures.TERRAIN);
                                 }
 
                                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
                                 shapeRenderer.begin();
 
-                                for (int i = 0; i < particleManager.particles[pass].size(); ++i) {
-                                    ((Particle) particleManager.particles[pass].get(i)).render(
+                                for (Particle particle : particles) {
+                                    particle.render(
                                             shapeRenderer, delta, var123, var69, newYRot, var117,
                                             var32);
                                 }
@@ -1581,17 +1583,12 @@ public final class Minecraft implements Runnable {
             if (newLevel != null) {
                 newLevel.particleEngine = particleManager;
             }
-
-            for (int pass = 0; pass < 2; ++pass) {
-                particleManager.particles[pass].clear();
-            }
+            particleManager.clear();
         }
 
         if (inventoryCache != null) {
             player.inventory.slots = inventoryCache;
         }
-
-        System.gc();
     }
 
     public final void shutdown() {
