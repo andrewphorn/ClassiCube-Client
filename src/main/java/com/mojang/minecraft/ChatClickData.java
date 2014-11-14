@@ -7,8 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.mojang.minecraft.gui.FontRenderer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Class used to store data for clicking URLs in the chat screen
@@ -20,8 +18,8 @@ public class ChatClickData {
     public final String message;
 
     // Regex pattern courtesy of Matthew O'Riordan
-    private final String urlPattern = "\\(?((([A-Za-z]{2,9}:(\\/\\/)?)([\\-;:&=\\+\\$,\\w][\\-;:&=\\+\\$,\\w]+@)?([A-Za-z0-9]([A-Za-z0-9\\-]*[A-Za-z0-9])?)(\\.[A-Za-z0-9]([A-Za-z0-9\\-]*[A-Za-z0-9])?)+|(www\\.|[\\-;:&=\\+\\$,\\w]+@)([A-Za-z0-9]([A-Za-z0-9\\-]*[A-Za-z0-9])?)(\\.[A-Za-z0-9]([A-Za-z0-9\\-]*[A-Za-z0-9])?)+)(:\\d+)?((\\/[\\+~%\\/\\.\\w\\-_\\(\\)]*)?(\\?[\\-\\+=&;%@\\.\\w_]*)?(#\\S*)?))";
-    private final Pattern compiledPattern = Pattern.compile(urlPattern);
+    private final String urlPattern = "\\(?(?:(?:[a-z]{2,9}:(?:\\/\\/)?)(?:[\\-;:&=\\+\\$,\\w]+@)?[a-z0-9\\-]+(?:\\.[a-z0-9\\-]+)+|www\\.[a-z0-9\\-]+(?:\\.[a-z0-9\\-]+)+)(?::\\d{1,5})?(?:\\/[\\+~%\\/\\.\\w\\-\\(\\)]*)?(?:\\?[\\-\\+=&;%@\\.\\w]*)?(?:#\\S*)?";
+    private final Pattern compiledPattern = Pattern.compile(urlPattern, Pattern.CASE_INSENSITIVE);
 
     public ChatClickData(String message) {
         this.message = FontRenderer.stripColor(message);
