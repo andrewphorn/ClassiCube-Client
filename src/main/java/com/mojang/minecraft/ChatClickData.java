@@ -7,6 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.mojang.minecraft.gui.FontRenderer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class used to store data for clicking URLs in the chat screen
@@ -15,45 +17,18 @@ import com.mojang.minecraft.gui.FontRenderer;
  */
 public class ChatClickData {
 
-    private static final Pattern patternControlCode = Pattern.compile("(?i)\\u00A7[0-9A-FK-OR]");
     public final String message;
-    private final ArrayList<LinkData> clickedUrls;
-    
+
     // Regex pattern courtesy of Matthew O'Riordan
-    private final String urlPattern = "((([A-Za-z]{2,9}:(?:\\/\\/)?)(?:[\\-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9\\.\\-]+"
-            + "|(?:www\\.|[\\-;:&=\\+\\$,\\w]+@)[A-Za-z0-9\\.\\-]+)"
-            + "((?:\\/[\\+~%\\/\\.\\w\\-_]*)?\\??(?:[\\-\\+=&;%@\\.\\w_]*)#?(?:[\\.\\!\\/\\\\\\w]*))?)";
+    private final String urlPattern = "\\(?((([A-Za-z]{2,9}:(\\/\\/)?)([\\-;:&=\\+\\$,\\w][\\-;:&=\\+\\$,\\w]+@)?([A-Za-z0-9]([A-Za-z0-9\\-]*[A-Za-z0-9])?)(\\.[A-Za-z0-9]([A-Za-z0-9\\-]*[A-Za-z0-9])?)+|(www\\.|[\\-;:&=\\+\\$,\\w]+@)([A-Za-z0-9]([A-Za-z0-9\\-]*[A-Za-z0-9])?)(\\.[A-Za-z0-9]([A-Za-z0-9\\-]*[A-Za-z0-9])?)+)(:\\d+)?((\\/[\\+~%\\/\\.\\w\\-_\\(\\)]*)?(\\?[\\-\\+=&;%@\\.\\w_]*)?(#\\S*)?))";
     private final Pattern compiledPattern = Pattern.compile(urlPattern);
 
-    public ChatClickData(FontRenderer fontRenderer, String message) {
-        this.message = message;
-        clickedUrls = pullLinks(message, fontRenderer);
+    public ChatClickData(String message) {
+        this.message = FontRenderer.stripColor(message);
     }
 
-    public static String stripControlCodes(String string) {
-        return patternControlCode.matcher(string).replaceAll("");
-    }
-
-    public ArrayList<LinkData> getClickedUrls() {
-        return clickedUrls;
-    }
-
-    public URI getURI(String message) {
-        Matcher urlMatcher = compiledPattern.matcher(message);
-
-        if (urlMatcher.matches()) {
-            try {
-                String url = urlMatcher.group(0);
-                if (!url.startsWith("http://")) {
-                    url = "http://" + url;
-                }
-                return new URI(url);
-            } catch (URISyntaxException uriE) {
-                // Not sure if we need to do anything here
-                // I'm sure no error needs to be recorded
-            }
-        }
-        return null;
+    public ArrayList<LinkData> getClickedUrls(FontRenderer fontRenderer) {
+        return pullLinks(message, fontRenderer);
     }
 
     /**
@@ -67,25 +42,36 @@ public class ChatClickData {
         ArrayList<LinkData> links = new ArrayList<>();
         Matcher m = compiledPattern.matcher(text);
         while (m.find()) {
+            int start = m.start();
+            int end = m.end();
             String urlStr = m.group();
-            if (urlStr.startsWith("(") && urlStr.endsWith(")")) {
-                urlStr = urlStr.substring(1, urlStr.length() - 1);
+            if (urlStr.charAt(0) == '(') {
+                start++;
+                if (urlStr.endsWith(")")) {
+                    end--;
+                }
+                urlStr = text.substring(start, end);
             }
-            links.add(new LinkData(urlStr,
-                    fr.getWidth(text.substring(0, m.start())),
-                    fr.getWidth(text.substring(0, m.end()))));
+
+            try {
+                links.add(new LinkData(new URI(urlStr),
+                        fr.getWidth(text.substring(0, start)),
+                        fr.getWidth(text.substring(0, end))));
+            } catch (URISyntaxException ex) {
+                // Suppress
+            }
         }
         return links;
     }
 
     public class LinkData {
 
-        public String link;
+        public URI url;
         public int x0;
         public int x1;
 
-        public LinkData(String textualLink, int x0, int x1) {
-            link = textualLink;
+        public LinkData(URI textualLink, int x0, int x1) {
+            url = textualLink;
             this.x0 = x0;
             this.x1 = x1;
         }

@@ -250,14 +250,10 @@ public class ChatInputScreen extends GuiScreen {
         if (clickType == 0) {
             for (ChatScreenData chatLine : minecraft.hud.chatsOnScreen) {
                 if (x >= chatLine.bounds.maxX && x <= chatLine.bounds.minX && y >= chatLine.bounds.maxY && y <= chatLine.bounds.minY) {
-                    ChatClickData chatClickData = new ChatClickData(fontRenderer, chatLine.string);
-                    for (LinkData link : chatClickData.getClickedUrls()) {
+                    ChatClickData chatClickData = new ChatClickData(chatLine.string);
+                    for (LinkData link : chatClickData.getClickedUrls(fontRenderer)) {
                         if (x >= 4 + link.x0 && x <= 4 + link.x1) {
-                            String s = FontRenderer.stripColor(link.link);
-                            URI uri = chatClickData.getURI(s);
-                            if (uri != null) {
-                                openWebPage(uri);
-                            }
+                            openWebPage(link.url);
                         }
                     }
                 }
@@ -314,10 +310,10 @@ public class ChatInputScreen extends GuiScreen {
         int y = height - Mouse.getEventY() * height / minecraft.height - 1;
         for (ChatScreenData chatLine : minecraft.hud.chatsOnScreen) {
             if (x > chatLine.bounds.maxX && x < chatLine.bounds.minX && y > chatLine.bounds.maxY && y < chatLine.bounds.minY) {
-                ChatClickData chatClickData = new ChatClickData(fontRenderer, chatLine.string);
-                for (LinkData link : chatClickData.getClickedUrls()) {
+                ChatClickData chatClickData = new ChatClickData(chatLine.string);
+                for (LinkData link : chatClickData.getClickedUrls(fontRenderer)) {
                     if (x > 3 + link.x0 && x < 3 + link.x1) {
-                        GuiScreen.drawBox(3 + link.x0, chatLine.y, 5 + link.x1, chatLine.y + chatSpacing, -2147483648);
+                        GuiScreen.drawBox(3 + link.x0, chatLine.y, 4 + link.x1, chatLine.y + chatSpacing, -2147483648);
                     }
                 }
             }
