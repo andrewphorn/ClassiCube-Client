@@ -87,194 +87,199 @@ public class Player extends HumanoidMob {
                 }
             }
         } else {
-            oBob = bob;
-            input.updateMovement(1);
-            super.aiStep();
-            float fx = xd;
-            float fy = yd;
-            float fz = zd;
-            if (fx > 0.1f) {
-                fx = 0.1f;
-            }
-            if (fy > 0.1f) {
-                fy = 0.1f;
-            }
-            if (fz > 0.1f) {
-                fz = 0.1f;
-            }
+            if (input.canMove) {
+                oBob = bob;
+                input.updateMovement(1);
+                super.aiStep();
+                float fx = xd;
+                float fy = yd;
+                float fz = zd;
+                if (fx > 0.1f) {
+                    fx = 0.1f;
+                }
+                if (fy > 0.1f) {
+                    fy = 0.1f;
+                }
+                if (fz > 0.1f) {
+                    fz = 0.1f;
+                }
 
-            if (fx < -0.1f) {
-                fx = -0.1f;
-            }
-            if (fy < -0.1f) {
-                fy = -0.1f;
-            }
-            if (fz < -0.1f) {
-                fz = -0.1f;
-            }
+                if (fx < -0.1f) {
+                    fx = -0.1f;
+                }
+                if (fy < -0.1f) {
+                    fy = -0.1f;
+                }
+                if (fz < -0.1f) {
+                    fz = -0.1f;
+                }
 
-            float aaa = MathHelper.sqrt(fx * fx + fz * fz);
-            float bbb = (float) Math.atan(-fy * 0.2F) * 15F;
-            bob += (aaa - bob) * 0.4F;
-            tilt += (bbb - tilt) * 0.8F;
+                float aaa = MathHelper.sqrt(fx * fx + fz * fz);
+                float bbb = (float) Math.atan(-fy * 0.2F) * 15F;
+                bob += (aaa - bob) * 0.4F;
+                tilt += (bbb - tilt) * 0.8F;
 
-            boolean isFlying = false;
-            boolean isNoClipping = false;
-            boolean isSpeeding = true;
-            float speedMult = 1F;
-            oBob = bob;
-            if (flyingMode && HackState.fly) {
-                isFlying = true;
-            }
-            if (noPhysics && HackState.noclip) {
-                isNoClipping = true;
-            }
-            if (input.mult > 1F && HackState.speed) {
-                speedMult = input.mult;
-            }
+                boolean isFlying = false;
+                boolean isNoClipping = false;
+                boolean isSpeeding = true;
+                float speedMult = 1F;
+                oBob = bob;
+                if (flyingMode && HackState.fly) {
+                    isFlying = true;
+                }
+                if (noPhysics && HackState.noclip) {
+                    isNoClipping = true;
+                }
+                if (input.mult > 1F && HackState.speed) {
+                    speedMult = input.mult;
+                }
 
-            if (!settings.hacksEnabled) {
-                isFlying = false;
-                isNoClipping = false;
-                isSpeeding = false;
-                speedMult = 1F;
-            }
+                if (!settings.hacksEnabled) {
+                    isFlying = false;
+                    isNoClipping = false;
+                    isSpeeding = false;
+                    speedMult = 1F;
+                }
 
-            if (!HackState.fly || !HackState.speed) {
-                isSpeeding = false;
-            }
+                if (!HackState.fly || !HackState.speed) {
+                    isSpeeding = false;
+                }
 
-            xo = x;
-            yo = y;
-            zo = z;
-            xRotO = xRot;
-            yRotO = yRot;
+                xo = x;
+                yo = y;
+                zo = z;
+                xRotO = xRot;
+                yRotO = yRot;
 
-            boolean inWater = isInWater();
-            boolean inLava = isInLava();
-            boolean onRope = isInOrOnRope();
+                boolean inWater = isInWater();
+                boolean inLava = isInLava();
+                boolean onRope = isInOrOnRope();
 
-            // this.input.updateMovement(1);
-            if (isFlying || isNoClipping) {
-                yd = input.elevate;
-            }
+                // this.input.updateMovement(1);
+                if (isFlying || isNoClipping) {
+                    yd = input.elevate;
+                }
 
-            if (onGround || isFlying) {
-                jumpCount = 0;
-            }
+                if (onGround || isFlying) {
+                    jumpCount = 0;
+                }
 
-            if (input.jump) {
-                if (inWater) {
-                    yd += 0.08F;
-                } else if (onRope) {
-                    yd += 0.06F;
-                } else if (inLava) {
-                    yd += 0.07F;
-                } else if (isFlying) {
-                    yd += 0.05F;
-                } else if (onGround) {
-                    if (!input.fall) {
-                        if (!settings.hacksEnabled && isSpeeding) {
-                            yd = 0.48F;
-                        } else {
-                            yd = 0.35F;
+                if (input.jump) {
+                    if (inWater) {
+                        yd += 0.08F;
+                    } else if (onRope) {
+                        yd += 0.06F;
+                    } else if (inLava) {
+                        yd += 0.07F;
+                    } else if (isFlying) {
+                        yd += 0.05F;
+                    } else if (onGround) {
+                        if (!input.fall) {
+                            if (!settings.hacksEnabled && isSpeeding) {
+                                yd = 0.48F;
+                            } else {
+                                yd = 0.35F;
+                            }
+                            input.fall = true;
+                            jumpCount += 1;
                         }
+                    } else if (settings.hacksEnabled && !input.fall && isSpeeding && jumpCount < 3) {
+                        yd = 0.5F;
                         input.fall = true;
                         jumpCount += 1;
                     }
-                } else if (settings.hacksEnabled && !input.fall && isSpeeding && jumpCount < 3) {
-                    yd = 0.5F;
-                    input.fall = true;
-                    jumpCount += 1;
-                }
-            } else {
-                input.fall = false;
-            }
-
-            if (settings.hacksEnabled && isSpeeding && jumpCount > 1) {
-                speedMult *= 2.5F;
-                if (!isOnIce) {
-                    speedMult *= jumpCount;
                 } else {
-                    jumpCount = 0;
+                    input.fall = false;
                 }
-            }
 
-            if (inWater && !isFlying && !isNoClipping) {
-                float oldY = y;
-                super.moveRelative(input.strafe, input.move, 0.02F * speedMult);
-                super.move(xd * speedMult, yd * speedMult, zd * speedMult);
-                xd *= 0.8F;
-                yd *= 0.8F;
-                zd *= 0.8F;
-                yd = (float) (yd - 0.02D);
-                if (horizontalCollision && isFree(xd, yd + 0.6F - y + oldY, zd)) {
-                    yd = 0.3F;
+                if (settings.hacksEnabled && isSpeeding && jumpCount > 1) {
+                    speedMult *= 2.5F;
+                    if (!isOnIce) {
+                        speedMult *= jumpCount;
+                    } else {
+                        jumpCount = 0;
+                    }
                 }
-                return;
-            }
 
-            if (inLava && !isFlying && !isNoClipping) {
-                float oldY = y;
-                super.moveRelative(input.strafe, input.move, 0.02F * speedMult);
-                super.move(xd * speedMult, yd * speedMult, zd * speedMult);
-                xd *= 0.5F;
-                yd *= 0.5F;
-                zd *= 0.5F;
-                yd = (float) (yd - 0.02D);
-                if (horizontalCollision && isFree(xd, yd + 0.6F - y + oldY, zd)) {
-                    yd = 0.3F;
+                if (inWater && !isFlying && !isNoClipping) {
+                    float oldY = y;
+                    super.moveRelative(input.strafe, input.move, 0.02F * speedMult);
+                    super.move(xd * speedMult, yd * speedMult, zd * speedMult);
+                    xd *= 0.8F;
+                    yd *= 0.8F;
+                    zd *= 0.8F;
+                    yd = (float) (yd - 0.02D);
+                    if (horizontalCollision && isFree(xd, yd + 0.6F - y + oldY, zd)) {
+                        yd = 0.3F;
+                    }
+                    return;
                 }
-                return;
-            }
 
-            if (isFlying) {
-                speedMult *= 1.2f;
-            }
-
-            float f4 = 0F;
-            float speedScale;
-            if (isNoClipping) {
-                f4 = isFlying ? 0.72F : 0.71F;
-                if (isFlying) {
-                    yd = input.elevate;
+                if (inLava && !isFlying && !isNoClipping) {
+                    float oldY = y;
+                    super.moveRelative(input.strafe, input.move, 0.02F * speedMult);
+                    super.move(xd * speedMult, yd * speedMult, zd * speedMult);
+                    xd *= 0.5F;
+                    yd *= 0.5F;
+                    zd *= 0.5F;
+                    yd = (float) (yd - 0.02D);
+                    if (horizontalCollision && isFree(xd, yd + 0.6F - y + oldY, zd)) {
+                        yd = 0.3F;
+                    }
+                    return;
                 }
-                speedScale = 0.2F;
-            } else if (onGround || jumpCount > 0 || isFlying) {
-                speedScale = 0.1F;
-            } else {
-                speedScale = 0.02F;
-            }
-
-            super.moveRelative(input.strafe, input.move, speedScale * speedMult);
-
-            if (isNoClipping && (xd != 0F || zd != 0F)) {
-                super.moveTo(x + xd, y + yd - f4, z + zd, yRot, xRot);
-                yo = y += f4;
-            } else {
-                super.move(xd * speedMult, yd * speedMult, zd * speedMult);
-            }
-            int tileBelow = level.getTile((int) x, (int) (y - 2.12F), (int) z);
-            if (Block.blocks[tileBelow] != Block.ICE) {
-                if (jumpCount == 0) {
-                    isOnIce = false;
-                }
-                float f2 = 0.6F;
-                xd *= 0.91F;
-                yd *= 0.98F;
-                zd *= 0.91F;
 
                 if (isFlying) {
-                    yd *= f2 / 4F;
-                    walkDist = 0F;
-                } else {
-                    yd = (float) (yd - 0.01D);
+                    speedMult *= 1.2f;
                 }
-                xd *= f2;
-                zd *= f2;
-                tilt = 0f;
+
+                float f4 = 0F;
+                float speedScale;
+                if (isNoClipping) {
+                    f4 = isFlying ? 0.72F : 0.71F;
+                    if (isFlying) {
+                        yd = input.elevate;
+                    }
+                    speedScale = 0.2F;
+                } else if (onGround || jumpCount > 0 || isFlying) {
+                    speedScale = 0.1F;
+                } else {
+                    speedScale = 0.02F;
+                }
+
+                super.moveRelative(input.strafe, input.move, speedScale * speedMult);
+
+                if (isNoClipping && (xd != 0F || zd != 0F)) {
+                    super.moveTo(x + xd, y + yd - f4, z + zd, yRot, xRot);
+                    yo = y += f4;
+                } else {
+                    super.move(xd * speedMult, yd * speedMult, zd * speedMult);
+                }
+                int tileBelow = level.getTile((int) x, (int) (y - 2.12F), (int) z);
+                if (Block.blocks[tileBelow] != Block.ICE) {
+                    if (jumpCount == 0) {
+                        isOnIce = false;
+                    }
+                    float f2 = 0.6F;
+                    xd *= 0.91F;
+                    yd *= 0.98F;
+                    zd *= 0.91F;
+
+                    if (isFlying) {
+                        yd *= f2 / 4F;
+                        walkDist = 0F;
+                    } else {
+                        yd = (float) (yd - 0.01D);
+                    }
+                    xd *= f2;
+                    zd *= f2;
+                    tilt = 0f;
+                } else {
+                    isOnIce = true;
+                }
             } else {
-                isOnIce = true;
+                input.updateMovement(0);
+                super.aiStep();
             }
         }
     }
