@@ -2004,7 +2004,9 @@ public final class Minecraft implements Runnable {
                                 break;
 
                             case Keyboard.KEY_F6:
-                                settings.thirdPersonMode = settings.thirdPersonMode.next();
+                                if (HackState.noclip) {
+                                    settings.thirdPersonMode = settings.thirdPersonMode.next();
+                                }
                                 break;
 
                             case Keyboard.KEY_F11:
