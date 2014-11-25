@@ -67,7 +67,7 @@ public final class FontRenderer {
                 }
                 // Next, find end of character (right-most non-empty column)
                 int chEnd = maxCharWidth - 1;
-                for (int c = maxCharWidth - 1; c > chStart; c--) {
+                for (int c = maxCharWidth - 1; c >= chStart; c--) {
                     chEnd = c;
                     if (!isColEmpty(fontData, offset + c, width, maxCharHeight)) {
                         break;
