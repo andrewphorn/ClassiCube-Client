@@ -53,11 +53,11 @@ public final class FontRenderer {
             int offset = (col * maxCharWidth) + (row * maxCharHeight * width);
 
             if (character == 32) {
-                // Space is always 50% width
+                // Space is always 33% width
                 charWidths[32] = maxCharWidth / 3;
             } else {
                 // Other chars' width is determined by examining pixels
-                // First, find start of character (first non-empty row)
+                // First, find start of character (left-most non-empty column)
                 int chStart = 0;
                 for (int c = 0; c < maxCharWidth; c++) {
                     chStart = c;
@@ -65,7 +65,7 @@ public final class FontRenderer {
                         break;
                     }
                 }
-                // Next, find end of character (last non-empty row)
+                // Next, find end of character (right-most non-empty column)
                 int chEnd = maxCharWidth - 1;
                 for (int c = maxCharWidth - 1; c > chStart; c--) {
                     chEnd = c;
