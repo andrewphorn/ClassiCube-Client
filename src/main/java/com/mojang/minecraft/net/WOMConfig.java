@@ -60,8 +60,12 @@ public class WOMConfig {
             HackState.respawn = false;
         }
 
-        if ((joinedString.contains("+ophax")) && minecraft.player.userType >= 100) {
-            HackState.setAllEnabled();
+        if (joinedString.contains("+ophax")) {
+            if (minecraft.player.userType >= 100){
+                HackState.setAllEnabled();
+            } else {
+                HackState.setAllDisabled();
+            }
         }
     }
 
