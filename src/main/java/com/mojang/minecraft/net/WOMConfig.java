@@ -35,6 +35,14 @@ public class WOMConfig {
             HackState.setAllEnabled();
         }
 
+        if (joinedString.contains("+ophax")) {
+            if (minecraft.player.userType >= 100){
+                HackState.setAllEnabled();
+            } else { // disable all non op players hax, which can be determined after this
+                HackState.setAllDisabled();
+            }
+        }
+
         // then we can manually disable others here
         if (joinedString.contains("+fly")) {
             HackState.fly = true;
@@ -58,14 +66,6 @@ public class WOMConfig {
             HackState.respawn = true;
         } else if (joinedString.contains("-respawn")) {
             HackState.respawn = false;
-        }
-
-        if (joinedString.contains("+ophax")) {
-            if (minecraft.player.userType >= 100){
-                HackState.setAllEnabled();
-            } else {
-                HackState.setAllDisabled();
-            }
         }
     }
 
