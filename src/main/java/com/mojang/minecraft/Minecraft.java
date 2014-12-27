@@ -385,28 +385,7 @@ public final class Minecraft implements Runnable {
         }
         String folder = ".net.classicube.client";
         String home = System.getProperty("user.home");
-        File minecraftFolder;
-        OperatingSystem os = OperatingSystem.detect();
-        switch (os) {
-            case LINUX:
-            case SOLARIS:
-                minecraftFolder = new File(home, folder + '/');
-                break;
-            case WINDOWS:
-                String appData = System.getenv("APPDATA");
-
-                if (appData != null) {
-                    minecraftFolder = new File(appData, folder + '/');
-                } else {
-                    minecraftFolder = new File(home, folder + '/');
-                }
-                break;
-            case MAC_OS_X:
-                minecraftFolder = new File(home, "Library/Application Support/" + folder);
-                break;
-            default:
-                minecraftFolder = new File(home, folder + '/');
-        }
+        File minecraftFolder = OperatingSystem.detect().getMinecraftFolder(home, folder);
 
         if (!minecraftFolder.exists() && !minecraftFolder.mkdirs()) {
             throw new RuntimeException("The working directory could not be created: "
