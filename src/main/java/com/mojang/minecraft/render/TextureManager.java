@@ -612,9 +612,9 @@ public class TextureManager {
     }
 
     public void resetSideBlock() {
-        sideBlockId = -1;
-        customSideBlock = null;
+        sideBlockId = 7;
         unloadTexture(Textures.MAP_SIDE);
+        customSideBlock = textureAtlas.get(Block.blocks[7].getTextureId(TextureSide.Top));
     }
 
     public int getEdgeBlock() {
@@ -633,9 +633,9 @@ public class TextureManager {
     }
 
     public void resetEdgeBlock() {
-        edgeBlockId = -1;
-        customEdgeBlock = null;
+        edgeBlockId = 8;
         unloadTexture(Textures.MAP_EDGE);
+        customEdgeBlock = textureAtlas.get(Block.blocks[8].getTextureId(TextureSide.Top));
     }
 
     public void setTerrainTexture(BufferedImage newImage) {
