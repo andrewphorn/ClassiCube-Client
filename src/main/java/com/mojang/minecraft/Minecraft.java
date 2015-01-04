@@ -1150,37 +1150,39 @@ public final class Minecraft implements Runnable {
                         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
                         // If player is inside a solid block (noclip?)
                         if (level.isSolid(player.x, player.y, player.z, 0.1F)) {
-                            int playerX = (int) player.x;
-                            int playerY = (int) player.y;
-                            int playerZ = (int) player.z;
+                            if (!player.noPhysics || !HackState.noclip){
+                                int playerX = (int) player.x;
+                                int playerY = (int) player.y;
+                                int playerZ = (int) player.z;
 
-                            for (int x = playerX - 1; x <= playerX + 1; ++x) {
-                                for (int y = playerY - 1; y <= playerY + 1; ++y) {
-                                    for (int z = playerZ - 1; z <= playerZ + 1; ++z) {
-                                        int var104 = levelRenderer.level.getTile(x, y, z);
-                                        if (var104 != 0 && Block.blocks[var104].isSolid()) {
-                                            GL11.glColor4f(0.2F, 0.2F, 0.2F, 1F);
-                                            GL11.glDepthFunc(GL11.GL_LESS);
+                                for (int x = playerX - 1; x <= playerX + 1; ++x) {
+                                    for (int y = playerY - 1; y <= playerY + 1; ++y) {
+                                        for (int z = playerZ - 1; z <= playerZ + 1; ++z) {
+                                            int var104 = levelRenderer.level.getTile(x, y, z);
+                                            if (var104 != 0 && Block.blocks[var104].isSolid()) {
+                                                GL11.glColor4f(0.2F, 0.2F, 0.2F, 1F);
+                                                GL11.glDepthFunc(GL11.GL_LESS);
 
-                                            shapeRenderer.begin();
+                                                shapeRenderer.begin();
 
-                                            for (int side = 0; side < 6; ++side) {
-                                                Block.blocks[var104].renderInside(shapeRenderer,
-                                                        x, y, z, side);
+                                                for (int side = 0; side < 6; ++side) {
+                                                    Block.blocks[var104].renderInside(shapeRenderer,
+                                                            x, y, z, side);
+                                                }
+
+                                                shapeRenderer.end();
+                                                GL11.glCullFace(GL11.GL_FRONT);
+                                                shapeRenderer.begin();
+
+                                                for (int side = 0; side < 6; ++side) {
+                                                    Block.blocks[var104].renderInside(shapeRenderer,
+                                                            x, y, z, side);
+                                                }
+                                            
+                                                shapeRenderer.end();
+                                                GL11.glCullFace(GL11.GL_BACK);
+                                                GL11.glDepthFunc(GL11.GL_LEQUAL);
                                             }
-
-                                            shapeRenderer.end();
-                                            GL11.glCullFace(GL11.GL_FRONT);
-                                            shapeRenderer.begin();
-
-                                            for (int side = 0; side < 6; ++side) {
-                                                Block.blocks[var104].renderInside(shapeRenderer,
-                                                        x, y, z, side);
-                                            }
-
-                                            shapeRenderer.end();
-                                            GL11.glCullFace(GL11.GL_BACK);
-                                            GL11.glDepthFunc(GL11.GL_LEQUAL);
                                         }
                                     }
                                 }
