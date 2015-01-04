@@ -449,8 +449,10 @@ public abstract class Entity implements Serializable {
             dz *= 0.05F;
             dx *= 1F - pushthrough;
             dz *= 1F - pushthrough;
-            this.push(-dx, 0F, -dz);
-            entity.push(dx, 0F, dz);
+            if (!entity.noPhysics){
+                this.push(-dx, 0F, -dz);
+                entity.push(dx, 0F, dz);
+            }
         }
 
     }
