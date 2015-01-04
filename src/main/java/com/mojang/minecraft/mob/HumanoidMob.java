@@ -199,7 +199,7 @@ public class HumanoidMob extends Mob {
             downloadUrl = skinName;
         } else {
             // Only the player name was given. Download from skin server.
-            downloadUrl = Minecraft.skinServer + skinName + ".png";
+            downloadUrl = Minecraft.skinServer + skinName.replaceAll("[^a-zA-Z0-9:._]", "") + ".png";
         }
 
         // Non-humanoid skins are only downloaded if full URL was given.
