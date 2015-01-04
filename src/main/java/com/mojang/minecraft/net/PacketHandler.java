@@ -500,11 +500,16 @@ public final class PacketHandler {
                         LogUtil.logInfo("Downloading texture pack " + hash + " from " + textureUrl);
                         minecraft.downloadImage(new URL(textureUrl), file);
                     }
-                    image = ImageIO.read(file);
-                    if (image.getWidth() % 16 == 0 && image.getHeight() % 16 == 0) {
-                        minecraft.textureManager.setTerrainTexture(image);
-                    } else {
-                        LogUtil.logInfo("Unacceptable terrain texture dimensions: " + image.getWidth() + " x " + image.getHeight());
+                    try {
+                        image = ImageIO.read(file);                        
+                        if (image.getWidth() % 16 == 0 && image.getHeight() % 16 == 0) {
+                            minecraft.textureManager.setTerrainTexture(image);
+                        } else {
+                            LogUtil.logInfo("Unacceptable terrain texture dimensions: " + image.getWidth() + " x " + image.getHeight());
+                        }
+                    } catch (Exception ex) {
+                        LogUtil.logWarning("Terrain file does not exist, reverting to default textures.", ex);
+                        minecraft.textureManager.setTerrainTexture(null);
                     }
                 }
             } else {
