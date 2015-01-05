@@ -2,6 +2,7 @@ package com.mojang.minecraft.model;
 
 public class BlockModel extends Model {
     public BlockModel() {
+        headOffset = 1F;
     }
 
     @Override

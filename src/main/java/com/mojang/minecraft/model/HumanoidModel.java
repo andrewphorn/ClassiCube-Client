@@ -26,6 +26,7 @@ public class HumanoidModel extends Model {
      * @param scale Scale value to use for the model.
      */
     public HumanoidModel(float scale) {
+        headOffset = 0F;
         head = new ModelPart(0, 0);
         head.setBounds(-4F, -8F, -4F, 8, 8, 8, scale);
         head.allowTransparency = false;

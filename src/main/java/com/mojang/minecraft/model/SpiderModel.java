@@ -17,6 +17,7 @@ public final class SpiderModel extends Model {
     private ModelPart leg8;
 
     public SpiderModel() {
+        headOffset = 1F;
         head.setBounds(-4F, -4F, -8F, 8, 8, 8, 0F);
         head.setPosition(0F, 16F, -3F);
         neck = new ModelPart(0, 0);

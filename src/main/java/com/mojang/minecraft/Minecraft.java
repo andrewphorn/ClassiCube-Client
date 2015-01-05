@@ -64,6 +64,7 @@ import com.mojang.minecraft.level.generator.LevelGenerator;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.Mob;
+import static com.mojang.minecraft.mob.Mob.modelCache;
 import com.mojang.minecraft.model.ModelManager;
 import com.mojang.minecraft.model.ModelPart;
 import com.mojang.minecraft.net.NetworkManager;
@@ -967,7 +968,7 @@ public final class Minecraft implements Runnable {
                         float var34 = var69 * var174;
                         float var87 = var32 * var174;
                         float reachDistance = gamemode.getReachDistance();
-                        Vec3D vec3D = newPlayerVector.add(var34 * reachDistance, var33 * reachDistance,
+                        Vec3D vec3D = newPlayerVector.add(var34 * reachDistance, (var33 * reachDistance) - modelCache.getModel(player.getModelName()).headOffset,
                                 var87 * reachDistance);
                         selected = level.clip(newPlayerVector, vec3D);
                         float var74 = reachDistance;

@@ -3,6 +3,7 @@ package com.mojang.minecraft.model;
 public final class SkeletonModel extends ZombieModel {
 
     public SkeletonModel() {
+        headOffset = 0F;
         rightArm = new ModelPart(40, 16);
         rightArm.setBounds(-1F, -2F, -1F, 2, 12, 2, 0F);
         rightArm.setPosition(-5F, 2F, 0F);

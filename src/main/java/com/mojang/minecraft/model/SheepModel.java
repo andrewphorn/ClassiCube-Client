@@ -4,6 +4,7 @@ public final class SheepModel extends AnimalModel {
 
     public SheepModel() {
         super(12);
+        headOffset = 0.375F;
         head = new ModelPart(0, 0);
         head.setBounds(-3F, -4F, -6F, 6, 6, 8, 0F);
         head.setPosition(0F, 6F, -8F);

@@ -13,6 +13,7 @@ public final class CreeperModel extends Model {
     private ModelPart leg4;
 
     public CreeperModel() {
+        headOffset = 0.25F;
         head.setBounds(-4F, -8F, -4F, 8, 8, 8, 0F);
         head.setPosition(0F, 4F, 0F);
         unused = new ModelPart(32, 0);

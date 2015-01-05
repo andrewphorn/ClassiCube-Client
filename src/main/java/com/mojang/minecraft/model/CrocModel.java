@@ -15,6 +15,7 @@ public class CrocModel extends Model {
     ModelPart leg3;
 
     public CrocModel() {
+        headOffset = 0.937F;
         tail = new ModelPart(0, 0);
         tail.setBounds(0F, 0F, 0F, 8, 2, 17, 0F);
         tail.setPosition(-4F, 11F, 5F);

@@ -8,6 +8,7 @@ import com.mojang.minecraft.SelectionBoxData;
 import com.mojang.minecraft.ThirdPersonMode;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
+import static com.mojang.minecraft.mob.Mob.modelCache;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.physics.CustomAABB;
 import com.mojang.minecraft.player.Player;
@@ -87,7 +88,7 @@ public final class Renderer {
         float newX = player.xo + (player.x - player.xo) * delta;
         float newY = player.yo + (player.y - player.yo) * delta;
         float newZ = player.zo + (player.z - player.zo) * delta;
-        return new Vec3D(newX, newY, newZ);
+        return new Vec3D(newX, newY - modelCache.getModel(this.minecraft.player.getModelName()).headOffset, newZ);
     }
 
     // SURVIVAL: hurt effect
@@ -195,7 +196,7 @@ public final class Renderer {
         float cameraX = player.xo + (player.x - player.xo) * delta;
         float cameraY = player.yo + (player.y - player.yo) * delta;
         float cameraZ = player.zo + (player.z - player.zo) * delta;
-        GL11.glTranslatef(-cameraX, -cameraY, -cameraZ);
+        GL11.glTranslatef(-cameraX, -cameraY + modelCache.getModel(this.minecraft.player.getModelName()).headOffset, -cameraZ);
     }
 
     public void drawWeather(float delta, ShapeRenderer shapeRenderer) {

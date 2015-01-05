@@ -14,6 +14,7 @@ public class ChickenModel extends Model {
     public ModelPart chin;
 
     public ChickenModel() {
+        headOffset = 1F;
         byte var1 = 16;
         head = new ModelPart(0, 0);
         head.setBounds(-2F, -6F, -2F, 4, 6, 3, 0F);

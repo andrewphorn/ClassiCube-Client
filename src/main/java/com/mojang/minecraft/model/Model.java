@@ -4,6 +4,7 @@ public abstract class Model {
     public static final String HUMANOID = "humanoid";
 
     public float attackOffset;
+    public float headOffset;
 
     /**
      * Sets the model's various rotation angles. For bipeds, var1 and var2 are

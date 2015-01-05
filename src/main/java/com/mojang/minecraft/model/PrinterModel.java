@@ -21,6 +21,7 @@ public class PrinterModel extends Model {
     ModelPart RightLine;
 
     public PrinterModel() {
+        headOffset = 1.4375F;
         // textureWidth = 128;
         // textureHeight = 128;
         Base = new ModelPart(0, 0);

@@ -130,7 +130,7 @@ public class NetworkPlayer extends HumanoidMob {
         FontRenderer fontRenderer = minecraft.fontRenderer;
         GL11.glPushMatrix();
         float var1 = minecraft.player.distanceTo(this) / 128;
-        GL11.glTranslatef(xo + (x - xo) * var1, yo + (y - yo) * var1 + 0.8F + renderOffset, zo
+        GL11.glTranslatef(xo + (x - xo) * var1, yo + (y - yo) * var1 + renderOffset - (modelCache.getModel(modelName).headOffset) + 0.8F, zo
                 + (z - zo) * var1);
         GL11.glRotatef(-minecraft.player.yRot, 0F, 1F, 0F);
         GL11.glRotatef(-minecraft.player.xRot, 1F, 0F, 0F);
