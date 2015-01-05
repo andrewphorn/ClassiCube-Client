@@ -1036,7 +1036,7 @@ public final class Minecraft implements Runnable {
 
                         // Adjust fog color if underwater or in lava
                         int blockTypeAroundHead = level.getTile((int) this.player.x,
-                                (int) (this.player.y + 0.12F), (int) this.player.z);
+                                (int) (this.player.y + 0.12F - modelCache.getModel(player.getModelName()).headOffset), (int) this.player.z);
                         Block blockAroundHead = Block.blocks[blockTypeAroundHead];
                         if (blockAroundHead != null && blockAroundHead.getLiquidType() != LiquidType.notLiquid) {
                             LiquidType liquidType = blockAroundHead.getLiquidType();

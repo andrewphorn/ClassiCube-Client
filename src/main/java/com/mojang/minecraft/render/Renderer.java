@@ -138,7 +138,8 @@ public final class Renderer {
         GL11.glFog(GL11.GL_FOG_COLOR, createBuffer(fogRed, fogBlue, fogGreen, 1F));
         GL11.glNormal3f(0F, -1F, 0F);
         GL11.glColor4f(1F, 1F, 1F, 1F);
-        Block headBlock = Block.blocks[minecraft.level.getTile((int) player.x, (int) (player.y + 0.12F), (int) player.z)];
+        Block headBlock = Block.blocks[minecraft.level.getTile((int) player.x, 
+                (int) (player.y + 0.12F - modelCache.getModel(player.getModelName()).headOffset), (int) player.z)];
         if (headBlock != null && headBlock.getLiquidType() != LiquidType.notLiquid) {
             // Colored fog when inside water/lava
             LiquidType liquidType = headBlock.getLiquidType();
