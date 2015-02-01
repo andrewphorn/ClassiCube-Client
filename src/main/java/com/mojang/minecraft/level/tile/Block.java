@@ -15,7 +15,7 @@ import com.mojang.minecraft.sound.StepSound;
 import com.mojang.minecraft.sound.StepSoundSand;
 import com.mojang.minecraft.sound.StepSoundStone;
 import com.mojang.util.IntersectionHelper;
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 
 public class Block {
     public static final Block[] blocks = new Block[256];
@@ -205,14 +205,14 @@ public class Block {
         return !level.isSolidTile(x, y, z);
     }
 
-    public final MovingObjectPosition clip(int var1, int var2, int var3, Vec3D vector, Vec3D other) {
+    public final MovingObjectPosition clip(int var1, int var2, int var3, Vector3f vector, Vector3f other) {
         vector = vector.add(-var1, -var2, -var3);
         other = other.add(-var1, -var2, -var3);
-        Vec3D var6 = vector.getXIntersection(other, maxX);
-        Vec3D var7 = vector.getXIntersection(other, minX);
-        Vec3D var8 = vector.getYIntersection(other, maxY);
-        Vec3D var9 = vector.getYIntersection(other, minY);
-        Vec3D var10 = vector.getZIntersection(other, maxZ);
+        Vector3f var6 = vector.getXIntersection(other, maxX);
+        Vector3f var7 = vector.getXIntersection(other, minX);
+        Vector3f var8 = vector.getYIntersection(other, maxY);
+        Vector3f var9 = vector.getYIntersection(other, minY);
+        Vector3f var10 = vector.getZIntersection(other, maxZ);
         other = vector.getZIntersection(other, minZ);
         if (!xIntersects(var6)) {
             var6 = null;
@@ -238,7 +238,7 @@ public class Block {
             other = null;
         }
 
-        Vec3D var11 = null;
+        Vector3f var11 = null;
         if (var6 != null) {
             var11 = var6;
         }
@@ -729,15 +729,15 @@ public class Block {
     public void update(Level level, int x, int y, int z, Random rand) {
     }
 
-    private boolean xIntersects(Vec3D vec) {
+    private boolean xIntersects(Vector3f vec) {
         return IntersectionHelper.xIntersects(vec, maxY, maxZ, minY, minZ);
     }
 
-    private boolean yIntersects(Vec3D vec) {
+    private boolean yIntersects(Vector3f vec) {
         return IntersectionHelper.yIntersects(vec, maxX, maxZ, minX, minZ);
     }
 
-    private boolean zIntersects(Vec3D vec) {
+    private boolean zIntersects(Vector3f vec) {
         return IntersectionHelper.zIntersects(vec, maxX, maxY, minX, minY);
     }
 }

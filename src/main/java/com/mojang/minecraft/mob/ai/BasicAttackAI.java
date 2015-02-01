@@ -3,14 +3,14 @@ package com.mojang.minecraft.mob.ai;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.item.Arrow;
 import com.mojang.util.MathHelper;
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 
 public class BasicAttackAI extends BasicAI {
 
     public int damage = 6;
 
     public boolean attack(Entity var1) {
-        if (level.clip(new Vec3D(mob.x, mob.y, mob.z), new Vec3D(var1.x, var1.y, var1.z)) != null) {
+        if (level.clip(new Vector3f(mob.x, mob.y, mob.z), new Vector3f(var1.x, var1.y, var1.z)) != null) {
             return false;
         } else {
             mob.attackTime = 5;

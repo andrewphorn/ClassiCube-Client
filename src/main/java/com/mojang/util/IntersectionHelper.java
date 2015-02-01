@@ -17,7 +17,7 @@ public class IntersectionHelper {
      * @param z1
      * @return
      */
-    public static boolean xIntersects(Vec3D vec, float y0, float z0, float y1, float z1) {
+    public static boolean xIntersects(Vector3f vec, float y0, float z0, float y1, float z1) {
         return vec != null && vec.y >= y0 && vec.y <= y1 && vec.z >= z0 && vec.z <= z1;
     }
 
@@ -31,7 +31,7 @@ public class IntersectionHelper {
      * @param z1
      * @return
      */
-    public static boolean yIntersects(Vec3D vec, float x0, float z0, float x1, float z1) {
+    public static boolean yIntersects(Vector3f vec, float x0, float z0, float x1, float z1) {
         return vec != null && vec.x >= x0 && vec.x <= x1 && vec.z >= z0 && vec.z <= z1;
     }
 
@@ -45,7 +45,7 @@ public class IntersectionHelper {
      * @param y1
      * @return
      */
-    public static boolean zIntersects(Vec3D vec, float x0, float y0, float x1, float y1) {
+    public static boolean zIntersects(Vector3f vec, float x0, float y0, float x1, float y1) {
         return vec != null && vec.x >= x0 && vec.x <= x1 && vec.y >= y0 && vec.y <= y1;
     }
 }

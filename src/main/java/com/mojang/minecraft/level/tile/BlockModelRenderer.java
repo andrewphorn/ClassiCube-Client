@@ -7,7 +7,7 @@ import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.ShapeRenderer;
 import com.mojang.util.IntersectionHelper;
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 
 public class BlockModelRenderer {
     public int textureId;
@@ -29,14 +29,14 @@ public class BlockModelRenderer {
         return true;
     }
 
-    public final MovingObjectPosition clip(int var1, int var2, int var3, Vec3D var4, Vec3D var5) {
+    public final MovingObjectPosition clip(int var1, int var2, int var3, Vector3f var4, Vector3f var5) {
         var4 = var4.add(-var1, -var2, -var3);
         var5 = var5.add(-var1, -var2, -var3);
-        Vec3D var6 = var4.getXIntersection(var5, x1);
-        Vec3D var7 = var4.getXIntersection(var5, x2);
-        Vec3D var8 = var4.getYIntersection(var5, y1);
-        Vec3D var9 = var4.getYIntersection(var5, y2);
-        Vec3D var10 = var4.getZIntersection(var5, z1);
+        Vector3f var6 = var4.getXIntersection(var5, x1);
+        Vector3f var7 = var4.getXIntersection(var5, x2);
+        Vector3f var8 = var4.getYIntersection(var5, y1);
+        Vector3f var9 = var4.getYIntersection(var5, y2);
+        Vector3f var10 = var4.getZIntersection(var5, z1);
         var5 = var4.getZIntersection(var5, z2);
         if (!xIntersects(var6)) {
             var6 = null;
@@ -62,7 +62,7 @@ public class BlockModelRenderer {
             var5 = null;
         }
 
-        Vec3D var11 = null;
+        Vector3f var11 = null;
         if (var6 != null) {
             var11 = var6;
         }
@@ -325,15 +325,15 @@ public class BlockModelRenderer {
         this.z2 = z2;
     }
 
-    private boolean xIntersects(Vec3D vec) {
+    private boolean xIntersects(Vector3f vec) {
         return IntersectionHelper.xIntersects(vec, y1, z1, y2, z2);
     }
 
-    private boolean yIntersects(Vec3D vec) {
+    private boolean yIntersects(Vector3f vec) {
         return IntersectionHelper.yIntersects(vec, x1, z1, x2, z2);
     }
 
-    private boolean zIntersects(Vec3D vec) {
+    private boolean zIntersects(Vector3f vec) {
         return IntersectionHelper.zIntersects(vec, x1, y1, x2, y2);
     }
 }

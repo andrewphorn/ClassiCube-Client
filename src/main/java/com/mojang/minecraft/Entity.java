@@ -14,7 +14,7 @@ import com.mojang.minecraft.render.TextureManager;
 import com.mojang.minecraft.sound.StepSound;
 import com.mojang.util.ColorCache;
 import com.mojang.util.MathHelper;
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 
 public abstract class Entity implements Serializable {
 
@@ -532,7 +532,7 @@ public abstract class Entity implements Serializable {
         bbHeight = height;
     }
 
-    public boolean shouldRender(Vec3D vec3d) {
+    public boolean shouldRender(Vector3f vec3d) {
         float dx = x - vec3d.x;
         float dy = y - vec3d.y;
         float dz = z - vec3d.z;

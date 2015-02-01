@@ -15,7 +15,7 @@ import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.render.texture.Textures;
 import com.mojang.util.ColorCache;
 import com.mojang.util.MathHelper;
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 
 import java.nio.FloatBuffer;
 import java.util.Random;
@@ -83,12 +83,12 @@ public final class Renderer {
         GL11.glTranslatef(0F, 0F, -200F);
     }
 
-    public Vec3D getPlayerVector(float delta) {
+    public Vector3f getPlayerVector(float delta) {
         Player player = minecraft.player;
         float newX = player.xo + (player.x - player.xo) * delta;
         float newY = player.yo + (player.y - player.yo) * delta;
         float newZ = player.zo + (player.z - player.zo) * delta;
-        return new Vec3D(newX, newY - modelCache.getModel(this.minecraft.player.getModelName()).headOffset, newZ);
+        return new Vector3f(newX, newY - modelCache.getModel(this.minecraft.player.getModelName()).headOffset, newZ);
     }
 
     // SURVIVAL: hurt effect
@@ -121,7 +121,7 @@ public final class Renderer {
             GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
             float ambientBrightness = 0.7F;
             float diffuseBrightness = 0.3F;
-            Vec3D sunPosition = new Vec3D(0F, -1F, 0.5F).normalize();
+            Vector3f sunPosition = new Vector3f(0F, -1F, 0.5F).normalize();
             GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION,
                     createBuffer(sunPosition.x, sunPosition.y, sunPosition.z, 0F));
             GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE,

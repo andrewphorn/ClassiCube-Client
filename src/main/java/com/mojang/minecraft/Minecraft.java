@@ -97,7 +97,7 @@ import com.mojang.util.LogUtil;
 import com.mojang.util.MathHelper;
 import com.mojang.util.StreamingUtil;
 import com.mojang.util.Timer;
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 import com.oyasunadev.mcraft.client.util.Constants;
 import java.security.NoSuchAlgorithmException;
 
@@ -960,7 +960,7 @@ public final class Minecraft implements Runnable {
                         float delta = timer.delta;
                         float newXRot = player.xRotO + (player.xRot - player.xRotO) * delta;
                         float newYRot = player.yRotO + (player.yRot - player.yRotO) * delta;
-                        Vec3D newPlayerVector = renderer.getPlayerVector(delta);
+                        Vector3f newPlayerVector = renderer.getPlayerVector(delta);
                         float var32 = MathHelper.cos((float) ((double) -newYRot * (Math.PI / 180D) - Math.PI));
                         float var69 = MathHelper.sin((float) ((double) -newYRot * (Math.PI / 180D) - Math.PI));
                         float var174 = MathHelper.cos(-newXRot * (float) (Math.PI / 180D));
@@ -968,7 +968,7 @@ public final class Minecraft implements Runnable {
                         float var34 = var69 * var174;
                         float var87 = var32 * var174;
                         float reachDistance = gamemode.getReachDistance();
-                        Vec3D vec3D = newPlayerVector.add(var34 * reachDistance, (var33 * reachDistance) - modelCache.getModel(player.getModelName()).headOffset,
+                        Vector3f vec3D = newPlayerVector.add(var34 * reachDistance, (var33 * reachDistance) - modelCache.getModel(player.getModelName()).headOffset,
                                 var87 * reachDistance);
                         selected = level.clip(newPlayerVector, vec3D);
                         float var74 = reachDistance;
@@ -1191,7 +1191,7 @@ public final class Minecraft implements Runnable {
                         }
 
                         renderer.setLighting(true);
-                        Vec3D playerVector = renderer.getPlayerVector(delta);
+                        Vector3f playerVector = renderer.getPlayerVector(delta);
                         // TODO: investigate if this render pass is necessary
                         level.blockMap.render(playerVector, frustum, levelRenderer.textureManager, delta);
                         renderer.setLighting(false);
