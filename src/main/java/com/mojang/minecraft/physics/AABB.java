@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.mojang.minecraft.MovingObjectPosition;
 import com.mojang.util.IntersectionHelper;
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 
 public class AABB implements Serializable {
 
@@ -25,12 +25,12 @@ public class AABB implements Serializable {
         this.minZ = minZ;
     }
 
-    public MovingObjectPosition clip(Vec3D vec, Vec3D other) {
-        Vec3D var3 = vec.getXIntersection(other, maxX);
-        Vec3D var4 = vec.getXIntersection(other, minX);
-        Vec3D var5 = vec.getYIntersection(other, maxY);
-        Vec3D var6 = vec.getYIntersection(other, minY);
-        Vec3D var7 = vec.getZIntersection(other, maxZ);
+    public MovingObjectPosition clip(Vector3f vec, Vector3f other) {
+        Vector3f var3 = vec.getXIntersection(other, maxX);
+        Vector3f var4 = vec.getXIntersection(other, minX);
+        Vector3f var5 = vec.getYIntersection(other, maxY);
+        Vector3f var6 = vec.getYIntersection(other, minY);
+        Vector3f var7 = vec.getZIntersection(other, maxZ);
         other = vec.getZIntersection(other, minZ);
         if (!xIntersects(var3)) {
             var3 = null;
@@ -56,7 +56,7 @@ public class AABB implements Serializable {
             other = null;
         }
 
-        Vec3D var8 = null;
+        Vector3f var8 = null;
         if (var3 != null) {
             var8 = var3;
         }
@@ -165,7 +165,7 @@ public class AABB implements Serializable {
      * @param vector The vector to check against.
      * @return boolean
      */
-    public boolean contains(Vec3D vector) {
+    public boolean contains(Vector3f vector) {
         return ((vector.x > maxX && vector.x < minX)
                 && (vector.y > maxY && vector.y < minY)
                 && (vector.z > maxZ && vector.z < minZ));
@@ -338,15 +338,15 @@ public class AABB implements Serializable {
         return new AABB(var4, var5, var6, var7, var8, var9);
     }
 
-    private boolean xIntersects(Vec3D vec) {
+    private boolean xIntersects(Vector3f vec) {
         return IntersectionHelper.xIntersects(vec, maxY, maxZ, minY, minZ);
     }
 
-    private boolean yIntersects(Vec3D vec) {
+    private boolean yIntersects(Vector3f vec) {
         return IntersectionHelper.yIntersects(vec, maxX, maxZ, minX, minZ);
     }
 
-    private boolean zIntersects(Vec3D vec) {
+    private boolean zIntersects(Vector3f vec) {
         return IntersectionHelper.zIntersects(vec, maxX, maxY, minX, minY);
     }
 }

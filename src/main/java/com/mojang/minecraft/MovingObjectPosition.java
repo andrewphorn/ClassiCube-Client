@@ -1,6 +1,6 @@
 package com.mojang.minecraft;
 
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 
 public class MovingObjectPosition {
     public boolean hasEntity;
@@ -9,7 +9,7 @@ public class MovingObjectPosition {
     public int y;
     public int z;
     public int face;
-    public Vec3D vec;
+    public Vector3f vec;
 
     public Entity entity;
 
@@ -18,7 +18,7 @@ public class MovingObjectPosition {
         this.entity = entity;
     }
 
-    public MovingObjectPosition(int x, int y, int z, int side, Vec3D blockPos) {
+    public MovingObjectPosition(int x, int y, int z, int side, Vector3f blockPos) {
         hasEntity = false;
 
         this.x = x;
@@ -27,6 +27,6 @@ public class MovingObjectPosition {
 
         face = side;
 
-        vec = new Vec3D(blockPos.x, blockPos.y, blockPos.z);
+        vec = new Vector3f(blockPos.x, blockPos.y, blockPos.z);
     }
 }

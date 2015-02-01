@@ -19,7 +19,7 @@ import com.mojang.minecraft.sound.AudioInfo;
 import com.mojang.minecraft.sound.EntitySoundPos;
 import com.mojang.minecraft.sound.LevelSoundPos;
 import com.mojang.util.MathHelper;
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 import java.util.ArrayDeque;
 
 public class Level implements Serializable {
@@ -120,7 +120,7 @@ public class Level implements Serializable {
         }
     }
 
-    public MovingObjectPosition clip(Vec3D var1, Vec3D var2) {
+    public MovingObjectPosition clip(Vector3f var1, Vector3f var2) {
         if (!Float.isNaN(var1.x) && !Float.isNaN(var1.y) && !Float.isNaN(var1.z)) {
             if (!Float.isNaN(var2.x) && !Float.isNaN(var2.y) && !Float.isNaN(var2.z)) {
                 int var3 = (int) Math.floor(var2.x);

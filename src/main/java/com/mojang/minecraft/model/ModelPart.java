@@ -2,7 +2,7 @@ package com.mojang.minecraft.model;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 import com.mojang.util.Vertex;
 
 public final class ModelPart {
@@ -34,9 +34,9 @@ public final class ModelPart {
         GL11.glBegin(GL11.GL_QUADS);
 
         for (TexturedQuad quad : quads) {
-            Vec3D edge1 = quad.vertices[1].vector.subtract(quad.vertices[0].vector).normalize();
-            Vec3D edge2 = quad.vertices[1].vector.subtract(quad.vertices[2].vector).normalize();
-            Vec3D normal = new Vec3D(edge1.y * edge2.z - edge1.z * edge2.y,
+            Vector3f edge1 = quad.vertices[1].vector.subtract(quad.vertices[0].vector).normalize();
+            Vector3f edge2 = quad.vertices[1].vector.subtract(quad.vertices[2].vector).normalize();
+            Vector3f normal = new Vector3f(edge1.y * edge2.z - edge1.z * edge2.y,
                     edge1.z * edge2.x - edge1.x * edge2.z,
                     edge1.x * edge2.y - edge1.y * edge2.x).normalize();
             GL11.glNormal3f(normal.x, normal.y, normal.z);

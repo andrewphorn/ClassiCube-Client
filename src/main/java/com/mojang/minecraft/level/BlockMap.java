@@ -8,7 +8,7 @@ import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.physics.AABB;
 import com.mojang.minecraft.render.Frustum;
 import com.mojang.minecraft.render.TextureManager;
-import com.mojang.util.Vec3D;
+import com.mojang.util.Vector3f;
 
 public class BlockMap implements Serializable {
 
@@ -156,7 +156,7 @@ public class BlockMap implements Serializable {
 
     }
 
-    public void render(Vec3D playerVector, Frustum frustum, TextureManager textureManager, float delta) {
+    public void render(Vector3f playerVector, Frustum frustum, TextureManager textureManager, float delta) {
         for (int x = 0; x < width; ++x) {
             float var6 = (x << 4) - 2;
             float var7 = (x + 1 << 4) + 2;

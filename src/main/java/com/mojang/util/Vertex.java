@@ -2,7 +2,7 @@ package com.mojang.util;
 
 public final class Vertex {
 
-    public Vec3D vector;
+    public Vector3f vector;
     public float u;
     public float v;
 
@@ -16,7 +16,7 @@ public final class Vertex {
      * @param v
      */
     public Vertex(float x, float y, float z, float u, float v) {
-        this(new Vec3D(x, y, z), u, v);
+        this(new Vector3f(x, y, z), u, v);
     }
 
     /**
@@ -26,7 +26,7 @@ public final class Vertex {
      * @param u
      * @param v
      */
-    private Vertex(Vec3D vector, float u, float v) {
+    private Vertex(Vector3f vector, float u, float v) {
         this.vector = vector;
         this.u = u;
         this.v = v;
