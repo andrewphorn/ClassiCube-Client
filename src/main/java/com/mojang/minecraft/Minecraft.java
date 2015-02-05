@@ -29,8 +29,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.swing.*;
 
-import com.oyasunadev.mcraft.client.core.ClassiCubeStandalone;
-import javafx.stage.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
