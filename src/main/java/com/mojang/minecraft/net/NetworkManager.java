@@ -23,7 +23,7 @@ public class NetworkManager {
     public static final int MAX_PACKETS_PER_TICK = 100;
     private static final int BUFFER_SIZE = 1048576;
 
-    private final Set<ProtocolExtension> enabledExtensions = new HashSet<>();
+    public final Set<ProtocolExtension> enabledExtensions = new HashSet<>();
 
     private final Minecraft minecraft;
 

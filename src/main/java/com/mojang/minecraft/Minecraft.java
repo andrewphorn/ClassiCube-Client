@@ -2148,6 +2148,15 @@ public final class Minecraft implements Runnable {
         networkManager = new NetworkManager(this);
         packetHandler = new PacketHandler(this);
         womConfig = new WOMConfig(this);
-        networkManager.beginConnect(server, port);
+        networkManager.beginConnect(server, port);        
+        playerListNameData.clear();
+        networkManager.enabledExtensions.clear();
+        HUDScreen.Compass = "";
+        HUDScreen.ServerName = "";
+        HUDScreen.UserDetail = "";
+        HUDScreen.BottomRight1 = "";
+        HUDScreen.BottomRight2 = "";
+        HUDScreen.BottomRight3 = "";
+        HUDScreen.Announcement = "";
     }
 }
