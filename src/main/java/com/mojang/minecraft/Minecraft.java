@@ -947,8 +947,7 @@ public final class Minecraft implements Runnable {
                         float var34 = var69 * var174;
                         float var87 = var32 * var174;
                         float reachDistance = gamemode.getReachDistance();
-                        Vec3D vec3D = newPlayerVector.add(var34 * reachDistance, (var33 * reachDistance) - modelCache.getModel(player.getModelName()).headOffset,
-                                var87 * reachDistance);
+                        Vec3D vec3D = newPlayerVector.add(var34 * reachDistance, var33 * reachDistance, var87 * reachDistance);
                         selected = level.clip(newPlayerVector, vec3D);
                         float var74 = reachDistance;
                         if (selected != null) {
