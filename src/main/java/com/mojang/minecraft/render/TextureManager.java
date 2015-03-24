@@ -74,6 +74,7 @@ public class TextureManager {
     public BufferedImage customPig = null;
     public BufferedImage customPrinter = null;
     public BufferedImage customSheep = null;
+    public BufferedImage customSheepFur = null;
     public BufferedImage customSkeleton = null;
     public BufferedImage customSpider = null;
     public BufferedImage customZombie = null;
@@ -386,7 +387,10 @@ public class TextureManager {
 
             case Textures.MOB_SHEEP:
                 return loadCustom(file, customSheep);
-
+                
+            case Textures.SHEEP_FUR:
+                return loadCustom(file, customSheepFur);
+                
             case Textures.MOB_SKELETON:
                 return loadCustom(file, customSkeleton);
 
@@ -519,6 +523,7 @@ public class TextureManager {
                 customPig = loadImageFromZip(zip, "pig.png");
                 customPrinter = loadImageFromZip(zip, "printer.png");
                 customSheep = loadImageFromZip(zip, "sheep.png");
+                customSheepFur = loadImageFromZip(zip, "sheep_fur.png");
                 customSkeleton = loadImageFromZip(zip, "skeleton.png");
                 customSpider = loadImageFromZip(zip, "spider.png");
                 customZombie = loadImageFromZip(zip, "zombie.png");
@@ -580,6 +585,7 @@ public class TextureManager {
         customPig = null;
         customPrinter = null;
         customSheep = null;
+        customSheepFur = null;
         customSkeleton = null;
         customSpider = null;
         customZombie = null;
@@ -591,6 +597,7 @@ public class TextureManager {
         unloadTexture(Textures.MOB_PIG);
         unloadTexture(Textures.MOB_PRINTER);
         unloadTexture(Textures.MOB_SHEEP);
+        unloadTexture(Textures.SHEEP_FUR);
         unloadTexture(Textures.MOB_SKELETON);
         unloadTexture(Textures.MOB_SPIDER);
         unloadTexture(Textures.MOB_ZOMBIE);
