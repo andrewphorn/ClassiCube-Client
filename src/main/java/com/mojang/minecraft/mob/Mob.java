@@ -505,7 +505,7 @@ public class Mob extends Entity {
             yd *= 0.98F;
             zd *= 0.91F;
             yd = (float) (yd - 0.08D);
-            if (Block.blocks[var1] != Block.ICE) {
+            if (Block.blocks[var1] != Block.ICE || noPhysics) {
 
                 if (flyingMode) {
                     y1 = 0F;

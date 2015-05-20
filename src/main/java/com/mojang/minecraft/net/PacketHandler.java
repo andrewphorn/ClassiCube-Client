@@ -111,11 +111,11 @@ public final class PacketHandler {
             // Read WoM-style hack control flags
             //TODO: if(!isExtEnabled(ProtocolExtension.HACK_CONTROL)){ ... }
             minecraft.womConfig.readHax(name, motd);
+            minecraft.player.userType = (Byte) packetParams[3];
             if (!receivedExtInfo) {
                 // Only process WoM-style "cfg" command if CPE is not enabled
                 minecraft.womConfig.readCfg(motd);
             }
-            minecraft.player.userType = (Byte) packetParams[3];
             setLoadingLevel(true);
             if (minecraft.womConfig.isEnabled() && minecraft.womConfig.hasKey("server.sendwomid")) {
                 String womIdCmd = "/womid ClassiCube" + Constants.CLASSICUBE_VERSION;
