@@ -195,7 +195,7 @@ public class MinecraftFrame extends JFrame {
         //  Set up Minecraft instance
         MCraftApplet applet = new MCraftApplet();
         MinecraftCanvas canvas = new MinecraftCanvas();
-        minecraft = new Minecraft(canvas, applet, getWidth(), getHeight(), fullscreen, false);
+        minecraft = new Minecraft(canvas, applet, fullscreen, false);
 
         if (player != null || server != null || mppass != null) {
             minecraft.session = new SessionData(player, "noidea");

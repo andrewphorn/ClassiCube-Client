@@ -64,7 +64,6 @@ import com.mojang.minecraft.level.generator.LevelGenerator;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.Mob;
-import static com.mojang.minecraft.mob.Mob.modelCache;
 import com.mojang.minecraft.model.ModelManager;
 import com.mojang.minecraft.model.ModelPart;
 import com.mojang.minecraft.net.NetworkManager;
@@ -140,11 +139,11 @@ public final class Minecraft implements Runnable {
     /**
      * The width of the playing window.
      */
-    public int width;
+    public int width = 1;
     /**
      * The height of the playing window.
      */
-    public int height;
+    public int height = 1;
     /**
      * The level we are playing in.
      */
@@ -220,8 +219,8 @@ public final class Minecraft implements Runnable {
      */
     public HUDScreen hud;
     /**
-     * True if the player is connecting to a server, from the moment connection is established and
-     * until LEVEL_FINALIZE packet is received.
+     * True if the player is connecting to a server, from the moment connection
+     * is established and until LEVEL_FINALIZE packet is received.
      */
     public boolean isConnecting;
     /**
@@ -259,8 +258,8 @@ public final class Minecraft implements Runnable {
      */
     public int port;
     /**
-     * Set this to whatever you want to show as debug information in the HUD. It will occupy one
-     * line. Right now it shows FPS and Chunk Updates.
+     * Set this to whatever you want to show as debug information in the HUD. It
+     * will occupy one line. Right now it shows FPS and Chunk Updates.
      */
     public String debug;
     /**
@@ -286,14 +285,12 @@ public final class Minecraft implements Runnable {
     public HashSet<Block> disallowedPlacementBlocks = new HashSet<>();
     public HashSet<Block> disallowedBreakingBlocks = new HashSet<>();
     public MonitoringThread monitoringThread;
-    public int tempDisplayWidth;
-    public int tempDisplayHeight;
     public boolean canRenderGUI = true;
     boolean isShuttingDown = false;
     int[] inventoryCache;
     /**
-     * This timer determines how much time will pass between block modifications. It is used to
-     * prevent really fast block spamming.
+     * This timer determines how much time will pass between block
+     * modifications. It is used to prevent really fast block spamming.
      */
     private Timer timer = new Timer(20F);
     private ResourceDownloadThread resourceThread;
@@ -310,17 +307,12 @@ public final class Minecraft implements Runnable {
      *
      * @param canvas Canvas to use for drawing.
      * @param applet applet of this instance
-     * @param width Width of the window
-     * @param height Height of the window
      * @param fullscreen True if game should be in fullscreen
      * @param isApplet True if the game is running as an applet
      */
-    public Minecraft(Canvas canvas, MinecraftApplet applet, int width, int height,
-            boolean fullscreen, boolean isApplet) {
+    public Minecraft(Canvas canvas, MinecraftApplet applet, boolean fullscreen, boolean isApplet) {
         this.applet = applet;
         this.canvas = canvas;
-        this.width = width;
-        this.height = height;
         this.isFullScreen = fullscreen;
         this.isApplet = isApplet;
         sound = new SoundManager();
@@ -351,7 +343,6 @@ public final class Minecraft implements Runnable {
                 LogUtil.logError("Failed to create the AWT Robot!", ex);
             }
         }
-
     }
 
     private static void checkGLError(String context) {
@@ -607,8 +598,8 @@ public final class Minecraft implements Runnable {
     }
 
     public void resize() {
-        width = Display.getDisplayMode().getWidth();
-        height = Display.getDisplayMode().getHeight();
+        width = Display.getWidth();
+        height = Display.getHeight();
 
         if (width <= 0) {
             width = 1;
@@ -656,44 +647,7 @@ public final class Minecraft implements Runnable {
             }
         }
 
-        if (canvas != null) {
-            Display.setParent(canvas);
-        } else if (isFullScreen) {
-            setDisplayMode();
-            Display.setFullscreen(true);
-            width = Display.getDisplayMode().getWidth();
-            height = Display.getDisplayMode().getHeight();
-            tempDisplayWidth = width;
-            tempDisplayHeight = height;
-        } else {
-            Display.setDisplayMode(new DisplayMode(width, height));
-        }
-
-        Display.setResizable(true);
-        Display.setTitle("ClassiCube");
-
-        Display.create();
-
-        logSystemInfo();
-
-        Keyboard.create();
-        Mouse.create();
-
-        checkGLError("Pre startup");
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glShadeModel(GL11.GL_FLAT);
-        GL11.glClearDepth(1D);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthFunc(GL11.GL_LEQUAL);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.5F);
-        GL11.glCullFace(GL11.GL_BACK);
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-        checkGLError("Startup");
+        initializeDisplay();
 
         settings = new GameSettings(this, mcDir);
         settings.capRefreshRate(Display.getDisplayMode().getFrequency());
@@ -790,6 +744,42 @@ public final class Minecraft implements Runnable {
         }
     }
 
+    private void initializeDisplay() throws LWJGLException {
+        Display.setParent(canvas);
+
+        if (isFullScreen) {
+            setFullscreenDisplayMode();
+            Display.setFullscreen(true);
+        }
+
+        Display.setResizable(true);
+        Display.setTitle("ClassiCube");
+
+        Display.create();
+        resize();
+
+        logSystemInfo();
+
+        Keyboard.create();
+        Mouse.create();
+
+        checkGLError("Pre startup");
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glClearDepth(1D);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthFunc(GL11.GL_LEQUAL);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.5F);
+        GL11.glCullFace(GL11.GL_BACK);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        checkGLError("Startup");
+    }
+
     private void logSystemInfo() {
         LogUtil.logInfo(String.format(
                 "GPU Vendor: %s | Renderer: %s | OpenGL version: %s",
@@ -847,15 +837,7 @@ public final class Minecraft implements Runnable {
         }
 
         // Check if window was resized last frame
-        if (!Display.isFullscreen()
-                && (canvas.getWidth() != Display.getDisplayMode().getWidth()
-                || canvas.getHeight() != Display.getDisplayMode().getHeight())) {
-            DisplayMode displayMode = new DisplayMode(canvas.getWidth(), canvas.getHeight());
-            try {
-                Display.setDisplayMode(displayMode);
-            } catch (LWJGLException ex) {
-                LogUtil.logError("Error resizing the OpenGL context.", ex);
-            }
+        if (Display.wasResized()) {
             resize();
         }
 
@@ -1014,7 +996,7 @@ public final class Minecraft implements Runnable {
 
                         // Adjust fog color if underwater or in lava
                         int blockTypeAroundHead = level.getTile((int) this.player.x,
-                                (int) (this.player.y + 0.12F - modelCache.getModel(player.getModelName()).headOffset), (int) this.player.z);
+                                (int) (this.player.y + 0.12F - Mob.modelCache.getModel(player.getModelName()).headOffset), (int) this.player.z);
                         Block blockAroundHead = Block.blocks[blockTypeAroundHead];
                         if (blockAroundHead != null && blockAroundHead.getLiquidType() != LiquidType.notLiquid) {
                             LiquidType liquidType = blockAroundHead.getLiquidType();
@@ -1129,7 +1111,7 @@ public final class Minecraft implements Runnable {
                         ShapeRenderer shapeRenderer = ShapeRenderer.instance;
                         // If player is inside a solid block (noclip?)
                         if (level.isSolid(player.x, player.y, player.z, 0.1F)) {
-                            if (!player.noPhysics || !HackState.noclip){
+                            if (!player.noPhysics || !HackState.noclip) {
                                 int playerX = (int) player.x;
                                 int playerY = (int) player.y;
                                 int playerZ = (int) player.z;
@@ -1157,7 +1139,7 @@ public final class Minecraft implements Runnable {
                                                     Block.blocks[var104].renderInside(shapeRenderer,
                                                             x, y, z, side);
                                                 }
-                                            
+
                                                 shapeRenderer.end();
                                                 GL11.glCullFace(GL11.GL_BACK);
                                                 GL11.glDepthFunc(GL11.GL_LEQUAL);
@@ -1490,7 +1472,7 @@ public final class Minecraft implements Runnable {
         grabMouse();
     }
 
-    private void setDisplayMode() throws LWJGLException {
+    private void setFullscreenDisplayMode() throws LWJGLException {
         DisplayMode desktopMode = Display.getDesktopDisplayMode();
         Display.setDisplayMode(desktopMode);
         width = desktopMode.getWidth();
@@ -2096,27 +2078,16 @@ public final class Minecraft implements Runnable {
             isFullScreen = !isFullScreen;
 
             if (isFullScreen) {
-                setDisplayMode();
-                width = Display.getDisplayMode().getWidth();
-                height = Display.getDisplayMode().getHeight();
+                setFullscreenDisplayMode();
             } else {
-                Display.setDisplayMode(new DisplayMode(tempDisplayWidth, tempDisplayHeight));
-                width = tempDisplayWidth;
-                height = tempDisplayHeight;
+                Display.setDisplayMode(new DisplayMode(canvas.getWidth(), canvas.getHeight()));
             }
 
-            if (width <= 0) {
-                width = 1;
-            }
-            if (height <= 0) {
-                height = 1;
-            }
-
-            resize();
             Display.setFullscreen(isFullScreen);
             settings.capRefreshRate(Display.getDisplayMode().getFrequency());
             Display.setVSyncEnabled(settings.framerateLimit != 0);
             Display.update();
+            resize();
 
         } catch (Exception ex) {
             LogUtil.logWarning("Error toggling fullscreen " + (isFullScreen ? "ON" : "OFF"), ex);
@@ -2148,7 +2119,7 @@ public final class Minecraft implements Runnable {
         networkManager = new NetworkManager(this);
         packetHandler = new PacketHandler(this);
         womConfig = new WOMConfig(this);
-        networkManager.beginConnect(server, port);        
+        networkManager.beginConnect(server, port);
         playerListNameData.clear();
         networkManager.enabledExtensions.clear();
         HUDScreen.Compass = "";

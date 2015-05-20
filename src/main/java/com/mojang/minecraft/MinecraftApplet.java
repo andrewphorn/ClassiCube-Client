@@ -78,7 +78,7 @@ public class MinecraftApplet extends Applet {
             fullscreen = getParameter("fullscreen").equalsIgnoreCase("true");
         }
 
-        minecraft = new Minecraft(canvas, this, getWidth(), getHeight(), fullscreen, true);
+        minecraft = new Minecraft(canvas, this, fullscreen, true);
 
         minecraft.host = getDocumentBase().getHost();
 
