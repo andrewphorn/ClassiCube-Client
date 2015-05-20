@@ -1,10 +1,6 @@
 package com.mojang.minecraft;
 
-import java.awt.AWTException;
-import java.awt.Canvas;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.Robot;
+import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ComponentColorModel;
@@ -31,8 +27,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
+import javax.swing.*;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -61,6 +56,7 @@ import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.LevelLoader;
 import com.mojang.minecraft.level.LevelSerializer;
 import com.mojang.minecraft.level.generator.LevelGenerator;
+import com.mojang.minecraft.level.generator.FlatLevelGenerator;
 import com.mojang.minecraft.level.liquid.LiquidType;
 import com.mojang.minecraft.level.tile.Block;
 import com.mojang.minecraft.mob.Mob;
@@ -430,6 +426,13 @@ public final class Minecraft implements Runnable {
         gamemode.prepareLevel(newLevel);
         setLevel(newLevel);
     }
+    public final void generateFlatLevel(int scale) {
+        String username = (session != null ? session.username : "anonymous");
+        Level newLevel = new FlatLevelGenerator(progressBar)
+                .generate(username, 128 << scale, 128 << scale, 64);
+        gamemode.prepareLevel(newLevel);
+        setLevel(newLevel);
+    }
 
     public String getHash(String urlString) {
         try {
@@ -607,8 +610,8 @@ public final class Minecraft implements Runnable {
     }
 
     public void resize() {
-        width = Display.getDisplayMode().getWidth();
-        height = Display.getDisplayMode().getHeight();
+        width = Display.getWidth();
+        height = Display.getHeight();
 
         if (width <= 0) {
             width = 1;
@@ -848,15 +851,11 @@ public final class Minecraft implements Runnable {
 
         // Check if window was resized last frame
         if (!Display.isFullscreen()
-                && (canvas.getWidth() != Display.getDisplayMode().getWidth()
-                || canvas.getHeight() != Display.getDisplayMode().getHeight())) {
-            DisplayMode displayMode = new DisplayMode(canvas.getWidth(), canvas.getHeight());
-            try {
-                Display.setDisplayMode(displayMode);
-            } catch (LWJGLException ex) {
-                LogUtil.logError("Error resizing the OpenGL context.", ex);
-            }
+                && (canvas.getWidth() != Display.getWidth()
+                || canvas.getHeight() != Display.getHeight())) {
+            // Resize the canvas etc before the viewport. Otherwise the canvas size lags behind. Horribly.
             resize();
+            GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
         }
 
         try {

@@ -11,6 +11,7 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -247,6 +248,10 @@ public class ClassiCubeStandalone {
             setSize(1024, 512);
             setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             setLayout(new BorderLayout());
+
+            // Stops people resizing it smaller than useable.
+            Dimension minimumSize = new Dimension(1024, 512);
+            setMinimumSize(minimumSize);
 
             addWindowListener(new WindowAdapter() {
                 @Override

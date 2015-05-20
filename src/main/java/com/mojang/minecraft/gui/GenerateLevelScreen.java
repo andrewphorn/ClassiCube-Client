@@ -8,24 +8,61 @@ public final class GenerateLevelScreen extends GuiScreen {
         this.parent = parent;
     }
 
+    private int type = 0; // 0 = Terrain, 1 = Flat
+    private int size = 1; // 0 = Small, 1 = Normal, 2 = Huge
+
     @Override
     protected final void onButtonClick(Button button) {
-        if (button.id == 3) {
+        if (button.id == 5) {
             minecraft.setCurrentScreen(parent);
-        } else {
-            minecraft.generateLevel(button.id);
+        } else if (button.id == 4) {
+            // Generate
+            if (type == 0) {
+                minecraft.generateLevel(size);
+            } else {
+                minecraft.generateFlatLevel(size);
+            }
             minecraft.setCurrentScreen(null);
             minecraft.grabMouse();
+        } else if (button.id == 0) {
+            // Alter type.
+            if (type == 1) {
+                type = 0;
+            } else {
+                type = 1;
+            }
+
+            if (type == 1) {
+                button.text = "Type: Flat";
+            } else {
+                button.text = "Type: Terrain";
+            }
+        } else if (button.id == 1) {
+            // Alter size.
+            if (size == 2) {
+                size = 0;
+            } else {
+                size++;
+            }
+
+            if (size == 0) {
+                button.text = "Size: Small";
+            } else if (size == 1) {
+                button.text = "Size: Normal";
+            } else if (size == 2) {
+                button.text = "Size: Huge";
+            }
         }
     }
 
     @Override
     public final void onOpen() {
         buttons.clear();
-        buttons.add(new Button(0, width / 2 - 100, height / 4, "Small"));
-        buttons.add(new Button(1, width / 2 - 100, height / 4 + 24, "Normal"));
-        buttons.add(new Button(2, width / 2 - 100, height / 4 + 48, "Huge"));
-        buttons.add(new Button(3, width / 2 - 100, height / 4 + 120, "Cancel"));
+        buttons.add(new Button(0, width / 2 - 100, height / 4, "Type: Terrain"));
+        buttons.add(new Button(1, width / 2 - 100, height / 4 + 24, "Size: Normal"));
+
+        buttons.add(new Button(4, width / 2 - 100, height / 4 + 96, "Generate Level"));
+        buttons.add(new Button(5, width / 2 - 100, height / 4 + 120, "Cancel"));
     }
 
     @Override
