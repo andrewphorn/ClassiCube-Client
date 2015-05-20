@@ -12,7 +12,7 @@ public class Constants {
     /**
      * ClassiCube Version.
      */
-    public static final String CLASSICUBE_VERSION = "0.13";
+    public static final String CLASSICUBE_VERSION = "0.14";
 
     /**
      * The Minecraft Classic protocol version. Default is 0x07.
