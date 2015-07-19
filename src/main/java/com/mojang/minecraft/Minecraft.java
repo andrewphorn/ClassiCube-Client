@@ -1802,7 +1802,7 @@ public final class Minecraft implements Runnable {
                     while (Keyboard.next()) {
                         if (Keyboard.getEventKeyState()) {
                             if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-                                pause();
+                                Mouse.setGrabbed(false);
                             }
                         }
                     }
@@ -1926,7 +1926,11 @@ public final class Minecraft implements Runnable {
                     }
                     if (currentScreen == null) {
                         if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-                            pause();
+                            if (!packetHandler.isLoadingLevel){
+                                pause();
+                            } else {
+                                Mouse.setGrabbed(false);
+                            }
                         }
 
                         if (!isSurvival()) {
