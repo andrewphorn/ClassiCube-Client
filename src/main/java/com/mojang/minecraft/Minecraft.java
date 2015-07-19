@@ -1802,7 +1802,7 @@ public final class Minecraft implements Runnable {
                     while (Keyboard.next()) {
                         if (Keyboard.getEventKeyState()) {
                             if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-                                Mouse.setGrabbed(false);
+                                pause();
                             }
                         }
                     }
