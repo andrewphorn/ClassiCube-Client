@@ -579,6 +579,9 @@ public final class Minecraft implements Runnable {
                     }
                 }
             }
+            if(!level.isInBounds(x, y, z)){
+                return;
+            }
 
             if (isOnline()) {
                 networkManager.sendBlockChange(x, y, z, button, blockID);
@@ -1650,7 +1653,7 @@ public final class Minecraft implements Runnable {
 
     private void tick() {
         if (soundPlayer != null) {
-            if (System.currentTimeMillis() > sound.lastMusic && sound.playMusic(soundPlayer, "calm")) {
+            if (System.currentTimeMillis() > sound.lastMusic && (settings.music ? sound.playMusic(soundPlayer, "calm") : true)) {
                 sound.lastMusic = System.currentTimeMillis() + sound.random.nextInt(900000) + 300000L;
             }
         }

@@ -19,8 +19,8 @@ final class MusicPlayThread extends Thread {
     public final void run() {
         try {
             do {
-                if (music.stopped) {
-                    return;
+                if (music != null && music.stopped) {
+                    break;
                 }
 
                 ByteBuffer var2;
