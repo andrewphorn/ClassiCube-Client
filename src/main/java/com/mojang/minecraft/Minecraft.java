@@ -1926,7 +1926,7 @@ public final class Minecraft implements Runnable {
                     }
                     if (currentScreen == null) {
                         if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-                            if (!packetHandler.isLoadingLevel){
+                            if (!packetHandler.isLoadingLevel || !isOnline()){
                                 pause();
                             } else {
                                 Mouse.setGrabbed(false);
