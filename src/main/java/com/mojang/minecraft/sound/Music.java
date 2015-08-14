@@ -23,9 +23,9 @@ public final class Music implements Audio {
     public Music(SoundPlayer var1, URL var2) {
         player = var1;
         try {
-            LogicalOggStreamImpl var3 = new OnDemandUrlStream(var2).getLogicalStreams().iterator()
-                    .next();
-            stream = new VorbisStream(var3);
+            LogicalOggStreamImpl oggStream = (LogicalOggStreamImpl)(new OnDemandUrlStream(var2)).
+                    getLogicalStreams().iterator().next();
+            stream = new VorbisStream(oggStream);
         } catch (Exception ex) {
             LogUtil.logError("Error loading music from " + var2, ex);
         }

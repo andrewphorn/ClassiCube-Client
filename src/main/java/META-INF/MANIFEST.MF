@@ -1,2 +1,0 @@
-Main-Class: com.oyasunadev.mcraft.client.core.MinecraftStandalone
-

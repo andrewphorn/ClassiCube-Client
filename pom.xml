@@ -23,12 +23,12 @@
         <dependency>
             <groupId>org.lwjgl.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
-            <version>2.9.1</version>
+            <version>2.9.3</version>
         </dependency>
         <dependency>
             <groupId>org.lwjgl.lwjgl</groupId>
             <artifactId>lwjgl_util</artifactId>
-            <version>2.9.1</version>
+            <version>2.9.3</version>
         </dependency>
         <dependency>
             <groupId>net.java.jinput</groupId>
@@ -43,39 +43,53 @@
         <dependency>
             <groupId>org.lwjgl.lwjgl</groupId>
             <artifactId>lwjgl-platform</artifactId>
-            <version>2.9.1</version>
+            <version>2.9.3</version>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>de.jarnbjo</groupId>
+            <artifactId>j-ogg-all</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.1</version>
-            <configuration>
-                <source>1.7</source>
-                <target>1.7</target>
-            </configuration>
-        </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>2.2</version>
-            <configuration>
-                <archive>
-                    <addMavenDescriptor>false</addMavenDescriptor>
-                    <manifestEntries>
-                        <Permissions>all-permissions</Permissions>
-                        <Codebase>*</Codebase>
-                    </manifestEntries>
-                    <manifest>
-                        <addClasspath>true</addClasspath>
-                        <mainClass>com.oyasunadev.mcraft.client.core.ClassiCubeStandalone</mainClass>
-                    </manifest>
-                </archive>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
+    <build>
+        <defaultGoal>clean install</defaultGoal>
+        <sourceDirectory>${basedir}/src/main/java/</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifestEntries>
+                            <Permissions>all-permissions</Permissions>
+                            <Codebase>*</Codebase>
+                        </manifestEntries>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.oyasunadev.mcraft.client.core.ClassiCubeStandalone</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

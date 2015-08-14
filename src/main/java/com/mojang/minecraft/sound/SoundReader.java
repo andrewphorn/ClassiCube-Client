@@ -14,9 +14,9 @@ public final class SoundReader {
     public static SoundData read(URL var0) {
         VorbisStream vorbisStream = null;
         try {
-            LogicalOggStreamImpl OggStream = new OnDemandUrlStream(var0).getLogicalStreams()
-                    .iterator().next();
-            vorbisStream = new VorbisStream(OggStream);
+            LogicalOggStreamImpl oggStream = (LogicalOggStreamImpl)(new OnDemandUrlStream(var0)).
+                    getLogicalStreams().iterator().next();
+            vorbisStream = new VorbisStream(oggStream);
         } catch (Exception ex) {
             LogUtil.logWarning("Error loading sound stream from " + var0, ex);
         }
