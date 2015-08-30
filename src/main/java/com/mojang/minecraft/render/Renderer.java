@@ -119,8 +119,8 @@ public final class Renderer {
             GL11.glEnable(GL11.GL_LIGHT0);
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
             GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
-            float ambientBrightness = 0.7F;
-            float diffuseBrightness = 0.3F;
+            float ambientBrightness = 1F;
+            float diffuseBrightness = 0F;
             Vec3D sunPosition = new Vec3D(0F, -1F, 0.5F).normalize();
             GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION,
                     createBuffer(sunPosition.x, sunPosition.y, sunPosition.z, 0F));
